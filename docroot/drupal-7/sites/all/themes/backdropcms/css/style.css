@@ -1,0 +1,67 @@
+body {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-weight: 300;
+}
+
+#sidebar-first {
+  background-color: #000;
+  color: #fff;
+}
+#sidebar-first a {
+  color: #fff;
+}
+
+#site-name {
+  font-size: 35px;
+}
+
+#main-menu ul {
+  padding: 0;
+  width: 100%
+}
+#main-menu li {
+  list-style-type: none;
+  padding: 10px;
+  border-bottom: 1px solid #fff;
+}
+#main-menu li.first {
+  border-top: 1px solid #fff;
+}
+#main-menu a {
+  _font-weight: bold;
+}
+
+#sidebar-second {
+  -webkit-transition: width 0.3s ease, margin 0.3s ease;
+  -moz-transition: width 0.3s ease, margin 0.3s ease;
+  -o-transition: width 0.3s ease, margin 0.3s ease;
+  transition: width 0.3s ease, margin 0.3s ease;
+
+  background-color: #ccc;
+  color: #000;
+}
+
+#secondary-menu ul {
+  padding: 0;
+  width: 100%;
+}
+#secondary-menu li {
+  list-style-type: none;
+  padding: 10px;
+  font-weight: 500;
+}
+#secondary-menu a {
+  font-weight: 300;
+}
+
+/* no-links are special */
+li.menu-317,
+li.menu-318,
+li.menu-319 {
+  border-bottom: 1px solid #000;
+}
+
+/* HTML elements */
+a {
+  text-decoration: none;
+}

@@ -1,0 +1,56 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#page {
+  text-align: left;
+  max-width: 1440px;
+  height: 100%;
+}
+
+
+#main-wrapper {
+  float: left;
+  width: 840px;
+  margin-left: 600px;
+  margin-right: -1440px;
+  height: 100%;
+  overflow: auto;
+}
+  #main {
+    position: relative;
+    padding-bottom: 125px;
+  }
+
+#sidebar-first {
+  float: left;
+  width: 300px;
+  margin-left: 0;
+  margin-right: -300px;
+  height: 100%;
+  overflow: auto;
+}
+#sidebar-second {
+  float: left;
+  width: 300px;
+  margin-left: 300px;
+  margin-right: -600px;
+  height: 100%;
+  overflow: auto;
+}
+
+#content {
+}
+#footer {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  height: 125px;
+}
+
+.section {
+  padding: 50px 25px;
+}
