@@ -3,40 +3,43 @@ body, html {
   padding: 0;
   height: 100%;
 }
+body.admin-menu {
+  margin-top: 0 !important;
+}
 
 #page {
+  position: relative;
   text-align: left;
-  max-width: 1440px;
   height: 100%;
 }
 
 
 #main-wrapper {
-  float: left;
-  width: 840px;
   margin-left: 600px;
-  margin-right: -1440px;
-  height: 100%;
   overflow: auto;
+  text-align: center;
 }
   #main {
     position: relative;
     padding-bottom: 125px;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: left;
   }
 
 #sidebar-first {
-  float: left;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 300px;
-  margin-left: 0;
-  margin-right: -300px;
   height: 100%;
   overflow: auto;
 }
 #sidebar-second {
-  float: left;
+  position: fixed;
+  top: 0;
+  left: 300px;
   width: 300px;
-  margin-left: 300px;
-  margin-right: -600px;
   height: 100%;
   overflow: auto;
 }
