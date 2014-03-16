@@ -1,0 +1,37 @@
+<?php 
+/**
+ * @file
+ * Install, update and uninstall functions for the on_the_web module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Deletes all module-specific variables on uninstall.
+ */
+function on_the_web_uninstall() {
+  module_load_include('module', 'on_the_web', 'on_the_web');
+  $services = on_the_web_get_services();
+  foreach ($services as $service => $info) {
+    variable_del('on_the_web_' . $service . '_page');
+  }
+  variable_del('on_the_web_size');
+  variable_del('on_the_web_target');
+  variable_del('on_the_web_sitename');
+  variable_del('on_the_web_display');
+  variable_del('on_the_web_enabled');
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function on_the_web_update_7001() {
+  // Set the display style to automatic.
+  variable_set('on_the_web_display', 'auto');
+  // If feed was used previously, turn feed into an ordinary service.
+  $feed = variable_get('on_the_web_feed', FALSE);
+  if ($feed) {
+    variable_set('on_the_web_rss_page', 'rss.xml');
+  }
+  variable_del('on_the_web_feed');
+}

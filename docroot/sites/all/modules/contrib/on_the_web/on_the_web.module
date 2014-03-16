@@ -1,0 +1,351 @@
+<?php
+/**
+ * @file 
+ * Adds a block with a series of icons which link off-site to other web presences.
+ */
+
+/**
+ * Implementation of hook_block_info().
+ */
+function on_the_web_menu() {
+  $items['admin/config/services/on_the_web'] = array(
+    'title' => 'On The Web Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('on_the_web_settings_form'),
+    'access arguments' => array('administer blocks'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Settings form.
+ */
+function on_the_web_settings_form($form, &$form_state) {
+  $form = array();
+
+  $form['on_the_web_size'] = array(
+    '#type' => 'select',
+    '#title' => t('Icon size'),
+    '#options' => array(
+      'sm' => t('Small: 32px square'),
+      'lg' => t('Large: 64px square'),
+    ),
+    '#default_value' => array(variable_get('on_the_web_size', 'sm')),
+  );
+  $form['on_the_web_sitename'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use <a href="!url">Site name</a> in link titles', array('!url' => url('admin/config/system/site-information'))),
+    '#default_value' => variable_get('on_the_web_sitename', TRUE),
+    '#description' => t('Unchecking this box will use "us" as the title attribute for these links, instead of <em>Find !us on Facebook</em>.', array('!us' => variable_get('site_name', 'Drupal'))),
+  );
+  $form['on_the_web_target'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Open links in new windows'),
+    '#default_value' => variable_get('on_the_web_target', TRUE),
+    '#description' => t('Unchecking this box his will remove the target="_blank" attribute from these links.'),
+  );
+
+  $form['services'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Social media site links'),
+    '#description' => t('Providing default values here may save you some time 
+      when adding the On The Web block in more than one place on your site.'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $services = on_the_web_get_services();
+  foreach ($services as $service => $info) {
+    $testagain = TRUE;
+    $form['services']['on_the_web_' . $service . '_page'] = array(
+      '#type' => 'textfield',
+      '#title' => t($info['name'] . ' Page'),
+      '#default_value' => variable_get('on_the_web_' . $service . '_page', ''),
+      '#description' => t('Please enter the full url, including http://'),
+    );
+    // Collapse the fieldset if any URL is already entered.
+    if ($testagain && $form['services']['on_the_web_' . $service . '_page']['#default_value'] != '') {
+      $form['services']['#collapsed'] = TRUE;
+      $testagain = FALSE;
+    }
+  }
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implementation of hook_block_info().
+ */
+function on_the_web_block_info() {
+  $blocks[0] = array(
+    'info' => t('On The Web'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implementation of hook_block_configure().
+ */
+function on_the_web_block_configure($delta = 0) {
+  $form = array();
+  if ($delta == 0) {
+
+    $form['services'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Icons provided for the following services:'),
+      '#description' => t('The URL for each service must be entered on the OTW
+        <a href="!url">settings page</a>.', array('!url' => url('admin/config/services/on_the_web'))),
+    );
+
+    $form['services']['display'] = array(
+      '#type' => 'radios',
+      '#title' => t('Icon display'),
+      '#options' => array(
+        'auto' => t('Automatic'),
+        'manual' => t('Explicit'),
+      ),
+      '#default_value' => variable_get('on_the_web_display', 'auto'),
+    );
+
+    // Add descriptions to the radio buttons.
+    $form['services']['display']['auto'] = array(
+      '#description' => t('Show all icons that have corresponding links entered.'),
+    );
+    $form['services']['display']['manual'] = array(
+      '#description' => t('Explicity choose icons here.'),
+    );
+
+    $services = on_the_web_get_services();
+    $options = array();
+    $defaults = array();
+    foreach ($services as $service => $info) {
+      // Check the box by default if the service has a URL.
+      if (variable_get('on_the_web_' . $service . '_page', FALSE)) {
+        $options[$service] = $info['name'];
+        $defaults[$service] = $service;
+      }
+    }
+    if (!empty($options)) {
+      $form['services']['enabled'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Icons'),
+        '#options' => $options,
+        '#default_value' => variable_get('on_the_web_enabled', $defaults),
+        '#description' => t('Please select the icons you would like displayed in this block.'),
+        '#states' => array(
+          'visible' => array(
+            ':input[name="display"]' => array('value' => 'manual'),
+          ),
+        ),
+      );
+    }
+    else {
+      $form['services']['none'] = array(
+        '#markup' => '<p class="warning">' . t('No services have been configured yet.') . '</p>',
+      );
+    }
+  }
+
+  return $form;
+}
+
+ 
+/**
+ * Implementation of hook_block_save().
+ */
+function on_the_web_block_save($delta = 0, $edit = array()) {
+  // This example comes from node.module.
+  if ($delta == 0) {
+    variable_set('on_the_web_display', $edit['display']);
+    if ($edit['display'] == 'manual') {
+      variable_set('on_the_web_enabled', $edit['enabled']);
+    }
+  }
+}
+ 
+ 
+/**
+ * Implementation of hook_block_view().
+ */
+function on_the_web_block_view($delta = 0) {
+  $block = array(
+    'subject' => t('Find Us On...'),
+    'content' => on_the_web_display_block($delta)
+  );
+
+  return $block;
+}
+
+/**
+ * Block Display
+ *
+ * @return 
+ *    Content for block.
+ */
+function on_the_web_display_block($delta) {
+  $output = '';
+
+  // Get the appropriate name to use in links.
+  if (variable_get('on_the_web_sitename', TRUE)) {
+    $name = variable_get('site_name', 'Drupal');
+  }
+  else {
+    $name = t('Us');
+  }
+
+  // Get the display style, and enabled icons.
+  $display = variable_get('on_the_web_display', 'auto');
+  if ($display == 'manual') {
+    $enabled = variable_get('on_the_web_enabled', array());
+  }
+
+  $services = on_the_web_get_services();
+
+  $count = 0;
+  foreach ($services as $service => $info) {
+    $link = variable_get('on_the_web_' . $service . '_page', FALSE);
+    if (($display == 'auto' && $link) || 
+        ($display == 'manual' && array_key_exists($service, $enabled) && $enabled[$service] === $service)) {
+      $classes = array('on-the-web', 'otw-' . $service, 'otw-' . $count);
+      if ($service != 'rss') {
+        $title = t('Find !us on !service', array('!us' => $name, '!service' => $info['name']));
+      }
+      else {
+        $title = t('!us RSS feed', array('!us' => $name));
+      }
+      $linked_image = theme('on_the_web_item', array('service' => $service, 'link' => $link, 'title' => $title));
+      $output .= theme('on_the_web_icon', array('linked_image' => $linked_image, 'classes' => $classes));
+      $count++;
+    }
+  }
+
+  return $output;
+}
+
+/**
+ * Gets the available services.
+ *
+ * @return array
+ *   List of services with icons.
+ */
+function on_the_web_get_services() {
+  $services = array(
+    'twitter' => array('name' => 'Twitter'),
+    'facebook' => array('name' => 'Facebook'),
+    'pinterest' => array('name' => 'Pinterest'),
+    'google' => array('name' => 'Google+'),
+    'youtube' => array('name' => 'YouTube'),
+    'flickr' => array('name' => 'Flickr'),
+    'myspace' => array('name' => 'MySpace'),
+    'linkedin' => array('name' => 'LinkedIn'),
+    'itunes' => array('name' => 'iTunes'),
+    'delicious' => array('name' => 'Delicious'),
+    'friendfeed' => array('name' => 'FriendFeed'),
+    'rss' => array('name' => 'RSS'),
+  );
+
+  drupal_alter('on_the_web_get_services', $services);
+
+  return $services;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function on_the_web_theme($existing, $type, $theme, $path) {
+  return array(
+    'on_the_web_icon' => array(
+      'variables' => array('linked_image' => NULL, 'classes' => NULL),
+    ),
+    'on_the_web_item' => array(
+      'variables' => array('service' => NULL, 'link' => NULL, 'title' => NULL),
+    ),
+    'on_the_web_image' => array(
+      'variables' => array('service' => NULL, 'title' => NULL),
+    ),
+  );
+}
+
+/**
+ * Theme function
+ *
+ * @param $linked_image
+ *    Linked icon.
+ * @return 
+ *    Linked image with wrapper markup.
+ */
+function theme_on_the_web_icon($variables){
+  $linked_image = $variables['linked_image'];
+  $classes = $variables['classes'] ? ' class="' . implode(' ', $variables['classes']) . '"' : '';
+
+  if ($linked_image){
+    $output = '<span' . $classes . '>' . $linked_image . '</span>';
+    return $output;
+  }
+  return;
+}
+
+/**
+ * Theme function
+ *
+ * @param $service
+ *    Icon for appropriate service.
+ * @param $link
+ *    URL where link should point.
+ * @param $title
+ *    Title attribute for the link tag.
+ *
+ * @return 
+ *    Linked icon with wrapper markup.
+ */
+function theme_on_the_web_item($variables) {
+  $service = $variables['service'];
+  $link = $variables['link'];
+  $title = $variables['title'];
+
+  // Build the img tag.
+  $image = theme('on_the_web_image', array('service' => $service, 'title' => $title));
+
+  // Determine attributes for the link
+  $attributes  = array('title' => $title);
+  if (variable_get('on_the_web_target', TRUE) == TRUE) {
+    $attributes['target'] = '_blank';
+  }
+
+  // Link the image and wrap it in a span.
+  $linked_image = l($image, $link, array('attributes' => $attributes, 'html' => TRUE));
+
+  return $linked_image;
+}
+
+/**
+ * Theme function
+ *
+ * @param $service
+ *    Icon for appropriate service.
+ * @param $title
+ *    Title attribute for the link tag.
+ *
+ * @return 
+ *    Icon image of appropriate size.
+ */
+function theme_on_the_web_image($variables) {
+  $service = $variables['service'];
+  $title = $variables['title'];
+
+  // Get the size.
+  $size = variable_get('on_the_web_size', 'sm');
+
+  // Assemble necessary variables for building the image.
+  $variables = array(
+    'path' => drupal_get_path('module', 'on_the_web') . '/images/' . $size . '/' . $service . '.png', 
+    'alt' => $title,
+    'title' => $title,
+  );
+
+  // Build the img tag.
+  $image = theme('image', $variables);
+
+  return $image;
+}
