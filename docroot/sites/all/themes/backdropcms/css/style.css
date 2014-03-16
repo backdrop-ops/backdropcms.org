@@ -22,10 +22,10 @@ body {
 #main-menu li {
   list-style-type: none;
   padding: 10px;
-  border-bottom: 1px solid #fff;
+  border-bottom: 2px solid #fff;
 }
 #main-menu li.first {
-  border-top: 1px solid #fff;
+  border-top: 2px solid #fff;
 }
 #main-menu a {
   _font-weight: bold;
@@ -56,9 +56,34 @@ body {
 
 /* no-links are special */
 li.menu-317,
-li.menu-318,
+li.menu-358,
 li.menu-319 {
-  border-bottom: 1px solid #000;
+  border-bottom: 2px solid #000;
+}
+
+.book-navigation {
+  margin-top: 50px;
+}
+
+.version-number {
+  font-size: 2em;
+  margin: 0 auto;
+  text-align: center;
+}
+.version-number span {
+  display: inline-block;
+  width: 28%;
+}
+.version-explaination {
+  margin: 0 auto;
+  text-align: center;
+}
+.version-explaination span {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  width: 29%;
 }
 
 /* HTML elements */
