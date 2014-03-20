@@ -1,6 +1,5 @@
 body {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-  font-weight: 300;
 }
 
 #sidebar-first {
@@ -13,6 +12,10 @@ body {
 
 #site-name {
   font-size: 35px;
+  line-height: 250px;
+  height: 250px;
+  margin: 0 -10px;
+  text-align: center;
 }
 
 #main-menu ul {
@@ -21,14 +24,19 @@ body {
 }
 #main-menu li {
   list-style-type: none;
-  padding: 10px;
+  padding: 8px 25px;
   border-bottom: 2px solid #fff;
 }
 #main-menu li.first {
   border-top: 2px solid #fff;
 }
+#main-menu li.active,
+#main-menu li.active-trail {
+  background: transparent url('../images/arrow.png') top right no-repeat;
+}
 #main-menu a {
-  _font-weight: bold;
+  font-size: 24px;
+  line-height: 36px;
 }
 
 #sidebar-second {
@@ -54,11 +62,15 @@ body {
   font-weight: 300;
 }
 
-/* no-links are special */
+/* non-links are special */
 li.menu-317,
 li.menu-358,
 li.menu-319 {
   border-bottom: 2px solid #000;
+}
+
+#main {
+  font-weight: 300;
 }
 
 .book-navigation {
@@ -88,5 +100,6 @@ li.menu-319 {
 
 /* HTML elements */
 a {
+  color: #149EEC;
   text-decoration: none;
 }

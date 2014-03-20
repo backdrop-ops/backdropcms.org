@@ -5,10 +5,11 @@ version = VERSION
 core = 7.x
 
 stylesheets[all][] = css/layout.css
+stylesheets[all][] = css/font-awesome.css
 stylesheets[all][] = css/style.css
 stylesheets[print][] = css/print.css
 
-javascript[] = js/backdroporg.js
+javascript[] = js/backdropcms.js
 
 regions[content] = Content
 regions[sidebar_first] = Sidebar first

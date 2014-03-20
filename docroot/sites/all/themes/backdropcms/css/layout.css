@@ -19,13 +19,16 @@ body.admin-menu {
   overflow: auto;
   text-align: center;
 }
-  #main {
-    position: relative;
-    padding-bottom: 125px;
-    max-width: 700px;
-    margin: 0 auto;
-    text-align: left;
-  }
+#main-wrapper.closed {
+  margin-left: 300px;
+}
+#main {
+  position: relative;
+  padding-bottom: 125px;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: left;
+}
 
 #sidebar-first {
   position: fixed;
@@ -43,6 +46,9 @@ body.admin-menu {
   height: 100%;
   overflow: auto;
 }
+#sidebar-second.closed {
+  width: 0;
+}
 
 #content {
 }
@@ -56,4 +62,7 @@ body.admin-menu {
 
 .section {
   padding: 50px 25px;
+}
+#sidebar-first .section {
+  padding: 50px 0;
 }
