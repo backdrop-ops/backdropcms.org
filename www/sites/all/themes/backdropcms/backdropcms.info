@@ -14,8 +14,8 @@ stylesheets[all][] = system.menus.css
 scripts[] = js/backdropcms.js
 
 regions[content] = Content
-regions[sidebar_first] = Sidebar first
-regions[sidebar_second] = Sidebar second
+regions[sidebar_first] = Sidebar
+regions[sidebar_second] = Drawer
 
 regions[footer] = Footer
 

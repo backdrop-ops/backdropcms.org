@@ -34,7 +34,7 @@ body.admin-menu {
   text-align: left;
 }
 
-#sidebar-first {
+#sidebar {
   position: fixed;
   top: 0;
   left: 0;
@@ -76,6 +76,6 @@ body.admin-menu {
 .section {
   padding: 50px 25px;
 }
-#sidebar-first .section {
+#sidebar .section {
   padding: 50px 0;
 }

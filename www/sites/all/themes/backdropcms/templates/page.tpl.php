@@ -23,7 +23,7 @@
 
     </div></div> <!-- /#main, /#main-wrapper -->
 
-    <div id="sidebar-first" class="column"><div class="section">
+    <div id="sidebar" class="column"><div class="section">
       <div id="header">
         <?php if ($logo): ?>
           <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" id="logo">
@@ -52,13 +52,13 @@
       </nav> <!-- /#main-menu -->
 
       <?php print render($page['sidebar_first']); ?>
-    </div></div> <!-- /.section, /#sidebar-first -->
+    </div></div> <!-- /.section, /#sidebar -->
 
     <div id="drawer"><div class="section">
       <nav id="handbook-menu" class="navigation">
         <?php print $handbook_menu; ?>
       </nav>
       <?php print render($page['sidebar_second']); ?>
-    </div></div> <!-- /.section, /#sidebar-second -->
+    </div></div> <!-- /.section, /#drawer -->
 
   </div> <!-- /#page, -->
