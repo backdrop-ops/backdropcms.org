@@ -56,7 +56,7 @@
 
     <div id="drawer"><div class="section">
       <nav id="handbook-menu" class="navigation">
-        <?php print drupal_render(menu_tree('menu-handbook')); ?>
+        <?php print $handbook_menu; ?>
       </nav>
       <?php print render($page['sidebar_second']); ?>
     </div></div> <!-- /.section, /#sidebar-second -->

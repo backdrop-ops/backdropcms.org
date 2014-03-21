@@ -16,6 +16,8 @@ function backdropcms_preprocess_page(&$variables) {
     $variables['main_menu'][$key]['title'] = t($variables['main_menu'][$key]['title']) . ' <i class="fa fa-chevron-right fa-fw"></i>';
     $variables['main_menu'][$key]['html'] = TRUE;
   }
+  $handbook_tree = menu_tree('menu-handbook');
+  $variables['handbook_menu'] = drupal_render($handbook_tree);
 }
 
 /**
