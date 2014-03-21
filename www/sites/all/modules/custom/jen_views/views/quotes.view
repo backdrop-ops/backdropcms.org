@@ -64,6 +64,7 @@
  $handler->display->display_options['style_options']['views_slideshow_cycle']['wait_for_image_load_timeout'] = '3000';
  $handler->display->display_options['style_options']['views_slideshow_cycle']['cleartype'] = 0;
  $handler->display->display_options['style_options']['views_slideshow_cycle']['cleartypenobg'] = 0;
+ $handler->display->display_options['style_options']['views_slideshow_cycle']['advanced_options'] = '{"timeout":"6000","speed":"1500"}';
  $handler->display->display_options['row_plugin'] = 'fields';
  /* Field: Content: Photo */
  $handler->display->display_options['fields']['field_photo']['id'] = 'field_photo';
@@ -85,8 +86,8 @@
  $handler->display->display_options['fields']['body']['label'] = '';
  $handler->display->display_options['fields']['body']['alter']['alter_text'] = TRUE;
  $handler->display->display_options['fields']['body']['alter']['text'] = '<blockquote>
- <i class="fa fa-quote-right fa-2x pull-right"></i>[body]
- </blockquote>';
+  <i class="fa fa-quote-right fa-2x pull-right"></i>[body]
+  </blockquote>';
  $handler->display->display_options['fields']['body']['element_type'] = '0';
  $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
  $handler->display->display_options['fields']['body']['element_wrapper_type'] = '0';
@@ -108,6 +109,10 @@
  $handler->display->display_options['fields']['field_claim']['element_type'] = '0';
  $handler->display->display_options['fields']['field_claim']['element_label_colon'] = FALSE;
  $handler->display->display_options['fields']['field_claim']['element_wrapper_class'] = 'subtext';
+ /* Sort criterion: Global: Random */
+ $handler->display->display_options['sorts']['random']['id'] = 'random';
+ $handler->display->display_options['sorts']['random']['table'] = 'views';
+ $handler->display->display_options['sorts']['random']['field'] = 'random';
  /* Filter criterion: Content: Published */
  $handler->display->display_options['filters']['status']['id'] = 'status';
  $handler->display->display_options['filters']['status']['table'] = 'node';
