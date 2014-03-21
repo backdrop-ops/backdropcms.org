@@ -1,6 +1,6 @@
   <div id="page">
 
-    <div id="main-wrapper" class="column closed"><div id="main" class="clearfix">
+    <div id="main-wrapper" class="column"><div id="main" class="clearfix">
 
       <div id="content"><div class="section">
         <?php print $messages; ?>
@@ -54,21 +54,10 @@
       <?php print render($page['sidebar_first']); ?>
     </div></div> <!-- /.section, /#sidebar-first -->
 
-    <div id="sidebar-second" class="column closed"><div class="section">
-      <nav id="secondary-menu" class="navigation">
-        <?php print theme('links__system_secondary_menu', array(
-          'links' => $secondary_menu,
-          'attributes' => array(
-            'class' => array('links'),
-          ),
-          'heading' => array(
-            'text' => t('Secondary navigation'),
-            'level' => 'h2',
-            'class' => array('element-invisible'),
-          ),
-        )); ?>
-      </nav> <!-- /#secondary-menu -->
-
+    <div id="drawer"><div class="section">
+      <nav id="handbook-menu" class="navigation">
+        <?php print drupal_render(menu_tree('menu-handbook')); ?>
+      </nav>
       <?php print render($page['sidebar_second']); ?>
     </div></div> <!-- /.section, /#sidebar-second -->
 

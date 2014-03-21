@@ -8,7 +8,10 @@ stylesheets[all][] = css/layout.css
 stylesheets[all][] = css/style.css
 stylesheets[print][] = css/print.css
 
-javascript[] = js/backdropcms.js
+; Stylesheets to remove:
+stylesheets[all][] = system.menus.css
+
+scripts[] = js/backdropcms.js
 
 regions[content] = Content
 regions[sidebar_first] = Sidebar first
