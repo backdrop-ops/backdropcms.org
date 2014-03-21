@@ -82,6 +82,13 @@ li.menu-319 {
 #main {
   font-weight: 300;
 }
+#footer a {
+  color: #979797;
+}
+#footer a:hover {
+  color: #149EEC;
+}
+
 
 .book-navigation {
   margin-top: 50px;
@@ -175,6 +182,19 @@ body.front .node .content {
   padding: 0;
   vertical-align: top;
   width: 29%;
+}
+
+/* on the web block */
+.block-on-the-web a i {
+  width: 35px;
+  height: 35px;
+  font-size: 35px;
+  line-height: 35px;
+  margin: 10px 5px;
+  color: rgb(151, 151, 151);
+}
+.block-on-the-web a:hover i {
+  color: #149EEC;
 }
 
 /**
