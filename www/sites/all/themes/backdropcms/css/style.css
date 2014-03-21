@@ -24,12 +24,13 @@ body {
 }
 #main-menu li {
   list-style-type: none;
-  padding: 8px 25px;
+  padding: 0 0 0 15px;
   border-bottom: 2px solid #fff;
 }
-#main-menu li:after {
-  content: '';
-  color: #fff;
+#main-menu li a {
+  display: inline-block;
+  padding: 10px;
+  width: 265px;
 }
 #main-menu li.first {
   border-top: 2px solid #fff;
