@@ -95,9 +95,15 @@ li.menu-319 {
 }
 
 /* blocks */
+#block-block-1 {
+  float: left;
+  width: 175px;
+  margin-right: 25px;
+}
 #block-block-2 {
-  width: 300px;
-  margin: 0 auto;
+  float: left;
+  width: 330px;
+  margin-right: 25px;
 }
 #block-block-2 p.subtext {
   text-align: right;
@@ -119,8 +125,8 @@ a.button {
 a.button span {
   display: block;
   position: absolute;
-  top: -10px;
-  right: -10px;
+  top: -13px;
+  right: -13px;
   font-size: 14px;
   line-height: 24px;
   padding: 0 10px;
@@ -147,8 +153,11 @@ body.front .node .content {
 }
 
 /* quotes view */
+#block-views-quotes-block {
+  clear: both;
+}
 .view-quotes {
-  margin-top: 100px;
+  padding-top: 100px;
 }
 .view-quotes img {
   float: left;
