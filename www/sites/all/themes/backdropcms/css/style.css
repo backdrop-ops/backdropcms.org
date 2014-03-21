@@ -270,6 +270,10 @@ a {
   color: #149EEC;
   text-decoration: none;
 }
+img {
+  max-width: 100%;
+  height: auto;
+}
 blockquote {
   font-style: italic;
   min-height: 100px;
