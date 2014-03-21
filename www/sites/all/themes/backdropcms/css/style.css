@@ -192,6 +192,11 @@ body.front .node .content {
   vertical-align: top;
   width: 29%;
 }
+/* donate page */
+.donate-right {
+  float: right;
+  margin-top: -10px;
+}
 
 /* on the web block */
 .block-on-the-web a i {
