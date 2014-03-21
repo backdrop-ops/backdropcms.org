@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * All views, exported to code.
+ */
+ 
+/**
+ * Implements hook_views_api().
+ *
+ * Register View API information. This is required for your module to have
+ * its include files loaded; for example, when implementing
+ * hook_views_default_views().
+ *
+ * @return
+ *   An array with the following possible keys:
+ *   - api:  (required) The version of the Views API the module implements.
+ *   - path: (optional) If includes are stored somewhere other than within
+ *       the root module directory or a subdirectory called includes, specify
+ *       its path here.
+ */
+function jen_views_views_api() {
+  return array(
+    'api' => 2,
+  );
+}
+
+/**
+ * Implements hook_views_default_views_alter().
+ * Provides overrides for default views provided by other modules.
+ */
+function jen_views_views_default_views_alter(&$views) {
+  $views_path = drupal_get_path('module', 'jen_views') . '/views';
+  $files = file_scan_directory($views_path, '/\.view$/');
+  foreach ($files as $filename => $file) {
+    if (isset($views[$file->name])) {
+      require $filename;
+      $views[$file->name] = $view;
+    }
+  }
+}
