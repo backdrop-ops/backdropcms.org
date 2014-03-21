@@ -27,17 +27,24 @@ body {
   padding: 0 0 0 15px;
   border-bottom: 2px solid #fff;
 }
-#main-menu li a {
-  display: inline-block;
-  padding: 10px;
-  width: 265px;
-}
 #main-menu li.first {
   border-top: 2px solid #fff;
 }
-#main-menu li.active,
-#main-menu li.active-trail {
-  
+#main-menu a {
+  display: inline-block;
+  padding: 8px 10px;
+  width: 265px;
+  position: relative;
+}
+#main-menu i {
+  display: inline-block;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+}
+#main-menu li.active i,
+#main-menu li.active-trail i {
+  color: #149EEC;
 }
 #main-menu a {
   font-size: 24px;
@@ -167,20 +174,6 @@ body.front .node .content {
   width: 29%;
 }
 
-/* HTML elements */
-a {
-  color: #149EEC;
-  text-decoration: none;
-}
-blockquote {
-  font-style: italic;
-  min-height: 100px;
-  margin: 0;
-}
-blockquote p {
-  margin: 0;
-}
-
 /**
  * Tabs.
  */
@@ -233,4 +226,18 @@ ul.secondary a {
 }
 ul.secondary a.active {
   border-bottom: 4px solid #999;
+}
+
+/* HTML elements */
+a {
+  color: #149EEC;
+  text-decoration: none;
+}
+blockquote {
+  font-style: italic;
+  min-height: 100px;
+  margin: 0;
+}
+blockquote p {
+  margin: 0;
 }
