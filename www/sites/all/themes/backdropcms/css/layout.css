@@ -15,12 +15,16 @@ body.admin-menu {
 
 
 #main-wrapper {
-  margin-left: 600px;
-  overflow: auto;
-  text-align: center;
-}
-#main-wrapper.closed {
   margin-left: 300px;
+  text-align: center;
+
+  -webkit-transition: margin 0.3s ease;
+  -moz-transition: margin 0.3s ease;
+  -o-transition: margin 0.3s ease;
+  transition: margin 0.3s ease;
+}
+#main-wrapper.drawer-open {
+  margin-left: 600px;
 }
 #main {
   position: relative;
@@ -37,17 +41,26 @@ body.admin-menu {
   width: 300px;
   height: 100%;
   overflow: auto;
+  z-index: 2;
 }
-#sidebar-second {
+#drawer {
   position: fixed;
   top: 0;
-  left: 300px;
+  left: 0;
   width: 300px;
   height: 100%;
   overflow: auto;
+  z-index: 1;
+
+  -webkit-transition: left 0.3s ease;
+  -moz-transition: left 0.3s ease;
+  -o-transition: left 0.3s ease;
+  transition: left 0.3s ease;
 }
-#sidebar-second.closed {
-  width: 0;
+/* Because animations can't happen at the same time as hiding/showing. We have
+   classes for both open and closed. */
+#drawer.open {
+  left: 300px;
 }
 
 #content {
