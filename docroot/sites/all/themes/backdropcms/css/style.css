@@ -82,6 +82,9 @@ li.menu-319 {
   width: 300px;
   margin: 0 auto;
 }
+#block-block-2 p.subtext {
+  text-align: right;
+}
 
 /* classes */
 a.button {
@@ -109,11 +112,10 @@ a.button span {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-p.subtext {
+.subtext {
   font-size: 12px;
   font-weight: 400;
   color: #969595;
-  text-align: right;
 }
 
 /* home page */
@@ -125,6 +127,22 @@ body.front #page-title {
 body.front .node .content {
   font-size: 23px;
   line-height: 31px;
+}
+
+/* quotes view */
+.view-quotes {
+  margin-top: 100px;
+}
+.view-quotes img {
+  float: left;
+  margin-right: 15px;
+}
+.view-quotes blockquote {
+  margin-left: 125px;
+  font-size: 25px;
+}
+.view-quotes .subtext {
+  margin: 5px 0;
 }
 
 /* semantic versioning handbook page */
@@ -153,4 +171,14 @@ body.front .node .content {
 a {
   color: #149EEC;
   text-decoration: none;
+}
+blockquote {
+  background: transparent url('../images/blockquote.png') top right no-repeat;
+  font-style: italic;
+  padding: 0 90px 0 0;
+  min-height: 100px;
+  margin: 0;
+}
+blockquote p {
+  margin: 0;
 }
