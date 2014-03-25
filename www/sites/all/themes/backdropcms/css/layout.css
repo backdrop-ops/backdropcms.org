@@ -7,6 +7,10 @@ body.admin-menu {
   margin-top: 0 !important;
 }
 
+p{
+	font-size:100%; 
+}
+
 #page {
   position: relative;
   text-align: left;
@@ -63,6 +67,12 @@ body.admin-menu {
   left: 300px;
 }
 
+span.nolink {
+	font-size:180%;
+	font-weight:800;
+	letter-spacing: -.07em;
+}
+
 #footer {
   position: absolute;
   bottom: 0;
@@ -71,9 +81,17 @@ body.admin-menu {
   height: 125px;
 }
 
-.section {
-  padding: 50px 25px;
+/*.section {
+  padding: 50px 35px;
 }
 #sidebar .section {
-  padding: 50px 0;
+	padding-bottom: 50px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 25px;
+}*/
+
+#handbook-menu{
+	
 }
+
