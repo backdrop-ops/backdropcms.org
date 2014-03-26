@@ -1,0 +1,51 @@
+# translation of fr.po to
+# translation of codefilter.po to
+#
+# LANGUAGE translation of Drupal (codefilter.module)
+# Generated from files:
+#  codefilter.module,v 1.21.2.5 2006/12/28 22:49:07 unconed
+#  codefilter.info,v 1.2.2.2 2006/12/27 13:23:38 unconed
+# Copyright YEAR NAME <EMAIL@ADDRESS>.
+# Augustin <beginner2005@masquilier.org>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: fr\n"
+"POT-Creation-Date: 2007-12-04 13:48-0700\n"
+"PO-Revision-Date: 2007-12-13 14:20+0800\n"
+"Last-Translator: Augustin <beginner2005@masquilier.org>\n"
+"Language-Team: <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: KBabel 1.10.2\n"
+
+#: codefilter.module:9
+msgid "To post pieces of code, surround them with &lt;code&gt;...&lt;/code&gt; tags. For PHP code, you can use &lt;?php ... ?&gt;, which will also colour it based on syntax."
+msgstr "Pour publier des morceaux de code, entourez-les avec les balises &lt;code&gt;...&lt;/code&gt;. Pour du PHP, utilisez. &lt;?php ... ?&gt;, ce qui va colorier le code en fonction de sa syntaxe."
+
+#: codefilter.module:12
+msgid "You may post code using &lt;code&gt;...&lt;/code&gt; (generic) or &lt;?php ... ?&gt; (highlighted PHP) tags."
+msgstr "Vous pouvez publier du code en utilisant les balises &lt;code&gt;...&lt;/code&gt; (generic) ou bien &lt;?php ... ?&gt; (PHP colorié)."
+
+#: codefilter.module:95
+msgid "Code filter"
+msgstr "Filtre code"
+
+#: codefilter.module:98
+msgid "Allows users to post code verbatim using &lt;code&gt; and &lt;?php ?&gt; tags."
+msgstr "Permettre aux usagers de publier du code tel quel en utilisant les balises &lt;code&gt; et &lt;?php ?&gt;."
+
+#: codefilter.module:0
+msgid "codefilter"
+msgstr "codefilter"
+
+#: codefilter.info:0
+msgid "Code Filter"
+msgstr "Filtre de code"
+
+#: codefilter.info:0
+msgid "Provides tags for automatically escaping and formatting large pieces of code."
+msgstr "Procure des balises pour formatter et publier littéralement des blocs de code."
+

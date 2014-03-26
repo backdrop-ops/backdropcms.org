@@ -1,0 +1,46 @@
+# Japanese translation of Drupal (codefilter)
+# Copyright 2008 0829 <hixarg+0829@gmail.com>
+# Generated from files:
+#  codefilter.info,v 1.3 2007/12/03 08:01:51 dww Exp
+#  codefilter.module,v 1.29 2008/01/14 10:00:46 johnalbin Exp
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Drupal 6.x\n"
+"POT-Creation-Date: 2008-04-13 21:28+0900\n"
+"PO-Revision-Date: 2008-04-13 21:30+0900\n"
+"Last-Translator: 0829 <hixarg+0829@gmail.com>\n"
+"Language-Team: DRUPAL*DRUPAL <hixarg+0829@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: modules/codefilter/codefilter.info:0
+msgid "Code Filter"
+msgstr "コードフィルタ"
+
+#: modules/codefilter/codefilter.info:0
+msgid "Provides tags for automatically escaping and formatting large pieces of code."
+msgstr "HTML タグのエスケープや PHP コードのフォーマットなどの自動処理を行います。"
+
+#: modules/codefilter/codefilter.module:9
+msgid "To post pieces of code, surround them with &lt;code&gt;...&lt;/code&gt; tags. For PHP code, you can use &lt;?php ... ?&gt;, which will also colour it based on syntax."
+msgstr "コードを投稿する場合に &lt;code&gt;...&lt;/code&gt; タグを利用すると、記号等もすべて入力した内容のままで表示されます。 また PHP コードを入力する場合、&lt;?php ... ?&gt; を利用すれば、構文に基づいてハイライト表示されます。"
+
+#: modules/codefilter/codefilter.module:12
+msgid "You may post code using &lt;code&gt;...&lt;/code&gt; (generic) or &lt;?php ... ?&gt; (highlighted PHP) tags."
+msgstr "&lt;code&gt;...&lt;/code&gt で一般的なコードをそのまま投稿できます。 また、&lt;?php ... ?&gt; で投稿した PHP コードがハイライトされます。"
+
+#: modules/codefilter/codefilter.module:113
+msgid "Code filter"
+msgstr "コードフィルタ"
+
+#: modules/codefilter/codefilter.module:116
+msgid "Allows users to post code verbatim using &lt;code&gt; and &lt;?php ?&gt; tags."
+msgstr "&lt;code&gt; または &lt;?php ?&gt; を使用することでコードをそのまま入力することができます。"
+
+#: modules/codefilter/codefilter.module:0
+msgid "codefilter"
+msgstr "コードフィルタ"
+
