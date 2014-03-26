@@ -1,5 +1,12 @@
 body {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size:16px; 
+  
+}
+
+p{
+	font-size: 110%;
+	line-height: 140%;
 }
 
 #sidebar {
@@ -11,11 +18,12 @@ body {
 }
 
 #site-name {
-  font-size: 35px;
-  line-height: 250px;
-  height: 250px;
+  font-size: 250%;
+  line-height: 300px;
+  height: 300px;
   margin: 0 -10px;
   text-align: center;
+  letter-spacing: -.03em;
 }
 
 #main-menu ul {
@@ -51,8 +59,18 @@ body {
   line-height: 36px;
 }
 
+#main-menu a:hover {
+  color: #45B6F5;
+  
+}
+
+
+
+#main-menu.navigation{
+	margin-top:-17px;
+}
 #drawer {
-  background-color: #ccc;
+  background-color: #F7F7F7;
   color: #000;
 }
 #drawer span {
@@ -65,11 +83,30 @@ body {
 }
 #drawer ul.menu li {
   list-style-type: none;
-  padding: 10px 0;
-  font-weight: 500;
+  padding: 7px 0;
+  /*font-weight: 500;*/
 }
 #drawer a {
-  font-weight: 300;
+  
+}
+
+#handbook-menu ul.menu li.first.expanded{
+	border-top: 0;
+	padding: 0 30px;
+}
+
+#handbook-menu ul.menu li.expanded{
+	border-top: solid 2px #979797;
+	padding: 0 30px;
+	margin-top:30px;
+}
+
+#handbook-menu ul.menu li.expanded span{
+	padding: 30px 0 10px 0;
+}
+
+#handbook-menu ul.menu li.first.expanded span{
+	padding: 0px 0 10px 0;
 }
 
 /* non-links are special */
@@ -80,7 +117,7 @@ li.menu-319 {
 }
 
 #main {
-  font-weight: 300;
+  /*font-weight: 300;*/
 }
 #footer a {
   color: #979797;
@@ -282,3 +319,5 @@ blockquote {
 blockquote p {
   margin: 0;
 }
+
+

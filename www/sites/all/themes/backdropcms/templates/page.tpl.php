@@ -32,7 +32,7 @@
         <?php endif; ?>
         <?php if ($site_name): ?>
           <div id="site-name">
-            <strong><a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><?php print $site_name; ?></a></strong>
+            <strong><a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><?php print 'Backdrop'; ?></a></strong>
           </div>
         <?php endif; ?>
       </div> <!-- /#header -->
