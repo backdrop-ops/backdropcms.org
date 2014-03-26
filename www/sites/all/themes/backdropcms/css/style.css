@@ -4,6 +4,11 @@ body {
   
 }
 
+p{
+	font-size: 110%;
+	line-height: 140%;
+}
+
 #sidebar {
   background-color: #000;
   color: #fff;
@@ -53,6 +58,13 @@ body {
   font-size: 24px;
   line-height: 36px;
 }
+
+#main-menu a:hover {
+  color: #45B6F5;
+  
+}
+
+
 
 #main-menu.navigation{
 	margin-top:-17px;
@@ -307,3 +319,5 @@ blockquote {
 blockquote p {
   margin: 0;
 }
+
+
