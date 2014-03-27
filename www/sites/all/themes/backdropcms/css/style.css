@@ -32,7 +32,7 @@ p{
 }
 #main-menu li {
   list-style-type: none;
-  padding: 0 0 0 15px;
+  padding: 0 10px 0 15px;
   border-bottom: 2px solid #fff;
 }
 #main-menu li.first {
@@ -40,8 +40,8 @@ p{
 }
 #main-menu a {
   display: inline-block;
-  padding: 8px 10px;
-  width: 265px;
+  padding: 8px 0;
+  width: 100%;
   position: relative;
 }
 #main-menu i {
@@ -158,6 +158,7 @@ a.button {
   line-height: 50px;
   padding: 0 20px;
   position: relative;
+  white-space: nowrap;
 }
 a.button span {
   display: block;
@@ -180,13 +181,26 @@ a.button span {
 
 /* home page */
 body.front #page-title {
-  font-size: 105px;
-  line-height: 102px;
-  margin: 65px 0 0 0;
+  font-size: 55px;
+  line-height: 52px;
+  margin: 30px 0 0 0;
+}
+@media (min-width: 768px) {
+  body.front #page-title {
+    font-size: 105px;
+    line-height: 102px;
+    margin: 65px 0 0 0;
+  }
 }
 body.front .node .content {
-  font-size: 23px;
-  line-height: 31px;
+  font-size: 18px;
+  line-height: 24px;
+}
+@media (min-width: 768px) {
+  body.front .node .content {
+    font-size: 23px;
+    line-height: 31px;
+  }
 }
 
 /* quotes view */
@@ -320,4 +334,12 @@ blockquote p {
   margin: 0;
 }
 
-
+#page-title {
+  font-size: 280%;
+  letter-spacing: -.04em;
+}
+@media (min-width: 768px) {
+  #page-title {
+    margin-top: 75px;
+  }
+}
