@@ -1,6 +1,6 @@
   <div id="page">
 
-    <div id="main-wrapper" class="column"><div id="main" class="clearfix">
+    <div id="main-wrapper" class="column <?php print $wrapper_classes; ?>"><div id="main" class="clearfix">
 
       <div id="content"><div class="section">
         <?php print $messages; ?>
@@ -38,23 +38,13 @@
       </div> <!-- /#header -->
 
       <nav id="main-menu" class="navigation">
-        <?php print theme('links__system_main_menu', array(
-          'links' => $main_menu,
-          'attributes' => array(
-            'class' => array('links'),
-          ),
-          'heading' => array(
-            'text' => t('Main navigation'),
-            'level' => 'h2',
-            'class' => array('element-invisible'),
-          ),
-        )); ?>
+        <?php print $main_menu; ?>
       </nav> <!-- /#main-menu -->
 
       <?php print render($page['sidebar_first']); ?>
     </div></div> <!-- /.section, /#sidebar -->
 
-    <div id="drawer"><div class="section">
+    <div id="drawer" class="<?php print $drawer_classes; ?>"><div class="section">
       <nav id="handbook-menu" class="navigation">
         <?php print $handbook_menu; ?>
       </nav>
