@@ -5,8 +5,10 @@
   $(document).ready(function() {
     $defaultActiveLink = $('#main-menu li.active').first();
     $('.menu-320 a').click(function(e) {
-      toggleDrawer(this, '#handbook-menu');
-      return false;
+      if ($(window).width() >= 1024) {
+        toggleDrawer(this, '#handbook-menu');
+        return false;
+      }
     });
   });
 

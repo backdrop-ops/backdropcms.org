@@ -7,8 +7,8 @@ body.admin-menu {
   margin-top: 0 !important;
 }
 
-p{
-	font-size:100%; 
+p {
+  font-size:100%;
 }
 
 #page {
@@ -17,19 +17,6 @@ p{
   height: 100%;
 }
 
-
-#main-wrapper {
-  margin-left: 300px;
-  text-align: center;
-
-  -webkit-transition: margin 0.3s ease;
-  -moz-transition: margin 0.3s ease;
-  -o-transition: margin 0.3s ease;
-  transition: margin 0.3s ease;
-}
-#main-wrapper.drawer-open {
-  margin-left: 600px;
-}
 #main {
   position: relative;
   padding-bottom: 125px;
@@ -38,39 +25,75 @@ p{
   text-align: left;
 }
 
+#content {
+  margin: 48px 24px;
+}
 #sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: 100%;
-  overflow: auto;
+  width: 100%;
   z-index: 2;
 }
 #drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: 100%;
+  width: 100%;
   overflow: auto;
   z-index: 1;
+  display: none;
 
   -webkit-transition: left 0.3s ease;
   -moz-transition: left 0.3s ease;
   -o-transition: left 0.3s ease;
   transition: left 0.3s ease;
 }
-/* Because animations can't happen at the same time as hiding/showing. We have
-   classes for both open and closed. */
 #drawer.open {
-  left: 300px;
+  display: block;
+}
+/* Desktop drawer behavior */
+@media (min-width: 1024px) {
+  #main-wrapper {
+    margin-left: 300px;
+    text-align: center;
+
+    -webkit-transition: margin 0.3s ease;
+    -moz-transition: margin 0.3s ease;
+    -o-transition: margin 0.3s ease;
+    transition: margin 0.3s ease;
+  }
+  #main-wrapper.drawer-open {
+    margin-left: 600px;
+  }
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    overflow: auto;
+  }
+  #drawer {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    overflow: auto;
+    z-index: 1;
+
+    -webkit-transition: left 0.3s ease;
+    -moz-transition: left 0.3s ease;
+    -o-transition: left 0.3s ease;
+    transition: left 0.3s ease;
+  }
+  /* Because animations can't happen at the same time as hiding/showing. We have
+     classes for both open and closed. */
+  #drawer.open {
+    left: 300px;
+  }
 }
 
 span.nolink {
-	font-size:180%;
-	font-weight:800;
-	letter-spacing: -.07em;
+  font-size:180%;
+  font-weight:800;
+  letter-spacing: -.07em;
 }
 
 #footer {
@@ -90,13 +113,3 @@ span.nolink {
 	padding-right: 0px;
 	padding-top: 25px;
 }*/
-
-#handbook-menu{
-	
-}
-
-#page-title {
-	font-size:280%;
-	margin-top:123px;
-	letter-spacing:-.04em;
-}
