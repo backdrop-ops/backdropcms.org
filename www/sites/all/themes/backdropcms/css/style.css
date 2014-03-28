@@ -330,6 +330,12 @@ img {
   max-width: 100%;
   height: auto;
 }
+ul, ol {
+  margin: .75em 0;
+}
+ul li, ol li {
+  margin: 5px 0;
+}
 blockquote {
   font-style: italic;
   min-height: 100px;
