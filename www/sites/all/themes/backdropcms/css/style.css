@@ -203,9 +203,14 @@ body.front .node .content {
 /* quotes view */
 #block-views-quotes-block {
   clear: both;
+  padding-top: 100px;
 }
 .view-quotes {
-  padding-top: 100px;
+  padding: 100px 0;
+  background-color: #F7F7F7;
+  margin-left: -500px;
+  margin-right: -500px;
+  padding: 50px 500px;
 }
 .view-quotes img {
   float: left;
@@ -213,10 +218,13 @@ body.front .node .content {
 }
 .view-quotes blockquote {
   margin-left: 125px;
-  font-size: 25px;
+  font-size: 125%;
 }
 .view-quotes .subtext {
   margin: 5px 0;
+}
+.view-quotes .views-field-title {
+  margin-top: 5px;
 }
 
 /* semantic versioning handbook page */
