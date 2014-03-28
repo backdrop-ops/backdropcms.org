@@ -338,6 +338,13 @@ blockquote {
 blockquote p {
   margin: 0;
 }
+figure {
+  margin: 0 25px;
+}
+figcaption {
+  margin-top: 5px;
+  color: #969595;
+}
 
 #page-title {
   font-size: 280%;
