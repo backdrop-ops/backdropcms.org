@@ -173,7 +173,7 @@ a.button span {
   border-radius: 5px;
 }
 .subtext {
-  font-size: 12px;
+  font-size: 80%;
   font-weight: 400;
   color: #969595;
 }
@@ -344,6 +344,7 @@ figure {
 figcaption {
   margin-top: 5px;
   color: #969595;
+  font-size: 80%;
 }
 
 #page-title {
