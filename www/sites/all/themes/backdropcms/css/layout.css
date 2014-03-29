@@ -11,6 +11,10 @@ p {
   font-size:100%;
 }
 
+#main-wrapper {
+  overflow: hidden;
+}
+
 #page {
   position: relative;
   text-align: left;
