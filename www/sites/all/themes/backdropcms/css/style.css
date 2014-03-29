@@ -63,12 +63,16 @@ p{
   
 }
 
-
+.region-sidebar-second {
+  padding: 30px;
+  border-top: 2px solid #979797;
+}
 
 #main-menu.navigation{
   margin-top:-17px;
 }
 #drawer {
+  border-right: 2px solid #979797;
   background-color: #F7F7F7;
   color: #000;
 }
