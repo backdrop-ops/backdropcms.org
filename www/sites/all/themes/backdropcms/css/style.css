@@ -122,6 +122,9 @@ li.menu-319 {
 #main {
   margin-top: 120px;
 }
+#footer {
+  padding-top: 50px;
+}
 #footer a {
   color: #979797;
 }
@@ -391,4 +394,56 @@ div.indent {
   #page-title {
     margin-top: 75px;
   }
+}
+
+#block-views-supporters-block {
+  margin: 100px 0;
+}
+#block-views-supporters-block h2,
+#block-formblock-supporter h2 {
+  text-align: center;
+  font-weight: normal;
+  color: #999999;
+}
+.view-supporters {
+  text-align: center;
+}
+.view-supporters .view-content {
+  display: inline-block;
+  width: auto;
+  margin: 0 auto;
+  min-height: 150px;
+}
+.view-supporters .views-row {
+  float: left;
+  margin-right: 10px;
+  width: 120px;
+  min-height: 150px;
+  font-size: 12px;
+}
+.views-field-field-logo a {
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+}
+
+#block-formblock-supporter {
+  clear: left;
+  margin-top: 50px;
+  background-color: #F7F7F7;
+  margin-left: -500px;
+  margin-right: -500px;
+  padding: 50px 500px;
+}
+#block-formblock-supporter label {
+  color: #999999;
+}
+#block-formblock-supporter .description {
+  display: none;
+}
+#block-formblock-supporter .form-item .form-item {
+  margin: 0;
+}
+#block-formblock-supporter .form-actions {
+  text-align: center;
 }
