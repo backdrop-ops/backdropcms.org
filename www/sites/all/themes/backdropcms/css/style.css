@@ -422,9 +422,20 @@ div.indent {
   font-size: 12px;
 }
 .views-field-field-logo a {
+  text-align: center;
+  display: block;
   width: 100px;
   height: 100px;
+  margin: 0 auto;
+}
+.views-field-field-logo img {
   display: inline-block;
+  vertical-align: middle;
+}
+.views-field-field-logo .helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
 }
 
 #block-formblock-supporter {
