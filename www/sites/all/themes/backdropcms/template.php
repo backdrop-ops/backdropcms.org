@@ -12,7 +12,7 @@
  * Prepares variables for html.tpl.php
  */
 function backdropcms_preprocess_html() {
-  drupal_add_css('http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700', array('type' => 'external'));
+  drupal_add_css('https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700', array('type' => 'external'));
 }
 
 /**
