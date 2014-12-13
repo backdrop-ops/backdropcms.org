@@ -1,10 +1,9 @@
-BackdropCMS.org
----------------
+# BackdropCMS.org
 
 This repository holds the codebase for [www.backdropcms.org](https://www.backdropcms.org).
 
 
-# Issues
+## Issues
 
 This project contains an issue tracker specifically for backdropcms.org.
 
@@ -14,7 +13,7 @@ Please use this issue tracker when:
 * requesting content changes
 
 
-# Pull Requests
+## Pull Requests
 
 You can help make improvements to backdropcms.org by submitting pull requests to this repository.
 
