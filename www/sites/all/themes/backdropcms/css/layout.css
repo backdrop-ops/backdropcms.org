@@ -53,7 +53,7 @@ p {
 /* Desktop drawer behavior */
 @media (min-width: 1024px) {
   #main-wrapper {
-    margin-left: 300px;
+    margin-left: 235px;
     text-align: center;
 
     -webkit-transition: margin 0.3s ease;
@@ -62,13 +62,13 @@ p {
     transition: margin 0.3s ease;
   }
   #main-wrapper.drawer-open {
-    margin-left: 600px;
+    margin-left: 470px;
   }
   #sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 300px;
+    width: 235px;
     height: 100%;
     overflow: auto;
   }
@@ -77,7 +77,7 @@ p {
     position: fixed;
     top: 0;
     left: 0;
-    width: 300px;
+    width: 235px;
     height: 100%;
     overflow: auto;
     z-index: 1;
@@ -90,7 +90,7 @@ p {
   /* Because animations can't happen at the same time as hiding/showing. We have
      classes for both open and closed. */
   #drawer.open {
-    left: 300px;
+    left: 235px;
   }
 }
 
