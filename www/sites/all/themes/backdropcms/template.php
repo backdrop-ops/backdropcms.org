@@ -12,7 +12,7 @@
  * Prepares variables for html.tpl.php
  */
 function backdropcms_preprocess_html() {
-  drupal_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400italic,400,700', array('type' => 'external'));
+  drupal_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700', array('type' => 'external'));
 }
 
 /**
@@ -35,7 +35,7 @@ function backdropcms_preprocess_page(&$variables) {
   foreach (element_children($variables['main_menu']) as $key) {
     $item = &$variables['main_menu'][$key];
     // Populate font awesome glyphs next to menu items.
-    $item['#title'] = check_plain($variables['main_menu'][$key]['#title']) . ' <i class="fa fa-chevron-right fa-fw"></i>';
+    $item['#title'] = check_plain($variables['main_menu'][$key]['#title']) . ' <i class="fa fa-forward fa-fw"></i>';
     $item['#localized_options']['html'] = TRUE;
 
     // Attempt to standardize active classes.
