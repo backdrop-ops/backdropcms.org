@@ -47,29 +47,6 @@ ol > li * {
   color: #fff;
 }
 
-#header {
-  text-align: center;
-}
-
-#logo {
-  display: block;
-}
-@media (min-width: 400px) {
-  #logo {
-    max-width: 235px;
-    margin: 0 auto;
-  }
-  #logo img {
-    border-left: 2px solid #ffffff;
-    border-right: 2px solid #ffffff;
-  }
-}
-@media (min-width: 1024px) {
-  #logo img {
-    border: 0;
-  }
-}
-
 #site-name {
   font-size: 240%;
   line-height: 300px;
@@ -81,12 +58,14 @@ ol > li * {
 
 #main-menu ul {
   padding: 0;
-  width: 100%
+  width: 100%;
+  margin: 0;
 }
 #main-menu li {
   list-style-type: none;
   padding: 0 10px 0 15px;
   border-bottom: 2px solid #fff;
+  margin: 0;
 }
 #main-menu li.first {
   border-top: 2px solid #fff;
@@ -202,11 +181,27 @@ li.menu-319 {
 }
 
 #main {
-  margin-top: 120px;
-}
-#footer {
   padding-top: 50px;
+  background: transparent url('../images/Backdrop-Logo-Horizontal.png') top left no-repeat;
+  background-size: 100%;
 }
+@media (min-width: 520px) {
+  #main {
+    padding-top: 80px;
+  }
+}
+@media (min-width: 700px) {
+  #main {
+    padding-top: 100px;
+  }
+}
+@media (min-width: 1024px) {
+  #main {
+    background-image: none;
+    padding-top: 0;
+  }
+}
+
 #footer a {
   color: #979797;
 }
@@ -487,7 +482,7 @@ div.indent {
   font-size: 280%;
   letter-spacing: -.04em;
 }
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   #page-title {
     margin-top: 75px;
   }
