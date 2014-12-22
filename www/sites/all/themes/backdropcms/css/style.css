@@ -219,23 +219,6 @@ li.menu-319 {
   margin-top: 50px;
 }
 
-/* blocks */
-#block-block-1 {
-  float: left;
-  width: 175px;
-  margin-right: 25px;
-}
-#block-block-2 {
-  float: left;
-}
-#block-block-2 p.subtext {
-  text-align: right;
-}
-#block-block-3 {
-  font-size: 1.25em;
-  margin-bottom: 5px;
-}
-
 /* classes */
 a.button {
   display: block;
@@ -250,6 +233,10 @@ a.button {
   padding: 0 20px;
   position: relative;
   white-space: nowrap;
+}
+a.button:hover {
+  border-color: #27ace2;
+  background-color: #f7f7f7;
 }
 a.button span {
   display: block;
@@ -268,6 +255,24 @@ a.button span {
   font-size: 80%;
   font-weight: 400;
   color: #969595;
+}
+
+/* blocks */
+#block-block-1 {
+  float: left;
+  width: 175px;
+  margin-right: 25px;
+}
+#block-block-2 {
+  float: left;
+  margin-right: 35px;
+}
+#block-block-2 p.subtext {
+  text-align: right;
+}
+#block-block-3 {
+  font-size: 1.25em;
+  margin-bottom: 5px;
 }
 
 /* home page */
