@@ -141,8 +141,10 @@ ol > li * {
 }
 #drawer ul.menu li {
   list-style-type: none;
-  padding: 7px 0;
-  /*font-weight: 500;*/
+  padding: 5px 0;
+}
+#drawer ul.menu li ul.menu {
+  margin-top: 0;
 }
 #drawer a {
   position: relative;
@@ -150,9 +152,9 @@ ol > li * {
 }
 #drawer a i {
   position: absolute;
-  top: 3px;
+  bottom: 2px;
   width: 6px;
-  margin-left: 10px;
+  margin: 0 0 0 10px;
   overflow: hidden;
   display: none;
 }
@@ -165,7 +167,11 @@ ol > li * {
   display: inline-block;
 }
 
-#drawer .nolink i {
+span.nolink {
+  font-size: 150%;
+  letter-spacing: -.05em;
+}
+span.nolink i {
   display: none;
 }
 
