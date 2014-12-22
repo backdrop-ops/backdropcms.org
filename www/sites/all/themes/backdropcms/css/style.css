@@ -91,12 +91,18 @@ ol > li * {
 #main-menu li.first {
   border-top: 2px solid #fff;
 }
-#main-menu a {
+#main-menu li a {
   font-weight: 300;
   display: inline-block;
   padding: 8px 0;
   width: 100%;
   position: relative;
+  font-size: 24px;
+  line-height: 36px;
+}
+#main-menu a:hover,
+#main-menu li.active a {
+  font-weight: 400;
 }
 #main-menu i {
   display: inline-block;
@@ -106,16 +112,9 @@ ol > li * {
   width: 10px;
   overflow: hidden;
 }
+#main-menu a:hover i,
 #main-menu li.active i,
 #main-menu li.active-trail i {
-  color: #27ace2;
-}
-#main-menu a {
-  font-size: 24px;
-  line-height: 36px;
-}
-
-#main-menu a:hover {
   color: #27ace2;
 }
 
@@ -146,7 +145,28 @@ ol > li * {
   /*font-weight: 500;*/
 }
 #drawer a {
-  
+  position: relative;
+  display: block;
+}
+#drawer a i {
+  position: absolute;
+  top: 3px;
+  width: 6px;
+  margin-left: 10px;
+  overflow: hidden;
+  display: none;
+}
+#drawer a.active-trail {
+  font-weight: bold;
+}
+#drawer a:hover i,
+#drawer a.active-trail i {
+  font-weight: bold;
+  display: inline-block;
+}
+
+#drawer .nolink i {
+  display: none;
 }
 
 #handbook-menu ul.menu li.first.expanded {

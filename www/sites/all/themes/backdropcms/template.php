@@ -35,8 +35,8 @@ function backdropcms_preprocess_page(&$variables) {
   foreach (element_children($variables['main_menu']) as $key) {
     $item = &$variables['main_menu'][$key];
     // Populate font awesome glyphs next to menu items.
-    $item['#title'] = check_plain($variables['main_menu'][$key]['#title']) . ' <i class="fa fa-forward fa-fw"></i>';
-    $item['#localized_options']['html'] = TRUE;
+    //$item['#title'] = check_plain($variables['main_menu'][$key]['#title']) . ' <i class="fa fa-forward fa-fw"></i>';
+    //$item['#localized_options']['html'] = TRUE;
 
     // Attempt to standardize active classes.
     $trail_class = array_search('active-trail', $item['#attributes']['class']);
@@ -73,6 +73,27 @@ function backdropcms_preprocess_block(&$variables) {
 /**
  * Theme overrides.
  */
+
+/**
+ * Overrides theme_menu_link().
+ */
+function backdropcms_menu_link(array $variables) {
+  $element = $variables['element'];
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    $sub_menu = drupal_render($element['#below']);
+  }
+
+  // Add the font awesome icon.
+  if ($element['#href']) {
+    $element['#title'] .= ' <i class="fa fa-forward fa-fw"></i>';
+    $element['#localized_options']['html'] = TRUE;
+  }
+
+  $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+  return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
+}
 
 /**
  * Overrides theme_on_the_web_image().
