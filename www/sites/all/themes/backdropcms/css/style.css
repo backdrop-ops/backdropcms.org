@@ -179,7 +179,10 @@ li.menu-319 {
 
 #main {
   padding-top: 70px;
-  background: transparent url('../images/Backdrop-Logo-Horizontal.png') top left no-repeat;
+  background-image: url('../images/Backdrop-Logo-Horizontal.png');
+  background-image: url('../images/Backdrop-Logo-Horizontal.svg');
+  background-position: top left;
+  background-repeat: no-repeat;
   background-size: 100%;
 }
 @media (min-width: 520px) {
