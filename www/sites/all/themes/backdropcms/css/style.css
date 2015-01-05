@@ -50,11 +50,17 @@ ol > li * {
 #site-name {
   border-top: 2px solid #fff;
   display: block;
-  height: 80px;
+  padding: 10px 0;
+  text-align: center;
+  /*
   background-image: url(../images/Backdrop-Logo-Type.png);
   background-repeat: no-repeat;
   background-size: 100%;
   text-indent: -9999px;
+  */
+  font-size: 370%;
+  font-weight: 300;
+  letter-spacing: -.04em;
 }
 
 #main-menu ul {
