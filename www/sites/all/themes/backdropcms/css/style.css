@@ -48,12 +48,13 @@ ol > li * {
 }
 
 #site-name {
-  font-size: 240%;
-  line-height: 300px;
-  height: 300px;
-  margin: 0 auto;
-  text-align: center;
-  letter-spacing: -.03em;
+  border-top: 2px solid #fff;
+  display: block;
+  height: 80px;
+  background-image: url(../images/Backdrop-Logo-Type.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  text-indent: -9999px;
 }
 
 #main-menu ul {
@@ -129,7 +130,7 @@ ol > li * {
 #drawer a i {
   position: absolute;
   bottom: 2px;
-  width: 6px;
+  width: 0.39em;
   margin: 0 0 0 10px;
   overflow: hidden;
   display: none;
@@ -139,7 +140,6 @@ ol > li * {
 }
 #drawer a:hover i,
 #drawer a.active-trail i {
-  font-weight: bold;
   display: inline-block;
 }
 
