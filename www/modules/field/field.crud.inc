@@ -60,11 +60,11 @@ function field_create_field($field) {
   }
   // Field type is required.
   if (empty($field['type'])) {
-    throw new FieldException('Attempt to create a field with no type.');
+    throw new FieldException(format_string('Attempt to create field @field_name with no type.', array('@field_name' => $field['field_name'])));
   }
   // Field name cannot contain invalid characters.
   if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $field['field_name'])) {
-    throw new FieldException('Attempt to create a field with invalid characters. Only lowercase alphanumeric characters and underscores are allowed, and only lowercase letters and underscore are allowed as the first character');
+    throw new FieldException(format_string('Attempt to create a field @field_name with invalid characters. Only lowercase alphanumeric characters and underscores are allowed, and only lowercase letters and underscore are allowed as the first character', array('@field_name' => $field['field_name'])));
   }
 
   // Field name cannot be longer than 32 characters. We use drupal_strlen()
@@ -540,9 +540,9 @@ function field_create_instance($instance) {
  *   // Fetch an instance info array.
  *   $instance_info = field_info_instance($entity_type, $field_name, $bundle_name);
  *   // Change a single property in the instance definition.
- *   $instance_info['definition']['required'] = TRUE;
+ *   $instance_info['required'] = TRUE;
  *   // Write the changed definition back.
- *   field_update_instance($instance_info['definition']);
+ *   field_update_instance($instance_info);
  *   @endcode
  *
  * @throws FieldException

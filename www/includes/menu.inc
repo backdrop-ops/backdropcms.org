@@ -1000,7 +1000,7 @@ function menu_tree($menu_name) {
 }
 
 /**
- * Returns a rendered menu tree.
+ * Returns an output structure for rendering a menu tree.
  *
  * The menu item's LI element is given one of the following classes:
  * - expanded: The menu item is showing its submenu.
@@ -2495,6 +2495,7 @@ function menu_link_get_preferred($path = NULL, $selected_menu = NULL) {
     $query->addField('ml', 'weight', 'link_weight');
     $query->fields('m');
     $query->condition('ml.link_path', $path_candidates, 'IN');
+    $query->addTag('preferred_menu_links');
 
     // Sort candidates by link path and menu name.
     $candidates = array();

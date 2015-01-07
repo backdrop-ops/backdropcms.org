@@ -640,13 +640,13 @@ function system_theme_settings_validate($form, &$form_state) {
 
   // If the user provided a path for a logo or favicon file, make sure a file
   // exists at that path.
-  if ($form_state['values']['logo_path']) {
+  if (!empty($form_state['values']['logo_path'])) {
     $path = _system_theme_settings_validate_path($form_state['values']['logo_path']);
     if (!$path) {
       form_set_error('logo_path', t('The custom logo path is invalid.'));
     }
   }
-  if ($form_state['values']['favicon_path']) {
+  if (!empty($form_state['values']['favicon_path'])) {
     $path = _system_theme_settings_validate_path($form_state['values']['favicon_path']);
     if (!$path) {
       form_set_error('favicon_path', t('The custom favicon path is invalid.'));
@@ -703,14 +703,16 @@ function system_theme_settings_submit($form, &$form_state) {
 
   // If the user uploaded a new logo or favicon, save it to a permanent location
   // and use it in place of the default theme-provided file.
-  if ($file = $values['logo_upload']) {
+  if (!empty($values['logo_upload'])) {
+    $file = $values['logo_upload'];
     unset($values['logo_upload']);
     $filename = file_unmanaged_copy($file->uri);
     $values['default_logo'] = 0;
     $values['logo_path'] = $filename;
     $values['toggle_logo'] = 1;
   }
-  if ($file = $values['favicon_upload']) {
+  if (!empty($values['favicon_upload'])) {
+    $file = $values['favicon_upload'];
     unset($values['favicon_upload']);
     $filename = file_unmanaged_copy($file->uri);
     $values['default_favicon'] = 0;
@@ -950,7 +952,11 @@ function system_sort_modules_by_info_name($a, $b) {
 }
 
 /**
- * Array sorting callback; sorts modules or themes by their name.
+ * Sorts themes by their names, with the default theme listed first.
+ *
+ * Callback for uasort() within system_themes_page().
+ *
+ * @see system_sort_modules_by_info_name().
  */
 function system_sort_themes($a, $b) {
   if ($a->is_default) {
@@ -995,22 +1001,28 @@ function _system_modules_build_row($info, $extra) {
   $status_short = '';
   $status_long = '';
 
+  // Initialize empty arrays of long and short reasons explaining why the
+  // module is incompatible.
+  // Add each reason as a separate element in both the arrays.
+  $reasons_short = array();
+  $reasons_long = array();
+
   // Check the core compatibility.
   if (!isset($info['core']) || $info['core'] != DRUPAL_CORE_COMPATIBILITY) {
     $compatible = FALSE;
-    $status_short .= t('Incompatible with this version of Drupal core.');
-    $status_long .= t('This version is not compatible with Drupal !core_version and should be replaced.', array('!core_version' => DRUPAL_CORE_COMPATIBILITY));
+    $reasons_short[] = t('Incompatible with this version of Drupal core.');
+    $reasons_long[] = t('This version is not compatible with Drupal !core_version and should be replaced.', array('!core_version' => DRUPAL_CORE_COMPATIBILITY));
   }
 
   // Ensure this module is compatible with the currently installed version of PHP.
   if (version_compare(phpversion(), $info['php']) < 0) {
     $compatible = FALSE;
-    $status_short .= t('Incompatible with this version of PHP');
+    $reasons_short[] = t('Incompatible with this version of PHP');
     $php_required = $info['php'];
     if (substr_count($info['php'], '.') < 2) {
       $php_required .= '.*';
     }
-    $status_long .= t('This module requires PHP version @php_required and is incompatible with PHP version !php_version.', array('@php_required' => $php_required, '!php_version' => phpversion()));
+    $reasons_long[] = t('This module requires PHP version @php_required and is incompatible with PHP version !php_version.', array('@php_required' => $php_required, '!php_version' => phpversion()));
   }
 
   // If this module is compatible, present a checkbox indicating
@@ -1026,6 +1038,8 @@ function _system_modules_build_row($info, $extra) {
     }
   }
   else {
+    $status_short = implode(' ', $reasons_short);
+    $status_long = implode(' ', $reasons_long);
     $form['enable'] = array(
       '#markup' =>  theme('image', array('path' => 'misc/watchdog-error.png', 'alt' => $status_short, 'title' => $status_short)),
     );

@@ -93,6 +93,11 @@ class BootstrapIPAddressTestCase extends DrupalWebTestCase {
     $this->assertFalse(drupal_valid_http_host('security\\.drupal.org:80'), 'HTTP_HOST with \\ is invalid');
     $this->assertFalse(drupal_valid_http_host('security<.drupal.org:80'), 'HTTP_HOST with &lt; is invalid');
     $this->assertFalse(drupal_valid_http_host('security..drupal.org:80'), 'HTTP_HOST with .. is invalid');
+    // Verifies that host names are shorter than 1000 characters.
+    $this->assertFalse(drupal_valid_http_host(str_repeat('x', 1001)), 'HTTP_HOST with more than 1000 characters is invalid.');
+    $this->assertFalse(drupal_valid_http_host(str_repeat('.', 101)), 'HTTP_HOST with more than 100 subdomains is invalid.');
+    $this->assertFalse(drupal_valid_http_host(str_repeat(':', 101)), 'HTTP_HOST with more than 100 portseparators is invalid.');
+
     // IPv6 loopback address
     $this->assertTrue(drupal_valid_http_host('[::1]:80'), 'HTTP_HOST containing IPv6 loopback is valid');
   }
@@ -139,7 +144,7 @@ class BootstrapPageCacheTestCase extends DrupalWebTestCase {
     $this->assertResponse(200, 'Conditional request without If-None-Match returned 200 OK.');
     $this->assertEqual($this->drupalGetHeader('X-Drupal-Cache'), 'HIT', 'Page was cached.');
 
-    $this->drupalGet('', array(), array('If-Modified-Since: ' . gmdate(DATE_RFC1123, strtotime($last_modified) + 1), 'If-None-Match: ' . $etag));
+    $this->drupalGet('', array(), array('If-Modified-Since: ' . gmdate(DATE_RFC7231, strtotime($last_modified) + 1), 'If-None-Match: ' . $etag));
     $this->assertResponse(200, 'Conditional request with new a If-Modified-Since date newer than Last-Modified returned 200 OK.');
     $this->assertEqual($this->drupalGetHeader('X-Drupal-Cache'), 'HIT', 'Page was cached.');
 
