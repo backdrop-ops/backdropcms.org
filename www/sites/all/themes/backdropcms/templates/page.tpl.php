@@ -18,7 +18,7 @@
 
       <div id="footer"><div class="section">
         <?php print render($page['footer']); ?>
-        <a href="/thank-you">thank you</a>
+        <a href="/contact">contact</a> &#9642; <a href="/security">report security issue</a> &#9642; <a href="/thank-you">thank you</a>
       </div></div> <!-- /.section, /#footer -->
 
     </div></div> <!-- /#main, /#main-wrapper -->
