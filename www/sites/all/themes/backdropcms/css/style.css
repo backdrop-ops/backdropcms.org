@@ -1,6 +1,6 @@
 body {
   font-family: 'Source Sans Pro', "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-size:16px; 
+  font-size: 16px;
 }
 
 p {
@@ -295,13 +295,17 @@ body.front #block-system-main {
     border-bottom: 2px solid #969696;
   }
 }
-body.front .block .content h2 {
+body.front .node .content h2 {
+  font-weight: normal;
+  font-size: 200%;
+}
+body.front #block-block-4 .content h2 {
   color: #85898a;
   font-size: 18px;
   line-height: 24px;
 }
 @media (min-width: 768px) {
-  body.front .block .content h2 {
+  body.front #block-block-4 .content h2 {
     font-size: 23px;
     line-height: 31px;
   }
