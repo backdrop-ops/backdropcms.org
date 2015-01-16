@@ -295,6 +295,12 @@ body.front #block-system-main {
     border-bottom: 2px solid #969696;
   }
 }
+body.front h4 i.fa {
+  font-size: 200%;
+  margin-right: 10px;
+  position: relative;
+  top: 6px;
+}
 body.front .node .content h2 {
   font-weight: normal;
   font-size: 200%;
