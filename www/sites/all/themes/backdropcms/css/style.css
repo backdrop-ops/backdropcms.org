@@ -39,6 +39,21 @@ ol > li * {
   text-indent: 0;
 }
 
+/* make font-awesome heading icons larger and with more space */
+h2 i.fa {
+  font-size: 125%;
+  margin-right: 10px;
+  position: relative;
+  top: 3px;
+}
+h4 i.fa {
+  font-size: 200%;
+  margin-right: 10px;
+  position: relative;
+  top: 6px;
+}
+
+
 #sidebar {
   background-color: #000;
   color: #fff;
@@ -294,12 +309,6 @@ body.front #block-system-main {
     line-height: 2em;
     border-bottom: 2px solid #969696;
   }
-}
-body.front h4 i.fa {
-  font-size: 200%;
-  margin-right: 10px;
-  position: relative;
-  top: 6px;
 }
 body.front .node .content h2 {
   font-weight: normal;
