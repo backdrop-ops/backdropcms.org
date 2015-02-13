@@ -1,0 +1,185 @@
+<?php
+/**
+ * @file
+ * Enables the presentation of user registration, site wide contact, or node creation forms in blocks.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function formblock_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'node_type_form' && isset($form['#node_type']->type)) {
+    $form['formblock'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Form block'),
+      '#group' => 'additional_settings',
+      '#attributes' => array(
+        'class' => array('formblock-node-type-settings-form'),
+      ),
+      '#attached' => array(
+        'js' => array(backdrop_get_path('module', 'formblock') . '/formblock.js'),
+      ),
+    );
+    $form['formblock']['formblock_expose'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable data entry from a block'),
+      '#default_value' => $form['#node_type']->settings['formblock_expose'],
+      '#description' => t('Enable this option to make the entry form for this content type available as a block.'),
+    );
+    $form['formblock']['formblock_show_help'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Show submission guidelines'),
+      '#default_value' => $form['#node_type']->settings['formblock_show_help'],
+      '#description' => t('Enable this option to show the submission guidelines in the block above the form.'),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="formblock_expose"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+    // Add our own submit handler.
+    $form['#submit'][] = 'formblock_node_type_form_submit';
+  }
+  elseif (strpos($form_id, '_node_form') !== FALSE) {
+    // Make sure we have necessary includes.
+    if (empty($form_state['build_info']['files']) || !in_array('modules/node/node.pages.inc', $form_state['build_info']['files'])) {
+      form_load_include($form_state, 'inc', 'node', 'node.pages');
+    }
+  }
+}
+
+/**
+ * Submit handler for the node type form.
+ */
+function formblock_node_type_form_submit(&$form, &$form_state) {
+  $type = $form_state['values']['type']; // Shorthand.
+
+  $config = config('node.type.' . $type);
+  $config->set('settings.formblock_expose', $form_state['values']['formblock_expose']);
+  $config->set('settings.formblock_show_help', $form_state['values']['formblock_show_help']);
+  $config->save();
+}
+
+/**
+ * Implements hook_node_type_load().
+ */
+function formblock_node_type_load(&$types) {
+  foreach ($types as $type_name => $type) {
+    $types[$type_name]->settings += array(
+      'formblock_expose' => FALSE,
+      'formblock_show_help' => FALSE,
+    );
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function formblock_block_info() {
+  $blocks = array();
+
+  foreach (node_type_get_types() as $name => $type) {
+    if ($type->settings['formblock_expose']) {
+      $blocks[$name] = array(
+        'info' => t('@name form block', array('@name' => $type->name)),
+        'description' => t('Form that allows new @name content to be created.', array('@name' => $type->name)),
+        'cache' => DRUPAL_NO_CACHE,
+      );
+    }
+  }
+  $blocks['user_register'] = array(
+    'info' => t('User registration form'),
+    'description' => t('Form that allows new accounts to be created.'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  if (module_exists('contact')) {
+    $blocks['contact_site'] = array(
+      'info' => t('Site-wide contact form'),
+      'description' => t('Form that will allow you to contact the site owners.'),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+  }
+  $blocks['user_password_request'] = array(
+    'info' => t('Request new password form'),
+    'description' => t('Form that will email you a one-time log in link.'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function formblock_block_view($delta = '', $settings = array(), $contexts = array()) {
+  $block = array();
+  $block['content']['#attached']['css'][] = backdrop_get_path('module', 'formblock') . '/formblock.css';
+  switch ($delta) {
+    case 'user_register':
+      global $user;
+      // Don't display the form to logged in users or if registration is disabled
+      if (!$user->uid && config_get('system.core', 'user_register')) {
+        $block['content']['form'] = backdrop_get_form('user_register_form');
+        $block['subject'] = t('Create new account');
+        return $block;
+      }
+      break;
+    case 'user_password_request':
+      module_load_include('inc', 'user', 'user.pages');
+
+      $block['subject'] = t('Request new password');
+      $block['content']['form'] = backdrop_get_form('user_pass');
+      return $block;
+    case 'contact_site':
+      if (module_exists('contact') && user_access('access site-wide contact form')) {
+        $limit = config_get('contact.settings', 'contact_threshold_limit');
+        if (!flood_is_allowed('contact', $limit)) {
+          $content = t("You cannot send more than %number messages per hour. Please try again later.", array('%number' => $limit));
+        }
+        else {
+          module_load_include('inc', 'contact', 'contact.pages');
+          $content = backdrop_get_form('contact_site_form');
+        }
+
+        $block['subject'] = t('Contact');
+        $block['content']['form'] = $content;
+        return $block;
+      }
+      break;
+    default:
+      return formblock_get_block($delta);
+  }
+}
+
+/**
+ * Generate a block containing a node entry form.
+ */
+function formblock_get_block($type) {
+  if (node_access('create', $type)) {
+    $block = array();
+
+    // Include page handler for node_add()
+    module_load_include('inc', 'node', 'node.pages');
+
+    // Note title before rendering of form.
+    $title = backdrop_get_title();
+    $form = node_add($type);
+
+    // Restore title, which will have been overridden.
+    backdrop_set_title($title, PASS_THROUGH);
+
+    // Get the help
+    $node_type = node_type_load($type);
+    if ($node_type->settings['formblock_show_help']) {
+      $block['content']['help'] = array('#markup' => !empty($node_type->help) ? '<p>' . filter_xss_admin($node_type->help) . '</p>' : '');
+    }
+
+    // Add our CSS
+    $block['content']['#attached']['css'][] = backdrop_get_path('module', 'formblock') . '/formblock.css';
+
+    $block['subject'] = t('@type form', array('@type' => $node_type->name));
+    $block['content']['form'] = $form;
+
+    return $block;
+  }
+}
