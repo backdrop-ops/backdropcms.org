@@ -1,0 +1,17 @@
+<?php
+/**
+ * @file
+ * Integration between BackdropCMS.org and GitHub.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function borg_github_menu() {
+  $items['github-listener'] = array(
+    'page callback' => 'borg_github_listener_callback',
+    'access callback' => 'borg_github_listener_access',
+    'file' => 'borg_github.pages.inc',
+  );
+  return $items;
+}
