@@ -1,0 +1,9 @@
+name = Field
+description = Field API to add fields to entities like nodes and users.
+package = System
+version = BACKDROP_VERSION
+backdrop = 1.x
+dependencies[] = field_sql_storage
+dependencies[] = entity
+required = TRUE
+stylesheets[all][] = css/field.css

@@ -1,0 +1,13 @@
+name = Bartik
+description = The default front-end theme for Backdrop CMS.
+version = BACKDROP_VERSION
+backdrop = 1.x
+
+stylesheets[all][] = css/style.css
+stylesheets[all][] = css/colors.css
+stylesheets[print][] = css/print.css
+
+; We need at least one setting for the theme settings page to appear in the
+; menu. Color module provides our defaults, so we just register a dummy setting.
+settings[color] = true
+

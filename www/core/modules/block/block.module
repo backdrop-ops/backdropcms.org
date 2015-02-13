@@ -1,0 +1,211 @@
+<?php
+/**
+ * @file
+ * Provides the ability to create reusable custom blocks.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function block_permission() {
+  return array(
+    'administer blocks' => array(
+      'title' => t('Administer custom blocks'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function block_menu() {
+  $items['admin/structure/block'] = array(
+    'title' => 'Custom blocks',
+    'description' => 'Create reusable blocks that can be placed in layouts.',
+    'page callback' => 'block_admin_list',
+    'access arguments' => array('administer blocks'),
+    'file' => 'block.admin.inc',
+  );
+  $items['admin/structure/block/list'] = array(
+    'title' => 'List blocks',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/structure/block/manage/%block_custom_block'] = array(
+    'title' => 'Configure block',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('block_admin_configure', 4),
+    'access arguments' => array('administer blocks'),
+    'file' => 'block.admin.inc',
+  );
+  $items['admin/structure/block/manage/%/configure'] = array(
+    'title' => 'Configure block',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+  );
+  $items['admin/structure/block/manage/%/delete'] = array(
+    'title' => 'Delete block',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('block_custom_block_delete', 4),
+    'access arguments' => array('administer blocks'),
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_NONE,
+    'file' => 'block.admin.inc',
+  );
+  $items['admin/structure/block/add'] = array(
+    'title' => 'Add block',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('block_add_block_form'),
+    'access arguments' => array('administer blocks'),
+    'type' => MENU_LOCAL_ACTION,
+    'file' => 'block.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function block_block_info() {
+  // Statically cache to prevent multiple database lookups.
+  $blocks = &backdrop_static(__FUNCTION__);
+  if (isset($blocks)) {
+    return $blocks;
+  }
+
+  $blocks = array();
+  $result = db_query('SELECT bid, info FROM {block_custom} ORDER BY info');
+  foreach ($result as $block) {
+    $blocks[$block->bid]['info'] = $block->info;
+    $blocks[$block->bid]['description'] = t('A custom block.');
+  }
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function block_block_configure($delta) {
+  if ($delta) {
+    $custom_block = block_custom_block_load($delta);
+  }
+  else {
+    $custom_block = array();
+  }
+  return block_custom_block_form($custom_block);
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function block_block_save($delta, &$edit = array()) {
+  block_custom_block_save($edit, $delta);
+
+  // Remove values from edit to prevent them from being saved in layout config.
+  unset($edit['info']);
+  unset($edit['title']);
+  unset($edit['body']);
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Generates the administrator-defined blocks for display.
+ */
+function block_block_view($delta = '') {
+  $block = db_query('SELECT title, body, format FROM {block_custom} WHERE bid = :bid', array(':bid' => $delta))->fetchObject();
+  $data['subject'] = strlen($block->title) ? $block->title : NULL;
+  $data['content'] = check_markup($block->body, $block->format, '', TRUE);
+  return $data;
+}
+
+/**
+ * Returns information from database about a user-created (custom) block.
+ *
+ * @param $bid
+ *   ID of the block to get information for.
+ *
+ * @return
+ *   Associative array of information stored in the database for this block.
+ *   Array keys:
+ *   - bid: Block ID.
+ *   - info: Block description.
+ *   - body: Block contents.
+ *   - format: Filter ID of the filter format for the body.
+ */
+function block_custom_block_load($bid) {
+  return db_query("SELECT * FROM {block_custom} WHERE bid = :bid", array(':bid' => $bid))->fetchAssoc();
+}
+
+/**
+ * Form constructor for the custom block form.
+ *
+ * @param $edit
+ *   (optional) An associative array of information retrieved by
+ *   block_custom_get_block() if an existing block is being edited, or an empty
+ *   array otherwise. Defaults to array().
+ *
+ * @ingroup forms
+ */
+function block_custom_block_form($edit = array()) {
+  $edit += array(
+    'info' => '',
+    'body' => '',
+    'format' => NULL,
+  );
+  $form['info'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+    '#default_value' => $edit['info'],
+    '#maxlength' => 64,
+    '#description' => t('Used in administrative interfaces and not shown to end-users.'),
+    '#required' => TRUE,
+    '#weight' => -19,
+  );
+  $form['body'] = array(
+    '#type' => 'text_format',
+    '#title' => t('Body'),
+    '#default_value' => $edit['body'],
+    '#format' => $edit['format'],
+    '#rows' => 8,
+    '#required' => TRUE,
+    '#weight' => -17,
+  );
+
+  return $form;
+}
+
+/**
+ * Saves a user-created block in the database.
+ *
+ * @param array $edit
+ *   Associative array of fields to save. Array keys:
+ *   - info: Block description.
+ *   - title: The block title.
+ *   - body: Associative array of body value and format. Array keys:
+ *     - value: Block contents.
+ *     - format: Filter ID of the filter format for the body.
+ * @param integer|NULL $delta
+ *   Block ID of the block to save or NULL if saving a new block.
+ *
+ * @return
+ *   Always returns TRUE.
+ */
+function block_custom_block_save(array $edit, $delta = NULL) {
+  $custom_block = $delta ? block_custom_block_load($delta) : array('title' => '');
+  $merge = db_merge('block_custom')
+    ->key(array(
+      'bid' => $delta,
+    ))
+    ->fields(array(
+      'body' => $edit['body']['value'],
+      'info' => $edit['info'],
+      'title' => isset($edit['title']) ? $edit['title'] : $custom_block['title'],
+      'format' => $edit['body']['format'],
+    ));
+  $result = $merge->execute();
+  if ($result === $merge::STATUS_INSERT) {
+    $delta = $merge->getResult();
+  }
+
+  return $delta;
+}

@@ -1,0 +1,7 @@
+name = Field SQL Storage
+description = Stores field data in an SQL database.
+package = Fields
+version = BACKDROP_VERSION
+backdrop = 1.x
+dependencies[] = field
+required = TRUE

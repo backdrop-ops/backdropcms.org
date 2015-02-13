@@ -1,0 +1,7 @@
+name = Filter
+description = Filters content in preparation for display.
+package = System
+version = BACKDROP_VERSION
+backdrop = 1.x
+required = TRUE
+configure = admin/config/content/formats
