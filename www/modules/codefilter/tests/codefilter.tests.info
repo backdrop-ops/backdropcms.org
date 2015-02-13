@@ -1,0 +1,11 @@
+[CodeFilterUITestCase]
+name = Code Filter
+description = Ensure code wrapped in php or code tags renders as expected.
+group = Code Filter
+file = codefilter.test
+
+[CodeFilterUnitTestCase]
+name = Codefilter module text filters
+description = Tests raw filtering functions.
+group = Code Filter
+file = codefilter.test

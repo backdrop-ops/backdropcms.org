@@ -1,0 +1,6 @@
+name = Special menu items
+description = "Allow users to add placeholder and/or separator menu items."
+backdrop = 1.x
+dependencies[] = menu
+package = "Menu"
+configure = admin/config/system/special_menu_items

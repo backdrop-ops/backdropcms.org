@@ -1,0 +1,21 @@
+<?php
+
+
+function special_menu_items_update_last_removed() {
+  return 7000;
+}
+
+/**
+ * Updates from Drupal 7.x. to Backdrop 1.x.
+ */
+function special_menu_items_update_1000(){
+  $config = config('special_menu_items.settings');
+  $config->set('nolink_tag', update_variable_get('special_menu_items_nolink_tag', '<span>'));
+  $config->set('separator_tag', update_variable_get('special_menu_items_separator_tag', '<span>'));
+  $config->set('separator_value', update_variable_get('special_menu_items_separator_value', '<hr>'));
+  $config->save();
+
+  update_variable_del('special_menu_items_nolink_tag');
+  update_variable_del('special_menu_items_separator_tag');
+  update_variable_del('special_menu_items_separator_value');
+}

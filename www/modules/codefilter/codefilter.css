@@ -1,0 +1,13 @@
+div.codeblock {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+div.codeblock pre {
+  border: 1px solid #CCC;
+  background-color: #EEE;
+  white-space: pre;
+  overflow: auto;
+}
+div.codeblock.nowrap-expand pre {
+  overflow: hidden;
+}

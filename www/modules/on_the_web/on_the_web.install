@@ -1,0 +1,36 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the on_the_web module.
+ */
+
+/**
+ * Move settings from variables to config.
+ */
+function on_the_web_update_1000() {
+  module_load_include('module', 'on_the_web', 'on_the_web');
+  $services = on_the_web_get_services();
+
+  // Migrate variables to config.
+  $config = config('on_the_web.settings');
+  $config->set('type', update_variable_get('on_the_web_type', 'image'));
+  $config->set('size', update_variable_get('on_the_web_size', 'sm'));
+  $config->set('target', update_variable_get('on_the_web_target', TRUE));
+  $config->set('sitename', update_variable_get('on_the_web_sitename', TRUE));
+  foreach ($services as $service => $info) {
+    $config->set($service . '_page', update_variable_get('on_the_web_' . $service . '_page', ''));
+    $config->set($service . '_page', update_variable_get('on_the_web_' . $service . '_weight', 0));
+    update_variable_del('on_the_web_' . $service . '_page');
+    update_variable_del('on_the_web_' . $service . '_weight');
+  }
+  $config->save();
+
+  // Delete variables converted to config.
+  update_variable_del('on_the_web_type');
+  update_variable_del('on_the_web_size');
+  update_variable_del('on_the_web_target');
+  update_variable_del('on_the_web_sitename');
+  // Delete variables now stored in layouts.
+  update_variable_del('on_the_web_display');
+  update_variable_del('on_the_web_enabled');
+}

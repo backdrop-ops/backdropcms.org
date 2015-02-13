@@ -1,0 +1,254 @@
+<?php
+/**
+ * @file
+ * Adds a block with a series of icons which link off-site to other web presences.
+ */
+
+/**
+ * Implementation of hook_block_info().
+ */
+function on_the_web_menu() {
+  $items['admin/config/services/on_the_web'] = array(
+    'title' => 'On The Web Settings',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('on_the_web_settings_form'),
+    'access arguments' => array('administer blocks'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'on_the_web.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function on_the_web_config_info() {
+  $prefixes['on_the_web.settings'] = array(
+    'label' => t('Links to social media sites, and their order.'),
+    'group' => t('On The Web'),
+  );
+
+  return $prefixes;
+}
+
+/**
+ * Implementation of hook_block_info().
+ */
+function on_the_web_block_info() {
+  $blocks['social_links'] = array(
+    'info' => t('Social Media Icons'),
+    'description' => t('Icons that link to your social media presence On The Web.'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implementation of hook_block_configure().
+ */
+function on_the_web_block_configure($delta = 'social_links', $settings = array()) {
+  $form = array();
+  if ($delta == 'social_links') {
+
+    $form['services'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Display icons for the following services:'),
+      '#description' => t('The URL for each service must be entered on the OTW
+        <a href="!url">settings page</a>.', array('!url' => url('admin/config/services/on_the_web'))),
+    );
+
+    $form['services']['display'] = array(
+      '#type' => 'radios',
+      '#title' => t('Icon display'),
+      '#options' => array(
+        'auto' => t('Automatic'),
+        'manual' => t('Explicit'),
+      ),
+      '#default_value' => (isset($settings['display'])) ? $settings['display'] : 'auto',
+    );
+
+    // Add descriptions to the radio buttons.
+    $form['services']['display']['auto'] = array(
+      '#description' => t('Show all icons that have corresponding links entered.'),
+    );
+    $form['services']['display']['manual'] = array(
+      '#description' => t('Explicity choose icons here.'),
+    );
+
+    $services = on_the_web_get_services();
+    $options = array();
+    $defaults = array();
+    $config = config('on_the_web.settings');
+    foreach ($services as $service => $info) {
+      $info['page'] = $config->get($service . '_page');
+
+      // If the service has a URL provided...
+      if ($info['page'] != '') {
+        // Add the option
+        $options[$service] = $info;
+        // Check the box by default.
+        $defaults[$service] = $service;
+        // Get the weight so we can sort.
+        $info['weight'] = $config->get($service . '_weight');
+      }
+    }
+
+    // Sort the options on the block form to match weight.
+    backdrop_sort($options);
+    $sorted_options = array();
+    foreach ($options as $service => $info) {
+      $sorted_options[$service] = $info['name'];
+    }
+
+    if (!empty($options)) {
+      $form['services']['enabled'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Icons'),
+        '#options' => $sorted_options,
+        '#default_value' => (isset($settings['enabled'])) ? $settings['enabled'] : $defaults,
+        '#description' => t('Please select the icons you would like displayed in this block.'),
+        '#states' => array(
+          'visible' => array(
+            ':input[name="block_settings[services][display]"]' => array('value' => 'manual'),
+          ),
+        ),
+      );
+    }
+    else {
+      $form['services']['none'] = array(
+        '#markup' => '<p class="warning">' . t('No services have been configured yet.') . '</p>',
+      );
+    }
+  }
+
+  return $form;
+}
+
+/**
+ * Implementation of hook_block_view().
+ */
+function on_the_web_block_view($delta = 'social_links', $settings = array(), $contexts = array()) {
+  $block = array(
+    'subject' => NULL,
+    'content' => on_the_web_display_block($delta, $settings, $contexts),
+  );
+
+  return $block;
+}
+
+/**
+ * Block Display
+ *
+ * @return
+ *    Content for block.
+ */
+function on_the_web_display_block($delta, $settings = array(), $contexts = array()) {
+  $config = config('on_the_web.settings');
+  $output = '';
+
+  // Get the appropriate name to use in links.
+  if ($config->get('sitename')) {
+    $name = config_get('system.core', 'site_name');
+  }
+  else {
+    $name = t('us');
+  }
+
+  // Get the display style, and enabled icons.
+  $display = $settings['services']['display'];
+  if ($display == 'manual') {
+    $enabled = $settings['services']['enabled'];
+  }
+
+  $services = on_the_web_get_services();
+
+  $links = array();
+  foreach ($services as $service => $info) {
+    $link = $config->get($service . '_page');
+
+    if (($display == 'auto' && ($link != '')) || 
+        ($display == 'manual' && array_key_exists($service, $enabled) && $enabled[$service] === $service)) {
+
+      if ($service != 'rss') {
+        $title = t('Find !us on !service', array('!us' => $name, '!service' => $info['name']));
+      }
+      else {
+        $title = t('!us RSS feed', array('!us' => $name));
+      }
+
+      $size = $config->get('size');
+      $classes = array('on-the-web', 'otw-' . $size, 'otw-' . $service);
+      $weight = $config->get($service . '_weight');
+
+      $links[] = array(
+        '#theme' => 'on_the_web_item',
+        '#service' => $service,
+        '#link' => $link,
+        '#title' => $title,
+        '#classes' => $classes,
+        '#weight' => $weight,
+      );
+    }
+
+    $type = $config->get('type');
+    if ($type == 'anchor') {
+      $links['#attached'] = array(
+        'css' => array(backdrop_get_path('module', 'on_the_web') . '/css/on_the_web.css'),
+      );
+    }
+  }
+
+  return backdrop_render($links);
+}
+
+/**
+ * Helper function: Gets the available services.
+ *
+ * @return array
+ *   List of services with icons.
+ */
+function on_the_web_get_services() {
+  $services = array(
+    'twitter' => array('name' => 'Twitter'),
+    'facebook' => array('name' => 'Facebook'),
+    'pinterest' => array('name' => 'Pinterest'),
+    'instagram' => array('name' => 'Instagram'),
+    'google' => array('name' => 'Google+'),
+    'youtube' => array('name' => 'YouTube'),
+    'flickr' => array('name' => 'Flickr'),
+    'myspace' => array('name' => 'MySpace'),
+    'linkedin' => array('name' => 'LinkedIn'),
+    'itunes' => array('name' => 'iTunes'),
+    'delicious' => array('name' => 'Delicious'),
+    'soundcloud' => array('name' => 'Soundcloud'),
+    'friendfeed' => array('name' => 'FriendFeed'),
+    'rss' => array('name' => 'RSS'),
+  );
+
+  backdrop_alter('on_the_web_get_services', $services);
+
+  return $services;
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function on_the_web_theme($existing, $type, $theme, $path) {
+  return array(
+    'on_the_web_item' => array(
+      'variables' => array('service' => NULL, 'link' => NULL, 'title' => NULL, 'classes' => array()),
+      'file' => 'on_the_web.theme.inc',
+    ),
+    'on_the_web_image' => array(
+      'variables' => array('service' => NULL, 'title' => NULL),
+      'file' => 'on_the_web.theme.inc',
+    ),
+
+    // Administration form.
+    'on_the_web_settings_form' => array(
+      'render element' => 'form',
+      'file' => 'on_the_web.theme.inc',
+    ),
+  );
+}

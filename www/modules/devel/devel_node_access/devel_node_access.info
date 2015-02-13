@@ -1,0 +1,6 @@
+name = Devel node access
+description = Developer blocks and page illustrating relevant node_access records.
+package = Development
+backdrop = 1.x
+dependencies[] = menu
+configure = admin/config/development/devel

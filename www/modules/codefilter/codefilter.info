@@ -1,0 +1,6 @@
+name = Code Filter
+description = Provides tags for automatically escaping and formatting large pieces of code.
+backdrop = 1.x
+
+stylesheets[all][] = codefilter.css
+scripts[] = codefilter.js
