@@ -1,0 +1,125 @@
+/*******************************************************************************
+ * base.scss
+ *
+ * Contains base styles for HTML elements only.
+ ******************************************************************************/
+
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Source Sans Pro', "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 16px;
+}
+
+p {
+  font-size: 110%;
+  line-height: 140%;
+}
+
+a {
+  color: #27ace2;
+  text-decoration: none;
+}
+a:hover {
+}
+
+img, media {
+  max-width: 100%;
+  height: auto;
+}
+
+h1 {
+  font-weight: 300;
+}
+
+h2 {
+}
+
+h3 {
+}
+
+h4 {
+}
+
+ul {
+  margin: .75em 0;
+}
+ul > li {
+  margin: 5px 0;
+}
+
+ol {
+  margin: 0 0 1.5em;
+  padding: 0;
+  counter-reset: item;
+}
+
+ol > li {
+  margin: 0;
+  padding: 0 0 0 2em;
+  text-indent: -2em;
+  list-style-type: none;
+  counter-increment: item;
+}
+
+ol > li:before {
+  display: inline-block;
+  width: 1.5em;
+  padding-right: 0.5em;
+  font-weight: bold;
+  text-align: right;
+  content: counter(item) ".";
+}
+
+ol > li * {
+  text-indent: 0;
+}
+
+blockquote {
+  font-style: italic;
+  min-height: 100px;
+  margin: 0;
+}
+blockquote p {
+  margin: 0;
+}
+figure {
+  margin: 0 25px;
+}
+figcaption {
+  margin-top: 5px;
+  color: #969595;
+  font-size: 80%;
+}
+
+code,
+div.codeblock {
+  margin: 10px 0;
+  font-size: 85%;
+}
+div.indent {
+  margin: 0 25px;
+}
+
+/*******************************************************************************
+ * Forms.
+ ******************************************************************************/
+input {
+  padding: 4px 8px;
+  font-size: 75%;
+  color: #555;
+  border: 2px solid #ccc;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  background-color: #fff;
+}
+input[type="submit"] {
+  border-radius: 10px;
+}
+input[type="submit"]:hover {
+  background-color: #ebebeb;
+  border-color: #adadad;
+}

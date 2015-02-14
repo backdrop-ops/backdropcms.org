@@ -1,0 +1,81 @@
+/*******************************************************************************
+ * layout.scss
+ *
+ * Contains styles relating to layout (colors, not widths!)
+ ******************************************************************************/
+#page-title {
+  font-size: 280%;
+  letter-spacing: -.04em;
+}
+@media (min-width: 1024px) {
+  #page-title {
+    margin-top: 75px;
+  }
+}
+
+/*******************************************************************************
+ * Sidebar
+ ******************************************************************************/
+.l-sidebar {
+  background-color: #000;
+  color: #fff;
+}
+.l-sidebar a {
+  color: #fff;
+}
+
+/*******************************************************************************
+ * Drawer
+ ******************************************************************************/
+.l-drawer {
+  border-right: 2px solid #979797;
+  background-color: #F7F7F7;
+  color: #000;
+}
+.l-drawer span {
+  display: block;
+  padding: 10px 0;
+}
+.l-drawer ul.menu {
+  padding: 0;
+  width: 100%;
+}
+.l-drawer ul.menu li {
+  list-style-type: none;
+  padding: 5px 0;
+}
+.l-drawer ul.menu li ul.menu {
+  margin-top: 0;
+}
+.l-drawer a {
+  position: relative;
+  display: block;
+}
+.l-drawer a i {
+  position: absolute;
+  bottom: 2px;
+  width: 0.39em;
+  margin: 0 0 0 10px;
+  overflow: hidden;
+  display: none;
+}
+.l-drawer a.active-trail {
+  font-weight: bold;
+}
+.l-drawer a:hover i,
+.l-drawer a.active-trail i {
+  display: inline-block;
+}
+
+/*******************************************************************************
+ * Footer
+ ******************************************************************************/
+.l-footer {
+  text-align: center;
+}
+.l-footer a {
+  color: #979797;
+}
+.l-footer a:hover {
+  color: #27ace2;
+}
