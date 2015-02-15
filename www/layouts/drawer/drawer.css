@@ -1,0 +1,138 @@
+/*******************************************************************************
+ * Front-end only
+ ******************************************************************************/
+
+/* Clearfix for all regions. */
+.layout--drawer .l-main-wrapper:after,
+.layout--drawer .l-footer:after,
+.layout--drawer .l-container:after,
+.layout--drawer .l-content:after,
+.layout--drawer .l-sidebar:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.layout--drawer .l-messages,
+.layout--drawer .l-container,
+.layout--drawer .l-footer {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  clear: both;
+}
+.layout--drawer .l-content {
+  padding: 0 15px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.layout--drawer .l-footer {
+  min-height: 100px;
+  padding: 20px;
+}
+.layout--drawer .l-footer-inner {
+
+}
+
+@media all and (min-width: 851px) {
+  .layout--drawer .l-content,
+  .layout--drawer .l-sidebar,
+  .layout--drawer .l-drawer {
+    display: inline;
+    float: right; /* LTR */
+    position: relative;
+  }
+  [dir="rtl"] .layout--drawer .l-content,
+  [dir="rtl"] .layout--drawer .l-sidebar,
+  [dir="rtl"] .layout--drawer .l-drawer {
+    float: left;
+  }
+  .layout--drawer .l-content,
+  .layout--drawer .l-footer-inner {
+    box-sizing: border-box;
+    width: 100%;
+    padding-left: 235px; /* LTR */
+    padding-right: 0;
+    text-align: center;
+  }
+  [dir="rtl"] .layout--drawer .l-content {
+    padding-right: 235px;
+    padding-left: 0;
+  }
+  .l-content-inner {
+    text-align: left;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .layout--drawer .l-sidebar {
+    width: 235px;
+    height: 100%;
+    width: 235px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: auto;
+    padding: 10px 0;
+  }
+  [dir="rtl"] .layout--drawer .l-sidebar {
+    right: 0;
+  }
+  .layout--drawer .l-drawer {
+    width: 235px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 235px;
+    overflow: auto;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;
+    padding: 10px;
+  }
+  [dir="rtl"] .layout--drawer .l-drawer {
+    right: 235px;
+  }
+}
+
+/**
+ * @file
+ * CSS for the two column layout.
+ */
+
+/*******************************************************************************
+ * Admin only CSS
+ ******************************************************************************/
+
+#layout-edit-main .layout--drawer .l-content {
+  position: relative;
+  float: right;
+  width: 50%;
+  padding: 0;
+}
+
+#layout-edit-main .layout--drawer .l-sidebar {
+  position: relative;
+  float: left;
+  width: 25%;
+}
+#layout-edit-main .l-drawer {
+  float: left;
+  width: 25%;
+  margin: 0;
+}
+
+#layout-edit-main .layout--drawer .l-footer {
+  width: 100%;
+}
+#layout-edit-main .layout--drawer .l-footer-inner {
+  padding: 0;
+}
+
+.layout-editor-region {
+  padding: 0 10px;
+}
