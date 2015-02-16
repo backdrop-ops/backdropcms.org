@@ -1,0 +1,52 @@
+<?php
+/**
+ * @file
+ * Provides custom blocks for Backdropcms.org
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function borg_blocks_block_info() {
+  $blocks['branding'] = array(
+    'info' => t('Branding'),
+    'description' => t('Backdrop CMS logomark and wordmark.'),
+  );
+  $blocks['handbook'] = array(
+    'info' => t('Handbook Menu'),
+    'description' => t('Backdrop CMS Handbook menu, with section titles.'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements function hook_block_view().
+ */
+function borg_blocks_block_view($delta = '', $settings = array(), $contexts = array()) {
+  $block = array();
+
+  switch ($delta) {
+    case 'branding':
+      $uri = backdrop_get_path('module', 'borg_blocks') . '/images/logo.png';
+      $image = theme('image', array('uri' => $uri, 'alt' => t('Backdrop CMS Logo')));
+      $options = array('html' => TRUE, 'attributes' => array('class' => 'logo', 'title' => t('Backdrop CMS Home')));
+      $output = l($image, '', $options);
+      // Change the class for the text link.
+      $options['attributes']['class'] = array('site-name');
+      $output .= l(t('backdrop'), '', $options);
+
+      $block['subject'] = NULL;
+      $block['content'] = $output;
+      break;
+
+    case 'handbook':
+      $tree = menu_tree('menu-handbook');
+
+      $block['subject'] = NULL;
+      $block['content'] = backdrop_render($tree);
+      break;
+  }
+
+  return $block;
+}
