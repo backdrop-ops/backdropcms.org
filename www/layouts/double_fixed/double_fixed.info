@@ -1,9 +1,9 @@
-name = Sidebar with Drawer
+name = Double Fixed Sidebars
 version = 1.x
 backdrop = 1.x
 
 ; Include file for special preprocessing of this layout's variables.
-file = drawer.php
+file = double_fixed.php
 
 ; Specify regions for this layout.
 regions[sidebar] = Sidebar

@@ -7,7 +7,7 @@
 /**
  * Prepare variables for the drawer layout template file.
  */
-function template_preprocess_layout__drawer(&$variables) {
+function template_preprocess_layout__double_fixed(&$variables) {
   if ($variables['content']['sidebar'] && $variables['content']['drawer']) {
     $variables['classes'][] = 'layout-both-sidebars';
   }
