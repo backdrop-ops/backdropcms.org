@@ -2,12 +2,13 @@ name = Sidebar with Drawer
 version = 1.x
 backdrop = 1.x
 
+; Include file for special preprocessing of this layout's variables.
+file = drawer.php
+
 ; Specify regions for this layout.
-regions[header] = Header
-regions[top] = Top
-regions[content] = Content
 regions[sidebar] = Sidebar
 regions[drawer] = Drawer
+regions[content] = Content
 regions[footer] = Footer
 
 ; Content is the default region by default, but specify it for clarity.

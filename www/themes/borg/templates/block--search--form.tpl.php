@@ -1,6 +1,6 @@
 <?php
 /**
- * Remove the title from all system (menu) blocks.
+ * Remove the title from the search form block.
  */
 ?>
 <div class="<?php print implode(' ', $classes); ?>">

@@ -20,6 +20,7 @@
  *   region of the layout. This layout supports the following sections:
  *   - $content['content']
  *   - $content['sidebar']
+ *   - $content['drawer']
  *   - $content['footer']
  */
 ?>
@@ -56,6 +57,11 @@
 
         <?php print $content['content']; ?>
       </div>
+      <?php if ($content['footer']): ?>
+        <div class="l-footer">
+            <?php print $content['footer']; ?>
+        </div>
+      <?php endif; ?>
     </main>
 
     <?php if ($content['sidebar']): ?>
@@ -70,12 +76,4 @@
       </div>
     <?php endif; ?>
   </div>
-
-  <?php if ($content['footer']): ?>
-    <div class="l-footer">
-      <div class="l-footer-inner">
-        <?php print $content['footer']; ?>
-      </div>
-    </div>
-  <?php endif; ?>
 </div>
