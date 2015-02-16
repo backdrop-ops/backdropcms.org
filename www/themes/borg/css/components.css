@@ -4,6 +4,24 @@
  * Contains specific styles for common HTML components.
  ******************************************************************************/
 
+.logo {
+  display: none;
+}
+@media all and (min-width: 851px) {
+  .logo {
+    display: block;
+  }
+}
+
+.site-name {
+  border-top: 2px solid #fff;
+  display: block;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 360%;
+  font-weight: 300;
+  letter-spacing: -.04em;
+}
 
 /*******************************************************************************
  * Main menu
@@ -52,22 +70,26 @@
 /*******************************************************************************
  * Handbook menu
  ******************************************************************************/
-#handbook-menu ul.menu li.first.expanded {
+.block-borg-blocks-handbook ul.menu li.first.expanded {
   border-top: 0;
   padding: 0 30px;
 }
 
-#handbook-menu ul.menu li.expanded {
+.block-borg-blocks-handbook ul.menu li.expanded {
   border-top: solid 2px #979797;
   padding: 0 30px;
-  margin-top:30px;
+  margin-top: 30px;
 }
 
-#handbook-menu ul.menu li.expanded span {
+.block-borg-blocks-handbook ul.menu li.expanded span {
   padding: 30px 0 10px 0;
 }
+.block-borg-blocks-handbook ul.menu li.expanded span.nolink {
+  font-size: 150%;
+  letter-spacing: -.05em;
+}
 
-#handbook-menu ul.menu li.first.expanded span {
+.block-borg-blocks-handbook ul.menu li.first.expanded span {
   padding: 0px 0 10px 0;
 }
 

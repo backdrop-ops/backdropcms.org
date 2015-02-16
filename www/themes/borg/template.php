@@ -21,3 +21,42 @@ function borg_preprocess_page() {
 /*******************************************************************************
  * Theme function overrides.
  ******************************************************************************/
+
+/**
+ * Overrides theme_menu_link().
+ */
+function borg_menu_link(array $variables) {
+  $element = $variables['element'];
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    $sub_menu = backdrop_render($element['#below']);
+  }
+
+  // Add the font awesome icon.
+  if ($element['#href']) {
+    $element['#title'] .= ' <i class="fa fa-forward fa-fw"></i>';
+    $element['#localized_options']['html'] = TRUE;
+  }
+
+  $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+  return '<li' . backdrop_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
+}
+
+/**
+ * Overrides theme_on_the_web_image().
+ */
+function borg_on_the_web_image($variables) {
+  if ($variables['service'] == 'twitter') {
+    return '<i class="fa fa-twitter-square"></i>';
+  }
+  if ($variables['service'] == 'facebook') {
+    return '<i class="fa fa-facebook-square"></i>';
+  }
+  if ($variables['service'] == 'google') {
+    return '<i class="fa fa-google-plus-square"></i>';
+  }
+  if ($variables['service'] == 'youtube') {
+    return '<i class="fa fa-youtube-square"></i>';
+  }
+}

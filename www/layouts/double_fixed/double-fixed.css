@@ -99,10 +99,6 @@
     top: 0;
     left: 235px;
     overflow: auto;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 0 10px;
   }
   [dir="rtl"] .layout--double-fixed .l-drawer {
     right: 235px;
