@@ -1,6 +1,4 @@
-name = Code Filter
-description = Provides tags for automatically escaping and formatting large pieces of code.
+name = BackdropCMS.org GitHub Integration
+description = Provides webhook listeners and integration with GitHub
 backdrop = 1.x
-
-stylesheets[all][] = codefilter.css
-scripts[] = codefilter.js
+package = BackdropCMS.org

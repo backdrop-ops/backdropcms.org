@@ -12,6 +12,7 @@ function borg_github_menu() {
     'page callback' => 'borg_github_listener_callback',
     'access callback' => 'borg_github_listener_access',
     'file' => 'borg_github.pages.inc',
+    'type' => MENU_CALLBACK,
   );
   return $items;
 }
