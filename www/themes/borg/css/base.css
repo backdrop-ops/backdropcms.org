@@ -20,14 +20,14 @@ p {
 }
 
 a {
-  color: #27ace2;
+  color: #007CBA;
   text-decoration: none;
 }
 a:hover {
-  color: #27ace2;
+  color: #007CBA:
 }
 
-img, media {
+img {
   max-width: 100%;
   height: auto;
 }
@@ -37,18 +37,22 @@ h1 {
 }
 
 h2 {
+  font-weight: 500;
+  font-size: 30px;
 }
 
 h3 {
+  font-weight: 400;
 }
 
 h4 {
+  font-weight: 400;
 }
 
 ul {
   margin: .75em 0;
 }
-ul > li {
+li {
   margin: 5px 0;
 }
 
@@ -81,7 +85,6 @@ ol > li * {
 
 blockquote {
   font-style: italic;
-  min-height: 100px;
   margin: 0;
 }
 blockquote p {
@@ -108,7 +111,8 @@ div.indent {
 /*******************************************************************************
  * Forms.
  ******************************************************************************/
-input {
+input,
+textarea {
   padding: 4px 8px;
   font-size: 75%;
   color: #555;

@@ -24,6 +24,68 @@
 }
 
 /*******************************************************************************
+ * Admin-bar
+ ******************************************************************************/
+#admin-bar li {
+  /* Undo the margin we add in base.css. */
+  margin: 0;
+}
+
+/*******************************************************************************
+ * Tabs & Sub-tabs.
+ ******************************************************************************/
+ul.primary {
+  border-bottom: 2px solid #bbb;
+  border-collapse: collapse;
+  height: auto;
+  line-height: normal;
+  list-style: none;
+  margin: 5px;
+  padding: 0 0 0 1em; /* LTR */
+  white-space: nowrap;
+}
+ul.primary li {
+  display: inline;
+}
+ul.primary li a {
+  background-color: #ddd;
+  border-color: #bbb;
+  border-style: solid solid none solid;
+  border-width: 1px;
+  height: auto;
+  margin-right: 0.5em; /* LTR */
+  padding: 0 1em;
+  text-decoration: none;
+}
+ul.primary li.active a {
+  background-color: #fff;
+  border: 2px solid #bbb;
+  border-bottom: 2px solid #fff;
+}
+ul.primary li a:hover {
+  background-color: #eee;
+  border-color: #ccc;
+  border-bottom-color: #eee;
+}
+ul.secondary {
+  border-bottom: 2px solid #bbb;
+  padding: 0.5em 1em;
+  margin: 5px;
+}
+ul.secondary li {
+  border-right: 2px solid #ccc; /* LTR */
+  display: inline;
+  padding: 0 1em;
+}
+ul.secondary a {
+  padding: 0;
+  text-decoration: none;
+}
+ul.secondary a.active {
+  border-bottom: 4px solid #999;
+}
+
+/*******************************************************************************
  * Main menu
  ******************************************************************************/
 .block-system-main-menu ul {
@@ -64,7 +126,7 @@
 .block-system-main-menu a:hover i,
 .block-system-main-menu li.active i,
 .block-system-main-menu li.active-trail i {
-  color: #27ace2;
+  color: #27ACE2;
 }
 
 /*******************************************************************************
@@ -94,10 +156,34 @@
 }
 
 /*******************************************************************************
+ * Search block
+ ******************************************************************************/
+.search-block-form {
+  padding: 0px 30px;
+  margin: 1em 0;
+  text-align: center;
+}
+.search-block-form input.form-search {
+  width: 100%;
+  box-sizing: border-box;
+}
+.search-block-form .form-actions {
+  margin: 10px;
+}
+
+/*******************************************************************************
  * Book Navigation
  ******************************************************************************/
 .book-navigation {
   margin-top: 50px;
+}
+
+/*******************************************************************************
+ * Front page content
+ ******************************************************************************/
+body.front .node-page {
+  clear: both;
+  border-top: 2px solid #969696;
 }
 
 /*******************************************************************************
@@ -202,7 +288,7 @@
 }
 
 /*******************************************************************************
- * On The Web social medai links block.
+ * On The Web social media links block.
  ******************************************************************************/
 .block-on-the-web-social-links a i {
   width: 35px;
@@ -213,7 +299,7 @@
   color: rgb(151, 151, 151);
 }
 .block-on-the-web-social-links a:hover i {
-  color: #27ace2;
+  color: #007CBA;
 }
 
 /*******************************************************************************
@@ -223,6 +309,7 @@
   float: left;
   width: 185px;
   margin-right: 25px;
+  margin-bottom: 20px;
 }
 
 /*******************************************************************************
@@ -231,6 +318,7 @@
 .block-block-2 {
   float: left;
   margin-right: 35px;
+  margin-bottom: 20px;
 }
 .block-block-2 p.subtext {
   text-align: right;
@@ -248,8 +336,51 @@
 }
 
 /*******************************************************************************
+ * Front page tagline.
+ ******************************************************************************/
+body.front .block-block-4 h2 {
+  font-size: 34px;
+  line-height: 1.2;
+  color: #85898A;
+  font-weight: 400;
+}
+
+/*******************************************************************************
  * Powered by Backdrop block.
  ******************************************************************************/
 .block-system-powered-by {
   padding: 20px;
+}
+
+/*******************************************************************************
+ * Site contact form.
+ ******************************************************************************/
+.contact-site-form .form-item {
+  margin: 12px 0;
+}
+.contact-site-form label {
+  display: inline-block;
+  width: 0;
+  white-space: nowrap;
+  padding-right: 500px;
+  margin-right: -300px;
+  margin-bottom: 4px;
+}
+.contact-site-form input.form-text,
+.contact-site-form input.form-email {
+  width: 20em;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-size: 100%;
+}
+.contact-site-form select {
+  width: 15em;
+  max-width: 100%;
+}
+.contact-site-form textarea {
+  height: 16em;
+  font-size: 100%;
+}
+.contact-site-form input.form-submit {
+  font-size: 100%;
 }

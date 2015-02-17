@@ -18,6 +18,23 @@ function borg_preprocess_page() {
   drupal_add_css('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('type' => 'external'));
 }
 
+/**
+ * Prepares variables for layout.tpl.php
+ */
+function borg_preprocess_layout__double_fixed(&$variables) {
+  $node = menu_get_object();
+  if (isset($node) && isset($node->type) && $node->type === 'book') {
+    $variables['classes'][] = 'drawer-open';
+  }
+  else {
+    $variables['classes'][] = 'drawer-closed';
+    $array_key = array_search('layout-both-sidebars', $variables['classes']);
+    if ($array_key !== FALSE) {
+      $variables['classes'][$array_key] = 'layout-one-sidebar';
+    }
+  }
+}
+
 /*******************************************************************************
  * Theme function overrides.
  ******************************************************************************/
@@ -33,10 +50,21 @@ function borg_menu_link(array $variables) {
     $sub_menu = backdrop_render($element['#below']);
   }
 
-  // Add the font awesome icon.
-  if ($element['#href']) {
-    $element['#title'] .= ' <i class="fa fa-forward fa-fw"></i>';
-    $element['#localized_options']['html'] = TRUE;
+  $menu_name = isset($element['#original_link']['menu_name']) ? $element['#original_link']['menu_name'] : NULL;
+  if ($menu_name === 'main-menu' || $menu_name === 'menu-handbook') {
+    // Add the font awesome icon.
+    if ($element['#href']) {
+      $element['#title'] .= ' <i class="fa fa-forward fa-fw"></i>';
+      $element['#localized_options']['html'] = TRUE;
+    }
+
+    // If this is the handbook link and we're on a book page, set an active class.
+    if ($element['#href'] === 'node/1') {
+      $node = menu_get_object();
+      if (isset($node) && isset($node->type) && $node->type === 'book') {
+        $element['#attributes']['class'][] = 'active';
+      }
+    }
   }
 
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
