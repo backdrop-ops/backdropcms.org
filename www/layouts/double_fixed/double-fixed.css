@@ -1,0 +1,143 @@
+/*******************************************************************************
+ * Front-end only
+ ******************************************************************************/
+
+/* Clearfix for all regions. */
+.layout--double-fixed .l-main-wrapper:after,
+.layout--double-fixed .l-footer:after,
+.layout--double-fixed .l-container:after,
+.layout--double-fixed .l-content:after,
+.layout--double-fixed .l-sidebar:after,
+.layout--double-fixed .l-drawer:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.layout--double-fixed .l-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  clear: both;
+  text-align: center;
+}
+.layout--double-fixed .l-content {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.layout--double-fixed .l-content-inner {
+  text-align: left;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.layout--double-fixed .l-sidebar,
+.layout--double-fixed .l-drawer {
+  text-align: left;
+}
+
+.layout--double-fixed .l-footer {
+  padding: 20px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  min-height: 100px;
+}
+
+@media all and (min-width: 851px) {
+  .layout--double-fixed .l-sidebar,
+  .layout--double-fixed .l-drawer {
+    display: inline;
+    float: right; /* LTR */
+    position: relative;
+  }
+  [dir="rtl"] .layout--double-fixed .l-sidebar,
+  [dir="rtl"] .layout--double-fixed .l-drawer {
+    float: left;
+  }
+
+  /* Two Sidebars */
+  .layout--double-fixed.layout-both-sidebars .l-container {
+    padding-left: 470px;
+  }
+  [dir="rtl"] .layout--double-fixed.layout-both-sidebars .l-container {
+    padding-left: 0;
+    padding-right: 470px;
+  }
+
+  /* One Sidebar */
+  .layout--double-fixed.layout-one-sidebar .l-container {
+    padding-left: 235px;
+  }
+  [dir="rtl"] .layout--double-fixed.layout-one-sidebar .l-container {
+    padding-left: 0;
+    padding-right: 235px;
+  }
+
+  .layout--double-fixed .l-sidebar {
+    width: 235px;
+    height: 100%;
+    width: 235px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: auto;
+  }
+  [dir="rtl"] .layout--double-fixed .l-sidebar {
+    right: 0;
+  }
+
+  .layout--double-fixed .l-drawer {
+    width: 235px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 235px;
+    overflow: auto;
+  }
+  [dir="rtl"] .layout--double-fixed .l-drawer {
+    right: 235px;
+  }
+}
+
+/**
+ * @file
+ * CSS for the two column layout.
+ */
+
+/*******************************************************************************
+ * Admin only CSS
+ ******************************************************************************/
+
+#layout-edit-main .layout--double-fixed .l-container {
+  padding: 0;
+}
+
+#layout-edit-main .layout--double-fixed .l-content {
+  position: relative;
+  float: right;
+  width: 50%;
+  padding: 0;
+}
+
+#layout-edit-main .layout--double-fixed .l-sidebar {
+  position: relative;
+  float: left;
+  width: 25%;
+}
+#layout-edit-main .layout--double-fixed .l-drawer {
+  position: relative;
+  float: left;
+  width: 25%;
+  margin: 0;
+  left: 0;
+}
+
+.layout-editor-region {
+  padding: 0 10px;
+}

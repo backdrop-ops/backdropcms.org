@@ -1,0 +1,255 @@
+/*******************************************************************************
+ * components.scss
+ *
+ * Contains specific styles for common HTML components.
+ ******************************************************************************/
+
+.logo {
+  display: none;
+}
+@media all and (min-width: 851px) {
+  .logo {
+    display: block;
+  }
+}
+
+.site-name {
+  border-top: 2px solid #fff;
+  display: block;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 360%;
+  font-weight: 300;
+  letter-spacing: -.04em;
+}
+
+/*******************************************************************************
+ * Main menu
+ ******************************************************************************/
+.block-system-main-menu ul {
+  padding: 0;
+  width: 100%;
+  margin: 0;
+}
+.block-system-main-menu li {
+  list-style-type: none;
+  padding: 0 10px 0 15px;
+  border-bottom: 2px solid #fff;
+  margin: 0;
+}
+.block-system-main-menu li.first {
+  border-top: 2px solid #fff;
+}
+.block-system-main-menu li a {
+  font-weight: 300;
+  display: inline-block;
+  padding: 8px 0;
+  width: 100%;
+  position: relative;
+  font-size: 24px;
+  line-height: 36px;
+}
+.block-system-main-menu a:hover,
+.block-system-main-menu li.active a {
+  font-weight: 400;
+}
+.block-system-main-menu i {
+  display: inline-block;
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  width: 10px;
+  overflow: hidden;
+}
+.block-system-main-menu a:hover i,
+.block-system-main-menu li.active i,
+.block-system-main-menu li.active-trail i {
+  color: #27ace2;
+}
+
+/*******************************************************************************
+ * Handbook menu
+ ******************************************************************************/
+.block-borg-blocks-handbook ul.menu li.first.expanded {
+  border-top: 0;
+  padding: 0 30px;
+}
+
+.block-borg-blocks-handbook ul.menu li.expanded {
+  border-top: solid 2px #979797;
+  padding: 0 30px;
+  margin-top: 30px;
+}
+
+.block-borg-blocks-handbook ul.menu li.expanded span {
+  padding: 30px 0 10px 0;
+}
+.block-borg-blocks-handbook ul.menu li.expanded span.nolink {
+  font-size: 150%;
+  letter-spacing: -.05em;
+}
+
+.block-borg-blocks-handbook ul.menu li.first.expanded span {
+  padding: 0px 0 10px 0;
+}
+
+/*******************************************************************************
+ * Book Navigation
+ ******************************************************************************/
+.book-navigation {
+  margin-top: 50px;
+}
+
+/*******************************************************************************
+ * Quotes view.
+ ******************************************************************************/
+#block-views-quotes-block {
+  clear: both;
+  padding-top: 100px;
+}
+.view-quotes {
+  padding: 100px 0;
+  background-color: #F7F7F7;
+  margin-left: -500px;
+  margin-right: -500px;
+  padding: 50px 500px;
+  border-top: 2px solid #d7d7d7;
+  border-bottom: 2px solid #d7d7d7;
+}
+.view-quotes img {
+  float: left;
+  margin-right: 15px;
+}
+.view-quotes blockquote {
+  margin-left: 125px;
+  font-size: 125%;
+}
+.view-quotes .subtext {
+  margin: 5px 0;
+}
+.view-quotes .views-field-title {
+  margin-top: 5px;
+}
+
+/*******************************************************************************
+ * Supporters view. Block.
+ ******************************************************************************/
+#block-views-supporters-block {
+  margin: 100px 0;
+}
+#block-views-supporters-block h2,
+#block-formblock-supporter h2 {
+  text-align: center;
+  font-weight: normal;
+}
+.view-supporters {
+  text-align: center;
+}
+.view-supporters .view-content {
+  display: inline-block;
+  width: auto;
+  margin: 0 auto;
+  min-height: 150px;
+}
+.view-supporters .views-row {
+  float: left;
+  margin-right: 10px;
+  width: 120px;
+  min-height: 150px;
+  font-size: 12px;
+}
+.views-field-field-logo a {
+  text-align: center;
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+.views-field-field-logo img {
+  display: inline-block;
+  vertical-align: middle;
+}
+.views-field-field-logo .helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+/*******************************************************************************
+ * Show your support form block.
+ ******************************************************************************/
+#block-formblock-supporter {
+  clear: left;
+  margin-top: 50px;
+  background-color: #F7F7F7;
+  margin-left: -500px;
+  margin-right: -500px;
+  padding: 50px 500px;
+  border-top: 2px solid #d7d7d7;
+  border-bottom: 2px solid #d7d7d7;
+}
+#block-formblock-supporter label {
+  color: #999999;
+}
+#block-formblock-supporter .description {
+  display: none;
+}
+#block-formblock-supporter .form-item .form-item {
+  margin: 0;
+}
+#block-formblock-supporter .form-actions {
+  text-align: center;
+}
+
+/*******************************************************************************
+ * On The Web social medai links block.
+ ******************************************************************************/
+.block-on-the-web-social-links a i {
+  width: 35px;
+  height: 35px;
+  font-size: 35px;
+  line-height: 35px;
+  margin: 10px 5px;
+  color: rgb(151, 151, 151);
+}
+.block-on-the-web-social-links a:hover i {
+  color: #27ace2;
+}
+
+/*******************************************************************************
+ * Try Backdrop Block
+ ******************************************************************************/
+.block-block-1 {
+  float: left;
+  width: 185px;
+  margin-right: 25px;
+}
+
+/*******************************************************************************
+ * Download Backdrop Block
+ ******************************************************************************/
+.block-block-2 {
+  float: left;
+  margin-right: 35px;
+}
+.block-block-2 p.subtext {
+  text-align: right;
+}
+
+/*******************************************************************************
+ * Mailchimp Signup Block
+ ******************************************************************************/
+.block-block-3 {
+  font-size: 1.25em;
+  margin-bottom: 5px;
+}
+.block-block-3 #mce-EMAIL {
+  margin-right: 5px;
+}
+
+/*******************************************************************************
+ * Powered by Backdrop block.
+ ******************************************************************************/
+.block-system-powered-by {
+  padding: 20px;
+}

@@ -1,0 +1,12 @@
+name = Backdrop ORG
+description = The main theme for the Backdrop primary site.
+version = 1.x
+backdrop = 1.x
+
+stylesheets[screen][] = css/base.css
+stylesheets[screen][] = css/layout.css
+stylesheets[screen][] = css/style.css
+stylesheets[screen][] = css/components.css
+
+; Stylesheets to remove:
+stylesheets[all][] = system.theme.css
