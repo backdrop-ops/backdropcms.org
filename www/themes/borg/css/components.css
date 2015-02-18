@@ -295,7 +295,7 @@ body.front .node-page {
   height: 35px;
   font-size: 35px;
   line-height: 35px;
-  margin: 10px 5px;
+  margin: 0 5px;
   color: rgb(151, 151, 151);
 }
 .block-on-the-web-social-links a:hover i {
@@ -349,7 +349,8 @@ body.front .block-block-4 h2 {
  * Powered by Backdrop block.
  ******************************************************************************/
 .block-system-powered-by {
-  padding: 20px;
+  font-size: 14px;
+  margin-top: 75px;
 }
 
 /*******************************************************************************
