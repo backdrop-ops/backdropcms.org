@@ -93,12 +93,16 @@ body.front #page-title {
 /*******************************************************************************
  * Footer
  ******************************************************************************/
-.l-footer {
+.layout--double-fixed .l-footer {
   text-align: center;
+  padding-top: 60px;
 }
 .l-footer a {
   color: #979797;
 }
 .l-footer a:hover {
   color: #007CBA;
+}
+.l-footer .block {
+  padding: 5px;
 }

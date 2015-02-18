@@ -264,7 +264,7 @@ body.front .node-page {
 /*******************************************************************************
  * Show your support form block.
  ******************************************************************************/
-#block-formblock-supporter {
+.block-formblock-supporter {
   clear: left;
   margin-top: 50px;
   background-color: #F7F7F7;
@@ -274,16 +274,16 @@ body.front .node-page {
   border-top: 2px solid #d7d7d7;
   border-bottom: 2px solid #d7d7d7;
 }
-#block-formblock-supporter label {
+.block-formblock-supporter label {
   color: #999999;
 }
-#block-formblock-supporter .description {
+.block-formblock-supporter .description {
   display: none;
 }
-#block-formblock-supporter .form-item .form-item {
+.block-formblock-supporter .form-item .form-item {
   margin: 0;
 }
-#block-formblock-supporter .form-actions {
+.block-formblock-supporter .form-actions {
   text-align: center;
 }
 
@@ -295,7 +295,7 @@ body.front .node-page {
   height: 35px;
   font-size: 35px;
   line-height: 35px;
-  margin: 10px 5px;
+  margin: 0 5px;
   color: rgb(151, 151, 151);
 }
 .block-on-the-web-social-links a:hover i {
@@ -349,7 +349,11 @@ body.front .block-block-4 h2 {
  * Powered by Backdrop block.
  ******************************************************************************/
 .block-system-powered-by {
-  padding: 20px;
+  font-size: 14px;
+  color: #979797;
+}
+.block-system-powered-by a {
+   color: #007cba;
 }
 
 /*******************************************************************************
@@ -383,4 +387,43 @@ body.front .block-block-4 h2 {
 }
 .contact-site-form input.form-submit {
   font-size: 100%;
+}
+
+/*******************************************************************************
+ * Login form
+ ******************************************************************************/
+#user-login .form-item {
+  padding: 15px 0;
+  display: flex;
+}
+/* Clearfix for .form-item */
+#user-login .form-item:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#user-login .form-item label {
+  width: 90px;
+  display: inline-block;
+}
+#user-login .form-item input {
+  width: 100%;
+  flex: 1;
+}
+
+/*******************************************************************************
+ * Password reset form
+ ******************************************************************************/
+#user-pass .form-item {
+  padding: 15px 0;
+  display: flex;
+}
+#user-pass .form-item label {
+  padding-right: 15px;
+  display: inline-block;
+}
+#user-pass .form-item input {
+  width: 100%;
+  flex: 1;
 }

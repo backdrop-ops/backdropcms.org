@@ -125,6 +125,7 @@ textarea {
 }
 input[type="submit"] {
   border-radius: 10px;
+  width: auto;
 }
 input[type="submit"]:hover {
   background-color: #ebebeb;
