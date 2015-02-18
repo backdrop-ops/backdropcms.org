@@ -194,6 +194,7 @@ body.front .node-page {
   padding-top: 100px;
 }
 .view-quotes {
+  height: 250px;
   padding: 100px 0;
   background-color: #F7F7F7;
   margin-left: -500px;
@@ -215,6 +216,16 @@ body.front .node-page {
 }
 .view-quotes .views-field-title {
   margin-top: 5px;
+}
+
+/*******************************************************************************
+ * Flexslider
+ ******************************************************************************/
+.flexslider .slides .img {
+  width: auto;
+}
+ol.flex-control-paging > li:before {
+  content: '';
 }
 
 /*******************************************************************************
