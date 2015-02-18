@@ -220,10 +220,10 @@ body.front .node-page {
 /*******************************************************************************
  * Supporters view. Block.
  ******************************************************************************/
-#block-views-supporters-block {
+.block-views-supporters-block {
   margin: 100px 0;
 }
-#block-views-supporters-block h2,
+.block-views-supporters-block h2,
 #block-formblock-supporter h2 {
   text-align: center;
   font-weight: normal;
