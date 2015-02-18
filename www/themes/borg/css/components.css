@@ -211,6 +211,9 @@ body.front .node-page {
   margin-left: 125px;
   font-size: 125%;
 }
+.views-field-title {
+  clear: left;
+}
 .view-quotes .subtext {
   margin: 5px 0;
 }
@@ -221,6 +224,10 @@ body.front .node-page {
 /*******************************************************************************
  * Flexslider
  ******************************************************************************/
+.flexslider {
+  background: transparent;
+  border: 0;
+}
 .flexslider .slides img {
   width: auto;
 }
