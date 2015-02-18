@@ -1,0 +1,14 @@
+Patches to Backdrop Core:
+=========================
+
+Fix seven theme so it doesn't throw PHP notice:
+https://github.com/backdrop/backdrop-issues/issues/721
+
+Fix up views to prevent PHP notices when no li classes:
+https://github.com/backdrop/backdrop-issues/issues/729
+
+
+Patches to Backdrop Contrib:
+============================
+
+none
