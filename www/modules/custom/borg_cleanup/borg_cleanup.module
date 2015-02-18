@@ -1,0 +1,70 @@
+<?php
+/**
+ * @file
+ * Removes cruft from forms.
+ */
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Removes tabs from the log in and password pages.
+ */
+function borg_cleanup_menu_alter(&$items) {
+  $items['user/login']['type'] = MENU_CALLBACK;
+  $items['user/pasword']['type'] = MENU_CALLBACK;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Removes useless description text from log in form, adds password link.
+ */
+function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
+  unset($form['name']['#description']);
+  unset($form['pass']['#description']);
+
+  $form['actions']['forgot'] = array(
+    '#markup' => '<small>' . l(t('Forgot password?'), 'user/password') . '</small>',
+    '#weight' => -1,
+  );
+}
+
+/**
+ * Prepare variables for page template.
+ *
+ * Corrects the head_title variable to correctly match the current page.
+ *
+ * @see template_preprocess_page().
+ * @see page.tpl.php
+ */
+function borg_cleanup_preprocess_page(&$variables) {
+  if (arg(0) == 'user') {
+    global $user;
+    if (arg(1) == 'password') {
+      $variables['head_title'] = t('Forgot password | !name', array('!name' => config_get('system.core', 'site_name')));
+    }
+    elseif (arg(1) == 'login' || (!arg(1) && $user->uid === 0)) {
+      $variables['head_title'] = t('Log in | !name', array('!name' => config_get('system.core', 'site_name')));
+    }
+  }
+}
+
+/**
+ * Prepare variables for page template.
+ *
+ * Corrects the head_title variable to correctly match the current page.
+ *
+ * @see template_preprocess_layout().
+ * @see layout.tpl.php
+ */
+function borg_cleanup_preprocess_layout(&$variables) {
+  if (arg(0) == 'user') {
+    global $user;
+    if (arg(1) == 'password') {
+      backdrop_set_title('Forgot password');
+    }
+    elseif (arg(1) == 'login' || (!arg(1) && $user->uid === 0)) {
+      backdrop_set_title('Log in');
+    }
+  }
+}
