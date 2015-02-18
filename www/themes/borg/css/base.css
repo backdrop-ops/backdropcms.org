@@ -33,20 +33,22 @@ img {
 }
 
 h1 {
-  font-weight: 300;
+  font-weight: 300 /* Light */;
 }
 
 h2 {
-  font-weight: 500;
+  /* Semibold: Note Source Sans Pro has no 500 value. */
+  /* https://www.google.com/fonts/specimen/Source+Sans+Pro */
+  font-weight: 600;
   font-size: 30px;
 }
 
 h3 {
-  font-weight: 400;
+  font-weight: 400; /* Normal */
 }
 
 h4 {
-  font-weight: 400;
+  font-weight: 400; /* Normal */
 }
 
 ul {
