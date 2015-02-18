@@ -264,7 +264,7 @@ body.front .node-page {
 /*******************************************************************************
  * Show your support form block.
  ******************************************************************************/
-#block-formblock-supporter {
+.block-formblock-supporter {
   clear: left;
   margin-top: 50px;
   background-color: #F7F7F7;
@@ -274,16 +274,16 @@ body.front .node-page {
   border-top: 2px solid #d7d7d7;
   border-bottom: 2px solid #d7d7d7;
 }
-#block-formblock-supporter label {
+.block-formblock-supporter label {
   color: #999999;
 }
-#block-formblock-supporter .description {
+.block-formblock-supporter .description {
   display: none;
 }
-#block-formblock-supporter .form-item .form-item {
+.block-formblock-supporter .form-item .form-item {
   margin: 0;
 }
-#block-formblock-supporter .form-actions {
+.block-formblock-supporter .form-actions {
   text-align: center;
 }
 
@@ -350,7 +350,10 @@ body.front .block-block-4 h2 {
  ******************************************************************************/
 .block-system-powered-by {
   font-size: 14px;
-  margin-top: 75px;
+  color: #979797;
+}
+.block-system-powered-by a {
+   color: #007cba;
 }
 
 /*******************************************************************************
