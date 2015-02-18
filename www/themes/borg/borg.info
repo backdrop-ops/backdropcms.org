@@ -3,12 +3,14 @@ description = The main theme for the Backdrop primary site.
 version = 1.x
 backdrop = 1.x
 
+; Core stylesheets to replace:
+stylesheets[all][] = css/system.theme.css
+
+; Custom stylesheets to be added:
 stylesheets[screen][] = css/base.css
 stylesheets[screen][] = css/layout.css
 stylesheets[screen][] = css/patterns.css
 stylesheets[screen][] = css/components.css
 
-; Stylesheets to remove:
-stylesheets[all][] = system.theme.css
-
+; Custom javascript to be added:
 scripts[] = js/borg.js

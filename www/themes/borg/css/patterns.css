@@ -58,6 +58,9 @@ a.button span {
 .form-actions {
   text-align: right;
 }
+.form-actions input {
+  margin: 0 15px;
+}
 
 /*******************************************************************************
  * Subtext
