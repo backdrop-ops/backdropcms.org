@@ -384,3 +384,42 @@ body.front .block-block-4 h2 {
 .contact-site-form input.form-submit {
   font-size: 100%;
 }
+
+/*******************************************************************************
+ * Login form
+ ******************************************************************************/
+#user-login .form-item {
+  padding: 15px 0;
+  display: flex;
+}
+/* Clearfix for .form-item */
+#user-login .form-item:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#user-login .form-item label {
+  width: 90px;
+  display: inline-block;
+}
+#user-login .form-item input {
+  width: 100%;
+  flex: 1;
+}
+
+/*******************************************************************************
+ * Password reset form
+ ******************************************************************************/
+#user-pass .form-item {
+  padding: 15px 0;
+  display: flex;
+}
+#user-pass .form-item label {
+  padding-right: 15px;
+  display: inline-block;
+}
+#user-pass .form-item input {
+  width: 100%;
+  flex: 1;
+}
