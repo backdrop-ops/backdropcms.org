@@ -13,9 +13,21 @@
  */
 function borg_preprocess_page() {
   // Add the Source Sans Pro font.
-  drupal_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700', array('type' => 'external'));
+  backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700', array('type' => 'external'));
   // Add FontAwesome.
-  drupal_add_css('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('type' => 'external'));
+  backdrop_add_css('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('type' => 'external'));
+
+  // Add Flexslider to the front page only.
+  if (backdrop_is_front_page()) {
+    $path = backdrop_get_path('theme', 'borg');
+    backdrop_add_css($path . '/css/flexslider.css');
+    backdrop_add_js($path . '/js/jquery.flexslider.js');
+    $script = "
+$(window).load(function() {
+  $('.flexslider').flexslider();
+});";
+    backdrop_add_js($script, array('type' => 'inline'));
+  }
 }
 
 /**

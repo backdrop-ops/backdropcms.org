@@ -194,6 +194,7 @@ body.front .node-page {
   padding-top: 100px;
 }
 .view-quotes {
+  height: 250px;
   padding: 100px 0;
   background-color: #F7F7F7;
   margin-left: -500px;
@@ -210,6 +211,9 @@ body.front .node-page {
   margin-left: 125px;
   font-size: 125%;
 }
+.views-field-title {
+  clear: left;
+}
 .view-quotes .subtext {
   margin: 5px 0;
 }
@@ -218,12 +222,26 @@ body.front .node-page {
 }
 
 /*******************************************************************************
+ * Flexslider
+ ******************************************************************************/
+.flexslider {
+  background: transparent;
+  border: 0;
+}
+.flexslider .slides img {
+  width: auto;
+}
+ol.flex-control-paging > li:before {
+  content: '';
+}
+
+/*******************************************************************************
  * Supporters view. Block.
  ******************************************************************************/
-#block-views-supporters-block {
+.block-views-supporters-block {
   margin: 100px 0;
 }
-#block-views-supporters-block h2,
+.block-views-supporters-block h2,
 #block-formblock-supporter h2 {
   text-align: center;
   font-weight: normal;
