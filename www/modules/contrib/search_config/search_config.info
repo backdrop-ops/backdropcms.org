@@ -1,0 +1,7 @@
+name = Search config
+description = Configure display of the advanced search form
+dependencies[] = search
+;files[] = search_config.module
+package = Search
+backdrop = 1.x
+version = 1.x-1.x

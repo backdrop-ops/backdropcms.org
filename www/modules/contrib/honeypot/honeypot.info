@@ -1,0 +1,7 @@
+name = Honeypot
+description = "Mitigates spam form submissions using the honeypot method."
+backdrop = 1.x
+configure = admin/config/content/honeypot
+package = "Spam control"
+
+files[] = honeypot.test

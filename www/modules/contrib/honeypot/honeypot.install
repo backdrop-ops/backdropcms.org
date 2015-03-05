@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Honeypot module.
+ */
+
+/**
+ * Implements of hook_schema().
+ */
+function honeypot_schema() {
+  $schema['honeypot_user'] = array(
+    'description' => 'Table that stores failed attempts to submit a form.',
+    'fields' => array(
+      'uid' => array(
+        'description' => 'Foreign key to {users}.uid; uniquely identifies a Drupal user to whom this ACL data applies.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'timestamp' => array(
+        'description' => 'Date/time when the form submission failed, as Unix timestamp.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'uid' => array('uid'),
+      'timestamp' => array('timestamp'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function honeypot_install() {
+  // Create CSS file.
+  honeypot_create_css(config_get('honeypot.settings', 'element_name'));
+
+  $t = get_t();
+  backdrop_set_message($t("Honeypot installed successfully. Please !link to protect your forms from spam bots.", array(
+    '!link' => l($t('configure Honeypot'), 'admin/config/content/honeypot'),
+  )));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function honeypot_uninstall() {
+  // Delete 'honeypot' directory from public file directory.
+  file_unmanaged_delete_recursive('public://honeypot');
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function honeypot_update_last_removed() {
+  return 7004;
+}
+
+/**
+ * @defgroup updates-7.x-to-1.x Updates from 7.x to 1.x
+ * @{
+ * Update functions from Drupal 7.x to Backdrop CMS 1.x.
+ */
+
+/**
+ * Move honeypot settings from variables to config.
+ */
+
+function honeypot_update_1000() {
+  // Migrate variables to config.
+  $config = config('honeypot.settings');
+  $config->set('protect_all_forms', update_variable_get('honeypot_protect_all_forms', 0));
+  $config->set('expire', update_variable_get('honeypot_expire', 300));
+  $config->set('log', update_variable_get('honeypot_log', 1));
+  $config->set('element_name', update_variable_get('honeypot_element_name', 'url'));
+  $config->set('time_limit', update_variable_get('honeypot_time_limit', 5));
+
+  $form_settings = array();
+  $result = db_query('SELECT * FROM {variable} WHERE name LIKE  :name', array(':name' => '%honeypot_form_%'));
+  foreach ($result as $row) {
+    $form_settings[$row->name] = unserialize($row->value);
+  }
+  $config->set('form_settings', $form_settings);
+
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('honeypot_protect_all_forms');
+  update_variable_del('honeypot_expire');
+  update_variable_del('honeypot_log');
+  update_variable_del('honeypot_element_name');
+  update_variable_del('honeypot_time_limit');
+
+  foreach($form_settings as $k => $v) {
+    update_variable_del($k);
+  }
+}
+
+/**
+ * @} End of "defgroup updates-7.x-to-1.x"
+ * The next series of updates should start at 2000.
+ */
