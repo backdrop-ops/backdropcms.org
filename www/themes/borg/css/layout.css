@@ -19,6 +19,34 @@ body.front #page-title {
 }
 
 /*******************************************************************************
+ * Main content.
+ ******************************************************************************/
+main {
+  padding-top: 70px;
+  background-image: url('../images/Backdrop-Logo-Horizontal.png');
+  background-image: linear-gradient(transparent, transparent), url('../images/Backdrop-Logo-Horizontal.svg');
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 80%;
+}
+@media (min-width: 520px) {
+  main {
+    padding-top: 100px;
+  }
+}
+@media (min-width: 700px) {
+  main {
+    padding-top: 160px;
+  }
+}
+@media (min-width: 851px) {
+  main {
+    background-image: none;
+    padding-top: 0;
+  }
+}
+
+/*******************************************************************************
  * Sidebar
  ******************************************************************************/
 .l-sidebar {
