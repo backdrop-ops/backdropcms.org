@@ -35,7 +35,7 @@
  * Tabs & Sub-tabs.
  ******************************************************************************/
 ul.primary {
-  border-bottom: 2px solid #bbb;
+  border-bottom: 2px solid #969696;
   border-collapse: collapse;
   height: auto;
   line-height: normal;
@@ -59,8 +59,9 @@ ul.primary li a {
 }
 ul.primary li.active a {
   background-color: #fff;
-  border: 2px solid #bbb;
-  border-bottom: 2px solid #fff;
+  border: 2px solid #969696;
+  border-bottom: none;
+  padding-bottom: 2px;
 }
 ul.primary li a:hover {
   background-color: #eee;
@@ -83,6 +84,13 @@ ul.secondary a {
 }
 ul.secondary a.active {
   border-bottom: 4px solid #999;
+}
+
+/*******************************************************************************
+ * Vertical tabs
+ ******************************************************************************/
+.vertical-tabs {
+  background: white;
 }
 
 /*******************************************************************************
@@ -184,6 +192,15 @@ ul.secondary a.active {
  ******************************************************************************/
 .book-navigation {
   margin-top: 50px;
+}
+.book-pager {
+  border-top: 2px solid #969696;
+  border-bottom: 2px solid #969696;
+  margin: 1em 0;
+}
+.book-add-child a {
+  margin: 1em 0;
+  display: inline-block;
 }
 
 /*******************************************************************************

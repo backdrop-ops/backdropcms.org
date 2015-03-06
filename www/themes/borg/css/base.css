@@ -17,6 +17,7 @@ body {
 p {
   font-size: 110%;
   line-height: 140%;
+  margin: 1em 0;
 }
 
 a {
@@ -57,7 +58,7 @@ ul {
   margin: .75em 0;
 }
 li {
-  margin: 5px 0;
+  margin: .5em 0;
 }
 
 ol {
@@ -67,7 +68,6 @@ ol {
 }
 
 ol > li {
-  margin: 0;
   padding: 0 0 0 2em;
   text-indent: -2em;
   list-style-type: none;
@@ -92,7 +92,7 @@ blockquote {
   margin: 0;
 }
 blockquote p {
-  margin: 0;
+  margin: .5em 0;
 }
 figure {
   margin: 0 25px;
@@ -104,10 +104,10 @@ figcaption {
 }
 
 div.codeblock pre {
-  padding: 12px;
+  padding: 6px 12px;
 }
 div.codeblock code {
-  font-size: 1em;
+  font-size: .8em;
   line-height: 1.6;
 }
 div.indent {
