@@ -54,7 +54,7 @@ function honeypot_permission() {
 function honeypot_cron() {
   // Delete {honeypot_user} entries older than the value of honeypot_expire.
   db_delete('honeypot_user')
-    ->condition('timestamp', time() - $config->get('expire'), '<')
+    ->condition('timestamp', time() - config_get('honeypot.settings', 'expire'), '<')
     ->execute();
 }
 
