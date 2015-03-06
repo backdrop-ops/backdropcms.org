@@ -266,7 +266,7 @@ ol.flex-control-paging > li:before {
 .view-supporters .views-row {
   float: left;
   margin: 0 15px;
-  width: 60px;
+  width: 80px;
   min-height: 150px;
   font-size: 12px;
 }
@@ -276,8 +276,8 @@ ol.flex-control-paging > li:before {
 .views-field-field-logo a {
   text-align: center;
   display: block;
-  width: 60px;
-  height: 60px;
+  width: 72px;
+  height: 72px;
   margin: 0 auto;
 }
 .views-field-field-logo img {
@@ -461,4 +461,13 @@ body.front .block-block-4 h2 {
 #user-pass .form-item input {
   width: 100%;
   flex: 1;
+}
+
+
+/*******************************************************************************
+ * Contribute page (/contribute)
+ ******************************************************************************/
+.donate-right {
+  float: right;
+  margin-top: -10px;
 }

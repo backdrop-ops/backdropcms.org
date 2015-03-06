@@ -44,11 +44,13 @@ h2 {
 }
 
 h3 {
-  font-weight: 400; /* Normal */
+  font-weight: 600; /* Semi-bold */
+  font-size: 22px;
 }
 
 h4 {
-  font-weight: 400; /* Normal */
+  font-weight: 600; /* Semi-bold */
+  font-size: 18px;
 }
 
 ul {
@@ -101,10 +103,12 @@ figcaption {
   font-size: 80%;
 }
 
-code,
-div.codeblock {
-  margin: 10px 0;
-  font-size: 85%;
+div.codeblock pre {
+  padding: 12px;
+}
+div.codeblock code {
+  font-size: 1em;
+  line-height: 1.6;
 }
 div.indent {
   margin: 0 25px;
