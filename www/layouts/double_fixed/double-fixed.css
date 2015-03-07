@@ -33,7 +33,12 @@
   text-align: left;
   max-width: 700px;
   margin: 0 auto;
-  padding: 0 35px;
+  padding: 0 15px;
+}
+@media all and (min-width: 851px) {
+  .layout--double-fixed .l-content-inner {
+    padding: 0 35px;
+  }
 }
 
 .layout--double-fixed .l-sidebar,
