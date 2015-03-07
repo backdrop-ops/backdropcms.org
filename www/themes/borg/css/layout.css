@@ -74,7 +74,6 @@ main {
 .l-drawer {
   overflow: auto;
   z-index: 1; /* Position below the sidebar. */
-  border-right: 2px solid #979797;
   background-color: #F7F7F7;
   color: #000;
 
@@ -82,6 +81,11 @@ main {
   -moz-transition: left 0.3s ease;
   -o-transition: left 0.3s ease;
   transition: left 0.3s ease;
+}
+@media (min-width: 850px) {
+  .l-drawer {
+    border-right: 2px solid #979797;
+  }
 }
 .l-container {
   -webkit-transition: padding 0.3s ease;
