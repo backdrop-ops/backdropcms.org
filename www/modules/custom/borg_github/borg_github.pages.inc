@@ -18,7 +18,13 @@ function borg_github_listener_callback($callback, array $expected_events) {
 
   $result = NULL;
   $errors = array();
-  if (in_array($event, $expected_events)) {
+
+  // Always return an OK for ping requests, which aren't an actual webhook.
+  if ($event === 'ping') {
+    $result = TRUE;
+  }
+  // Check that the callback accepts the given event.
+  elseif (in_array($event, $expected_events)) {
     $result = $callback($errors, $payload);
   }
 
