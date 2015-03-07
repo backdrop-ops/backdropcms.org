@@ -213,14 +213,8 @@ ul.secondary a.active {
  ******************************************************************************/
 body.front .node-page {
   clear: both;
-  position: relative;
-  top: 30px;
-  background-color: #F7F7F7;
-  margin-left: -500px;
-  margin-right: -500px;
-  padding: 0 500px 50px;
-  border-top: 2px solid #d7d7d7;
-  border-bottom: 2px solid #d7d7d7;
+  padding-top: 20px;
+  margin: 80px 0;
 }
 body.front .node-page h1,
 body.front .node-page h2,
@@ -244,8 +238,7 @@ body.front .node-page ul {
   padding-top: 100px;
 }
 .view-quotes {
-  height: 250px;
-  padding: 100px 0;
+  padding: 50px 0;
   background-color: #F7F7F7;
   margin-left: -500px;
   margin-right: -500px;
