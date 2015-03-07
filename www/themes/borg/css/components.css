@@ -16,10 +16,11 @@
 .site-name {
   border-top: 2px solid #fff;
   display: block;
-  padding: 10px 0;
+  /* Top of "b" and bottom of "p" should have equal distance to lines. */
+  padding: 8px 0 16px;
   text-align: center;
-  font-size: 360%;
-  font-weight: 300;
+  font-size: 54px;
+  font-weight: 200;
   letter-spacing: -.04em;
 }
 
@@ -103,7 +104,7 @@ ul.secondary a.active {
 }
 .block-system-main-menu li {
   list-style-type: none;
-  padding: 0 10px 0 15px;
+  padding: 0 13px 0 23px;
   border-bottom: 2px solid #fff;
   margin: 0;
 }
@@ -111,12 +112,12 @@ ul.secondary a.active {
   border-top: 2px solid #fff;
 }
 .block-system-main-menu li a {
-  font-weight: 300;
+  font-weight: 200;
   display: inline-block;
   padding: 8px 0;
   width: 100%;
   position: relative;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 36px;
 }
 .block-system-main-menu a:hover,
@@ -128,7 +129,7 @@ ul.secondary a.active {
   position: absolute;
   top: 15px;
   right: 10px;
-  width: 10px;
+  width: .42em;
   overflow: hidden;
 }
 .block-system-main-menu a:hover i,
@@ -208,7 +209,17 @@ ul.secondary a.active {
  ******************************************************************************/
 body.front .node-page {
   clear: both;
-  border-top: 2px solid #969696;
+  background-color: #F7F7F7;
+  margin-left: -500px;
+  margin-right: -500px;
+  padding: 0 500px 50px;
+  border-top: 2px solid #d7d7d7;
+  border-bottom: 2px solid #d7d7d7;
+}
+body.front .node-page h1,
+body.front .node-page h2,
+body.front .node-page h3 {
+  text-align: center;
 }
 
 /*******************************************************************************
@@ -264,12 +275,11 @@ ol.flex-control-paging > li:before {
  * Supporters view. Block.
  ******************************************************************************/
 .block-views-supporters-block {
-  margin: 100px 0;
+  margin: 80px 0;
 }
 .block-views-supporters-block h2,
 #block-formblock-supporter h2 {
   text-align: center;
-  font-weight: normal;
 }
 .view-supporters {
   text-align: center;
@@ -317,17 +327,52 @@ ol.flex-control-paging > li:before {
   background-color: #F7F7F7;
   margin-left: -500px;
   margin-right: -500px;
-  padding: 50px 500px;
+  padding: 34px 500px 50px;
   border-top: 2px solid #d7d7d7;
   border-bottom: 2px solid #d7d7d7;
   text-align: center;
 }
 .block-formblock-supporter form {
-  display: inline-block;
+  max-width: 670px;
   text-align: left;
 }
 .block-formblock-supporter label {
   color: #999999;
+  display: block;
+  line-height: 2.5;
+}
+.block-formblock-supporter .form-text {
+  border-color: #979797;
+  font-size: 32px;
+  width: 100%;
+}
+.block-formblock-supporter .image-widget-data {
+  float: none;
+  position: relative;
+}
+.block-formblock-supporter .form-managed-file {
+  border: 2px solid #979797;
+  background: white;
+}
+.block-formblock-supporter .form-file {
+  padding: 15px 14px 14px;
+  border: none;
+  vertical-align: middle;
+  width: 100%;
+  position: absolute;
+}
+.block-formblock-supporter .form-managed-file .form-submit {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  padding: 17px 30px;
+  float: right;
+  font-size: 16px;
+  border: none;
+  border-left: 2px solid #979797;
+  vertical-align: middle;
+  position: relative;
+  z-index: 2;
 }
 .block-formblock-supporter .description {
   display: none;

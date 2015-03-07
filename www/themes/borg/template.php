@@ -13,7 +13,7 @@
  */
 function borg_preprocess_page() {
   // Add the Source Sans Pro font.
-  backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700', array('type' => 'external'));
+  backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700', array('type' => 'external'));
   // Add FontAwesome.
   backdrop_add_css('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', array('type' => 'external'));
 

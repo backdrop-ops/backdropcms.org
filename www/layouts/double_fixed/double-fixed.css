@@ -72,17 +72,17 @@
 
   /* One Sidebar */
   .layout--double-fixed.layout-one-sidebar .l-container {
-    padding-left: 235px;
+    padding-left: 230px;
   }
   [dir="rtl"] .layout--double-fixed.layout-one-sidebar .l-container {
     padding-left: 0;
-    padding-right: 235px;
+    padding-right: 230px;
   }
 
   .layout--double-fixed .l-sidebar {
-    width: 235px;
+    width: 230px;
     height: 100%;
-    width: 235px;
+    width: 230px;
     position: fixed;
     top: 0;
     left: 0;
@@ -93,15 +93,15 @@
   }
 
   .layout--double-fixed .l-drawer {
-    width: 235px;
+    width: 230px;
     height: 100%;
     position: fixed;
     top: 0;
-    left: 235px;
+    left: 230px;
     overflow: auto;
   }
   [dir="rtl"] .layout--double-fixed .l-drawer {
-    right: 235px;
+    right: 230px;
   }
 }
 

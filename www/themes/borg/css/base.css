@@ -35,18 +35,19 @@ img {
 
 h1 {
   font-weight: 300 /* Light */;
+  font-size: 60px;
 }
 
 h2 {
-  /* Semibold: Note Source Sans Pro has no 500 value. */
-  /* https://www.google.com/fonts/specimen/Source+Sans+Pro */
-  font-weight: 600;
-  font-size: 30px;
+  font-weight: 300; /* Light */
+  font-size: 42px;
 }
 
 h3 {
+  /* Semibold: Note Source Sans Pro has no 500 value. */
+  /* https://www.google.com/fonts/specimen/Source+Sans+Pro */
   font-weight: 600; /* Semi-bold */
-  font-size: 22px;
+  font-size: 24px;
 }
 
 h4 {
