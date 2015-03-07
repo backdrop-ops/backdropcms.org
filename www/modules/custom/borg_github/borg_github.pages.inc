@@ -5,40 +5,32 @@
 
 /**
  * Page callback for listening to all GitHub events on a contrib project.
+ *
+ * @param string $callback
+ *   A callable function. Which should be passed the GitHub payload.
+ * @param array $expected_events
+ *   An array of GitHub event names that the given callable function is able
+ *   to handle.
  */
-function borg_github_listener_callback() {
-  $input = file_get_contents('php://input');
-  // Handle both Form URL-Encoded and JSON input.
-  if (strpos($input, 'payload') === 0) {
-    $parsed_input = array();
-    parse_str($input, $parsed_input);
-    $input = $parsed_input['payload'];
-  }
+function borg_github_listener_callback($callback, array $expected_events) {
+  $payload = borg_github_get_payload();
   $event = $_SERVER['HTTP_X_GITHUB_EVENT'];
-
-  $payload = @json_decode($input, TRUE);
-  if (empty($payload)) {
-    backdrop_add_http_header('Status', '500 Corrupt payload');
-    exit('Corrupt or empty payload.');
-  }
 
   $result = NULL;
   $errors = array();
-  switch ($event) {
-    case 'release':
-      $result = _borg_github_add_package($errors, $payload['repository']['name'], $payload['release']['tag_name'], $payload['release']['zipball_url'], $payload['release']['assets_url'], $payload['release']['upload_url']);
-      break;
+  if (in_array($event, $expected_events)) {
+    $result = $callback($errors, $payload);
   }
 
+  // Output the results of the callback.
   if (!isset($result)) {
-    exit(format_string('No action taken for the "!event" event.', array('!event' => $event)));
+    backdrop_add_http_header('Status', '501 Not Implemented');
+    exit(format_string('This URL only supports the following events: "!expected_events". Please remove the "!event" event from the GitHub Webhook configuration.', array('!expected_events' => implode(', ', $expected_events), '!event' => $event)));
   }
-  elseif (!empty($result)) {
-    exit('OK');
-  }
-  else {
+  elseif ($result === FALSE || !empty($errors)) {
     backdrop_add_http_header('Status', '500 Failed');
     print "Unable to process the payload.\n";
+    $full_project_name = isset($payload['repository']['name']) ? $payload['repository']['name'] : NULL;
     if ($full_project_name) {
       $github_hook_url = 'https://github.com/' . $full_project_name . '/settings/hooks';
       $github_delivery = $_SERVER['HTTP_X_GITHUB_DELIVERY'];
@@ -49,6 +41,9 @@ function borg_github_listener_callback() {
     print implode("\n\n", $errors);
     exit();
   }
+
+  // In the event of no errors and successful response.
+  exit('OK');
 }
 
 /**
@@ -92,27 +87,53 @@ function borg_github_listener_access() {
 }
 
 /**
+ * Get the full payload from the GitHub POST request.
+ */
+function borg_github_get_payload() {
+  $input = file_get_contents('php://input');
+  // Handle both Form URL-Encoded and JSON input.
+  if (strpos($input, 'payload') === 0) {
+    $parsed_input = array();
+    parse_str($input, $parsed_input);
+    $input = $parsed_input['payload'];
+  }
+  $payload = @json_decode($input, TRUE);
+  if (empty($payload)) {
+    backdrop_add_http_header('Status', '500 Corrupt payload');
+    exit('Corrupt or empty payload.');
+  }
+  return $payload;
+}
+
+/**
  * Given a project zip archive, download it, add package info, and reupload.
  *
  * @param array $errors
  *   An empty array that should be populated with any error information that
  *   occurs during the request.
- * @param string $project_name
- *   The name of the project, e.g. "webform".
- * @param string $tag_name
- *   The release tag name. We accept both with and without a "v" prefix and
- *   major version number. e.g. "1.x-2.0.5", "v2.0.5", or "v1.x-2.0.5".
- * @param string $source_zip_url
- *   The URL to the source zip archive that will be parsed.
- * @param string $assets_url
- *   The URL that lists all the current assets on the GitHub release.
- * @param string $upload_url
- *   The URL to which the archive will be uploaded when processing is finished.
+ * @param array $payload
+ *   The GitHub webhook payload.
  * @return bool
  *   TRUE if the package is modified and uploaded successfully. FALSE otherwise.
  */
-function _borg_github_add_package(array &$errors, $project_name, $tag_name, $source_zip_url, $assets_url, $upload_url) {
+function _borg_github_create_package(array &$errors, array $payload) {
   $access_token = settings_get('borg_github_access_token');
+
+  // The name of the project, e.g. "webform".
+  $project_name = $payload['repository']['name'];
+
+  // The release tag name. We accept both with and without a "v" prefix and
+  // major version number. e.g. "1.x-2.0.5", "v2.0.5", or "v1.x-2.0.5".
+  $tag_name = $payload['release']['tag_name'];
+
+  // The URL to the source zip archive that will be parsed.
+  $source_zip_url = $payload['release']['zipball_url'];
+
+  // The URL that lists all the current assets on the GitHub release.
+  $assets_url = $payload['release']['assets_url'];
+
+  // The URL to which the archive will be uploaded when processing is finished.
+  $upload_url = $payload['release']['upload_url'];
 
   // Remove any leading "v" from the tag.
   $tag_name = ltrim($tag_name, 'v');
@@ -241,7 +262,6 @@ function _borg_github_add_package(array &$errors, $project_name, $tag_name, $sou
     $success = $rename_result->code == 200;
   }
 
-  $success = FALSE;
   if ($success) {
     watchdog('github', 'Successfully created release for @project @tag and pushed the package to GitHub.', array('@project' => $project_name, '@tag' => $tag_name), WATCHDOG_INFO);
   }

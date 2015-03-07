@@ -17,7 +17,7 @@ function formblock_form_alter(&$form, &$form_state, $form_id) {
         'class' => array('formblock-node-type-settings-form'),
       ),
       '#attached' => array(
-        'js' => array(backdrop_get_path('module', 'formblock') . '/formblock.js'),
+        'js' => array(backdrop_get_path('module', 'formblock') . '/js/formblock.js'),
       ),
     );
     $form['formblock']['formblock_expose'] = array(

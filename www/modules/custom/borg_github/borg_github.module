@@ -8,8 +8,14 @@
  * Implements hook_menu().
  */
 function borg_github_menu() {
-  $items['github-listener'] = array(
+  // Each webhook callback should uses "borg_github_listener_callback" as the
+  // page callback, then pass in the name of the action-specific callback as
+  // the first page argument. This approach is similar to the common pattern
+  // of the page callback being "backdrop_get_form" and the page arguments
+  // being the form callback name.
+  $items['webhooks/github/packager'] = array(
     'page callback' => 'borg_github_listener_callback',
+    'page arguments' => array('_borg_github_create_package', array('release')),
     'access callback' => 'borg_github_listener_access',
     'file' => 'borg_github.pages.inc',
     'type' => MENU_CALLBACK,
