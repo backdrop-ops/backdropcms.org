@@ -34,6 +34,12 @@ a.button {
   padding: 0 20px;
   position: relative;
   white-space: nowrap;
+
+  -webkit-transition: background-color .5s;
+  -moz-transition: background-color .5s;
+  -ms-transition: background-color .5s;
+  -o-transition: background-color .5s;
+  transition: background-color .5s;
 }
 a.button:hover {
   border-color: #007CBA;

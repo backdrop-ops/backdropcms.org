@@ -120,9 +120,13 @@ ul.secondary a.active {
   font-size: 20px;
   line-height: 36px;
 }
+.block-system-main-menu li a i {
+  /* Font Awesome needs unmodified font weights. */
+  font-weight: normal;
+}
 .block-system-main-menu a:hover,
 .block-system-main-menu li.active a {
-  font-weight: 400;
+  font-weight: 300;
 }
 .block-system-main-menu i {
   display: inline-block;
@@ -209,6 +213,8 @@ ul.secondary a.active {
  ******************************************************************************/
 body.front .node-page {
   clear: both;
+  position: relative;
+  top: 30px;
   background-color: #F7F7F7;
   margin-left: -500px;
   margin-right: -500px;
@@ -220,6 +226,14 @@ body.front .node-page h1,
 body.front .node-page h2,
 body.front .node-page h3 {
   text-align: center;
+}
+body.front .node-page ul {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 /*******************************************************************************
@@ -292,19 +306,24 @@ ol.flex-control-paging > li:before {
 }
 .view-supporters .views-row {
   float: left;
+  display: inline-block;
+  width: 50px;
   margin: 0 15px;
-  width: 80px;
   min-height: 150px;
   font-size: 12px;
+}
+@media all and (min-width: 600px) {
+  .view-supporters .views-row {
+    width: 72px;
+  }
 }
 .view-supporters .views-field-title {
   margin: 0 -10px;
 }
 .views-field-field-logo a {
   text-align: center;
-  display: block;
-  width: 72px;
-  height: 72px;
+  display: inline-block;
+  width: 100%;
   margin: 0 auto;
 }
 .views-field-field-logo img {
@@ -323,7 +342,6 @@ ol.flex-control-paging > li:before {
  ******************************************************************************/
 .block-formblock-supporter {
   clear: left;
-  margin-top: 50px;
   background-color: #F7F7F7;
   margin-left: -500px;
   margin-right: -500px;
@@ -338,7 +356,6 @@ ol.flex-control-paging > li:before {
 }
 .block-formblock-supporter label {
   color: #999999;
-  display: block;
   line-height: 2.5;
 }
 .block-formblock-supporter .form-text {
@@ -346,13 +363,41 @@ ol.flex-control-paging > li:before {
   font-size: 32px;
   width: 100%;
 }
+
+/* File upload widget gets pretty complicated. */
+.block-formblock-supporter .form-managed-file {
+  border: 2px solid #979797;
+  background: white;
+  padding: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .block-formblock-supporter .image-widget-data {
   float: none;
   position: relative;
 }
-.block-formblock-supporter .form-managed-file {
-  border: 2px solid #979797;
-  background: white;
+.block-formblock-supporter .image-widget-data span {
+  display: none;
+}
+@media all and (min-width: 851px) {
+  .block-formblock-supporter .image-widget-data span {
+    display: inline;
+  }
+}
+.block-formblock-supporter .image-widget-data:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.block-formblock-supporter .image-preview {
+  max-height: 30px;
+  max-width: 30px;
+  overflow: hidden;
+  padding: 0 12px 0 0;
+}
+.block-formblock-supporter .image-preview img {
+  width: 100%;
+  height: auto;
 }
 .block-formblock-supporter .form-file {
   padding: 15px 14px 14px;
@@ -360,11 +405,13 @@ ol.flex-control-paging > li:before {
   vertical-align: middle;
   width: 100%;
   position: absolute;
+  margin: -12px; /* Negative .image-preview padding. */
 }
 .block-formblock-supporter .form-managed-file .form-submit {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
+  margin: -12px; /* Negative .image-preview padding. */
   padding: 17px 30px;
   float: right;
   font-size: 16px;
@@ -372,8 +419,11 @@ ol.flex-control-paging > li:before {
   border-left: 2px solid #979797;
   vertical-align: middle;
   position: relative;
+  text-transform: uppercase;
   z-index: 2;
 }
+/* End file upload widget. */
+
 .block-formblock-supporter .description {
   display: none;
 }
@@ -381,7 +431,23 @@ ol.flex-control-paging > li:before {
   margin: 0;
 }
 .block-formblock-supporter .form-actions {
-  text-align: center;
+  text-align: right;
+}
+.block-formblock-supporter .form-actions .form-submit {
+  background-color: white;
+  border-color: #979797;
+  font-size: 16px;
+  padding: 12px 20px;
+  border-radius: 24px;
+  text-transform: uppercase;
+  margin: 1em 0;
+}
+.block-formblock-supporter .form-actions .form-submit:hover {
+  background-color: #EBEBEB;
+  border-color: #ADADAD;
+}
+.block-formblock-supporter .form-actions a {
+  display: none;
 }
 
 /*******************************************************************************
@@ -407,6 +473,8 @@ ol.flex-control-paging > li:before {
   width: 185px;
   margin-right: 25px;
   margin-bottom: 20px;
+  font-weight: 300;
+  letter-spacing: .03em;
 }
 
 /*******************************************************************************
@@ -416,6 +484,8 @@ ol.flex-control-paging > li:before {
   float: left;
   margin-right: 35px;
   margin-bottom: 20px;
+  font-weight: 300;
+  letter-spacing: .03em;
 }
 .block-block-2 p.subtext {
   text-align: right;
@@ -439,7 +509,7 @@ body.front .block-block-4 h2 {
   font-size: 34px;
   line-height: 1.2;
   color: #85898A;
-  font-weight: 400;
+  font-weight: 300;
 }
 
 /*******************************************************************************
@@ -532,4 +602,28 @@ body.front .block-block-4 h2 {
 .donate-right {
   float: right;
   margin-top: -10px;
+}
+
+/*******************************************************************************
+ * Release Cycle (/releases)
+ ******************************************************************************/
+.version-number {
+  font-size: 2em;
+  margin: 0 auto;
+  text-align: center;
+}
+.version-number span {
+  display: inline-block;
+  width: 28%;
+}
+.version-explaination {
+  margin: 0 auto;
+  text-align: center;
+}
+.version-explaination span {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  width: 29%;
 }

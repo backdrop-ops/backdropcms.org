@@ -63,11 +63,11 @@
 
   /* Two Sidebars */
   .layout--double-fixed.layout-both-sidebars .l-container {
-    padding-left: 470px;
+    padding-left: 460px;
   }
   [dir="rtl"] .layout--double-fixed.layout-both-sidebars .l-container {
     padding-left: 0;
-    padding-right: 470px;
+    padding-right: 460px;
   }
 
   /* One Sidebar */

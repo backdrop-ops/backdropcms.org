@@ -121,10 +121,11 @@ main {
   display: none;
 }
 .l-drawer a.active-trail {
-  font-weight: bold;
+  font-weight: 600;
 }
 .l-drawer a:hover i,
 .l-drawer a.active-trail i {
+  font-weight: normal;
   display: inline-block;
 }
 
