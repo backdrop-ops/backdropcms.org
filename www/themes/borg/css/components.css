@@ -179,11 +179,16 @@ ul.secondary a.active {
 }
 
 /*******************************************************************************
- * Front page content
+ * Front page
  ******************************************************************************/
-body.front .node-page {
-  clear: both;
-  border-top: 2px solid #969696;
+body.front .l-content-top {
+  background-color: #f7f7f7;
+  border-bottom: 2px solid #d7d7d7;
+  border-top: 2px solid #d7d7d7;
+  margin-left: -500px;
+  margin-right: -500px;
+  margin-bottom: 50px;
+  padding: 0 500px 25px 500px;
 }
 
 /*******************************************************************************
