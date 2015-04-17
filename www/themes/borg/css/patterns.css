@@ -36,10 +36,15 @@ a.button {
   white-space: nowrap;
 
   -webkit-transition: background-color .33s;
+  -webkit-transition: color .33s;
   -moz-transition: background-color .33s;
+  -moz-transition: color .33s;
   -ms-transition: background-color .33s;
+  -ms-transition: olor .33s;
   -o-transition: background-color .33s;
+  -o-transition: color .33s;
   transition: background-color .33s;
+  transition: color .33s;
 }
 a.button:hover {
   background-color: #007CBA;
