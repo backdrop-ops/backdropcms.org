@@ -42,7 +42,8 @@ a.button {
   transition: background-color .33s;
 }
 a.button:hover {
-  background-color: rgba(216, 216, 216, 0.1);
+  background-color: #007CBA;
+  color: white;
 }
 a.button span {
   display: block;
