@@ -1,0 +1,17 @@
+{
+    "_config_name": "field.bundle.node.book",
+    "entity_type": "node",
+    "bundle": "book",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "title": {
+                "weight": "-5"
+            },
+            "redirect": {
+                "weight": "30"
+            }
+        },
+        "display": []
+    }
+}

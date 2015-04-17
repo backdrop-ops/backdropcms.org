@@ -1,0 +1,137 @@
+{
+    "_config_name": "views.view.quotes",
+    "name": "quotes",
+    "description": "",
+    "tag": "default",
+    "disabled": false,
+    "base_table": "node",
+    "human_name": "quotes",
+    "core": "7",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "use_more_always": false,
+                "access": {
+                    "type": "perm"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "5"
+                    }
+                },
+                "style_plugin": "list",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 0,
+                    "row_class_special": 0,
+                    "type": "ul",
+                    "wrapper_class": "flexslider",
+                    "class": "slides"
+                },
+                "row_plugin": "fields",
+                "fields": {
+                    "field_photo": {
+                        "id": "field_photo",
+                        "table": "field_data_field_photo",
+                        "field": "field_photo",
+                        "label": "",
+                        "element_type": "0",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "0",
+                        "click_sort_column": "fid",
+                        "settings": {
+                            "image_style": "thumbnail",
+                            "image_link": ""
+                        }
+                    },
+                    "body": {
+                        "id": "body",
+                        "table": "field_data_body",
+                        "field": "body",
+                        "label": "",
+                        "alter": {
+                            "alter_text": true,
+                            "text": "<blockquote>\n  <i class=\"fa fa-quote-right fa-2x pull-right\"></i>[body]\n  </blockquote>"
+                        },
+                        "element_type": "0",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "0"
+                    },
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": "",
+                        "alter": {
+                            "word_boundary": false,
+                            "ellipsis": false
+                        },
+                        "element_type": "0",
+                        "element_label_colon": false,
+                        "link_to_node": false
+                    },
+                    "field_claim": {
+                        "id": "field_claim",
+                        "table": "field_data_field_claim",
+                        "field": "field_claim",
+                        "label": "",
+                        "element_type": "0",
+                        "element_label_colon": false,
+                        "element_wrapper_class": "subtext"
+                    }
+                },
+                "sorts": {
+                    "random": {
+                        "id": "random",
+                        "table": "views",
+                        "field": "random"
+                    }
+                },
+                "filters": {
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    },
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "quote": "quote"
+                        }
+                    }
+                }
+            }
+        },
+        "block": {
+            "display_title": "Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                }
+            }
+        }
+    }
+}

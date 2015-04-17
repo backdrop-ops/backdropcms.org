@@ -1,0 +1,32 @@
+{
+    "_config_name": "node.type.sa",
+    "type": "sa",
+    "name": "Security Announcement",
+    "base": "node_content",
+    "module": "node",
+    "description": "Post a security notification related to Backdrop CMS. This is aggregated by external sources, use care before publishing.",
+    "help": "",
+    "has_title": true,
+    "title_label": "Title",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "sa",
+    "settings": {
+        "status_default": false,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "0",
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": null,
+        "formblock_expose": false,
+        "formblock_show_help": false,
+        "menu_options": [],
+        "menu_parent": "main-menu:0",
+        "node_permissions": true
+    }
+}

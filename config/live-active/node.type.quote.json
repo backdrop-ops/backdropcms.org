@@ -1,0 +1,34 @@
+{
+    "_config_name": "node.type.quote",
+    "type": "quote",
+    "name": "Quote",
+    "base": "node_content",
+    "module": "node",
+    "description": "A quote is something someone says about Backdrop.",
+    "help": "",
+    "has_title": true,
+    "title_label": "Person's name",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "quote",
+    "settings": {
+        "status_default": true,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": true,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "0",
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": null,
+        "formblock_expose": false,
+        "formblock_show_help": false,
+        "menu_options": [
+            "main-menu"
+        ],
+        "menu_parent": "main-menu:0",
+        "node_permissions": true
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "_config_name": "field.field.field_sa_versions",
+    "field_name": "field_sa_versions",
+    "type": "text_long",
+    "module": "text",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": [],
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

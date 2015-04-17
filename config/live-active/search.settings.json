@@ -1,0 +1,31 @@
+{
+    "_config_name": "search.settings",
+    "node_rank_comments": 0,
+    "node_rank_relevance": "0",
+    "node_rank_sticky": "0",
+    "node_rank_promote": "0",
+    "search_minimum_word_size": "3",
+    "search_overlap_cjk": 1,
+    "search_cron_limit": "100",
+    "search_tag_weights": {
+        "h1": 25,
+        "h2": 18,
+        "h3": 15,
+        "h4": 12,
+        "h5": 9,
+        "h6": 6,
+        "u": 3,
+        "b": 3,
+        "i": 3,
+        "strong": 3,
+        "em": 3,
+        "a": 10
+    },
+    "search_active_modules": {
+        "node": "node",
+        "user": "user"
+    },
+    "search_and_or_limit": 7,
+    "search_default_module": "node",
+    "node_rank_recent": "0"
+}

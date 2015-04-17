@@ -1,0 +1,42 @@
+{
+    "_config_name": "field.instance.node.article.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "article",
+    "deleted": "0",
+    "label": "Body",
+    "widget": {
+        "type": "text_textarea_with_summary",
+        "settings": {
+            "rows": 20,
+            "summary_rows": 5
+        },
+        "weight": -4,
+        "module": "text"
+    },
+    "settings": {
+        "display_summary": true,
+        "text_processing": 1,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "text_default",
+            "settings": [],
+            "module": "text",
+            "weight": 0
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "text_summary_or_trimmed",
+            "settings": {
+                "trim_length": 600
+            },
+            "module": "text",
+            "weight": 0
+        }
+    },
+    "required": false,
+    "description": ""
+}

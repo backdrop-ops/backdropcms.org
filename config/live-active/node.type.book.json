@@ -1,0 +1,34 @@
+{
+    "_config_name": "node.type.book",
+    "type": "book",
+    "name": "Book page",
+    "base": "node_content",
+    "module": "node",
+    "description": "<em>Books</em> have a built-in hierarchical navigation. Use for handbooks or tutorials.",
+    "help": "",
+    "has_title": true,
+    "title_label": "Title",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "book",
+    "settings": {
+        "status_default": true,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": "1",
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": null,
+        "formblock_expose": false,
+        "formblock_show_help": false,
+        "menu_options": [
+            "menu-handbook"
+        ],
+        "menu_parent": "menu-handbook:0",
+        "node_permissions": true
+    }
+}
