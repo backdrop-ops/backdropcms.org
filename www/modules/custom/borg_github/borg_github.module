@@ -5,20 +5,96 @@
  */
 
 /**
- * Implements hook_menu().
+ * Implements hook_github_project_validate().
  */
-function borg_github_menu() {
-  // Each webhook callback should uses "borg_github_listener_callback" as the
-  // page callback, then pass in the name of the action-specific callback as
-  // the first page argument. This approach is similar to the common pattern
-  // of the page callback being "backdrop_get_form" and the page arguments
-  // being the form callback name.
-  $items['webhooks/github/packager'] = array(
-    'page callback' => 'borg_github_listener_callback',
-    'page arguments' => array('_borg_github_create_package', array('release')),
-    'access callback' => 'borg_github_listener_access',
-    'file' => 'borg_github.pages.inc',
-    'type' => MENU_CALLBACK,
+function borg_github_github_project_validate(Node $project_node, array &$errors, array $payload) {
+  $access_token = settings_get('project_github_access_token');
+
+  // Project module will create the first type of project in the system, but
+  // we have multiple project types on BackdropCMS.org (modules/themes/layouts).
+  // So we have to check the contents of the repository to determine the type
+  // of project it is that needs to be created. We do this by getting the
+  // directory listing, finding the first non-test .info file, and reading
+  // the "type" property from it.
+
+  // Get the contents of the release.
+  // See https://developer.github.com/v3/git/trees/#get-a-tree-recursively
+  $tag = $payload['release']['tag_name'];
+  $trees_url = str_replace('{/sha}', '/' . $tag, $payload['repository']['trees_url']) . '?recursive=1';
+
+  $tree_result = backdrop_http_request($trees_url, array(
+    'headers' => array(
+      'Authorization' => 'token ' . $access_token,
+    ),
+  ));
+  if ($tree_result->code == 200) {
+    $data = json_decode($tree_result->data, TRUE);
+
+    // Loop through all files to find the .info file closest to the root of the
+    // repository. This helps avoid test or sub-module .info files.
+    $lowest_directory = 10;
+    foreach ($data['tree'] as $item) {
+      if (strpos($item['path'], '.info') !== FALSE && strpos($item['path'], 'tests/') === FALSE) {
+        $directory_count = substr_count($item['path'], '/');
+        if ($directory_count < $lowest_directory) {
+          $lowest_directory = $directory_count;
+          $contents_url = str_replace('{+path}', $item['path'], $payload['repository']['contents_url']);
+        }
+      }
+    }
+  }
+  else {
+    $errors['github_error'] = t('The tree of the project could not be retrieved. Response: !response', array('!response' => print_r($tree_result, TRUE)));
+    return;
+  }
+
+  if (!isset($contents_url)) {
+    $errors['no_info_file'] = t('The project node could not be created on BackdropCMS.org because no .info file was found in the repository.');
+    return;
+  }
+
+  // At this point we have found the .info file, but need its contents.
+  $contents_result = backdrop_http_request($contents_url, array(
+    'headers' => array(
+      'Authorization' => 'token ' . $access_token,
+    ),
+  ));
+  if ($contents_result->code == 200) {
+    $data = json_decode($contents_result->data, TRUE);
+    $info_contents = base64_decode($data['content']);
+  }
+  else {
+    $errors['info_retrieval_failed'] = t('The info file of the project could not be retrieved. Response: !response', array('!response' => print_r($contents_result, TRUE)));
+    return;
+  }
+
+  // Info file contents retrieved. Parse and check the "type" property.
+  $info = backdrop_parse_info_format($info_contents);
+  $allowed_types = array(
+    'module' => 'project_module',
+    'theme' => 'project_theme',
+    'layout' => 'project_layout',
   );
-  return $items;
+  if (!isset($info['type'])) {
+    $errors['no_type'] = t('The project node could not be created on BackdropCMS.org because no "type" property was specified in the project .info file. Info file contents: !contents', array('!contents' => print_r($info, TRUE)));
+    return;
+  }
+  elseif (!array_key_exists($info['type'], $allowed_types)) {
+    $errors['invalid_type'] = t('The project node could not be created on BackdropCMS.org because "type" property was "@value". Only values of @list are allowed.', array('@value' => $info['type'], '@list' => implode(array_keys($allowed_types))));
+    return;
+  }
+
+  // Finally, we have an allowed project type from the .info file.
+  $project_node->type = $allowed_types[$info['type']];
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function borg_github_node_view(Node $node, $view_mode, $langcode) {
+  if ($view_mode === 'full' && node_is_page($node) && !empty($node->project_release['release_link'])) {
+    if (valid_url($node->project_release['release_link']) && strpos($node->project_release['release_link'], '://github.com')) {
+      backdrop_goto($node->project_release['release_link']);
+    }
+  }
 }

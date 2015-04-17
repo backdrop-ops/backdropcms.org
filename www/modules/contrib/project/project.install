@@ -1,0 +1,82 @@
+<?php
+/**
+ * @file
+ * Install, update, and uninstall functions for the Project module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function project_install() {
+  $node_type = array(
+    'type' => 'project',
+    'name' => st('Project'),
+    'description' => st('A project contains code-related assets.'),
+    'settings' => array(
+      'status_default' => TRUE,
+      'promote_enabled' => FALSE,
+      'promote_default' => FALSE,
+      'sticky_enabled' => FALSE,
+      'sticky_default' => FALSE,
+      'revision_enabled' => FALSE,
+      'revision_default' => FALSE,
+      'show_submitted_info' => FALSE,
+      'project_behavior' => 'project',
+    ),
+    'base' => 'node_content',
+    'module' => 'project',
+    'is_new' => TRUE,
+  );
+  $node_type = node_type_set_defaults($node_type);
+
+  if (module_exists('comment')) {
+    $node_type->settings['comment_default'] = COMMENT_NODE_CLOSED;
+  }
+
+  node_add_body_field($node_type, st('Description'));
+  node_type_save($node_type);
+}
+
+/**
+ * Implements hook_schema().
+ */
+function project_schema() {
+  $schema['project'] = array(
+    'description' => 'Stores project-specific node data.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'Foreign key: node.nid of the project.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'name' => array(
+        'description' => 'The project machine name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'sandbox' => array(
+        'description' => 'Is this project a non-validated, non-unique sandbox project?',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid'),
+    'indexes' => array(
+      'name_sandbox' => array('name', 'sandbox'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function project_update_last_removed() {
+  return 7007;
+}

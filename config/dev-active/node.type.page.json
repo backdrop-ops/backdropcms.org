@@ -1,0 +1,34 @@
+{
+    "_config_name": "node.type.page",
+    "type": "page",
+    "name": "Basic page",
+    "base": "node_content",
+    "module": "node",
+    "description": "Use <em>basic pages</em> for your static content, such as an 'About us' page.",
+    "help": "",
+    "has_title": true,
+    "title_label": "Title",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "page",
+    "settings": {
+        "status_default": true,
+        "sticky_enabled": true,
+        "sticky_default": false,
+        "promote_enabled": true,
+        "promote_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "node_preview": 1,
+        "node_submitted": false,
+        "node_user_picture": true,
+        "language": null,
+        "formblock_expose": false,
+        "formblock_show_help": false,
+        "menu_options": [
+            "main-menu"
+        ],
+        "menu_parent": "main-menu:0",
+        "node_permissions": true
+    }
+}

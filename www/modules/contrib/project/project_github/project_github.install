@@ -1,0 +1,72 @@
+<?php
+/**
+ * @file
+ * Install and update routines for project_github.
+ */
+
+/**
+ * Implements hook_schema_alter().
+ */
+function project_github_schema_alter(&$schema) {
+  $schema['project']['fields']['github_path'] = array(
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => TRUE,
+    'default' => '',
+  );
+  $schema['project']['fields']['github_sync_readme'] = array(
+    'type' => 'int',
+    'size' => 'tiny',
+    'not null' => TRUE,
+    'default' => 0,
+    'description' => 'Boolean indicating if this project should sync the body field with the README.md from GitHub.',
+  );
+  $schema['project']['indexes'] += array(
+    'github_path' => array('github_path'),
+  );
+}
+
+/**
+ * Implements hook_install().
+ */
+function project_github_install() {
+  if (!db_field_exists('project', 'github_path')) {
+    $spec = array(
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+      'default' => '',
+    );
+    db_add_field('project', 'github_path', $spec);
+  }
+  if (!db_field_exists('project', 'github_sync_readme')) {
+    $spec = array(
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 1,
+      'description' => 'Boolean indicating if this project should sync the body field with the README.md from GitHub.',
+    );
+    db_add_field('project', 'github_sync_readme', $spec);
+  }
+  if (!db_index_exists('project', 'github_path')) {
+    db_add_index('project', 'github_path', array('github_path'));
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function project_github_uninstall() {
+  // Remove added columns on the project table.
+  if (db_field_exists('project', 'github_path')) {
+    db_drop_field('project', 'github_path');
+  }
+  if (db_field_exists('project', 'github_sync_readme')) {
+    db_drop_field('project', 'github_sync_readme');
+  }
+  // Remove added indexes.
+  if (db_index_exists('project', 'github_path')) {
+    db_drop_index('project', 'github_path');
+  }
+}

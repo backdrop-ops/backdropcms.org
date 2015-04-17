@@ -1,0 +1,102 @@
+<?php
+
+class ProjectWebTestCase extends BackdropWebTestCase {
+  /**
+   * Setup basic tasks for all project issue tests.
+   */
+  protected function setUp($modules = array()) {
+    $modules = array_merge(array('project'), $modules);
+    parent::setUp($modules);
+  }
+
+  /**
+   * Assert that a field in the current page is enabled.
+   * @TODO Remove this when http://drupal.org/node/882564 is committed.
+   *
+   * @param $name
+   *   name of field to assert.
+   * @param $message
+   *   Message to display.
+   * @return
+   *   TRUE on pass, FALSE on fail.
+   */
+  function assertFieldEnabled($name, $message = '') {
+    $elements = $this->xpath('//input[@name="' . $name . '"]');
+    return $this->assertTrue(isset($elements[0]) && empty($elements[0]['disabled']), $message ? $message : format_string('Field @name is enabled.', array('@name' => $name)));
+  }
+
+  /**
+   * Assert that a field in the current page is disabled.
+   * @TODO Remove this when http://drupal.org/node/882564 is committed.
+   *
+   * @param $name
+   *   name of field to assert.
+   * @param $message
+   *   Message to display.
+   * @return
+   *   TRUE on pass, FALSE on fail.
+   */
+  function assertFieldDisabled($name, $message = '') {
+    $elements = $this->xpath('//input[@name="' . $name . '"]');
+    return $this->assertTrue(isset($elements[0]) && !empty($elements[0]['disabled']), $message ? $message : format_string('Field @name is disabled.', array('@name' => $name)));
+  }
+
+  /**
+   * Assert that a checkbox field in the current page is not checked.
+   *
+   * @param $name
+   *   name of field to assert.
+   * @param $message
+   *   Message to display.
+   * @return
+   *   TRUE on pass, FALSE on fail.
+   */
+  protected function assertNoFieldCheckedByName($name, $message = '') {
+    $elements = $this->xpath('//input[@name="' . $name . '"]');
+    return $this->assertTrue(isset($elements[0]) && empty($elements[0]['checked']), $message ? $message : format_string('Checkbox field @id is not checked.', array('@id' => $name)), 'Browser');
+  }
+
+  /**
+   * Assert that a checkbox field in the current page is checked.
+   *
+   * @param $name
+   *   name of field to assert.
+   * @param $message
+   *   Message to display.
+   * @return
+   *   TRUE on pass, FALSE on fail.
+   */
+  protected function assertFieldCheckedByName($name, $message = '') {
+    $elements = $this->xpath('//input[@name="' . $name . '"]');
+    return $this->assertTrue(isset($elements[0]) && !empty($elements[0]['checked']), $message ? $message : format_string('Checkbox field @id is checked.', array('@id' => $name)), 'Browser');
+  }
+
+  /**
+   * Helper function for creating a new project.
+   *
+   * @param $settings array
+   *   An array of form values to be passed to BackdropWebTestCase::drupalPost().
+   */
+  function createProject($settings = array()) {
+    $defaults = array(
+      'type' => 'project',
+      'title' => $this->randomName(),
+      'body' => array(
+        LANGUAGE_NONE => array(
+          0 => array(
+            'value' => $this->randomString(128),
+            'format' => filter_default_format()
+          )
+        )
+      ),
+      'project' => array(
+        'name' => $this->randomName(),
+        'sandbox' => FALSE,
+      ),
+    );
+
+    $settings = backdrop_array_merge_deep($defaults, $settings);
+    return $this->drupalCreateNode($settings);
+  }
+}
+

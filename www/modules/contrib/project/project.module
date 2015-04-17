@@ -1,0 +1,712 @@
+<?php
+/**
+ * @file
+ * Base module for identifying nodes as projects (or relating to projects).
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function project_menu() {
+  $items['admin/config/project'] = array(
+    'title' => 'Project',
+    'description' => 'Configure the project suite of modules.',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+    'file path' => backdrop_get_path('module', 'system'),
+    'position' => 'right',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/config/project/settings'] = array(
+    'title' => 'Project settings',
+    'description' => 'Main project module settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('project_settings_form'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer projects'),
+    'description' => t('Configure system-wide settings for the Project module.'),
+    'file' => 'project.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Add default local task for project node edit page.
+ */
+function project_menu_alter(&$callbacks) {
+  $callbacks['node/%node/edit/project'] = $callbacks['node/%node/edit'];
+  $callbacks['node/%node/edit/project']['type'] = MENU_DEFAULT_LOCAL_TASK;
+  $callbacks['node/%node/edit/project']['title'] = 'Project';
+  // Only take over secondary local tasks for projects.
+  $callbacks['node/%node/edit/project']['access callback'] = 'project_user_access';
+  $callbacks['node/%node/edit/project']['access arguments'] = array(1, 'edit project');
+}
+
+/**
+ * Set project-specific breadcrumbs.
+ *
+ * @param $project
+ *   A fully-loaded node object representing the project to generate
+ *   breadcrumbs for.
+ * @param boolean $include_project
+ *   Should the breadcrumb trail include a link to the project itself?
+ * @param array $extra
+ *   An array of additional breadcrumb links to include after the main
+ *   project breadcrumb items (e.g. for issue queues, releases, etc).
+ *
+ * @see backdrop_set_breadcrumb()
+ */
+function project_project_set_breadcrumb($project = NULL, $include_project = FALSE, $extra = array()) {
+  $breadcrumb = project_project_get_breadcrumb($project, $include_project, $extra);
+  backdrop_set_breadcrumb($breadcrumb);
+}
+
+/**
+ * Return an array of breadcrumb links for a given project.
+ *
+ * @param $project
+ *   A fully-loaded node object representing the project to generate
+ *   breadcrumbs for.
+ * @param boolean $include_project
+ *   Should the breadcrumb trail include a link to the project itself?
+ * @param array $extra
+ *   An array of additional breadcrumb links to include after the main
+ *   project breadcrumb items (e.g. for issue queues, releases, etc).
+ *
+ * @see backdrop_set_breadcrumb()
+ */
+function project_project_get_breadcrumb($project = NULL, $include_project = FALSE, $extra = array()) {
+  $breadcrumb = array();
+  $breadcrumb[] = l(t('Home'), NULL);
+
+  // If project_solr exists, inject breadcrumbs for its browsing pages.
+  if (module_exists('project_solr')) {
+    $breadcrumb[] = l(t('Project summary'), 'project');
+    $type = node_type_load($project->type);
+    $breadcrumb[] = l(check_plain($type->name), 'project/' . $type->type);
+  }
+  // else {
+  // TODO: We want a link to the root of the project browsing, but we're not
+  // yet providing views for that.
+
+  // TODO: If the site has multiple project node types, we want a breadcrumb
+  // entry here pointing to the way to browse all projects of the same type.
+  // E.g. on Drupal.org if we're viewing a module project page, we'd want a
+  // link to the module browsing section. However, we're not providing any
+  // views for this.
+  // }
+
+  if ($include_project && !empty($project)) {
+    $breadcrumb[] = l($project->title, 'node/' . $project->nid);
+  }
+
+  if (!empty($extra)) {
+    $breadcrumb = array_merge($breadcrumb, $extra);
+  }
+
+  return $breadcrumb;
+}
+
+/**
+ * Determine whether or not a node is a project.
+ *
+ * @param $node
+ *   A node to check.
+ */
+function project_node_is_project($node) {
+  return !empty($node) && project_node_type_is_project($node->type);
+}
+
+/**
+ * Determine whether or not a given node type behaves as a project.
+ *
+ * We just check the project_behavior_[node_type] setting for the given
+ * node type to see if the type is configured to behave like a project.
+ *
+ * @param string $node_type
+ *   The node type (machine name) to check.
+ *
+ * @return boolean
+ *   Is the given node type a project node type or not?
+ */
+function project_node_type_is_project($node_type_name) {
+  $node_type = node_type_get_type($node_type_name);
+  return $node_type && ($node_type->settings['project_behavior'] === 'project');
+}
+
+/**
+ * Retrieve a list of node types that are considered projects.
+ *
+ * @return array
+ *   An array of bundle names (aka node type names) that are configured to
+ *   have project nature.
+ *
+ * @see project_project_node_type_is_project()
+ */
+function project_project_node_types() {
+  $project_node_types = array();
+  $node_types = node_type_get_types();
+  foreach ($node_types as $type) {
+    if (project_node_type_is_project($type->type)) {
+      $project_node_types[] = $type->type;
+    }
+  }
+  return $project_node_types;
+}
+
+/**
+ * Menu loader callback to load a project node.
+ *
+ * @param $arg
+ *   The menu argument to attempt to load a project from.  Can be either a
+ *   numeric node ID (nid), or a string machine name.
+ *
+ * @return
+ *   The loaded node object if the argument was a valid project, FALSE if not.
+ */
+function project_load($arg) {
+  if (is_numeric($arg)) {
+    $node = node_load($arg);
+  }
+  else {
+    $nid = project_get_nid_from_machine_name($arg);
+    if (!empty($nid)) {
+      $node = node_load($nid);
+    }
+  }
+  if (!isset($node->type) || !project_node_is_project($node)) {
+    return FALSE;
+  }
+  return $node;
+}
+
+/**
+ * Menu argument loader: loads a project node type by string.
+ */
+function project_type_load($name) {
+  $type = node_type_load($name);
+  $project_types = project_project_node_types();
+
+  // Return the type only if it's a project.
+  if ($type && array_search($type->type, $project_types) !== FALSE) {
+    return $type;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function project_views_api() {
+  return array(
+    'api' => '3.0',
+    'path' => backdrop_get_path('module', 'project') .'/views',
+  );
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function project_config_info() {
+  $prefixes['project.settings'] = array(
+    'label' => t('Project settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function project_autoload_info() {
+  return array(
+    'project_plugin_argument_validate' => 'views/project_plugin_argument_validate.inc',
+  );
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function project_node_view($node, $view_mode, $langcode) {
+  if ($view_mode === 'full' && project_node_is_project($node)) {
+    project_project_set_breadcrumb($node);
+  }
+}
+
+/**
+ * Get the project node context from the currently active menu, if any.
+ *
+ * @return
+ *   A fully loaded project $node object if the currently active menu has a
+ *   project node context, or NULL if the menu isn't pointing to a project.
+ */
+function project_get_project_from_menu() {
+  $node = menu_get_object('project');
+  // If that didn't work, load it directly as a node and see if it's a project.
+  if (empty($node)) {
+    $node = menu_get_object();
+    if (empty($node) || !project_node_is_project($node)) {
+      $node = NULL;
+    }
+  }
+  return $node;
+}
+
+/**
+ * Implements hook_node_load().
+ */
+function project_node_load($nodes, $types) {
+  $project_nids = array();
+  foreach ($nodes as $node) {
+    if (project_node_is_project($node)) {
+      $project_nids[] = $node->nid;
+    }
+  }
+  if ($project_nids) {
+    $result = db_select('project', 'p')
+      ->fields('p')
+      ->condition('nid', array_keys($nodes))
+      ->execute();
+    foreach ($result as $row) {
+      $project_data = (array) $row;
+      unset($project_data['nid']);
+      $nodes[$row->nid]->project = $project_data;
+    }
+  }
+}
+
+/**
+ * Implements hook_node_prepare().
+ */
+function project_node_prepare(Node $node) {
+  if (project_node_is_project($node) && empty($node->project)) {
+    // Set default values.
+    $node->project = array(
+      'name' => '',
+      'sandbox' => 0,
+    );
+  }
+}
+
+/**
+ * Implements hook_node_validate().
+ */
+function project_node_validate($node, $form, &$form_state) {
+  if (!project_node_is_project($node)) {
+    return;
+  }
+
+  // Ensure title is unique across all projects.
+  $errors = array();
+  project_validate_project_title($node, $errors);
+  foreach ($errors as $error) {
+    form_set_error('title', $error);
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function project_node_insert(Node $node) {
+  if (project_node_is_project($node)) {
+    $record = array('nid' => $node->nid) + $node->project;
+    backdrop_write_record('project', $record);
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function project_node_update(Node $node) {
+  if (project_node_is_project($node)) {
+    $record = array('nid' => $node->nid) + $node->project;
+    $update_keys = !empty($node->original->project['name']) ? array('nid') : array();
+    backdrop_write_record('project', $record, $update_keys);
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function project_node_delete(Node $node) {
+  if (project_node_is_project($node)) {
+    db_query("DELETE FROM {project} WHERE nid = :nid", array(':nid' => $node->nid));
+  }
+}
+
+/**
+ * Implements hook_node_access().
+ */
+function project_node_access($node, $op, $account) {
+  $type = is_string($node) ? $node : $node->type;
+  if (project_node_type_is_project($type)) {
+    if ($op != 'create') {
+      return (project_user_access($node, $op . ' project', $account)) ? NODE_ACCESS_ALLOW : NODE_ACCESS_IGNORE;
+    }
+  }
+}
+
+/**
+ * See if the current user has the given permission on a given project.
+ *
+ * @param $project
+ *   The project to check access against. Can be either a numeric node ID
+ *   (nid) or a fully-loaded $node object.
+ * @param $permission
+ *   The string representing the permission to check access for.
+ */
+function project_user_access($project, $permission, $account = NULL) {
+  global $user;
+
+  if ($account == NULL) {
+    $account = $user;
+  }
+
+  if (empty($account->uid)) {
+    return FALSE;
+  }
+
+  $project_obj = is_numeric($project) ? node_load($project) : $project;
+  if (!isset($project_obj) || (isset($project_obj->type) && !project_node_is_project($project_obj))) {
+    return FALSE;
+  }
+
+  // If the user has the site-wide admin permission, always grant access.
+  if (user_access('administer projects')) {
+     return TRUE;
+  }
+
+  // Project owners are treated as super users and can always access.
+  if ($account->uid == $project_obj->uid) {
+    return TRUE;
+  }
+
+  // Otherwise, see if the user has the right permission for this project.
+  return !empty($project_obj->project['maintainers'][$account->uid]['permissions'][$permission]);
+
+  // If we haven't granted access yet, deny it.
+  return FALSE;
+}
+
+/**
+ * Load all per-project permission information and return it.
+ *
+ * This invokes hook_project_permission_info() and
+ * hook_project_permission_alter(), and caches the results in RAM.
+ *
+ * @param $project
+ *   A project object to pass to hook_project_permission_info().
+ *
+ * @see hook_project_permission_info()
+ * @see hook_project_permission_alter()
+ * @see backdrop_alter()
+ */
+function project_permission_load($project) {
+  static $project_permissions = array();
+  if (empty($project_permissions[$project->nid])) {
+    $permissions = module_invoke_all('project_permission_info', $project);
+    backdrop_alter('project_permission', $permissions, $project);
+    $project_permissions[$project->nid] = $permissions;
+  }
+  return $project_permissions[$project->nid];
+}
+
+/**
+ * Implements hook_node_type_load().
+ */
+function project_node_type_load(&$types) {
+  $additions = array(
+    'project_behavior' => 'none',
+  );
+  foreach ($types as $type_name => $type) {
+    $types[$type_name]->settings += $additions;
+  }
+}
+
+/**
+ * Implements hook_FORM_ID_form_alter().
+ *
+ * This adds a 'Project settings' vertical tab to the node_type_form and the
+ * initial choice of what behavior a given node type should have relative to
+ * the Project* suite. This also invokes a hook that allows other Project*
+ * modules to inject their own node-type-specific settings and form elements.
+ *
+ * @see hook_project_behavior_info()
+ * @see node_type_form_submit()
+ */
+function project_form_node_type_form_alter(&$form, $form_state) {
+  $node_type = $form['#node_type'];
+  $project_behavior = $node_type->settings['project_behavior'];
+
+  $form['project'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Project settings'),
+    '#collapsible' => TRUE,
+    '#group' => 'additional_settings',
+    '#tree' => FALSE,
+  );
+
+  $form['project']['project_behavior'] = array(
+    '#title' => t('Project behavior'),
+    '#type' => 'radios',
+    '#default_value' => $project_behavior,
+    '#description' => t('Select how this content type may be used within the Project module system.'),
+  );
+
+  $project_behaviors = project_get_behavior_info();
+  $project_behavior_choices = array();
+  foreach ($project_behaviors as $behavior_info) {
+    $machine_name = $behavior_info['machine name'];
+    $project_behavior_choices[$machine_name] = $behavior_info['label'];
+    if (!empty($behavior_info['settings callback'])) {
+      $form_elements = $behavior_info['settings callback']($node_type);
+    }
+    else {
+      $form_elements = array();
+    }
+    backdrop_alter('project_behavior_settings', $form_elements, $node_type, $behavior_info);
+    foreach (element_children($form_elements) as $key) {
+      // The form elements might define their own #states, so don't just
+      // clobber it, but merge in our visibility state carefully.
+      $visible = array(
+        ':input[name="project_behavior"]' => array('value' => $machine_name),
+      );
+      if (!empty($form_elements[$key]['#states']['visible'])) {
+        $visible = array_merge($form_elements[$key]['#states']['visible'], $visible);
+      }
+      $form_elements[$key]['#states']['visible'] = $visible;
+      $form['project'][$machine_name][$key] = $form_elements[$key];
+    }
+  }
+
+  $form['project']['project_behavior']['#options'] = $project_behavior_choices;
+}
+
+/**
+ * Invoke hook_project_behavior_info() and collect the results.
+ */
+function project_get_behavior_info() {
+  static $project_behaviors = array();
+  if (empty($project_behaviors)) {
+    $project_behaviors = array(
+      'none' => array(
+        'label' => t('No project behavior'),
+        'machine name' => 'none',
+        'module' => 'none',
+      ),
+    );
+    // @todo: This is stupid. We want something like module_collate_info().
+    // @see http://drupal.org/node/890660
+    foreach (module_implements('project_behavior_info') as $module) {
+      $function = "{$module}_project_behavior_info";
+      $project_behaviors[$module] = $function();
+      $project_behaviors[$module]['module'] = $module;
+    }
+  }
+  return $project_behaviors;
+}
+
+/**
+ * Implements hook_project_behavior_info().
+ *
+ * For now, there are no project-specific settings, so there's no settings
+ * callback.
+ *
+ * @return array
+ *   Info about the 'project' project behavior.
+ */
+function project_project_behavior_info() {
+  return array(
+    'label' => t('Used for projects'),
+    'machine name' => 'project',
+  );
+}
+
+/**
+ * Implements hook_FORM_ID_form_alter().
+ */
+function project_form_node_form_alter(&$form, &$form_state) {
+  $node = $form['#node'];
+  if (project_node_type_is_project($node->type)) {
+    $form['project'] = array(
+      '#type' => 'markup',
+      '#tree' => TRUE,
+    );
+    $form['project_name'] = array(
+      '#type' => 'machine_name',
+      '#machine_name' => array(
+        'source' => array('title'),
+      ),
+      '#element_validate' => array('project_validate_project_shortname_element'),
+      '#project_nid' => $node->nid,
+      '#default_value' => $node->project['name'],
+      '#parents' => array('project', 'name'),
+      '#weight' => -4,
+    );
+    $form['project_sandbox'] = array(
+      '#type' => 'radios',
+      '#title' => t('Project type'),
+      '#options' => array(
+        0 => t('Official project'),
+        1 => t('Sandbox'),
+      ),
+      '#description' => t('Official projects have unique, canonical project names. Multiple sandbox projects are allowed to share the same name.'),
+      '#default_value' => $node->project['sandbox'],
+      '#parents' => array('project', 'sandbox'),
+      '#weight' => -2,
+    );
+
+    project_project_set_breadcrumb($node);
+  }
+}
+
+/**
+ * Form API #element_validate callback. Validate the short name of a project.
+ */
+function project_validate_project_shortname_element($element, &$form_state, $form) {
+  // Don't attempt to validate if not present, the #required attribute will do
+  // the job of preventing submission.
+  if (empty($element['#value'])) {
+    return;
+  }
+
+  $errors = array();
+  $node = $form_state['node'];
+  $node->project['name'] = $element['#value'];
+  $node->project['sandbox'] = $form_state['values']['project']['sandbox'];
+  project_validate_project_shortname($node, $errors);
+  foreach ($errors as $error) {
+    form_error($element, $error);
+  }
+}
+
+/**
+ * Validate the short name (machine name) of a project node.
+ *
+ * @param Node $node
+ *   The project node whose name will be validated.
+ * @param array $errors
+ *   An array of errors that will be modified by reference.
+ * @return bool
+ *   TRUE if there are no problems with the short name; FALSE on errors.
+ */
+function project_validate_project_shortname(Node $node, array &$errors) {
+  if (empty($node->project['name'])) {
+    $errors['no_name'] = t('Project name is required.');
+    return FALSE;
+  }
+
+  $is_sandbox = !empty($node->project['sandbox']);
+  $name = $node->project['name'];
+  $nid = $node->nid;
+
+  // Make sure machine name isn't already in use, or reserved.  Includes all
+  // X from project/issues/X paths used in project_issues module
+  $reserved_names = array('user', 'issues', 'releases', 'rss', 'subscribe-mail', 'search', 'add', 'update_project', 'statistics', 'comments', 'autocomplete', 'cvs', 'developers', 'usage');
+  if (in_array(strtolower($name), $reserved_names)) {
+    $errors['reserved'] = t('This project name is reserved.');
+  }
+
+  $existing_nid = project_get_nid_from_machine_name($name);
+  if (!$is_sandbox && !empty($existing_nid) && $existing_nid !== $nid) {
+    $errors['in_use'] = t('This project name is already in use.');
+  }
+  if (config_get('project.settings', 'require_lowercase_machine_name') && $name != backdrop_strtolower($name)) {
+    $errors['not_lowercase'] = t('Please use lowercase for the project short name.');
+  }
+
+  return empty($errors);
+}
+
+/**
+ * Validate a project's title.
+ *
+ * @param Node $node
+ *   The project node whose name will be validated.
+ * @param array $errors
+ *   An array of errors that will be modified by reference.
+ * @return bool
+ *   TRUE if there are no problems with the short name; FALSE on errors.
+ */
+function project_validate_project_title(Node $node, array &$errors) {
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.type', project_project_node_types())
+    ->condition('n.title', $node->title);
+  if ($node->nid) {
+    $query->condition('n.nid', $node->nid, '!=');
+  }
+  $result = $query->execute()->fetchField();
+  if ($result) {
+    $errors['in_use'] = t('This project title is already in use.');
+  }
+  return !empty($errors);
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function project_field_extra_fields() {
+  $form_additions = array(
+    'project_name' => array(
+      'label' => t('Project name'),
+      'description' => t('Machine-readable name'),
+      'weight' => -4,
+    ),
+    'project_sandbox' => array(
+      'label' => t('Project sandbox toggle'),
+      'description' => t('Radios'),
+      'weight' => -2,
+    ),
+  );
+
+  $extra = array();
+  $types = project_project_node_types();
+  foreach ($types as $type_name) {
+    $extra['node'][$type_name] = array(
+      'form' => $form_additions,
+    );
+  }
+
+  return $extra;
+}
+
+/**
+ * Find a project node ID (nid) based on project machine name (shortname).
+ *
+ * @param $machine_name
+ *   The project machine name (shortname) to search for.
+ *
+ * @return
+ *   The project node ID (nid) of the given project, or FALSE if not found.
+ */
+function project_get_nid_from_machine_name($machine_name) {
+  static $nids = array();
+  if (isset($nids[$machine_name])) {
+    return $nids[$machine_name];
+  }
+  $nids[$machine_name] = db_query("SELECT nid FROM {project} WHERE name = :name AND sandbox <> 1", array(':name' => $machine_name))->fetchField();
+  return $nids[$machine_name];
+}
+
+/**
+ * Find a project machine name based on project node ID.
+ *
+ * @param $machine_name
+ *   The project machine name (shortname) to search for.
+ *
+ * @return
+ *   The project node ID (nid) of the given project, or FALSE if not found.
+ */
+function project_get_machine_name_from_nid($nid) {
+  static $machine_names = array();
+  if (isset($machine_names[$nid])) {
+    return $machine_names[$nid];
+  }
+  $machine_names[$nid] = db_query("SELECT name FROM {project} WHERE nid = :nid", array(':nid' => $nid))->fetchField();
+  return $machine_names[$nid];
+}

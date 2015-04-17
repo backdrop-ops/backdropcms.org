@@ -1,0 +1,44 @@
+{
+    "_config_name": "field.instance.node.page.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "page",
+    "deleted": "0",
+    "label": "Body",
+    "widget": {
+        "weight": "1",
+        "type": "text_textarea_with_summary",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "30",
+            "summary_rows": 5
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "display_summary": 0,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "0",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "text_summary_or_trimmed",
+            "settings": {
+                "trim_length": 600
+            },
+            "module": "text",
+            "weight": 0
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null
+}

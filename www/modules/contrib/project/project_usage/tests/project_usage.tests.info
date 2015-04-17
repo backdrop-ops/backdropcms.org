@@ -1,0 +1,23 @@
+[ProjectUsageGetDateTests]
+name = project_usage_gmgetdate()
+description = Test the project_usage_gmgetdate() function.
+group = Project Usage
+file = date_rounding.test
+
+[ProjectUsageUsageDailyTimestampTests]
+name = project_usage_daily_timestamp()
+description = Test the project_usage_daily_timestamp() function.
+group = Project Usage
+file = date_rounding.test
+
+[ProjectUsageUsageWeeklyTimestampTests]
+name = project_usage_weekly_timestamp()
+description = Test the project_usage_weekly_timestamp() function.
+group = Project Usage
+file = date_rounding.test
+
+[ProjectUsageGetWeeksSinceTests]
+name = project_usage_get_weeks_since()
+description = Test the project_usage_get_weeks_since() function.
+group = Project Usage
+file = date_rounding.test

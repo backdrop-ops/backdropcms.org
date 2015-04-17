@@ -1,0 +1,6 @@
+name = Project usage
+description = Provides data about installed usage of projects. This module requires update.module clients connecting to this site (most sites should not enable this module).
+package = Project
+dependencies[] = project
+dependencies[] = project_release
+backdrop = 1.x

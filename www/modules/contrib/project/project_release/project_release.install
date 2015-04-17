@@ -1,0 +1,267 @@
+<?php
+/**
+ * @file
+ * Install and update routines for project_release.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function project_release_schema() {
+
+  $schema['project_release'] = array(
+    'description' => 'Stores information related to project release nodes.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'Primary Key: The {node}.nid of the project release node.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'version' => array(
+        'description' => 'Primary Key: The sanitized version name. May include API version.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'project_nid' => array(
+        'description' => 'The {node}.nid of the parent project node.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'version_api' => array(
+        'description' => 'The project API compatibility version. This may be blank, or a major compatibility version such as 1.x, 2.x, etc.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'version_major' => array(
+        'description' => 'The "major" part of a version string as used in semantic versioning. e.g. the "1" in version 1.2.3.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'version_minor' => array(
+        'description' => 'The "minor" part of a version string as used in semantic versioning. e.g. the "2" in version 1.2.3.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'version_patch' => array(
+        'description' => 'The "patch" part of a version string as used in semantic versioning. e.g. the "3" in version 1.2.3.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'version_extra' => array(
+        'description' => 'The "extra" part of a version string as used in semantic versioning. Usually "alpha1", "beta2", "rc3", etc.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'update_status' => array(
+        'description' => 'String indicating the current status of this release, either "current", "not-current", or "not-secure".',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'security_update' => array(
+        'description' => 'A flag to indicate whether or not a release contains security fixes.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'release_link' => array(
+        'description' => 'URL to the release notes page (if not the release node itself).',
+        'type' => 'text',
+      ),
+      'download_link' => array(
+        'description' => 'URL to the release download archive.',
+        'type' => 'text',
+      ),
+      'download_size' => array(
+        'description' => 'The size of the download archive, in bytes.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+      ),
+    ),
+    'primary key' => array('nid', 'version'),
+    'indexes' => array(
+      'project_nid' => array('project_nid'),
+    ),
+  );
+
+  $schema['project_release_supported_versions'] = array(
+    'description' => 'Table used to store information about which major versions of a project are supported and/or recommended.',
+    'fields' => array(
+      'nid' => array(
+        'description' => 'Primary Key: The {project_projects}.nid of the project_project node.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'version_api' => array(
+        'description' => 'Primary Key: The API compatibility level of the given project, such as 1.x, 2.x, etc.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'version_major' => array(
+        'description' => 'Primary Key: The major version number of a release node.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'supported' => array(
+        'description' => 'A flag to indicate whether or not a given major version of a project is supported.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'recommended' => array(
+        'description' => 'A flag to indicate whether or not a given major version of a project is recommended.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'recommended_release' => array(
+        'description' => 'The release node ID of the recommended release node for this API and major version (the latest release without any "extra" version info such as "alpha1").',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'latest_release' => array(
+        'description' => 'The release node ID of the latest release node for this API and major version (even if it has "extra" version info such as "alpha1").',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'latest_security_release' => array(
+        'description' => 'The release node ID of the latest release node marked as a "security update" for this API and major version.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid', 'version_api', 'version_major'),
+  );
+
+  $schema['cache_project_release_download_table'] = backdrop_get_schema_unprocessed('system', 'cache');
+  $schema['cache_project_release_download_table']['description'] = 'Cache table for project release downloads.';
+
+  return $schema;
+}
+
+/**
+ * Implements hook_schema_alter().
+ */
+function project_release_schema_alter(&$schema) {
+  $schema['project']['fields']['releases_enabled'] = array(
+    'type' => 'int',
+    'size' => 'tiny',
+    'not null' => TRUE,
+    'default' => 1,
+    'description' => 'Boolean indicating if this project has release functionality enabled.',
+  );
+}
+
+/**
+ * Implements hook_install().
+ */
+function project_release_install() {
+  // Add the default project release node type.
+  $node_type = array(
+    'type' => 'project_release',
+    'name' => st('Project release'),
+    'description' => st('Add a tagged release of a project.'),
+    'settings' => array(
+      'status_default' => TRUE,
+      'promote_enabled' => FALSE,
+      'promote_default' => FALSE,
+      'sticky_enabled' => FALSE,
+      'sticky_default' => FALSE,
+      'revision_enabled' => FALSE,
+      'revision_default' => FALSE,
+      'show_submitted_info' => FALSE,
+      'project_behavior' => 'project_release',
+      'project_release_version_format' => '!api#major%minor%patch#extra',
+      'project_release_api_versions' => array('1.x'),
+    ),
+    'base' => 'node_content',
+    'module' => 'project_release',
+    'is_new' => TRUE,
+  );
+  $node_type = node_type_set_defaults($node_type);
+
+  if (module_exists('comment')) {
+    $node_type->settings['comment_default'] = COMMENT_NODE_CLOSED;
+  }
+
+  node_type_save($node_type);
+
+  // Set the default project type to use the new content type for releases.
+  $project_node_type = node_type_get_type('project');
+  if ($project_node_type) {
+    $project_node_type->settings['project_release_type'] = 'project_release';
+    node_type_save($project_node_type);
+  }
+
+  // Add the column to the project table.
+  if (!db_field_exists('project', 'releases_enabled')) {
+    $spec = array(
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 1,
+      'description' => 'Boolean indicating if this project has releases.',
+    );
+    db_add_field('project', 'releases_enabled', $spec);
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function project_release_uninstall() {
+  // Remove our additions from node types, but leave the node type itself.
+  backdrop_load('module', 'project_release');
+  foreach (project_release_release_node_types() as $node_type) {
+    if (isset($node_type->settings['project_release_version_format'])) {
+      unset($node_type->settings['project_release_version_format']);
+      node_type_save($node_type);
+    }
+  }
+
+  // Remove the column from the project table.
+  if (db_field_exists('project', 'releases_enabled')) {
+    db_drop_field('project', 'releases_enabled');
+  }
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function project_release_update_last_removed() {
+  return 7015;
+}

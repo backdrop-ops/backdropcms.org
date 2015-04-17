@@ -1,0 +1,28 @@
+{
+    "_config_name": "honeypot.settings",
+    "protect_all_forms": 0,
+    "expire": 300,
+    "log": 1,
+    "element_name": "url",
+    "time_limit": "5",
+    "form_settings": {
+        "honeypot_form_user_register_form": 1,
+        "honeypot_form_user_pass": 1,
+        "honeypot_form_contact_site_form": 1,
+        "honeypot_form_contact_personal_form": 1,
+        "honeypot_form_article_node_form": 0,
+        "honeypot_form_book_node_form": 0,
+        "honeypot_form_page_node_form": 0,
+        "honeypot_form_question_node_form": 0,
+        "honeypot_form_quote_node_form": 0,
+        "honeypot_form_sa_node_form": 0,
+        "honeypot_form_supporter_node_form": 1
+    },
+    "unprotected_forms": [
+        "user_login_form",
+        "search_form",
+        "search_block_form",
+        "views_exposed_form",
+        "honeypot_settings_form"
+    ]
+}

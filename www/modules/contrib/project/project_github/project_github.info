@@ -1,0 +1,5 @@
+name = Project GitHub Integration
+description = Provides web hook responses to integrate projects with GitHub.
+package = Project
+backdrop = 1.x
+dependencies[] = project_release

@@ -1,0 +1,57 @@
+{
+    "_config_name": "filter.format.filtered_html",
+    "format": "filtered_html",
+    "name": "Filtered HTML",
+    "cache": "1",
+    "status": "1",
+    "weight": "0",
+    "roles": [
+        "anonymous",
+        "authenticated",
+        3
+    ],
+    "filters": {
+        "filter_html_escape": {
+            "module": "filter",
+            "status": "0",
+            "weight": "-50",
+            "settings": []
+        },
+        "filter_html": {
+            "module": "filter",
+            "status": "1",
+            "weight": "-49",
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <h2> <h3> <h4> <i> <p> <small> <blockquote>",
+                "filter_html_help": 1,
+                "filter_html_nofollow": 0
+            }
+        },
+        "codefilter": {
+            "module": "codefilter",
+            "status": "1",
+            "weight": "-48",
+            "settings": []
+        },
+        "filter_autop": {
+            "module": "filter",
+            "status": "1",
+            "weight": "-47",
+            "settings": []
+        },
+        "filter_url": {
+            "module": "filter",
+            "status": "1",
+            "weight": "-46",
+            "settings": {
+                "filter_url_length": "72"
+            }
+        },
+        "filter_htmlcorrector": {
+            "module": "filter",
+            "status": "1",
+            "weight": "-45",
+            "settings": []
+        }
+    }
+}

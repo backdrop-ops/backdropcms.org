@@ -1,0 +1,233 @@
+<?php
+/**
+ * @file
+ *
+ * This module provides logging of the requests sent by core's update.module
+ * to the project_release.module on updates.drupal.org.
+ *
+ * Weekly usage statistics are calculated via log file parsing, then baking
+ * down the data and pushing it into weekly storage tables for both projects
+ * and releases. See project_usage.drush.inc for details.
+ *
+ * This data is then used to compute live usage statistics about all projects
+ * hosted on drupal.org. In theory, another site could setup
+ * update.module-style checking to their own project.module-based server, in
+ * which case, they might want to enable this module. Otherwise, sites should
+ * just leave this disabled.
+ */
+
+// Number of seconds in a day.
+define('PROJECT_USAGE_DAY', 60 * 60 * 24);
+// Number of seconds in a week.
+define('PROJECT_USAGE_WEEK', PROJECT_USAGE_DAY * 7);
+// Number of seconds in a year.
+define('PROJECT_USAGE_YEAR', PROJECT_USAGE_DAY * 365);
+
+/**
+ * Date formats for month and day. We define our own rather than using core's
+ * 'date_format_short' and 'date_format_long' variables because our timestamps
+ * don't have hour or minute resolution so displaying that would be confusing
+ * and take up extra space.
+ */
+define('PROJECT_USAGE_DATE_LONG', 'F jS');
+define('PROJECT_USAGE_DATE_SHORT', 'M j');
+
+/**
+ * Implements hook_menu().
+ */
+function project_usage_menu() {
+  $items['admin/config/project/project-usage-settings'] = array(
+    'title' => 'Project usage settings',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('project_usage_settings_form'),
+    'access arguments' => array('administer projects'),
+    'description' => 'Configure how long data is retained in project usage statistics.',
+    'weight' => 1,
+    'file' => 'project_usage.admin.inc',
+  );
+  $items['project/usage'] = array(
+    'title' => 'Project usage overview',
+    'page callback' => 'project_usage_overview',
+    'access arguments' => array('view project usage'),
+    'file' => 'project_usage.pages.inc',
+  );
+  $items['project/usage/%'] = array(
+    'title' => 'Project usage',
+    'page callback' => 'project_usage_dispatch',
+    'page arguments' => array(2),
+    'access arguments' => array('view project usage'),
+    'file' => 'project_usage.pages.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function project_usage_theme() {
+  $path = backdrop_get_path('module', 'project_usage');
+  return array(
+    'project_usage_chart_by_release' => array(
+      'variables' => array(
+        'header' => NULL,
+        'rows' => NULL,
+      ),
+      'file' => 'project_usage.pages.inc',
+      'path' => $path,
+    ),
+    'project_usage_header_links' => array(
+      'variables' => array(
+        'project' => NULL,
+        'release' => NULL,
+      ),
+      'file' => 'project_usage.pages.inc',
+      'path' => $path,
+    ),
+    'project_usage_project_page' => array(
+      'variables' => array(
+        'project' => NULL,
+        'release_header' => NULL,
+        'release_rows' => NULL,
+        'project_header' => NULL,
+        'project_rows' => NULL,
+      ),
+      'file' => 'project_usage.pages.inc',
+      'path' => $path,
+    ),
+    'project_usage_release_page' => array(
+      'variables' => array(
+        'project' => NULL,
+        'release' => NULL,
+        'header' => NULL,
+        'rows' => NULL,
+      ),
+      'file' => 'project_usage.pages.inc',
+      'path' => $path,
+    ),
+  );
+}
+
+/**
+ * Implements hook_help().
+ */
+function project_usage_help($path, $arg) {
+  switch ($path) {
+    case 'project/usage':
+    case 'project/usage/%':
+      module_load_include('inc', 'project_usage', 'includes/pages');
+      return _project_usage_help($arg[2]);
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function project_usage_permission() {
+  return array(
+    'view project usage' => array(
+      'title' => t('view project usage'),
+      'description' => t('View project usage statistics'),
+    ),
+  );
+}
+
+
+/**
+ * Implements hook_devel_caches().
+ *
+ * Lets the devel module know about our cache table so it can clear it.
+ */
+function project_usage_flush_caches() {
+  return array('cache_project_usage');
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function project_usage_config_info() {
+  $prefixes['project_usage.settings'] = array(
+    'label' => t('Project usage settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Return the total usage data for a given project across all versions.
+ *
+ * @param $nid
+ *   The project node ID.
+ *
+ * @return
+ *   The total reported usage for all versions of the given project.
+ */
+function project_usage_get_project_total_usage($nid) {
+  static $total = array();
+  $node = node_load($nid);
+  $node_type = node_type_get_type($node);
+  $api_versions = $node_type->settings['project_release_api_versions'];
+
+  if (empty($total[$nid])) {
+    $total[$nid] = 0;
+    foreach ($api_versions as $api_version) {
+      $total[$nid] += project_usage_get_project_usage($nid, $api_version);
+    }
+  }
+  return $total[$nid];
+}
+
+/**
+ * Return usage data for a given API version of a project.
+ *
+ * @param $nid
+ *   The project node ID.
+ * @param $version_api
+ *   The API compatibility (1.x, 2.x, etc.).
+ *
+ * @return
+ *   The total reported usage for the given version of the given project.
+ */
+function project_usage_get_project_usage($nid, $version_api) {
+  static $usage = array();
+  module_load_include('inc', 'project_usage', 'project_usage.date');
+  if (!isset($usage[$nid][$version_api])) {
+    $usage[$nid][$version_api] = (int) db_query("SELECT count FROM {project_usage_week_project} WHERE nid = :nid AND version_api = :version_api AND timestamp = :timestamp", array(':nid' => $nid, ':version_api' => $version_api, ':timestamp' => project_usage_get_current_active_week()))->fetchField();
+  }
+  return $usage[$nid][$version_api];
+}
+
+/**
+ * Return usage data for a given release.
+ *
+ * @param $nid
+ *   The release node ID.
+ *
+ * @return
+ *   The total reported usage for the given release.
+ */
+function project_usage_get_release_usage($nid) {
+  static $usage = array();
+  module_load_include('inc', 'project_usage', 'project_usage.date');
+  if (empty($usage[$nid])) {
+    $usage[$nid] = db_query("SELECT count FROM {project_usage_week_release} WHERE nid = :nid AND timestamp = :timestamp", array(':nid' => $nid, ':timestamp' => project_usage_get_current_active_week()))->fetchField();
+  }
+  return $usage[$nid];
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function project_usage_node_view($node) {
+  if (project_release_node_is_release($node)) {
+    $node->content['links']['project_usage'] = array(
+      '#theme' => 'links__node__project_usage',
+      '#links' => array(
+        'node-usage' => array(
+          'title' => t('View usage statistics for this release'),
+          'href' => 'project/usage/' . $node->nid,
+        ),
+      ),
+      '#attributes' => array('class' => array('links', 'inline')),
+    );
+  }
+}
