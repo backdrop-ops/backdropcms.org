@@ -86,6 +86,9 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
 
   // Finally, we have an allowed project type from the .info file.
   $project_node->type = $allowed_types[$info['type']];
+
+  // Update the title using the project title as well from the .info file.
+  $project_node->title = $info['name'];
 }
 
 /**

@@ -1,5 +1,11 @@
 name = Project GitHub Integration
 description = Provides web hook responses to integrate projects with GitHub.
+type = module
 package = Project
 backdrop = 1.x
 dependencies[] = project_release
+
+; Added by Backdrop CMS packaging script on 2015-04-17
+project = project
+version = 1.x-1.0.0-beta2
+timestamp = 1429259599
