@@ -89,15 +89,26 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
 
   // Update the title using the project title as well from the .info file.
   $project_node->title = $info['name'];
-}
 
-/**
- * Implements hook_node_view().
- */
-function borg_github_node_view(Node $node, $view_mode, $langcode) {
-  if ($view_mode === 'full' && node_is_page($node) && !empty($node->project_release['release_link'])) {
-    if (valid_url($node->project_release['release_link']) && strpos($node->project_release['release_link'], '://github.com')) {
-      backdrop_goto($node->project_release['release_link']);
+  // If this is a theme, attach the screenshot as the image.
+  if ($project_node->type === 'project_theme') {
+    // At this point we have found the .info file, but need its contents.
+    $screenshot_url = str_replace('{+path}', 'screenshot.png', $payload['repository']['contents_url']);
+    $contents_result = backdrop_http_request($screenshot_url, array(
+      'headers' => array(
+        'Authorization' => 'token ' . $access_token,
+        'Accept' => 'application/vnd.github.v3.raw',
+      ),
+    ));
+    if ($contents_result->code == 200) {
+      $filename = file_munge_filename($payload['repository']['name'] . '.png', 'png');
+      $uri = 'public://theme-screenshots/' . $filename;
+      $file = file_save_data($contents_result->data, $uri);
+      if ($file->uid !== $project_node->uid) {
+        $file->uid = $project_node->uid;
+        $file->save();
+      }
+      $project_node->field_image[LANGUAGE_NONE][0]['fid'] = $file->fid;
     }
   }
 }
