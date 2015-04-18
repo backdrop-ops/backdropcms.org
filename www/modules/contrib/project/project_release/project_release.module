@@ -741,6 +741,13 @@ function project_release_node_view($node, $view_mode, $langcode) {
       $extra .= ' (' . $size . ')';
     }
 
+    $node->content['project_link'] = array(
+      '#type' => 'markup',
+      '#title' => t('Project'),
+      '#markup' => l($project->title, 'node/' . $project->nid),
+      '#theme_wrappers' => array('form_element'),
+    );
+
     $node->content['project_download_link'] = array(
       '#type' => 'markup',
       '#title' => t('Download'),

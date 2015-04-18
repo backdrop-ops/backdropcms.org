@@ -139,6 +139,13 @@ function _project_github_handle_release(array &$errors, array $payload) {
     $release_node_result = _project_github_create_project_release($errors, $payload);
   }
 
+  // For better reporting for project authors who may not have access to the
+  // group-wide web hook settings, attempt to upload a report of the failures
+  // to the release as an asset.
+  if (!empty($errors)) {
+    _project_github_upload_error_log($errors, $payload);
+  }
+
   return $package_result && $project_node_result && $release_node_result;
 }
 
@@ -516,6 +523,41 @@ function _project_github_create_project_release(array &$errors, array $payload) 
     $errors[] = 'Unable to save release node: ' . print_r($node, 1);
   }
   return $success;
+}
+
+/**
+ * Attach an error log to a GitHub release.
+ */
+function _project_github_upload_error_log(array $errors, array $payload) {
+  $access_token = settings_get('project_github_access_token');
+
+  $error_log = '';
+  $error_log .= format_string("Errors occurred while packaging this project on !sitename.\n", array('!sitename' => config_get('system.core', 'site_name')));
+  $full_project_name = isset($payload['repository']['name']) ? $payload['repository']['name'] : NULL;
+  if ($full_project_name) {
+    $github_hook_url = 'https://github.com/' . $full_project_name . '/settings/hooks';
+    $github_delivery = $_SERVER['HTTP_X_GITHUB_DELIVERY'];
+    $error_log .= "Check the recent GitHub hook requests at $github_hook_url for more information.\n";
+    $error_log .= "X-GitHub-Delivery: $github_delivery\n";
+  }
+  $error_log .= "\nYou may delete this error log by editing this release on GitHub. A separate log is kept in the hook request history.\n\n";
+  $error_log .= "\nAfter resolving the below errors, create another release to try packaging again.\n\n";
+  $error_log .= "\nReported errors:\n";
+  $error_log .= implode("\n\n", $errors);
+  // Remove the GitHub placeholder name and specify our file name in the URL.
+  $upload_url = str_replace('{?name}', '?name=PACKAGING_ERROR_LOG.txt', $payload['release']['upload_url']);
+
+  // Upload the new file.
+  $upload_result = backdrop_http_request($upload_url, array(
+    'headers' => array(
+      'Authorization' => 'token ' . $access_token,
+      'Content-Type' => 'text/plain',
+    ),
+    'method' => 'POST',
+    'data' => $error_log,
+  ));
+
+  return $upload_result == 200;
 }
 
 /**
