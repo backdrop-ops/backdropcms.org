@@ -1,0 +1,201 @@
+<?php
+
+// $Id$
+/**
+ * @file
+ * Project Browser Server Example module.
+ * Authored by Leighton Whiting for Google Summer of Code 2011
+ */
+
+// ======================================
+// Hooks:
+// ======================================
+
+/**
+ * Implements hook_project_browser_server_query()
+().
+ *
+ * The function takes a $filters parameter that looks like this:
+ *
+ * array(
+ *   'version' => '7', // The Major Version of Backdrop that is running on the Client
+ *   'text' => 'views', // The text that was entered as the search query, or '' if none
+ *   'categories' => array() // The categories that were selected, if any
+ *   'type' => 'module', // The type of project being searched
+ *   'page' => 3, // The zero-based page number
+ *   'requested' => 12, // How many results are requested per page
+ * )
+ *
+ * The function should return an array like this:
+ *
+ * array(
+ *   'total' = 5, // The total number of results found for the filters
+ *   'projects' => array( // An array of projects returned for this page request
+ *     'views' => array( // A project array keyed by the machine name
+ *       'type' => 'module', // The type of project this is. Can be 'module' or 'theme'
+ *       'title' => 'Views', // The title of the project
+ *       'name' => 'views', // The machine name of the project
+ *       'author' => 'merlinofchaos', // The author's name
+ *       'description' => "Long project description ...",
+ *       'image' => 'http://www.example.com/image.jpg', // Absolute url to the image, if any
+ *       'usage' => '542312', // How many Downloads the module has had
+ *       'project url' => 'http://www.backdrop.org/projects/views', // Absolute url to the project page, if any
+ *       'project status url' => 'http://updates.backdrop.org/release-history/views/7.x', // The absolute url of the update checker, formatted like how Backdrop.org Update Status does it
+ *       'last updated' => '12342523', // UNIX Timestamp of when the project was last updated
+ *       'maintenance status' => 'Actively maintained', // Maintenance status
+ *       'development status' => 'Under active development', // Development status
+ *       'rating' => '9.6', // A rating on a scale of 1 to 10 of the project, if available
+ *       'dependencies' => array( // An array of the dependencies of this module
+ *         'ctools',
+ *       ),
+ *     ),
+ *   'name_2 => array( ... ),
+ *   ),
+ * );
+ *
+ * @param $filters
+ *   An associative array of the filters and their values
+ * @return array
+ *   Returns an array of results, formatted how Project Browser likes it
+ */
+function borg_pbs_project_browser_server_query($filters) {
+  $query = db_select('node', 'n')
+    ->fields('n');
+
+  // Filter out projects based on type.
+  if (isset($filters['type'])) {
+    $query->condition('n.type', 'project_' . $filters['type']);
+  }
+  // Only return nodes with releases.
+  $query->join('project_release', 'p', 'n.nid = p.project_nid');
+
+
+/**********************************************************
+// This is to filter by a project's available core version numbers
+// Since we're currently only at v1.x, this is commented out.
+   //Filter out projects based on Backdrop version number.
+  if (isset($filters['version'])) {
+    $query->join('project_release_supported_versions', 's', 'n.nid = s.nid', 's.version_api' = $filters['version'] . '.x');
+  }
+**********************************************************/
+ 
+  // Filter out projects based on the text query.
+  if (!empty($filters['text'])) {
+    $query->condition('n.title', '%' . db_like($filters['text']) . '%', 'LIKE');
+  }
+
+  // Only send back the requested amount.
+  $start = $filters['page'] * $filters['requested'];
+  $count_query = $query;
+  $count_result = $count_query->execute();
+  $query->range($start, $filters['requested']);
+
+  // Add the sorting.
+  if (!empty($filters['order_by'])) {
+    $sort_direction = (!empty($filters['sort']) && $filters['sort'] == 'asc') ? 'ASC' : 'DESC';
+    switch ($filters['order_by']) {
+      case 'title':
+        $query->orderBy('n.title', $sort_direction);
+        break;
+
+       case 'usage':
+        // Add a usage query as an expression
+        $query->addExpression("(SELECT w.count FROM project_usage_week_project w WHERE w.nid = n.nid)", 'usage_query');
+        // Sort by usage now.
+        $query->orderBy('usage_query', $sort_direction);
+        break;
+        
+      case 'score':
+      break;
+
+      // This is wrong of course: its not really filtering by name but by UID,
+      // but would need a join of the 'user' table, and since project author 
+      // names not yet implemented on BacdropCMS.org, will leave for now.
+      case 'name':
+        $query->orderBy('n.uid', $sort_direction);
+        break;
+
+      case 'latest_release':
+        $query->orderBy('n.changed', $sort_direction);
+        break;
+    }
+  }
+  $result = $query->execute();
+  
+  foreach ($result as $row) {
+    $load[] = $row->nid;
+  }
+  $nodes = node_load_multiple($load);
+  
+  $projects = array();
+  foreach ($nodes as $node) {
+    // Build the description field
+    $descr = field_get_items('node', $node, 'body');
+    $descr_field = reset($descr);
+    $descr_value = $descr_field['value'];
+    
+    $usage = 
+
+    $projects[$node->project['name']] = array(
+      'type' => 'module',
+      'title' => $node->title,
+      'name' => $node->project['name'],
+      'backdrop version' => '',
+      'author' => $node->name,
+      'description' => $descr_value,
+      'categories' => '',
+      'image' => '',
+      'usage' => project_usage_get_project_total_usage($node->nid),
+      'project url' => url('node/' . $node->nid, array('absolute' => TRUE)),
+      'project status url' => 'http://updates.backdropcms.org/release-history/' . $node->project['name'] . '/' . $filters['version'] . '.x',
+      'last updated' => $node->changed,
+      'maintenance status' => '',
+      'development status' => '',
+      'rating' => '',
+      'includes' => array(),
+    );
+  }
+  return array(
+    'total' => $count_result->rowCount(),
+    'projects' => $projects,
+  );
+}
+
+/**
+ * Implements hook_project_browser_server_categories()
+().
+ *
+ * The function should return an array like this:
+ *
+ * array(
+ *   'category_1' => "Category 1",
+ *   'category_2' => "Category 2",
+ *   'category_3' => "Category 3",
+ * );
+ *
+ * @param $type
+ *   The type of project to get the categories for, 'module' or 'theme'
+ * @return array
+ *   Returns an array of categories
+ */
+function borg_pbs_project_browser_server_categories($type) {
+  $categories = array();
+
+  switch ($type) {
+    case 'module':
+      $categories = array(
+        'admin' => "Administrative",
+        'search' => "Search",
+        'user_management' => "User Management",
+      );
+      break;
+
+    case 'theme':
+      $categories = array(
+        'dark' => "Dark",
+        'light' => "Light",
+      );
+  }
+
+  return array(); //$categories;
+}

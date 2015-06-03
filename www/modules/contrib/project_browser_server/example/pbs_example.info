@@ -1,0 +1,7 @@
+; $Id: $
+name = Project Browser Server Example
+description = Serve search results to the Project Browser module
+version = "7.x-1.x"
+core = 7.x
+files[] = pbs_example.module
+dependencies[] = project_browser_server

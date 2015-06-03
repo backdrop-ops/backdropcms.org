@@ -1,0 +1,6 @@
+; $Id: $
+name = Project Browser Server Backdrop Org
+description = Provides integration between Project Browser Server module and Backdrop's Project module.
+version = "1.x-1.x"
+backdrop = 1.x
+dependencies[] = project_browser_server

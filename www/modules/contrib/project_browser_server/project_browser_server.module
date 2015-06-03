@@ -1,0 +1,183 @@
+<?php
+
+/**
+ * @file
+ * Project Browser Server module.
+ */
+
+/**
+ * Implements hook_permission().().
+ */
+function project_browser_server_permission() {
+  return array(
+    'access project browser server' => array(
+      'title' => t('access project browser server'),
+      'description' => t('TODO Add a description for \'access project browser server\''),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().().
+ */
+function project_browser_server_menu() {
+  $items['project_browser/server/query/%/%'] = array(
+    'page callback' => 'project_browser_server_query',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access project browser server'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['project_browser/server/categories/%'] = array(
+    'page callback' => 'project_browser_server_categories',
+    'page arguments' => array(3),
+    'access arguments' => array('access project browser server'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback for the 'project_browser/server/categories' endpoint.
+ */
+function project_browser_server_categories($type) {
+  if (!_project_browser_server_validate($type)) {
+    return;
+  }
+
+  _project_browser_server_return(project_browser_server_get_categories($type));
+}
+
+/**
+ * Menu callback for the 'project_browser/server/query' endpoint.
+ */
+function project_browser_server_query($type, $version) {
+  if (!_project_browser_server_validate($type)) {
+    return;
+  }
+	
+  if (isset($_GET['categories'])) {$_GET['categories'] = unserialize($_GET['categories']);}
+
+  _project_browser_server_return(project_browser_server_get_results(array(
+    'version' => $version,
+    'type' => $type,
+    'text' => (isset($_GET['text']) && $_GET['text']) ? $_GET['text'] : '',
+    'order_by' => isset($_GET['order_by']) ? $_GET['order_by'] : 'usage',
+    'sort' => isset($_GET['sort']) ? $_GET['sort'] : 'desc',
+    'requested' => isset($_GET['requested']) ? (int) $_GET['requested'] : 12,
+    'page' => isset($_GET['page']) ? (int) $_GET['page'] : 0,
+    'categories' => (isset($_GET['categories']) && is_array($_GET['categories'])) ? $_GET['categories'] : array(),
+  )));
+}
+
+/**
+ * Return some JSON or JSONP to the page.
+ */
+function _project_browser_server_return($results) {
+  // JSONP
+  if (!empty($_GET['callback'])) {
+    // @todo msie9 might break with this content-type.
+    // @see http://stackoverflow.com/questions/111302/best-content-type-to-serve-jsonp/111306#111306
+    backdrop_add_http_header('Content-Type', 'application/javascript; charset=utf-8');
+    print $_GET['callback'] . '(' . backdrop_json_encode($results) . ');';
+  }
+  else {
+    backdrop_add_http_header('Content-Type', 'application/json; charset=utf-8');
+    print backdrop_json_encode($results);
+  }
+}
+
+/**
+ * Validate a Project Browser request.
+ */
+function _project_browser_server_validate($type) {
+  if ($type != 'module' && $type != 'theme' && $type != 'layout') {
+    backdrop_add_http_header('Status', '404 Not Found');
+
+    _project_browser_server_return(t('You must specify a project type to be either "module" or "theme" or "layout".'));
+    return FALSE;
+  }
+  return TRUE;
+}
+
+
+/**
+ * Invokes hook_project_browser_server_query to get results of a search query
+ *
+ * The hook_project_browser_server_query function takes a $filters parameter that looks like this:
+ *
+ * array(
+ *   'version' => '7', // The Major Version of Backdrop that is running on the Client
+ *   'text' => 'views', // The text that was entered as the search query, or '' if none
+ *   'categories' => array() // The categories that were selected, if any
+ *   'type' => 'module', // The type of project being searched
+ *   'page' => 3, // The zero-based page number
+ *   'requested' => 12, // How many results are requested per page
+ * )
+ *
+ * The hook_project_browser_server_query($filters) call should return an array like this:
+ *
+ * array(
+ *   'total' = 5, // The total number of results found for the filters
+ *   'projects' => array( // An array of projects returned for this page request
+ *     'views' => array( // A project array keyed by the machine name
+ *       'type' => 'module', // The type of project this is. Can be 'module' or 'theme' or 'layout'
+ *       'title' => 'Views', // The title of the project
+ *       'name' => 'views', // The machine name of the project
+ *       'author' => 'merlinofchaos', // The author's name
+ *       'description' => "Long project description ...",
+ *       'image' => 'http://www.example.com/image.jpg', // Absolute url to the image, if any
+ *       'usage' => '542312', // How many Downloads the module has had
+ *       'project url' => 'http://www.backdrop.org/projects/views', // Absolute url to the project page, if any
+ *       'project status url' => 'http://updates.backdrop.org/release-history/views/7.x', // The absolute url of the update checker, formatted like how Backdrop.org Update Status does it
+ *       'last updated' => '12342523', // UNIX Timestamp of when the project was last updated
+ *       'maintenance status' => 'Actively maintained', // Maintenance status
+ *       'development status' => 'Under active development', // Development status
+ *       'rating' => '9.6', // A rating on a scale of 1 to 10 of the project, if available
+ *       'dependencies' => array( // An array of the dependencies of this module
+ *         'ctools',
+ *       ),
+ *     ),
+ *   'name_2 => array( ... ),
+ *   ),
+ * );
+ *
+ * @param $filters
+ *   An associative array of the filters and their values
+ * @return array
+ *   Returns an array of results, formatted how Project Browser likes it
+ */
+function project_browser_server_get_results($filters) {
+  $pbs_modules = module_implements('project_browser_server_query');
+  if (count($pbs_modules) != 1) {
+    return FALSE;
+  }
+  $function = $pbs_modules[0] . '_project_browser_server_query';
+  return $function($filters);
+}
+
+/**
+ * Invokes hook_project_browser_server_categories to get a list of categories
+ *
+ * The hook_project_browser_server_categories($type) call should return an array like this:
+ *
+ * array(
+ *   'cat1' => "Category 1",
+ *   'cat2' => "Category 2",
+ *   'cat3' => "Category 3",
+ * );
+ *
+ * @param $type
+ *   The type of project to get the categories for, 'module' or 'theme' or 'layout'
+ * @return array
+ *   Returns an array of categories
+ */
+function project_browser_server_get_categories($type) {
+  $pbs_modules = module_implements('project_browser_server_categories');
+  if (count($pbs_modules) != 1) {
+    return FALSE;
+  }
+  $function = $pbs_modules[0] . '_project_browser_server_categories';
+  return $function($type);
+}
