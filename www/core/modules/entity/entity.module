@@ -59,6 +59,7 @@ function entity_get_info($entity_type = NULL) {
           'load hook' => $name . '_load',
           'bundles' => array(),
           'view modes' => array(),
+          'token type' => $name,
           'entity keys' => array(),
           'translation' => array(),
         );
@@ -184,12 +185,11 @@ function entity_create_stub_entity($entity_type, $ids) {
  * database access if loaded again during the same page request.
  *
  * The actual loading is done through a class that has to implement the
- * EntityControllerInterface interface. By default,
- * DefaultEntityController is used. Entity types can specify that a
- * different class should be used by setting the 'controller class' key in
- * hook_entity_info(). These classes can either implement the
- * EntityControllerInterface interface, or, most commonly, extend the
- * DefaultEntityController class. See node_entity_info() and the
+ * EntityControllerInterface interface. By default, DefaultEntityController is
+ * used. Entity types can specify that a different class should be used by
+ * setting the 'controller class' key in hook_entity_info(). These classes can
+ * either implement the EntityControllerInterface interface, or, most commonly,
+ * extend the DefaultEntityController class. See node_entity_info() and the
  * NodeController in node.module as an example.
  *
  * @param $entity_type
@@ -204,8 +204,8 @@ function entity_create_stub_entity($entity_type, $ids) {
  * @param $reset
  *   Whether to reset the internal cache for the requested entity type.
  *
- * @return EntityControllerInterface
- *   The entity controller object for the specified entity type.
+ * @return array
+ *   An array of entity objects indexed by their ids.
  *
  * @see hook_entity_info()
  * @see EntityControllerInterface
@@ -388,9 +388,6 @@ function entity_view_mode_prepare($entity_type, $entities, $view_mode, $langcode
  *   An array containing the 'path' and 'options' keys used to build the URI of
  *   the entity, and matching the signature of url(). NULL if the entity has no
  *   URI of its own.
- *
- * @deprecated
- *   Deprecated since 1.0.
  */
 function entity_uri($entity_type, $entity) {
   return $entity->uri();
@@ -409,9 +406,6 @@ function entity_uri($entity_type, $entity) {
  *
  * @return
  *   The entity label, or FALSE if not found.
- *
- * @deprecated
- *   Deprecated since 1.0.
  */
 function entity_label($entity_type, $entity) {
   return $entity->label();

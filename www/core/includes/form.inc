@@ -2636,8 +2636,8 @@ function _form_options_flatten($array) {
  *   - #required: (optional) Whether the user needs to select an option (TRUE)
  *     or not (FALSE). Defaults to FALSE.
  *   - #empty_option: (optional) The label to show for the first default option.
- *     By default, the label is automatically set to "- Please select -" for a
- *     required field and "- None -" for an optional field.
+ *     By default, the label is automatically set to "- Select -" for a required
+ *     field and "- None -" for an optional field.
  *   - #empty_value: (optional) The value for the first default option, which is
  *     used to determine whether the user submitted a value or not.
  *     - If #required is TRUE, this defaults to '' (an empty string).
@@ -3245,6 +3245,29 @@ function form_process_checkboxes($element) {
  */
 function form_process_actions($element, &$form_state) {
   $element['#attributes']['class'][] = 'form-actions';
+
+  $first_button = NULL;
+  $primary_set = FALSE;
+  foreach (element_children($element) as $key) {
+    $button = $element[$key];
+    if (!$first_button && $button['#type'] === 'submit') {
+      $first_button = $key;
+    }
+    // Record the primary button if found.
+    if (isset($button['#attributes']['class']) && in_array('button-primary', $button['#attributes']['class'])  && in_array('button-danger', $button['#attributes']['class'])) {
+      $primary_set = TRUE;
+    }
+    // Add the secondary button class otherwise.
+    elseif (!isset($button['#attributes']['class']) || !in_array('button-secondary', $button['#attributes']['class'])) {
+      $element[$key]['#attributes']['class'][] = 'button-secondary';
+    }
+  }
+  // Add the primary class to the first button found if no others are primary.
+  if (!$primary_set && $first_button) {
+    $element[$first_button]['#attributes']['class'][] = 'button-primary';
+    $element[$first_button]['#attributes']['class'] = array_diff($element[$first_button]['#attributes']['class'], array('button-secondary'));
+  }
+
   return $element;
 }
 
@@ -3293,8 +3316,10 @@ function theme_container($variables) {
     if (!array_key_exists('id', $element['#attributes'])) {
       $element['#attributes']['id'] = $element['#id'];
     }
-    // Add the 'form-wrapper' class.
-    $element['#attributes']['class'][] = 'form-wrapper';
+    // Add the form-wrapper class.
+    if (empty($element['#attributes']['class'])) {
+      $element['#attributes']['class'][] = 'form-wrapper';
+    }
   }
 
   return '<div' . backdrop_attributes($element['#attributes']) . '>' . $element['#children'] . '</div>';

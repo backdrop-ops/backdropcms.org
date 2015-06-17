@@ -112,12 +112,6 @@ description = Queues and dequeues a set of items to check the basic queue functi
 group = System
 file = tests/system.test
 
-[TokenReplaceTestCase]
-name = Token replacement
-description = Generates text using placeholders for dummy content to check token replacement.
-group = System
-file = tests/system.test
-
 [InfoFileParserTestCase]
 name = Info file format parser
 description = Tests proper parsing of a .info file formatted string.
@@ -178,14 +172,20 @@ description = Test the security token validation.
 group = System
 file = tests/system.test
 
+[ConfirmFormTest]
+name = Confirm form
+description = Tests that the confirm form does not use external destinations.
+group = System
+file = tests/system.test
+
 [UuidUnitTestCase]
 name = UUID handling
 description = Test the handling of Universally Unique IDentifiers (UUIDs).
 group = System
 file = tests/system.test
 
-[TokenScanTest]
-name = Token scanning
-description = Scan token-like patterns in a dummy text to check token scanning.
+[BackdropSetMessageTest]
+name = Messages
+description = Tests that messages can be displayed using backdrop_set_message().
 group = System
 file = tests/system.test

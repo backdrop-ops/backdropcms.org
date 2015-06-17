@@ -815,6 +815,7 @@ function template_preprocess_views_view_unformatted(&$variables) {
   $max = count($rows);
   foreach ($rows as $id => $row) {
     $count++;
+    $variables['row_classes'][$id] = array();
     if ($default_row_class) {
       $variables['row_classes'][$id][] = 'views-row';
       $variables['row_classes'][$id][] = 'views-row-' . $count;
@@ -831,11 +832,6 @@ function template_preprocess_views_view_unformatted(&$variables) {
 
     if ($row_class = $view->style_plugin->get_row_class($id)) {
       $variables['row_classes'][$id][] = $row_class;
-    }
-
-    // Add an empty array here even to prevent errors from template.
-    if (!isset($variables['row_classes'][$id])) {
-      $variables['row_classes'][$id] = array();
     }
   }
 }

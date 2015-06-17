@@ -337,7 +337,7 @@ function backdrop_get_favicon() {
     }
     elseif ($site_config->get('site_favicon_path')) {
       $favicon['path'] = file_create_url($site_config->get('site_favicon_path'));
-      $favicon['type'] = $site_config->get('site_favicon_mime');
+      $favicon['type'] = $site_config->get('site_favicon_mimetype');
     }
   }
   catch (ConfigException $e) {
@@ -1746,7 +1746,7 @@ function _filter_xss_split($m, $store = FALSE) {
     return '&lt;';
   }
 
-  if (!preg_match('%^<\s*(/\s*)?([a-zA-Z0-9]+)([^>]*)>?|(<!--.*?-->)$%', $string, $matches)) {
+  if (!preg_match('%^<\s*(/\s*)?([a-zA-Z0-9\-]+)([^>]*)>?|(<!--.*?-->)$%', $string, $matches)) {
     // Seriously malformed.
     return '';
   }
@@ -2381,14 +2381,20 @@ function url($path = NULL, array $options = array()) {
     'prefix' => ''
   );
 
+  // A duplicate of the code from url_is_external() to avoid needing another
+  // function call, since performance inside url() is critical.
   if (!isset($options['external'])) {
-    // Return an external link if $path contains an allowed absolute URL. Only
-    // call the slow backdrop_strip_dangerous_protocols() if $path contains a ':'
-    // before any / ? or #. Note: we could use url_is_external($path) here, but
-    // that would require another function call, and performance inside url() is
-    // critical.
+    // Return an external link if $path contains an allowed absolute URL. Avoid
+    // calling backdrop_strip_dangerous_protocols() if there is any slash (/),
+    // hash (#) or question_mark (?) before the colon (:) occurrence - if any -
+    // as this would clearly mean it is not a URL. If the path starts with 2
+    // slashes then it is always considered an external URL without an explicit
+    // protocol part.
     $colonpos = strpos($path, ':');
-    $options['external'] = ($colonpos !== FALSE && !preg_match('![/?#]!', substr($path, 0, $colonpos)) && backdrop_strip_dangerous_protocols($path) == $path);
+    $options['external'] = (strpos($path, '//') === 0)
+      || ($colonpos !== FALSE
+        && !preg_match('![/?#]!', substr($path, 0, $colonpos))
+        && backdrop_strip_dangerous_protocols($path) == $path);
   }
 
   // Preserve the original path before altering or aliasing.
@@ -2425,6 +2431,11 @@ function url($path = NULL, array $options = array()) {
     // Reassemble.
     return $path . $options['fragment'];
   }
+
+  // Strip leading slashes from internal paths to prevent them becoming external
+  // URLs without protocol. /example.com should not be turned into
+  // //example.com.
+  $path = ltrim($path, '/');
 
   global $base_url, $base_secure_url, $base_insecure_url;
 
@@ -2518,10 +2529,15 @@ function url($path = NULL, array $options = array()) {
  */
 function url_is_external($path) {
   $colonpos = strpos($path, ':');
-  // Avoid calling backdrop_strip_dangerous_protocols() if there is any
-  // slash (/), hash (#) or question_mark (?) before the colon (:)
-  // occurrence - if any - as this would clearly mean it is not a URL.
-  return $colonpos !== FALSE && !preg_match('![/?#]!', substr($path, 0, $colonpos)) && backdrop_strip_dangerous_protocols($path) == $path;
+  // Avoid calling backdrop_strip_dangerous_protocols() if there is any slash (/),
+  // hash (#) or question_mark (?) before the colon (:) occurrence - if any - as
+  // this would clearly mean it is not a URL. If the path starts with 2 slashes
+  // then it is always considered an external URL without an explicit protocol
+  // part.
+  return (strpos($path, '//') === 0)
+    || ($colonpos !== FALSE
+      && !preg_match('![/?#]!', substr($path, 0, $colonpos))
+      && backdrop_strip_dangerous_protocols($path) == $path);
 }
 
 /**
@@ -2807,7 +2823,10 @@ function backdrop_deliver_html_page($page_callback_result) {
 
         // Keep old path for reference, and to allow forms to redirect to it.
         if (!isset($_GET['destination'])) {
-          $_GET['destination'] = $_GET['q'];
+          // Make sure that the current path is not interpreted as external URL.
+          if (!url_is_external($_GET['q'])) {
+            $_GET['destination'] = $_GET['q'];
+          }
         }
 
         $path = backdrop_get_normal_path($site_config->get('site_404'));
@@ -2826,7 +2845,10 @@ function backdrop_deliver_html_page($page_callback_result) {
 
         // Keep old path for reference, and to allow forms to redirect to it.
         if (!isset($_GET['destination'])) {
-          $_GET['destination'] = $_GET['q'];
+          // Make sure that the current path is not interpreted as external URL.
+          if (!url_is_external($_GET['q'])) {
+            $_GET['destination'] = $_GET['q'];
+          }
         }
 
         $path = backdrop_get_normal_path($site_config->get('site_403'));
@@ -3865,7 +3887,7 @@ function backdrop_load_stylesheet_content($contents, $optimize = FALSE) {
 
   // Replaces @import commands with the actual stylesheet content.
   // This happens recursively but omits external files.
-  $contents = preg_replace_callback('/@import\s*(?:url\(\s*)?[\'"]?(?![a-z]+:)([^\'"\()]+)[\'"]?\s*\)?\s*;/', '_backdrop_load_stylesheet', $contents);
+  $contents = preg_replace_callback('/@import\s*(?:url\(\s*)?[\'"]?(?![a-z]+:)(?!\/\/)([^\'"\()]+)[\'"]?\s*\)?\s*;/', '_backdrop_load_stylesheet', $contents);
   return $contents;
 }
 
@@ -5411,9 +5433,9 @@ function backdrop_get_hash_salt() {
  *   The private key.
  */
 function backdrop_get_private_key() {
-  if (!($key = config_get('system.core', 'private_key'))) {
+  if (!($key = state_get('private_key'))) {
     $key = backdrop_random_key();
-    config_set('system.core', 'private_key', $key);
+    state_set('private_key', $key);
   }
   return $key;
 }
@@ -6540,13 +6562,22 @@ function backdrop_render_cid_parts($granularity = NULL) {
   }
 
   if (!empty($granularity)) {
+    $cache_per_role = $granularity & BACKDROP_CACHE_PER_ROLE;
+    $cache_per_user = $granularity & BACKDROP_CACHE_PER_USER;
+    // User 1 has special permissions outside of the role system, so when
+    // caching per role is requested, it should cache per user instead.
+    if ($user->uid == 1 && $cache_per_role) {
+      $cache_per_user = TRUE;
+      $cache_per_role = FALSE;
+    }
+
     // 'PER_ROLE' and 'PER_USER' are mutually exclusive. 'PER_USER' can be a
     // resource drag for sites with many users, so when a module is being
     // equivocal, we favor the less expensive 'PER_ROLE' pattern.
-    if ($granularity & BACKDROP_CACHE_PER_ROLE) {
+    if ($cache_per_role) {
       $cid_parts[] = 'r.' . implode(',', array_keys($user->roles));
     }
-    elseif ($granularity & BACKDROP_CACHE_PER_USER) {
+    elseif ($cache_per_user) {
       $cid_parts[] = "u.$user->uid";
     }
 
@@ -7953,7 +7984,7 @@ function backdrop_flush_all_caches() {
   menu_rebuild();
 
   // Ordered so clearing the page cache will always be the last action.
-  $core = array('cache', 'path', 'filter', 'bootstrap', 'page');
+  $core = array('cache', 'path', 'filter', 'bootstrap', 'token', 'page');
   $cache_bins = array_merge(module_invoke_all('flush_caches'), $core);
   foreach ($cache_bins as $bin) {
     cache($bin)->flush();

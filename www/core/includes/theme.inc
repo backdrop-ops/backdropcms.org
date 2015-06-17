@@ -1184,7 +1184,13 @@ function theme($hook, $variables = array()) {
     if (isset($info['path'])) {
       $template_file = $info['path'] . '/' . $template_file;
     }
-    if (config_get('system.core', 'theme_debug')) {
+    try {
+      $theme_debug = config_get('system.core', 'theme_debug');
+    }
+    catch (ConfigException $e) {
+      $theme_debug = FALSE;
+    }
+    if ($theme_debug) {
       $output = _theme_render_template_debug($render_function, $template_file, $variables, $extension);
     }
     else {
@@ -1704,7 +1710,7 @@ function theme_status_messages($variables) {
       $output .= " </ul>\n";
     }
     else {
-      $output .= $messages[0];
+      $output .= reset($messages);
     }
     $output .= "</div>\n";
   }
@@ -2138,9 +2144,9 @@ function theme_table($variables) {
         $output .= ' <tr' . backdrop_attributes($tr_attributes) . '>';
         $i = 0;
         foreach ($cells as $cell) {
-          $i++;
           // Add active class if needed for sortable tables.
           $cell = tablesort_cell($cell, $header, $ts, $i);
+          $i++;
           // Copy RESPONSIVE_PRIORITY_LOW/RESPONSIVE_PRIORITY_MEDIUM
           // class from header to cell as needed.
           if (isset($responsive_columns[$i])) {

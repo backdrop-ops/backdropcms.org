@@ -1196,9 +1196,7 @@ function node_permission() {
     ),
     'access content overview' => array(
       'title' => t('Access the content overview page'),
-      'description' => user_access('access content overview')
-        ? t('Get an overview of <a href="@url">all content</a>.', array('@url' => url('admin/content')))
-        : t('Get an overview of all content.'),
+      'description' => t('Get an overview of <a href="@url">all content</a>.', array('@url' => url('admin/content'))),
     ),
     'access content' => array(
       'title' => t('View published content'),
@@ -1625,13 +1623,14 @@ function node_menu() {
     'file' => 'node.types.inc',
   );
   $items['admin/structure/types/manage/%node_type/edit'] = array(
-    'title' => 'Edit',
+    'title' => 'Configure',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['admin/structure/types/manage/%node_type/delete'] = array(
     'title' => 'Delete',
     'page arguments' => array('node_type_delete_confirm', 4),
     'access arguments' => array('administer content types'),
+    'type' => MENU_VISIBLE_IN_BREADCRUMB,
     'file' => 'node.types.inc',
   );
 
@@ -2067,7 +2066,7 @@ function node_view_multiple($nodes, $view_mode = 'teaser', $weight = 0, $langcod
   }
   // Sort here, to preserve the input order of the entities that were passed to
   // this function.
-  uasort($build['nodes'], 'element_sort');
+  backdrop_sort($build['nodes'], array('#weight'));
   $build['nodes']['#sorted'] = TRUE;
 
   return $build;
@@ -2145,11 +2144,12 @@ function node_page_view(Node $node) {
   // of the active trail, and the link name becomes the page title.
   // Thus, we must explicitly set the page title to be the node title.
   backdrop_set_title($node->title);
-  $uri = entity_uri('node', $node);
   // Set the node path as the canonical URL to prevent duplicate content.
-  backdrop_add_html_head_link(array('rel' => 'canonical', 'href' => url($uri['path'], $uri['options'])), TRUE);
-  // Set the non-aliased path as a default shortlink.
-  backdrop_add_html_head_link(array('rel' => 'shortlink', 'href' => url($uri['path'], array_merge($uri['options'], array('alias' => TRUE)))), TRUE);
+  $uri = entity_uri('node', $node);
+  $canonical_secure = config_get('system.core', 'canonical_secure') ? TRUE : FALSE;
+  $uri_options = array('absolute' => TRUE, 'https' => $canonical_secure);
+  backdrop_add_html_head_link(array('rel' => 'canonical', 'href' => url($uri['path'], array_merge($uri['options'], $uri_options))), TRUE);
+
   return node_show($node);
 }
 
@@ -2296,7 +2296,7 @@ function node_search_validate($form, &$form_state) {
   if (isset($form_state['values']['language']) && is_array($form_state['values']['language'])) {
     $languages = array_filter($form_state['values']['language']);
     if (count($languages)) {
-      $keys = search_expression_insert($keys, 'language', implode(',', $languages));
+      $keys = search_expression_insert($keys, 'langcode', implode(',', $languages));
     }
   }
   if ($form_state['values']['or'] != '') {
@@ -3447,7 +3447,12 @@ function node_autoload_info() {
     'NodeStorageController' => 'node.entity.inc',
 
     // Views handlers.
-    'views_handler_argument_dates_various' => 'views/views_handler_argument_dates_various.inc',
+    'views_handler_argument_node_created_fulldate' => 'views/views_handler_argument_dates_various.inc',
+    'views_handler_argument_node_created_year' => 'views/views_handler_argument_dates_various.inc',
+    'views_handler_argument_node_created_year_month' => 'views/views_handler_argument_dates_various.inc',
+    'views_handler_argument_node_created_month' => 'views/views_handler_argument_dates_various.inc',
+    'views_handler_argument_node_created_day' => 'views/views_handler_argument_dates_various.inc',
+    'views_handler_argument_node_created_week' => 'views/views_handler_argument_dates_various.inc',
     'views_handler_argument_node_language' => 'views/views_handler_argument_node_language.inc',
     'views_handler_argument_node_nid' => 'views/views_handler_argument_node_nid.inc',
     'views_handler_argument_node_type' => 'views/views_handler_argument_node_type.inc',

@@ -88,6 +88,9 @@ function field_create_field($field) {
   // Fields have a large amount of data that is generated on load, so trim down
   // the entire structure to just that which is not replaced on load.
   $field_data = array_intersect_key($field, field_defaults_field());
+  if (isset($field_data['storage']['details'])) {
+    unset($field_data['storage']['details']);
+  }
 
   // Store the field in config.
   $config = config('field.field.' . $field['field_name']);
@@ -177,6 +180,9 @@ function field_update_field($field) {
   // Fields have a large amount of data that is generated on load, so trim down
   // the entire structure to just that which is not replaced on load.
   $field_data = array_intersect_key($field, field_defaults_field());
+  if (isset($field_data['storage']['details'])) {
+    unset($field_data['storage']['details']);
+  }
 
   // Store the field in config.
   $config = config('field.field.' . $field['field_name']);
@@ -510,6 +516,7 @@ function field_create_instance($instance) {
 
   // Invoke external hooks after the cache is cleared for API consistency.
   module_invoke_all('field_create_instance', $instance);
+  token_cache_clear();
 
   return $instance;
 }
@@ -568,6 +575,7 @@ function field_update_instance($instance) {
   field_cache_clear();
 
   module_invoke_all('field_update_instance', $instance, $prior_instance);
+  token_cache_clear();
 }
 
 /**
@@ -839,6 +847,7 @@ function field_delete_instance($instance, $field_cleanup = TRUE) {
 
   // Let modules react to the deletion of the instance.
   module_invoke_all('field_delete_instance', $instance);
+  token_cache_clear();
 
   // Delete the field itself if we just deleted its last instance.
   if ($field_cleanup && count($field['bundles']) == 0) {
@@ -1042,7 +1051,7 @@ function field_purge_instance($instance) {
 }
 
 /**
- * Purges a field record from the database.
+ * Purges a field configuration.
  *
  * This function assumes all instances for the field has already been purged,
  * and should only be called by field_purge_batch().

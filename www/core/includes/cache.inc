@@ -56,7 +56,7 @@ function cache($bin = 'cache') {
  * @return
  *   The cache or FALSE on failure.
  */
-function cache_get($cid, $bin) {
+function cache_get($cid, $bin = 'cache') {
   return cache($bin)->get($cid);
 }
 
@@ -173,7 +173,12 @@ function cache_clear_all($cid = NULL, $bin = NULL, $wildcard = FALSE) {
   }
 
   if (!$wildcard) {
-    cache($bin)->delete($cid);
+    if (is_null($cid)) {
+      cache($bin)->garbageCollection();
+    }
+    else {
+      cache($bin)->delete($cid);
+    }
   }
   else {
     if ($cid === '*') {

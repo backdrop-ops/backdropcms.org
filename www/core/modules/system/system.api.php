@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Hooks provided by Backdrop core and the System module.
@@ -160,8 +159,8 @@ function hook_cron() {
  * @return
  *   An associative array where the key is the queue name and the value is
  *   again an associative array. Possible keys are:
- *   - 'worker callback': The name of the function to call. It will be called
- *     with one argument, the item created via BackdropQueue::createItem().
+ *   - 'worker callback': A PHP callable to call that is an implementation of
+ *     callback_queue_worker().
  *   - 'time': (optional) How much time Backdrop should spend on calling this
  *     worker in seconds. Defaults to 15.
  *   - 'skip on cron': (optional) Set to TRUE to avoid being processed during
@@ -194,6 +193,50 @@ function hook_cron_queue_info_alter(&$queues) {
   // This site has many feeds so let's spend 90 seconds on each cron run
   // updating feeds instead of the default 60.
   $queues['aggregator_feeds']['time'] = 90;
+}
+
+ /**
+ * Work on a single queue item.
+ *
+ * Callback for hook_queue_info().
+ *
+ * @param $queue_item_data
+ *   The data that was passed to BackdropQueue::createItem() when the item was
+ *   queued.
+ *
+ * @throws \Exception
+ *   The worker callback may throw an exception to indicate there was a problem.
+ *   The cron process will log the exception, and leave the item in the queue to
+ *   be processed again later.
+ *
+ * @see backdrop_cron_run()
+ */
+function callback_queue_worker($queue_item_data) {
+  $node = node_load($queue_item_data);
+  $node->title = 'Updated title';
+  $node->save();
+}
+
+/**
+ * Work on a single queue item.
+ *
+ * Callback for hook_queue_info().
+ *
+ * @param $queue_item_data
+ *   The data that was passed to DrupalQueue::createItem() when the item was
+ *   queued.
+ *
+ * @throws \Exception
+ *   The worker callback may throw an exception to indicate there was a problem.
+ *   The cron process will log the exception, and leave the item in the queue to
+ *   be processed again later.
+ *
+ * @see drupal_cron_run()
+ */
+function callback_queue_worker($queue_item_data) {
+  $node = node_load($queue_item_data);
+  $node->title = 'Updated title';
+  $node->save();
 }
 
 /**
@@ -1350,9 +1393,8 @@ function hook_init() {
 /**
  * Define image toolkits provided by this module.
  *
- * The file which includes each toolkit's functions must be declared as part of
- * the files array in the module .info file so that the registry will find and
- * parse it.
+ * The file which includes each toolkit's functions must be included in this
+ * hook.
  *
  * The toolkit's functions must be named image_toolkitname_operation().
  * where the operation may be:
@@ -3015,8 +3057,9 @@ function hook_class_registry_alter(&$class_registry, $modules) {
  *
  * Any tasks you define here will be run, in order, after the installer has
  * finished the site configuration step but before it has moved on to the
- * final import of languages and the end of the installation. You can have any
- * number of custom tasks to perform during this phase.
+ * final import of languages and the end of the installation. This is invoked
+ * by install_tasks().  You can have any number of custom tasks to perform
+ * during this phase.
  *
  * Each task you define here corresponds to a callback function which you must
  * separately define and which is called when your task is run. This function
@@ -3109,6 +3152,8 @@ function hook_class_registry_alter(&$class_registry, $modules) {
  *
  * @see install_state_defaults()
  * @see batch_set()
+ * @see hook_install_tasks_alter()
+ * @see install_tasks()
  */
 function hook_install_tasks(&$install_state) {
   // Here, we define a variable to allow tasks to indicate that a particular,
@@ -3211,6 +3256,8 @@ function hook_html_head_alter(&$head_elements) {
 /**
  * Alter the full list of installation tasks.
  *
+ * This hook is invoked on the install profile in install_tasks().
+ *
  * You can use this hook to change or replace any part of the Backdrop
  * installation process that occurs after the installation profile is selected.
  *
@@ -3220,6 +3267,9 @@ function hook_html_head_alter(&$head_elements) {
  *   steps within the installation process.
  * @param $install_state
  *   An array of information about the current installation state.
+ *
+ * @see hook_install_tasks()
+ * @see install_tasks()
  */
 function hook_install_tasks_alter(&$tasks, $install_state) {
   // Replace the entire site configuration form provided by Backdrop core
@@ -3634,6 +3684,9 @@ function hook_tokens_alter(array &$replacements, array $context) {
  *       the node author token provides a user object, which can then be used
  *       for token replacement data in token_replace() without having to supply
  *       a separate user object.
+ *     - deprecated (optional): If set to TRUE, the token will not be displayed
+ *       in token listings, but will still be replaced if encountered and pass
+ *       form validation by token_element_validate().
  *
  * @see hook_token_info_alter()
  * @see hook_tokens()
@@ -3647,27 +3700,27 @@ function hook_token_info() {
 
   // Core tokens for nodes.
   $node['nid'] = array(
-    'name' => t("Node ID"),
-    'description' => t("The unique ID of the node."),
+    'name' => t('Node ID'),
+    'description' => t('The unique ID of the node.'),
   );
   $node['title'] = array(
-    'name' => t("Title"),
-    'description' => t("The title of the node."),
+    'name' => t('Title'),
+    'description' => t('The title of the node.'),
   );
   $node['edit-url'] = array(
-    'name' => t("Edit URL"),
+    'name' => t('Edit URL'),
     'description' => t("The URL of the node's edit page."),
   );
 
   // Chained tokens for nodes.
   $node['created'] = array(
-    'name' => t("Date created"),
-    'description' => t("The date the node was posted."),
+    'name' => t('Date created'),
+    'description' => t('The date the node was posted.'),
     'type' => 'date',
   );
   $node['author'] = array(
-    'name' => t("Author"),
-    'description' => t("The author of the node."),
+    'name' => t('Author'),
+    'description' => t('The author of the node.'),
     'type' => 'user',
   );
 

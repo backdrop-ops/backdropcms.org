@@ -194,7 +194,16 @@ class CommonURLUnitTestCase extends BackdropWebTestCase {
     // vectors.
     $this->assertTrue(url_is_external($url), 'Correctly identified an external URL.');
 
+    // External URL without an explicit protocol.
+    $url = '//backdropcms.org/foo/bar?foo=bar&bar=baz&baz#foo';
+    $this->assertTrue(url_is_external($url), 'Correctly identified an external URL without a protocol part.');
+
+    // Internal URL starting with a slash.
+    $url = '/backdropcms.org';
+    $this->assertFalse(url_is_external($url), 'Correctly identified an internal URL with a leading slash.');
+
     // Test the parsing of absolute URLs.
+    $url = 'http://backdropcms.org/foo/bar?foo=bar&bar=baz&baz#foo';
     $result = array(
       'path' => 'http://backdropcms.org/foo/bar',
       'query' => array('foo' => 'bar', 'bar' => 'baz', 'baz' => ''),
@@ -336,6 +345,17 @@ class CommonURLUnitTestCase extends BackdropWebTestCase {
     $query = array($this->randomName(5) => $this->randomName(5));
     $result = url($url, array('query' => $query));
     $this->assertEqual($url . '&' . http_build_query($query, '', '&'), $result, 'External URL query string can be extended with a custom query string in $options.');
+
+    // Verify that an internal URL does not result in an external URL without
+    // protocol part.
+    $url = '/backdropcms.org';
+    $result = url($url);
+    $this->assertTrue(strpos($result, '//') === FALSE, 'Internal URL does not turn into an external URL.');
+
+    // Verify that an external URL without protocol part is recognized as such.
+    $url = '//backdropcms.org';
+    $result = url($url);
+    $this->assertEqual($url, $result, 'External URL without protocol is not altered.');
   }
 }
 
@@ -1879,7 +1899,7 @@ class CommonBackdropRenderTestCase extends BackdropWebTestCase {
   }
 
   /**
-   * Tests caching of an empty render item.
+   * Tests caching of render items.
    */
   function testBackdropRenderCache() {
     // Force a request via GET.
@@ -1904,6 +1924,59 @@ class CommonBackdropRenderTestCase extends BackdropWebTestCase {
     $element = $test_element;
     backdrop_render($element);
     $this->assertFalse(isset($element['#printed']), 'Cache hit');
+
+    // Test that user 1 does not share the cache with other users who have the
+    // same roles, even when BACKDROP_CACHE_PER_ROLE is used.
+    $user1 = user_load(1);
+    $first_authenticated_user = $this->backdropCreateUser();
+    $second_authenticated_user = $this->backdropCreateUser();
+    $user1->roles = array_intersect($user1->roles, array(BACKDROP_AUTHENTICATED_ROLE));
+    user_save($user1);
+    // Load all the accounts again, to make sure we have complete account
+    // objects.
+    $user1 = user_load(1);
+    $first_authenticated_user = user_load($first_authenticated_user->uid);
+    $second_authenticated_user = user_load($second_authenticated_user->uid);
+    $this->assertEqual($user1->roles, $first_authenticated_user->roles, 'User 1 has the same roles as an authenticated user.');
+    // Impersonate user 1 and render content that only user 1 should have
+    // permission to see.
+    $original_user = $GLOBALS['user'];
+    $original_session_state = backdrop_save_session();
+    backdrop_save_session(FALSE);
+    $GLOBALS['user'] = $user1;
+    $test_element = array(
+      '#cache' => array(
+        'keys' => array('test'),
+        'granularity' => BACKDROP_CACHE_PER_ROLE,
+      ),
+    );
+    $element = $test_element;
+    $element['#markup'] = 'content for user 1';
+    $output = backdrop_render($element);
+    $this->assertEqual($output, 'content for user 1');
+    // Verify the cache is working by rendering the same element but with
+    // different markup passed in; the result should be the same.
+    $element = $test_element;
+    $element['#markup'] = 'should not be used';
+    $output = backdrop_render($element);
+    $this->assertEqual($output, 'content for user 1');
+    // Verify that the first authenticated user does not see the same content
+    // as user 1.
+    $GLOBALS['user'] = $first_authenticated_user;
+    $element = $test_element;
+    $element['#markup'] = 'content for authenticated users';
+    $output = backdrop_render($element);
+    $this->assertEqual($output, 'content for authenticated users');
+    // Verify that the second authenticated user shares the cache with the
+    // first authenticated user.
+    $GLOBALS['user'] = $second_authenticated_user;
+    $element = $test_element;
+    $element['#markup'] = 'should not be used';
+    $output = backdrop_render($element);
+    $this->assertEqual($output, 'content for authenticated users');
+    // Restore the original logged-in user.
+    $GLOBALS['user'] = $original_user;
+    backdrop_save_session($original_session_state);
 
     // Restore the previous request method.
     $_SERVER['REQUEST_METHOD'] = $request_method;

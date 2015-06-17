@@ -372,9 +372,7 @@ function user_password($length = 10) {
  *   An unindexed array of role names, such as those in $user->roles.
  *
  * @return
- *   If $roles is a non-empty array, an array indexed by role ID is returned.
- *   Each value is an array whose keys are the permission strings for the given
- *   role ID. If $roles is empty nothing is returned.
+ *   An array of permission strings for all the given role names.
  */
 function user_role_permissions($role_names = array()) {
   $all_roles = user_roles(FALSE, NULL, TRUE);
@@ -450,6 +448,25 @@ function user_is_blocked($name) {
     ->condition('name', db_like($name), 'LIKE')
     ->condition('status', 0)
     ->execute()->fetchObject();
+}
+
+/**
+ * Checks if a user has a role.
+ *
+ * @param int $rid
+ *   A role ID.
+ * @param User $account
+ *   (optional) A user account. Defaults to the current user.
+ *
+ * @return bool
+ *   TRUE or FALSE.
+ */
+function user_has_role($rid, $account = NULL) {
+  if (!$account) {
+    $account = $GLOBALS['user'];
+  }
+
+  return isset($account->roles[$rid]);
 }
 
 /**
@@ -1165,7 +1182,7 @@ function user_menu() {
 
   // Administration pages.
   $items['admin/config/people'] = array(
-    'title' => 'People',
+    'title' => 'User accounts',
     'description' => 'Configure user accounts.',
     'position' => 'left',
     'weight' => -20,
@@ -1210,7 +1227,7 @@ function user_menu() {
 
   // Administration pages.
   $items['admin/config/people'] = array(
-    'title' => 'People',
+    'title' => 'User accounts',
     'description' => 'Configure user accounts.',
     'position' => 'left',
     'weight' => -20,
@@ -1681,7 +1698,7 @@ function user_login_submit($form, &$form_state) {
  */
 function user_pass_reset_url($account) {
   $timestamp = REQUEST_TIME;
-  return url("user/reset/$account->uid/$timestamp/" . user_pass_rehash($account->pass, $timestamp, $account->login), array('absolute' => TRUE));
+  return url("user/reset/$account->uid/$timestamp/" . user_pass_rehash($account->pass, $timestamp, $account->login, $account->uid), array('absolute' => TRUE));
 }
 
 /**
@@ -1703,7 +1720,7 @@ function user_pass_reset_url($account) {
  */
 function user_cancel_url($account) {
   $timestamp = REQUEST_TIME;
-  return url("user/$account->uid/cancel/confirm/$timestamp/" . user_pass_rehash($account->pass, $timestamp, $account->login), array('absolute' => TRUE));
+  return url("user/$account->uid/cancel/confirm/$timestamp/" . user_pass_rehash($account->pass, $timestamp, $account->login, $account->uid), array('absolute' => TRUE));
 }
 
 /**
@@ -1723,12 +1740,33 @@ function user_cancel_url($account) {
  *   A UNIX timestamp, typically REQUEST_TIME.
  * @param int $login
  *   The UNIX timestamp of the user's last login.
+ * @param int $uid
+ *   The user ID of the user account.
  *
  * @return
  *   A string that is safe for use in URLs and SQL statements.
  */
-function user_pass_rehash($password, $timestamp, $login) {
-  return backdrop_hmac_base64($timestamp . $login, backdrop_get_hash_salt() . $password);
+function user_pass_rehash($password, $timestamp, $login, $uid) {
+  // Backwards compatibility: Try to determine a $uid if one was not passed.
+  // (Since $uid is a required parameter to this function, a PHP warning will
+  // be generated if it's not provided, which is an indication that the calling
+  // code should be updated. But the code below will try to generate a correct
+  // hash in the meantime.)
+  if (!isset($uid)) {
+    $uids = db_query_range('SELECT uid FROM {users} WHERE pass = :password AND login = :login AND uid > 0', 0, 2, array(':password' => $password, ':login' => $login))->fetchCol();
+    // If exactly one user account matches the provided password and login
+    // timestamp, proceed with that $uid.
+    if (count($uids) == 1) {
+      $uid = reset($uids);
+    }
+    // Otherwise there is no safe hash to return, so return a random string
+    // that will never be treated as a valid token.
+    else {
+      return backdrop_random_key();
+    }
+  }
+
+  return backdrop_hmac_base64($timestamp . $login . $uid, backdrop_get_hash_salt() . $password);
 }
 
 /**
@@ -2069,10 +2107,12 @@ function user_mail_tokens(&$replacements, $data, $options) {
  * @param $permission
  *   A string containing a permission. If set, only roles containing that
  *   permission are returned.
+ * @param $full_objects
+ *   TRUE to return complete role objects; FALSE to return role labels.
  *
  * @return
- *   An associative array with the role id as the key and the role name as
- *   value.
+ *   An associative array of role objects (or role labels, depending on
+ *   $full_objects) indexed by role names.
  */
 function user_roles($members_only = FALSE, $permission = NULL, $full_objects = FALSE) {
   $user_roles = &backdrop_static(__FUNCTION__);

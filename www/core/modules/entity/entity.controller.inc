@@ -33,7 +33,9 @@ interface EntityControllerInterface {
    * @param $ids
    *   An array of entity IDs, or FALSE to load all entities.
    * @param $conditions
-   *   An array of conditions in the form 'field' => $value.
+   *   An array of conditions. Keys are field names on the entity's base table.
+   *   Values will be compared for equality. All the comparisons will be ANDed
+   *   together. This parameter is deprecated; use an EntityFieldQuery instead.
    *
    * @return
    *   An array of entity objects indexed by their ids.
@@ -249,7 +251,9 @@ class DefaultEntityController implements EntityControllerInterface {
    * @param $ids
    *   An array of entity IDs, or FALSE to load all entities.
    * @param $conditions
-   *   An array of conditions in the form 'field' => $value.
+   *   An array of conditions. Keys are field names on the entity's base table.
+   *   Values will be compared for equality. All the comparisons will be ANDed
+   *   together. This parameter is deprecated; use an EntityFieldQuery instead.
    * @param $revision_id
    *   The ID of the revision to load, or FALSE if this query is asking for the
    *   most current revision(s).
@@ -504,7 +508,7 @@ class EntityDatabaseStorageController extends DefaultEntityController implements
     catch (Exception $e) {
       $transaction->rollback();
       watchdog_exception($this->entityType, $e);
-      throw new EntityStorageException($e->getMessage, $e->getCode, $e);
+      throw new EntityStorageException($e->getMessage, (int) $e->getCode(), $e);
     }
   }
 
@@ -546,7 +550,7 @@ class EntityDatabaseStorageController extends DefaultEntityController implements
     catch (Exception $e) {
       $transaction->rollback();
       watchdog_exception($this->entityType, $e);
-      throw new EntityStorageException($e->getMessage(), $e->getCode(), $e);
+      throw new EntityStorageException($e->getMessage(), (int) $e->getCode(), $e);
     }
   }
 
