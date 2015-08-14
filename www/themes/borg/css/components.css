@@ -635,3 +635,163 @@ body.front .block-block-4 h2 {
   vertical-align: top;
   width: 29%;
 }
+
+/*******************************************************************************
+ * Default pager styles
+ ******************************************************************************/
+.view .item-list {
+   text-align: center;
+}
+
+.item-list .pager {
+   display: inline-block;
+   margin: 20px 0 0;
+   padding: 0;
+}
+
+.item-list .pager li {
+   position: relative;
+   display: block;
+   float: left;
+   min-width: 2em;
+   height: 2em;
+   margin: 0;
+   padding: 2px;
+   line-height: 2em;
+   font-weight: normal;
+  font-size: 1.3em;
+}
+
+.item-list .pager li a {
+   display: block;
+   min-width: 2em;
+   height: 2em;
+   color: #86898a;
+}
+.item-list .pager li a:hover,
+.item-list .pager li a:focus,
+.item-list .pager li a:active {
+  color: #007CBA;
+}
+.item-list .pager .pager-item {
+  display: none;
+}
+.item-list .pager .pager-current:before {
+  content: 'Page ';
+}
+@media (min-width: 580px) {
+  .item-list .pager .pager-item {
+    display: block;
+  }
+  .item-list .pager .pager-current:before {
+    content: '';
+  }
+}
+.pager-current:before,
+.pager-current + .pager-item:before,
+.pager-item + .pager-item:before {
+   content: '';
+}
+.pager-current:first-child:before {
+  display: none;
+}
+@media (min-width: 580px) {
+  .pager-current:before,
+  .pager-current + .pager-item:before,
+  .pager-item + .pager-item:before {
+     position: absolute;
+     left: 0;
+     top: 50%;
+     z-index: 1;
+     width: 0em;
+     height: 1.2em;
+     pointer-events: none;
+     -webkit-transform: translate(-0.05em, -50%) rotate(20deg);
+         -ms-transform: translate(-0.05em, -50%) rotate(20deg);
+             transform: translate(-0.05em, -50%) rotate(20deg);
+     border-left: 1px solid #86898a;
+  }
+}
+.pager-first a,
+.pager-previous a,
+.pager-next a,
+.pager-last a {
+   position: relative;
+   display: block;
+   width: 2em;
+   height: 2em;
+   text-indent: -9999em;
+   overflow: hidden;
+}
+.pager-first a:before,
+.pager-first a:after,
+.pager-previous a:before,
+.pager-previous a:after,
+.pager-next a:before,
+.pager-next a:after,
+.pager-last a:before,
+.pager-last a:after {
+   position: absolute;
+   top: 0;
+   left: 0;
+   content: '';
+   border: 0 solid #86898a;
+   width: .5em;
+   height: .5em;
+   -webkit-transform: translate(0.6em, 0.65em) rotate(45deg);
+       -ms-transform: translate(0.6em, 0.65em) rotate(45deg);
+           transform: translate(0.6em, 0.65em) rotate(45deg);
+}
+@media (min-width: 580px) {
+  .pager-first a:hover:before,
+  .pager-first a:hover:after,
+  .pager-previous a:hover:before,
+  .pager-previous a:hover:after,
+  .pager-next a:hover:before,
+  .pager-next a:hover:after,
+  .pager-last a:hover:before,
+  .pager-last a:hover:after {
+    border-color: #007CBA;
+  }
+}
+.pager-first a:before,
+.pager-first a:after {
+   border-width: 0 0 2px 2px;
+}
+.pager-first a:before {
+   left: 1px;
+}
+.pager-first a:after {
+   left: 7px;
+}
+.pager-previous a:before {
+   border-width: 0 0 2px 2px;
+}
+.pager-previous a:before {
+   left: 3px;
+}
+.pager-next a:before {
+   border-width: 2px 2px 0 0;
+}
+.pager-next a:before {
+   left: 0px;
+}
+.pager-last a:before,
+.pager-last a:after {
+   border-width: 2px 2px 0 0;
+}
+.pager-last a:before {
+   left: -5px;
+}
+.pager-last a:after {
+   left: 1px;
+}
+
+
+/*******************************************************************************
+ * Project releases view
+ ******************************************************************************/
+.view-project-releases-by-project .view-empty {
+  margin: 1em 0;
+  font-size: 1.2em;
+}

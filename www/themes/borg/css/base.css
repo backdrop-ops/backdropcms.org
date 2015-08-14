@@ -17,7 +17,7 @@ body {
 
 p {
   font-size: 110%;
-  line-height: 140%;
+  line-height: 1.4;
   margin: 1em 0;
 }
 
@@ -25,8 +25,9 @@ a {
   color: #007CBA;
   text-decoration: none;
 }
+
 a:hover {
-  color: #007CBA:
+  color: #007CBA;
 }
 
 img {
@@ -42,7 +43,13 @@ h1 {
 h2 {
   margin: 1em 0;
   font-weight: 300; /* Light */
-  font-size: 42px;
+  font-size: 38px;
+}
+
+@media (min-width: 520px) {
+  h2 {
+    font-size: 42px;
+  }
 }
 
 h3 {
@@ -61,6 +68,7 @@ h4 {
 
 ul {
   margin: .75em 0;
+  padding-left: 2em;
 }
 li {
   margin: .5em 0;
