@@ -1,0 +1,32 @@
+{
+    "_config_name": "field.bundle.node.project_module",
+    "bundle": "project_module",
+    "entity_type": "node",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "title": {
+                "weight": "-5"
+            },
+            "project_name": {
+                "weight": "-4"
+            },
+            "project_sandbox": {
+                "weight": "-2"
+            },
+            "project_github_path": {
+                "weight": "-3"
+            },
+            "project_github_sync_readme": {
+                "weight": "-1"
+            },
+            "project_releases_enabled": {
+                "weight": "-4"
+            },
+            "redirect": {
+                "weight": "30"
+            }
+        },
+        "display": []
+    }
+}

@@ -3,7 +3,7 @@
     "name": "node_admin_content",
     "description": "Find and manage content.",
     "module": "node",
-    "storage": 4,
+    "storage": 2,
     "tag": "default",
     "disabled": false,
     "base_table": "node",
@@ -323,16 +323,29 @@
                             "operator": "type_op",
                             "identifier": "type",
                             "required": 0,
-                            "remember": 0,
+                            "remember": 1,
                             "multiple": 0,
                             "remember_roles": {
+                                "authenticated": "authenticated",
                                 "anonymous": 0,
-                                "authenticated": 0,
-                                "administrator": 0
+                                "4": 0,
+                                "3": 0
                             },
                             "reduce": 0
                         },
-                        "is_grouped": false
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
                     },
                     "title": {
                         "id": "title",

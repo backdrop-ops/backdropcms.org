@@ -16,7 +16,29 @@
         "type": "field_sql_storage",
         "module": "field_sql_storage",
         "active": 1,
-        "settings": []
+        "settings": [],
+        "details": {
+            "sql": {
+                "FIELD_LOAD_CURRENT": {
+                    "field_data_field_image": {
+                        "fid": "field_image_fid",
+                        "alt": "field_image_alt",
+                        "title": "field_image_title",
+                        "width": "field_image_width",
+                        "height": "field_image_height"
+                    }
+                },
+                "FIELD_LOAD_REVISION": {
+                    "field_revision_field_image": {
+                        "fid": "field_image_fid",
+                        "alt": "field_image_alt",
+                        "title": "field_image_title",
+                        "width": "field_image_width",
+                        "height": "field_image_height"
+                    }
+                }
+            }
+        }
     },
     "entity_types": []
 }

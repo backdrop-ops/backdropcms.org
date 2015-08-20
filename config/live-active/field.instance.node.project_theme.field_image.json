@@ -1,0 +1,46 @@
+{
+    "_config_name": "field.instance.node.project_theme.field_image",
+    "field_name": "field_image",
+    "entity_type": "node",
+    "bundle": "project_theme",
+    "label": "Theme preview",
+    "widget": {
+        "weight": "5",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "medium"
+        }
+    },
+    "description": "Include a screenshot of this theme in action. The image should be a 3:4 ratio size for best display.",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "file_directory": "theme-screenshots",
+        "file_extensions": "png",
+        "max_filesize": "10MB",
+        "max_resolution": "2048x1536",
+        "min_resolution": "292x219",
+        "alt_field": 0,
+        "title_field": 0,
+        "default_image": "",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "image",
+            "settings": {
+                "image_style": "",
+                "image_link": "",
+                "image_float": ""
+            },
+            "module": "image",
+            "weight": 1
+        }
+    }
+}
