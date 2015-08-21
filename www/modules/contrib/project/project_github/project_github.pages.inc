@@ -446,7 +446,7 @@ function _project_github_create_project_release(array &$errors, array $payload) 
 
   // Check that we're not about to overwrite an existing node. We will update
   // the existing node with the same version string if applicable.
-  $existing_nid = db_query("SELECT nid FROM {project_release} WHERE version = :version", array(':version' => $payload['release']['tag_name']))->fetchField();
+  $existing_nid = db_query("SELECT nid FROM {project_release} WHERE version = :version AND project_nid = :project_nid", array(':version' => $payload['release']['tag_name'], ':project_nid' => $project_node->nid))->fetchField();
   if ($existing_nid) {
     $node = node_load($existing_nid);
   }
