@@ -1,12 +1,10 @@
 Patches to Backdrop Core:
 =========================
 
-Fix seven theme so it doesn't throw PHP notice:
-https://github.com/backdrop/backdrop-issues/issues/721
-
-Fix up views to prevent PHP notices when no li classes:
-https://github.com/backdrop/backdrop-issues/issues/729
-
+Fix the packager so that it can include invisible files (.htaccess)
+https://github.com/backdrop/backdrop-issues/issues/1109
+https://patch-diff.githubusercontent.com/raw/backdrop/backdrop/pull/1020.diff
+This should be in Backdrop 1.1.4.
 
 Patches to Backdrop Contrib:
 ============================

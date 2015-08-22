@@ -661,7 +661,7 @@ function _project_release_node_save(Node $node) {
     // Determine the download file size if not provided.
     $is_new = empty($node->original);
     $update_download_size = FALSE;
-    if (is_null($node->project_release['download_size']) || $node->project_release['download_size'] === '') {
+    if (!isset($node->project_release['download_size']) || $node->project_release['download_size'] === '') {
       $update_download_size = TRUE;
     }
     if (!$is_new && $node->original->project_release['download_link'] !== $node->project_release['download_link']) {
