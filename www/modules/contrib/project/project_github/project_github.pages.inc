@@ -502,7 +502,7 @@ function _project_github_create_project_release(array &$errors, array $payload) 
   // Allow other modules to set errors or modify the node before save.
   foreach (module_implements('github_project_release_validate') as $module) {
     $function = $module . '_github_project_release_validate';
-    $function($project_node, $errors, $payload);
+    $function($node, $errors, $payload);
   }
 
   if (empty($errors)) {
@@ -617,12 +617,15 @@ function _project_github_update_readme(array &$errors, array $payload) {
  *   TRUE if the node has been modified with the updated README.
  */
 function project_github_update_readme(Node &$node) {
+  $access_token = settings_get('project_github_access_token');
+
   // GitHub doesn't provide a URL for the README, though it is documented under
   // the "contents" API. See https://developer.github.com/v3/repos/contents/
   $readme_url = 'https://api.github.com/repos/' . $node->project['github_path'] . '/readme';
 
   $options = array(
     'headers' => array(
+      'Authorization' => 'token ' . $access_token,
       'Accept' => 'application/vnd.github.v3.html',
     ),
   );

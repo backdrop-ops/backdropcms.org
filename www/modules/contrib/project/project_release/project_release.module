@@ -91,7 +91,7 @@ function project_release_menu_alter(&$callbacks) {
     $callbacks['node/add/' . $type_url_str . '/%project']['access arguments'] = array(3, 'administer releases');
 
     // @todo: Provide a fallback page for adding project releases.
-    $callbacks['node/add/' . $type_url_str]['page callback'] = FALSE;
+    //$callbacks['node/add/' . $type_url_str]['page callback'] = FALSE;
   }
 }
 
