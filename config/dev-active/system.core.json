@@ -1,6 +1,5 @@
 {
     "_config_name": "system.core",
-    "private_key": "deJFW793ITRGq1fzLM-kI6DbCDAlCFrG2nyDpnXKlsE",
     "user_admin_role": "3",
     "anonymous": "Anonymous",
     "user_email_verification": 1,
@@ -28,7 +27,7 @@
     "cron_max_threshold": 10800,
     "cron_threshold_error": 1209600,
     "site_name": "Backdrop CMS",
-    "site_mail": "no-reply@example.com",
+    "site_mail": "noreply@backdropcms.org",
     "site_slogan": "",
     "site_403": "",
     "site_404": "",
@@ -60,5 +59,11 @@
     "default_nodes_main": "10",
     "field_purge_batch_size": 200,
     "image_style_flood_limit": 5,
-    "theme_debug": false
+    "theme_debug": false,
+    "site_logo_theme": 0,
+    "site_logo_path": "",
+    "site_favicon_theme": 0,
+    "site_favicon_path": "",
+    "site_favicon_mimetype": "",
+    "canonical_secure": 0
 }
