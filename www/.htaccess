@@ -119,7 +119,6 @@ DirectoryIndex index.php index.html index.htm
   # Pass all requests not referring directly to files in the filesystem to
   # index.php. Clean URLs are handled in backdrop_environment_initialize().
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_URI} !=/favicon.ico
   RewriteRule ^ index.php [L]
 

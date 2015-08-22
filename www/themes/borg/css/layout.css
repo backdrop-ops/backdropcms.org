@@ -25,6 +25,19 @@ body.front #page-title {
   margin-bottom: 30px;
 }
 
+
+@media all and (min-width: 851px) {
+  body {
+    padding-left: 230px;
+  }
+
+  [dir="rtl"] body {
+    padding-left: 0;
+    padding-right: 230px;
+  }
+}
+
+
 /*******************************************************************************
  * Main content.
  ******************************************************************************/

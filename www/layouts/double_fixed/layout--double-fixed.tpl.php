@@ -31,37 +31,39 @@
 
   <div class="l-container">
     <main class="l-content" role="main">
-        <div class="l-content-top">
-          <div class="l-content-wrapper">
-            <a id="main-content"></a>
-            <?php print render($title_prefix); ?>
-            <?php if ($title): ?>
-              <h1 class="title" id="page-title">
-                <?php print $title; ?>
-              </h1>
-            <?php endif; ?>
-            <?php print render($title_suffix); ?>
+      <div class="l-content-top">
+        <div class="l-content-wrapper">
+          <a id="main-content"></a>
+          <?php print render($title_prefix); ?>
+          <?php if ($title): ?>
+            <h1 class="title" id="page-title">
+              <?php print $title; ?>
+            </h1>
+          <?php endif; ?>
+          <?php print render($title_suffix); ?>
 
-            <?php print $content['content-top']; ?>
-          </div>
+          <?php print $content['content-top']; ?>
         </div>
-
-        <?php if ($tabs): ?>
-          <div class="tabs l-content-wrapper">
-            <?php print $tabs; ?>
-          </div>
-        <?php endif; ?>
-
-        <?php print $action_links; ?>
-
-        <?php if ($messages): ?>
-          <section class="l-messages">
-            <?php print $messages; ?>
-          </section>
-        <?php endif; ?>
-
-        <?php print $content['content']; ?>
       </div>
+
+      <?php if ($tabs): ?>
+        <div class="tabs l-content-wrapper">
+          <?php print $tabs; ?>
+        </div>
+      <?php endif; ?>
+
+      <div class="l-content-wrapper">
+        <?php print $action_links; ?>
+      </div>
+
+      <?php if ($messages): ?>
+        <section class="l-content-wrapper l-messages">
+          <?php print $messages; ?>
+        </section>
+      <?php endif; ?>
+
+      <?php print $content['content']; ?>
+
       <?php if ($content['footer']): ?>
         <div class="l-footer">
             <?php print $content['footer']; ?>

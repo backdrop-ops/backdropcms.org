@@ -78,15 +78,6 @@
   }
 
   /* One Sidebar */
-  body {
-    padding-left: 230px;
-  }
-
-  [dir="rtl"] body {
-    padding-left: 0;
-    padding-right: 230px;
-  }
-
   .layout--double-fixed .l-sidebar {
     width: 230px;
     height: 100%;
@@ -122,10 +113,12 @@
  * Admin only CSS
  ******************************************************************************/
 
+#layout-edit-main .layout--double-fixed {
+  position: relative;
+}
 #layout-edit-main .layout--double-fixed .l-container {
   padding: 0;
 }
-
 #layout-edit-main .layout--double-fixed .l-content {
   position: relative;
   float: right;
@@ -134,15 +127,18 @@
 }
 
 #layout-edit-main .layout--double-fixed .l-sidebar {
-  position: relative;
+  position: absolute;
   float: left;
   width: 25%;
+  top: 0;
+  left: 25%;
 }
 #layout-edit-main .layout--double-fixed .l-drawer {
-  position: relative;
+  position: absolute;
   float: left;
   width: 25%;
   margin: 0;
+  top: 0;
   left: 0;
 }
 
