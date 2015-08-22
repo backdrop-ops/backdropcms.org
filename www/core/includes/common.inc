@@ -2347,6 +2347,8 @@ function _format_date_callback(array $matches = NULL, $new_langcode = NULL) {
  *     internal to the site, $options['language'] is used to look up the alias
  *     for the URL. If $options['language'] is omitted, the global $language_url
  *     will be used.
+ *   - 'clean': Force the enabling or disabling of the "Clean URLs" option for
+ *     the returned URL. If omitted, the site-wide setting will be used.
  *   - 'https': Whether this URL should point to a secure location. If not
  *     defined, the current scheme is used, so the user stays on HTTP or HTTPS
  *     respectively. TRUE enforces HTTPS and FALSE enforces HTTP, but HTTPS can
@@ -2474,16 +2476,23 @@ function url($path = NULL, array $options = array()) {
   // Cache the clean URLs setting, as url() is called very frequently.
   static $backdrop_static_fast;
   if (!isset($backdrop_static_fast)) {
-    $backdrop_static_fast['clean_url'] = &backdrop_static(__FUNCTION__);
+    $backdrop_static_fast['clean_urls_enabled'] = &backdrop_static(__FUNCTION__);
   }
-  $clean_url = &$backdrop_static_fast['clean_url'];
-  if (!isset($clean_url)) {
+  $clean_urls_enabled = &$backdrop_static_fast['clean_urls_enabled'];
+  if (!isset($clean_urls_enabled)) {
     try {
-      $clean_url = config_get('system.core', 'clean_url') ? TRUE : FALSE;
+      $clean_urls_enabled = config_get('system.core', 'clean_url') ? TRUE : FALSE;
     }
     catch (ConfigException $e) {
-      $clean_url = FALSE;
+      $clean_urls_enabled = FALSE;
     }
+  }
+
+  if (isset($options['clean'])) {
+    $clean_url = $options['clean'];
+  }
+  else {
+    $clean_url = $clean_urls_enabled;
   }
 
   // With Clean URLs.
@@ -6662,12 +6671,21 @@ function element_info_property($type, $property_name, $default = NULL) {
  * @param array $array
  *   The input array to be sorted.
  * @param array $keys
- *   An array of keys on which to be sort. Each key of the $keys array is the
- *   key by which sorting will be done. Each value of the $keys array must be
- *   one of the PHP constants sorting, either SORT_NUMERIC or SORT_STRING.
- *   If an unindexed array is passed in, each value will be assumed to be the
- *   key by which sorting will be done, and all comparisons will be done as
- *   though SORT_NUMERIC were passed in for each key.
+ *   An array of keys to sort by. Values must be PHP sorting type flags,
+ *   either SORT_NUMERIC or SORT_STRING, and default to SORT_NUMERIC if an 
+ *   unindexed array is passed in. 
+ *
+ * Example usage:
+ * @code
+ * // Sort by a single numeric key:
+ * backdrop_sort($my_array, array('weight' => SORT_NUMERIC));
+ * 
+ * // Short-hand sort by a numeric key:
+ * backdrop_sort($my_array, array('weight'));
+ * 
+ * // Sort by numeric and string keys.
+ * backdrop_sort($my_array, array('weight' => SORT_NUMERIC, 'title' => SORT_STRING));
+ * @endcode
  */
 function backdrop_sort(array &$array, array $keys = array('weight')) {
   // Ensure all keys have a sort value.
