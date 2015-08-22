@@ -9,7 +9,7 @@
     $defaultActiveLink = $('.block-system-main-menu li.active').first();
     $menu = $('.block-system-main-menu ul.menu');
     $drawer = $('.l-drawer');
-    $layoutWrapper = $('.layout--double-fixed');
+    $layoutWrapper = $('body');
 
     // Bind to the handbook link to open/close the drawer.
     $('.block-system-main-menu a[href$="/handbook"]').click(function(e) {

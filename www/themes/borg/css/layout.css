@@ -5,8 +5,13 @@
  * etc. should be in the layouts/double_fixed/double-fixed.css file!
  ******************************************************************************/
 #page-title {
-  font-size: 64px;
+  font-size: 45px;
   letter-spacing: -.04em;
+}
+@media (min-width: 520px) {
+  #page-title {
+    font-size: 64px;
+  }
 }
 @media (min-width: 1024px) {
   #page-title {
@@ -24,27 +29,35 @@ body.front #page-title {
  * Main content.
  ******************************************************************************/
 main {
-  padding-top: 70px;
+  position: relative;
+}
+main:before {
+  content: 'Backdrop';
+  /* Aspect ratio hack: http://codepen.io/wesruv/full/hindu */
+  display: block;
+  width: 95%;
+  height: 0;
+  padding: 23% 0 0;
+  margin: 25px auto 0;
   background-image: url('../images/Backdrop-Logo-Horizontal.png');
   background-image: linear-gradient(transparent, transparent), url('../images/Backdrop-Logo-Horizontal.svg');
   background-position: top center;
   background-repeat: no-repeat;
-  background-size: 80%;
+  background-size: 100% auto;
+  text-indent: -9999em;
+  overflow: hidden;
+  transition: width 0.2s ease-out;
+  will-change: width;
 }
 @media (min-width: 520px) {
-  main {
-    padding-top: 100px;
-  }
-}
-@media (min-width: 700px) {
-  main {
-    padding-top: 160px;
+  main:before {
+    width: 80%;
   }
 }
 @media (min-width: 851px) {
-  main {
-    background-image: none;
-    padding-top: 0;
+  main:before {
+    display: none;
+    content: '';
   }
 }
 
@@ -95,7 +108,7 @@ main {
   transition: padding 0.3s ease;
 }
 .drawer-closed .l-drawer {
-  left: -2px !important;
+  left: -2px;
 }
 .l-drawer span {
   display: block;

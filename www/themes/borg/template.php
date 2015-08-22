@@ -11,7 +11,7 @@
 /**
  * Prepares variables for page.tpl.php
  */
-function borg_preprocess_page() {
+function borg_preprocess_page(&$variables) {
   // Add the Source Sans Pro font.
   backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700', array('type' => 'external'));
   // Add FontAwesome.
@@ -28,15 +28,11 @@ $(window).load(function() {
 });";
     backdrop_add_js($script, array('type' => 'inline'));
   }
-}
 
-/**
- * Prepares variables for layout.tpl.php
- */
-function borg_preprocess_layout__double_fixed(&$variables) {
   $node = menu_get_object();
   if (isset($node) && isset($node->type) && $node->type === 'book') {
     $variables['classes'][] = 'drawer-open';
+    $variables['classes'][] = 'layout-both-sidebars';
   }
   else {
     $variables['classes'][] = 'drawer-closed';
@@ -44,6 +40,61 @@ function borg_preprocess_layout__double_fixed(&$variables) {
     if ($array_key !== FALSE) {
       $variables['classes'][$array_key] = 'layout-one-sidebar';
     }
+  }
+}
+
+/**
+ * Preprocess views_view
+ */
+function borg_preprocess_views_view(&$variables) {
+  $path = backdrop_get_path('theme', 'borg');
+  if($variables['name'] == 'modules') {
+    backdrop_add_css($path . '/css/project-search.css');
+  }
+}
+
+/**
+ * Preprocess views exposed forms
+ */
+function borg_preprocess_views_exposed_form(&$variables) {
+  if(substr($variables['form']['#id'], 0, 26) == 'views-exposed-form-modules'){
+    // Update search field
+    $search_field_key = '';
+    $search_type = '';
+    if (!empty($variables['form']['title'])){
+      $search_field_key = 'title';
+      if($variables['form']['#id'] == 'views-exposed-form-modules-page-2') {
+        $search_type = 'themes';
+      }
+      elseif ($variables['form']['#id'] == 'views-exposed-form-modules-page-3') {
+        $search_type = 'layouts';
+      }
+    }
+    elseif (!empty($variables['form']['keys'])){
+      $search_field_key = 'keys';
+      $search_type = 'modules';
+    }
+
+    if (!empty($search_field_key)){
+      // Boo divitis
+      unset($variables['form'][$search_field_key]['#theme_wrappers']);
+      // Add placeholder text
+      $variables['form'][$search_field_key]['#attributes']['placeholder'] = t('Search '. $search_type .'...');
+      // Re-render field
+      $variables['widgets']['filter-'. $search_field_key]->widget = render($variables['form'][$search_field_key]);
+    }
+  }
+}
+
+/**
+ * Prepare variables for node template
+ */
+function borg_preprocess_node(&$variables){
+  $path = backdrop_get_path('theme', 'borg');
+  if (substr($variables['type'], 0, 8) == 'project_'){
+    $variables['content']['project_release_downloads']['#prefix'] = '<h2>' . t('Downloads')  . '</h2>';
+    $variables['content']['project_release_downloads']['#weight'] = -10;
+    backdrop_add_css($path . '/css/project-styles.css');
   }
 }
 

@@ -40,10 +40,29 @@
                 "pager": {
                     "type": "full",
                     "options": {
-                        "items_per_page": "25"
+                        "items_per_page": "25",
+                        "offset": "0",
+                        "id": "0",
+                        "total_pages": "",
+                        "quantity": "9",
+                        "tags": {
+                            "first": "« first",
+                            "previous": "‹ previous",
+                            "next": "next ›",
+                            "last": "last »"
+                        },
+                        "expose": {
+                            "items_per_page": 0,
+                            "items_per_page_label": "Items per page",
+                            "items_per_page_options": "5, 10, 20, 40, 60",
+                            "items_per_page_options_all": 0,
+                            "items_per_page_options_all_label": "- All -",
+                            "offset": 0,
+                            "offset_label": "Offset"
+                        }
                     }
                 },
-                "style_plugin": "default",
+                "style_plugin": "list",
                 "row_plugin": "fields",
                 "fields": {
                     "title": {
@@ -363,7 +382,7 @@
                         "hide_empty": 0,
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
-                        "text": "more info >>"
+                        "text": "More Info"
                     }
                 },
                 "filters": {
@@ -513,13 +532,9 @@
                     }
                 },
                 "row_options": {
-                    "default_field_elements": 1,
-                    "inline": {
-                        "version": "version",
-                        "download_size": "download_size",
-                        "view_node": "view_node"
-                    },
-                    "separator": "&nbsp;",
+                    "default_field_elements": 0,
+                    "inline": [],
+                    "separator": " ",
                     "hide_empty": 0
                 },
                 "use_ajax": false,
@@ -537,6 +552,15 @@
                         "format": "filtered_html",
                         "tokenize": 0
                     }
+                },
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "result",
+                    "default_row_class": 0,
+                    "row_class_special": 1,
+                    "type": "ol",
+                    "wrapper_class": "project-search__results-wrapper l-content-wrapper",
+                    "class": "project-search__results"
                 }
             }
         },
