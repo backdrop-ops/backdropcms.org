@@ -1,0 +1,83 @@
+<?php
+/**
+ * @file
+ * Update hooks for BackdropCMS.org GitHub integration.
+ */
+
+/**
+ * Collect and recreate project release nodes for all project.
+ */
+function borg_github_update_1000() {
+  $access_token = settings_get('project_github_access_token');
+  $project_results = db_query("SELECT * FROM {project}");
+  module_load_include('inc', 'project', 'project.pages');
+  foreach ($project_results as $project_result) {
+    $project_node = node_load($project_result->nid);
+    $project_updated = FALSE;
+
+    $github_path = $project_result->github_path;
+    $releases_url = 'https://api.github.com/repos/' . $github_path . '/releases';
+    $options = array(
+      'headers' => array(
+        'Authorization' => 'token ' . $access_token,
+        'Accept' => 'application/vnd.github.v3.html',
+      ),
+    );
+    $result = backdrop_http_request($releases_url, $options);
+    $data = json_decode($result->data, TRUE);
+    foreach ($data as $release_info) {
+      // Only recreate releases for assets that have associated archives.
+      if (empty($release_info['assets'][0])) {
+        continue;
+      }
+      $asset = $release_info['assets'][0];
+      if ($asset['content_type'] !== 'application/zip') {
+        continue;
+      }
+      $version = $release_info['tag_name'];
+      $title = $project_result->name . ' ' . $version;
+      $existing_nid = db_query("SELECT nid FROM {project_release} WHERE version = :version AND project_nid = :project_nid", array(':version' => $version, ':project_nid' => $project_result->nid))->fetchField();
+      if ($existing_nid) {
+        // Ensure the title of the node is correct.
+        $existing_node = node_load($existing_nid);
+        if ($existing_node->title !== $title) {
+          $existing_node->title = $title;
+          $existing_node->save();
+        }
+        continue;
+      }
+
+      $new_node = new Node(array(
+        'title' => $project_result->name . ' ' . $version,
+        'type' => 'project_release',
+        'uid' => 1,
+        'project_release' => array(),
+        'status' => 1,
+      ));
+
+      $project_release_data = array(
+        'project_nid' => $project_result->nid,
+        'version' => $version,
+        'version_api' => '1.x',
+        'release_link' => $release_info['html_url'],
+        'download_link' => $asset['browser_download_url'],
+        'download_size' => $asset['size'],
+      );
+
+      $new_node->project_release = array_merge($new_node->project_release, $project_release_data);
+
+      // Validate the version string is valid.
+      if ($version_parts = project_release_parse_version($new_node)) {
+        $new_node->save();
+        $project_node->updated = REQUEST_TIME;
+        $project_updated = TRUE;
+      }
+    }
+
+    // If a new release was created for a project, resave the node to trigger
+    // rebuilding of available versions.
+    if ($project_updated) {
+      $project_node->save();
+    }
+  }
+}
