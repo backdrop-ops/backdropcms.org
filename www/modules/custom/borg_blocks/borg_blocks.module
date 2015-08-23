@@ -30,7 +30,7 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
     case 'branding':
       $uri = backdrop_get_path('module', 'borg_blocks') . '/images/logo.png';
       $image = theme('image', array('uri' => $uri, 'alt' => t('Backdrop CMS Logo')));
-      $options = array('html' => TRUE, 'attributes' => array('class' => 'logo', 'title' => t('Backdrop CMS Home')));
+      $options = array('html' => TRUE, 'attributes' => array('class' => array('logo', 'backdrop-mark'), 'title' => t('Backdrop CMS Home')));
       $output = l($image, '', $options);
       // Change the class for the text link.
       $options['attributes']['class'] = array('site-name');
