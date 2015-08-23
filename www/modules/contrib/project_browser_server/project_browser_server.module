@@ -6,7 +6,7 @@
  */
 
 /**
- * Implements hook_permission().().
+ * Implements hook_permission().
  */
 function project_browser_server_permission() {
   return array(
@@ -18,7 +18,7 @@ function project_browser_server_permission() {
 }
 
 /**
- * Implements hook_menu().().
+ * Implements hook_menu().
  */
 function project_browser_server_menu() {
   $items['project_browser/server/query/%/%'] = array(
@@ -86,6 +86,7 @@ function _project_browser_server_return($results) {
     backdrop_add_http_header('Content-Type', 'application/json; charset=utf-8');
     print backdrop_json_encode($results);
   }
+  exit();
 }
 
 /**
