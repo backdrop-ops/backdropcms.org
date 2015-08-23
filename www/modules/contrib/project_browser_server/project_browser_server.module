@@ -11,8 +11,8 @@
 function project_browser_server_permission() {
   return array(
     'access project browser server' => array(
-      'title' => t('access project browser server'),
-      'description' => t('TODO Add a description for \'access project browser server\''),
+      'title' => t('Access project browser server'),
+      'description' => t('Access API for retrieving project information through JSON.'),
     ),
   );
 }
@@ -56,7 +56,7 @@ function project_browser_server_query($type, $version) {
   if (!_project_browser_server_validate($type)) {
     return;
   }
-	
+
   if (isset($_GET['categories'])) {$_GET['categories'] = unserialize($_GET['categories']);}
 
   _project_browser_server_return(project_browser_server_get_results(array(
