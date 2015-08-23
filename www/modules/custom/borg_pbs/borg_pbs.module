@@ -100,7 +100,7 @@ function borg_pbs_project_browser_server_query($filters) {
 
        case 'usage':
         // Add a usage query as an expression
-        $query->addExpression("(SELECT w.count FROM project_usage_week_project w WHERE w.nid = n.nid)", 'usage_query');
+        $query->addExpression("(SELECT SUM(w.count) FROM project_usage_week_project w WHERE w.nid = n.nid)", 'usage_query');
         // Sort by usage now.
         $query->orderBy('usage_query', $sort_direction);
         break;
