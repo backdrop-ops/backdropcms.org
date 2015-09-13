@@ -246,7 +246,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
   $archive->close();
 
   // Remove the GitHub placeholder name and specify our file name in the URL.
-  $upload_url = str_replace('{?name}', '', $upload_url);
+  $upload_url = preg_replace('/{.*}/', '', $upload_url);
   $upload_url .= '?name=' . $archive_name;
 
   // Upload the new file.
@@ -545,7 +545,7 @@ function _project_github_upload_error_log(array $errors, array $payload) {
   $error_log .= "\nReported errors:\n";
   $error_log .= implode("\n\n", $errors);
   // Remove the GitHub placeholder name and specify our file name in the URL.
-  $upload_url = str_replace('{?name}', '?name=PACKAGING_ERROR_LOG.txt', $payload['release']['upload_url']);
+  $upload_url = preg_replace('/{.*}/', '?name=PACKAGING_ERROR_LOG.txt', $payload['release']['upload_url']);
 
   // Upload the new file.
   $upload_result = backdrop_http_request($upload_url, array(
