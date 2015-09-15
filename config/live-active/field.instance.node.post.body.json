@@ -1,22 +1,22 @@
 {
-    "_config_name": "field.instance.node.article.body",
+    "_config_name": "field.instance.node.post.body",
     "field_name": "body",
     "entity_type": "node",
-    "bundle": "article",
-    "deleted": "0",
+    "bundle": "post",
     "label": "Body",
     "widget": {
+        "weight": 31,
         "type": "text_textarea_with_summary",
+        "module": "text",
+        "active": 1,
         "settings": {
-            "rows": 20,
+            "rows": "10",
             "summary_rows": 5
-        },
-        "weight": -4,
-        "module": "text"
+        }
     },
     "settings": {
-        "display_summary": true,
-        "text_processing": 1,
+        "text_processing": "1",
+        "display_summary": 0,
         "user_register_form": false
     },
     "display": {
@@ -37,6 +37,9 @@
             "weight": 0
         }
     },
-    "required": false,
-    "description": ""
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null
 }

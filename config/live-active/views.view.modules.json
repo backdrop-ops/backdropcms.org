@@ -40,10 +40,29 @@
                 "pager": {
                     "type": "full",
                     "options": {
-                        "items_per_page": "25"
+                        "items_per_page": "25",
+                        "offset": "0",
+                        "id": "0",
+                        "total_pages": "",
+                        "quantity": "9",
+                        "tags": {
+                            "first": "« first",
+                            "previous": "‹ previous",
+                            "next": "next ›",
+                            "last": "last »"
+                        },
+                        "expose": {
+                            "items_per_page": 0,
+                            "items_per_page_label": "Items per page",
+                            "items_per_page_options": "5, 10, 20, 40, 60",
+                            "items_per_page_options_all": 0,
+                            "items_per_page_options_all_label": "- All -",
+                            "offset": 0,
+                            "offset_label": "Offset"
+                        }
                     }
                 },
-                "style_plugin": "default",
+                "style_plugin": "list",
                 "row_plugin": "fields",
                 "fields": {
                     "title": {
@@ -363,7 +382,7 @@
                         "hide_empty": 0,
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
-                        "text": "more info >>"
+                        "text": "More Info"
                     }
                 },
                 "filters": {
@@ -461,6 +480,45 @@
                             "group_items": []
                         },
                         "remove_score": 0
+                    },
+                    "recommended": {
+                        "id": "recommended",
+                        "table": "project_release_supported_versions",
+                        "field": "recommended",
+                        "relationship": "project_release_supported_versions",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": "1",
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
                     }
                 },
                 "sorts": {
@@ -513,13 +571,9 @@
                     }
                 },
                 "row_options": {
-                    "default_field_elements": 1,
-                    "inline": {
-                        "version": "version",
-                        "download_size": "download_size",
-                        "view_node": "view_node"
-                    },
-                    "separator": "&nbsp;",
+                    "default_field_elements": 0,
+                    "inline": [],
+                    "separator": " ",
                     "hide_empty": 0
                 },
                 "use_ajax": false,
@@ -537,10 +591,19 @@
                         "format": "filtered_html",
                         "tokenize": 0
                     }
+                },
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "result",
+                    "default_row_class": 0,
+                    "row_class_special": 1,
+                    "type": "ol",
+                    "wrapper_class": "project-search__results-wrapper l-content-wrapper",
+                    "class": "project-search__results"
                 }
             }
         },
-        "page_1": {
+        "modules": {
             "display_title": "Modules",
             "display_plugin": "page",
             "display_options": {
@@ -552,7 +615,7 @@
                 "display_description": ""
             }
         },
-        "page_2": {
+        "themes": {
             "display_title": "Themes",
             "display_plugin": "page",
             "display_options": {
@@ -656,6 +719,45 @@
                             "default_group_multiple": [],
                             "group_items": []
                         }
+                    },
+                    "recommended": {
+                        "id": "recommended",
+                        "table": "project_release_supported_versions",
+                        "field": "recommended",
+                        "relationship": "project_release_supported_versions",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": "1",
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
                     }
                 },
                 "defaults": {
@@ -688,7 +790,7 @@
                 "title": "Themes for Backdrop CMS"
             }
         },
-        "page_3": {
+        "layouts": {
             "display_title": "Layouts",
             "display_plugin": "page",
             "display_options": {
@@ -777,6 +879,45 @@
                                 "anonymous": 0,
                                 "4": 0,
                                 "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "recommended": {
+                        "id": "recommended",
+                        "table": "project_release_supported_versions",
+                        "field": "recommended",
+                        "relationship": "project_release_supported_versions",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": "1",
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
                             }
                         },
                         "is_grouped": false,
