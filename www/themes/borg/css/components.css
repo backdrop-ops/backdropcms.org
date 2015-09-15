@@ -821,3 +821,24 @@ body.front .block-block-4 h2 {
   margin: 1em 0;
   font-size: 1.2em;
 }
+
+
+/*******************************************************************************
+ * Latest News View block
+ ******************************************************************************/
+.block-views-news-block {
+  text-align: center;
+  background-color: #F7F7F7;
+  margin: 50px -500px 100px -500px;
+  padding: 50px 500px;
+  border-top: 2px solid #d7d7d7;
+  border-bottom: 2px solid #d7d7d7;
+}
+.block-views-news-block h2 {
+  margin-top: 0;
+}
+.block-views-news-block .content {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: left;
+}

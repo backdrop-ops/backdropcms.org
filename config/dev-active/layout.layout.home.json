@@ -30,7 +30,7 @@
         ],
         "content": [
             "712c691e-6273-4634-8000-d97d82d86e88",
-            "09559140-3714-4dbd-a003-03d32bdee361",
+            "67447c68-4227-4401-ad00-f50c7b1a6690",
             "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51",
             "eb9135d6-652f-45c3-9a00-c8de2519591d"
         ],
@@ -230,11 +230,11 @@
                 }
             }
         },
-        "09559140-3714-4dbd-a003-03d32bdee361": {
-            "plugin": "views:quotes-block",
+        "67447c68-4227-4401-ad00-f50c7b1a6690": {
+            "plugin": "views:news-block",
             "data": {
                 "module": "views",
-                "delta": "quotes-block",
+                "delta": "news-block",
                 "settings": {
                     "title_display": "default",
                     "title": "",
@@ -242,7 +242,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "09559140-3714-4dbd-a003-03d32bdee361",
+                "uuid": "67447c68-4227-4401-ad00-f50c7b1a6690",
                 "style": {
                     "plugin": "default",
                     "data": {
