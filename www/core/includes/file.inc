@@ -2096,7 +2096,7 @@ function file_scan_directory($dir, $mask, $options = array(), $depth = 0) {
   $files = array();
   if (is_dir($dir) && $handle = opendir($dir)) {
     while (FALSE !== ($filename = readdir($handle))) {
-      if (!preg_match($options['nomask'], $filename) && $filename[0] != '.') {
+      if (!preg_match($options['nomask'], $filename) && $filename !== '.' && $filename !== '..') {
         $uri = "$dir/$filename";
         $uri = file_stream_wrapper_uri_normalize($uri);
         if (is_dir($uri) && $options['recurse']) {
