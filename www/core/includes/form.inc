@@ -1471,7 +1471,7 @@ function _form_validate(&$elements, &$form_state, $form_id = NULL) {
     // #value data.
     elseif (isset($elements['#element_validate'])) {
       foreach ($elements['#element_validate'] as $function) {
-        $function($elements, $form_state, $form_state['complete_form']);
+        call_user_func_array($function, array(&$elements, &$form_state, $form_state['complete_form']));
       }
     }
     $elements['#validated'] = TRUE;
@@ -3393,9 +3393,9 @@ function theme_container($variables) {
  *     $options = array(
  *       array(
  *         'title' => 'How to Learn Backdrop',
- *         'content_type' => 'Article',
+ *         'content_type' => 'Post',
  *         'status' => 'published',
- *         '#attributes' => array('class' => array('article-row')),
+ *         '#attributes' => array('class' => array('post-row')),
  *       ),
  *       array(
  *         'title' => 'Privacy Policy',
@@ -4049,7 +4049,7 @@ function theme_search($variables) {
 
   $extra = '';
   if ($element['#autocomplete_path'] && backdrop_valid_path($element['#autocomplete_path'])) {
-    backdrop_add_library('system', 'drupal.autocomplete');
+    backdrop_add_library('system', 'backdrop.autocomplete');
     $element['#attributes']['class'][] = 'form-autocomplete';
 
     $attributes = array();

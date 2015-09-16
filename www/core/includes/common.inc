@@ -571,6 +571,9 @@ function backdrop_http_build_query(array $query, $parent = '') {
   foreach ($query as $key => $value) {
     $key = ($parent ? $parent . '[' . rawurlencode($key) . ']' : rawurlencode($key));
 
+    // For better readability of paths in query strings, we decode slashes.
+    $key = str_replace('%2F', '/', $key);
+
     // Recurse into children.
     if (is_array($value)) {
       $params[] = backdrop_http_build_query($value, $key);
@@ -5786,12 +5789,26 @@ function backdrop_system_listing($mask, $directory, $key = 'name', $min_depth = 
     $searchdir[] = "$config/$directory";
   }
 
+  // Do not check for system files in common special-purpose directories.
+  $ignore_directories = array(
+    'assets',
+    'css',
+    'scss',
+    'less',
+    'js',
+    'images',
+    'templates',
+    'node_modules',
+    'bower_components',
+  );
+  $no_mask = '/^(\..*)|' . implode('|', $ignore_directories) .  '$/';
+
   // Get current list of items.
   if (!function_exists('file_scan_directory')) {
     require_once BACKDROP_ROOT . '/core/includes/file.inc';
   }
   foreach ($searchdir as $dir) {
-    $files_to_add = file_scan_directory($dir, $mask, array('key' => $key, 'min_depth' => $min_depth));
+    $files_to_add = file_scan_directory($dir, $mask, array('key' => $key, 'min_depth' => $min_depth, 'nomask' => $no_mask));
 
     // Duplicate files found in later search directories take precedence over
     // earlier ones, so we want them to overwrite keys in our resulting
@@ -7762,8 +7779,7 @@ function backdrop_write_record($table, &$record, $primary_keys = array()) {
  * - screenshot: Path to screenshot relative to the theme's .info file.
  * - engine: Theme engine; typically phptemplate.
  * - base: Name of a base theme, if applicable; e.g., base = zen.
- * - regions: Listed regions; e.g., region[left] = Left sidebar.
- * - features: Features available; e.g., features[] = logo.
+ * - settings: Theme settings; e.g., settings[color] = true
  * - stylesheets: Theme stylesheets; e.g., stylesheets[all][] = my-style.css.
  * - scripts: Theme scripts; e.g., scripts[] = my-script.js.
  *
