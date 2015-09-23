@@ -138,7 +138,7 @@ function borg_pbs_project_browser_server_query($filters) {
       'title' => $node->title,
       'name' => $node->project['name'],
       'backdrop version' => $filters['version'] . '.x',
-      'author' => 'Backdrop Contrib'; // $node->name,
+      'author' => 'Backdrop Contrib', // $node->name,
       'description' => $descr_value,
       'categories' => '',
       'image' => $image_url,
