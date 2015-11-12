@@ -1,6 +1,4 @@
 <?php
-
-// $Id$
 /**
  * @file
  * Backdrop.org Project Browser Server module.
@@ -128,7 +126,7 @@ function borg_pbs_project_browser_server_query($filters) {
     $descr = field_get_items('node', $node, 'body');
     $descr_field = reset($descr);
     $descr_value = $descr_field['value'];
-
+    
     // Build the image uri
     $img_field = field_get_items('node', $node, 'field_image');
     $image_url = !empty($img_field) ? file_create_url($img_field[0]['uri']) : '';
@@ -159,7 +157,7 @@ function borg_pbs_project_browser_server_query($filters) {
 }
 
 /**
- * Implements hook_project_browser_server_categories()
+ * Implements hook_project_browser_server_categories().
  *
  * The function should return an array like this:
  *
