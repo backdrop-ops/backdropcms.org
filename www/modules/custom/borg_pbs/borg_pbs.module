@@ -1,19 +1,12 @@
 <?php
-
-// $Id$
 /**
  * @file
- * Project Browser Server Example module.
+ * Backdrop.org Project Browser Server module.
  * Authored by Leighton Whiting for Google Summer of Code 2011
  */
 
-// ======================================
-// Hooks:
-// ======================================
-
 /**
  * Implements hook_project_browser_server_query()
-().
  *
  * The function takes a $filters parameter that looks like this:
  *
@@ -40,7 +33,7 @@
  *       'image' => 'http://www.example.com/image.jpg', // Absolute url to the image, if any
  *       'usage' => '542312', // How many Downloads the module has had
  *       'project url' => 'http://www.backdrop.org/projects/views', // Absolute url to the project page, if any
- *       'project status url' => 'http://updates.backdrop.org/release-history/views/7.x', // The absolute url of the update checker, formatted like how Backdrop.org Update Status does it
+ *       'project status url' => 'http://updates.backdrop.org/release-history/views/1.x', // The absolute url of the update checker, formatted like how Backdrop.org Update Status does it
  *       'last updated' => '12342523', // UNIX Timestamp of when the project was last updated
  *       'maintenance status' => 'Actively maintained', // Maintenance status
  *       'development status' => 'Under active development', // Development status
@@ -134,17 +127,19 @@ function borg_pbs_project_browser_server_query($filters) {
     $descr_field = reset($descr);
     $descr_value = $descr_field['value'];
     
-    $usage = 
+    // Build the image uri
+    $img_field = field_get_items('node', $node, 'field_image');
+    $image_url = !empty($img_field) ? file_create_url($img_field[0]['uri']) : '';
 
     $projects[$node->project['name']] = array(
-      'type' => 'module',
+      'type' => $filters['type'],
       'title' => $node->title,
       'name' => $node->project['name'],
-      'backdrop version' => '',
-      'author' => $node->name,
+      'backdrop version' => $filters['version'] . '.x',
+      'author' => 'Backdrop Contrib', // $node->name,
       'description' => $descr_value,
       'categories' => '',
-      'image' => '',
+      'image' => $image_url,
       'usage' => project_usage_get_project_total_usage($node->nid),
       'project url' => url('node/' . $node->nid, array('absolute' => TRUE)),
       'project status url' => 'http://updates.backdropcms.org/release-history/' . $node->project['name'] . '/' . $filters['version'] . '.x',
@@ -162,8 +157,7 @@ function borg_pbs_project_browser_server_query($filters) {
 }
 
 /**
- * Implements hook_project_browser_server_categories()
-().
+ * Implements hook_project_browser_server_categories().
  *
  * The function should return an array like this:
  *
