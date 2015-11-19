@@ -209,7 +209,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
   unlink($directory . '/original.zip');
 
   // Make a list of all files sans the archive.
-  $files = file_scan_directory($directory, '/.*/');
+  $files = file_scan_directory($directory, '/.*/', array('nomask' => '/^$/'));
 
   // Individually rezip each file, modifying .info files as needed.
   $archive = new ZipArchive();
