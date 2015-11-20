@@ -1,0 +1,50 @@
+{
+    "_config_name": "socialfield.settings",
+    "services": {
+        "facebook": {
+            "name": "Facebook",
+            "icon": "icon-facebook",
+            "validation_pattern": "*facebook.com/*"
+        },
+        "twitter": {
+            "name": "Twitter",
+            "icon": "icon-twitter",
+            "validation_pattern": "*twitter.com/*"
+        },
+        "instagram": {
+            "name": "Instagram",
+            "icon": "icon-instagram",
+            "validation_pattern": "*instagram.com/*"
+        }
+        "googleplus": {
+            "name": "Google+",
+            "icon": "icon-gplus",
+            "validation_pattern": "*plus.google.com/*"
+        },
+        "linkedin": {
+            "name": "LinkedIn",
+            "icon": "icon-linkedin",
+            "validation_pattern": "*linkedin.com/*"
+        },
+        "youtube": {
+            "name": "YouTube",
+            "icon": "icon-youtube",
+            "validation_pattern": "*youtube.com/*"
+        },
+        "vimeo": {
+            "name": "Vimeo",
+            "icon": "icon-vimeo",
+            "validation_pattern": "*vimeo.com/*"
+        },
+        "flickr": {
+            "name": "Flickr",
+            "icon": "icon-flickr",
+            "validation_pattern": "*flickr.com/*"
+        },
+        "pinterest": {
+            "name": "Pinterest",
+            "icon": "icon-pinterest",
+            "validation_pattern": "*pinterest.com/*"
+        },
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.instance.user.user.field_gender",
+    "field_name": "field_gender",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Gender",
+    "widget": {
+        "weight": "4",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 1,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": "none"
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": 1
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "4",
+            "settings": [],
+            "module": "list"
+        }
+    }
+}

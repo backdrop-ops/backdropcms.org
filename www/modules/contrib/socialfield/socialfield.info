@@ -1,0 +1,11 @@
+name = Social field
+description = Provides a field for adding social services links.
+backdrop = 1.x
+type = module
+package = Fields
+configure = admin/config/media/socialfield
+
+; Added by Backdrop CMS packaging script on 2015-11-19
+project = socialfield
+version = 1.x-1.4.0
+timestamp = 1447980485

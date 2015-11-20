@@ -1,0 +1,46 @@
+{
+    "_config_name": "field.instance.user.user.field_photo",
+    "field_name": "field_photo",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Photo",
+    "widget": {
+        "weight": "1",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "thumbnail"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "file_directory": "images/profile",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "max_resolution": "350x350",
+        "min_resolution": "",
+        "alt_field": 0,
+        "title_field": 0,
+        "default_image": "public://default_images",
+        "user_register_form": 0
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "0",
+            "settings": {
+                "image_style": "thumbnail",
+                "image_link": "",
+                "image_float": "left"
+            },
+            "module": "image"
+        }
+    }
+}

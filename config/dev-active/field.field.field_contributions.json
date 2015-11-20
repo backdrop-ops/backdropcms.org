@@ -1,0 +1,39 @@
+{
+    "_config_name": "field.field.field_contributions",
+    "field_name": "field_contributions",
+    "type": "list_text",
+    "translatable": false,
+    "module": "list",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "-1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "services": "I provide services related to Backdrop CMS",
+            "documentation": "I write/update documentation for Backdrop CMS",
+            "design": "I provide designs for Backdrop CMS (core or contrib)",
+            "issues": "I create/comment on issues for Backdrop CMS on GitHub (core or contrib)",
+            "prs": "I create Pull Requests against Backdrop CMS (core or contrib)",
+            "review-prs": "I review Pull Requests against Backdrop CMS (core or contrib)",
+            "modules": "I create/maintain modules for Backdrop CMS",
+            "themes": "I create/maintain themes for Backdrop CMS",
+            "layouts": "I create/maintain layouts for Backdrop CMS",
+            "design-borg": "I provide designs for backdropcms.org",
+            "issues-borg": "I create/comment on issues for backdropcms.org",
+            "prs-borg": "I create Pull Requests against backdropcms.org",
+            "review-prs-borg": "I review Pull Requests against backdropcms.org",
+            "support": "I give support on IRC/Gitter in #backdrop",
+            "mentor": "I help mentor new contributors",
+            "dollars": "I have made a financial donation to the Backdrop Foundation"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}

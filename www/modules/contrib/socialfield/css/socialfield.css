@@ -1,0 +1,103 @@
+/**
+ * @file 
+ * CSS for socialfield.
+ */
+
+/**
+ * Fix multi-value field styles for social icons.
+ */
+.field-type-social-links-field .field-item {
+  display: inline;
+}
+
+/**
+ * generic social icon styles.
+ */
+a.socialfield {
+  display: inline-block;
+  margin-right: 5px;
+}
+.socialfield .icon {
+  color: #FFF;
+  font-size: 24px;
+  padding: 4px;
+  background-color: #4a6ea9;
+}
+
+/**
+ * Service-specific colors & sizes.
+ */
+.socialfield-reddit .icon {
+  padding: 8px 7px 8px 1px;
+  background-color: #ff4500;
+}
+.socialfield-slideshare .icon {
+  padding: 8px 2px 8px 6px;
+  background-color: #4a6ea9;
+}
+.socialfield-yahoo .icon {
+  padding: 8px 8px 8px 0px;
+  background-color: #720e9e;
+}
+.socialfield-facebook .icon {
+  background-color: #3b5998;
+}
+.socialfield-twitter .icon {
+  background-color: #55acee;
+}
+.socialfield-instagram .icon {
+  background-color: #3f729b;
+}
+.socialfield-googleplus .icon {
+  background-color: #dc4a38;
+}
+.socialfield-linkedin .icon {
+  background-color: #0e76a8;
+}
+.socialfield-youtube .icon {
+  background-color: #c4302b;
+}
+.socialfield-vimeo .icon {
+  background-color: #44bbff;
+}
+.socialfield-delicious .icon {
+  background-color: #222222;
+}
+.socialfield-digg .icon {
+  background-color: #7a9ac2;
+}
+.socialfield-flickr .icon {
+  background-color: #ff0084;
+}
+.socialfield-google .icon {
+  background-color: #4285f4;
+}
+.socialfield-myspace .icon {
+  background-color: #6087bb;
+}
+.socialfield-pinterest .icon {
+  background-color: #c8232c;
+}
+.socialfield-stumbleupon .icon {
+  background-color: #f74425;
+}
+
+/**
+ * CSS for form / widget.
+ */
+#socialfield-instance-settings-services-table span.instance-settings-table-service-name {
+  position: relative;
+  top: -3px;
+}
+#socialfield-instance-settings-services-table tr {
+  height: 55px;
+}
+#socialfield-instance-settings-services-table tr .social-links-instance-settings span {
+  margin-right: 5px;
+}
+#socialfield-instance-settings-services-table tr .social-links-instance-settings {
+  float: left;
+}
+#socialfield-table tr .social-links {
+  float: left;
+}
