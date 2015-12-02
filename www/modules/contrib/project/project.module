@@ -269,7 +269,7 @@ function project_node_load($nodes, $types) {
   if ($project_nids) {
     $result = db_select('project', 'p')
       ->fields('p')
-      ->condition('nid', array_keys($nodes))
+      ->condition('nid', $project_nids)
       ->execute();
     foreach ($result as $row) {
       $project_data = (array) $row;
