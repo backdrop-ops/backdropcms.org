@@ -316,6 +316,17 @@ function devel_admin_paths() {
   return $paths;
 }
 
+/**
+ * Implements hook_config_info().
+ */
+function devel_config_info() {
+  $prefixes['devel.settings'] = array(
+    'label' => t('Devel settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
 function devel_menu_need_destination() {
   return array('devel/cache/clear', 'devel/reinstall', 'devel/menu/reset', 'devel/variable', 'admin/reports/status/run-cron');
 }
@@ -531,6 +542,7 @@ function devel_silent() {
   // Don't interfere with private files/images.
   return
     function_exists('backdrop_is_cli') && backdrop_is_cli() ||
+    function_exists('backdrop_is_html') && !backdrop_is_html() ||
     (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'ApacheBench') !== FALSE) ||
     !empty($_REQUEST['XDEBUG_PROFILE']) ||
     isset($GLOBALS['devel_shutdown']) ||
@@ -559,7 +571,7 @@ function devel_xhprof_is_enabled() {
 }
 
 /**
- * Implementation of hook_boot(). Runs even for cached pages.
+ * Implementation of hook_boot().
  */
 function devel_boot() {
   // Initialize XHProf.
@@ -582,7 +594,6 @@ function devel_boot() {
   // avoid a stray query.
   backdrop_get_filename('module', 'user', 'modules/user/user.module');
   backdrop_load('module', 'user');
-  backdrop_register_shutdown_function('devel_shutdown');
 }
 
 /**
@@ -958,23 +969,6 @@ function devel_backdrop_goto_alter($path, $options, $http_response_code) {
   }
 }
 
-/**
- * Runs on shutdown to clean up and display developer information.
- *
- * devel_boot() registers this function as a shutdown function.
- * The bulk of the work is done in devel_shutdown_real().
- */
-function devel_shutdown() {
-  // Register the real shutdown function so it runs later than other shutdown functions.
-  backdrop_register_shutdown_function('devel_shutdown_real');
-
-  global $devel_run_id;
-  $devel_run_id = devel_xhprof_is_enabled() ? devel_shutdown_xhprof(): NULL;
-  if ($devel_run_id && function_exists('drush_log')) {
-    drush_log('xhprof link: ' . devel_xhprof_link($devel_run_id, 'url'), 'notice');
-  }
-}
-
 // AJAX render reponses sometimers are sent as text/html so we have to catch them here
 // and disable our footer stuff.
 function devel_ajax_render_alter() {
@@ -982,13 +976,28 @@ function devel_ajax_render_alter() {
 }
 
 /**
- * Runs on shutdown to display developer information in the footer.
- *
- * devel_shutdown() registers this function as a shutdown function.
+ * Implements hook_module_implements_alter().
  */
-function devel_shutdown_real() {
-  global $user;
+function devel_module_implements_alter(&$implementations, $hook) {
+  // Make devel_exit() run last after all other modules.
+  if ($hook == 'exit') {
+    $group = $implementations['devel'];
+    unset($implementations['devel']);
+    $implementations['devel'] = $group;
+  }
+}
+
+/**
+ * Implements hook_exit().
+ */
+function devel_exit() {
+  global $user, $devel_run_id;
   $output = $txt = '';
+
+  $devel_run_id = devel_xhprof_is_enabled() ? devel_shutdown_xhprof(): NULL;
+  if ($devel_run_id && function_exists('drush_log')) {
+    drush_log('xhprof link: ' . devel_xhprof_link($devel_run_id, 'url'), 'notice');
+  }
 
   // Set $GLOBALS['devel_shutdown'] = FALSE in order to supress the
   // devel footer for a page.  Not necessary if your page outputs any
@@ -1015,10 +1024,7 @@ function devel_shutdown_real() {
     }
 
     if ($output) {
-      // TODO: gzip this text if we are sending a gzip page. see backdrop_page_header().
-      // For some reason, this is not actually printing for cached pages even though it gets executed
-      // and $output looks good.
-      print $output;
+      print '<div class="devel-footer-output">' . $output . '</div>';
     }
   }
 }
@@ -1089,7 +1095,7 @@ function devel_shutdown_query($queries) {
       devel_query_put_contents($queries);
     }
     else {
-      $output = '</div>' . dprint_r($queries, TRUE);
+      $output = dprint_r($queries, TRUE);
     }
     return $output;
   }
