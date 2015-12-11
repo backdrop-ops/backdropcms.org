@@ -606,8 +606,33 @@ body.front .block-block-4 h2 {
 /*******************************************************************************
  * User Profile
  ******************************************************************************/
+
+main.account-page #page-title {
+  padding-top: 15px;
+  text-align: center;
+}
+
+@media all and (min-width: 501px) {
+  main.account-page #page-title {
+    text-align: left;
+    margin-left: 215px;
+    padding-top: 40px;
+  }
+  .l-sidebar-inner {
+    position: relative;
+    top: -80px;
+    padding: 0;
+  }
+}
+@media all and (min-width: 851px) {
+  main.account-page #page-title {
+    margin-left: 275px;
+  }
+}
+
 article.profile {
   clear: none;
+  margin-top: 0;
 }
 article.profile .field-name-field-contributions {
   margin-top: 40px;
@@ -615,7 +640,6 @@ article.profile .field-name-field-contributions {
   padding-top: 10px;
 }
 article.profile .field-name-field-contributions .field-label {
-  text-transform: uppercase;
   font-weight: normal;
 }
 article.profile .field-name-field-contributions ul {
@@ -643,9 +667,13 @@ article.profile .field-name-field-contributions li {
   margin: 0;
 }
 
+.view-profile-sidebar .views-field-field-photo .field-content {
+  text-align: center;
+}
 .view-profile-sidebar .views-field-field-photo img {
   border-radius: 50%;
   background: #ffffff;
+  margin: 0 auto;
 }
 
 .view-profile-sidebar .views-field-field-name {
@@ -687,6 +715,7 @@ article.profile .field-name-field-contributions li {
 
 /*******************************************************************************
  * User Profile Edit form
+ *   Wesruv - feel free to remove this!!!
  ******************************************************************************/
 
 .user-profile-form table {
