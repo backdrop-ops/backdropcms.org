@@ -30,12 +30,26 @@
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   text-align: left;
+  background-repeat: no-repeat;
 }
+
+main.has-background #page-title {
+  margin-top: 50px;
+}
+@media all and (min-width: 851px) {
+  main.has-background #page-title {
+    margin-top: 225px;
+  }
+}
+
+
 .layout--double-fixed .l-content-wrapper {
   text-align: left;
   max-width: 728px;
   margin: 0 auto;
   padding: 0 20px;
+  background-color: #ffffff;
+  min-height: 90px;
 }
 @media all and (min-width: 851px) {
   .layout--double-fixed .l-content-wrapper {
@@ -43,14 +57,39 @@
   }
 }
 
+.layout--double-fixed .tabs {
+  background-color: #ffffff;
+}
+.layout--double-fixed .tabs ul.primary {
+  margin: 0;
+}
+.layout--double-fixed .l-inner {
+  background-color: #ffffff;
+  text-align: center;
+}
+.layout--double-fixed .l-sidebar-inner {
+  width: 220px;
+  margin: 0 auto;
+  text-align: left;
+}
+.layout--double-fixed .l-content-inner {
+  padding-top: 15px;
+  text-align: left;
+}
+
 .layout--double-fixed .l-sidebar,
 .layout--double-fixed .l-drawer {
   text-align: left;
 }
 
+
 @media all and (min-width: 501px) {
+  .l-content-top .l-content-wrapper {
+    min-height: 125px;
+  }
   .layout--double-fixed .l-sidebar-inner {
     float: left;
+    margin: 0;
     width: 200px;
   }
   .layout--double-fixed .l-content-inner {

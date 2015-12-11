@@ -52,9 +52,11 @@
         </div>
       <?php endif; ?>
 
+      <?php if ($action_links): ?>
       <div class="l-content-wrapper">
         <?php print $action_links; ?>
       </div>
+      <?php endif; ?>
 
       <?php if ($messages): ?>
         <section class="l-content-wrapper l-messages">

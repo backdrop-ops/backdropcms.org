@@ -31,7 +31,7 @@
   </div>
 
   <div class="l-container">
-    <main class="l-content" role="main">
+    <main role="main"<?php print backdrop_attributes($main_attributes); ?>>
       <div class="l-content-top">
         <div class="l-content-wrapper">
           <a id="main-content"></a>
@@ -47,15 +47,11 @@
         </div>
       </div>
 
-      <?php if ($tabs): ?>
-        <div class="tabs l-content-wrapper">
-          <?php print $tabs; ?>
-        </div>
-      <?php endif; ?>
-
+      <?php if ($action_links): ?>
       <div class="l-content-wrapper">
         <?php print $action_links; ?>
       </div>
+      <?php endif; ?>
 
       <?php if ($messages): ?>
         <section class="l-content-wrapper l-messages">
@@ -63,7 +59,7 @@
         </section>
       <?php endif; ?>
 
-      <div class="l-content-wrapper clearfix">
+      <div class="l-inner l-content-wrapper clearfix">
         <div class="l-sidebar-inner">
           <?php print $content['content_sidebar']; ?>
         </div>
