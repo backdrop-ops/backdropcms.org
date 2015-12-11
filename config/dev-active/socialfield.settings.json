@@ -3,83 +3,53 @@
     "services": {
         "facebook": {
             "name": "Facebook",
-            "icon": "icon-facebook",
+            "icon": "fa fa-facebook-square",
             "validation_pattern": "*facebook.com/*"
         },
         "twitter": {
             "name": "Twitter",
-            "icon": "icon-twitter",
+            "icon": "fa fa-twitter-square",
             "validation_pattern": "*twitter.com/*"
         },
         "instagram": {
             "name": "Instagram",
-            "icon": "icon-instagram",
+            "icon": "fa fa-instagram",
             "validation_pattern": "*instagram.com/*"
         },
         "googleplus": {
             "name": "Google+",
-            "icon": "icon-gplus",
+            "icon": "fa fa-google-plus-square",
             "validation_pattern": "*plus.google.com/*"
         },
         "linkedin": {
             "name": "LinkedIn",
-            "icon": "icon-linkedin",
+            "icon": "fa fa-linkedin-square",
             "validation_pattern": "*linkedin.com/*"
         },
         "youtube": {
             "name": "YouTube",
-            "icon": "icon-youtube",
+            "icon": "fa fa-youtube-square",
             "validation_pattern": "*youtube.com/*"
-        },
-        "vimeo": {
-            "name": "Vimeo",
-            "icon": "icon-vimeo",
-            "validation_pattern": "*vimeo.com/*"
-        },
-        "delicious": {
-            "name": "Delicious",
-            "icon": "icon-delicious",
-            "validation_pattern": "*delicious.com/*"
-        },
-        "digg": {
-            "name": "Digg",
-            "icon": "icon-digg",
-            "validation_pattern": "*digg.com/*"
         },
         "flickr": {
             "name": "Flickr",
-            "icon": "icon-flickr",
+            "icon": "fa fa-flickr",
             "validation_pattern": "*flickr.com/*"
-        },
-        "yahoo": {
-            "name": "Yahoo!",
-            "icon": "icon-yahoo",
-            "validation_pattern": "*yahoo.com/*"
-        },
-        "myspace": {
-            "name": "Myspace",
-            "icon": "icon-myspace",
-            "validation_pattern": "*myspace.com/*"
         },
         "pinterest": {
             "name": "Pinterest",
-            "icon": "icon-pinterest",
+            "icon": "fa fa-pinterest-square",
             "validation_pattern": "*pinterest.com/*"
         },
         "reddit": {
             "name": "Reddit",
-            "icon": "icon-reddit",
+            "icon": "fa fa-reddit-square",
             "validation_pattern": "*reddit.com/*"
         },
         "slideshare": {
             "name": "Slideshare",
-            "icon": "icon-slideshare",
+            "icon": "fa fa-slideshare",
             "validation_pattern": "*slideshare.net/*"
-        },
-        "stumbleupon": {
-            "name": "Stumbleupon",
-            "icon": "icon-stumbleupon",
-            "validation_pattern": "*stumbleupon.com/*"
         }
     }
 }
