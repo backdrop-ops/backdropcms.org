@@ -1,17 +1,17 @@
 {
-    "_config_name": "field.instance.user.user.field_photo",
-    "field_name": "field_photo",
+    "_config_name": "field.instance.user.user.field_header_photo",
+    "field_name": "field_header_photo",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Headshot",
+    "label": "Header Photo",
     "widget": {
-        "weight": "1",
+        "weight": "2",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "medium"
+            "preview_image_style": "header_preview"
         }
     },
     "description": "",
@@ -20,21 +20,21 @@
     "default_value": null,
     "default_value_function": null,
     "settings": {
-        "file_directory": "images/profile",
+        "file_directory": "images/profile/header",
         "file_extensions": "png gif jpg jpeg",
         "max_filesize": "",
-        "max_resolution": "350x350",
+        "max_resolution": "3000x3000",
         "min_resolution": "",
         "alt_field": 0,
         "title_field": 0,
         "user_register_form": 0,
-        "default_image": "public://default_images"
+        "default_image": ""
     },
     "display": {
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "0",
+            "weight": "11",
             "settings": []
         }
     }

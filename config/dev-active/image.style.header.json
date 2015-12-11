@@ -1,0 +1,25 @@
+{
+    "_config_name": "image.style.header",
+    "label": "Header",
+    "name": "header",
+    "effects": [
+        {
+            "name": "image_scale",
+            "data": {
+                "width": "1500",
+                "height": "",
+                "upscale": 1
+            },
+            "weight": "1"
+        },
+        {
+            "name": "image_crop",
+            "data": {
+                "width": "1500",
+                "height": "500",
+                "anchor": "center-top"
+            },
+            "weight": "2"
+        }
+    ]
+}
