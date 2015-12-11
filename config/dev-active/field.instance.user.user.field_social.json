@@ -1,0 +1,60 @@
+{
+    "_config_name": "field.instance.user.user.field_social",
+    "field_name": "field_social",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Social",
+    "widget": {
+        "weight": "6",
+        "type": "socialfield_widget",
+        "module": "socialfield",
+        "active": 0,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": 0,
+        "used_services": {
+            "instagram": "instagram",
+            "linkedin": "linkedin",
+            "youtube": "youtube",
+            "flickr": "flickr",
+            "pinterest": "pinterest",
+            "reddit": "reddit",
+            "slideshare": "slideshare",
+            "facebook": "facebook",
+            "twitter": "twitter"
+        },
+        "services": {
+            "twitter": "twitter",
+            "facebook": "facebook",
+            "linkedin": "linkedin",
+            "reddit": "reddit",
+            "slideshare": "slideshare"
+        },
+        "weights": {
+            "facebook": "-10",
+            "twitter": "-9",
+            "instagram": "-8",
+            "googleplus": "-7",
+            "linkedin": "-6",
+            "youtube": "-5",
+            "flickr": "-4",
+            "pinterest": "-3",
+            "reddit": "-2",
+            "slideshare": "-1"
+        }
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "10",
+            "settings": []
+        }
+    }
+}

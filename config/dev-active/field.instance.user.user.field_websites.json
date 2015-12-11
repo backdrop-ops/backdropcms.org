@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Website(s)",
     "widget": {
-        "weight": "6",
+        "weight": "7",
         "type": "link_field",
         "module": "link",
         "active": 0,
@@ -41,10 +41,9 @@
     "display": {
         "default": {
             "label": "above",
-            "type": "link_default",
+            "type": "hidden",
             "weight": "5",
-            "settings": [],
-            "module": "link"
+            "settings": []
         }
     }
 }
