@@ -47,6 +47,12 @@
         </div>
       </div>
 
+      <?php if ($tabs): ?>
+        <div class="tabs l-content-wrapper">
+          <?php print $tabs; ?>
+        </div>
+      <?php endif; ?>
+
       <?php if ($action_links): ?>
       <div class="l-content-wrapper">
         <?php print $action_links; ?>
