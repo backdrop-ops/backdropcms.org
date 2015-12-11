@@ -3,9 +3,9 @@
     "field_name": "field_gender",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Preferred pronoun",
+    "label": "Preferred pronouns",
     "widget": {
-        "weight": "3",
+        "weight": "4",
         "type": "options_buttons",
         "module": "options",
         "active": 1,
