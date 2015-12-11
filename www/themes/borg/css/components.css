@@ -608,26 +608,7 @@ body.front .block-block-4 h2 {
  ******************************************************************************/
 
 main.account-page #page-title {
-  padding-top: 15px;
-  text-align: center;
-}
-
-@media all and (min-width: 501px) {
-  main.account-page #page-title {
-    text-align: left;
-    margin-left: 215px;
-    padding-top: 40px;
-  }
-  .l-sidebar-inner {
-    position: relative;
-    top: -80px;
-    padding: 0;
-  }
-}
-@media all and (min-width: 851px) {
-  main.account-page #page-title {
-    margin-left: 275px;
-  }
+  padding-top: 50px;
 }
 
 article.profile {
