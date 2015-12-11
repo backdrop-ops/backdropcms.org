@@ -1,0 +1,25 @@
+{
+    "_config_name": "image.style.header_preview",
+    "label": "Header Preview",
+    "name": "header_preview",
+    "effects": {
+        "1": {
+            "name": "image_scale",
+            "data": {
+                "width": "500",
+                "height": "",
+                "upscale": 0
+            },
+            "weight": "2"
+        },
+        "2": {
+            "name": "image_crop",
+            "data": {
+                "width": "500",
+                "height": "166",
+                "anchor": "center-top"
+            },
+            "weight": 3
+        }
+    }
+}
