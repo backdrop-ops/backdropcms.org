@@ -48,6 +48,25 @@
   text-align: left;
 }
 
+@media all and (min-width: 501px) {
+  .layout--double-fixed .l-sidebar-inner {
+    float: left;
+    width: 200px;
+  }
+  .layout--double-fixed .l-content-inner {
+    margin-left: 215px;
+  }
+}
+@media all and (min-width: 851px) {
+  .layout--double-fixed .l-sidebar-inner {
+    width: 230px;
+  }
+  .layout--double-fixed .l-content-inner {
+    margin-left: 275px;
+  }
+}
+
+
 .layout--double-fixed .l-footer {
   padding: 20px;
   -moz-box-sizing: border-box;
