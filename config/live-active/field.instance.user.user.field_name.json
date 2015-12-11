@@ -25,10 +25,9 @@
     "display": {
         "default": {
             "label": "inline",
-            "type": "text_default",
+            "type": "hidden",
             "weight": "2",
-            "settings": [],
-            "module": "text"
+            "settings": []
         }
     }
 }
