@@ -643,18 +643,7 @@ article.profile .field-name-field-contributions li {
   margin: 0;
 }
 
-.view-profile-sidebar .views-field-field-photo {
-  position: relative;
-  height: 0;
-  padding-bottom: 100%;
-}
 .view-profile-sidebar .views-field-field-photo img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%,-50%);
-      -ms-transform: translate(-50%,-50%);
-          transform: translate(-50%,-50%);
   border-radius: 50%;
   background: #ffffff;
 }
@@ -694,6 +683,76 @@ article.profile .field-name-field-contributions li {
   content: "";
   position: relative;
   top: 20px;
+}
+
+/*******************************************************************************
+ * User Profile Edit form
+ ******************************************************************************/
+
+.user-profile-form table {
+  width: 100%;
+}
+.user-profile-form table th {
+  border: 0;
+}
+.user-profile-form table tbody {
+  border-top: 1px solid #ccc; /* matches row bottom border */
+}
+.user-profile-form table td {
+  padding: 3px 4px;
+}
+
+.user-profile-form input.form-text,
+.user-profile-form input.form-email {
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 2px solid #d0d0d0;
+  font-weight: 400;
+  color: #444b53;
+  background: #fff;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-transition: border-color 0.25s ease-in-out;
+  -moz-transition: border-color 0.25s ease-in-out;
+  -ms-transition: border-color 0.25s ease-in-out;
+  -o-transition: border-color 0.25s ease-in-out;
+  will-change: border-color;
+}
+.user-profile-form textarea {
+  padding: 10px;
+  border: 2px solid #d0d0d0;
+  max-width: 100%;
+  font-weight: 400;
+  color: #444b53;
+  background: #fff;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.field-name-field-photo {
+  position: relative;
+}
+.field-name-field-photo .image-preview {
+  float: none;
+}
+.field-name-field-photo .image-preview img {
+  border-radius: 50%;
+  background: #ffffff;
+}
+div.image-widget-data {
+  float: none;
+}
+
+/*******************************************************************************
+ * Draggable Handles
+ ******************************************************************************/
+form .field-multiple-table .field-multiple-drag .tabledrag-handle {
+  padding: 0;
+}
+.draggable a.tabledrag-handle {
+  margin-left: 0;
 }
 
 /*******************************************************************************
