@@ -25,15 +25,17 @@
  *   - $content['footer']
  */
 ?>
-<div class="layout--double-fixed <?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
+<div class="layout--double-fixed-inner <?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
   <div id="skip-link">
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   </div>
 
   <div class="l-container">
     <main role="main"<?php print backdrop_attributes($main_attributes); ?>>
-      <div class="l-content-top">
-        <div class="l-content-wrapper">
+
+      <div class="l-content-wrapper">
+
+        <div class="l-content-top">
           <a id="main-content"></a>
           <?php print render($title_prefix); ?>
           <?php if ($title): ?>
@@ -45,34 +47,33 @@
 
           <?php print $content['content-top']; ?>
         </div>
-      </div>
 
-      <?php if ($tabs): ?>
-        <div class="tabs l-content-wrapper">
-          <?php print $tabs; ?>
+        <?php if ($tabs): ?>
+          <div class="tabs">
+            <?php print $tabs; ?>
+          </div>
+        <?php endif; ?>
+
+        <?php if ($action_links): ?>
+          <?php print $action_links; ?>
+        <?php endif; ?>
+
+        <?php if ($messages): ?>
+          <section class="l-messages">
+            <?php print $messages; ?>
+          </section>
+        <?php endif; ?>
+
+        <div class="l-inner clearfix">
+          <div class="l-sidebar-inner">
+            <?php print $content['content_sidebar']; ?>
+          </div>
+          <div class="l-content-inner">
+            <?php print $content['content']; ?>
+          </div>
         </div>
-      <?php endif; ?>
 
-      <?php if ($action_links): ?>
-      <div class="l-content-wrapper">
-        <?php print $action_links; ?>
-      </div>
-      <?php endif; ?>
-
-      <?php if ($messages): ?>
-        <section class="l-content-wrapper l-messages">
-          <?php print $messages; ?>
-        </section>
-      <?php endif; ?>
-
-      <div class="l-inner l-content-wrapper clearfix">
-        <div class="l-sidebar-inner">
-          <?php print $content['content_sidebar']; ?>
-        </div>
-        <div class="l-content-inner">
-          <?php print $content['content']; ?>
-        </div>
-      </div>
+      </div><!-- l-content-wrapper -->
 
       <?php if ($content['footer']): ?>
         <div class="l-footer">

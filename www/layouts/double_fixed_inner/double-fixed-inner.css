@@ -3,19 +3,19 @@
  ******************************************************************************/
 
 /* Clearfix for all regions. */
-.layout--double-fixed .l-main-wrapper:after,
-.layout--double-fixed .l-footer:after,
-.layout--double-fixed .l-container:after,
-.layout--double-fixed .l-content-top:after,
-.layout--double-fixed .l-content:after,
-.layout--double-fixed .l-sidebar:after,
-.layout--double-fixed .l-drawer:after {
+.layout--double-fixed-inner .l-main-wrapper:after,
+.layout--double-fixed-inner .l-footer:after,
+.layout--double-fixed-inner .l-container:after,
+.layout--double-fixed-inner .l-content-top:after,
+.layout--double-fixed-inner .l-content:after,
+.layout--double-fixed-inner .l-sidebar:after,
+.layout--double-fixed-inner-inner .l-drawer:after {
   content: "";
   display: table;
   clear: both;
 }
 
-.layout--double-fixed .l-container {
+.layout--double-fixed-inner .l-container {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -25,88 +25,59 @@
   clear: both;
   text-align: center;
 }
-.layout--double-fixed .l-content {
+.layout--double-fixed-inner .l-content {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   text-align: left;
   background-repeat: no-repeat;
-}
-
-main.has-background #page-title {
-  margin-top: 50px;
+  background-size: 100%;
 }
 @media all and (min-width: 851px) {
-  main.has-background #page-title {
-    margin-top: 225px;
+  .layout--double-fixed-inner .l-content.has-background {
+    padding-top: 125px;
   }
 }
-
-
-.layout--double-fixed .l-content-wrapper {
+.layout--double-fixed-inner .l-content-wrapper {
   text-align: left;
   max-width: 728px;
   margin: 0 auto;
   padding: 0 20px;
-  background-color: #ffffff;
-  min-height: 90px;
 }
 @media all and (min-width: 851px) {
-  .layout--double-fixed .l-content-wrapper {
-    padding: 0 35px;
+  .layout--double-fixed-inner .l-content-wrapper {
+    background-color: #ffffff;
   }
-}
-
-.layout--double-fixed .tabs {
-  background-color: #ffffff;
-}
-.layout--double-fixed .tabs ul.primary {
-  margin: 0;
-}
-.layout--double-fixed .l-inner {
-  background-color: #ffffff;
-  text-align: center;
-}
-.layout--double-fixed .l-sidebar-inner {
-  width: 220px;
-  margin: 0 auto;
-  text-align: left;
-}
-.layout--double-fixed .l-content-inner {
-  padding-top: 15px;
-  text-align: left;
-}
-
-.layout--double-fixed .l-sidebar,
-.layout--double-fixed .l-drawer {
-  text-align: left;
 }
 
 
 @media all and (min-width: 501px) {
-  .l-content-top .l-content-wrapper {
-    min-height: 125px;
+  .layout--double-fixed-inner .l-content-wrapper {
+    padding: 0 20px 0 245px;
+    max-width: 453px;
   }
-  .layout--double-fixed .l-sidebar-inner {
-    float: left;
-    margin: 0;
+  .layout--double-fixed-inner .l-inner {
+    position: relative;
+  }
+  .layout--double-fixed-inner .l-sidebar-inner {
+    position: absolute;
     width: 200px;
-  }
-  .layout--double-fixed .l-content-inner {
-    margin-left: 215px;
+    left: -230px;
+    top: -150px;
   }
 }
 @media all and (min-width: 851px) {
-  .layout--double-fixed .l-sidebar-inner {
-    width: 230px;
-  }
-  .layout--double-fixed .l-content-inner {
-    margin-left: 275px;
+  .layout--double-fixed-inner .l-content-wrapper {
+    padding: 0 35px 0 260px;
   }
 }
 
+.layout--double-fixed-inner .l-sidebar,
+.layout--double-fixed-inner .l-drawer {
+  text-align: left;
+}
 
-.layout--double-fixed .l-footer {
+.layout--double-fixed-inner .l-footer {
   padding: 20px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -115,28 +86,28 @@ main.has-background #page-title {
 }
 
 @media all and (min-width: 851px) {
-  .layout--double-fixed .l-sidebar,
-  .layout--double-fixed .l-drawer {
+  .layout--double-fixed-inner .l-sidebar,
+  .layout--double-fixed-inner .l-drawer {
     display: inline;
     float: right; /* LTR */
     position: relative;
   }
-  [dir="rtl"] .layout--double-fixed .l-sidebar,
-  [dir="rtl"] .layout--double-fixed .l-drawer {
+  [dir="rtl"] .layout--double-fixed-inner .l-sidebar,
+  [dir="rtl"] .layout--double-fixed-inner .l-drawer {
     float: left;
   }
 
   /* Two Sidebars */
-  .layout-both-sidebars .layout--double-fixed .l-container {
+  .layout-both-sidebars .layout--double-fixed-inner .l-container {
     padding-left: 230px;
   }
-  [dir="rtl"] .layout-both-sidebars .layout--double-fixed .l-container {
+  [dir="rtl"] .layout-both-sidebars .layout--double-fixed-inner .l-container {
     padding-left: 0;
     padding-right: 230px;
   }
 
   /* One Sidebar */
-  .layout--double-fixed .l-sidebar {
+  .layout--double-fixed-inner .l-sidebar {
     width: 230px;
     height: 100%;
     width: 230px;
@@ -145,11 +116,11 @@ main.has-background #page-title {
     left: 0;
     overflow: auto;
   }
-  [dir="rtl"] .layout--double-fixed .l-sidebar {
+  [dir="rtl"] .layout--double-fixed-inner .l-sidebar {
     right: 0;
   }
 
-  .layout--double-fixed .l-drawer {
+  .layout--double-fixed-inner .l-drawer {
     width: 230px;
     height: 100%;
     position: fixed;
@@ -157,7 +128,7 @@ main.has-background #page-title {
     left: 230px;
     overflow: auto;
   }
-  [dir="rtl"] .layout--double-fixed .l-drawer {
+  [dir="rtl"] .layout--double-fixed-inner .l-drawer {
     right: 230px;
   }
 }
@@ -171,27 +142,27 @@ main.has-background #page-title {
  * Admin only CSS
  ******************************************************************************/
 
-#layout-edit-main .layout--double-fixed {
+#layout-edit-main .layout--double-fixed-inner {
   position: relative;
 }
-#layout-edit-main .layout--double-fixed .l-container {
+#layout-edit-main .layout--double-fixed-inner .l-container {
   padding: 0;
 }
-#layout-edit-main .layout--double-fixed .l-content {
+#layout-edit-main .layout--double-fixed-inner .l-content {
   position: relative;
   float: right;
   width: 50%;
   padding: 0;
 }
 
-#layout-edit-main .layout--double-fixed .l-sidebar {
+#layout-edit-main .layout--double-fixed-inner .l-sidebar {
   position: absolute;
   float: left;
   width: 25%;
   top: 0;
   left: 25%;
 }
-#layout-edit-main .layout--double-fixed .l-drawer {
+#layout-edit-main .layout--double-fixed-inner .l-drawer {
   position: absolute;
   float: left;
   width: 25%;
