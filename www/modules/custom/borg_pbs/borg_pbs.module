@@ -16,7 +16,7 @@
  *   'categories' => array() // The categories that were selected, if any
  *   'type' => 'module', // The type of project being searched
  *   'page' => 3, // The zero-based page number
- *   'requested' => 12, // How many results are requested per page
+ *   'items_per_page' => 12, // How many results are requested per page
  * )
  *
  * The function should return an array like this:
@@ -78,15 +78,15 @@ function borg_pbs_project_browser_server_query($filters) {
   }
 
   // Only send back the requested amount.
-  $start = $filters['page'] * $filters['requested'];
+  $start = $filters['page'] * $filters['items_per_page'];
   $count_query = $query;
   $count_result = $count_query->execute();
-  $query->range($start, $filters['requested']);
+  $query->range($start, $filters['items_per_page']);
 
   // Add the sorting.
-  if (!empty($filters['order_by'])) {
+  if (!empty($filters['order'])) {
     $sort_direction = (!empty($filters['sort']) && $filters['sort'] == 'asc') ? 'ASC' : 'DESC';
-    switch ($filters['order_by']) {
+    switch ($filters['order']) {
       case 'title':
         $query->orderBy('n.title', $sort_direction);
         break;
