@@ -46,8 +46,8 @@
     "taxonomy_term_pattern": "",
     "user_pattern": "account/[user:name]",
     "node_book_pattern": "",
-    "node_core_pattern": "",
-    "node_core_release_pattern": "",
+    "node_core_pattern": "project/releases/[node:title]",
+    "node_core_release_pattern": "releases/[node:title]",
     "node_page_pattern": "",
     "node_project_layout_pattern": "project/[node:title]",
     "node_project_module_pattern": "project/[node:title]",
@@ -56,5 +56,6 @@
     "node_quote_pattern": "",
     "node_sa_pattern": "",
     "node_supporter_pattern": "",
-    "taxonomy_term_tags_pattern": "tags/[term:name]"
+    "taxonomy_term_tags_pattern": "tags/[term:name]",
+    "node_post_pattern": ""
 }

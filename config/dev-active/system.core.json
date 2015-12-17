@@ -41,7 +41,13 @@
     "log_facility": 128,
     "log_format": "!base_url|!timestamp|!type|!ip|!request_uri|!referer|!uid|!link|!message",
     "error_level": "all",
-    "active_menus_default": [],
+    "active_menus_default": {
+        "1": "menu-handbook",
+        "2": "main-menu",
+        "3": "management",
+        "4": "navigation",
+        "5": "user-menu"
+    },
     "menu_route_handler": "layout_route_handler",
     "file_default_scheme": "public",
     "file_public_path": "files",

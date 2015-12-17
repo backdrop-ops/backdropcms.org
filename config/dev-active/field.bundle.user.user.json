@@ -10,20 +10,20 @@
     "extra_fields": {
         "form": {
             "redirect": {
-                "weight": "12"
+                "weight": "14"
             },
             "account": {
                 "weight": "0"
             },
             "timezone": {
-                "weight": "11"
+                "weight": "13"
             }
         },
         "display": {
             "member_for": {
                 "default": {
                     "weight": "10",
-                    "visible": true
+                    "visible": false
                 }
             }
         }

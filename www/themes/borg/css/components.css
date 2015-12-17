@@ -603,6 +603,167 @@ body.front .block-block-4 h2 {
   flex: 1;
 }
 
+/*******************************************************************************
+ * User Profile
+ ******************************************************************************/
+
+main.account-page #page-title {
+  padding-top: 50px;
+}
+
+article.profile {
+  clear: none;
+  margin-top: 0;
+}
+article.profile .field-name-field-contributions {
+  margin-top: 40px;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+article.profile .field-name-field-contributions .field-label {
+  font-weight: normal;
+}
+article.profile .field-name-field-contributions ul {
+  margin-top: 0.25em;
+}
+article.profile .field-name-field-contributions li {
+  margin: 0.25em 0;
+}
+
+/*******************************************************************************
+ * User Profile Sidebar
+ ******************************************************************************/
+
+.view-profile-sidebar .views-field {
+  margin-bottom: 15px;
+}
+.view-profile-sidebar .views-label {
+  font-weight: bold;
+}
+.view-profile-sidebar .item-list ul {
+  text-align: left;
+}
+.view-profile-sidebar .item-list li {
+  list-style-type: none;
+  margin: 0;
+}
+
+.view-profile-sidebar .views-field-field-photo .field-content {
+  text-align: center;
+}
+.view-profile-sidebar .views-field-field-photo img {
+  border-radius: 50%;
+  background: #ffffff;
+  margin: 0 auto;
+}
+
+.view-profile-sidebar .views-field-field-name {
+  margin-top: 20px;
+  padding-top: 20px;
+}
+.view-profile-sidebar .views-field-field-name:before {
+  height: 2px;
+  background: #000000;
+  width: 25px;
+  display: block;
+  content: "";
+  position: relative;
+  top: -20px;
+}
+
+.view-profile-sidebar .views-field-created {
+   margin: 20px 0;
+   padding: 20px 0;
+}
+.view-profile-sidebar .views-field-created:before {
+  height: 2px;
+  background: #000000;
+  width: 25px;
+  display: block;
+  content: "";
+  position: relative;
+  top: -20px;
+}
+.view-profile-sidebar .views-field-created:after {
+  height: 2px;
+  background: #000000;
+  width: 25px;
+  display: block;
+  content: "";
+  position: relative;
+  top: 20px;
+}
+
+/*******************************************************************************
+ * User Profile Edit form
+ *   Wesruv - feel free to remove this!!!
+ ******************************************************************************/
+
+.user-profile-form table {
+  width: 100%;
+}
+.user-profile-form table th {
+  border: 0;
+}
+.user-profile-form table tbody {
+  border-top: 1px solid #ccc; /* matches row bottom border */
+}
+.user-profile-form table td {
+  padding: 3px 4px;
+}
+
+.user-profile-form input.form-text,
+.user-profile-form input.form-email {
+  max-width: 100%;
+  padding: 7px 10px;
+  border: 2px solid #d0d0d0;
+  font-weight: 400;
+  color: #444b53;
+  background: #fff;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-transition: border-color 0.25s ease-in-out;
+  -moz-transition: border-color 0.25s ease-in-out;
+  -ms-transition: border-color 0.25s ease-in-out;
+  -o-transition: border-color 0.25s ease-in-out;
+  will-change: border-color;
+}
+.user-profile-form textarea {
+  padding: 10px;
+  border: 2px solid #d0d0d0;
+  max-width: 100%;
+  font-weight: 400;
+  color: #444b53;
+  background: #fff;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.field-name-field-photo {
+  position: relative;
+}
+.field-name-field-photo .image-preview {
+  float: none;
+}
+.field-name-field-photo .image-preview img {
+  border-radius: 50%;
+  background: #ffffff;
+}
+div.image-widget-data {
+  float: none;
+}
+
+/*******************************************************************************
+ * Draggable Handles
+ ******************************************************************************/
+form .field-multiple-table .field-multiple-drag .tabledrag-handle {
+  padding: 0;
+}
+.draggable a.tabledrag-handle {
+  margin-left: 0;
+}
 
 /*******************************************************************************
  * Contribute page (/contribute)

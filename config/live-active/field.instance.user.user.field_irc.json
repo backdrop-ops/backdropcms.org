@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "IRC Handle",
     "widget": {
-        "weight": "3",
+        "weight": "6",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -25,10 +25,9 @@
     "display": {
         "default": {
             "label": "inline",
-            "type": "text_default",
+            "type": "hidden",
             "weight": "3",
-            "settings": [],
-            "module": "text"
+            "settings": []
         }
     }
 }

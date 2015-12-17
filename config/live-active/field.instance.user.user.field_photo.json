@@ -3,7 +3,7 @@
     "field_name": "field_photo",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Photo",
+    "label": "Headshot",
     "widget": {
         "weight": "1",
         "type": "image_image",
@@ -11,7 +11,7 @@
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "thumbnail"
+            "preview_image_style": "medium"
         }
     },
     "description": "",
@@ -27,20 +27,15 @@
         "min_resolution": "",
         "alt_field": 0,
         "title_field": 0,
-        "default_image": "public://default_images",
-        "user_register_form": 0
+        "user_register_form": 0,
+        "default_image": "public://default_images"
     },
     "display": {
         "default": {
             "label": "hidden",
-            "type": "image",
+            "type": "hidden",
             "weight": "0",
-            "settings": {
-                "image_style": "thumbnail",
-                "image_link": "",
-                "image_float": "left"
-            },
-            "module": "image"
+            "settings": []
         }
     }
 }

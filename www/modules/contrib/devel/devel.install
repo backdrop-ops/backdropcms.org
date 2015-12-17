@@ -100,3 +100,12 @@ function devel_update_1000() {
 
   $config->save();
 }
+
+/**
+ * Enable static caching for the Devel config file.
+ */
+function devel_update_1001() {
+  config('devel.settings')
+    ->set('_config_static', TRUE)
+    ->save();
+}

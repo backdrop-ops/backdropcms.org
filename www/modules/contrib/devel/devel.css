@@ -11,6 +11,14 @@
 }
 
 /**
+ * Disable flexbox on the overall layout to prevent overlapping issues.
+ */
+body > .layout {
+  height: auto !important;
+}
+
+
+/**
  * Query summary
  */
 div.dev-query {

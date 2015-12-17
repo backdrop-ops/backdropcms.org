@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Areas of Expertise",
     "widget": {
-        "weight": "7",
+        "weight": "9",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -25,10 +25,9 @@
     "display": {
         "default": {
             "label": "above",
-            "type": "text_default",
+            "type": "hidden",
             "weight": "6",
-            "settings": [],
-            "module": "text"
+            "settings": []
         }
     }
 }

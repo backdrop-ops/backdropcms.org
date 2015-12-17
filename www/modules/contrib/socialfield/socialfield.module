@@ -5,6 +5,18 @@
  */
 
 /**
+ * Implements hook_config_info().
+ */
+function socialfield_config_info() {
+  $prefixes['socialfield.settings'] = array(
+    'label' => t('Socialfield settings'),
+    'group' => t('Configuration'),
+  );
+
+  return $prefixes;
+}
+
+/**
  * Implements hook_menu().
  */
 function socialfield_menu() {

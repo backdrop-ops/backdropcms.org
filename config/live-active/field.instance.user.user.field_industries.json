@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Industries in which I've worked",
     "widget": {
-        "weight": "8",
+        "weight": "10",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -25,10 +25,9 @@
     "display": {
         "default": {
             "label": "above",
-            "type": "text_default",
+            "type": "hidden",
             "weight": "7",
-            "settings": [],
-            "module": "text"
+            "settings": []
         }
     }
 }

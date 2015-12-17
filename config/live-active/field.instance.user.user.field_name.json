@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Full Name",
     "widget": {
-        "weight": "2",
+        "weight": "3",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -25,10 +25,9 @@
     "display": {
         "default": {
             "label": "inline",
-            "type": "text_default",
+            "type": "hidden",
             "weight": "2",
-            "settings": [],
-            "module": "text"
+            "settings": []
         }
     }
 }
