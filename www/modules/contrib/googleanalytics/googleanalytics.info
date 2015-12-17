@@ -1,0 +1,11 @@
+name = Google Analytics
+description = Adds a Google Analytics JavaScript tracking code to every page.
+backdrop = 1.x
+package = Statistics
+type = module
+configure = admin/config/system/googleanalytics
+
+; Added by Backdrop CMS packaging script on 2015-12-16
+project = googleanalytics
+version = 1.x-2.1.0
+timestamp = 1450315512
