@@ -1,7 +1,6 @@
-  document.write(5 + 6);
-  /**
-   * Google Analytics Event Tracking
-   */
+/**
+ * Google Analytics Event Tracking
+ */
 (function($) {
   $(document).ready(function() {
     $('.button.download').on('click', function(){
