@@ -91,10 +91,10 @@ function redirect_generate_batch_generate($num, array &$context) {
   for ($i = 0; $i < min($limit, $context['sandbox']['max'] - $context['sandbox']['progress']); $i++) {
     $rand = mt_rand(0, 100);
 
-    $redirect = new stdClass();
-    redirect_object_prepare($redirect);
-    $redirect->source = _redirect_generate_url();
-    $redirect->devel_generate = TRUE;
+    $redirect = new Redirect(array(
+      'source' => _redirect_generate_url(),
+      'devel_generate' => TRUE,
+    ));
 
     if ($context['sandbox']['nids'] && $rand >= 40) {
       $redirect->redirect = 'node/'. array_rand($context['sandbox']['nids']);

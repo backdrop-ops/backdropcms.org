@@ -160,3 +160,12 @@ function redirect_update_1001() {
     db_add_index('redirect', 'source_langcode', array('source', 'langcode'));
   }
 }
+
+/**
+ * Enable config static caching.
+ */
+function redirect_update_1002() {
+  config('redirect.settings')
+    ->set('_config_static', true)
+    ->save();
+}

@@ -5,13 +5,6 @@ path_redirect and globalredirect).
 
 * Initial Backdrop Port
 
-there are some flags in the code in areas where I believe some action is required,
-but I did not know the correct action.
-
-those areas are flagged: 
-* TODO
-* BACKDROP_INITIAL_PORT
-
 Dependencies
 * locale
 * field_ui
@@ -24,8 +17,8 @@ ii.  To install the redirect module:
   * visit /admin/modules
   * search for 'redirect'
   * click enable and save
-  ** When adding content to your site you will see a Redirect Vertical tab
-    *** you can click this tab to add a redirect to the content.
+    * When adding content to your site you will see a Redirect Vertical tab
+      * you can click this tab to add a redirect to the content.
   * You can also add redirects at: /admin/config/search/redirect
   
 iii. Licensed under GPL v2

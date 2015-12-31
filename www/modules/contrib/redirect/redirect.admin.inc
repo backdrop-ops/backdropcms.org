@@ -302,6 +302,13 @@ function redirect_list_form_operations_confirm_form($form, &$form_state, $operat
 }
 
 /**
+ * Page callback; Redirect to the form for creating a redirect.
+ */
+function redirect_add_redirect_page() {
+  backdrop_goto('admin/config/search/redirect/add');
+}
+
+/**
  * Form builder to add or edit an URL redirect.
  *
  * @see redirect_element_validate_source()
@@ -313,17 +320,15 @@ function redirect_list_form_operations_confirm_form($form, &$form_state, $operat
  */
 function redirect_edit_form($form, &$form_state, $redirect = NULL) {
   if (!isset($redirect)) {
-    $redirect = new stdClass();
+    $redirect = new Redirect(array(
+      'source' => isset($_GET['source']) ? urldecode($_GET['source']) : '',
+      'source_options' => isset($_GET['source_options']) ? backdrop_get_query_array($_GET['source_options']) : array(),
+      'redirect' => isset($_GET['redirect']) ? urldecode($_GET['redirect']) : '',
+      'redirect_options' => isset($_GET['redirect_options']) ? backdrop_get_query_array($_GET['redirect_options']) : array(),
+      'langcode' => isset($_GET['langcode']) ? urldecode($_GET['langcode']) : LANGUAGE_NONE,
+    ));
   }
   $config = config('redirect.settings');
-  // Merge default values.
-  redirect_object_prepare($redirect, array(
-    'source' => isset($_GET['source']) ? urldecode($_GET['source']) : '',
-    'source_options' => isset($_GET['source_options']) ? backdrop_get_query_array($_GET['source_options']) : array(),
-    'redirect' => isset($_GET['redirect']) ? urldecode($_GET['redirect']) : '',
-    'redirect_options' => isset($_GET['redirect_options']) ? backdrop_get_query_array($_GET['redirect_options']) : array(),
-    'langcode' => isset($_GET['langcode']) ? urldecode($_GET['langcode']) : LANGUAGE_NONE,
-  ));
 
   $form['rid'] = array(
     '#type' => 'value',
@@ -522,7 +527,7 @@ function _redirect_extract_url_options(&$element, &$form_state) {
  * @see redirect_edit_form()
  */
 function redirect_edit_form_validate($form, &$form_state) {
-  $redirect = (object) $form_state['values'];
+  $redirect = new Redirect($form_state['values']);
 
   if (empty($form_state['values']['override'])) {
     if ($existing = redirect_load_by_source($redirect->source, $redirect->langcode)) {
@@ -541,6 +546,7 @@ function redirect_edit_form_validate($form, &$form_state) {
   }
 
   redirect_validate($redirect, $form, $form_state);
+  $form_state['redirect'] = $redirect;
 }
 
 /**
@@ -549,9 +555,8 @@ function redirect_edit_form_validate($form, &$form_state) {
  * @see redirect_edit_form()
  */
 function redirect_edit_form_submit($form, &$form_state) {
-  form_state_values_clean($form_state);
-  $redirect = (object) $form_state['values'];
-  redirect_save($redirect);
+  $redirect = $form_state['redirect'];
+  $redirect->save();
   backdrop_set_message(t('The redirect has been saved.'));
   $form_state['redirect'] = 'admin/config/search/redirect';
 }
