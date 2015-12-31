@@ -40,10 +40,12 @@ function honeypot_install() {
   // Create CSS file.
   honeypot_create_css(config_get('honeypot.settings', 'element_name'));
 
-  $t = get_t();
-  backdrop_set_message($t("Honeypot installed successfully. Please !link to protect your forms from spam bots.", array(
-    '!link' => l($t('configure Honeypot'), 'admin/config/content/honeypot'),
-  )));
+  if (!backdrop_is_cli()) {
+    $t = get_t();
+    backdrop_set_message($t("Honeypot installed successfully. Please !link to protect your forms from spam bots.", array(
+      '!link' => l($t('configure Honeypot'), 'admin/config/content/honeypot'),
+    )));
+  }
 }
 
 /**
@@ -79,6 +81,14 @@ function honeypot_update_1000() {
   $config->set('log', update_variable_get('honeypot_log', 1));
   $config->set('element_name', update_variable_get('honeypot_element_name', 'url'));
   $config->set('time_limit', update_variable_get('honeypot_time_limit', 5));
+  $config->set('unprotected_forms', array(
+    'user_login',
+    'user_login_block',
+    'search_form',
+    'search_block_form',
+    'views_exposed_form',
+    'honeypot_admin_form'
+  ));
 
   $form_settings = array();
   $result = db_query('SELECT * FROM {variable} WHERE name LIKE  :name', array(':name' => '%honeypot_form_%'));
@@ -105,3 +115,13 @@ function honeypot_update_1000() {
  * @} End of "defgroup updates-7.x-to-1.x"
  * The next series of updates should start at 2000.
  */
+
+/**
+ * Ensure a css file is created
+ */
+function honeypot_update_2001() {
+  backdrop_load('module', 'honeypot');
+  module_load_include('inc', 'honeypot', 'honeypot.admin');
+  honeypot_create_css(config_get('honeypot.settings', 'element_name'));
+}
+

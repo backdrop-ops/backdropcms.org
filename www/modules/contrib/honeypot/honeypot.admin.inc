@@ -34,7 +34,7 @@ function honeypot_admin_form($form, &$form_state) {
   $form['configuration']['honeypot_element_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Honeypot element name'),
-    '#description' => t("The name of the Honeypot form field. It's usually most effective to use a generic name like email, homepage, or name, but this should be changed if it interferes with fields that are already in your forms. Must not contain spaces or special characters."),
+    '#description' => t("The name of the Honeypot form field. It's usually most effective to use a generic name like email, homepage, or link, but this should be changed if it interferes with fields that are already in your forms. Must not contain spaces or special characters."),
     '#default_value' => $config->get('element_name'),
     '#required' => TRUE,
     '#size' => 30,
@@ -128,7 +128,7 @@ function honeypot_admin_form($form, &$form_state) {
       $form['enabled_forms'][$id] = array(
         '#type' => 'checkbox',
         '#title' => t('@name node form', array('@name' => $type->name)),
-        '#default_value' => $form_settings[$id],
+        '#default_value' => array_key_exists($id, $form_settings) ? $form_settings[$id]: 0,
       );
     }
 
@@ -140,7 +140,7 @@ function honeypot_admin_form($form, &$form_state) {
         $form['enabled_forms'][$id] = array(
           '#type' => 'checkbox',
           '#title' => t('@name comment form', array('@name' => $type->name)),
-          '#default_value' => $form_settings[$id],
+          '#default_value' => array_key_exists($id, $form_settings) ? $form_settings[$id]: 0,
         );
       }
     }
@@ -178,6 +178,16 @@ function honeypot_admin_form_validate($form, &$form_state) {
   if (!preg_match("/^[-_a-zA-Z0-9]+$/", $form_state['values']['honeypot_element_name'])) {
     form_set_error('honeypot_element_name', t("The element name cannot contain spaces or other special characters."));
   }
+
+  // Make sure Honeypot element name isn't one of the reserved names.
+  $reserved_element_names = array(
+    'name',
+    'pass',
+    'website',
+  );
+  if (in_array($form_state['values']['honeypot_element_name'], $reserved_element_names)) {
+    form_set_error('honeypot_element_name', t("The element name cannot match one of the common Backdrop form field names (e.g. @names).", array('@names' => implode(', ', $reserved_element_names))));
+  }
 }
 
 /**
@@ -190,8 +200,9 @@ function honeypot_admin_form_submit($form, &$form_state) {
   $config = config('honeypot.settings');
 
   // Store individual form settings in an array
-  $form_settings = array();
+  $form_settings = $config->get('form_settings');
 
+  // Update the form settings
   foreach($form_state['values'] as $k => $v) {
     if("honeypot_form_" == substr($k,0,14)) {
       $form_settings[$k] = $v;

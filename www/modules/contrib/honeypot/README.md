@@ -1,5 +1,5 @@
 Honeypot
---------
+========
 
 Honeypot uses both the honeypot and timestamp methods of deterring spam bots from completing forms on your Backdrop site. These methods are effective against many spam bots, and are not as intrusive as CAPTCHAs or other methods which punish the user.
 
