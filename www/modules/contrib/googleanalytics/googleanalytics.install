@@ -1,0 +1,115 @@
+<?php
+/**
+ * @file
+ * Installation file for Google Analytics module.
+ */
+
+/**
+ * Implements hook_disable().
+ *
+ * Remove cache directory if module is disabled (or uninstalled).
+ */
+function googleanalytics_disable() {
+  googleanalytics_clear_js_cache();
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function googleanalytics_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    // Raise warning if Google user account has not been set yet.
+    $ga_config = config('googleanalytics.settings');
+    if (!preg_match('/^UA-\d+-\d+$/', $ga_config->get('account'))) {
+      $requirements['googleanalytics_account'] = array(
+        'title' => $t('Google Analytics module'),
+        'description' => $t('Google Analytics module has not been configured yet. Please configure its settings from the <a href="@url">Google Analytics settings page</a>.', array('@url' => url('admin/config/system/googleanalytics'))),
+        'severity' => REQUIREMENT_WARNING,
+        'value' => $t('Not configured'),
+      );
+    }
+
+    // Raise warning if debugging is enabled.
+    if ($ga_config->get('debug')) {
+      $requirements['google_analytics_debugging'] = array(
+        'title' => $t('Google Analytics module'),
+        'description' => $t('Google Analytics module has debugging enabled. Please disable debugging setting in production sites from the <a href="@url">Google Analytics settings page</a>.', array('@url' => url('admin/config/system/googleanalytics'))),
+        'severity' => REQUIREMENT_WARNING,
+        'value' => $t('Debugging enabled'),
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Move settings from variables to config.
+ */
+function googleanalytics_update_1001() {
+  $config = config('googleanalytics.settings');
+  $config->set('_config_static', TRUE); // Enable static caching for this file.
+  $config->set('account', update_variable_get('googleanalytics_account', 'UA-'));
+  $config->set('domain_mode', update_variable_get('googleanalytics_domain_mode', 0));
+  $config->set('cross_domains', update_variable_get('googleanalytics_cross_domains', ''));
+  $config->set('visibility_pages', update_variable_get('googleanalytics_visibility_pages', ''));
+  $config->set('pages', update_variable_get('googleanalytics_pages', ''));
+  $config->set('visibility_roles', update_variable_get('googleanalytics_visibility_roles', 0));
+  $config->set('roles', array_keys(array_filter(update_variable_get('googleanalytics_roles', array()))));
+  $config->set('custom', update_variable_get('googleanalytics_custom', 0));
+  $config->set('trackuserid', update_variable_get('googleanalytics_trackuserid', FALSE));
+  $config->set('trackoutbound', update_variable_get('googleanalytics_trackoutbound', TRUE));
+  $config->set('trackmailto', update_variable_get('googleanalytics_trackmailto', TRUE));
+  $config->set('trackfiles', update_variable_get('googleanalytics_trackfiles', TRUE));
+  $config->set('trackfiles_extensions', update_variable_get('googleanalytics_trackfiles_extensions', ''));
+  $config->set('tracklinkid', update_variable_get('googleanalytics_tracklinkid', FALSE));
+  $config->set('trackurlfragments', update_variable_get('googleanalytics_trackurlfragments', FALSE));
+  $config->set('trackmessages', update_variable_get('googleanalytics_trackmessages', FALSE));
+  $config->set('site_search', update_variable_get('googleanalytics_site_search', FALSE));
+  $config->set('trackadsense', update_variable_get('googleanalytics_trackadsense', FALSE));
+  $config->set('trackdoubleclick', update_variable_get('googleanalytics_trackdoubleclick', FALSE));
+  $config->set('tracker_anonymizeip', update_variable_get('googleanalytics_tracker_anonymizeip', TRUE));
+  $config->set('privacy_donottrack', update_variable_get('googleanalytics_privacy_donottrack', TRUE));
+  $config->set('custom_dimension', update_variable_get('googleanalytics_custom_dimension', array()));
+  $config->set('custom_metric', update_variable_get('googleanalytics_custom_metric', array()));
+  $config->set('cache', update_variable_get('googleanalytics_cache', FALSE));
+  $config->set('translation_set', update_variable_get('googleanalytics_translation_set', FALSE));
+  $config->set('codesnippet_create', update_variable_get('googleanalytics_codesnippet_create', array()));
+  $config->set('codesnippet_before', update_variable_get('googleanalytics_codesnippet_before', ''));
+  $config->set('codesnippet_after', update_variable_get('googleanalytics_codesnippet_after', ''));
+  $config->set('debug', update_variable_get('googleanalytics_debug', FALSE));
+  $config->save();
+
+  update_variable_del('googleanalytics_account');
+  update_variable_del('googleanalytics_domain_mode');
+  update_variable_del('googleanalytics_cross_domains');
+  update_variable_del('googleanalytics_visibility_pages');
+  update_variable_del('googleanalytics_pages');
+  update_variable_del('googleanalytics_visibility_roles');
+  update_variable_del('googleanalytics_roles');
+  update_variable_del('googleanalytics_custom');
+  update_variable_del('googleanalytics_trackuserid');
+  update_variable_del('googleanalytics_trackoutbound');
+  update_variable_del('googleanalytics_trackmailto');
+  update_variable_del('googleanalytics_trackfiles');
+  update_variable_del('googleanalytics_trackfiles_extensions');
+  update_variable_del('googleanalytics_tracklinkid');
+  update_variable_del('googleanalytics_trackurlfragments');
+  update_variable_del('googleanalytics_trackmessages');
+  update_variable_del('googleanalytics_site_search');
+  update_variable_del('googleanalytics_trackadsense');
+  update_variable_del('googleanalytics_trackdoubleclick');
+  update_variable_del('googleanalytics_tracker_anonymizeip');
+  update_variable_del('googleanalytics_privacy_donottrack');
+  update_variable_del('googleanalytics_custom_dimension');
+  update_variable_del('googleanalytics_custom_metric');
+  update_variable_del('googleanalytics_cache');
+  update_variable_del('googleanalytics_translation_set');
+  update_variable_del('googleanalytics_codesnippet_create');
+  update_variable_del('googleanalytics_codesnippet_before');
+  update_variable_del('googleanalytics_codesnippet_after');
+  update_variable_del('googleanalytics_debug');
+}
