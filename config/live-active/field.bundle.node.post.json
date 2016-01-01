@@ -1,0 +1,39 @@
+{
+    "_config_name": "field.bundle.node.post",
+    "bundle": "post",
+    "entity_type": "node",
+    "view_modes": {
+        "teaser": {
+            "custom_settings": true
+        },
+        "full": {
+            "custom_settings": false
+        },
+        "rss": {
+            "custom_settings": false
+        },
+        "search_index": {
+            "custom_settings": false
+        },
+        "search_result": {
+            "custom_settings": false
+        },
+        "print": {
+            "custom_settings": false
+        }
+    },
+    "extra_fields": {
+        "form": {
+            "title": {
+                "weight": "0"
+            },
+            "path": {
+                "weight": "2"
+            },
+            "redirect": {
+                "weight": "3"
+            }
+        },
+        "display": []
+    }
+}

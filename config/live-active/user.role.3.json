@@ -25,7 +25,6 @@
         "administer content types",
         "administer filters",
         "administer google analytics",
-        "administer honeypot",
         "administer image styles",
         "administer menu",
         "administer modules",
@@ -41,7 +40,6 @@
         "administer users",
         "administer views",
         "block IP addresses",
-        "bypass honeypot protection",
         "bypass node access",
         "cancel account",
         "change own username",
@@ -133,6 +131,8 @@
         "administer path patterns",
         "notify of path changes",
         "access project browser server",
-        "administer socialfield"
+        "administer socialfield",
+        "administer honeypot",
+        "bypass honeypot protection"
     ]
 }
