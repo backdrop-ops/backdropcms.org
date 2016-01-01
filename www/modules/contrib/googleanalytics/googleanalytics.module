@@ -370,10 +370,9 @@ function googleanalytics_field_extra_fields() {
  */
 function googleanalytics_form_user_profile_form_alter(&$form, &$form_state) {
   $account = $form['#user'];
-  $category = $form['#user_category'];
   $config = config('googleanalytics.settings');
 
-  if ($category == 'account' && user_access('opt-in or out of tracking') && ($custom = $config->get('custom')) != 0 && _googleanalytics_visibility_roles($account)) {
+  if (user_access('opt-in or out of tracking') && ($custom = $config->get('custom')) != 0 && _googleanalytics_visibility_roles($account)) {
     $form['googleanalytics'] = array(
       '#type' => 'fieldset',
       '#title' => t('Google Analytics configuration'),

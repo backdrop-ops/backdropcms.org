@@ -841,16 +841,18 @@ function _googleanalytics_validate_create_field_value($value) {
  *    - Values are separated by a carriage return.
  *    - Each value is in the format "name|value" or "value".
  */
-function _googleanalytics_get_name_value_string($values) {
+function _googleanalytics_get_name_value_string($values = NULL) {
   $lines = array();
-  foreach ($values as $name => $value) {
-    // Convert data types.
-    // @todo: #2251377: Json utility class serializes boolean values to incorrect data type
-    if (is_bool($value)) {
-      $value = ($value) ? 'true' : 'false';
-    }
+  if ($values != NULL) {
+    foreach ($values as $name => $value) {
+      // Convert data types.
+      // @todo: #2251377: Json utility class serializes boolean values to incorrect data type
+      if (is_bool($value)) {
+        $value = ($value) ? 'true' : 'false';
+      }
 
-    $lines[] = "$name|$value";
+      $lines[] = "$name|$value";
+    }
   }
   return implode("\n", $lines);
 }

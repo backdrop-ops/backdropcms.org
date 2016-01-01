@@ -42,11 +42,14 @@ complete text.
 Current Maintainers
 -------------------
 
-This module is currently seeking maintainers.
+- Jen Lampton (https://github.com/jenlampton)
+- Seeking additional maintainers
 
 Credits
 -------
 
-This module was originally written for Drupal by Mike Carter
-(https://www.drupal.org/u/budda) and the Drupal module has been maintained by
-Alexander Hass (https://www.drupal.org/u/hass) for many years.
+- This module was originally written for Drupal by Mike Carter
+(https://www.drupal.org/u/budda).
+- The Drupal module has been maintained for many years by
+Alexander Hass (https://www.drupal.org/u/hass).
+- The port to Backdrop CMS was done by Jen Lampton (https://github.com/jenlampton) and Nate Haug (https://github.com/quicksketch).
