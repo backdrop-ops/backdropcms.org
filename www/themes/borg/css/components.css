@@ -586,6 +586,9 @@ body.front .block-block-4 h2 {
   width: 100%;
   flex: 1;
 }
+#user-login small {
+  margin: 0 10px;
+}
 
 /*******************************************************************************
  * Password reset form

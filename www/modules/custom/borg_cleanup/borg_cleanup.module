@@ -25,7 +25,11 @@ function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
 
   $form['actions']['forgot'] = array(
     '#markup' => '<small>' . l(t('Forgot password?'), 'user/password') . '</small>',
-    '#weight' => -1,
+    '#weight' => 10,
+  );
+  $form['actions']['register'] = array(
+    '#markup' => '<small>' . l(t('Create a new account!'), 'user/register') . '</small>',
+    '#weight' => 11,
   );
 }
 
@@ -46,6 +50,9 @@ function borg_cleanup_preprocess_page(&$variables) {
     elseif (arg(1) == 'login' || (!arg(1) && $user->uid === 0)) {
       $variables['head_title'] = t('Log in | !name', array('!name' => config_get('system.core', 'site_name')));
     }
+    elseif (arg(1) == 'register') {
+      $variables['head_title'] = t('Create a new account | !name', array('!name' => config_get('system.core', 'site_name')));
+    }
   }
 }
 
@@ -59,6 +66,7 @@ function borg_cleanup_preprocess_page(&$variables) {
  */
 function borg_cleanup_preprocess_layout(&$variables) {
   if (arg(0) == 'user') {
+    $variables['tabs'] = FALSE;
     global $user;
     if (arg(1) == 'password') {
       backdrop_set_title('Forgot password');
