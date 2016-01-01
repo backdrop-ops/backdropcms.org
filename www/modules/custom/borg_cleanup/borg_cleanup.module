@@ -17,7 +17,7 @@ function borg_cleanup_menu_alter(&$items) {
 /**
  * Implements hook_form_FORM_ID_alter().
  *
- * Removes useless description text from log in form, adds password link.
+ * Removes useless description text from log in form, adds additional links.
  */
 function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
   unset($form['name']['#description']);
@@ -31,6 +31,16 @@ function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
     '#markup' => '<small>' . l(t('Create a new account!'), 'user/register') . '</small>',
     '#weight' => 11,
   );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Removes useless description text.
+ */
+function borg_cleanup_form_user_register_form_alter(&$form, &$form_state) {
+  $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you request to receive a new password.');
+  unset($form['account']['pass']['#description']);
 }
 
 /**
