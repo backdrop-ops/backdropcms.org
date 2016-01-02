@@ -44,6 +44,15 @@ $(window).load(function() {
 }
 
 /**
+ * Prepares variables for layout templates.
+ */
+function borg_preprocess_layout(&$variables) {
+  if (arg(0) == 'user') {
+    $variables['tabs'] = FALSE;
+  }
+}
+
+/**
  * Preprocess views_view
  */
 function borg_preprocess_views_view(&$variables) {

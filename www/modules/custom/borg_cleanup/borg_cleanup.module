@@ -76,13 +76,15 @@ function borg_cleanup_preprocess_page(&$variables) {
  */
 function borg_cleanup_preprocess_layout(&$variables) {
   if (arg(0) == 'user') {
-    $variables['tabs'] = FALSE;
     global $user;
     if (arg(1) == 'password') {
       backdrop_set_title('Forgot password');
     }
     elseif (arg(1) == 'login' || (!arg(1) && $user->uid === 0)) {
       backdrop_set_title('Log in');
+    }
+    elseif (arg(1) == 'register') {
+      backdrop_set_title('Create a new account');
     }
   }
 }

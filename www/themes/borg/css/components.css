@@ -607,6 +607,45 @@ body.front .block-block-4 h2 {
 }
 
 /*******************************************************************************
+ * Registration form
+ ******************************************************************************/
+#user-register-form .form-item {
+  padding: 15px 0;
+  display: flex;
+}
+#user-register-form .form-item label {
+  width: 180px;
+  padding-right: 15px;
+  display: inline-block;
+}
+#user-register-form .form-item input {
+  width: 100%;
+  flex: 1;
+}
+#user-register-form .form-item div.description {
+  display: none;
+}
+
+#user-register-form .form-item-pass {
+  display: block;
+}
+#user-register-form .form-item-pass .form-item {
+  margin: 0;
+  padding: 10px 0 15px 0;
+}
+
+@media (max-width: 580px) {
+  #user-register-form .form-item {
+    display: block;
+    padding: 10px 0;
+    margin: 0;
+  }
+  #user-register-form .form-item label {
+    display: block;
+  }
+}
+
+/*******************************************************************************
  * User Profile
  ******************************************************************************/
 
