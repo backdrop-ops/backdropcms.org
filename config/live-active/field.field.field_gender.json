@@ -11,8 +11,9 @@
     "entity_types": [],
     "settings": {
         "allowed_values": {
-            "male": "he/him",
-            "female": "she/her",
+            "male": "Male",
+            "female": "Female",
+            "trans": "Transgender",
             "other": "Other"
         },
         "allowed_values_function": ""

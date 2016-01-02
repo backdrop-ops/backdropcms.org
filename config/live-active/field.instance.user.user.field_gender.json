@@ -3,9 +3,9 @@
     "field_name": "field_gender",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Preferred pronouns",
+    "label": "Gender",
     "widget": {
-        "weight": "4",
+        "weight": "5",
         "type": "options_buttons",
         "module": "options",
         "active": 1,
@@ -17,7 +17,7 @@
     "default_value": null,
     "default_value_function": null,
     "settings": {
-        "user_register_form": 1
+        "user_register_form": 0
     },
     "display": {
         "default": {
