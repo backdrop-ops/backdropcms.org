@@ -27,5 +27,10 @@
       var href = this.href;
       ga('send','event','Contact','Submit',document.title, {'hitCallback': function(){document.location = href;}}); return false;
     });
+
+    $('#user-register-form .button-primary.form-submit').on('click', function(){
+      var href = this.href;
+      ga('send','event','User Registration','Submit',document.title, {'hitCallback': function(){document.location = href;}}); return false;
+    });
   });
 })(jQuery);
