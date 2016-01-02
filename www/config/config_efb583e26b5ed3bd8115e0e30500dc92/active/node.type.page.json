@@ -1,0 +1,41 @@
+{
+    "_config_name": "node.type.page",
+    "type": "page",
+    "name": "Page",
+    "description": "Add a page for static content, such as an 'About us' page.",
+    "settings": {
+        "status_default": true,
+        "promote_enabled": false,
+        "promote_default": false,
+        "sticky_enabled": false,
+        "sticky_default": false,
+        "revision_enabled": true,
+        "revision_default": false,
+        "show_submitted_info": false,
+        "comment_default": 1,
+        "menu_options": [
+            "main-menu"
+        ],
+        "comment_enabled": false,
+        "comment_per_page": 50,
+        "comment_mode": 1,
+        "comment_anonymous": 0,
+        "comment_subject_field": false,
+        "comment_user_picture": true,
+        "comment_form_location": 1,
+        "comment_preview": 1,
+        "menu_parent": "main-menu:0",
+        "node_submitted": true,
+        "node_user_picture": true,
+        "language": 0,
+        "node_permissions": true
+    },
+    "base": "node_content",
+    "module": "node",
+    "help": "",
+    "modified": false,
+    "disabled": false,
+    "has_title": true,
+    "title_label": "Title",
+    "orig_type": "page"
+}

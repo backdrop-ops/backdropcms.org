@@ -1,0 +1,47 @@
+{
+    "_config_name": "filter.format.filtered_html",
+    "format": "filtered_html",
+    "name": "Filtered HTML",
+    "weight": 0,
+    "editor": "ckeditor",
+    "filters": {
+        "filter_url": {
+            "weight": 0,
+            "status": 1,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html": {
+            "weight": 1,
+            "status": 1,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_autop": {
+            "weight": 2,
+            "status": 1,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_image_caption": {
+            "weight": 4,
+            "status": 1,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_image_align": {
+            "weight": 4,
+            "status": 1,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_htmlcorrector": {
+            "weight": 10,
+            "status": 1,
+            "module": "filter",
+            "settings": []
+        }
+    },
+    "cache": true,
+    "status": 1
+}
