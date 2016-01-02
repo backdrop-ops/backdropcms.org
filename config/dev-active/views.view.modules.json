@@ -5,7 +5,7 @@
     "tag": "default",
     "disabled": false,
     "base_table": "node",
-    "human_name": "Modules",
+    "human_name": "modules",
     "core": "1.1.2",
     "display": {
         "default": {
@@ -407,7 +407,7 @@
                         "value": {
                             "project_module": "project_module"
                         },
-                        "group": "1",
+                        "group": 1,
                         "exposed": false,
                         "expose": {
                             "operator_id": false,
@@ -438,24 +438,24 @@
                             "group_items": []
                         }
                     },
-                    "keys": {
-                        "id": "keys",
-                        "table": "search_index",
-                        "field": "keys",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "optional",
+                        "operator": "contains",
                         "value": "",
-                        "group": "1",
+                        "group": 1,
                         "exposed": true,
                         "expose": {
-                            "operator_id": "keys_op",
+                            "operator_id": "combine_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "keys_op",
-                            "identifier": "keys",
+                            "operator": "combine_op",
+                            "identifier": "combine",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -479,7 +479,10 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "remove_score": 0
+                        "fields": {
+                            "title": "title",
+                            "body": "body"
+                        }
                     },
                     "recommended": {
                         "id": "recommended",
@@ -490,7 +493,7 @@
                         "ui_name": "",
                         "operator": "=",
                         "value": "1",
-                        "group": "1",
+                        "group": 1,
                         "exposed": false,
                         "expose": {
                             "operator_id": false,
@@ -600,6 +603,12 @@
                     "type": "ol",
                     "wrapper_class": "project-search__results-wrapper l-content-wrapper",
                     "class": "project-search__results"
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
                 }
             }
         },
