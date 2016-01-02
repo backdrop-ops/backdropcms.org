@@ -5,7 +5,7 @@
     "bundle": "post",
     "label": "Body",
     "widget": {
-        "weight": 31,
+        "weight": "1",
         "type": "text_textarea_with_summary",
         "module": "text",
         "active": 1,
@@ -23,18 +23,18 @@
         "default": {
             "label": "hidden",
             "type": "text_default",
+            "weight": "0",
             "settings": [],
-            "module": "text",
-            "weight": 0
+            "module": "text"
         },
         "teaser": {
             "label": "hidden",
             "type": "text_summary_or_trimmed",
+            "weight": "0",
             "settings": {
                 "trim_length": 600
             },
-            "module": "text",
-            "weight": 0
+            "module": "text"
         }
     },
     "description": "",
