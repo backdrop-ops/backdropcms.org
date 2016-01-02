@@ -10,13 +10,16 @@
     "extra_fields": {
         "form": {
             "redirect": {
-                "weight": "14"
+                "weight": "15"
             },
             "account": {
-                "weight": "0"
+                "weight": "1"
             },
             "timezone": {
-                "weight": "13"
+                "weight": "14"
+            },
+            "googleanalytics": {
+                "weight": "4"
             }
         },
         "display": {
