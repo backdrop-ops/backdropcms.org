@@ -13,7 +13,7 @@ h1 {
   margin: 0 0 3em;
 }
 
-.views-exposed-form .views-widget-filter-keys,
+.views-exposed-form .views-widget-filter-combine,
 .views-exposed-form .views-widget-filter-title,
 .views-exposed-form .views-submit-button {
   height: 2em;
@@ -23,7 +23,7 @@ h1 {
   line-height: 1.5;
 }
 
-.views-exposed-form .views-widget-filter-keys,
+.views-exposed-form .views-widget-filter-combine,
 .views-exposed-form .views-widget-filter-title {
   width: calc(100% - 2.3em);
 }
