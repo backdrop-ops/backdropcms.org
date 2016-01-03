@@ -18,6 +18,7 @@
       ga('send','event','Newsletter','Subscribe',document.title, {'hitCallback': function(){document.location = href;}}); return false;
     });
 
+    /*
     $('#supporter-node-form .button-primary.form-submit').on('click', function(){
       var href = this.href;
       ga('send','event','Support','Submit',document.title, {'hitCallback': function(){document.location = href;}}); return false;
@@ -27,6 +28,7 @@
       var href = this.href;
       ga('send','event','Contact','Submit',document.title, {'hitCallback': function(){document.location = href;}}); return false;
     });
+    */
 
     $('#user-register-form .button-primary.form-submit').on('click', function(){
       var href = this.href;
