@@ -36,21 +36,24 @@
  * Tabs & Sub-tabs.
  ******************************************************************************/
 ul.primary {
+  height: auto;
   border-bottom: 2px solid #d7d7d7;
   border-collapse: collapse;
-  height: 28px;
   line-height: normal;
   list-style: none;
   margin: 5px;
   padding: 0 0 0 1em; /* LTR */
   white-space: nowrap;
+  box-sizing: border-box;
 }
 ul.primary li {
   display: inline;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 ul.primary li a {
+  display: inline-block;
   background-color: #f7f7f7;
   border-color: #d7d7d7;
   border-style: solid solid none solid;
@@ -61,6 +64,9 @@ ul.primary li a {
   text-decoration: none;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+  box-sizing: border-box;
+  position: relative;
+  bottom: -2px;
 }
 ul.primary li.active a {
   background-color: #fff;
