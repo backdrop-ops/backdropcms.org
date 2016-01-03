@@ -456,6 +456,68 @@ ol.flex-control-paging > li:before {
 }
 
 /*******************************************************************************
+ * Socialfield icons
+ ******************************************************************************/
+.socialfield .icon {
+  background-color: #ffffff;
+  padding-left: 0;
+}
+.socialfield-reddit .icon {
+  padding: 8px 7px 8px 1px;
+  color: #ff4500;
+}
+.socialfield-slideshare .icon {
+  padding: 8px 2px 8px 6px;
+  color: #4a6ea9;
+}
+.socialfield-yahoo .icon {
+  padding: 8px 8px 8px 0px;
+  color: #720e9e;
+}
+.socialfield-facebook .icon {
+  color: #3b5998;
+}
+.socialfield-twitter .icon {
+  color: #55acee;
+}
+.socialfield-instagram .icon {
+  color: #3f729b;
+}
+.socialfield-googleplus .icon {
+  color: #dc4a38;
+}
+.socialfield-linkedin .icon {
+  color: #0e76a8;
+}
+.socialfield-youtube .icon {
+  color: #c4302b;
+}
+.socialfield-vimeo .icon {
+  color: #44bbff;
+}
+.socialfield-delicious .icon {
+  color: #222222;
+}
+.socialfield-digg .icon {
+  color: #7a9ac2;
+}
+.socialfield-flickr .icon {
+  color: #ff0084;
+}
+.socialfield-google .icon {
+  color: #4285f4;
+}
+.socialfield-myspace .icon {
+  color: #6087bb;
+}
+.socialfield-pinterest .icon {
+  color: #c8232c;
+}
+.socialfield-stumbleupon .icon {
+  color: #f74425;
+}
+
+/*******************************************************************************
  * On The Web social media links block.
  ******************************************************************************/
 .block-on-the-web-social-links a i {
