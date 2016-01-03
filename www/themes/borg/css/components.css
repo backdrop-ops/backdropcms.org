@@ -36,9 +36,9 @@
  * Tabs & Sub-tabs.
  ******************************************************************************/
 ul.primary {
-  border-bottom: 2px solid #969696;
+  border-bottom: 2px solid #d7d7d7;
   border-collapse: collapse;
-  height: auto;
+  height: 28px;
   line-height: normal;
   list-style: none;
   margin: 5px;
@@ -47,22 +47,26 @@ ul.primary {
 }
 ul.primary li {
   display: inline;
+  margin: 0;
+  padding: 0;
 }
 ul.primary li a {
-  background-color: #ddd;
-  border-color: #bbb;
+  background-color: #f7f7f7;
+  border-color: #d7d7d7;
   border-style: solid solid none solid;
-  border-width: 1px;
+  border-width: 2px;
   height: auto;
   margin-right: 0.5em; /* LTR */
-  padding: 0 1em;
+  padding: 10px 25px 7px 25px;
   text-decoration: none;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 ul.primary li.active a {
   background-color: #fff;
-  border: 2px solid #969696;
+  border: 2px solid #d7d7d7;
   border-bottom: none;
-  padding-bottom: 2px;
+  padding-bottom: 9px;
 }
 ul.primary li a:hover {
   background-color: #eee;
@@ -70,7 +74,7 @@ ul.primary li a:hover {
   border-bottom-color: #eee;
 }
 ul.secondary {
-  border-bottom: 2px solid #bbb;
+  border-bottom: 2px solid #d7d7d7;
   padding: 0.5em 1em;
   margin: 5px;
 }

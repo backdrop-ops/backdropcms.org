@@ -47,7 +47,7 @@ $(window).load(function() {
  * Prepares variables for layout templates.
  */
 function borg_preprocess_layout(&$variables) {
-  if (arg(0) == 'user') {
+  if (arg(0) == 'user' && !is_numeric(arg(1))) {
     $variables['tabs'] = FALSE;
   }
 }
