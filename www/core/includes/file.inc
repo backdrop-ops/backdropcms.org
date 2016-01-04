@@ -529,8 +529,7 @@ function file_save_htaccess($directory, $private = TRUE, $force_overwrite = FALS
 function file_htaccess_lines($private = TRUE) {
   $lines = <<<EOF
 # Turn off all options we don't need.
-Options None
-Options +FollowSymLinks
+Options -Indexes -ExecCGI -Includes
 
 # Set the catch-all handler to prevent scripts from being executed.
 SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006
@@ -2088,7 +2087,7 @@ function file_scan_directory($dir, $mask, $options = array(), $depth = 0) {
     'node_modules',
     'bower_components',
   );
-  $no_mask = '/^(\..*)|' . implode('|', $ignore_directories) .  '$/';
+  $no_mask = '/^((\..*)|' . implode('|', $ignore_directories) .  ')$/';
 
   // Merge in defaults.
   $options += array(

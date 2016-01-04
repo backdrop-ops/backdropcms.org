@@ -1017,7 +1017,7 @@ class BackdropWebTestCase extends BackdropTestCase {
    * @param $settings
    *   An associative array of settings to change from the defaults, keys are
    *   node properties, for example 'title' => 'Hello, world!'.
-   * @return
+   * @return Node
    *   Created node entity.
    */
   protected function backdropCreateNode($settings = array()) {
@@ -2813,7 +2813,7 @@ class BackdropWebTestCase extends BackdropTestCase {
         $path = substr($path, $length);
       }
       // Ensure that we have an absolute path.
-      if ($path[0] !== '/') {
+      if (strlen($path) && $path[0] !== '/') {
         $path = '/' . $path;
       }
       // Finally, prepend the $base_url.

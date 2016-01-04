@@ -43,6 +43,12 @@ Backdrop.behaviors.filterEditors = {
       var activeEditor = $this.val();
       var field = $this.closest('.text-format-wrapper').find('textarea').get(-1);
 
+      // No textarea found. This may happen on long text elements that use a
+      // single-line text field widget.
+      if (!field) {
+        return;
+      }
+
       // Directly attach this editor, if the input format is enabled or there is
       // only one input format at all.
       if ($this.is(':input')) {
@@ -71,6 +77,17 @@ Backdrop.behaviors.filterEditors = {
         }
         Backdrop.filterEditorDetach(field, Backdrop.settings.filter.formats[activeEditor]);
       });
+    });
+  },
+  detach: function (context, settings) {
+    var $context = $(context);
+    $context.find('.filter-list:input').each(function () {
+      var $this = $(this);
+      var activeEditor = $this.val();
+      var field = $this.closest('.text-format-wrapper').find('textarea').get(-1);
+      if (field && Backdrop.settings.filter.formats[activeEditor]) {
+        Backdrop.filterEditorDetach(field, Backdrop.settings.filter.formats[activeEditor]);
+      }
     });
   }
 };

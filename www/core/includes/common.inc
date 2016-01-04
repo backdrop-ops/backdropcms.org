@@ -1835,7 +1835,15 @@ function _filter_xss_attributes($attr) {
       case 2:
         // Attribute value, a URL after href= for instance.
         if (preg_match('/^"([^"]*)"(\s+|$)/', $attr, $match)) {
-          $thisval = filter_xss_bad_protocol($match[1]);
+          // Do not strip protocol information out from data attributes,
+          // which may be mangled if they contain JSON.
+          if (strpos($attrname, 'data-') === 0) {
+            $thisval = $match[1];
+          }
+          // Strip bad protocols from all other attributes, e.g. href, src.
+          else {
+            $thisval = filter_xss_bad_protocol($match[1]);
+          }
 
           if (!$skip) {
             $attrarr[] = "$attrname=\"$thisval\"";
@@ -3520,12 +3528,6 @@ function backdrop_pre_render_styles($elements) {
   // URL changed.
   $query_string = !defined('MAINTENANCE_MODE') ? state_get('css_js_query_string', '0') : '';
 
-  // For inline CSS to validate as XHTML, all CSS containing XHTML needs to be
-  // wrapped in CDATA. To make that backwards compatible with HTML 4, we need to
-  // comment out the CDATA-tag.
-  $embed_prefix = "\n/* <![CDATA[ */\n";
-  $embed_suffix = "\n/* ]]> */\n";
-
   // Defaults for LINK and STYLE elements.
   $link_element_defaults = array(
     '#type' => 'head_tag',
@@ -3633,8 +3635,6 @@ function backdrop_pre_render_styles($elements) {
         if (isset($group['data'])) {
           $element = $style_element_defaults;
           $element['#value'] = $group['data'];
-          $element['#value_prefix'] = $embed_prefix;
-          $element['#value_suffix'] = $embed_suffix;
           $element['#attributes']['media'] = $group['media'];
           $element['#browsers'] = $group['browsers'];
           $elements[] = $element;
@@ -3643,8 +3643,6 @@ function backdrop_pre_render_styles($elements) {
           foreach ($group['items'] as $item) {
             $element = $style_element_defaults;
             $element['#value'] = $item['data'];
-            $element['#value_prefix'] = $embed_prefix;
-            $element['#value_suffix'] = $embed_suffix;
             $element['#attributes']['media'] = $item['media'];
             $element['#browsers'] = $group['browsers'];
             $elements[] = $element;
@@ -4145,10 +4143,7 @@ function backdrop_region_class($region) {
  *   on the current page by placing the code directly in the page (for example,
  *   to tell the user that a new message arrived, by opening a pop up, alert
  *   box, etc.). This should only be used for JavaScript that cannot be executed
- *   from a file. When adding inline code, make sure that you are not relying on
- *   $() being the jQuery function. Wrap your code in
- *   @code (function ($) {... })(jQuery); @endcode
- *   or use jQuery() instead of $().
+ *   from a file.
  * - Add external JavaScript ('external'): Allows the inclusion of external
  *   JavaScript files that are not hosted on the local server. Note that these
  *   external JavaScript references do not get aggregated when preprocessing is
@@ -4169,8 +4164,8 @@ function backdrop_region_class($region) {
  *   backdrop_add_js(array('myModule' => array('key' => 'value')), 'setting');
  * @endcode
  *
- * Calling backdrop_static_reset('backdrop_add_js') will clear all JavaScript added
- * so far.
+ * Calling backdrop_static_reset('backdrop_add_js') will clear all JavaScript
+ * added so far.
  *
  * If JavaScript aggregation is enabled, all JavaScript files added with
  * $options['preprocess'] set to TRUE will be merged into one aggregate file.
@@ -4202,17 +4197,20 @@ function backdrop_region_class($region) {
  *   - 'setting': An associative array with configuration options. The array is
  *     merged directly into Backdrop.settings. All modules should wrap their
  *     actual configuration settings in another variable to prevent conflicts in
- *     the Backdrop.settings namespace. Items added with a string key will replace
- *     existing settings with that key; items with numeric array keys will be
- *     added to the existing settings array.
+ *     the Backdrop.settings namespace. Settings within the same namespace will
+ *     be recursively merged together unless a "key" option is specified in the
+ *     $options array.
  * @param $options
  *   (optional) A string defining the type of JavaScript that is being added in
  *   the $data parameter ('file'/'setting'/'inline'/'external'), or an
- *   associative array. JavaScript settings should always pass the string
- *   'setting' only. Other types can have the following elements in the array:
+ *   associative array.
  *   - type: The type of JavaScript that is to be added to the page. Allowed
  *     values are 'file', 'inline', 'external' or 'setting'. Defaults
  *     to 'file'.
+ *   - key: Applies to the 'setting' and 'inline' types only. A string that
+ *     identifies data that should only be added once per page. If omitted,
+ *     multiple settings within the same namespace will be merged together
+ *     recursively.
  *   - scope: The location in which you want to place the script. Possible
  *     values are 'header' or 'footer'. If your theme implements different
  *     regions, you can also use these. Defaults to 'header'.
@@ -4359,11 +4357,21 @@ function backdrop_add_js($data = NULL, $options = NULL) {
       case 'setting':
         // All JavaScript settings are placed in the header of the page with
         // the library weight so that inline scripts appear afterwards.
-        $javascript['settings']['data'][] = $data;
+        if (isset($options['key'])) {
+          $javascript['settings']['data'][$options['key']] = $data;
+        }
+        else {
+          $javascript['settings']['data'][] = $data;
+        }
         break;
 
       case 'inline':
-        $javascript[] = $options;
+        if (isset($options['key'])) {
+          $javascript[$options['key']] = $options;
+        }
+        else {
+          $javascript[] = $options;
+        }
         break;
 
       default: // 'file' and 'external'
@@ -4523,20 +4531,11 @@ function backdrop_pre_render_scripts($elements) {
   // page request.
   $default_query_string = !defined('MAINTENANCE_MODE') ? state_get('css_js_query_string', '0') : '';
 
-  // For inline JavaScript to validate as XHTML, all JavaScript containing
-  // XHTML needs to be wrapped in CDATA. To make that backwards compatible
-  // with HTML 4, we need to comment out the CDATA-tag.
-  $embed_prefix = "\n<!--//--><![CDATA[//><!--\n";
-  $embed_suffix = "\n//--><!]]>\n";
-
   // Defaults for each SCRIPT element.
   $element_defaults = array(
     '#type' => 'head_tag',
     '#tag' => 'script',
     '#value' => '',
-    '#attributes' => array(
-      'type' => 'text/javascript',
-    ),
   );
 
   // Loop through each group.
@@ -4564,15 +4563,11 @@ function backdrop_pre_render_scripts($elements) {
         // Element properties that depend on item type.
         switch ($item['type']) {
           case 'setting':
-            $element['#value_prefix'] = $embed_prefix;
             $element['#value'] = 'window.Backdrop = {settings: ' . backdrop_json_encode(backdrop_array_merge_deep_array($item['data'])) . "};";
-            $element['#value_suffix'] = $embed_suffix;
             break;
 
           case 'inline':
-            $element['#value_prefix'] = $embed_prefix;
             $element['#value'] = $item['data'];
-            $element['#value_suffix'] = $embed_suffix;
             break;
 
           case 'file':
@@ -5304,8 +5299,11 @@ function backdrop_json_encode($var, $pretty_print = FALSE) {
     }
     else {
       $string = json_encode($var);
+      // PHP 5.3 JSON_PRETTY_PRINT.
       $string = backdrop_json_format($string);
+      // PHP 5.3 JSON_UNESCAPED_UNICODE.
       $string = backdrop_json_decode_unicode($string);
+      // PHP 5.3 JSON_UNESCAPED_SLASHES.
       $string = str_replace('\/', '/', $string);
     }
     // Collapse empty brackets, needed for PHP 5.3.x - PHP 5.4.27 to be
@@ -5400,9 +5398,20 @@ function backdrop_json_format($json) {
  * Decode Unicode characters in JSON strings.
  */
 function backdrop_json_decode_unicode($json) {
-  return preg_replace_callback('/\\\\u([0-9a-f]{4})/i', function ($match) {
-    return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
-  }, $json);
+  // Convert escaped characters, such as \u00e9 to the unescaped version (é).
+  // See http://stackoverflow.com/questions/2934563/how-to-decode-unicode-escape-sequences-like-u00ed-to-proper-utf-8-encoded-cha
+  $decode_callback = function ($match) {
+    return $match[1] . mb_convert_encoding(pack('H*', $match[2]), 'UTF-8', 'UCS-2BE');
+  };
+  // To prevent unintentionally unescaping the string "\u", be sure that the
+  // the backslash itself is not also escaped. Note that because the replacement
+  // may include part of a 4-digit code for a previous Unicode character, this
+  // will only escape every-other Unicode character if they are next to each
+  // other.
+  $pattern = '/([^\\\\])\\\\u([0-9a-fA-F]{4})/';
+  $json = preg_replace_callback($pattern, $decode_callback, $json);
+  // Replace a second time to catch any sequences multiple Unicode characters.
+  return preg_replace_callback($pattern, $decode_callback, $json);
 }
 
 /**
@@ -5801,7 +5810,7 @@ function backdrop_system_listing($mask, $directory, $key = 'name', $min_depth = 
     'node_modules',
     'bower_components',
   );
-  $no_mask = '/^(\..*)|' . implode('|', $ignore_directories) .  '$/';
+  $no_mask = '/^((\..*)|' . implode('|', $ignore_directories) .  ')$/';
 
   // Get current list of items.
   if (!function_exists('file_scan_directory')) {

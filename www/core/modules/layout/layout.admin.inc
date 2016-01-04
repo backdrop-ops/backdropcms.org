@@ -47,10 +47,10 @@ function layout_list_page() {
         $storage = t('Overridden');
       }
       elseif ($layout->storage === LAYOUT_STORAGE_DEFAULT) {
-        $storage = t('Default');
+        $storage = t('Default (module-provided)');
       }
       else {
-        $storage = t('User-created');
+        $storage = t('Custom');
       }
       $row = array();
       $row[] = theme('layout_info', array('layout' => $layout));
@@ -66,7 +66,7 @@ function layout_list_page() {
 
   $header = array(
     array('data' => t('Layout and path'), 'class' => array('layout-title')),
-    array('data' => t('Status'), 'class' => array('layout-status', 'priority-low')),
+    array('data' => t('Storage state'), 'class' => array('layout-status', 'priority-low')),
     array('data' => t('Operations'), 'class' => array('layout-operations')),
   );
 
