@@ -1,0 +1,68 @@
+<?php
+/**
+ * @file
+ * The installation instructions for the SMTP Authentication Support.
+ */
+
+/**
+ * Implements hook_install().
+ */
+ function smtp_install() {
+   config_set('smtp.settings', 'smtp_on', 0);
+ }
+
+/**
+ * Implements hook_disable().
+ */
+function smtp_disable() {
+  $mail_modes = config_get('system.mail', 'mail_system');
+  $mail_modes['default-system'] = 'DefaultMailSystem';
+  config_set('system.mail', 'mail_system', $mail_modes);
+}
+
+/**
+ * Implements hook_update_N().
+ * Upgrade variables to config for Backdrop CMS.
+ */
+function smtp_update_1000() {
+  $config = config('smtp.settings');
+
+  if ($config->get('smtp_on') != 0) {
+    config_set('system.mail', 'mail_system', array('default-system' => 'SmtpMailSystem'));
+  }
+
+  // Migrate variables.
+  $config->set('smtp_on', update_variable_get('smtp_on'));
+  $config->set('smtp_queue', update_variable_get('smtp_queue'));
+  $config->set('smtp_host', update_variable_get('smtp_host'));
+  $config->set('smtp_hostbackup', update_variable_get('smtp_hostbackup'));
+  $config->set('smtp_port', update_variable_get('smtp_port'));
+  $config->set('smtp_protocol', update_variable_get('smtp_protocol'));
+  $config->set('smtp_username', update_variable_get('smtp_username'));
+  $config->set('smtp_password', update_variable_get('smtp_password'));
+  $config->set('smtp_from', update_variable_get('smtp_from'));
+  $config->set('smtp_fromname', update_variable_get('smtp_fromname'));
+  $config->set('smtp_allowhtml', update_variable_get('smtp_allowhtml'));
+  $config->set('smtp_test_address', update_variable_get('smtp_test_address'));
+  $config->set('smtp_debugging', update_variable_get('smtp_debugging'));
+  $config->set('smtp_previous_mail_system', update_variable_get('smtp_previous_mail_system'));
+
+  $config->save();
+
+  // Delete old variables.
+  update_variable_del('smtp_library');
+  update_variable_del('smtp_on');
+  update_variable_del('smtp_queue');
+  update_variable_del('smtp_host');
+  update_variable_del('smtp_hostbackup');
+  update_variable_del('smtp_port');
+  update_variable_del('smtp_protocol');
+  update_variable_del('smtp_username');
+  update_variable_del('smtp_password');
+  update_variable_del('smtp_from');
+  update_variable_del('smtp_fromname');
+  update_variable_del('smtp_allowhtml');
+  update_variable_del('smtp_test_address');
+  update_variable_del('smtp_debugging');
+  update_variable_del('smtp_previous_mail_system');
+}
