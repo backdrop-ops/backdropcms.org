@@ -53,7 +53,7 @@
             "settings": []
         },
         "filter_image_align": {
-            "status": 0,
+            "status": 1,
             "weight": 5,
             "module": "filter",
             "settings": []
@@ -69,6 +69,65 @@
             "module": "filter"
         }
     },
-    "editor": "",
-    "editor_settings": []
+    "editor": "ckeditor",
+    "editor_settings": {
+        "toolbar": [
+            [
+                {
+                    "name": "Formatting",
+                    "items": [
+                        "Bold",
+                        "Italic"
+                    ]
+                },
+                {
+                    "name": "Lists",
+                    "items": [
+                        "BulletedList",
+                        "NumberedList",
+                        "BackdropLink",
+                        "BackdropUnlink"
+                    ]
+                },
+                {
+                    "name": "Alignment",
+                    "items": [
+                        "JustifyLeft",
+                        "JustifyCenter",
+                        "JustifyRight"
+                    ]
+                },
+                {
+                    "name": "Media",
+                    "items": [
+                        "BackdropImage"
+                    ]
+                },
+                {
+                    "name": "Tools",
+                    "items": [
+                        "RemoveFormat",
+                        "Source",
+                        "Maximize",
+                        "Format"
+                    ]
+                }
+            ]
+        ],
+        "image_upload": {
+            "status": 1,
+            "scheme": "public",
+            "directory": "inline-images",
+            "max_size": "",
+            "max_dimensions": {
+                "width": "",
+                "height": ""
+            }
+        },
+        "plugins": {
+            "style": {
+                "style_list": []
+            }
+        }
+    }
 }
