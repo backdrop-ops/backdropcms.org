@@ -175,6 +175,22 @@
                 "pager_options": null,
                 "title": "News & Announcements"
             }
+        },
+        "feed_1": {
+            "display_title": "Feed",
+            "display_plugin": "feed",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "news/rss.xml",
+                "displays": {
+                    "block": "block",
+                    "page_1": "page_1",
+                    "default": 0
+                }
+            }
         }
     }
 }
