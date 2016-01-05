@@ -168,6 +168,9 @@ function borg_on_the_web_image($variables) {
   if ($variables['service'] == 'youtube') {
     return '<i class="fa fa-youtube-square"></i><span class="element-invisible">Backdrop CMS on YouTube</span>';
   }
+  if ($variables['service'] == 'rss') {
+    return '<i class="fa fa-rss-square"></i><span class="element-invisible">Latest News from Backdrop CMS</span>';
+  }
 }
 
 /**
