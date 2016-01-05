@@ -56,22 +56,51 @@
                     }
                 },
                 "filters": {
-                    "status": {
-                        "value": 1,
-                        "table": "node",
-                        "field": "status",
-                        "id": "status",
-                        "expose": {
-                            "operator": false
-                        },
-                        "group": 1
-                    },
                     "type": {
                         "id": "type",
                         "table": "node",
                         "field": "type",
                         "value": {
                             "post": "post"
+                        }
+                    },
+                    "status_extra": {
+                        "id": "status_extra",
+                        "table": "node",
+                        "field": "status_extra",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": "",
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
                         }
                     }
                 },
