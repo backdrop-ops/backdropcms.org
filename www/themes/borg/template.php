@@ -99,7 +99,15 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * Prepare variables for node template
  */
 function borg_preprocess_node(&$variables){
+  // Change the submitted by language.
   $variables['submitted'] = str_replace('Submitted by', 'Posted by', $variables['submitted']);
+  // Add a picture to blog posts.
+  if ($variables['type'] == 'post') {
+    // Get the profile photo.
+    $author = user_load($variables['uid']);
+    $langcode = $author->langcode;
+    $variables['user_picture'] = theme('image_style', array('style_name' => 'medium', 'uri' => $author->field_photo[$langcode][0]['uri']));
+  }
   if (substr($variables['type'], 0, 8) == 'project_'){
     $path = backdrop_get_path('theme', 'borg');
     $variables['content']['project_release_downloads']['#prefix'] = '<h2>' . t('Downloads')  . '</h2>';

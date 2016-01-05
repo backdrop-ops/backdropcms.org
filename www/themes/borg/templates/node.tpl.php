@@ -93,9 +93,10 @@
   <?php print render($title_suffix); ?>
 
   <?php if ($display_submitted): ?>
-    <footer>
+    <footer class="clearfix">
       <?php print $user_picture; ?>
       <p class="submitted"><?php print $submitted; ?></p>
+      <div class="arrow-down"></div>
     </footer>
   <?php endif; ?>
 
