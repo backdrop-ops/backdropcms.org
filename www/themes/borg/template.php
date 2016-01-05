@@ -102,7 +102,7 @@ function borg_preprocess_node(&$variables){
   // Change the submitted by language.
   $variables['submitted'] = str_replace('Submitted by', 'Posted by', $variables['submitted']);
   // Add a picture to blog posts.
-  if ($variables['type'] == 'post') {
+  if ($variables['type'] == 'post' && $variables['view_mode'] == 'full') {
     // Get the profile photo.
     $author = user_load($variables['uid']);
     $langcode = $author->langcode;
