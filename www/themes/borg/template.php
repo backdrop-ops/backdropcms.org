@@ -56,8 +56,8 @@ function borg_preprocess_layout(&$variables) {
  * Preprocess views_view
  */
 function borg_preprocess_views_view(&$variables) {
-  $path = backdrop_get_path('theme', 'borg');
-  if($variables['name'] == 'modules') {
+  if ($variables['name'] == 'modules') {
+    $path = backdrop_get_path('theme', 'borg');
     backdrop_add_css($path . '/css/project-search.css');
   }
 }
@@ -66,7 +66,7 @@ function borg_preprocess_views_view(&$variables) {
  * Preprocess views exposed forms
  */
 function borg_preprocess_views_exposed_form(&$variables) {
-  if(substr($variables['form']['#id'], 0, 26) == 'views-exposed-form-modules'){
+  if (substr($variables['form']['#id'], 0, 26) == 'views-exposed-form-modules'){
     // Update search field
     $search_field_key = '';
     $search_type = '';
@@ -99,8 +99,9 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * Prepare variables for node template
  */
 function borg_preprocess_node(&$variables){
-  $path = backdrop_get_path('theme', 'borg');
+  $variables['submitted'] = str_replace('Submitted by', 'Posted by', $variables['submitted']);
   if (substr($variables['type'], 0, 8) == 'project_'){
+    $path = backdrop_get_path('theme', 'borg');
     $variables['content']['project_release_downloads']['#prefix'] = '<h2>' . t('Downloads')  . '</h2>';
     $variables['content']['project_release_downloads']['#weight'] = -10;
     backdrop_add_css($path . '/css/project-styles.css');

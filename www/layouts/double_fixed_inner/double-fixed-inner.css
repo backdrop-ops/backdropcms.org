@@ -58,6 +58,7 @@
   }
   .layout--double-fixed-inner .l-inner {
     position: relative;
+    min-height: 450px;
   }
   .layout--double-fixed-inner .l-sidebar-inner {
     position: absolute;
