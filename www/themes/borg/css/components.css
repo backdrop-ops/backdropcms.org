@@ -281,25 +281,20 @@ article.node-post.view-mode-full footer {
   border: 1px solid #d7d7d7;
   border-radius: 10px;
   padding: 10px 15px;
-  position: relative;
   margin-bottom: 55px;
   display: table;
   width: 100%;
   box-sizing: border-box;
+  position: relative;
 }
 article.node-post.view-mode-full footer img {
-  display: none;
-}
-@media all and (min-width: 300px) {
-  article.node-post.view-mode-full footer img {
-    display: inline-block;
-    float: left;
-    margin-right: 15px;
-    max-width: 75px;
-    max-height: 75px;
-    border-radius: 50%;
-    background: #ffffff;
-  }
+  display: inline-block;
+  float: left;
+  margin-right: 15px;
+  max-width: 75px;
+  max-height: 75px;
+  border-radius: 50%;
+  background: #ffffff;
 }
 @media all and (min-width: 550px) {
   article.node-post.view-mode-full footer img {
@@ -312,7 +307,8 @@ article.node-post.view-mode-full footer p {
   vertical-align: middle;
   margin: 0;
 }
-article.node-post.view-mode-full footer .arrow-down {
+article.node-post footer .arrow-down {
+  display: block;
   width: 0;
   height: 0;
   border-left: 20px solid transparent;
