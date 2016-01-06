@@ -1283,3 +1283,15 @@ form .field-multiple-table .field-multiple-drag .tabledrag-handle {
   margin: 0 auto;
   text-align: left;
 }
+
+/*******************************************************************************
+ * News page sidebar
+ ******************************************************************************/
+.layout--double-fixed-inner-rev .l-sidebar-inner h2 {
+  font-size: 38px;
+  margin: 0 0 .5em 0;
+}
+.layout--double-fixed-inner-rev .l-sidebar-inner .block {
+  margin-left: 25px;
+  margin-bottom: 25px;
+}
