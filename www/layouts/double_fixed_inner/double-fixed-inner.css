@@ -73,6 +73,9 @@
   }
 }
 
+/******************************************************************************
+ * Sidebar & Drawer & Footer - do not change.
+ ******************************************************************************/
 .layout--double-fixed-inner .l-sidebar,
 .layout--double-fixed-inner .l-drawer {
   text-align: left;
@@ -133,11 +136,6 @@
     right: 230px;
   }
 }
-
-/**
- * @file
- * CSS for the two column layout.
- */
 
 /*******************************************************************************
  * Admin only CSS
