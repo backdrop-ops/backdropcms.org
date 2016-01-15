@@ -89,6 +89,7 @@ tr.even .form-item {
 }
 .form-item .description {
   font-size: 0.85em;
+  padding: 0.8em 0 0;
 }
 label {
   display: block;
@@ -190,44 +191,16 @@ abbr.form-required, abbr.tabledrag-changed, abbr.ajax-changed {
 }
 
 /**
- * Collapsible fieldsets.
- *
- * @see collapse.js
- */
-.js fieldset.collapsible .fieldset-legend a {
-  background: url(../../../core/misc/menu-expanded.png) 5px 65% no-repeat; /* LTR */
-  padding-left: 15px; /* LTR */
-}
-.js[dir="rtl"] fieldset.collapsible .fieldset-legend a {
-  background-position: 98% 75%;
-  padding-left: 0;
-  padding-right: 15px;
-}
-.js fieldset.collapsed .fieldset-legend a {
-  background-image: url(../../../core/misc/menu-collapsed.png); /* LTR */
-  background-position: 5px 50%; /* LTR */
-}
-.js[dir="rtl"] fieldset.collapsed .fieldset-legend a {
-  background-image: url(../../../core/misc/menu-collapsed-rtl.png);
-  background-position: 98% 50%;
-}
-.fieldset-legend span.summary {
-  color: #999;
-  font-size: 0.9em;
-  margin-left: 0.5em; /* LTR */
-}
-.fieldset-legend span.summary {
-  margin-left: 0;
-  margin-right: 0.5em;
-}
-
-/**
  * TableDrag behavior.
  *
  * @see tabledrag.js
  */
 tr.drag {
   background-color: #fffff0;
+}
+tr.draggable {
+  border-bottom: 1px solid #eee;
+  background: #fff;
 }
 tr.drag-previous {
   background-color: #ffd;
@@ -237,6 +210,50 @@ tr.drag-previous {
 }
 body div.tabledrag-changed-warning {
   margin-bottom: 0.5em;
+}
+.draggable a.tabledrag-handle,
+.draggable a.tabledrag-handle .handle {
+  display: block;
+  width: 2.82em;
+  height: 2.5em;
+  margin: 0;
+  padding: 0;
+}
+.draggable a.tabledrag-handle {
+  position: relative;
+}
+.draggable a.tabledrag-handle .handle {
+  background: transparent;
+}
+a.tabledrag-handle:before,
+a.tabledrag-handle:after,
+a.tabledrag-handle .handle:before,
+a.tabledrag-handle .handle:after {
+  content: '';
+  position: absolute;
+  top: 0.5em;
+  left: 0.6em;
+  display: block;
+  width: 1.2em;
+  height: 0.1em;
+  font-size: 1.25rem;
+  border: 0.0625em solid #ccc;
+  border-bottom: 0;
+  border-right: 0;
+  background: #eee;
+  backface-visibility: hidden;
+}
+a.tabledrag-handle:after {
+  -webkit-transform: translate(0, 0.3em);
+  transform: translate(0, 0.3em);
+}
+a.tabledrag-handle .handle:before {
+  -webkit-transform: translate(0, 0.6em);
+  transform: translate(0, 0.6em);
+}
+a.tabledrag-handle .handle:after {
+  -webkit-transform: translate(0, 0.9em);
+  transform: translate(0, 0.9em);
 }
 
 /**
@@ -490,4 +507,187 @@ img.align-left {
 img.align-right {
   margin-left: 2em;
   margin-bottom: 1em;
+}
+
+/**
+ * User Form
+ */
+.user-profile-form {
+  padding: 1.5em 0 0;
+}
+
+.field-name-field-header-photo .image-preview {
+  float: none;
+}
+
+.user-profile-form label {
+  text-transform: uppercase;
+}
+
+.user-profile-form label.option {
+  text-transform: none;
+}
+
+/**
+ * Socialfield overrides
+ */
+.field-type-social-links-field .form-type-select {
+  margin-top: 1em;
+}
+.socialfield .icon {
+  background: transparent;
+  font-size: 2.2em;
+}
+.socialfield .fa {
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  text-indent: 100em; /* Shove text outside of container */
+}
+.socialfield .fa:before {
+  display: block;
+  margin: 0 auto;
+  text-indent: 2px;
+}
+
+.socialfield-facebook .icon {
+  color: #3b5998;
+}
+.socialfield-twitter .icon {
+  color: #55acee;
+}
+.socialfield-instagram .icon {
+  color: #3f729b;
+}
+.socialfield-googleplus .icon {
+  color: #dc4a38;
+}
+.socialfield-linkedin .icon {
+  color: #0e76a8;
+}
+.socialfield-youtube .icon {
+  color: #c4302b;
+}
+.socialfield-vimeo .icon {
+  color: #44bbff;
+}
+.socialfield-delicious .icon {
+  color: #222222;
+}
+.socialfield-digg .icon {
+  color: #7a9ac2;
+}
+.socialfield-flickr .icon {
+  color: #ff0084;
+}
+.socialfield-google .icon {
+  color: #4285f4;
+}
+.socialfield-myspace .icon {
+  color: #6087bb;
+}
+.socialfield-pinterest .icon {
+  color: #c8232c;
+}
+.socialfield-stumbleupon .icon {
+  color: #f74425;
+}
+
+/**
+ * Fieldsets.
+ */
+fieldset {
+  position: relative;
+  max-width: 100%;
+  display: table-cell;
+  margin: 1em 0 2.5em;
+  padding: 3em 0 0 0; /* LTR */
+  border-radius: 4px;
+  background-color:#fff;
+  border:solid 2px #EAEAEA;
+  min-width: 0;
+}
+[dir="rtl"] fieldset {
+  padding: 2.5em 0 0;
+}
+fieldset .fieldset-legend {
+  position: absolute;
+  left: 0; /* LTR */
+  top: 0;
+  width: 100%;
+  margin-top: .35em;
+  padding-left: 15px; /* LTR */
+  text-transform: uppercase;
+}
+[dir="rtl"] fieldset .fieldset-legend {
+  right: 0;
+  padding-right: 15px;
+  padding-left: 0;
+}
+legend {
+  font-size: 120%;
+  font-weight: normal;
+}
+fieldset fieldset {
+  background-color: #fff;
+}
+fieldset fieldset fieldset {
+  background-color: #f8f8f8;
+}
+
+/**
+ * Collapsible Fieldsets
+ */
+.js fieldset.collapsible {
+  position: relative;
+}
+fieldset .fieldset-wrapper {
+  padding: 0 13px 13px 15px; /* LTR */
+}
+[dir="rtl"] fieldset .fieldset-wrapper {
+  padding: 0 15px 13px 13px;
+}
+.js fieldset.collapsible a.fieldset-title {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 94%; /* IE8 fallback */
+  width: calc(100% - 4em);
+  padding: .3em .3em .3em 1.8em;
+  margin: 0 -.5em;
+  border-radius: 4px;
+  background: transparent;
+}
+.js fieldset.collapsible .fieldset-legend a:before {
+  content: "";
+  position: absolute;
+  left: .6em;
+  top: .8em;
+  width: 0;
+  height: 0;
+  border: .32em solid transparent;
+  border-top-color: #000;
+  border-bottom: 0;
+}
+
+.fieldset-legend span.summary {
+  position: absolute;
+  top: .4em;
+  right: 2em;
+  display: none;
+}
+@media (min-width: 450px) {
+  .fieldset-legend span.summary {
+    display: block;
+  }
+}
+/* Collapsed state styles */
+.js fieldset.collapsed {
+  padding: 1.6em 0;
+}
+.js fieldset.collapsed .fieldset-legend a:before {
+  left: .8em;
+  top: .7em;
+  border: .32em solid transparent;
+  border-left-color: black;
 }
