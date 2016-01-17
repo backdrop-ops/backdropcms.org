@@ -1,0 +1,41 @@
+[SelectOtherBasicTest]
+name = Select and other Basic Test
+description = Test saving values with the Select and other widget.
+group = Field UI
+file = select_other.test
+
+[SelectOtherHTMLEntitiesTest]
+name = Select and other HTML Entities
+description = Assert HTML entities are not double-encoded.
+group = Field UI
+file = select_other.test
+
+[SelectOtherAllowedValuesTest]
+name = Select and other Allowed Values Test
+description = Confirm that allowed values set on a field restrict the widget.
+group = Field UI
+file = select_other.test
+
+[SelectOtherMultipleFieldsTest]
+name = Select and other Multiple Fields
+description = Tests UI when a content type has multiple Select and other fields.
+group = Field UI
+file = select_other.test
+
+[SelectOtherMultipleValueListTest]
+name = Select and other Multiple Values
+description = Tests multiple value list field. Where delta is greater than one.
+group = Field UI
+file = select_other.test
+
+[SelectOtherNotRequiredTest]
+name = Select and other Not Required
+description = Asserts that Select and other is not saving any values if -none- is selected.
+group = Field UI
+file = select_other.test
+
+[SelectOtherNumericFieldTest]
+name = Select and other Numeric Field
+description = Assert that Select and other widget behaves correctly for non-text fields.
+group = Field UI
+file = select_other.test

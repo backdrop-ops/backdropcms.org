@@ -1,0 +1,327 @@
+<?php
+/**
+ * @file
+ * A list field widget that also provides a write-in text box when Other is selected from the list.
+ */
+
+/**
+ * Implementation of hook_views_api().
+ */
+function select_other_views_api() {
+  return array(
+    'api' => '3',
+    'path' => backdrop_get_path('module', 'select_other') . '/views',
+  );
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function select_other_autoload_info() {
+  return array(
+    'select_other_handler_field' => 'views/select_other_handler_field.inc',
+    'select_other_handler_filter' => 'views/select_other_handler_filter.inc',
+  );
+}
+
+/**
+ * Implementation of hook_field_widget_info().
+ */
+function select_other_field_widget_info() {
+  return array(
+    'select_other' => array(
+      'label' => t('Select list (and Other)'),
+      'description' => t('Provides an "other" option for an alternate value.'),
+      'field types' => array('list_integer', 'list_float', 'list_text'),
+      'settings' => array(
+        'select_list_options' => '',
+        'select_text_required' => TRUE,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function select_other_field_formatter_info() {
+  return array(
+    'select_other' => array(
+      'label' => t('Select and other'),
+      'description' => t('Select and other list widget.'),
+      'field types' => array('list_integer', 'list_float', 'list_text'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_formatter_view().
+ */
+function select_other_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  if ($display['type'] == 'select_other') {
+
+    $settings = $instance['widget']['settings'];
+    $options = select_other_options($instance);
+    $element = array();
+
+    foreach ($items as $delta => $item) {
+      $value = isset($options[$item['value']]) ? field_filter_xss($options[$item['value']]) : field_filter_xss($item['value']);
+
+      $element[$delta] = array(
+        '#markup' => $value,
+      );
+    }
+
+    return $element;
+  }
+}
+
+/**
+ * Implementation of hook_field_widget_settings_form().
+ */
+function select_other_field_widget_settings_form($field, $instance) {
+  $widget = $instance['widget'];
+  $settings = $widget['settings'];
+
+  $form['select_list_options'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Select list options'),
+    '#description' => t('You may also put restricted values in the Allowed Values text area.'),
+    '#default_value' => (!empty($settings['select_list_options'])) ? $settings['select_list_options'] : 'other|Other',
+  );
+  $form['select_text_required'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Require a write-in answer when Other is selected.'),
+    '#default_value' => $settings['select_text_required'],
+  );
+
+  return $form;
+}
+
+/**
+ * Implementation of hook_field_widget_form().
+ */
+function select_other_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $options = select_other_options($instance);
+  $settings = $instance['widget']['settings'];
+
+  // Setup Select and other wrapper.
+  $element += array(
+    '#bundle' => $instance['bundle'],
+    '#field_name' => $field['field_name'],
+    '#langcode' => $langcode,
+    '#element_validate' => array('select_other_widget_validate'),
+    '#attributes' => array(
+      'class' => array('form-select-other-wrapper', 'cck-select-other-wrapper'),
+    ),
+  );
+
+  // Setup select list.
+  $element['select_other_list'] = array(
+    '#title' => $element['#title'],
+    '#description' => $element['#description'],
+    '#type' => 'select',
+    '#options' => $options,
+    '#required' => $instance['required'],
+    '#attributes' => array(
+      'class' => array('form-text form-select form-select-other-list'),
+    ),
+  );
+
+  // Setup text input.
+  $name = $field['field_name'] . '[' . $element['#language'] . '][' . $delta . '][select_other_list]';
+  $element['select_other_text_input'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Provide other option'),
+    '#title_display' => 'invisible',
+    '#size' => 60,
+    '#attributes' => array(
+      'class' => array('form-text form-select-other-text-input'),
+    ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="' . $name . '"]' => array('value' => 'other'),
+      ),
+    ),
+  );
+
+  // Pass requiredness to validate handler.
+  $element['select_other_text_required'] = array(
+    '#type' => 'value',
+    '#value' => $settings['select_text_required'],
+  );
+
+  // Default empty values.
+  $list_default = $instance['required'] ? '' : '_none';
+  $text_default = '';
+  $value = '';
+
+  if (isset($items[$delta]['value'])) {
+    // Use the value provided in items.
+    $value = $items[$delta]['value'];
+  }
+  elseif (isset($instance['default_value'])) {
+    // Use the default value of the field if it is set.
+    $value = $instance['default_value'][0]['value'];
+  }
+
+  if ($value && in_array($value, array_keys($options))) {
+    // Value is not empty and value is in the list.
+    $list_default = $value;
+  }
+  elseif ($value) {
+    // Set the list default to other.
+    $list_default = 'other';
+    $text_default = $value;
+  }
+
+  // Set default values.
+  $element['select_other_list']['#default_value'] = $list_default;
+  $element['select_other_text_input']['#default_value'] = $text_default;
+
+  return $element;
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function select_other_form_alter(&$form, &$form_state, $form_id) {
+  // Select only the Select and other form.
+  if ($form_id == 'field_ui_field_edit_form' && isset($form_state['build_info']['args'][0]['widget']) && $form_state['build_info']['args'][0]['widget']['type'] == 'select_other') {
+
+    // Add a warning above the Allowed vales.
+    $form['field']['settings']['allowed_values']['#prefix'] = '<div class="messages warning">' . t('Select and other fields do not require allowed values. Select list options will be used instead.') . '</div>';
+    // Remove the validation check for allowed values.
+    $form['field']['settings']['allowed_values']['#element_validate'] = NULL;
+
+    // Add some feedback about set Allowed values since they are hidden.
+    if (isset($form['field']['settings']['allowed_values'])) {
+      backdrop_set_message('It is recommended that you do NOT provide allowed values for <em>Select and other</em> fields.', 'warning');
+    }
+  }
+}
+
+/**
+ * Validate empty text input for other selection.
+ */
+function select_other_widget_validate($element, &$form_state) {
+  $values = backdrop_array_get_nested_value($form_state['values'], $element['#array_parents']);
+
+  if (empty($values)) {
+    // Field UI does not behave in the same way as normal form operations, and
+    // values should be extracted from $element['#parents'] instead.
+    $values = backdrop_array_get_nested_value($form_state['values'], $element['#parents']);
+  }
+
+  // Required list.
+  if ($element['select_other_list']['#required']) {
+    // Empty select list option for required field.
+    if ($values['select_other_list'] == '') {
+      form_set_value($element, array('value' => ''), $form_state);
+      form_error($element, t('You must select an option.'));
+    }
+    elseif ($values['select_other_list'] == 'other') {
+      // Check and see if other text is required.
+      if (!$values['select_other_text_input'] && $values['select_other_text_required']) {
+        // Empty text input for required field.
+        form_set_value($element, array('value' => NULL), $form_state);
+        form_error($element['select_other_text_input'], t('You must provide a value for this option.'));
+      }
+    }
+  }
+
+  // Optional list.
+  elseif (!$element['select_other_list']['#required']) {
+    // List is empty.
+    if ($values['select_other_list'] == '_none') {
+      // Empty select list option.
+      form_set_value($element, array('value' => NULL), $form_state);
+    }
+    // List is other.
+    elseif ($values['select_other_list'] == 'other') {
+      // Text has value.
+      if ($values['select_other_text_input']) {
+        // Non-empty text input value.
+        form_set_value($element, array('value' => $values['select_other_text_input']), $form_state);
+      }
+      elseif (!$values['select_other_text_input']) {
+        // Empty non-required field.
+        form_set_value($element, array('value' => NULL), $form_state);
+      }
+    }
+  }
+
+  $field = field_info_field($element['#field_name']);
+
+  // Validate integer and float values for other options.
+  if ($field['type'] == 'list_integer' && $values['select_other_list'] == 'other') {
+    if (!preg_match('/^-?\d+$/', $values['select_other_text_input'])) {
+      form_error($element['select_other_text_input'], t('Only integers are allowed.'));
+    }
+  }
+  elseif ($field['type'] == 'list_float' && $values['select_other_list'] == 'other') {
+    if (!is_numeric($values['select_other_text_input'])) {
+      form_error($element['select_other_text_input'], t('Only valid numbers are allowed.'));
+    }
+  }
+}
+
+/**
+ * Retrieve options for the select list
+ * @param $field the field instance we're working with
+ * @return an array of options to pass into the Form API.
+ */
+function select_other_options($field) {
+  if (!isset($field['widget'])) {
+    return array();
+  }
+
+  if (empty($options)) {
+    $options_str = $field['widget']['settings']['select_list_options'];
+    if (!empty($options_str)) {
+      $options_arr = preg_split("/[\r]?[\n]/", $options_str);
+      if (count($options_arr) > 0) {
+        foreach ($options_arr as $option_str) {
+          $option_arr = preg_split("/\|/", $option_str);
+          if (count($option_arr) == 2) {
+            $options[check_plain($option_arr[0])] = t('@option', array('@option' => $option_arr[1]));
+          }
+          else {
+            $options[check_plain($option_arr[0])] = t('@option', array('@option' => $option_arr[0]));
+          }
+        }
+      }
+    }
+  }
+  else {
+    foreach ($options as $key => $option) {
+      if (!is_numeric($key)) {
+        $key = check_plain($key);
+      }
+      $options[$key] = t('@option', array('@option' => $option));
+    }
+  }
+
+  if (!isset($options['other'])) {
+    $options['other'] = t('Other');
+  }
+
+  if (!$field['required']) {
+    $options = array('_none' => t('- None - ')) + $options;
+  }
+  else {
+    $options = array('' => t('- Select a value -')) + $options;
+  }
+
+  return $options;
+}
+
+/**
+ * Implementation of hook_content_migrate_field_alter().
+ */
+function select_other_content_migrate_field_alter(&$field_value) {
+  if ($field_value['type'] == 'select_other') {
+    $field_value['type'] = 'list_text';
+    $field_value['module'] = 'list';
+  }
+}

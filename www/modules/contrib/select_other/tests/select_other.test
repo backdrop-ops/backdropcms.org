@@ -1,0 +1,618 @@
+<?php
+/**
+ * @file
+ * Select and other Functional Tests
+ */
+
+/**
+ * This is a base class that other tests will rely on for standardized setUp(),
+ * and tearDown() methods.
+ */
+class SelectOtherTest extends BackdropWebTestCase {
+
+  public $contentType = NULL;
+  public $test_node = NULL;
+  public $test_instance = NULL;
+  public $test_field = NULL;
+  public $options = NULL;
+
+  /**
+   * Implementation of setUp() method
+   */
+  public function setUp() {
+    parent::setUp(array('select_other'));
+
+    $this->assertTrue(module_exists('select_other'), t('Select and other module is enabled.'));
+
+    $content_type = strtolower($this->randomName(5));
+
+    /* Setup an admin user */
+    $this->admin_user = $this->backdropCreateUser( array('administer content types', 'administer site configuration'));
+    $this->backdropLogin($this->admin_user);
+
+    /* Create a new content type */
+    $settings = array(
+      'type' => $content_type,
+    );
+    $this->contentType = $this->backdropCreateContentType($settings);
+
+    /* Create some options for our Select and other list */
+    $this->options = '';
+    for ($i = 0; $i < 4; $i++) {
+      $this->options .= $this->randomName(5);
+      if ($i < 3) {
+        $this->options .= "\n";
+      }
+    }
+
+    /* Create a new field on our content type */
+    $field_label = $this->randomName(5);
+    $field_name = strtolower($this->randomName(5));
+    $bundle_path = 'admin/structure/types/manage/' . $this->contentType->type;
+    $edit = array(
+      'fields[_add_new_field][label]' => $field_label,
+      'fields[_add_new_field][field_name]' => $field_name,
+      'fields[_add_new_field][type]' => 'list_text',
+      'fields[_add_new_field][widget_type]' => 'select_other',
+    );
+    $this->backdropPost($bundle_path . '/fields', $edit, 'Save');
+    $edit = array(
+      'instance[required]' => TRUE,
+      'instance[widget][settings][select_list_options]' => $this->options,
+      'field_' . $field_name . '[und][0][select_other_list]' => 'other',
+    );
+    $this->backdropPost($bundle_path . '/fields/field_' . $field_name, $edit, 'Save settings');
+    $this->backdropGet($bundle_path . '/fields/field_' . $field_name);
+
+    $this->test_field = field_info_field('field_' . $field_name);
+    $this->test_instance = field_info_instance('node', 'field_' . $field_name, $this->contentType->type);
+
+    /* Setup a web user that can create content */
+    // @todo bypass node access seems to be the only thing that does not return 403
+    $this->web_user = $this->backdropCreateUser(array('access content', 'create ' . $this->contentType->type . ' content', 'delete any ' . $this->contentType->type . ' content', 'bypass node access'));
+
+    $this->backdropLogout();
+
+    $this->backdropLogin($this->web_user);
+
+    $settings = array(
+      'type' => $this->contentType->type,
+    );
+    $this->test_node = $this->backdropCreateNode($settings);
+
+    $this->backdropLogout();
+
+    $options_arr = select_other_options($this->test_instance);
+    $this->assertEqual(6, count($options_arr), t('There are 6 = %count options set on the field.', array('%count' => count($options_arr))));
+  }
+
+  /**
+   * Implementation of tearDown() method
+   */
+  public function tearDown() {
+    $this->backdropLogin($this->web_user);
+    $this->backdropPost('node/' . $this->test_node->nid . '/delete', array('confirm' => 1), 'Delete');
+    $this->backdropLogout();
+
+    $this->backdropLogin($this->admin_user);
+    field_delete_field($this->test_field['field_name']);
+    $this->backdropLogout();
+
+    $this->test_node = NULL;
+    $this->test_field = NULL;
+    $this->test_instance = NULL;
+    $this->admin_user = NULL;
+    $this->web_user = NULL;
+    $this->options = NULL;
+
+    parent::tearDown();
+  }
+}
+
+/**
+ * Assert basic Select and other list operations.
+ */
+class SelectOtherBasicTest extends SelectOtherTest {
+
+  /**
+   * Modify node with a new value from select list options
+   */
+  function testSelectFieldValue() {
+    $options_arr = select_other_options($this->test_instance);
+    $this->assertEqual(6, count($options_arr), t('There are 6 = %count options set on the field.', array('%count' => count($options_arr))));
+
+    do {
+      $my_option = array_rand(select_other_options($this->test_instance));
+    } while (in_array($my_option, array('other', '_none', '')));
+
+    $this->backdropLogin($this->web_user);
+
+    // @todo sometimes 'und' is undefined...
+    $select_field = $this->test_field['field_name'] . '[und][0][select_other_list]';
+    $text_field = $this->test_field['field_name'] . '[und][0][select_other_text_input]';
+    $edit = array(
+      $select_field => $my_option,
+    );
+    if ($my_option == 'other') {
+      $edit[$text_field] = $this->randomName(16);
+    }
+
+    $my_option_value = ($my_option == 'other') ? $edit[$text_field] : $edit[$select_field];
+
+    $this->backdropGet('node/' . $this->test_node->nid);
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->test_node = node_load($this->test_node->nid, NULL, TRUE);
+    $this->assertRaw($this->test_node->{$this->test_field['field_name']}['und'][0]['value'], t('Select and other field data %field matches %match on node.', array('%field' => $this->test_node->{$this->test_field['field_name']}['und'][0]['value'], '%match' => $my_option_value)));
+
+    $this->backdropLogout();
+  }
+
+  /**
+   * Fail validation of node edit form, check option values
+   * TODO: I don't think I can resave the same form with backdropPost
+   */
+  function testFailValidationForm() {
+    $my_option = array_rand(select_other_options($this->test_instance));
+
+    $this->backdropLogin($this->web_user);
+
+    $select_field = $this->test_field['field_name'] . '[und][0][select_other_list]';
+    $text_field = $this->test_field['field_name'] . '[und][0][select_other_text_input]';
+    $edit = array(
+      'title' => '',
+      $select_field => $my_option,
+    );
+    if ($my_option == 'other') {
+      $edit[$text_field] = $this->randomName(16);
+    }
+
+    $field_str = str_replace('_', '-', $this->test_field['field_name']);
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertFieldById('edit-' . $field_str . '-und-0-select-other-list', $my_option, t('Select field value matches'));
+
+    $this->backdropLogout();
+  }
+
+  /**
+   * Fail validation of node edit form for required field.
+   */
+  function testFailValidationRequiredField() {
+    // Make field instance required and update
+    $this->test_instance['required'] = FALSE;
+    field_update_instance($this->test_instance);
+
+    $select_field = $this->test_field['field_name'] . '[und][0][select_other_list]';
+    $text_field = $this->test_field['field_name'] . '[und][0][select_other_text_input]';
+
+    $edit = array(
+      $select_field => 'other',
+      $text_field => '',
+    );
+
+    // First assert that we do not fail validation for a non-
+    // required field.
+    $this->backdropLogin($this->web_user);
+
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertNoRaw(t('You must provide a value for this option.'), t('Did not fail validation for non-required field.'));
+
+    $this->backdropLogout();
+
+    // Make field instance required and update
+    $this->test_instance['required'] = TRUE;
+    field_update_instance($this->test_instance);
+
+    // Fairly straightforward, see above tests.
+    $this->backdropLogin($this->web_user);
+
+    $field_str = str_replace('_', '-', $this->test_field['field_name']);
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertRaw(t('You must provide a value for this option.'), t('Failed validation for required field.'));
+    $elements = $this->xpath('//input[@name="' . $text_field .'" and contains(@class, "error")]');
+    $this->assertEqual(count($elements), 1, t('Found error class on %field element.', array('%field' => $text_field)));
+
+    $this->backdropLogout();
+  }
+}
+
+/**
+ * Assert HTML entities are not double-encoded.
+ */
+class SelectOtherHTMLEntitiesTest extends SelectOtherTest {
+
+  /**
+   * Assert HTML entities are not double-encoded.
+   */
+  function testHTMLEntities() {
+    $this->backdropLogin($this->web_user);
+
+    $select_field = $this->test_field['field_name'] . '[und][0][select_other_list]';
+    $text_field = $this->test_field['field_name'] . '[und][0][select_other_text_input]';
+    $edit = array(
+      $select_field => 'other',
+      $text_field => '&',
+    );
+
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->backdropGet('node/' . $this->test_node->nid . '/edit');
+    $this->assertNoFieldByName($text_field, '&amp;', t('Correctly encoded HTML entity.'));
+
+    $this->backdropLogout();
+  }
+
+}
+
+/**
+ * Assert that allowed values restrict Select and other list options in the rare
+ * case that someone decides to use them.
+ */
+class SelectOtherAllowedValuesTest extends SelectOtherTest {
+
+  /**
+   * Fail validation or test allowed values for other option
+   */
+  function testAllowedValues() {
+    $this->backdropLogin($this->admin_user);
+
+    //Setup some allowed values to equal our select list options + another known value
+    $options = select_other_options($this->test_instance);
+    $options['AllowedValue'] = 'AllowedValue';
+    $this->test_field['settings']['allowed_values'] = $options;
+    field_update_field($this->test_field);
+
+    $this->test_field = field_info_field($this->test_field['field_name']);
+    $this->assertEqual($this->test_field['id'], $this->test_instance['field_id'], t('Field name @first is equal to @second. Field updated successfully.', array('@first' => $this->test_field['id'], '@second' => $this->test_instance['field_id'])));
+
+    $this->backdropLogout();
+    $this->backdropLogin($this->web_user);
+
+    $select_field = $this->test_field['field_name'] . '[und][0][select_other_list]';
+    $text_field = $this->test_field['field_name'] . '[und][0][select_other_text_input]';
+    $goodEdit = array(
+      $select_field => 'other',
+      $text_field => 'AllowedValue',
+    );
+
+    $badEdit = array(
+      $select_field => 'other',
+      $text_field => 'DisallowedValue',
+    );
+
+    // try to save a disallowed value
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $badEdit, t('Save'));
+    $this->assertText(t('@name: illegal value.', array('@name' => $this->test_instance['label'])), t('Successfully blocked submission of DisallowedValue.'));
+
+    // try to save an allowed value
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $goodEdit, t('Save'));
+    $this->assertNoText(t('@name: illegal value.', array('@name' => $this->test_instance['label'])), t('Successfully saved form with allowed value, AllowedValue.'));
+    $this->assertRaw('AllowedValue', t('Found %allowed allowed value on node view.', array('%allowed' => 'AllowedValue')));
+
+    $this->backdropLogout();
+  }
+
+}
+
+/**
+ * Assert that Select and other list is functional when there are multiple select
+ * other fields on a page.
+ */
+class SelectOtherMultipleFieldsTest extends SelectOtherTest {
+
+  function testMultipleField() {
+    /* Create some options for our Select and other list */
+    $this->newoptions = '';
+    for ($i = 0; $i < 4; $i++) {
+      $option = $this->randomName(5);
+      $newoptions[$option] = $option;
+      $this->newoptions .= $option;
+      if ($i < 3) {
+        $this->newoptions .= "\n";
+      }
+    }
+
+    do {
+      $firstoption = array_rand(select_other_options($this->test_instance));
+    } while (in_array($firstoption, array('other', '_none', '')));
+
+    // Create a new field and instance
+    $this->second_field = $this->test_field;
+    $this->second_field['field_name'] = 'field_' . strtolower($this->randomName(5));
+    $this->second_field['label'] = $this->randomName(5);
+    unset($this->second_field['id']);
+    $this->second_field = field_create_field($this->second_field);
+
+    $this->second_instance = $this->test_instance;
+    $this->second_instance['field_id'] = $this->second_field['id'];
+    $this->second_instance['field_name'] = $this->second_field['field_name'];
+    $this->second_instance['label'] = $this->second_field['label'];
+    $this->second_instance['widget']['settings']['select_list_options'] = $this->newoptions;
+    unset($this->second_instance['id']);
+
+    $this->second_instance = field_create_instance($this->second_instance);
+
+    // Login
+    $this->backdropLogin($this->web_user);
+
+    // Load up our test node in edit view now that we have a new field.
+    $this->backdropGet('node/' . $this->test_node->nid . '/edit');
+    $this->assertRaw($this->second_field['label'], t('Found label, %label, for second test field, %field.', array('%label' => $this->second_field['label'], '%field' => $this->second_field['field_name'])));
+
+    // Post some new values
+    $secondoption = $this->randomName(15);
+    $edit = array(
+      $this->test_instance['field_name'] . '[und][0][select_other_list]' => $firstoption,
+      $this->second_instance['field_name'] . '[und][0][select_other_list]' => 'other',
+      $this->second_instance['field_name'] . '[und][0][select_other_text_input]' => $secondoption,
+    );
+
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertRaw($firstoption, t('Found option, %option, for field, %field.', array('%option' => $firstoption, '%field' => $this->test_field['field_name'])));
+    $this->assertRaw($secondoption, t('Found option, %option, for field, %field.', array('%option' => $secondoption, '%field' => $this->second_field['field_name'])));
+
+    // Check our edit page again.
+    $this->backdropGet('node/' . $this->test_node->nid . '/edit');
+    // @todo there is currently no way in backdrop SimpleTest to test style: hidden.
+    // However, if you use the Debug mode, you can confirm the test yourself.
+
+    // Logout
+    $this->backdropLogout();
+  }
+}
+
+/**
+ * Assert multiple value list fields where $delta > 1 or -1 (unlimited).
+ */
+class SelectOtherMultipleValueListTest extends SelectOtherTest {
+
+  function setUp() {
+    parent::setUp();
+
+    $this->backdropLogin($this->admin_user);
+
+    // Make changes to our field instance.
+    $options_arr = array_keys(select_other_options($this->test_instance));
+    $edit = array(
+      'field[cardinality]' => 2,
+      $this->test_field['field_name'] . '[und][0][select_other_list]' => $options_arr[1],
+    );
+    $this->backdropPost('admin/structure/types/manage/' . $this->test_node->type . '/fields/' . $this->test_field['field_name'], $edit, 'Save settings');
+    field_cache_clear(); // Ugh...
+
+    // Load our field and instance back again.
+    $this->test_field = field_info_field($this->test_field['field_name']);
+    $this->test_instance = field_info_instance('node', $this->test_field['field_name'], $this->test_node->type);
+
+    $this->backdropLogout();
+  }
+
+  // @todo $delta for default values.
+  function testFieldEditSave() {
+    $this->backdropLogin($this->web_user);
+
+    // Load node edit form and check element default values.
+    // edit-field-wqs9w-und-0-select-other-list
+    $name = substr($this->test_field['field_name'], 6);
+
+    $this->backdropGet('node/' . $this->test_node->nid . '/edit');
+    $this->assertOptionSelected('edit-field-' . $name . '-und-0-select-other-list', $this->test_instance['default_value'][0]['value']);
+    $this->assertOptionSelected('edit-field-' . $name . '-und-1-select-other-list', $this->test_instance['default_value'][0]['value']);
+
+    // Try to post and make sure it saved both values correctly. In unlimited
+    // situation, there are two elements by default. Test add more function
+    // later.
+    $options_arr = select_other_options($this->test_instance);
+    do {
+      $firstoption = array_rand(select_other_options($this->test_instance));
+    } while (in_array($firstoption, array('other', '_none', '')));
+    $otheroption = $this->randomName(16);
+
+    $edit = array(
+      $this->test_instance['field_name'] . '[und][0][select_other_list]' => 'other',
+      $this->test_instance['field_name'] . '[und][0][select_other_text_input]' => $otheroption,
+
+      $this->test_instance['field_name'] . '[und][1][select_other_list]' => $firstoption,
+    );
+
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertRaw($otheroption, t('Found first Select and other list option on node.'));
+    $this->assertRaw($firstoption, t('Found second Select and other list option on node.'));
+
+    $this->backdropLogout();
+  }
+
+}
+
+/**
+ * Assert that Select and other list is not saving any values if -none- is selected
+ */
+class SelectOtherNotRequiredTest extends SelectOtherTest {
+
+  function setUp() {
+    parent::setUp();
+
+    $this->test_instance['required'] = FALSE;
+    field_update_instance($this->test_instance);
+    $this->test_instance = field_info_instance('node', $this->test_field['field_name'], $this->test_node->type);
+  }
+
+  /**
+   * Test that there is a -none- option in a non-required field and that it does
+   * not save a field value.
+   */
+  function testNoRequired() {
+    $this->backdropLogin($this->web_user);
+
+    $name = substr($this->test_field['field_name'], 6);
+
+    // Assert that we have -none- as the option in our select list.
+    $this->backdropGet('node/' . $this->test_node->nid . '/edit');
+    $this->assertOptionSelected('edit-field-' . $name . '-und-0-select-other-list', '_none', t('- None - option selected in select list.'));
+
+    // Post to the node, and make sure that -none- is the value and that value ends up as empty.
+    $edit = array(
+      $this->test_instance['field_name'] . '[und][0][select_other_list]' => '_none',
+    );
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertNoRaw($this->test_instance['label']);
+
+    // Assert the node object as well.
+    $node = node_load($this->test_node->nid);
+    $this->assertTrue(empty($node->{$this->test_instance['field_name']}), t('Select and other did not save any value for non-required field.'));
+
+    $this->backdropLogout();
+  }
+
+  /**
+   * Save a value to the field and then set it to -none-
+   */
+  function testValueToNone() {
+    $this->backdropLogin($this->web_user);
+
+    // Save a value into the node and assert that it was saved.
+    $edit = array(
+      $this->test_instance['field_name'] . '[und][0][select_other_list]' => 'other',
+      $this->test_instance['field_name'] . '[und][0][select_other_text_input]' => $this->randomName(15),
+    );
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertRaw($this->test_instance['label']);
+
+    $edit = array(
+      $this->test_instance['field_name'] . '[und][0][select_other_list]' => '_none',
+    );
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertNoRaw($this->test_instance['label']);
+
+    // Assert the node object as well.
+    $node = node_load($this->test_node->nid);
+    $this->assertTrue(empty($node->{$this->test_instance['field_name']}), t('Select and other did not save any value for non-required field.'));
+
+    $this->backdropLogout();
+  }
+
+}
+
+/**
+ * Assert that Select and other field widget can be used with non-text fields.
+ *
+ * This is not based on SelectOtherTest case because it's a different field.
+ */
+class SelectOtherNumericFieldTest extends BackdropWebTestCase {
+
+  public function setUp() {
+    parent::setUp(array('select_other'));
+
+    $content_type = strtolower($this->randomName(5));
+
+    /* Setup an admin user */
+    $this->admin_user = $this->backdropCreateUser(array('administer content types', 'administer site configuration'));
+    $this->backdropLogin($this->admin_user);
+
+    /* Create a new content type */
+    $settings = array(
+      'type' => $content_type,
+    );
+    $this->contentType = $this->backdropCreateContentType($settings);
+
+    /* Create some options for our Select and other list */
+    $this->options = "1\n2\n3\n4\n5\nother|Other";
+
+    /* Create a new field on our content type */
+    $field_label = $this->randomName(5);
+    $field_name = strtolower($this->randomName(5));
+    $bundle_path = 'admin/structure/types/manage/' . $this->contentType->type;
+    $edit = array(
+      'fields[_add_new_field][label]' => $field_label,
+      'fields[_add_new_field][field_name]' => $field_name,
+      'fields[_add_new_field][type]' => 'list_integer',
+      'fields[_add_new_field][widget_type]' => 'select_other',
+    );
+    $this->backdropPost($bundle_path . '/fields', $edit, 'Save');
+    $edit = array(
+      'instance[required]' => TRUE,
+      'instance[widget][settings][select_list_options]' => $this->options,
+      'field_' . $field_name . '[und][0][select_other_list]' => '_none',
+    );
+    $this->backdropPost($bundle_path . '/fields/field_' . $field_name, $edit, 'Save settings');
+    $this->backdropGet($bundle_path . '/fields/field_' . $field_name);
+
+    $this->test_field = field_info_field('field_' . $field_name);
+    $this->test_instance = field_info_instance('node', 'field_' . $field_name, $this->contentType->type);
+
+    /* Setup a web user that can create content */
+    // @todo bypass node access seems to be the only thing that does not return 403
+    $this->web_user = $this->backdropCreateUser(array('access content', 'create ' . $this->contentType->type . ' content', 'delete any ' . $this->contentType->type . ' content', 'bypass node access'));
+
+    $this->backdropLogout();
+
+    $this->backdropLogin($this->web_user);
+
+    $settings = array(
+      'type' => $this->contentType->type,
+    );
+    $this->test_node = $this->backdropCreateNode($settings);
+
+    $this->backdropLogout();
+
+    $options_arr = select_other_options($this->test_instance);
+    $this->assertEqual(7, count($options_arr), t('There are 6 = %count options set on the field.', array('%count' => count($options_arr))));
+  }
+
+  /**
+   * Implementation of tearDown() method
+   */
+  public function tearDown() {
+    $this->backdropLogin($this->web_user);
+    $this->backdropPost('node/' . $this->test_node->nid . '/delete', array('confirm' => 1), 'Delete');
+    $this->backdropLogout();
+
+    $this->backdropLogin($this->admin_user);
+    field_delete_field($this->test_field['field_name']);
+    $this->backdropLogout();
+
+    $this->test_node = NULL;
+    $this->test_field = NULL;
+    $this->test_instance = NULL;
+    $this->admin_user = NULL;
+    $this->web_user = NULL;
+    $this->options = NULL;
+
+    parent::tearDown();
+  }
+
+  /**
+   * Test numeric field CRUD.
+   */
+  public function testSelectOtherList() {
+    $this->backdropLogin($this->web_user);
+
+    // Save a regular field value.
+    $value = rand(1, 5);
+
+    $select_field = $this->test_field['field_name'] . '[und][0][select_other_list]';
+    $text_field = $this->test_field['field_name'] . '[und][0][select_other_text_input]';
+    $edit = array(
+      $select_field => $value,
+    );
+
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->test_node = node_load($this->test_node->nid, NULL, TRUE);
+    $this->assertRaw($this->test_node->{$this->test_field['field_name']}['und'][0]['value'], t('Select and other field data %field matches %match on node.', array('%field' => $this->test_node->{$this->test_field['field_name']}['und'][0]['value'], '%match' => $value)));
+
+
+    // Save an other value as an integer.
+    $value = rand(50, 1000);
+    $edit[$select_field] = 'other';
+    $edit[$text_field] = $value;
+
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->test_node = node_load($this->test_node->nid, NULL, TRUE);
+    $this->assertRaw($this->test_node->{$this->test_field['field_name']}['und'][0]['value'], t('Select and other field data %field matches %match on node.', array('%field' => $this->test_node->{$this->test_field['field_name']}['und'][0]['value'], '%match' => $value)));
+
+    // Attempt to save an other value that is non-integer.
+    $value = $this->randomName(10);
+    $edit[$text_field] = $value;
+    $this->backdropPost('node/' . $this->test_node->nid . '/edit', $edit, t('Save'));
+    $this->assertText('Only integers are allowed', t('Select and other field did not save an illegal value.'));
+  }
+
+}
