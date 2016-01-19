@@ -17,8 +17,7 @@
                     "options": []
                 },
                 "access": {
-                    "type": "perm",
-                    "perm": "administer nodes"
+                    "type": "none"
                 },
                 "cache": {
                     "type": "none"
@@ -221,6 +220,10 @@
                     "block": "block",
                     "page_1": "page_1",
                     "default": 0
+                },
+                "defaults": {
+                    "access": true,
+                    "access_options": true
                 }
             }
         }
