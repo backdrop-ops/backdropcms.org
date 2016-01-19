@@ -20,9 +20,6 @@ function borg_cleanup_menu_alter(&$items) {
  * Removes useless description text from log in form, adds additional links.
  */
 function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
-  unset($form['name']['#description']);
-  unset($form['pass']['#description']);
-
   $form['actions']['forgot'] = array(
     '#markup' => '<small>' . l(t('Forgot password?'), 'user/password') . '</small>',
     '#weight' => 10,
@@ -41,50 +38,4 @@ function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
 function borg_cleanup_form_user_register_form_alter(&$form, &$form_state) {
   $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you request to receive a new password.');
   unset($form['account']['pass']['#description']);
-}
-
-/**
- * Prepare variables for page template.
- *
- * Corrects the head_title variable to correctly match the current page.
- *
- * @see template_preprocess_page().
- * @see page.tpl.php
- */
-function borg_cleanup_preprocess_page(&$variables) {
-  if (arg(0) == 'user') {
-    global $user;
-    if (arg(1) == 'password') {
-      $variables['head_title'] = t('Forgot password | !name', array('!name' => config_get('system.core', 'site_name')));
-    }
-    elseif (arg(1) == 'login' || (!arg(1) && $user->uid === 0)) {
-      $variables['head_title'] = t('Log in | !name', array('!name' => config_get('system.core', 'site_name')));
-    }
-    elseif (arg(1) == 'register') {
-      $variables['head_title'] = t('Create a new account | !name', array('!name' => config_get('system.core', 'site_name')));
-    }
-  }
-}
-
-/**
- * Prepare variables for page template.
- *
- * Corrects the head_title variable to correctly match the current page.
- *
- * @see template_preprocess_layout().
- * @see layout.tpl.php
- */
-function borg_cleanup_preprocess_layout(&$variables) {
-  if (arg(0) == 'user') {
-    global $user;
-    if (arg(1) == 'password') {
-      backdrop_set_title('Forgot password');
-    }
-    elseif (arg(1) == 'login' || (!arg(1) && $user->uid === 0)) {
-      backdrop_set_title('Log in');
-    }
-    elseif (arg(1) == 'register') {
-      backdrop_set_title('Create a new account');
-    }
-  }
 }
