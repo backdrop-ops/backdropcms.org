@@ -10,7 +10,7 @@
 function borg_metadata_preprocess_page(&$variables) {
   if ($variables['is_front']) {
     // Add home page header tag
-    $variables['head_title'] = t('Backdrop CMS: Freee Open Source Content Management System');
+    //$variables['head_title'] = t('Backdrop CMS: Freee Open Source Content Management System');
 
     // Add a description tag.
     $description = array(
@@ -18,7 +18,7 @@ function borg_metadata_preprocess_page(&$variables) {
       '#tag' => 'meta',
       '#attributes' => array(
         'name' => 'description',
-        'content' => t('Backdrop is a PHP CMS used to build beautiful, professional websites. Backdrop is simple, lightweight, and easy to use, and based on the popular Drupal Contant Management Framework.'),
+        'content' => t('Backdrop CMS is simple, lightweight, and easy to use. A PHP content management system used to build creative, professional websites.'),
       )
     );
     backdrop_add_html_head($description, 'description');
