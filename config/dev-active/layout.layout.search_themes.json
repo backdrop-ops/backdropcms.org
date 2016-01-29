@@ -25,7 +25,8 @@
         ],
         "content-top": [],
         "content": [
-            "1370551a-8ba1-435e-ab15-21f558c45013"
+            "1370551a-8ba1-435e-ab15-21f558c45013",
+            "b0f361db-2ba6-437c-8906-061b8e351f10"
         ],
         "footer": [
             "8cfef68d-7527-4538-b026-3826cad24eee",
@@ -139,6 +140,29 @@
                     "contexts": []
                 },
                 "uuid": "1370551a-8ba1-435e-ab15-21f558c45013",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "b0f361db-2ba6-437c-8906-061b8e351f10": {
+            "plugin": "borg_blocks:rss",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "rss",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "b0f361db-2ba6-437c-8906-061b8e351f10",
                 "style": {
                     "plugin": "default",
                     "data": {

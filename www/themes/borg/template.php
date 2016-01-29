@@ -178,6 +178,6 @@ function borg_on_the_web_image($variables) {
  */
 function borg_feed_icon($variables) {
   $text = t('Subscribe to !feed-title', array('!feed-title' => $variables['title']));
-  $image = '<i class="fa fa-rss-square"></i><span class="element-invisible">Latest News from Backdrop CMS</span>';
+  $image = '<i class="fa fa-rss-square"></i><span class="element-invisible">' . $text . '</span>';
   return l($image, $variables['url'], array('html' => TRUE, 'attributes' => array('class' => array('feed-icon'), 'title' => $text)));
 }

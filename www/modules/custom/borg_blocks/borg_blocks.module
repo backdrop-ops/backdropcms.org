@@ -16,6 +16,10 @@ function borg_blocks_block_info() {
     'info' => t('Handbook Menu'),
     'description' => t('Backdrop CMS Handbook menu, with section titles.'),
   );
+  $blocks['rss'] = array(
+    'info' => t('Project RSS feed'),
+    'description' => t('RSS feed for Backdrop CMS modules, themes, and layouts.'),
+  );
 
   return $blocks;
 }
@@ -45,6 +49,11 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
 
       $block['subject'] = NULL;
       $block['content'] = backdrop_render($tree);
+      break;
+
+    case 'rss':
+      $block['subject'] = NULL;
+      $block['content'] = backdrop_get_feeds();
       break;
   }
 
