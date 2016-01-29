@@ -52,6 +52,12 @@ description = Test storage-related Field Attach API functions.
 group = Field API
 file = field.test
 
+[FieldBlockTestCase]
+name = Field block tests
+description = Tests the adding of field blocks and formatter settings.
+group = Field API
+file = field.test
+
 [FieldViewsDataTest]
 name = Views integration for Field API
 description = Tests the Field API Views data.
@@ -63,3 +69,8 @@ name = Views fields for Field API
 description = Tests the Views field of the Field API integration.
 group = Field API
 file = field_views.test
+
+; Added by Backdrop CMS packaging script on 2016-01-20
+project = backdrop
+version = 1.3.2
+timestamp = 1453348233

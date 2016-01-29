@@ -724,7 +724,7 @@ function comment_node_page_additions(Node $node) {
   // Only attempt to render comments if the node has visible comments.
   // Unpublished comments are not included in $node->comment_count, so show
   // comments unconditionally if the user is an administrator.
-  if (($node->comment_count && user_access('access comments')) || user_access('administer comments')) {
+  if ((!empty($node->comment_count) && user_access('access comments')) || user_access('administer comments')) {
     $mode = $node_type->settings['comment_mode'];
     $comments_per_page = $node_type->settings['comment_per_page'];
     if ($cids = comment_get_thread($node, $mode, $comments_per_page)) {
@@ -1141,6 +1141,7 @@ function comment_form_node_type_form_alter(&$form, $form_state) {
       '#attached' => array(
         'js' => array(backdrop_get_path('module', 'comment') . '/js/comment.admin.js'),
       ),
+      '#weight' => 20,
     );
     // Unlike coment_form_node_form_alter(), all of these settings are applied
     // as defaults to all new nodes. Therefore, it would be wrong to use #states
