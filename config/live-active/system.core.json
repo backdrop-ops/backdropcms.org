@@ -72,5 +72,11 @@
     "site_favicon_path": "",
     "site_favicon_mimetype": "",
     "canonical_secure": 0,
-    "user_mail_status_canceled_notify": 0
+    "user_mail_status_canceled_notify": 0,
+    "file_transliterate_lowercase": false,
+    "file_transliterate_uploads": true,
+    "file_transliterate_uploads_display_name": false,
+    "maintenance_page_maximum_age": 10,
+    "page_cache_background_fetch": 1,
+    "page_cache_keep_stale_age": 172800
 }
