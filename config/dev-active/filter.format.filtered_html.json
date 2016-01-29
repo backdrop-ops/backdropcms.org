@@ -21,20 +21,20 @@
             "module": "codefilter"
         },
         "filter_image_caption": {
-            "status": 0,
-            "weight": 4,
+            "status": 1,
+            "weight": -46,
             "module": "filter",
             "settings": []
         },
         "filter_autop": {
             "status": 1,
-            "weight": -47,
+            "weight": -44,
             "module": "filter",
             "settings": []
         },
         "filter_url": {
             "status": 1,
-            "weight": -46,
+            "weight": -47,
             "settings": {
                 "filter_url_length": "72"
             },
@@ -42,7 +42,7 @@
         },
         "filter_htmlcorrector": {
             "status": 1,
-            "weight": -45,
+            "weight": -43,
             "module": "filter",
             "settings": []
         },
@@ -54,7 +54,7 @@
         },
         "filter_image_align": {
             "status": 1,
-            "weight": 5,
+            "weight": -45,
             "module": "filter",
             "settings": []
         },
@@ -62,7 +62,7 @@
             "status": 1,
             "weight": -49,
             "settings": {
-                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img>",
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure>",
                 "filter_html_help": 1,
                 "filter_html_nofollow": 0
             },
