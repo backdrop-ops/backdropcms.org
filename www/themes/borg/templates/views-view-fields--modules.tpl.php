@@ -4,21 +4,21 @@
  * Custom template for Backdrop Extensions Search Results
  */
 ?>
-
-<?php print $fields['title']->content; ?>
+<?php if(!empty($fields['body']->content)): ?>
+  <?php print $fields['title']->content; ?>
+  <?php unset($fields['title']); ?>
+<?php endif; ?>
 <?php if(!empty($fields['body']->content)): ?>
 <div class="result__description">
   <?php print $fields['body']->content; ?>
+  <?php unset($fields['body']); ?>
 </div>
 <?php endif; ?>
+
 <ul class="result__info">
-  <li class="result__download">
-    <?php print $fields['version']->content; ?>
-    <?php if(!empty($fields['download_size']->content)): ?>
-      <span class="result__version"><?php print $fields['download_size']->content; ?></span>
-    <?php endif; ?>
+<?php foreach ($fields as $id => $field): ?>
+  <li>
+    <?php print $field->content; ?>
   </li>
-  <li class="result__more">
-    <?php print $fields['view_node']->content; ?>
-  </li>
+<?php endforeach; ?>
 </ul>
