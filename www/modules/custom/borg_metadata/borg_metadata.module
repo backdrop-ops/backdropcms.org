@@ -18,7 +18,7 @@ function borg_metadata_preprocess_page(&$variables) {
       '#tag' => 'meta',
       '#attributes' => array(
         'name' => 'description',
-        'content' => t('Backdrop CMS is simple, lightweight, and easy to use. A PHP content management system used to build creative, professional websites.'),
+        'content' => t('Backdrop CMS is a simple, lightweight, and easy to use Content Management System used to build attractive, professional websites.'),
       )
     );
     backdrop_add_html_head($description, 'description');
