@@ -426,19 +426,6 @@
                             }
                         },
                         "is_grouped": false
-                    },
-                    "status_extra": {
-                        "id": "status_extra",
-                        "table": "node",
-                        "field": "status_extra",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "=",
-                        "value": "",
-                        "group": "1",
-                        "exposed": false,
-                        "is_grouped": false
                     }
                 },
                 "sorts": {
