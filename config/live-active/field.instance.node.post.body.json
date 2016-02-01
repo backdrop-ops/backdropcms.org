@@ -35,6 +35,15 @@
                 "trim_length": 600
             },
             "module": "text"
+        },
+        "rss": {
+            "label": "hidden",
+            "type": "text_trimmed",
+            "weight": "0",
+            "settings": {
+                "trim_length": "1200"
+            },
+            "module": "text"
         }
     },
     "description": "",

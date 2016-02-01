@@ -25,7 +25,8 @@
         ],
         "content-top": [],
         "content": [
-            "default"
+            "default",
+            "62b827f3-5a2e-463d-ac3f-63fd43e95bdc"
         ],
         "footer": [
             "3f6bea0b-e674-4374-8103-3ab4762617fb",
@@ -149,6 +150,29 @@
                             "title_classes": "block-title",
                             "content_tag": "div",
                             "content_classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "62b827f3-5a2e-463d-ac3f-63fd43e95bdc": {
+            "plugin": "borg_blocks:rss",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "rss",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "62b827f3-5a2e-463d-ac3f-63fd43e95bdc",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
                         }
                     }
                 }
