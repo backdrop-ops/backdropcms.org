@@ -2969,8 +2969,8 @@ function _node_in_array_r($needle, $haystack, $strict = TRUE) {
 function node_access_acquire_grants(Node $node, $delete = TRUE) {
   // We only care about the node if is unpublished. If not, it is
   // treated just like any other node and we completely ignore it.
+  $grants = array();
   if ($node->status == 0) {
-    $grants = array();
     // Unpublished nodes should be viewable to all editors.
     $grants[] = array(
       'realm' => 'view_unpublished_content',
@@ -2996,7 +2996,6 @@ function node_access_acquire_grants(Node $node, $delete = TRUE) {
       'grant_delete' => 0,
       'priority' => 0,
     );
-    return $grants;
   }
   $grants = array_merge($grants, module_invoke_all('node_access_records', $node));
   // Let modules alter the grants.
