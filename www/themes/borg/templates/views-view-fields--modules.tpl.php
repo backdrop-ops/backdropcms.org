@@ -17,8 +17,8 @@
 
 <ul class="result__info">
 <?php foreach ($fields as $id => $field): ?>
-  <li>
-    <?php print $field->content; ?>
-  </li>
+  <?php if(!empty($field->content)): ?>
+    <li><?php print $field->content; ?></li>
+  <?php endif; ?>
 <?php endforeach; ?>
 </ul>
