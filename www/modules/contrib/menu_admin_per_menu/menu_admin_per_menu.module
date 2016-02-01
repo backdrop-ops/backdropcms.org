@@ -47,7 +47,7 @@ function _menu_admin_per_menu_menu_overview_page() {
   }
 
   $perm_menus = _menu_admin_per_menu_get_perm_menus();
-  $result = db_query("SELECT * FROM {menu_custom} ORDER BY title", array(), array('fetch' => PDO::FETCH_ASSOC));
+  $result = menu_load_all();
   $header = array(t('Title'), array('data' => t('Operations'), 'colspan' => '2'));
   $rows = array();
   foreach ($result as $menu) {
