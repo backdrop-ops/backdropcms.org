@@ -139,13 +139,28 @@ h1 {
 }
 
 .result h3 {
-  margin: 0;
+  margin: 0 5px 0 0;
   font-weight: 600;
   font-size: 27px;
+}
+@media all and (min-width: 550px) {
+  .result h3 {
+    display: inline-block;
+  }
 }
 
 .result h3 a {
   color: #000;
+}
+
+.result div.since {
+  color: #86898a;
+  font-size: 0.9em;
+}
+@media all and (min-width: 550px) {
+  .result div.since {
+    display: inline-block;
+  }
 }
 
 .result__description {
@@ -154,7 +169,7 @@ h1 {
 }
 
 .result__description p {
-  margin: 0 0 0.5em;
+  margin: 0.5em 0;
 }
 
 .result__info {
