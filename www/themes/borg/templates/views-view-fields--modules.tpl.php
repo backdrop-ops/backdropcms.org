@@ -18,7 +18,7 @@
 <ul class="result__info">
 <?php foreach ($fields as $id => $field): ?>
   <?php if(!empty($field->content)): ?>
-    <li><?php print $field->content; ?></li>
+    <li class="<?php print backdrop_clean_css_identifier($id); ?>"><?php print $field->content; ?></li>
   <?php endif; ?>
 <?php endforeach; ?>
 </ul>
