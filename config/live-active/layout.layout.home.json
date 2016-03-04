@@ -165,7 +165,10 @@
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "delta": "2",
+                        "reusable": true
+                    },
                     "contexts": []
                 },
                 "uuid": "8d5c45f5-62dc-4c2b-8400-bd0984468841",
