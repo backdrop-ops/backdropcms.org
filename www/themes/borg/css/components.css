@@ -1038,8 +1038,12 @@ div.image-widget-data {
 /*******************************************************************************
  * Draggable Handles
  ******************************************************************************/
-form .field-multiple-table .field-multiple-drag .tabledrag-handle {
-  padding: 0;
+a.tabledrag-handle {
+  padding: .75em 0 0 0;
+}
+a.tabledrag-handle .handle {
+  margin: -0.4em 0;
+  padding: 0.42em 0.25em;
 }
 .draggable a.tabledrag-handle {
   margin-left: 0;
