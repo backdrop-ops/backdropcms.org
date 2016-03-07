@@ -36,7 +36,7 @@ function pbs_example_help($path, $arg) {
  *   'categories' => array() // The categories that were selected, if any
  *   'type' => 'module', // The type of project being searched
  *   'page' => 3, // The zero-based page number
- *   'requested' => 12, // How many results are requested per page
+ *   'items_per_page' => 12, // How many results are requested per page
  * )
  *
  * The function should return an array like this:
@@ -122,8 +122,8 @@ function pbs_example_project_browser_server_query($filters) {
   $results['total'] = count($projects);
 
   // FIXME - Only send back the requested amount
-  $start = $filters['page'] * $filters['requested'];
-  $end = $start + $filters['requested'];
+  $start = $filters['page'] * $filters['items_per_page'];
+  $end = $start + $filters['items_per_page'];
 
   $results['projects'] = $projects;
 

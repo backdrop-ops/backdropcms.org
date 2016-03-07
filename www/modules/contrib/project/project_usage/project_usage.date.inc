@@ -23,21 +23,23 @@ function project_usage_gmgetdate($timestamp = NULL) {
 }
 
 /**
- * Compute a timestamp for the beginning of a day N days ago.
+ * Compute the starting timestamp for a day based on a timestamp.
  *
- * @param $time
+ * @param $timestamp
  *   Mixed, either a GMT timestamp or an array returned by
  *   project_usage_gmgetdate().
- * @param $days_ago
- *   An integer specifying a number of days previous. A value of 0 indicates
- *   the current day.
+ * @param $day_adjustment
+ *   An integer specifying a number of days to adjust. A value of 0 will give
+ *   the start of the current day. A value of -1 will give the start of the
+ *   previous day. A value of 1 will give the value of the start of the next
+ *   day.
  *
  * @return
  *   GMT UNIX timestamp.
  */
-function project_usage_daily_timestamp($time = NULL, $days_ago = 0) {
+function project_usage_daily_timestamp($time = NULL, $day_adjustment = 0) {
   $time_parts = is_array($time) ? $time : project_usage_gmgetdate($time);
-  $day = $time_parts['mday'] - $days_ago;
+  $day = $time_parts['mday'] + $day_adjustment;
   return gmmktime(0, 0, 0, $time_parts['mon'], $day, $time_parts['year']);
 }
 

@@ -116,9 +116,20 @@ DirectoryIndex index.php index.html index.htm
   RewriteCond %{REQUEST_URI} !core
   RewriteRule ^ %1/core/%2 [L,QSA,R=301]
 
+  # Make it so the the rewrites for project browser are in place for all
+  # localhost installations. Note that the production server runs nginx, not
+  # Apache, so this rule does not affect production.
+  RewriteCond %{REQUEST_URI} ^/query/(.*)$
+  RewriteRule ^ index.php?q=project_browser/server/query/%1 [L]
+
+  RewriteCond %{REQUEST_URI} ^/categories/(.*)$
+  RewriteRule ^ index.php?q=project_browser/server/categories/%1 [L]
+
   # Pass all requests not referring directly to files in the filesystem to
   # index.php. Clean URLs are handled in backdrop_environment_initialize().
   RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_URI} !=^/query/(.*)$
+  RewriteCond %{REQUEST_URI} !=^/categories/(.*)$
   RewriteCond %{REQUEST_URI} !=/favicon.ico
   RewriteRule ^ index.php [L]
 

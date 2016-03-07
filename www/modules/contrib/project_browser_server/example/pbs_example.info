@@ -5,3 +5,7 @@ version = "7.x-1.x"
 core = 7.x
 files[] = pbs_example.module
 dependencies[] = project_browser_server
+; Added by Backdrop CMS packaging script on 2016-03-06
+project = project_browser_server
+version = 1.x-1.0.0
+timestamp = 1457312819

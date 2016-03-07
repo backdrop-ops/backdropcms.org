@@ -1,6 +1,9 @@
-; $Id: $
 name = Project Browser Server
-description = Serve search results to the Project Browser module
-version = "1.x-1.x"
+description = Serve search results to the Project Browser module.
 backdrop = 1.x
 type = module
+
+; Added by Backdrop CMS packaging script on 2016-03-06
+project = project_browser_server
+version = 1.x-1.0.0
+timestamp = 1457312819

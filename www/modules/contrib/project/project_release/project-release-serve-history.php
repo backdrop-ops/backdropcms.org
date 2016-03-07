@@ -5,11 +5,23 @@
  *
  * This script encourages a local .htaccess file with the following:
  *
+ * @code
  * DirectoryIndex project-release-serve-history.php
  * <IfModule mod_rewrite.c>
  *   RewriteEngine on
- *   RewriteRule ^(.*)$ project-release-serve-history.php?q=$1 [L,QSA]
+ *   RewriteRule ^release-history/(.*)$ modules/project/project_release/project-release-serve-history.php?q=$1 [L,QSA]
  * </IfModule>
+ * @endcode
+ *
+ * Or if using Nginx, add the following to your nginx site configuration file:
+ *
+ * @code
+ *   location ^= /release-history {
+ *     rewrite ^/(.*)$ /modules/project/project_release/project-release-serve-history.php?q=$1;
+ *   }
+ *
+ * @endcode
+ *
  *
  * Configuration within this file is usually unnecessary and settings should be
  * automatically determined. If manual setting of the BACKDROP_ROOT or

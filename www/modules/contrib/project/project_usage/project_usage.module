@@ -29,7 +29,7 @@ define('PROJECT_USAGE_YEAR', PROJECT_USAGE_DAY * 365);
  * don't have hour or minute resolution so displaying that would be confusing
  * and take up extra space.
  */
-define('PROJECT_USAGE_DATE_LONG', 'F jS');
+define('PROJECT_USAGE_DATE_LONG', 'F jS, Y');
 define('PROJECT_USAGE_DATE_SHORT', 'M j');
 
 /**
@@ -164,13 +164,16 @@ function project_usage_config_info() {
 function project_usage_get_project_total_usage($nid) {
   static $total = array();
   $node = node_load($nid);
-  $node_type = node_type_get_type($node);
-  $api_versions = $node_type->settings['project_release_api_versions'];
-
-  if (empty($total[$nid])) {
-    $total[$nid] = 0;
-    foreach ($api_versions as $api_version) {
-      $total[$nid] += project_usage_get_project_usage($nid, $api_version);
+  $project_node_type = node_type_get_type($node);
+  $release_node_type_name = $project_node_type->settings['project_release_type'];
+  if ($release_node_type_name) {
+    $release_node_type = node_type_get_type($release_node_type_name);
+    $api_versions = $release_node_type->settings['project_release_api_versions'];
+    if (empty($total[$nid])) {
+      $total[$nid] = 0;
+      foreach ($api_versions as $api_version) {
+        $total[$nid] += project_usage_get_project_usage($nid, $api_version);
+      }
     }
   }
   return $total[$nid];

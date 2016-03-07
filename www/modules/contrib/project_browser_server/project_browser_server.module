@@ -63,9 +63,9 @@ function project_browser_server_query($type, $version) {
     'version' => $version,
     'type' => $type,
     'text' => (isset($_GET['text']) && $_GET['text']) ? $_GET['text'] : '',
-    'order_by' => isset($_GET['order_by']) ? $_GET['order_by'] : 'usage',
+    'order' => isset($_GET['order']) ? $_GET['order'] : 'usage',
     'sort' => isset($_GET['sort']) ? $_GET['sort'] : 'desc',
-    'requested' => isset($_GET['requested']) ? (int) $_GET['requested'] : 12,
+    'items_per_page' => isset($_GET['items_per_page']) ? (int) $_GET['items_per_page'] : 12,
     'page' => isset($_GET['page']) ? (int) $_GET['page'] : 0,
     'categories' => (isset($_GET['categories']) && is_array($_GET['categories'])) ? $_GET['categories'] : array(),
   )));
@@ -80,11 +80,11 @@ function _project_browser_server_return($results) {
     // @todo msie9 might break with this content-type.
     // @see http://stackoverflow.com/questions/111302/best-content-type-to-serve-jsonp/111306#111306
     backdrop_add_http_header('Content-Type', 'application/javascript; charset=utf-8');
-    print $_GET['callback'] . '(' . backdrop_json_encode($results) . ');';
+    print $_GET['callback'] . '(' . json_encode($results) . ');';
   }
   else {
     backdrop_add_http_header('Content-Type', 'application/json; charset=utf-8');
-    print backdrop_json_encode($results);
+    print json_encode($results);
   }
   exit();
 }
@@ -114,7 +114,7 @@ function _project_browser_server_validate($type) {
  *   'categories' => array() // The categories that were selected, if any
  *   'type' => 'module', // The type of project being searched
  *   'page' => 3, // The zero-based page number
- *   'requested' => 12, // How many results are requested per page
+ *   'items_per_page' => 12, // How many results are requested per page
  * )
  *
  * The hook_project_browser_server_query($filters) call should return an array like this:

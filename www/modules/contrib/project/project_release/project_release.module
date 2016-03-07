@@ -91,7 +91,7 @@ function project_release_menu_alter(&$callbacks) {
     $callbacks['node/add/' . $type_url_str . '/%project']['access arguments'] = array(3, 'administer releases');
 
     // @todo: Provide a fallback page for adding project releases.
-    $callbacks['node/add/' . $type_url_str]['page callback'] = FALSE;
+    //$callbacks['node/add/' . $type_url_str]['page callback'] = FALSE;
   }
 }
 
@@ -661,7 +661,7 @@ function _project_release_node_save(Node $node) {
     // Determine the download file size if not provided.
     $is_new = empty($node->original);
     $update_download_size = FALSE;
-    if (!isset($node->project_release['download_size']) || $node->project_release['download_size'] === '') {
+    if (is_null($node->project_release['download_size']) || $node->project_release['download_size'] === '') {
       $update_download_size = TRUE;
     }
     if (!$is_new && $node->original->project_release['download_link'] !== $node->project_release['download_link']) {
@@ -723,7 +723,7 @@ function project_release_node_view($node, $view_mode, $langcode) {
   elseif (project_release_node_is_release($node)) {
     $project = node_load(project_release_get_release_project_nid($node));
 
-    if ($view_mode === 'full') {
+    if ($project && $view_mode === 'full') {
       project_project_set_breadcrumb($project, TRUE, array(l(t('Releases'), 'node/' . $project->nid . '/releases')));
     }
 
@@ -741,12 +741,14 @@ function project_release_node_view($node, $view_mode, $langcode) {
       $extra .= ' (' . $size . ')';
     }
 
-    $node->content['project_link'] = array(
-      '#type' => 'markup',
-      '#title' => t('Project'),
-      '#markup' => l($project->title, 'node/' . $project->nid),
-      '#theme_wrappers' => array('form_element'),
-    );
+    if ($project) {
+      $node->content['project_link'] = array(
+        '#type' => 'markup',
+        '#title' => t('Project'),
+        '#markup' => l($project->title, 'node/' . $project->nid),
+        '#theme_wrappers' => array('form_element'),
+      );
+    }
 
     $node->content['project_download_link'] = array(
       '#type' => 'markup',

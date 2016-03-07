@@ -1,0 +1,8 @@
+# The scripts in this directory should never be invoked from the web.
+# They are meant to be run via cron as CLI scripts, preferably as a
+# different user than your httpd. Therefore, we prevent them from
+# being accessible via the web at all.
+
+<FilesMatch "\.php$">
+  Order allow,deny
+</FilesMatch>

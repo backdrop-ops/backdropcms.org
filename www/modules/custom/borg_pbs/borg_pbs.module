@@ -118,11 +118,16 @@ function borg_pbs_project_browser_server_query($filters) {
   $query->groupBy('n.nid');
 
   $result = $query->execute();
-  
+
+  $load = array();
   foreach ($result as $row) {
     $load[] = $row->nid;
   }
-  $nodes = node_load_multiple($load);
+
+  $nodes = array();
+  if (count($load)) {
+    $nodes = node_load_multiple($load);
+  }
   
   $projects = array();
   foreach ($nodes as $node) {

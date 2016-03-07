@@ -1,0 +1,17 @@
+<?php
+/**
+ * @file
+ * Project module customizations for BackdropCMS.org
+ */
+
+/**
+ * Implements hook_cron().
+ */
+function borg_project_cron() {
+  // Temporary measure to ensure Travis-CI results don't end up in usage stats.
+  // This should be removed at any time after late 2016, after enough time has
+  // passed that pull requests/testing is not happening on Backdrop 1.x prior
+  // to https://github.com/backdrop/backdrop-issues/issues/1566 having been
+  // fixed and merged.
+  db_query("DELETE FROM {project_usage_raw} WHERE hostname LIKE '173.247.%' OR hostname LIKE '199.182.%' OR hostname LIKE '199.91.%';");
+}

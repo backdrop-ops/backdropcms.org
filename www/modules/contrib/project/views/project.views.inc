@@ -48,14 +48,41 @@ function project_views_data() {
     ),
   );
 
-  $data['project']['releases_enabled'] = array(
-    'title' => t('Releases enabled'),
-    'help' => t('Projects that have releases may have downloadable files attached to them.'),
+  $data['project']['name'] = array(
+    'title' => t('Project name'),
+    'help' => t('The machine name of a project node.'),
     'field' => array(
       'handler' => 'views_handler_field',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_string',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_string',
+    ),
+  );
+
+  $data['project']['sandbox'] = array(
+    'title' => t('Project type'),
+    'help' => t('Whether or not the project is a sandbox project or a full project.'),
+    'field' => array(
+      'handler' => 'views_handler_field_boolean',
+      'click sortable' => TRUE,
+      'output formats' => array(
+        'sandbox-notsandbox' => array(t('Sandbox project'), t('Full project')),
+      ),
     ),
     'filter' => array(
       'handler' => 'views_handler_filter_boolean_operator',
+      'label' => t('Is sandbox'),
+      'type' => 'yes-no',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
     ),
   );
 

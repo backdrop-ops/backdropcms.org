@@ -56,6 +56,9 @@ function project_release_views_data() {
     'filter' => array(
       'handler' => 'project_release_handler_filter_version_api',
     ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
   );
   $data['project_release']['version_major'] = array(
     'title' => t('Major version number'),
@@ -63,6 +66,9 @@ function project_release_views_data() {
     'field' => array(
       'handler' => 'views_handler_field_numeric',
       'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
     ),
   );
   $data['project_release']['version_minor'] = array(
@@ -72,6 +78,9 @@ function project_release_views_data() {
       'handler' => 'views_handler_field_numeric',
       'click sortable' => TRUE,
     ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
   );
   $data['project_release']['version_patch'] = array(
     'title' => t('Patch version number'),
@@ -79,6 +88,9 @@ function project_release_views_data() {
     'field' => array(
       'handler' => 'views_handler_field',
       'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
     ),
   );
   $data['project_release']['update_status'] = array(
@@ -136,8 +148,26 @@ function project_release_views_data() {
     'filter' => array(
       'handler' => 'views_handler_filter_numeric',
     ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
   );
 
+  $data['project']['releases_enabled'] = array(
+    'title' => t('Releases enabled'),
+    'help' => t('Projects that have releases may have downloadable files attached to them.'),
+    'field' => array(
+      'handler' => 'views_handler_field_boolean',
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_boolean_operator',
+      'label' => t('Releases enabled'),
+      'type' => 'enabled-disabled',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
 
   $data['project_release_supported_versions']['table']['group'] = t('Project release');
   $data['project_release_supported_versions']['nid'] = array(
