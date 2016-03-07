@@ -6,8 +6,9 @@
  */
 
 // Define the root directory of the Backdrop installation.
-if (getopt('root')) {
-  define('BACKDROP_ROOT', getopt('root'));
+$options = getopt('', array('url:', 'root:'));
+if (!empty($options['root'])) {
+  define('BACKDROP_ROOT', $options['root']);
 }
 else {
   $cwd = getcwd();
@@ -19,8 +20,7 @@ else {
 
 // The hostname of your site. Required so that when we bootstrap Backdrop in
 // this script, we find the right settings.php file in your sites folder.
-$options = getopt('', array('url:'));
-define('HTTP_HOST', $options['url'] ? parse_url($options['url'], PHP_URL_HOST) : '');
+define('HTTP_HOST', !empty($options['url']) ? parse_url($options['url'], PHP_URL_HOST) : '');
 
 // ------------------------------------------------------------
 // Initialization
