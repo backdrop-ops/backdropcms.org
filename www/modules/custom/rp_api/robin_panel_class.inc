@@ -18,6 +18,7 @@ class RobinPanel {
   function __construct($user = NULL, $password = NULL, $host = NULL, $port = NULL, $debug = FALSE) {
     set_time_limit(0);
     backdrop_set_message(getcwd());
+    include_once 'libraries/XML_Util/Util.php';
     include_once 'libraries/PEAR-XML_Serializer/Serializer.php';
     include_once 'libraries/PEAR-XML_Serializer/Unserializer.php';
 
