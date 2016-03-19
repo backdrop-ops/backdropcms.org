@@ -1,0 +1,195 @@
+<?php
+/**
+ * @file
+ * RP API.
+ *
+ * Working with backdrop/backdrop to delivery websites
+ */
+
+/**
+ * Implements hook_config_info().
+ */
+function qa_config_info() {
+  $prefixes['qa.settings'] = array(
+    'label' => t('QA settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function qa_menu() {
+  $items = array();
+
+  $items['admin/config/system/qa'] = array(
+    'title' => 'QA settings',
+    'description' => 'QA settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('qa_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'qa.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_gitlc_webhook().
+ */
+function qa_gitlc_webhook($method, $data){
+  switch($method){
+    case 'init':
+        
+        $domain = qa_get_value($data['config']['env_vars'], 'domain');
+        if(is_object($domain)){
+          return $domain;
+        }
+        
+        $answer['env_vars'] = array();
+        
+        $suffix = $data['branch'];
+        if($data['pull_request']){
+          $suffix = 'pr' . $data['pull_request'];
+        }
+        
+        $database_user = str_replace(array('%','.','?'), '', $suffix);
+        $answer['env_vars']['database_user']= $data['config']['username']. '_' . $database_user;
+
+        $database_name = str_replace(array('%','.','?'), '', $suffix);
+        $answer['env_vars']['database_name']= $data['config']['username']. '_' . $database_name;
+        
+        $database_password = user_password(8);
+        $answer['env_vars']['database_password']= $database_password;
+        //Init RP
+        rp_api_init_robin_panel();
+        
+        $config = config('rp_api.settings');
+        $username = $config->get('username');
+
+        //Add domain
+        qa_add_domain($username, $domain);
+        
+        //Add Database
+        qa_add_db($username, $database_name);
+        
+        //Add User and Grant it
+        qa_add_dbuser($username, $database_user,$database_name, $database_password);
+        
+        return $answer;
+      break;
+    case 'remove':
+        //remove domain, mysql user and database.
+        $domain = qa_get_value($data['config']['env_vars'], 'domain');
+        if(is_object($domain)){
+          return $domain;
+        }
+        
+        $suffix = $data['branch'];
+        if($data['pull_request']){
+          $suffix = 'pr' . $data['pull_request'];
+        }
+
+        $database_user = str_replace(array('%','.','?'), '', $suffix);
+        $database_name = str_replace(array('%','.','?'), '', $suffix);
+        
+        //Init RP
+        rp_api_init_robin_panel();
+        
+        $config = config('rp_api.settings');
+        $username = $config->get('username');
+        
+        qa_del_domain($username, $domain);
+        qa_del_db($username, $database_name);
+        qa_del_dbuser($username, $database_user);
+        
+      break;
+  }
+  return $data;
+}
+
+function qa_get_value($env_vars, $variable){
+  if(isset($env_vars[$variable])){
+    return $env_vars[$variable];
+  }else{
+    $answer = new stdClass();
+    $answer->error = TRUE;
+    $answer->message = t('Please set env_vars:!variable', array('!variable' => $variable));
+    $answer->env_vars = $env_vars;
+    return $answer;
+  }
+}
+
+function qa_add_domain($user, $domain){
+  $settings = array(
+    'user' => $user,
+    'domain' => $domain,
+    'ip' => '*',
+    'ns' => TRUE,
+    'mx' => 'hosting',
+    'awstats' => FALSE,
+    'accesslog' => TRUE,
+    'errorlog' => TRUE,
+    'wildcard' => FALSE,
+    'strict' => FALSE,
+    'ssl' => FALSE,
+  );
+  rp_api_execute_command('AddDomain', $settings);
+}
+
+function qa_add_db($user, $database){
+  $settings = array(
+    'user' => $user,
+    'db' => $database,
+  );
+  rp_api_execute_command('MysqlAddDB', $settings);
+}
+
+function qa_add_dbuser($user, $database_user, $database_name, $password){
+  $settings = array(
+    'user' => $user,
+    'dbuser' => $database_user,
+    'dbpasswd' => $password,
+    'dbhost' => 'localhost',
+  );
+  rp_api_execute_command('MysqlAddUser', $settings);
+  
+  $grand_settings = array(
+    'user' => $user,
+    'name' => $database_name,
+    'dbuser' => $database_user,
+    'host' => 'localhost',
+    'acl' => 'ALL',
+  );
+  rp_api_execute_command('MysqlUserGrant', $grand_settings);
+}
+
+function qa_del_domain($user, $domain){
+  $settings = array(
+    'user' => $user,
+    'domain' => $domain,
+    'ns' => 'Y'
+  );
+  rp_api_execute_command('DelDomain', $settings);
+}
+
+function qa_del_db($user, $database_name){
+  $settings = array(
+    'user' => $user,
+    'db' => $database_name,
+  );
+  rp_api_execute_command('MysqlDelDB', $settings);
+}
+
+function qa_del_dbuser($user, $database_user){
+  $settings = array(
+    'user' => $user,
+    'dbuser' => $database_user,
+    'host' => 'localhost',
+  );
+  rp_api_execute_command('MysqlDelUser', $settings);
+}
