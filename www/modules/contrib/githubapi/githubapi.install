@@ -1,0 +1,202 @@
+<?php
+/**
+ * @file
+ * Install, update, and uninstall functions for the githubapi module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function githubapi_install() {
+}
+
+/**
+ * Implements hook_schema().
+ */
+function githubapi_schema() {
+  $schema['githubapi_payload'] = array(
+    'description' => 'Stores githubapi-specific payload logs.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary Key: Unique report ID.',
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'Payload type.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'sender' => array(
+        'description' => 'Event sender.',
+        'type' => 'blob',
+        'size' => 'big',
+        'serialize' => TRUE,
+      ),
+      'rid' => array(
+        'description' => 'The {githubapi_repositories}.id of the repo for hook.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'data' => array(
+        'description' => 'Event data execept sender and repository.',
+        'type' => 'blob',
+        'size' => 'big',
+        'serialize' => TRUE,
+      ),
+      'timestamp' => array(
+        'description' => 'Unix timestamp of when report created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+    'indexes' => array(
+      'type' => array('type'),
+      'rid' => array('rid'),
+    ),
+  );
+  $schema['githubapi_repositories'] = array(
+    'description' => '{githubapi} repository config.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary Key: Unique repository ID.',
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'repo_id' => array(
+        'description' => 'Repository ID.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'owner' => array(
+        'description' => 'Repository owner.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'name' => array(
+        'description' => 'Repository name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'private' => array(
+        'description' => 'Repository private status.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'cache' => array(
+        'description' => 'Owner data cache.',
+        'type' => 'blob',
+        'size' => 'normal',
+        'serialize' => TRUE,
+      ),
+      'timestamp' => array(
+        'description' => 'Unix timestamp of when cache updated.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'secret' => array(
+        'description' => 'Secret key for webhook.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),      
+    ),
+    'indexes' => array(
+      'owner_name' => array('owner', 'name'),
+      'secret' => array('secret'),      
+    ),
+
+    'unique keys' => array(
+      'id' => array('id'),
+    ),
+  );
+
+  $schema['githubapi_hooks'] = array(
+    'description' => '{githubapi} repository hooks.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary Key: Unique hook ID.',
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'rid' => array(
+        'description' => 'The {githubapi_repositories}.id of the repo for hook.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'default' => 0,
+      ),
+      'hook_id' => array(
+        'description' => 'Hook ID in Github.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'child' => array(
+        'description' => 'Status hook child.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'timestamp' => array(
+        'description' => 'Unix timestamp of when hook created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'rid' => array('rid'),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+/**
+ * Add repository and hook tables. Update payload table to use rid instead of repository.
+ */
+function githubapi_update_1001() {
+  $schema = backdrop_get_schema_unprocessed('githubapi');
+  db_create_table('githubapi_repositories', $schema['githubapi_repositories']);
+  db_create_table('githubapi_hooks', $schema['githubapi_hooks']);
+
+  db_add_field('githubapi_payload', 'rid', $schema['githubapi_payload']['fields']['rid']);
+  db_drop_field('githubapi_payload', 'repository');
+
+  db_add_index('githubapi_payload', 'rid', array('rid'));
+}
+
+/**
+ * Add secret fields to repository.
+ */
+function githubapi_update_1002() {
+  $schema = backdrop_get_schema_unprocessed('githubapi');
+  db_add_field('githubapi_repositories', 'secret', $schema['githubapi_repositories']['fields']['secret']);
+  db_add_index('githubapi_repositories', 'secret', array('secret'));
+}
+
+/**
+ * Fix secret. It should be varchar.
+ */
+function githubapi_update_1003() {
+  $schema = backdrop_get_schema_unprocessed('githubapi');
+  db_change_field('githubapi_repositories', 'secret', 'secret', $schema['githubapi_repositories']['fields']['secret']);
+}
