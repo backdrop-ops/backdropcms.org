@@ -1,0 +1,59 @@
+<?php
+/**
+ * @file
+ * Install, update, and uninstall functions for the webhook module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function gitlc_webhook_schema() {
+  
+  $schema['gitlc_webhook_repositories'] = array(
+    'description' => '{gitlc_webhook} repository config.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary Key: Unique repository ID.',
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+      ),
+      'owner' => array(
+        'description' => 'Repository owner.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'repo' => array(
+        'description' => 'Repository name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'secret' => array(
+        'description' => 'Gitlc hook secret.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),      
+      'public_key' => array(
+        'description' => 'Gitlc deploy public key.',
+        'type' => 'blob',
+        'size' => 'normal',
+      ),      
+    ),
+    'indexes' => array(
+      'owner_name' => array('owner', 'repo'),
+      'secret' => array('secret'),
+    ),
+
+    'unique keys' => array(
+      'id' => array('id'),
+    ),
+  );
+
+  return $schema;
+}

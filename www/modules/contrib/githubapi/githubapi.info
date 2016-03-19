@@ -1,0 +1,7 @@
+name = githubapi
+description = Github API integration.
+backdrop = 1.x
+version = 1.x-1.0
+package = API
+configure = admin/config/system/githubapi
+type = module

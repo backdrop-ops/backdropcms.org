@@ -1,0 +1,10 @@
+name = QA (ci) for backdropcms.org
+description = Respond on gitlc_webhook with config information and prepare target for deployment.
+backdrop = 1.x
+version = 1.x-1.0
+package = BackdropCMS.org
+configure = admin/config/system/qa
+type = module
+dependencies[] = rp_api
+dependencies[] = gitlc_webhook
+dependencies[] = githubapi

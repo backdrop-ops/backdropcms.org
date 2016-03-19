@@ -1,0 +1,233 @@
+<?php
+/**
+ * @file
+ * RP API.
+ *
+ * Working with Robin Panel
+ */
+
+/**
+ * Implements hook_config_info().
+ */
+function rp_api_config_info() {
+  $prefixes['rp_api.settings'] = array(
+    'label' => t('RP API settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function rp_api_menu() {
+  $items = array();
+
+  $items['admin/config/system/rp_api'] = array(
+    'title' => 'RP API settings',
+    'description' => 'RP API settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('rp_api_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'rp_api.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+/**
+ * Init RobinClass object and return it.
+ *
+ * @param int $sid
+ *   Server ID.
+ *
+ * @param int $aid
+ *   Account ID.
+ *
+ * @return bool|RobinPanel
+ *   RobinPanel class connect.
+ */
+function rp_api_init_robin_panel() {
+  static $rp;
+  
+  if (empty($rp)) {
+    module_load_include('inc', 'rp_api', 'robin_panel_class');
+    
+    $config = config('rp_api.settings');
+    
+    $server = settings_get('rp_api_server');
+    $username = settings_get('rp_api_username');
+    $password = settings_get('rp_api_password');
+  
+    if(empty($server)){
+      $server = $config->get('server');
+    }
+    if(empty($username)){
+      $username = $config->get('username');
+    }
+    if(empty($password)){
+      $password = $config->get('password');
+    }
+    $rp = new RobinPanel($username, $password, $server);
+  }
+
+  return $rp;
+}
+
+function rp_api_error_message($message = '') {
+  static $error;
+
+  if (!empty($message)) {
+    $error = $message;
+  }
+
+  return $error;
+}
+
+function rp_api_execute_command($command, $settings) {
+  $rp = rp_api_init_robin_panel();
+
+  switch ($command) {
+    case 'AddUser':
+      $answer = $rp->AddUser($settings, TRUE, 360);
+      break;
+    case 'ShowUserInfo':
+      $answer = $rp->ShowUserInfo($settings['user'], TRUE, 360);
+    default:
+      $answer = $rp->execute($command, $settings, TRUE, 360);
+  }
+
+  if (is_array($answer)) {
+    switch ($command) {
+      case 'ShowUserInfo':
+        $result_answer_status = $answer['Data']['answer']['status'];
+        $taskid = isset($answer['taskid']) ? $answer['taskid'] : $answer['Data']['taskid'];
+
+        if ($result_answer_status == 2) {
+          $count = 1;
+
+          while ($result_answer_status == 2 && $count < 10) {
+            $result2 = $rp->CmdStatusGet($taskid);
+
+            if (!isset($result2['answer']['status'])) {
+              $result_answer_status = 2;
+            }
+            else {
+              $result_answer_status = $result2['answer']['status'];
+            }
+
+            sleep(1);
+            $count++;
+          }
+
+          $answer = $result2;
+        }
+
+        $cache = isset($answer['Data']['answer']['vars']['data']['message']) ? $answer['Data']['answer']['vars']['data']['message'] : $answer['answer']['vars']['data']['message'];
+        if(isset($rp->aid)){
+          db_update('rp_api_accounts')
+            ->fields(array(
+              'cache' => serialize($cache),
+            ))
+            ->condition('aid', $rp->aid)
+            ->execute();
+        }
+        return $cache;
+        break;
+        
+      case 'AddUser':
+        // Safe user.
+        $result = $rp->ShowUserInfo($settings['user'], TRUE, 360);
+
+        $result_answer_status = $result['Data']['answer']['status'];
+        $taskid = isset($result['taskid']) ? $result['taskid'] : $result['Data']['taskid'];
+
+        if ($result_answer_status == 2) {
+          $count = 1;
+
+          while ($result_answer_status == 2 && $count < 10) {
+            $result2 = $rp->CmdStatusGet($taskid);
+
+            if (!isset($result2['answer']['status'])) {
+              $result_answer_status = 2;
+            }
+            else {
+              $result_answer_status = $result2['answer']['status'];
+            }
+
+            sleep(1);
+            $count++;
+          }
+          $result = $result2;
+        }
+
+        $cache = isset($result['Data']['answer']['vars']['data']['message']) ? $result['Data']['answer']['vars']['data']['message'] : $result['answer']['vars']['data']['message'];
+        if(isset($rp->sid)){
+          $account = array(
+            'login' => $settings['user'],
+            'password' => $settings['password'],
+            'sid' => $rp->sid,
+            'uid' => $settings['uid'],
+            'cache' => serialize($cache),
+            'changed' => REQUEST_TIME,
+          );
+          
+          backdrop_write_record('rp_api_accounts', $account);
+          $rp->aid = $account['aid'];
+        }
+        break;
+
+      default:
+        //let's wait for complete status
+        if(!isset($answer['Data']['answer']['status'])){
+          print_r($answer);
+          return FALSE;
+        }
+        $result_answer_status = $answer['Data']['answer']['status'];
+        $taskid = isset($answer['taskid']) ? $answer['taskid'] : $answer['Data']['taskid'];
+
+        if ($result_answer_status == 2) {
+          $count = 1;
+
+          while ($result_answer_status == 2 && $count < 10) {
+            $result2 = $rp->CmdStatusGet($taskid);
+
+            if (!isset($result2['answer']['status'])) {
+              $result_answer_status = 2;
+            }
+            else {
+              $result_answer_status = $result2['answer']['status'];
+            }
+
+            $count++;
+            sleep(1);
+
+          }
+
+          $answer = $result2;
+        }
+
+        if ($result_answer_status == 1) {
+          $vals = array();
+          $values = isset($answer['Data']['answer']['vars']['error']['values']) ? $answer['Data']['answer']['vars']['error']['values'] : $answer['answer']['vars']['error']['values'];
+
+          foreach ($values as $key => $val) {
+            $vals['!' . $key] = $val;
+          }
+
+          $tstring = isset($answer['Data']['answer']['vars']['error']['message']) ? $answer['Data']['answer']['vars']['error']['message'] : $answer['answer']['vars']['error']['message'];
+          $string = t($tstring, $vals);
+          rp_api_error_message($string);
+          return FALSE;
+        }
+    }
+  }
+  else {
+    rp_api_error_message($answer);
+    return FALSE;
+  }
+
+  return $answer;
+}

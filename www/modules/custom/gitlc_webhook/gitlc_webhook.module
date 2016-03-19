@@ -1,0 +1,167 @@
+<?php
+/**
+ * @file
+ * Webhook.
+ *
+ * React on webhook calls.
+ */
+
+ // URL Gitlc API.
+define('GITLC_API_URI', 'http://git.lc/api');
+define('GITLC_WEBHOOK_PAYLOAD_PATH', 'webhook/config');
+
+ 
+/**
+ * Implements hook_config_info().
+ */
+function gitlc_webhook_config_info() {
+  $prefixes['gitlc_webhook.settings'] = array(
+    'label' => t('Webhook settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function gitlc_webhook_menu() {
+  $items = array();
+
+  $items['admin/config/system/gitlc_webhook'] = array(
+    'title' => 'Gitlc Webhook settings',
+    'description' => 'Webhook settings to integrate with GitLC.',    
+    'page callback' => 'gitlc_webhook_admin_list',
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'gitlc_webhook.page.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  $items['admin/config/system/gitlc_webhook/list'] = array(
+    'title' => 'Gitlc hooked repositories',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  
+  // Admin settings page.
+  $items['admin/config/system/gitlc_webhook/settings'] = array(
+    'title' => 'Gitlc Webhook settings',
+    'description' => 'Webhook settings to integrate with GitLC.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('gitlc_webhook_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'gitlc_webhook.admin.inc',
+    'weight' => 10,
+  );
+
+  $items['admin/config/system/gitlc_webhook/%/delete'] = array(
+    'title' => 'Remove hook',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('gitlc_webhook_hook_remove', 4),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'gitlc_webhook.page.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+
+  $items['webhook/%'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Webhook',
+    'page callback' => 'gitlc_webhook_ajax',
+    'access callback' => TRUE,
+    'page arguments' => array(1),
+    'delivery callback' => 'gitlc_webhook_ajax_deliver',
+  );
+
+  return $items;
+}
+
+function gitlc_webhook_ajax($method){
+  $received_json = file_get_contents("php://input",  TRUE);
+  
+  $headers = apache_request_headers();
+  
+  $webhook = db_select('gitlc_webhook_repositories', 'gh')
+    ->fields('gh')
+    ->condition('owner', $headers['Owner'])
+    ->condition('repo', $headers['Repo'])
+    ->execute()
+    ->fetchObject();
+    
+  if(empty($webhook)){
+    return MENU_ACCESS_DENIED;
+  }
+  
+  if(isset($headers['Signature'])){
+    list($algorithm, $expected_hash) = explode('=', $headers['Signature'], 2);
+    $actual_hash = hash_hmac($algorithm, $received_json, $webhook->secret);
+    if ($expected_hash !== $actual_hash) {
+      return MENU_ACCESS_DENIED;
+    }
+  }
+
+  $data = backdrop_json_decode($received_json);
+  $answer = module_invoke_all('gitlc_webhook', $method, $data);
+
+  return $answer;
+}
+
+function gitlc_webhook_ajax_deliver($page_callback_result){
+  backdrop_add_http_header('Content-Type', 'application/json; charset=utf-8');
+
+  if (is_int($page_callback_result)) {
+    $json = array('error' => true);
+    switch ($page_callback_result) {
+      case MENU_NOT_FOUND:
+        $json['message'] = t('The requested page could not be found.');
+        backdrop_add_http_header('Status', '404 Not Found');
+        break;
+
+      case MENU_ACCESS_DENIED:
+        $json['message'] = t('You are not authorized to access this page.');
+        backdrop_add_http_header('Status', '403 Forbidden');
+        break;
+
+      case MENU_SITE_OFFLINE:
+        $json['message'] = t('@site is currently under maintenance. We should be back shortly. Thank you for your patience.', array('@site' => variable_get('site_name', 'backdrop')));
+        backdrop_add_http_header('Status', '503 Service unavailable');
+        break;
+    }
+
+  }elseif(is_array($page_callback_result) ){
+    $json = $page_callback_result;
+  }
+  print backdrop_json_encode($json);
+  if (backdrop_get_bootstrap_phase() == BACKDROP_BOOTSTRAP_FULL && (!defined('MAINTENANCE_MODE') || MAINTENANCE_MODE != 'update')) {
+    module_invoke_all('exit');
+  }
+}
+
+function gitlc_webhook_get_class($settings){
+  module_load_include('inc', 'gitlc_webhook', 'gitlc_webhook.class');
+
+  $api_token = gitlc_webhook_get_api_token();
+
+  $githubapi = new GitlcAPI();
+  $githubapi->setOwnerName($settings['owner']);
+  $githubapi->setRepoName($settings['repo']);
+  $githubapi->setToken($api_token);
+  return $githubapi;
+}
+
+
+function gitlc_webhook_get_api_token(){
+  $config = config('gitlc_webhook.settings');
+
+  // Use setting.php values if exists.
+  $api_token = settings_get('gitlc_webhook_api_token');
+
+  if(empty($api_token)){
+    $api_token = $config->get('api_token');
+  }
+  return $api_token;
+}
+
+
