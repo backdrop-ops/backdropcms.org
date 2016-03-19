@@ -1,0 +1,72 @@
+<?php
+/**
+ * This module provides github API integration.
+ *
+ * @author Gor Martsen <gor@me.com>
+ */
+
+ define('BORG_GITHUB_ISSUES_REPO', 'backdrop/backdrop-issues');
+ define('BORG_GITHUB_OWNER_NAME', 'backdrop');
+ define('BORG_GITHUB_REPO_NAME', 'backdrop');
+
+/**
+ * Implements hook_githubapi_payload().
+ */
+function borg_github_issues_githubapi_payload($event_name, $record, $repo){
+  $payload = $record->data;
+  $expr = '/(?<!\S)#([0-9]*)/i';
+  
+  if($repo->owner == BORG_GITHUB_OWNER_NAME && $repo->name == BORG_GITHUB_REPO_NAME){
+    switch ($event_name) {
+      case 'push':
+        foreach($payload->commits as $commit){
+          $match = NULL;
+          $message = '';
+          preg_match_all($expr, $commit->message, $match);
+          if(!empty($match[1])){
+            foreach($match[1] as $issue){
+              $message .= BORG_GITHUB_ISSUES_REPO . '#' . $issue . " ";
+            }
+            if(!empty($message)){
+              borg_github_issues_commit_comment_add($commit->id, $message, $repo);
+            }
+          }
+        }
+        break;
+      case 'pull_request':
+        if($payload->action == 'opened'){
+          $message = '';
+          preg_match_all($expr, $payload->pull_request->title . ' ' . $payload->pull_request->body, $match);
+          if(!empty($match[1])){
+            foreach($match[1] as $issue){
+              $message .= BORG_GITHUB_ISSUES_REPO . '#' . $issue . " ";
+            }
+  
+            if(!empty($message)){
+              borg_github_issues_issue_comment_add($payload->number, $message, $repo);
+            }
+          }
+        }
+        break;
+    }
+  }
+}
+
+function borg_github_issues_issue_comment_add($number, $message, $repo) {
+  $githubapi = githubapi_get_class($repo);
+  $settings = array(
+    ':number' => $number,
+    'body' => t('Related to: ') . $message,
+  );
+  $githubapi->createIssueComment($settings);
+}
+
+
+function borg_github_issues_commit_comment_add($sha, $message, $repo) {
+  $githubapi = githubapi_get_class($repo);
+  $settings = array(
+    ':sha' => $sha,
+    'body' => t('Related to: ') . $message,
+  );
+  $githubapi->createComment($settings);
+}
