@@ -534,9 +534,13 @@ ol.flex-control-paging > li:before {
   border: 2px solid #979797;
   background: white;
   padding: 12px;
+  height: 24px;
   white-space: nowrap;
   overflow: hidden;
 }
+/*#edit-field-logo #edit-field-logo-und-0-ajax-wrapper .form-type-managed-file div.image-widget {
+  height: 24px;
+}*/
 .block-formblock-supporter .image-widget-data {
   float: none;
   position: relative;
