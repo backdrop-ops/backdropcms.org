@@ -18,8 +18,8 @@ class RobinPanel {
   function __construct($user = NULL, $password = NULL, $host = NULL, $port = NULL, $debug = FALSE) {
     set_time_limit(0);
 
-    include_once 'XML/Serializer.php';
-    include_once 'XML/Unserializer.php';
+    include_once 'libraries/PEAR-XML_Serializer/Serializer.php';
+    include_once 'libraries/PEAR-XML_Serializer/Unserializer.php';
 
     call_user_func_array(array($this, 'init'), func_get_args());
   }

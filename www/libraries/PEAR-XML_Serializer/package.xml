@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
+<package version="1.0" packagerversion="1.7.1">
+ <name>XML_Serializer</name>
+ <summary>Swiss-army knife for reading and writing XML files. Creates XML files from data structures and vice versa.</summary>
+ <description>XML_Serializer serializes complex data structures like arrays or object as XML documents.
+This class helps you generating any XML document you require without the need for DOM.
+Furthermore this package can be used as a replacement to serialize() and unserialize() as it comes with a matching XML_Unserializer that is able to create PHP data structures (like arrays and objects) from XML documents, if type hints are available.
+If you use the XML_Unserializer on standard XML files, it will try to guess how it has to be unserialized. In most cases it does exactly what you expect it to do.
+Try reading a RSS file with XML_Unserializer and you have the whole RSS file in a structured array or even a collection of objects, similar to XML_RSS.
+
+Since version 0.8.0 the package is able to treat XML documents similar to the simplexml extension of PHP 5.
+ </description>
+ <maintainers>
+  <maintainer>
+   <user>schst</user>
+   <name>Stephan Schmidt</name>
+   <email>schst@php-tools.net</email>
+   <role>lead</role>
+  </maintainer>
+  <maintainer>
+   <user>ashnazg</user>
+   <name>Chuck Burgess</name>
+   <email>ashnazg@php.net</email>
+   <role>lead</role>
+  </maintainer>
+  </maintainers>
+ <release>
+  <version>0.20.1</version>
+  <date>2009-06-11</date>
+  <license>BSD License</license>
+  <state>beta</state>
+  <notes>- Request #13564:  bool(false) is converted to empty string
+  </notes>
+  <deps>
+   <dep type="pkg" rel="ge" version="1.1.1" optional="no">XML_Util</dep>
+   <dep type="pkg" rel="ge" version="1.2.6" optional="no">XML_Parser</dep>
+   <dep type="pkg" rel="has" optional="no">PEAR</dep>
+   <dep type="php" rel="ge" version="4.2.0" optional="no"/>
+   <dep type="ext" rel="has" optional="no">xml</dep>
+  </deps>
+  <filelist>
+   <dir name="/" baseinstalldir="XML">
+    <dir name="doc">
+     <file role="data" name="todo.txt">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+    </dir> <!-- /doc -->
+    <dir name="examples">
+     <file role="doc" name="example.xml">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeAndEncode.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeAndReturn.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeCData.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeIndexedArray.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeIndexedArrayWithContext.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeNullProperties.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeObject.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeRDF.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="Serializer_Bug7112.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeSelectiveAttributes.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeWithAttributes.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeWithAttributes2.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeWithComment.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeWithDtd.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeWithIndentedAttributes.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeWithNamespace.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="serializeWithTagMap.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeAnyXML.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeClassNames.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeEncoded.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeEnum.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeObject.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeRDF.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeWhitespace.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeWithAttributes.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeWithTagMap.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="doc" name="unserializeWithTypeGuessing.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+    </dir> <!-- /examples -->
+    <dir name="tests">
+     <file role="test" name="AllTests.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="bug-9799.phpt">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="bug-12139.phpt">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="req-13564.phpt">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="bug-13896.phpt">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="bug-15602.phpt">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Arrays_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Objects_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_AttributesContent_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_CDataSections_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_ClassName_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_Comment_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_DefaultTag_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_DocType_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_EncodeFunc_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_IgnoreNull_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_Indent_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_Linebreaks_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_Mode_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_Namespace_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_ReturnResult_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_RootAttributes_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_RootName_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_TagMap_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_TypeHints_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Option_XmlDeclaration_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Serializer_Scalars_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="show_ScalarAsAttributes_usage.phpt">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Unserializer_Arrays_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Unserializer_Objects_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Unserializer_Option_Encodings_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Unserializer_Option_GuessTypes_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Unserializer_Option_Whitespace_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+     <file role="test" name="Unserializer_Scalars_TestCase.php">
+      <replace type="package-info" from="@package_version@" to="version"/>
+     </file>
+    </dir> <!-- /tests -->
+    <file role="php" name="Serializer.php">
+     <replace type="package-info" from="@package_version@" to="version"/>
+    </file>
+    <file role="php" name="Unserializer.php">
+     <replace type="package-info" from="@package_version@" to="version"/>
+    </file>
+   </dir> <!-- / -->
+  </filelist>
+ </release>
+ <changelog>
+   <release>
+    <version>0.2</version>
+    <date>2003-08-03</date>
+    <state>beta</state>
+    <notes>inital release
+    </notes>
+   </release>
+   <release>
+    <version>0.4</version>
+    <date>2003-08-12</date>
+    <state>beta</state>
+    <notes>added Unserializer
+removed bug with object typehint
+removed bug with unnameditem w/o _originalKey attribute
+uses XML_Util to validate tagname
+serializer does not break on resources anymore
+added support for __sleep() and __wakeup()
+    </notes>
+   </release>
+   <release>
+    <version>0.5</version>
+    <date>2003-08-14</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Unserializer is now able to unserialize XML files w/o type hints by automatically transforming multiple occurences of the same tag to an indexed array
+This is now similar to ext/simpleXML in PHP5 that means it can be used to parse any XML file, try it with your favorite RSS feed
+    </notes>
+   </release>
+   <release>
+    <version>0.6</version>
+    <date>2003-08-21</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Unserializer is able to return the name of the root tag,
+added &apos;complexType&apos; option to XML_Unserializer,
+added possibility to create nested objects from any XML file,
+tagname is used as classname if no other class is specified,
+added &apos;overrideOptions&apos; option that can be used to restore the default options for a serialization,
+added &apos;keyAttribute&apos; option to XML_Unserializer,
+added Todo list
+    </notes>
+   </release>
+   <release>
+    <version>0.8</version>
+    <date>2003-09-23</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>XML_Serializer:
+* added option: scalarAsAttribute to create tags with attributes from an array or object,
+* added option: prependAttributes to enable a prepend string for attributes (ensure they are different from type hints),
+* added option: attributeIndent to allow multiline tags, if a tag has several attributes; this makes it easier to read (requested by Yavor Shahpasov),
+* now requires XML_Util 0.4.1 or newer,
+* added option: mode =&gt; simplexml, allows you to serialize indexed arrays like simpleXML of PHP5 does: tags use name of the parent structure and are in the same depth (this is still in alpha state, not thoroughly tested)
+
+XML_Unserializer:
+* added option: parseAttributes which allows you to parse tags with attributes,
+* added option: attributesArray to specify the name of the array in which attributes should be stored,
+* added option: prependAttributes to specify a prepend string for the generated array keys,
+* added option: contentName to specify the key for the content of a tag that contains also attributes
+* added option: tagMap, to change the names of the tags while parsing
+
+Both:
+* removed bug that occured when instantiating w/o options (reported by Alan Knowles),
+* added options: keyAttribute, typeAttribute and classAtribute to allow user to specify attribute names for typehints,
+* added resetOptions(),
+* added setOption(),
+* added option: overrideOptions that allows you to reset to defaults for one call of serialize or unserialize,
+* added some very small docs to defaultOptions arrays
+    </notes>
+   </release>
+   <release>
+    <version>0.8.1</version>
+    <date>2003-09-23</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Bugfix release
+                                        
+XML_Serializer:
+* removed bug when using mode =&gt; simplexml and indexed arrays contained only scalar values,
+* removed bug with missing _originalKey attribute when serializing objects
+
+XML_Unserializer:
+* added check for set{$propName} method to use methods to set properties in Unserializer instead of direct access
+    </notes>
+   </release>
+   <release>
+    <version>0.9</version>
+    <date>2003-10-13</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>XML_Serializer:
++ added support for doctype declaration (requested by Lapo &apos;Raist&apos; Luchini),
+* changed tagName option to rootName option (tagName is still supported but deprecated),
++ added rootAttributes option (thanks to Lapo &apos;Raist&apos; Luchini),
++ added rootName option for serializing objects
+
+XML_Unserializer:
+* removed bug with unserializing aggregated objects
+    </notes>
+   </release>
+   <release>
+    <version>0.9.1</version>
+    <date>2003-10-26</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>fixed bug #105
+    </notes>
+   </release>
+   <release>
+    <version>0.9.2</version>
+    <date>2004-04-23</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>fixed invalid multiple call to XML_Parser constructor
+    </notes>
+   </release>
+   <release>
+    <version>0.10.0</version>
+    <date>2004-05-24</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>- fixed bug #1478 (Array to string conversion)
+- fixed bug #170 (RDF examples produce incorrect code)
+- added new options to XML_Serializer: attributesArray and contentName to match XML_Unserializer
+    </notes>
+   </release>
+   <release>
+    <version>0.10.1</version>
+    <date>2004-07-12</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>fixed bug #1846 (unserialization bug with empty arrays)
+    </notes>
+   </release>
+   <release>
+    <version>0.11.0</version>
+    <date>2004-08-24</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Serializer:
+- Request #2019 (use classname as tagname in indexed arrays)
+- replaced double quotes with single quotes
+- some CS fixes
+
+Unserializer:
+- added new option &apos;forceEnum&apos;
+- replaced double quotes with single quotes
+    </notes>
+   </release>
+   <release>
+    <version>0.11.1</version>
+    <date>2004-08-25</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Serializer:
+- fixed bug with default line endings
+    </notes>
+   </release>
+   <release>
+    <version>0.12.0</version>
+    <date>2004-11-03</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Serializer:
+- added new option tagMap (requested by Toby)
+Unserializer:
+- added encoding option (thanks to mc[at]glouglou[dot]net)
+    </notes>
+   </release>
+   <release>
+    <version>0.13.0</version>
+    <date>2004-11-06</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Serializer:
+- fixed bug #2688: in simplexml mode $array needs to be non-empty (thanks to demian[at]phpkitchen[dot]com and derek[at]hostbaby[dot]com)
+Unserializer:
+- implemented Request #2650: Multiple key attributes
+    </notes>
+   </release>
+   <release>
+    <version>0.13.1</version>
+    <date>2004-11-26</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Serializer:
+- fixed error handling (suppress error handling, when XML_Util returns an error) (patch by Lukas Smith)
+- replaced some left-over tabs with spaces
+    </notes>
+   </release>
+   <release>
+    <version>0.14.0</version>
+    <date>2004-12-22</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Serializer:
+- new option &apos;encodeFunction&apos; to apply a PHP function to character data and attributes before serializing the data
+Unserializer:
+- Does no longer extend XML_Parser (allows to change encoding at runtime), this could break some scripts
+- new option &apos;targetEncoding&apos; to specify the target encoding for character data
+- new option &apos;decodeFunction&apos; to apply a PHP function on character data and attributes while unserializing the document
+- some tiny whitespace fixes
+Global:
+- new requires XML_Parser 1.2.2 and XML_Util 1.1.0
+    </notes>
+   </release>
+   <release>
+    <version>0.14.1</version>
+    <date>2004-12-27</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>Bugfix release:
+- XML_Unserializer now again extends PEAR to use PEAR error management
+    </notes>
+   </release>
+   <release>
+    <version>0.15.0</version>
+    <date>2005-02-12</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>XML_Serializer:
+- added option to return the result directly from serialize()
+XML_Unserializer:
+- added option to return the result directly from unserialize(),
+- added defaultClass option
+- added tagAsClass option (fixes Bug #3303)
+- fixed bug (tag name was not used as classname when tag was empty)
+    </notes>
+   </release>
+   <release>
+    <version>0.16.0</version>
+    <date>2005-06-05</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>XML_Serializer:
+- introduced constants for all options (this helps avoiding typos in the option names)
+- deprecated option &apos;tagName&apos; is no longer supported, use XML_SERIALIZER_OPTION_ROOT_NAME (or rootName) instead
+- implement Request #3762: added new ignoreNull option to ignore properties that are set to null when serializing objects or arrays
+- fixed bug with encoding function
+- use new header comment blocks
+XML_Unserializer:
+- fix bug #4075 (allow tagMap option to influence any kind of value)
+    </notes>
+   </release>
+   <release>
+    <version>0.17.0</version>
+    <date>2005-09-24</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>XML_Serializer:
+- fixed bug #4575: use the return values of __sleep() when serializing objects
+- allow XML_SERIALIZER_OPTION_DEFAULT_TAG to be set as array to set different default tags based on the surrounding tag
+- allow XML_SERIALIZER_OPTION_SCALAR_AS_ATTRIBUTES to be set as array to selectively use scalar values as attributes
+- allow scalar values as first argument to serialize()
+- implemented request #3180: Add option to create cdata sections
+XML_Unserializer:
+- added constants for all options
+- fixed bug #5187: decode function should decode cdata instead of the element name
+- implemented request #3700: Treatment of whitespace can be influenced via an option
+    </notes>
+   </release>
+   <release>
+    <version>0.18.0</version>
+    <date>2005-10-02</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>XML_Serializer:
+- Allow the use of &apos;#default&apos; whenever one wants to specify an option for any other key
+- fixed bug #4575 for real: XML_Serializer now expects __sleep() to return an array of property names
+XML_Unserializer:
+- Added new IGNORE_KEYS option to specify a list of tags which will not be unserialized using their names as keys
+- Added new GUESS_TYPE option to automatically convert the data to the best matching type
+- Allow COMPLEXTYPE to be an array to be able to unserialize to arrays or objects
+- Allow the use of &apos;#default&apos; whenever one wants to specify an option for any other tag
+    </notes>
+   </release>
+   <release>
+    <version>0.19.0a1</version>
+    <date>2008-08-24</date>
+    <license>BSD License</license>
+    <state>alpha</state>
+    <notes>- switch to package.xml v2
+- PEAR CS cleanup
+- Req #13856:  License Change from PHP to BSD [ashnazg]
+- Bug #8048:   Entities are not replaced in tags with attributes [schst]
+- Doc #12725:  tuto link no more available
+    </notes>
+   </release>
+   <release>
+    <version>0.19.0</version>
+    <date>2008-09-15</date>
+    <license>BSD License</license>
+    <state>beta</state>
+    <notes>- switch to package.xml v2
+- PEAR CS cleanup
+- Req #13856:  License Change from PHP to BSD [ashnazg]
+- Bug #8048:   Entities are not replaced in tags with attributes [schst]
+- Doc #12725:  tuto link no more available
+    </notes>
+   </release>
+   <release>
+    <version>0.19.1</version>
+    <date>2008-10-21</date>
+    <license>BSD License</license>
+    <state>beta</state>
+    <notes>- Bug #14653:  testNumberedObjects testcase fails [ashnazg]
+- Doc #8650 :  Missing Information in the Manual [ashnazg]
+- Doc #13896:  Bad info in the RSS feed tutorial [ashnazg]
+    </notes>
+   </release>
+   <release>
+    <version>0.19.2</version>
+    <date>2009-01-24</date>
+    <license>BSD License</license>
+    <state>beta</state>
+    <notes>- Bug #15602:  attributes don&apos;t get escaped sometimes [lapo]
+    </notes>
+   </release>
+   <release>
+    <version>0.20.0</version>
+    <date>2009-06-11</date>
+    <license>BSD License</license>
+    <state>beta</state>
+    <notes>- Request #13564:  bool(false) is converted to empty string
+    </notes>
+   </release>
+   <release>
+    <version>0.20.1</version>
+    <date>2009-12-23</date>
+    <license>BSD License</license>
+    <state>beta</state>
+    <notes>Fixed minor deprecation issue in PHP 5.3: "Assigning the return value of new by reference is deprecated"
+    </notes>
+   </release>
+ </changelog>
+</package>
