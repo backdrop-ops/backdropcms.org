@@ -590,7 +590,7 @@ class XML_Parser extends PEAR
      *
      * @return XML_Parser_Error reference to the error object
      **/
-    function raiseError($msg = null, $ecode = 0, $mode = null,
+    function &raiseError($msg = null, $ecode = 0, $mode = null,
                          $options = null,
                          $userinfo = null,
                          $error_class = null,
