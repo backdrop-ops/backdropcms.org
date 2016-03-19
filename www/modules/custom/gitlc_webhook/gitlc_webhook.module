@@ -43,7 +43,7 @@ function gitlc_webhook_menu() {
     'title' => 'Webhook settings',
     'description' => 'Webhook settings to integrate with GitLC.',
     'page callback' => 'backdrop_get_form',
-    'page arguments' => ('gitlc_webhook_admin_settings'),
+    'page arguments' => array('gitlc_webhook_admin_settings'),
     'access arguments' => array('administer site configuration'),
     'type' => MENU_NORMAL_ITEM,
     'file' => 'gitlc_webhook.admin.inc',
