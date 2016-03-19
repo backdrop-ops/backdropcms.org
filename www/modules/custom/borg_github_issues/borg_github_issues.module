@@ -17,12 +17,12 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
   $expr = '/(?<!\S)#([0-9]*)/i';
   
   $code_owner_name = settings_get('borg_github_issues_code_owner_name');
-  if(empty($owner_name)){
+  if(empty($code_owner_name)){
     $code_owner_name = BORG_GITHUB_ISSUES_CODE_OWNER_NAME;
   }
 
   $code_repo_name = settings_get('borg_github_issues_code_repo_name');
-  if(empty($repo_name)){
+  if(empty($code_repo_name)){
     $code_repo_name = BORG_GITHUB_ISSUES_CODE_REPO_NAME;
   }
 
@@ -32,7 +32,7 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
   }
 
   
-  if($repo->owner == $code_owner_name && $repo->name == $rcode_epo_name){
+  if($repo->owner == $code_owner_name && $repo->name == $code_repo_name){
     switch ($event_name) {
       case 'push':
         foreach($payload->commits as $commit){
