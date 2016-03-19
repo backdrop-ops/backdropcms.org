@@ -5,9 +5,9 @@
  * @author Gor Martsen <gor@me.com>
  */
 
- define('BORG_GITHUB_ISSUES_REPO', 'backdrop/backdrop-issues');
- define('BORG_GITHUB_OWNER_NAME', 'backdrop');
- define('BORG_GITHUB_REPO_NAME', 'backdrop');
+ define('BORG_GITHUB_ISSUES_REPO_FULLNAME', 'backdrop/backdrop-issues');
+ define('BORG_GITHUB_ISSUES_CODE_OWNER_NAME', 'backdrop');
+ define('BORG_GITHUB_ISSUES_CODE_REPO_NAME', 'backdrop');
 
 /**
  * Implements hook_githubapi_payload().
@@ -16,7 +16,23 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
   $payload = $record->data;
   $expr = '/(?<!\S)#([0-9]*)/i';
   
-  if($repo->owner == BORG_GITHUB_OWNER_NAME && $repo->name == BORG_GITHUB_REPO_NAME){
+  $code_owner_name = settings_get('borg_github_issues_code_owner_name');
+  if(empty($owner_name)){
+    $code_owner_name = BORG_GITHUB_ISSUES_CODE_OWNER_NAME;
+  }
+
+  $code_repo_name = settings_get('borg_github_issues_code_repo_name');
+  if(empty($repo_name)){
+    $code_repo_name = BORG_GITHUB_ISSUES_CODE_REPO_NAME;
+  }
+
+  $issues_repo_fullname = settings_get('borg_github_issues_repo_fullname');
+  if(empty($repo_name)){
+    $issues_repo_fullname = BORG_GITHUB_ISSUES_REPO_FULLNAME;
+  }
+
+  
+  if($repo->owner == $code_owner_name && $repo->name == $rcode_epo_name){
     switch ($event_name) {
       case 'push':
         foreach($payload->commits as $commit){
@@ -25,7 +41,7 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
           preg_match_all($expr, $commit->message, $match);
           if(!empty($match[1])){
             foreach($match[1] as $issue){
-              $message .= BORG_GITHUB_ISSUES_REPO . '#' . $issue . " ";
+              $message .= $issues_repo_fullname . '#' . $issue . " ";
             }
             if(!empty($message)){
               borg_github_issues_commit_comment_add($commit->id, $message, $repo);
@@ -39,7 +55,7 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
           preg_match_all($expr, $payload->pull_request->title . ' ' . $payload->pull_request->body, $match);
           if(!empty($match[1])){
             foreach($match[1] as $issue){
-              $message .= BORG_GITHUB_ISSUES_REPO . '#' . $issue . " ";
+              $message .= $issues_repo_fullname . '#' . $issue . " ";
             }
   
             if(!empty($message)){
