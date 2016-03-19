@@ -56,9 +56,20 @@ function rp_api_init_robin_panel() {
     module_load_include('inc', 'rp_api', 'robin_panel_class');
     
     $config = config('rp_api.settings');
-    $username = $config->get('username');
-    $password = $config->get('password');
-    $server = $config->get('server');
+    
+    $server = settings_get('rp_api_server');
+    $username = settings_get('rp_api_username');
+    $password = settings_get('rp_api_password');
+  
+    if(empty($server)){
+      $server = $config->get('server');
+    }
+    if(empty($username)){
+      $username = $config->get('username');
+    }
+    if(empty($password)){
+      $password = $config->get('password');
+    }
     $rp = new RobinPanel($username, $password, $server);
   }
 
