@@ -93,7 +93,12 @@ function githubapi_link_user_submit($form, &$form_state){
   
   $config = config('githubapi.settings');
   $params = array();
-  $params['client_id'] = $config->get('client_id');
+
+  $client_id = settings_get('githubapi_client_id');
+  if(empty($client_id)){
+    $params['client_id'] = $config->get('client_id');  
+  }
+
   $params['scope'] = GITHUB_SCOPE;
 
   $params['redirect_uri'] = $base_url . '/githubapi/register';
