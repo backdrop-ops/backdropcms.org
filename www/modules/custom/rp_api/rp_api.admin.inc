@@ -75,7 +75,6 @@ function rp_api_settings_submit($form, &$form_state) {
   if(FALSE == $cache){
     backdrop_set_message(t('Credentials is not correct !error', array('!error' => rp_api_error_message())), 'error');
   }else{
-    backdrop_set_message('<pre>' . print_r($cache, true) . '</pre>');
     backdrop_set_message(t('The configuration options have been saved.'));
   }
 }
