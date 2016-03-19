@@ -96,8 +96,9 @@ function githubapi_link_user_submit($form, &$form_state){
 
   $client_id = settings_get('githubapi_client_id');
   if(empty($client_id)){
-    $params['client_id'] = $config->get('client_id');  
+    $client_id = $config->get('client_id');  
   }
+  $params['client_id'] = $client_id;
 
   $params['scope'] = GITHUB_SCOPE;
 
