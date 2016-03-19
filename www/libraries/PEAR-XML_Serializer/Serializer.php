@@ -55,7 +55,7 @@ require_once 'PEAR.php';
 /**
  * uses XML_Util to create XML tags
  */
-require_once 'XML/Util.php';
+include_once 'libraries/XML_Util/Util.php';
 
 /**
  * option: string used for indentation
