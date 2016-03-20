@@ -64,10 +64,20 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
           }
         }
         break;
+      case 'issue_comment':
+        if($payload->action == 'created'){
+          preg_match_all($expr, $payload->comment->body, $match);
+          if(!empty($match[1])){
+            foreach($match[1] as $issue){
+              $message .= $issues_repo_fullname . '#' . $issue . " ";
+            }
+            if(!empty($message)){
+              borg_github_issues_issue_comment_add($payload->number, $message, $repo);
+            }
+          }
+        }  
+        break;
     }
-  }else{
-    print_r($repo);
-    echo $code_owner_name. " " . $code_repo_name;
   }
 }
 
