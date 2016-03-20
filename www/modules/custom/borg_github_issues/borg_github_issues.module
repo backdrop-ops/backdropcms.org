@@ -74,7 +74,7 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
               $message .= $issues_repo_fullname . '#' . $issue . " ";
             }
             if(!empty($message)){
-              borg_github_issues_issue_comment_add($payload->number, $message, $repo);
+              borg_github_issues_issue_comment_add($payload->issue->number, $message, $repo);
             }
           }
         }  
