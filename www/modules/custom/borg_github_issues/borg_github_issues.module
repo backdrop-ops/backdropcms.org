@@ -27,7 +27,7 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
   }
 
   $issues_repo_fullname = settings_get('borg_github_issues_repo_fullname');
-  if(empty($repo_name)){
+  if(empty($issues_repo_fullname)){
     $issues_repo_fullname = BORG_GITHUB_ISSUES_REPO_FULLNAME;
   }
 
