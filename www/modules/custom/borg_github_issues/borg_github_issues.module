@@ -13,6 +13,7 @@
  * Implements hook_githubapi_payload().
  */
 function borg_github_issues_githubapi_payload($event_name, $record, $repo){
+  print_r($record);
   $payload = $record->data;
   $expr = '/(?<!\S)#([0-9]*)/i';
   
