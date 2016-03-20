@@ -67,6 +67,8 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
       case 'issue_comment':
         if($payload->action == 'created'){
           preg_match_all($expr, $payload->comment->body, $match);
+          print_r($match);
+          echo $payload->comment->body;
           if(!empty($match[1])){
             foreach($match[1] as $issue){
               $message .= $issues_repo_fullname . '#' . $issue . " ";
