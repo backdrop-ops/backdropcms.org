@@ -65,6 +65,9 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
         }
         break;
     }
+  }else{
+    print_r($repo);
+    echo $code_owner_name. " " . $code_repo_name;
   }
 }
 
