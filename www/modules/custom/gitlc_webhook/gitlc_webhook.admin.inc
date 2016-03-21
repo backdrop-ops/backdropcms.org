@@ -23,7 +23,8 @@ function gitlc_webhook_admin_settings($form, &$form_state) {
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Save API'),
-  );  
+  );
+  return $form;  
 }
 
 /**
