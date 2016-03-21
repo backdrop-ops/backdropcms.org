@@ -86,7 +86,7 @@ function githubapi_hook_remove_submit($form, &$form_state) {
     $token = $config->get('token');
   }
   
-  $githubapi = new GithubAPI();
+  $githubapi = new GitHubAPI();
 
   $githubapi->setOwnerName($repo->owner);
   $githubapi->setRepoName($repo->name);
@@ -140,7 +140,7 @@ function githubapi_hook_submit($form, &$form_state) {
     $token = $config->get('token');
   }
 
-  $githubapi = new GithubAPI();
+  $githubapi = new GitHubAPI();
   $githubapi->setToken($token);
 
   global $base_url;

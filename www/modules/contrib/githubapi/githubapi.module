@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This module provides github API integration.
+ * This module provides GitHub API integration.
  *
  * @author Gor Martsen <gor@me.com>
  */
@@ -228,7 +228,7 @@ function githubapi_get_class($repo){
     $token = $config->get('token');
   }
 
-  $githubapi = new GithubAPI();
+  $githubapi = new GitHubAPI();
   $githubapi->setOwnerName($repo->owner);
   $githubapi->setRepoName($repo->name);
   $githubapi->setToken($token);
