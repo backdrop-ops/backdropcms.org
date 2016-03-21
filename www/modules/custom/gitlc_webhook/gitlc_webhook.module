@@ -24,7 +24,7 @@ function gitlc_webhook_menu() {
   $items = array();
 
   $items['admin/config/system/gitlc_webhook'] = array(
-    'title' => 'Webhook settings',
+    'title' => 'Gitlc Webhook settings',
     'description' => 'Webhook settings to integrate with GitLC.',    
     'page callback' => 'gitlc_webhook_admin_list',
     'access callback' => 'user_access',
@@ -40,7 +40,7 @@ function gitlc_webhook_menu() {
   
   // Admin settings page.
   $items['admin/config/system/gitlc_webhook/settings'] = array(
-    'title' => 'Webhook settings',
+    'title' => 'Gitlc Webhook settings',
     'description' => 'Webhook settings to integrate with GitLC.',
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('gitlc_webhook_admin_settings'),
