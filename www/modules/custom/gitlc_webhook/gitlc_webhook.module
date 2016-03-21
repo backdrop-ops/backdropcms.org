@@ -45,7 +45,7 @@ function gitlc_webhook_menu() {
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('gitlc_webhook_admin_settings'),
     'access arguments' => array('administer site configuration'),
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
     'file' => 'gitlc_webhook.admin.inc',
   );
 
