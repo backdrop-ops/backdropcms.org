@@ -14,6 +14,7 @@ function gitlc_webhook_admin_settings($form, &$form_state) {
   $api_token = settings_get('gitlc_webhook_api_token');
 
   $form['api_token'] = array(
+    '#type' => 'textfield',    
     '#title' => t('Gitlc webhook token'),
     '#default_value' => !empty($api_token) ? $api_token : $config->get('api_token'),
     '#description' => t('You can obtain API Key on http://git.lc/api/settings page'),
