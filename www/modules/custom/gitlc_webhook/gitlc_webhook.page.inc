@@ -116,7 +116,7 @@ function gitlc_webhook_hook_remove($form, &$form_state, $hook_id){
     ->fetchObject();
 
   if(empty($webhook)){
-    backdrop_goto('admin/config/system/githubapi/list');
+    backdrop_goto('admin/config/system/gitlc_webhook/list');
   }
 
   $form_state['webhook'] = $webhook;
@@ -153,5 +153,5 @@ function gitlc_webhook_hook_remove_submit($form, &$form_state) {
   }else{
     backdrop_set_message(t('We do not have permissions to remove hook!'), 'error');
   }
-
+  backdrop_goto('admin/config/system/gitlc_webhook/list');
 }
