@@ -276,10 +276,67 @@ class GitlcAPI {
    */
   public function getHook() {
     return $this->getRequest(
+      'repos/:owner/:repo/hook', array(
+        ':owner' => $this->owner_name,
+        ':repo' => $this->repo_name,
+      )
+    );
+  }
+
+  /**
+   * Create hook for repository.
+   *
+   * @param $settings array
+   *   An array of settings for hook
+   *     - url: The URL to which the payloads will be delivered. 
+   *     - secret: If provided, payloads will be delivered with an Signature header.
+   * @return
+   *   Return hook information or FALSE if there is no access.
+   *
+   * @see SetRepoName
+   * @see SetOwnerName
+   */
+  public function createHook($settings)
+  {
+    $settings[':owner'] = $this->owner_name;
+    $settings[':repo'] = $this->repo_name;
+    return $this->postRequest( 'repos/:owner/:repo/hook', $settings ); 
+  }
+
+  /**
+   * Update hook for repository.
+   *
+   * @param $settings array
+   *   An array of settings for hook
+   *     - url: The URL to which the payloads will be delivered. 
+   *     - secret: If provided, payloads will be delivered with an Signature header.
+   * @return
+   *   Return hook information or FALSE if there is no access.
+   *
+   * @see SetRepoName
+   * @see SetOwnerName
+   */
+  public function updateHook($settings)
+  {
+    $settings[':owner'] = $this->owner_name;
+    $settings[':repo'] = $this->repo_name;
+    return $this->putRequest( 'repos/:owner/:repo/hook', $settings ); 
+  }
+
+  /**
+   * Delete hook for repository.
+   * @return
+   *   Return empty value if success or FALSE if error.
+   *
+   * @see SetRepoName
+   * @see SetOwnerName
+   */
+  public function deleteHook() {
+    return $this->deleteRequest(
         'repos/:owner/:repo/hook', array(
         ':owner' => $this->owner_name,
         ':repo' => $this->repo_name,
-        )
+      )
     );
   }
 }

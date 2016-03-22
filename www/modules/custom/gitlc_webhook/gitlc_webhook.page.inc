@@ -61,6 +61,7 @@ function gitlc_webhook_hook_validate($form, &$form_state) {
   if(count($owner_repo) != 2){
     form_set_error('owner_repo_path', t('Please provide info in OWNER/REPO format'));
   }
+  // TODO. Need to validate if repo already hooked!
 }
 
 /**
@@ -74,5 +75,24 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   );
   $GitlcAPI = gitlc_webhook_get_class($settings);
   $hook = $GitlcAPI->getHook();
+  $secret = backdrop_random_key();
+  
+  if(empty($hook)){
+    // Setup GitHub webhook for Gitlc and signup for integration with Gitlc.
+    $setup_settings = array(
+      'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH),
+      'secret' => $secret,
+    );
+    $GitlcAPI->reInitCurl();
+    $hook = $GitlcAPI->createHook($setup_settings); 
+  }else{
+    // Signup for integration with Gitlc.
+    $setup_settings = array(
+      'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH),
+      'secret' => $secret,
+    );
+    $GitlcAPI->reInitCurl();
+    $hook = $GitlcAPI->updateHook($setup_settings); 
+  }
   backdrop_set_message('<pre>' . htmlentities(print_r($hook,true)) . '</pre>');
 }
