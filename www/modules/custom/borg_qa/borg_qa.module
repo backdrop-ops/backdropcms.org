@@ -9,8 +9,8 @@
 /**
  * Implements hook_config_info().
  */
-function qa_config_info() {
-  $prefixes['qa.settings'] = array(
+function borg_qa_config_info() {
+  $prefixes['borg_qa.settings'] = array(
     'label' => t('QA settings'),
     'group' => t('Configuration'),
   );
@@ -21,14 +21,14 @@ function qa_config_info() {
 /**
  * Implements hook_menu().
  */
-function qa_menu() {
+function borg_qa_menu() {
   $items = array();
 
   $items['admin/config/system/qa'] = array(
     'title' => 'QA settings',
     'description' => 'QA settings.',
     'page callback' => 'backdrop_get_form',
-    'page arguments' => array('qa_settings'),
+    'page arguments' => array('borg_qa_settings'),
     'access callback' => 'user_access',
     'access arguments' => array('administer site configuration'),
     'file' => 'qa.admin.inc',
@@ -41,7 +41,7 @@ function qa_menu() {
 /**
  * Implements hook_gitlc_webhook().
  */
-function qa_gitlc_webhook($method, $data){
+function borg_qa_gitlc_webhook($method, $data){
   switch($method){
     case 'config':
         $owner = $data['owner'];
@@ -123,7 +123,7 @@ function qa_gitlc_webhook($method, $data){
   return $data;
 }
 
-function qa_get_value($env_vars, $variable){
+function borg_qa_get_value($env_vars, $variable){
   if(isset($env_vars[$variable])){
     return $env_vars[$variable];
   }else{
@@ -135,7 +135,7 @@ function qa_get_value($env_vars, $variable){
   }
 }
 
-function qa_add_domain($user, $domain){
+function borg_qa_add_domain($user, $domain){
   $settings = array(
     'user' => $user,
     'domain' => $domain,
@@ -152,7 +152,7 @@ function qa_add_domain($user, $domain){
   rp_api_execute_command('AddDomain', $settings);
 }
 
-function qa_add_db($user, $database){
+function borg_qa_add_db($user, $database){
   $settings = array(
     'user' => $user,
     'db' => $database,
@@ -160,7 +160,7 @@ function qa_add_db($user, $database){
   rp_api_execute_command('MysqlAddDB', $settings);
 }
 
-function qa_add_dbuser($user, $database_user, $database_name, $password){
+function borg_qa_add_dbuser($user, $database_user, $database_name, $password){
   $settings = array(
     'user' => $user,
     'dbuser' => $database_user,
@@ -179,7 +179,7 @@ function qa_add_dbuser($user, $database_user, $database_name, $password){
   rp_api_execute_command('MysqlUserGrant', $grand_settings);
 }
 
-function qa_del_domain($user, $domain){
+function borg_qa_del_domain($user, $domain){
   $settings = array(
     'user' => $user,
     'domain' => $domain,
@@ -188,7 +188,7 @@ function qa_del_domain($user, $domain){
   rp_api_execute_command('DelDomain', $settings);
 }
 
-function qa_del_db($user, $database_name){
+function borg_qa_del_db($user, $database_name){
   $settings = array(
     'user' => $user,
     'db' => $database_name,
@@ -196,7 +196,7 @@ function qa_del_db($user, $database_name){
   rp_api_execute_command('MysqlDelDB', $settings);
 }
 
-function qa_del_dbuser($user, $database_user){
+function borg_qa_del_dbuser($user, $database_user){
   $settings = array(
     'user' => $user,
     'dbuser' => $database_user,

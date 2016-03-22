@@ -7,8 +7,8 @@
  /**
  * Menu callback for admin/config/system/qa.
  */
-function qa_settings() {
-  $config = config('qa.settings');
+function borg_qa_settings() {
+  $config = config('borg_qa.settings');
   $form['actions']['#type'] = 'actions';
   $form['actions']['submit'] = array(
     '#type' => 'submit',
@@ -21,9 +21,9 @@ function qa_settings() {
 /**
  * Submit handler for the qa_settings() form.
  */
-function qa_settings_submit($form, &$form_state) {
+function borg_qa_settings_submit($form, &$form_state) {
 
-  $config = config('qa.settings');
+  $config = config('borg_qa.settings');
   $config->save();
   
   backdrop_set_message(t('The configuration options have been saved.'));
