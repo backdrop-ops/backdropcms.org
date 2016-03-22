@@ -54,8 +54,25 @@ function gitlc_webhook_hook(){
 }
 
 /**
- * Submit handler for the githubapi_hook() form.
+ * Validate handler for the gitlc_webhook_hook() form.
+ */
+function gitlc_webhook_hook_validate($form, &$form_state) {
+  $owner_repo = explode("/", $form_state['values']['owner_repo_path']);
+  if(count($owner_repo) != 2){
+    form_set_error('owner_repo_path', t('Please provide info in OWNER/REPO format'));
+  }
+}
+
+/**
+ * Submit handler for the gitlc_webhook_hook() form.
  */
 function gitlc_webhook_hook_submit($form, &$form_state) {
-  
+  $owner_repo = explode("/", $form_state['values']['owner_repo_path']);
+  $settings = array(
+    'owner' => $owner_repo[0],
+    'repo' => $owner_repo[1]
+  );
+  $GitlcAPI = gitlc_webhook_get_class($settings);
+  $hook = $GitlcAPI->getHook();
+  backdrop_set_message('<pre>' . print_r($hook,true) . '</pre>');
 }

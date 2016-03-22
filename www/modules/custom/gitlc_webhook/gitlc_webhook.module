@@ -133,3 +133,29 @@ function gitlc_webhook_ajax_deliver($page_callback_result){
   }
 }
 
+function gitlc_webhook_get_class($settings){
+  module_load_include('inc', 'gitlc_webhook', 'gitlc_webhook.class');
+
+  $api_token = gitlc_webhook_get_api_token();
+
+  $githubapi = new GitlcAPI();
+  $githubapi->setOwnerName($settings['owner']);
+  $githubapi->setRepoName($settings['repo']);
+  $githubapi->setToken($token);
+  return $githubapi;
+}
+
+
+function gitlc_webhook_get_api_token(){
+  $config = config('gitlc_webhook.settings');
+
+  // Use setting.php values if exists.
+  $api_token = settings_get('gitlc_webhook_api_token');
+
+  if(empty($api_token)){
+    $api_token = $config->get('api_token');
+  }
+  return $api_token;
+}
+
+

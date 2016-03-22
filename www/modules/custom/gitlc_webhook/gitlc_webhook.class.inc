@@ -264,4 +264,22 @@ class GitlcAPI {
     }
   }
 
+  /**
+   * Get repository information.
+   * https://developer.github.com/v3/repos/#get
+   *
+   * @return
+   *   Return repository information or FALSE if there is no repository or no access.
+   *
+   * @see SetRepoName
+   * @see SetOwnerName
+   */
+  public function getHook() {
+    return $this->getRequest(
+        'repos/:owner/:repo/hook', array(
+        ':owner' => $this->owner_name,
+        ':repo' => $this->repo_name,
+        )
+    );
+  }
 }
