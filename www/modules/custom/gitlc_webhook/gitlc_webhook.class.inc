@@ -26,6 +26,8 @@ class GitlcAPI {
   protected $repo_name = FALSE;
   // Debug mode. If enabled, data will be printed via backdrop_set_message.
   protected $debug = FALSE;
+  // Latest error message from GitlcAPI.
+  protected $error_message = '';
 
   /**
    * Constructor.
@@ -133,6 +135,15 @@ class GitlcAPI {
   }
 
   /**
+   * Get GitlcAPi Error message if error happen.
+   *
+   * @return
+   *   String with error message.
+   */
+  public function getGitlcAPIErrorMessage(){
+    return $this->error_message;
+  }
+  /**
    * Determine if request has been cached.
    *
    * @access protected
@@ -144,6 +155,11 @@ class GitlcAPI {
       backdrop_set_message('<pre>'.print_r($this->testingGetHeaders(), true).'</pre>');
     }
     if ($this->isError()) {
+      if(isset($this->curl->response->error) && $this->curl->response->error){
+        if(isset($this->curl->response->message)){
+          $this->error_message = $this->curl->response->message;
+        }
+      }
       return FALSE;
     }
     backdrop_set_message('Is Error: ' . $this->isError());

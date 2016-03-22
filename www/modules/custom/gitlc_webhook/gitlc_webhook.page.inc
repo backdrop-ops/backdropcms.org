@@ -150,9 +150,9 @@ function gitlc_webhook_hook_remove_submit($form, &$form_state) {
     db_delete('gitlc_webhook_repositories')
       ->condition('id', $webhook->id)
       ->execute();
-    backdrop_set_message(t('Hook deleted!') . print_r($result,true));
+    backdrop_set_message(t('Hook deleted!'));
   }else{
-    backdrop_set_message(t('We got an error: !message', array('!message' => $result['message'])), 'error');
+    backdrop_set_message(t('We got an error: !message', array('!message' => $GitlcAPI->getGitlcAPIErrorMessage())), 'error');
   }
   backdrop_goto('admin/config/system/gitlc_webhook/list');
 }
