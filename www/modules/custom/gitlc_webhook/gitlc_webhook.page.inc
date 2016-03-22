@@ -145,7 +145,7 @@ function gitlc_webhook_hook_remove_submit($form, &$form_state) {
   );
   $GitlcAPI = gitlc_webhook_get_class($settings);
   $result = $GitlcAPI->deleteHook();
-  if($result !== FALSE && !isset($result['error'])){
+  if($result !== FALSE && !is_array($result)){
     db_delete('gitlc_webhook_repositories')
       ->condition('id', $webhook->id)
       ->execute();
