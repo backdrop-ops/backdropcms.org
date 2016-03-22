@@ -80,7 +80,7 @@ function gitlc_webhook_menu() {
 
 function gitlc_webhook_ajax($method){
   $received_json = file_get_contents("php://input",  TRUE);
-  $data = backdrop_json_decode($received_json, TRUE);
+  $data = backdrop_json_decode($received_json);
   
   $answer = module_invoke_all('gitlc_webhook', $method, $data);
 

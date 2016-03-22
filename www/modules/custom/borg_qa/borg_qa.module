@@ -43,6 +43,17 @@ function qa_menu() {
  */
 function qa_gitlc_webhook($method, $data){
   switch($method){
+    case 'config':
+        $owner = $data['owner'];
+        $repo = $data['repo'];
+        $branch = $data['branch'];
+        $config_filepath = backdrop_get_path('module', 'borg_qa') . 'gitlc.yml';
+        if($config = file_get_contents($config_filepath)){
+          return array(
+            'config' => $config,
+          );
+        }
+      break;
     case 'init':
         
         $domain = qa_get_value($data['config']['env_vars'], 'domain');
