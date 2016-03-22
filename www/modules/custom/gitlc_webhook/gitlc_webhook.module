@@ -54,6 +54,17 @@ function gitlc_webhook_menu() {
     'file' => 'gitlc_webhook.admin.inc',
   );
 
+  $items['admin/config/system/gitlc_webhook/%/delete'] = array(
+    'title' => 'Remove hook',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('gitlc_webhook_hook_remove', 4),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'gitlc_webhook.page.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+
   $items['webhook/%'] = array(
     'type' => MENU_CALLBACK,
     'title' => 'Webhook',

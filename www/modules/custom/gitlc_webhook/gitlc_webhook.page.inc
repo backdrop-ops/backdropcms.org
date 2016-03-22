@@ -84,7 +84,7 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     );
     $GitlcAPI->reInitCurl();
     $hook = $GitlcAPI->createHook($setup_settings);
-  } 
+  }
   else {
     // Signup for integration with Gitlc.
     $setup_settings = array(
@@ -106,4 +106,51 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
       '!repo' => $owner_repo[1]
     )));
   }
+}
+
+function gitlc_webhook_hook_remove($form, &$form_state, $hook_id){
+  $webhook = db_select('gitlc_webhook_repositories', 'gh')
+    ->fields('gh')
+    ->condition('id', $hook_id)
+    ->execute()
+    ->fetchObject();
+
+  if(empty($webhook)){
+    backdrop_goto('admin/config/system/githubapi/list');
+  }
+
+  $form_state['webhook'] = $webhook;
+
+  $form['message'] = array(
+    '#markup' => t('Are you sure want to delete this webhook?'),
+  );
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+  );
+
+  return $form;
+
+}
+
+/**
+ * Submit handler for the githubapi_hook_remove() form.
+ */
+function gitlc_webhook_hook_remove_submit($form, &$form_state) {
+  $webhook =  $form_state['webhoo'];
+  $settings = array(
+    'owner' => $webhook->owner,
+    'repo' => $webhook->repo,
+  );
+  $GitlcAPI = gitlc_webhook_get_class($settings);
+  $result = $GitlcAPI->deleteHook($setup_settings);
+  if($result !== FALSE){
+    db_delete('gitlc_webhook_repositories')
+      ->condition('rid', $webhook->id)
+      ->execute();
+    backdrop_set_message(t('Hook deleted!'));
+  }else{
+    backdrop_set_message(t('We do not have permissions to remove hook!'), 'error');
+  }
+
 }
