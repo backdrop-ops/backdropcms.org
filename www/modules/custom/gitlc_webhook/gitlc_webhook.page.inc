@@ -167,16 +167,14 @@ function gitlc_webhook_hook_remove_submit($form, &$form_state) {
   );
   $GitlcAPI = gitlc_webhook_get_class($settings);
   
-  $result = $GitlcAPI->deleteHook();
-  if($result !== FALSE && !is_array($result)){
+  $GitlcAPI->deleteHook();
+  if (!$GitlcAPI->isError()) {
     db_delete('gitlc_webhook_repositories')
       ->condition('id', $webhook->id)
       ->execute();
     backdrop_set_message(t('Hook deleted!'));
     // Add ability to act on deleted webhook.    
     module_invoke_all('gitlc_webhook', 'deleted', $webhook);    
-  }else{
-    backdrop_set_message(t('We got an error: !message', array('!message' => $GitlcAPI->getGitlcAPIErrorMessage())) . print_r($result,true), 'error');
   }
   backdrop_goto('admin/config/system/gitlc_webhook/list');
 }
