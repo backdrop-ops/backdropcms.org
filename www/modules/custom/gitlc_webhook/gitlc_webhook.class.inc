@@ -176,6 +176,9 @@ class GitlcAPI {
     if(is_object($this->curl->response)){
       return (array)$this->curl->response;
     }
+    if('null' == $this->curl->response or NULL == $this->curl->response){
+      return FALSE;
+    }
     return $this->curl->response;
   }
 
