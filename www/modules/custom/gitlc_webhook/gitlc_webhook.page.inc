@@ -102,8 +102,8 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     );
     backdrop_write_record('gitlc_webhook_repositories', $webhook);
     backdrop_set_message(t('Gitlc webhook created for !owner/!repo', array(
-      'owner' => $owner_repo[0],
-      'repo' => $owner_repo[1]
+      '!owner' => $owner_repo[0],
+      '!repo' => $owner_repo[1]
     )));
   }
 }
