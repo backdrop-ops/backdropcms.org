@@ -146,6 +146,7 @@ class GitlcAPI {
     if ($this->isError()) {
       return FALSE;
     }
+    backdrop_set_message('Is Error: ' . $this->isError());
 
     return $this->curl->response;
   }
