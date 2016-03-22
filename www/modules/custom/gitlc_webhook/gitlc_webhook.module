@@ -39,7 +39,7 @@ function gitlc_webhook_menu() {
   );
   
   $items['admin/config/system/gitlc_webhook/list'] = array(
-    'title' => 'Repos list',
+    'title' => 'Gitlc hooked repositories',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   
@@ -52,6 +52,7 @@ function gitlc_webhook_menu() {
     'access arguments' => array('administer site configuration'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'gitlc_webhook.admin.inc',
+    'weight' => 10,
   );
 
   $items['admin/config/system/gitlc_webhook/%/delete'] = array(
