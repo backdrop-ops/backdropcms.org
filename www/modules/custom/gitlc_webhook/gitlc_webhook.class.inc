@@ -95,7 +95,7 @@ class GitlcAPI {
    *   TRUE or FALSE based on answer from Gitlc API.
    */
   public function isError() {
-    return $this->curl->curlError;
+    return $this->curl->curlError or $this->curl->error;
   }
 
   /**
