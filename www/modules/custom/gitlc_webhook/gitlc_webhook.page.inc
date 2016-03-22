@@ -92,7 +92,7 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     return;
   }
 
-  if (!is_object($hook)) {
+  if (empty($hook)) {
     // Setup GitHub webhook for Gitlc and signup for integration with Gitlc.
     $setup_settings = array(
       'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH, array('absolute' => TRUE)),

@@ -172,7 +172,7 @@ class GitlcAPI {
       
       return FALSE;
     }
-    return $this->curl->response;
+    return (array)$this->curl->response;
   }
 
    /**
@@ -301,7 +301,7 @@ class GitlcAPI {
    * @see SetOwnerName
    */
   public function getHook() {
-    return (array) $this->getRequest(
+    return $this->getRequest(
       'repos/:owner/:repo/hook', array(
         ':owner' => $this->owner_name,
         ':repo' => $this->repo_name,
@@ -326,7 +326,7 @@ class GitlcAPI {
   {
     $settings[':owner'] = $this->owner_name;
     $settings[':repo'] = $this->repo_name;
-    return (array) $this->postRequest( 'repos/:owner/:repo/hook', $settings ); 
+    return $this->postRequest( 'repos/:owner/:repo/hook', $settings ); 
   }
 
   /**
@@ -346,7 +346,7 @@ class GitlcAPI {
   {
     $settings[':owner'] = $this->owner_name;
     $settings[':repo'] = $this->repo_name;
-    return (array) $this->putRequest( 'repos/:owner/:repo/hook', $settings ); 
+    return $this->putRequest( 'repos/:owner/:repo/hook', $settings ); 
   }
 
   /**
@@ -358,7 +358,7 @@ class GitlcAPI {
    * @see SetOwnerName
    */
   public function deleteHook() {
-    return (array) $this->deleteRequest(
+    return $this->deleteRequest(
         'repos/:owner/:repo/hook', array(
         ':owner' => $this->owner_name,
         ':repo' => $this->repo_name,
