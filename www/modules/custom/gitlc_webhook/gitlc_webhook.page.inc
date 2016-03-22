@@ -85,7 +85,7 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     'repo' => $owner_repo[1]
   );
   $GitlcAPI = gitlc_webhook_get_class($settings);
-  $GitlcAPI->setDevel(TRUE);
+  $GitlcAPI->setDebug(TRUE);
   $hook = $GitlcAPI->getHook();
   $secret = backdrop_random_key();
   
