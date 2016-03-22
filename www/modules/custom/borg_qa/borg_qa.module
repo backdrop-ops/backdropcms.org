@@ -48,6 +48,7 @@ function borg_qa_gitlc_webhook($method, $data){
         $repo = $data['repo'];
         $branch = $data['branch'];
         $config_filepath = backdrop_get_path('module', 'borg_qa') . 'gitlc.yml';
+        $data['config_file'] = $config_filepath;
         if($config = file_get_contents($config_filepath)){
           return array(
             'config' => $config,
