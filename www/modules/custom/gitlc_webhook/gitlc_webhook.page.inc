@@ -86,6 +86,8 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     $GitlcAPI->reInitCurl();
     $hook = $GitlcAPI->createHook($setup_settings); 
   }else{
+    backdrop_set_message('<pre>' . htmlentities(print_r($hook,true)) . '</pre>');
+
     // Signup for integration with Gitlc.
     $setup_settings = array(
       'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH),
