@@ -39,6 +39,11 @@ function gitlc_webhook_schema() {
         'not null' => TRUE,
         'default' => '',
       ),      
+      'public_key' => array(
+        'description' => 'Gitlc deploy public key.',
+        'type' => 'blob',
+        'size' => 'normal',
+      ),      
     ),
     'indexes' => array(
       'owner_name' => array('owner', 'repo'),
