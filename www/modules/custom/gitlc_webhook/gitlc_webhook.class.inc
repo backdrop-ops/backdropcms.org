@@ -113,7 +113,8 @@ class GitlcAPI {
         'code' => $this->curl->curlErrorCode,
         'message' => $this->curl->curlErrorMessage,
         'request_headers' => $this->curl->requestHeaders,
-        'response_headers' => $this->curl->responseHeaders
+        'response_headers' => $this->curl->responseHeaders,
+        'curl' => $this->curl
       );
   }
 
