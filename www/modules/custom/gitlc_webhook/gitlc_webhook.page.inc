@@ -124,6 +124,7 @@ function gitlc_webhook_hook_remove($form, &$form_state, $hook_id){
   $form['message'] = array(
     '#markup' => t('Are you sure want to delete this webhook?'),
   );
+  $form['actions']['#type'] = 'actions';
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Delete'),
@@ -137,7 +138,7 @@ function gitlc_webhook_hook_remove($form, &$form_state, $hook_id){
  * Submit handler for the githubapi_hook_remove() form.
  */
 function gitlc_webhook_hook_remove_submit($form, &$form_state) {
-  $webhook =  $form_state['webhoo'];
+  $webhook =  $form_state['webhook'];
   $settings = array(
     'owner' => $webhook->owner,
     'repo' => $webhook->repo,
