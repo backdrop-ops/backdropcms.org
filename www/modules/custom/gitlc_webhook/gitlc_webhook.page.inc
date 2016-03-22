@@ -60,6 +60,18 @@ function gitlc_webhook_hook_validate($form, &$form_state) {
   if (count($owner_repo) != 2) {
     form_set_error('owner_repo_path', t('Please provide info in OWNER/REPO format'));
   }
+  
+  $webhook = db_select('gitlc_webhook_repositories', 'gh')
+    ->fields('gh')
+    ->condition('owner', $owner_repo[0])
+    ->condition('repo', $owner_repo[1])
+    ->execute()
+    ->fetchObject();
+    
+    if($webhook) {
+      form_set_error('owner_repo_path', t('This repo already hooked up.'));
+    }
+    
   // TODO. Need to validate if repo already hooked!
 }
 
