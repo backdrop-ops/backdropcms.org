@@ -90,7 +90,7 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   
   backdrop_set_message(print_r($hook,true));
   
-  if(FALSE === $hook){
+  if($GitlcAPI->isError()){
     return;
   }
 
