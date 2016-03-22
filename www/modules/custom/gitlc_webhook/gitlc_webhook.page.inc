@@ -81,7 +81,7 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
 
     // Setup GitHub webhook for Gitlc and signup for integration with Gitlc.
     $setup_settings = array(
-      'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH),
+      'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH, array('absolute' => TRUE)),
       'secret' => $secret,
     );
     $GitlcAPI->reInitCurl();
@@ -90,7 +90,7 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   else {
     // Signup for integration with Gitlc.
     $setup_settings = array(
-      'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH),
+      'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH, array('absolute' => TRUE)),
       'secret' => $secret,
     );
     $GitlcAPI->reInitCurl();
