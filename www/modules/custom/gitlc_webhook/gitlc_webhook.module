@@ -141,7 +141,7 @@ function gitlc_webhook_get_class($settings){
   $githubapi = new GitlcAPI();
   $githubapi->setOwnerName($settings['owner']);
   $githubapi->setRepoName($settings['repo']);
-  $githubapi->setToken($token);
+  $githubapi->setToken($api_token);
   return $githubapi;
 }
 
