@@ -173,7 +173,10 @@ class GitlcAPI {
       return FALSE;
     }
     backdrop_set_message(print_r($this->curl->response,true));
-    return (array)$this->curl->response;
+    if(is_object($this->curl->response)){
+      return (array)$this->curl->response;
+    }
+    return $this->curl->response;
   }
 
    /**
