@@ -85,7 +85,6 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     'repo' => $owner_repo[1]
   );
   $GitlcAPI = gitlc_webhook_get_class($settings);
-  $GitlcAPI->setDebug(TRUE);
   $hook = $GitlcAPI->getHook();
   $secret = backdrop_random_key();
   
@@ -121,6 +120,21 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     $GitlcAPI->reInitCurl();
     $hook = $GitlcAPI->updateHook($setup_settings);
   }
+  
+  if ($GitlcAPI->isError()) {
+    if ($message = $GitlcAPI->getGitlcAPIErrorMessage()) {
+      backdrop_set_message(t('Gitlc error message !message', array('!message' => $message)), 'error');
+      return;  
+    }
+    else{
+      if ($devel_data = $GitlcAPI->getErrors()) {
+        backdrop_set_message(t('Communication error <pre>!message</pre>', array('!message' => print_r($devel_data, true))), 'error');
+        return;
+      }
+    }
+    
+  }
+  
   if($hook){
     $webhook = array(
       'owner' => $owner_repo[0],
