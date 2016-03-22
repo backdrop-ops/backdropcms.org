@@ -8,7 +8,7 @@
 
  // URL Gitlc API.
 define('GITLC_API_URI', 'http://git.lc/api');
-define('GITLC_WEBHOOK_PAYLOAD_PATH', 'webhook/deploy')
+define('GITLC_WEBHOOK_PAYLOAD_PATH', 'webhook/deploy');
 
  
 /**
