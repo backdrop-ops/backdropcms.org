@@ -74,5 +74,5 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   );
   $GitlcAPI = gitlc_webhook_get_class($settings);
   $hook = $GitlcAPI->getHook();
-  backdrop_set_message('<pre>' . print_r($hook,true) . '</pre>');
+  backdrop_set_message('<pre>' . htmlentities(print_r($hook,true)) . '</pre>');
 }
