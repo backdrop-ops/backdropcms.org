@@ -77,8 +77,6 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   $secret = backdrop_random_key();
 
   if (!is_object($hook)) {
-    backdrop_set_message('<pre>' . htmlentities(print_r($hook, true)) . '</pre>');
-
     // Setup GitHub webhook for Gitlc and signup for integration with Gitlc.
     $setup_settings = array(
       'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH, array('absolute' => TRUE)),
@@ -88,7 +86,6 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     $hook = $GitlcAPI->createHook($setup_settings);
   } 
   else {
-    backdrop_set_message('<pre>' . htmlentities(print_r($hook, true)) . '</pre>');
     // Signup for integration with Gitlc.
     $setup_settings = array(
       'url' => url(GITLC_WEBHOOK_PAYLOAD_PATH, array('absolute' => TRUE)),
@@ -97,5 +94,16 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     $GitlcAPI->reInitCurl();
     $hook = $GitlcAPI->updateHook($setup_settings);
   }
-  backdrop_set_message('<pre>' . htmlentities(print_r($hook, true)) . '</pre>');
+  if($hook){
+    $webhook = array(
+      'owner' => $owner_repo[0],
+      'repo' => $owner_repo[1],
+      'secret' => $secret,
+    );
+    backdrop_write_record('gitlc_webhook_repositories', $webhook);
+    backdrop_set_message(t('Gitlc webhook created for !owner/!repo', array(
+      'owner' => $owner_repo[0],
+      'repo' => $owner_repo[1]
+    )));
+  }
 }
