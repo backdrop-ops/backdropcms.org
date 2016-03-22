@@ -145,13 +145,13 @@ function gitlc_webhook_hook_remove_submit($form, &$form_state) {
   );
   $GitlcAPI = gitlc_webhook_get_class($settings);
   $result = $GitlcAPI->deleteHook();
-  if($result !== FALSE){
+  if($result !== FALSE && !isset($result['error'])){
     db_delete('gitlc_webhook_repositories')
       ->condition('id', $webhook->id)
       ->execute();
     backdrop_set_message(t('Hook deleted!'));
   }else{
-    backdrop_set_message(t('We do not have permissions to remove hook!'), 'error');
+    backdrop_set_message(t('We got an error: !message', array('!message' => $result['message'])), 'error');
   }
   backdrop_goto('admin/config/system/gitlc_webhook/list');
 }
