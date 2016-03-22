@@ -87,6 +87,8 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   $GitlcAPI = gitlc_webhook_get_class($settings);
   $hook = $GitlcAPI->getHook();
   $secret = backdrop_random_key();
+  
+  backdrop_set_message('<pre>' . print_r($hook,true). '</pre>');
 
   if (!is_object($hook)) {
     // Setup GitHub webhook for Gitlc and signup for integration with Gitlc.
