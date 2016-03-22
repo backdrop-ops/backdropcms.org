@@ -5,6 +5,10 @@
  *
  * React on webhook calls.
  */
+
+ // URL Gitlc API.
+define('GITLC_API_URI', 'http://git.lc/api/');
+
  
 /**
  * Implements hook_config_info().
@@ -128,3 +132,4 @@ function gitlc_webhook_ajax_deliver($page_callback_result){
     module_invoke_all('exit');
   }
 }
+
