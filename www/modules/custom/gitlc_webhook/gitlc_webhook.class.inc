@@ -160,6 +160,16 @@ class GitlcAPI {
           $this->error_message = $this->curl->response->message;
         }
       }
+      
+      if ($message = $this->getGitlcAPIErrorMessage()) {
+        backdrop_set_message(t('Gitlc error message !message', array('!message' => $message)), 'error'); 
+      }
+      else{
+        $code = $this->curl->errorCode;
+        $message = $this->curl->errorMessage;
+        backdrop_set_message(t('Communication error: !code !message', array('!code' => $code, '!message' => $message)), 'error');
+      }
+      
       return FALSE;
     }
     return $this->curl->response;
