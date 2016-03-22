@@ -88,7 +88,19 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   $hook = $GitlcAPI->getHook();
   $secret = backdrop_random_key();
   
-  backdrop_set_message('<pre>' . print_r($hook,true). '</pre>');
+  if ($GitlcAPI->isError()) {
+    if ($message = $GitlcAPI->getGitlcAPIErrorMessage()) {
+      backdrop_set_message(t('Gitlc error message !message', array('!message' => $message)), 'error');
+      return;  
+    }
+    else{
+      if ($devel_data = $GitlcAPI->getErrors()) {
+        backdrop_set_message(t('Communication error <pre>!message</pre>', array('!message' => print_r($devel_data, true))), 'error');
+        return;
+      }
+    }
+    
+  }
 
   if (!is_object($hook)) {
     // Setup GitHub webhook for Gitlc and signup for integration with Gitlc.
