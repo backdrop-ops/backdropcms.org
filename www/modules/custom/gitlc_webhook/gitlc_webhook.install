@@ -32,8 +32,8 @@ function gitlc_webhook_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
-      'token' => array(
-        'description' => 'Gitlc token.',
+      'secret' => array(
+        'description' => 'Gitlc hook secret.',
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
@@ -51,4 +51,12 @@ function gitlc_webhook_schema() {
   );
 
   return $schema;
+}
+
+/**
+ * Fix secret. It should be varchar.
+ */
+function gitlc_webhook_update_1001() {
+  $schema = backdrop_get_schema_unprocessed('gitlc_webhook');
+  db_change_field('gitlc_webhook_repositories', 'token', 'secret', $schema['gitlc_webhook_repositories']['fields']['secret']);
 }
