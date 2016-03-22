@@ -88,8 +88,6 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   $hook = $GitlcAPI->getHook();
   $secret = backdrop_random_key();
   
-  backdrop_set_message(print_r($hook,true));
-  
   if($GitlcAPI->isError()){
     return;
   }
