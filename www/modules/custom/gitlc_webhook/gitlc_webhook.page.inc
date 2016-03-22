@@ -116,12 +116,15 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
       'owner' => $owner_repo[0],
       'repo' => $owner_repo[1],
       'secret' => $secret,
+      'public_key' => $hook['public_key'],
     );
     backdrop_write_record('gitlc_webhook_repositories', $webhook);
     backdrop_set_message(t('Gitlc webhook created for !owner/!repo', array(
       '!owner' => $owner_repo[0],
       '!repo' => $owner_repo[1]
     )));
+    // Add ability to act on new created webhook.
+    module_invoke_all('gitlc_webhook', 'created', $webhook);
   }
 }
 
@@ -168,6 +171,8 @@ function gitlc_webhook_hook_remove_submit($form, &$form_state) {
       ->condition('id', $webhook->id)
       ->execute();
     backdrop_set_message(t('Hook deleted!'));
+    // Add ability to act on deleted webhook.    
+    module_invoke_all('gitlc_webhook', 'deleted', $webhook);    
   }else{
     backdrop_set_message(t('We got an error: !message', array('!message' => $GitlcAPI->getGitlcAPIErrorMessage())), 'error');
   }
