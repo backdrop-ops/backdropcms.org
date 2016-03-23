@@ -220,6 +220,19 @@ function borg_qa_gitlc_webhook($method, $data){
         borg_qa_del_db($username, $database_name);
         borg_qa_del_dbuser($username, $database_user);
         
+        if($data['pull_request']){
+          $repo = array(
+            'owner' => $data['repo_owner'],
+            'name' => $data['repo_name'],
+          );
+          $githubapi = githubapi_get_class($repo);
+          $settings = array(
+            ':number' => $data['pull_request'],
+            'body' => t("Website: !url Removed", array('!url' => $domain)),
+          );
+          $githubapi->createIssueComment($settings);
+        }
+        
       break;
   }
   return $data;
