@@ -2,13 +2,13 @@ deploy:
   branch:
     server: backdrop.vps-private.net
     username: qa
-    dir: '{home}/github/branch/{branch}'
+    dir: '{home}/github/{owner}/{repo}/branch/{branch}'
     env_vars:
-      domain: '{branch}.qa.backdrop.vps-private.net'
-      site_name: '{branch} testing site'
-      site_mail: 'testing@{branch}.qa.backdrop.vps-private.net'
+      domain: '{branch}.{repo}.{owner}.qa.backdrop.vps-private.net'
+      site_name: '{branch} {owner}/{repo} testing site'
+      site_mail: 'testing@{branch}.{repo}.{owner}.qa.backdrop.vps-private.net'
       account_name: admin
-      account_mail: 'testing@{branch}.qa.backdrop.vps-private.net' 
+      account_mail: 'testing@{branch}.{repo}.{owner}.qa.backdrop.vps-private.net' 
     scripts:
       init: '{deploy_dir}/core/scripts/init_deploy.sh'
     webhooks:
@@ -17,13 +17,13 @@ deploy:
   pull_request:
     server: backdrop.vps-private.net
     username: qa
-    dir: '{home}/github/pr/{pr_number}'
+    dir: '{home}/github/{owner}/{repo}/pr/{pr_number}'
     env_vars:
-      domain: '{pr_number}.qa.backdrop.vps-private.net'
-      site_name: '{pr_number} testing site'
-      site_mail: 'testing@{pr_number}.qa.backdrop.vps-private.net'
+      domain: '{pr_number}.{repo}.{owner}.qa.backdrop.vps-private.net'
+      site_name: '{pr_number} {owner}/{repo} testing site'
+      site_mail: 'testing@{pr_number}.{repo}.{owner}.qa.backdrop.vps-private.net'
       account_name: admin
-      account_mail: 'testing@{pr_number}.qa.backdrop.vps-private.net' 
+      account_mail: 'testing@{pr_number}.{repo}.{owner}.qa.backdrop.vps-private.net' 
     scripts:
       init: '{deploy_dir}/core/scripts/init_deploy.sh'
     webhooks:
