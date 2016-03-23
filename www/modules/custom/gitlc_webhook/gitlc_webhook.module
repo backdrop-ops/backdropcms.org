@@ -70,7 +70,7 @@ function gitlc_webhook_menu() {
     'type' => MENU_CALLBACK,
     'title' => 'Webhook',
     'page callback' => 'gitlc_webhook_ajax',
-    'access callback' => 'gitlc_webhook_access',
+    'access callback' => TRUE,
     'page arguments' => array(1),
     'delivery callback' => 'gitlc_webhook_ajax_deliver',
   );
@@ -80,39 +80,32 @@ function gitlc_webhook_menu() {
 
 function gitlc_webhook_ajax($method){
   $received_json = file_get_contents("php://input",  TRUE);
-  $data = backdrop_json_decode($received_json);
   
+  $headers = apache_request_headers();
+  
+  $webhook = db_select('gitlc_webhook_repositories', 'gh')
+    ->fields('gh')
+    ->condition('owner', $headers['Owner'])
+    ->condition('repo', $headers['Repo'])
+    ->execute()
+    ->fetchObject();
+    
+  if(empty($webhook)){
+    return MENU_ACCESS_DENIED;
+  }
+  
+  if(isset($headers['Signature'])){
+    list($algorithm, $expected_hash) = explode('=', $headers['Signature'], 2);
+    $actual_hash = hash_hmac($algorithm, $received_json, $webhook->secret);
+    if ($expected_hash !== $actual_hash) {
+      return MENU_ACCESS_DENIED;
+    }
+  }
+
+  $data = backdrop_json_decode($received_json);
   $answer = module_invoke_all('gitlc_webhook', $method, $data);
 
   return $answer;
-}
-
-/**
- * Check token to be valid
- *
- * @return bool
- *   Boolean TRUE if the current user has the requested permission.
- */
-function gitlc_webhook_access(){
-  $headers = apache_request_headers();
-  $config = config('gitlc_webhook.settings');
-  
-  $api_token = settings_get('gitlc_webhook_api_token');
-  if(empty($api_token)){  
-    $api_token = $config->get('api_token');
-  }
-  
-  $header_token = '';
-  if(isset($headers['token'])){
-    $header_token = $headers['token'];
-  }
-  if(isset($headers['Token'])){
-    $header_token = $headers['Token'];
-  }
-  if(0 == strcmp($token, $header_token)){
-    return TRUE;
-  }
-  return FALSE;
 }
 
 function gitlc_webhook_ajax_deliver($page_callback_result){
