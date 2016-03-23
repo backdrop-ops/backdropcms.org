@@ -43,7 +43,37 @@ function borg_qa_menu() {
  */
 function borg_qa_gitlc_webhook($method, $data){
   switch($method){
+    case 'created':
+        /** Gitlc webhook has been created.
+         *
+         * @param $data array
+         *   - owner: GitHub organisation or user.
+         *   - repo: GitHub repository name.
+         *   - secret: secret used to signature gitlc webhooks.
+         *   - public_key: SSH public_key for Gitlc deploy process.
+         */
+      break;
+    case 'deleted':
+        /** Gitlc webhook has been deleted.
+         *
+         * @param $data array
+         *   - owner: GitHub organisation or user.
+         *   - repo: GitHub repository name.
+         *   - secret: secret used to signature gitlc webhooks.
+         *   - public_key: SSH public_key for Gitlc deploy process.
+         */
+      break;
     case 'config':
+        /** Gitlc config reguest from Gitlc server.
+         *
+         * @param $data array
+         *   - owner: GitHub organisation or user.
+         *   - repo: GitHub repository name.
+         *   - branch: repository branch that is going to be deployed.
+         *
+         * @return
+         *   array with 'config' value where gitlc.yml file is base64 encoded.
+         */
         $owner = $data['owner'];
         $repo = $data['repo'];
         $branch = $data['branch'];
@@ -56,10 +86,25 @@ function borg_qa_gitlc_webhook($method, $data){
         }
       break;
     case 'init':
+        /** Gitlc init request from Gitlc server. Happen if it's first deployment. Good to call install script.
+         *
+         * @param $data array
+         *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
+         *     - env_vars: Enviorment values set by script or Gitlc.
+         *   - repo: GitHub repository name.
+         *   - branch: repository branch that is going to be deployed.
+         *   - pull_request: PR number or FALSE.
+         *
+         * @return
+         *   array with 'env_vars'. All enviotment variables will be available via ENV in scripts.
+         */
         
-        $domain = qa_get_value($data['config']['env_vars'], 'domain');
-        if(is_object($domain)){
-          return $domain;
+        if(!$domain = borg_qa_get_value($data['config']['env_vars'], 'domain')){
+          $answer = array(
+            'error' => TRUE,
+            'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'));
+          );
+          return $answer;
         }
         
         $answer['env_vars'] = array();
@@ -95,10 +140,25 @@ function borg_qa_gitlc_webhook($method, $data){
         return $answer;
       break;
     case 'remove':
-        //remove domain, mysql user and database.
-        $domain = qa_get_value($data['config']['env_vars'], 'domain');
-        if(is_object($domain)){
-          return $domain;
+        /** Gitlc remove request from Gitlc server. Happen if branch deleted or PR closed. Good to cleanup data.
+         *
+         * @param $data array
+         *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
+         *     - env_vars: Enviorment values set by script or Gitlc.
+         *   - repo: GitHub repository name.
+         *   - branch: repository branch that is going to be deployed.
+         *   - pull_request: PR number or FALSE.
+         *
+         * @return
+         *   Nothig. This webhook happen after remove script get processed.
+         */
+
+        if(!$domain = borg_qa_get_value($data['config']['env_vars'], 'domain')){
+          $answer = array(
+            'error' => TRUE,
+            'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'));
+          );
+          return $answer;
         }
         
         $suffix = $data['branch'];
@@ -127,13 +187,8 @@ function borg_qa_gitlc_webhook($method, $data){
 function borg_qa_get_value($env_vars, $variable){
   if(isset($env_vars[$variable])){
     return $env_vars[$variable];
-  }else{
-    $answer = new stdClass();
-    $answer->error = TRUE;
-    $answer->message = t('Please set env_vars:!variable', array('!variable' => $variable));
-    $answer->env_vars = $env_vars;
-    return $answer;
   }
+  FALSE;
 }
 
 function borg_qa_add_domain($user, $domain){
