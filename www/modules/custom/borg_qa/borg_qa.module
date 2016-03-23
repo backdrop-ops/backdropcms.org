@@ -152,6 +152,29 @@ function borg_qa_gitlc_webhook($method, $data){
         //Add User and Grant it
         borg_qa_add_dbuser($username, $database_user,$database_name, $database_password);
         
+        // Set Website User and Pass
+        $answer['env_vars']['site_user'] = 'admin';
+        $answer['env_vars']['site_password'] = user_password(8);
+        // Add comment to PR.
+        if($data['pull_request']){
+          $repo = array(
+            'owner' => $data['repo_owner'],
+            'name' => $data['repo_name'],
+          );
+          $githubapi = githubapi_get_class($repo);
+          $settings = array(
+            ':number' => $number,
+            'body' => t("Website: !url\nUsername: !user\nPassword: !pass\n", 
+              array(
+                '!url' => $domain,
+                '!user' => $answer['env_vars']['site_user'],
+                '!pass' => $answer['env_vars']['site_password'],
+              )
+            ),
+          );
+          $githubapi->createIssueComment($settings);
+        }
+        
         return $answer;
       break;
     case 'remove':
