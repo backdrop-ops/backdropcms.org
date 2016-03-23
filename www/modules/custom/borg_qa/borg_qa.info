@@ -7,3 +7,4 @@ configure = admin/config/system/qa
 type = module
 dependencies[] = rp_api
 dependencies[] = gitlc_webhook
+dependencies[] = githubapi
