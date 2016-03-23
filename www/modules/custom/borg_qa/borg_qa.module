@@ -128,7 +128,7 @@ function borg_qa_gitlc_webhook($method, $data){
 
         // Database user limited with 16 digit total. Let's md5 it and cut to 16 - strlen($data['config']['username'] . "_") - 1.
         $md5 = md5($suffix);
-        $database_user = substr($suffix, 0, 16 - strlen($data['config']['username'] . '_') - 1);
+        $database_user = substr($md5, 0, 16 - strlen($data['config']['username'] . '_') - 1);
         
         $answer['env_vars']['database_user']= $data['config']['username'] . '_' . $database_user;
 
@@ -184,9 +184,7 @@ function borg_qa_gitlc_webhook($method, $data){
 
         // Database user limited with 16 digit total. Let's md5 it and cut to 16 - strlen($data['config']['username'] . "_") - 1.
         $md5 = md5($suffix);
-        $database_user = substr($suffix, 0, 16 - strlen($data['config']['username'] . '_') - 1);
-
-        $database_user = str_replace(array('%','.','?'), '', $suffix);
+        $database_user = substr($md5, 0, 16 - strlen($data['config']['username'] . '_') - 1);
         $database_name = $md5;
         
         //Init RP
