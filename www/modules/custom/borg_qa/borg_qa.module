@@ -163,7 +163,7 @@ function borg_qa_gitlc_webhook($method, $data){
           );
           $githubapi = githubapi_get_class($repo);
           $settings = array(
-            ':number' => $number,
+            ':number' => $data['pull_request'],
             'body' => t("Website: !url\nUsername: !user\nPassword: !pass\n", 
               array(
                 '!url' => $domain,
