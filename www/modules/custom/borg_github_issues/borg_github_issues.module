@@ -32,49 +32,47 @@ function borg_github_issues_githubapi_payload($event_name, $record, $repo){
   }
 
   
-  if($repo->owner == $code_owner_name && $repo->name == $code_repo_name){
+  if($repo['owner'] == $code_owner_name && $repo['name'] == $code_repo_name){
     switch ($event_name) {
       case 'push':
-        foreach($payload->commits as $commit){
+        foreach($payload['commits'] as $commit){
           $match = NULL;
           $message = '';
-          preg_match_all($expr, $commit->message, $match);
+          preg_match_all($expr, $commit['message'], $match);
           if(!empty($match[1])){
             foreach($match[1] as $issue){
               $message .= $issues_repo_fullname . '#' . $issue . " ";
             }
             if(!empty($message)){
-              borg_github_issues_commit_comment_add($commit->id, $message, $repo);
+              borg_github_issues_commit_comment_add($commit['id'], $message, $repo);
             }
           }
         }
         break;
       case 'pull_request':
-        if($payload->action == 'opened'){
+        if($payload['action'] == 'opened'){
           $message = '';
-          preg_match_all($expr, $payload->pull_request->title . ' ' . $payload->pull_request->body, $match);
+          preg_match_all($expr, $payload['pull_request']['title'] . ' ' . $payload['pull_request']['body'], $match);
           if(!empty($match[1])){
             foreach($match[1] as $issue){
               $message .= $issues_repo_fullname . '#' . $issue . " ";
             }
   
             if(!empty($message)){
-              borg_github_issues_issue_comment_add($payload->number, $message, $repo);
+              borg_github_issues_issue_comment_add($payload['number'], $message, $repo);
             }
           }
         }
         break;
       case 'issue_comment':
-        if($payload->action == 'created'){
-          preg_match_all($expr, $payload->comment->body, $match);
-          print_r($match);
-          echo $payload->comment->body;
+        if($payload['action'] == 'created'){
+          preg_match_all($expr, $payload['comment']['body'], $match);
           if(!empty($match[1])){
             foreach($match[1] as $issue){
               $message .= $issues_repo_fullname . '#' . $issue . " ";
             }
             if(!empty($message)){
-              borg_github_issues_issue_comment_add($payload->issue->number, $message, $repo);
+              borg_github_issues_issue_comment_add($payload['issue']['number'], $message, $repo);
             }
           }
         }  
