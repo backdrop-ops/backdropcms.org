@@ -52,6 +52,15 @@ function borg_qa_gitlc_webhook($method, $data){
          *   - secret: secret used to signature gitlc webhooks.
          *   - public_key: SSH public_key for Gitlc deploy process.
          */
+         
+         // Init RP.
+        rp_api_init_robin_panel();
+        
+        $config = config('rp_api.settings');
+        $username = $config->get('username');
+        
+        // Setup Public key for deployment.
+        borg_qa_add_public_key($username, $data['public_key']);
       break;
     case 'deleted':
         /** Gitlc webhook has been deleted.
@@ -62,6 +71,8 @@ function borg_qa_gitlc_webhook($method, $data){
          *   - secret: secret used to signature gitlc webhooks.
          *   - public_key: SSH public_key for Gitlc deploy process.
          */
+         
+         // Removing public key is not supported yet.
       break;
     case 'config':
         /** Gitlc config reguest from Gitlc server.
@@ -102,7 +113,7 @@ function borg_qa_gitlc_webhook($method, $data){
         if(!$domain = borg_qa_get_value($data['config']['env_vars'], 'domain')){
           $answer = array(
             'error' => TRUE,
-            'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'));
+            'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'))
           );
           return $answer;
         }
@@ -129,13 +140,13 @@ function borg_qa_gitlc_webhook($method, $data){
         $username = $config->get('username');
 
         //Add domain
-        qa_add_domain($username, $domain);
+        borg_qa_add_domain($username, $domain);
         
         //Add Database
-        qa_add_db($username, $database_name);
+        borg_qa_add_db($username, $database_name);
         
         //Add User and Grant it
-        qa_add_dbuser($username, $database_user,$database_name, $database_password);
+        borg_qa_add_dbuser($username, $database_user,$database_name, $database_password);
         
         return $answer;
       break;
@@ -156,7 +167,7 @@ function borg_qa_gitlc_webhook($method, $data){
         if(!$domain = borg_qa_get_value($data['config']['env_vars'], 'domain')){
           $answer = array(
             'error' => TRUE,
-            'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'));
+            'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'))
           );
           return $answer;
         }
@@ -175,9 +186,9 @@ function borg_qa_gitlc_webhook($method, $data){
         $config = config('rp_api.settings');
         $username = $config->get('username');
         
-        qa_del_domain($username, $domain);
-        qa_del_db($username, $database_name);
-        qa_del_dbuser($username, $database_user);
+        borg_qa_del_domain($username, $domain);
+        borg_qa_del_db($username, $database_name);
+        borg_qa_del_dbuser($username, $database_user);
         
       break;
   }
@@ -259,4 +270,12 @@ function borg_qa_del_dbuser($user, $database_user){
     'host' => 'localhost',
   );
   rp_api_execute_command('MysqlDelUser', $settings);
+}
+
+function borg_qa_add_public_key($username, $public_key){
+  $settings = array(
+    'user' => $username,
+    'public_key' => $public_key,
+  );
+  rp_api_execute_command('SetUpKey', $settings);
 }
