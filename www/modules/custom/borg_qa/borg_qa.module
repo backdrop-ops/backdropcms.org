@@ -164,7 +164,7 @@ function borg_qa_gitlc_webhook($method, $data){
           $githubapi = githubapi_get_class($repo);
           $settings = array(
             ':number' => $data['pull_request'],
-            'body' => t("Website: !url\nUsername: !user\nPassword: !pass\n", 
+            'body' => t("Website: http://!url\nUsername: !user\nPassword: !pass\n", 
               array(
                 '!url' => $domain,
                 '!user' => $answer['env_vars']['site_user'],
@@ -228,7 +228,7 @@ function borg_qa_gitlc_webhook($method, $data){
           $githubapi = githubapi_get_class($repo);
           $settings = array(
             ':number' => $data['pull_request'],
-            'body' => t("Website: !url Removed", array('!url' => $domain)),
+            'body' => t("Website: http://!url Removed", array('!url' => $domain)),
           );
           $githubapi->createIssueComment($settings);
         }
