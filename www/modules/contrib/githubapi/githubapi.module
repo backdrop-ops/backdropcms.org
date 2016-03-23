@@ -94,7 +94,7 @@ function gitlc_github_rid_load($rid){
     ->fields('gr')
     ->condition('id', $rid)
     ->execute()
-    ->fetchObject();
+    ->fetchAssoc();
 }
 
 /**
@@ -112,35 +112,35 @@ function githubapi_payload_process() {
     $received_json = file_get_contents('php://input', TRUE);
 
 
-    if (!$event = json_decode($received_json)) {
+    if (!$event = backdrop_json_decode($received_json)) {
       backdrop_add_http_header('Status', '403 Empty or broken data received');
       exit('Empty or broken data received.');
     }
 
     $repository_name = '';
 
-    if(isset($event->repository) && isset($event->repository->name)){
-      $repository_name = $event->repository->name;
+    if(isset($event['repository']) && isset($event['repository']['name'])){
+      $repository_name = $event['repository']['name'];
     }
 
     $owner_name = '';
-    if(isset($event->repository->owner)){
-      if(isset($event->repository->owner->login)){
-        $owner_name = $event->repository->owner->login;
+    if(isset($event['repository']['owner'])){
+      if(isset($event['repository']['owner']['login'])){
+        $owner_name = $event['repository']['owner']['login'];
       }
-      if(isset($event->repository->owner->name)){
-        $owner_name = $event->repository->owner->name;
+      if(isset($event['repository']['owner']['name'])){
+        $owner_name = $event['repository']['owner']['name'];
       }
     }
 
     if($event_name == 'membership'){
-      if(isset($event->organization->login)){
-        $owner_name = $event->organization->login;
+      if(isset($event['organization']['login'])){
+        $owner_name = $event['organization']['login'];
       }
     }
     if($event_name == 'ping'){
-      if(isset($event->organization->login)){
-        $owner_name = $event->organization->login;
+      if(isset($event['organization']['login'])){
+        $owner_name = $event['organization']['login'];
       }
     }
     
@@ -155,8 +155,8 @@ function githubapi_payload_process() {
         ->condition('name', "*")
         ->condition('owner', $owner_name)
         ->execute()
-        ->fetchObject();
-      $repo->name = '';
+        ->fetchAssoc();
+      $repo['name'] = '';
       if(empty($repo)){
         backdrop_add_http_header('Status', '403 We do not process this repo.');
         exit('We did not find repo information.');
@@ -167,15 +167,15 @@ function githubapi_payload_process() {
         ->condition('name', $repository_name)
         ->condition('owner', $owner_name)
         ->execute()
-        ->fetchObject();
+        ->fetchAssoc();
       if(empty($repo)){
         $repo = db_select('githubapi_repositories', 'gr')
           ->fields('gr')
           ->condition('name', "*")
           ->condition('owner', $owner_name)
           ->execute()
-          ->fetchObject();
-        $repo->name = $repository_name;
+          ->fetchAssoc();
+        $repo['name'] = $repository_name;
       }        
       if(empty($repo)){
         backdrop_add_http_header('Status', '403 We do not process this repo.');
@@ -184,22 +184,22 @@ function githubapi_payload_process() {
     }
 
     list($algorithm, $expected_hash) = explode('=', $_SERVER['HTTP_X_HUB_SIGNATURE'], 2);
-    $actual_hash = hash_hmac($algorithm, $received_json, $repo->secret);
+    $actual_hash = hash_hmac($algorithm, $received_json, $repo['secret']);
     if ($expected_hash !== $actual_hash) {
       backdrop_add_http_header('Status', '403 Invalid signature');
       exit('The provided secret key did not match the server key.');
     }
     if ($event_name) {
-      $sender = $event->sender;
-      $repository = $event->repository;
+      $sender = $event['sender'];
+      $repository = $event['repository'];
 
-      unset($event->repository);
-      unset($event->sender);
+      unset($event['repository']);
+      unset($event['sender']);
 
       $record = array(
         'type' => $event_name,
         'sender' => $sender,
-        'rid' => $repo->id,
+        'rid' => $repo['id'],
         'data' => $event,
         'timestamp' => REQUEST_TIME,
       );
@@ -229,8 +229,8 @@ function githubapi_get_class($repo){
   }
 
   $githubapi = new GitHubAPI();
-  $githubapi->setOwnerName($repo->owner);
-  $githubapi->setRepoName($repo->name);
+  $githubapi->setOwnerName($repo['owner']);
+  $githubapi->setRepoName($repo['name']);
   $githubapi->setToken($token);
   return $githubapi;
 }

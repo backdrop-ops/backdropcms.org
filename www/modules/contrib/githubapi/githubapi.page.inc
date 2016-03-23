@@ -51,7 +51,7 @@ function githubapi_hook_remove($form, &$form_state, $rid){
     ->fields('gh')
     ->condition('rid', $rid)
     ->execute()
-    ->fetchObject();
+    ->fetchAssoc();
 
   if(empty($repo)){
     backdrop_goto('admin/config/system/githubapi/list');
@@ -88,22 +88,22 @@ function githubapi_hook_remove_submit($form, &$form_state) {
   
   $githubapi = new GitHubAPI();
 
-  $githubapi->setOwnerName($repo->owner);
-  $githubapi->setRepoName($repo->name);
+  $githubapi->setOwnerName($repo['owner']);
+  $githubapi->setRepoName($repo['name']);
   $githubapi->setToken($token);
 
-  if($repo->name == '*'){
-    $answer = $githubapi->deleteOrgHook($hook->hook_id);
+  if($repo['name'] == '*'){
+    $answer = $githubapi->deleteOrgHook($hook['hook_id']);
   }else{
-    $answer = $githubapi->deleteHook($hook->hook_id);
+    $answer = $githubapi->deleteHook($hook['hook_id']);
   }
   if(empty($answer)){
     db_delete('githubapi_hooks')
-      ->condition('rid', $repo->id)
+      ->condition('rid', $repo['id'])
       ->execute();
 
     db_delete('githubapi_repositories')
-      ->condition('id', $repo->id)
+      ->condition('id', $repo['id'])
       ->execute();
 
     backdrop_set_message(t('Hook deleted!'));
