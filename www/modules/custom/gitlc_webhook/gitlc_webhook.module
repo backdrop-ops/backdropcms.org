@@ -103,6 +103,10 @@ function gitlc_webhook_ajax($method) {
   $data = backdrop_json_decode($received_json);
   $answer = module_invoke_all('gitlc_webhook', $method, $data);
 
+  // Temporary fix to just print and exit.
+  gitlc_webhook_ajax_deliver($answer);
+  exit();
+
   return $answer;
 }
 
@@ -127,10 +131,15 @@ function gitlc_webhook_ajax_deliver($page_callback_result) {
         backdrop_add_http_header('Status', '503 Service unavailable');
         break;
     }
-
   }
   elseif (is_array($page_callback_result)) {
     $json = $page_callback_result;
+  }
+  else {
+    $json = array(
+      'error' => TRUE,
+      'message' => t('An unknown error has occurred.'),
+    );
   }
   print backdrop_json_encode($json);
   if (backdrop_get_bootstrap_phase() == BACKDROP_BOOTSTRAP_FULL && (!defined('MAINTENANCE_MODE') || MAINTENANCE_MODE != 'update')) {

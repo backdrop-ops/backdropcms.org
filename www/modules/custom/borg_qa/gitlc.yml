@@ -1,6 +1,6 @@
 deploy:
   branch:
-    server: backdrop.vps-private.net
+    server: qa.backdropcms.org
     username: qa
     dir: '{home}/github/{repo_owner}/{repo_name}/branch/{branch}'
     env_vars:
