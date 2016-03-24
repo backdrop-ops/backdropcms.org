@@ -4,28 +4,28 @@ deploy:
     username: qa
     dir: '{home}/github/{repo_owner}/{repo_name}/branch/{branch}'
     env_vars:
-      domain: '{branch}.{repo_name}.{repo_owner}.qa.backdrop.vps-private.net'
-      site_name: '{branch} {repo_owner}/{repo_name} testing site'
-      site_mail: 'testing@{branch}.{repo_name}.{repo_owner}.qa.backdrop.vps-private.net'
+      domain: '{branch}.{repo_name}.{repo_owner}.qa.backdropcms.org'
+      site_name: 'branch {branch} {repo_owner}/{repo_name} testing site'
+      site_mail: 'testing@{branch}.{repo_name}.{repo_owner}.qa.backdropcms.org'
       account_name: admin
-      account_mail: 'testing@{branch}.{repo_name}.{repo_owner}.qa.backdrop.vps-private.net' 
+      account_mail: 'testing@{branch}.{repo_name}.{repo_owner}.qa.backdropcms.org' 
     scripts:
-      init: '{deploy_dir}/core/scripts/init_deploy.sh'
+      init: '/home/qa/tools/scripts/init_deploy.sh'
     webhooks:
-      init: http://cms.backdrop.expert/webhook/init
-      remove: http://cms.backdrop.expert/webhook/remove
+      init: http://backdropcms.org/webhook/init
+      remove: http://backdropcms.org/webhook/remove
   pull_request:
     server: backdrop.vps-private.net
     username: qa
     dir: '{home}/github/{repo_owner}/{repo_name}/pr/{pr_number}'
     env_vars:
-      domain: '{pr_number}.{repo_name}.{repo_owner}.qa.backdrop.vps-private.net'
-      site_name: '{pr_number} {repo_owner}/{repo_name} testing site'
-      site_mail: 'testing@{pr_number}.{repo_name}.{repo_owner}.qa.backdrop.vps-private.net'
+      domain: '{pr_number}.{repo_name}.{repo_owner}.qa.backdropcms.org'
+      site_name: 'PR {pr_number} {repo_owner}/{repo_name} testing site'
+      site_mail: 'testing@{pr_number}.{repo_name}.{repo_owner}.qa.backdropcms.org'
       account_name: admin
-      account_mail: 'testing@{pr_number}.{repo_name}.{repo_owner}.qa.backdrop.vps-private.net' 
+      account_mail: 'testing@{pr_number}.{repo_name}.{repo_owner}.qa.backdropcms.org' 
     scripts:
-      init: '{deploy_dir}/core/scripts/init_deploy.sh'
+      init: '/home/qa/tools/scripts/init_deploy.sh'
     webhooks:
-      init: http://cms.backdrop.expert/webhook/init
-      remove: http://cms.backdrop.expert/webhook/remove
+      init: http://backdropcms.org/webhook/init
+      remove: http://backdropcms.org/webhook/remove
