@@ -132,12 +132,6 @@ function gitlc_webhook_ajax_deliver($page_callback_result) {
   elseif (is_array($page_callback_result)) {
     $json = $page_callback_result;
   }
-  else {
-    $json = array(
-      'error' => TRUE,
-      'message' => t('An unknown error has occurred.'),
-    );
-  }
   print backdrop_json_encode($json);
   if (backdrop_get_bootstrap_phase() == BACKDROP_BOOTSTRAP_FULL && (!defined('MAINTENANCE_MODE') || MAINTENANCE_MODE != 'update')) {
     module_invoke_all('exit');
