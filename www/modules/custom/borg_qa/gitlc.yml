@@ -10,7 +10,7 @@ deploy:
       account_name: admin
       account_mail: 'testing@{branch}.{repo_name}.{repo_owner}.qa.backdrop.vps-private.net' 
     scripts:
-      init: '{deploy_dir}/core/scripts/init_deploy.sh'
+      init: '/home/qa/tools/scripts/init_deploy.sh'
     webhooks:
       init: http://cms.backdrop.expert/webhook/init
       remove: http://cms.backdrop.expert/webhook/remove
@@ -25,7 +25,7 @@ deploy:
       account_name: admin
       account_mail: 'testing@{pr_number}.{repo_name}.{repo_owner}.qa.backdrop.vps-private.net' 
     scripts:
-      init: '{deploy_dir}/core/scripts/init_deploy.sh'
+      init: '/home/qa/tools/scripts/init_deploy.sh'
     webhooks:
       init: http://cms.backdrop.expert/webhook/init
       remove: http://cms.backdrop.expert/webhook/remove
