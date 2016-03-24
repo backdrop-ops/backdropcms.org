@@ -60,7 +60,7 @@ function borg_qa_gitlc_webhook($method, $data) {
       rp_api_init_robin_panel();
       
       $username = settings_get('rp_api_username');
-      if ( empty ($username) ) {
+      if (empty($username)) {
         $config = config('rp_api.settings');
         $username = $config->get('username');
       }
@@ -147,7 +147,7 @@ function borg_qa_gitlc_webhook($method, $data) {
       rp_api_init_robin_panel();
 
       $username = settings_get('rp_api_username');
-      if ( empty ($username) ) {
+      if (empty($username)) {
         $config = config('rp_api.settings');
         $username = $config->get('username');
       }
@@ -223,7 +223,7 @@ function borg_qa_gitlc_webhook($method, $data) {
       rp_api_init_robin_panel();
 
       $username = settings_get('rp_api_username');
-      if ( empty ($username) ) {
+      if (empty($username)) {
         $config = config('rp_api.settings');
         $username = $config->get('username');
       }
