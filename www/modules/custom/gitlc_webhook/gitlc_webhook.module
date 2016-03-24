@@ -83,8 +83,8 @@ function gitlc_webhook_ajax($method) {
 
   $webhook = db_select('gitlc_webhook_repositories', 'gh')
     ->fields('gh')
-    ->condition('owner', $_SERVER['Owner'])
-    ->condition('repo', $_SERVER['Repo'])
+    ->condition('owner', $_SERVER['HTTP_OWNER'])
+    ->condition('repo', $_SERVER['HTTP_REPO'])
     ->execute()
     ->fetchObject();
 
@@ -92,8 +92,8 @@ function gitlc_webhook_ajax($method) {
     return MENU_ACCESS_DENIED;
   }
 
-  if (isset($_SERVER['Signature'])) {
-    list($algorithm, $expected_hash) = explode('=', $_SERVER['Signature'], 2);
+  if (isset($_SERVER['HTTP_SIGNATURE'])) {
+    list($algorithm, $expected_hash) = explode('=', $_SERVER['HTTP_SIGNATURE'], 2);
     $actual_hash = hash_hmac($algorithm, $received_json, $webhook->secret);
     if ($expected_hash !== $actual_hash) {
       return MENU_ACCESS_DENIED;
