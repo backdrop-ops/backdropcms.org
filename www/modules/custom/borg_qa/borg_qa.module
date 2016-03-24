@@ -17,7 +17,6 @@ function borg_qa_config_info() {
   return $prefixes;
 }
 
-
 /**
  * Implements hook_menu().
  */
@@ -58,13 +57,12 @@ function borg_qa_gitlc_webhook($method, $data) {
 
       // Init RP.
       rp_api_init_robin_panel();
-      
+
       $username = settings_get('rp_api_username');
       if (empty($username)) {
-        $config = config('rp_api.settings');
-        $username = $config->get('username');
+        $username = config_get('rp_api.settings', 'username');
       }
-      
+
       // Setup Public key for deployment.
       borg_qa_add_public_key($username, $data['public_key']);
       break;
@@ -148,10 +146,9 @@ function borg_qa_gitlc_webhook($method, $data) {
 
       $username = settings_get('rp_api_username');
       if (empty($username)) {
-        $config = config('rp_api.settings');
-        $username = $config->get('username');
+        $username = config_get('rp_api.settings', 'username');
       }
-    
+
       //Add domain
       borg_qa_add_domain($username, $domain);
 
@@ -224,10 +221,9 @@ function borg_qa_gitlc_webhook($method, $data) {
 
       $username = settings_get('rp_api_username');
       if (empty($username)) {
-        $config = config('rp_api.settings');
-        $username = $config->get('username');
+        $username = config_get('rp_api.settings', 'username');
       }
-      
+
       borg_qa_del_domain($username, $domain);
       borg_qa_del_db($username, $database_name);
       borg_qa_del_dbuser($username, $database_user);
