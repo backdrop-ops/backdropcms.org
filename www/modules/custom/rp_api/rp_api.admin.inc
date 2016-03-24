@@ -1,15 +1,15 @@
 <?php
 /**
  * @file
- * Administration pages provided by github API module.
+ * Administration pages provided by GitHub API module.
  */
 
- /**
+/**
  * Menu callback for admin/config/system/githubapi/settings.
  */
 function rp_api_settings() {
   $config = config('rp_api.settings');
-  
+
   // Use setting.php values if exists.
   $server = settings_get('rp_api_server');
   $username = settings_get('rp_api_username');
@@ -54,27 +54,28 @@ function rp_api_settings() {
 function rp_api_settings_submit($form, &$form_state) {
 
   $config = config('rp_api.settings');
-  
+
   $server = settings_get('rp_api_server');
   $username = settings_get('rp_api_username');
   $password = settings_get('rp_api_password');
 
-  if(empty($server)){
+  if (empty($server)) {
     $config->set('server', $form_state['values']['server']);
   }
-  if(empty($username)){
+  if (empty($username)) {
     $config->set('username', $form_state['values']['username']);
   }
-  if(empty($password)){
+  if (empty($password)) {
     $config->set('password', $form_state['values']['password']);
   }
   $config->save();
-  
+
   rp_api_init_robin_panel();
   $cache = rp_api_execute_command('ShowUserInfo', array('user' => $form_state['values']['username']));
-  if(FALSE == $cache){
+  if (FALSE == $cache) {
     backdrop_set_message(t('Credentials is not correct !error', array('!error' => rp_api_error_message())), 'error');
-  }else{
+  }
+  else {
     backdrop_set_message(t('The configuration options have been saved.'));
   }
 }

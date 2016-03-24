@@ -1,11 +1,13 @@
 <?php
-/**
- * @file
- * Class RobinPanel.
- *
- * Add event to EHD.
- */
 
+/**
+ * @file RobinPanel integration class
+ *
+ * This class provides integration with Robin Panel, a hosted service at
+ * vps-private.net. Robin Panel allows the creation of environments that
+ * have individual MySQL databases and users, domain names, email accounts, and
+ * FTP accounts.
+ */
 class RobinPanel {
   protected $user;
   protected $password;
@@ -99,10 +101,10 @@ class RobinPanel {
     $data_line = $this->createXML($data_arr);
 
     if ($this->debug) {
-	    $log_file = '/tmp/rp.log';
-	    if(isset($this->logfile) && !empty($this->logfile)){
-		    $log_file = $this->logfile;	
-	    }
+      $log_file = '/tmp/rp.log';
+      if (isset($this->logfile) && !empty($this->logfile)) {
+        $log_file = $this->logfile;
+      }
       $handle = fopen($log_file, 'a');
       $error_message = "[$command]\n";
       $error_message .= print_r($data_arr, TRUE);
@@ -477,7 +479,7 @@ class RobinPanel {
       ),
     );
 
-    foreach($setting as $key => $val) {
+    foreach ($setting as $key => $val) {
       $account[$key] = $val;
     }
 

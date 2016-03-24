@@ -37,37 +37,32 @@ function rp_api_menu() {
 
   return $items;
 }
+
 /**
  * Init RobinClass object and return it.
- *
- * @param int $sid
- *   Server ID.
- *
- * @param int $aid
- *   Account ID.
  *
  * @return bool|RobinPanel
  *   RobinPanel class connect.
  */
 function rp_api_init_robin_panel() {
   static $rp;
-  
+
   if (empty($rp)) {
     module_load_include('inc', 'rp_api', 'robin_panel_class');
-    
+
     $config = config('rp_api.settings');
-    
+
     $server = settings_get('rp_api_server');
     $username = settings_get('rp_api_username');
     $password = settings_get('rp_api_password');
-  
-    if(empty($server)){
+
+    if (empty($server)) {
       $server = $config->get('server');
     }
-    if(empty($username)){
+    if (empty($username)) {
       $username = $config->get('username');
     }
-    if(empty($password)){
+    if (empty($password)) {
       $password = $config->get('password');
     }
     $rp = new RobinPanel($username, $password, $server);
@@ -95,6 +90,7 @@ function rp_api_execute_command($command, $settings) {
       break;
     case 'ShowUserInfo':
       $answer = $rp->ShowUserInfo($settings['user'], TRUE, 360);
+      break;
     default:
       $answer = $rp->execute($command, $settings, TRUE, 360);
   }
@@ -107,6 +103,7 @@ function rp_api_execute_command($command, $settings) {
 
         if ($result_answer_status == 2) {
           $count = 1;
+          $result2 = NULL;
 
           while ($result_answer_status == 2 && $count < 10) {
             $result2 = $rp->CmdStatusGet($taskid);
@@ -126,7 +123,7 @@ function rp_api_execute_command($command, $settings) {
         }
 
         $cache = isset($answer['Data']['answer']['vars']['data']['message']) ? $answer['Data']['answer']['vars']['data']['message'] : $answer['answer']['vars']['data']['message'];
-        if(isset($rp->aid)){
+        if (isset($rp->aid)) {
           db_update('rp_api_accounts')
             ->fields(array(
               'cache' => serialize($cache),
@@ -136,7 +133,7 @@ function rp_api_execute_command($command, $settings) {
         }
         return $cache;
         break;
-        
+
       case 'AddUser':
         // Safe user.
         $result = $rp->ShowUserInfo($settings['user'], TRUE, 360);
@@ -146,6 +143,7 @@ function rp_api_execute_command($command, $settings) {
 
         if ($result_answer_status == 2) {
           $count = 1;
+          $result2 = NULL;
 
           while ($result_answer_status == 2 && $count < 10) {
             $result2 = $rp->CmdStatusGet($taskid);
@@ -164,7 +162,7 @@ function rp_api_execute_command($command, $settings) {
         }
 
         $cache = isset($result['Data']['answer']['vars']['data']['message']) ? $result['Data']['answer']['vars']['data']['message'] : $result['answer']['vars']['data']['message'];
-        if(isset($rp->sid)){
+        if (isset($rp->sid)) {
           $account = array(
             'login' => $settings['user'],
             'password' => $settings['password'],
@@ -173,7 +171,7 @@ function rp_api_execute_command($command, $settings) {
             'cache' => serialize($cache),
             'changed' => REQUEST_TIME,
           );
-          
+
           backdrop_write_record('rp_api_accounts', $account);
           $rp->aid = $account['aid'];
         }
@@ -181,7 +179,7 @@ function rp_api_execute_command($command, $settings) {
 
       default:
         //let's wait for complete status
-        if(!isset($answer['Data']['answer']['status'])){
+        if (!isset($answer['Data']['answer']['status'])) {
           print_r($answer);
           return FALSE;
         }
@@ -190,6 +188,7 @@ function rp_api_execute_command($command, $settings) {
 
         if ($result_answer_status == 2) {
           $count = 1;
+          $result2 = NULL;
 
           while ($result_answer_status == 2 && $count < 10) {
             $result2 = $rp->CmdStatusGet($taskid);

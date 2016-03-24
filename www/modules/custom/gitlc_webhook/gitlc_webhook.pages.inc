@@ -1,5 +1,11 @@
 <?php
+/**
+ * Menu callbacks for Gitlc module.
+ */
 
+/**
+ * Menu callback; Display a list of all Gitlc web hooks.
+ */
 function gitlc_webhook_admin_list() {
   $repos = db_select('gitlc_webhook_repositories', 'wr')
     ->fields('wr')
@@ -13,7 +19,8 @@ function gitlc_webhook_admin_list() {
     $row = array();
     $row[] = array('data' => $repo->owner);
     $row[] = array('data' => $repo->repo);
-    $links['delete'] = array('title' => t('Delete'),
+    $links['delete'] = array(
+      'title' => t('Delete'),
       'href' => "admin/config/system/gitlc_webhook/" . $repo->id . "/delete",
     );
     $row[] = array(
@@ -60,18 +67,18 @@ function gitlc_webhook_hook_validate($form, &$form_state) {
   if (count($owner_repo) != 2) {
     form_set_error('owner_repo_path', t('Please provide info in OWNER/REPO format'));
   }
-  
+
   $webhook = db_select('gitlc_webhook_repositories', 'gh')
     ->fields('gh')
     ->condition('owner', $owner_repo[0])
     ->condition('repo', $owner_repo[1])
     ->execute()
     ->fetchObject();
-    
-    if($webhook) {
-      form_set_error('owner_repo_path', t('This repo already hooked up.'));
-    }
-    
+
+  if ($webhook) {
+    form_set_error('owner_repo_path', t('This repo already hooked up.'));
+  }
+
   // TODO. Need to validate if repo already hooked!
 }
 
@@ -87,8 +94,8 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   $GitlcAPI = gitlc_webhook_get_class($settings);
   $hook = $GitlcAPI->getHook();
   $secret = backdrop_random_key();
-  
-  if($GitlcAPI->isError()){
+
+  if ($GitlcAPI->isError()) {
     return;
   }
 
@@ -110,8 +117,8 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
     $GitlcAPI->reInitCurl();
     $hook = $GitlcAPI->updateHook($setup_settings);
   }
-  
-  if($hook){
+
+  if ($hook) {
     $webhook = array(
       'owner' => $owner_repo[0],
       'repo' => $owner_repo[1],
@@ -128,14 +135,14 @@ function gitlc_webhook_hook_submit($form, &$form_state) {
   }
 }
 
-function gitlc_webhook_hook_remove($form, &$form_state, $hook_id){
+function gitlc_webhook_hook_remove($form, &$form_state, $hook_id) {
   $webhook = db_select('gitlc_webhook_repositories', 'gh')
     ->fields('gh')
     ->condition('id', $hook_id)
     ->execute()
     ->fetchObject();
 
-  if(empty($webhook)){
+  if (empty($webhook)) {
     backdrop_goto('admin/config/system/gitlc_webhook/list');
   }
 
@@ -158,13 +165,13 @@ function gitlc_webhook_hook_remove($form, &$form_state, $hook_id){
  * Submit handler for the githubapi_hook_remove() form.
  */
 function gitlc_webhook_hook_remove_submit($form, &$form_state) {
-  $webhook =  $form_state['webhook'];
+  $webhook = $form_state['webhook'];
   $settings = array(
     'owner' => $webhook->owner,
     'repo' => $webhook->repo,
   );
   $GitlcAPI = gitlc_webhook_get_class($settings);
-  
+
   $GitlcAPI->deleteHook();
   if (!$GitlcAPI->isError()) {
     db_delete('gitlc_webhook_repositories')
@@ -172,7 +179,7 @@ function gitlc_webhook_hook_remove_submit($form, &$form_state) {
       ->execute();
     backdrop_set_message(t('Hook deleted!'));
     // Add ability to act on deleted webhook.    
-    module_invoke_all('gitlc_webhook', 'deleted', $webhook);    
+    module_invoke_all('gitlc_webhook', 'deleted', $webhook);
   }
   backdrop_goto('admin/config/system/gitlc_webhook/list');
 }

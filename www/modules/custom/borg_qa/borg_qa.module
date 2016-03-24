@@ -35,217 +35,220 @@ function borg_qa_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  // Temporarily disabled until borg_qa_settings() actually returns something.
+  $items['admin/config/system/qa']['access callback'] = FALSE;
+
   return $items;
 }
 
 /**
  * Implements hook_gitlc_webhook().
  */
-function borg_qa_gitlc_webhook($method, $data){
-  switch($method){
+function borg_qa_gitlc_webhook($method, $data) {
+  switch ($method) {
     case 'created':
-        /** Gitlc webhook has been created.
-         *
-         * @param $data array
-         *   - owner: GitHub organisation or user.
-         *   - repo: GitHub repository name.
-         *   - secret: secret used to signature gitlc webhooks.
-         *   - public_key: SSH public_key for Gitlc deploy process.
-         */
-         
-         // Init RP.
-        rp_api_init_robin_panel();
-        
-        $config = config('rp_api.settings');
-        $username = $config->get('username');
-        
-        // Setup Public key for deployment.
-        borg_qa_add_public_key($username, $data['public_key']);
+      /** Gitlc webhook has been created.
+       *
+       * @param $data array
+       *   - owner: GitHub organisation or user.
+       *   - repo: GitHub repository name.
+       *   - secret: secret used to signature gitlc webhooks.
+       *   - public_key: SSH public_key for Gitlc deploy process.
+       */
+
+      // Init RP.
+      rp_api_init_robin_panel();
+
+      $config = config('rp_api.settings');
+      $username = $config->get('username');
+
+      // Setup Public key for deployment.
+      borg_qa_add_public_key($username, $data['public_key']);
       break;
     case 'deleted':
-        /** Gitlc webhook has been deleted.
-         *
-         * @param $data array
-         *   - owner: GitHub organisation or user.
-         *   - repo: GitHub repository name.
-         *   - secret: secret used to signature gitlc webhooks.
-         *   - public_key: SSH public_key for Gitlc deploy process.
-         */
-         
-         // Removing public key is not supported yet.
+      /** Gitlc webhook has been deleted.
+       *
+       * @param $data array
+       *   - owner: GitHub organisation or user.
+       *   - repo: GitHub repository name.
+       *   - secret: secret used to signature gitlc webhooks.
+       *   - public_key: SSH public_key for Gitlc deploy process.
+       */
+
+      // Removing public key is not supported yet.
       break;
     case 'config':
-        /** Gitlc config reguest from Gitlc server.
-         *
-         * @param $data array
-         *   - owner: GitHub organisation or user.
-         *   - repo: GitHub repository name.
-         *   - branch: repository branch that is going to be deployed.
-         *
-         * @return
-         *   array with 'config' value where gitlc.yml file is base64 encoded.
-         */
-        $owner = $data['owner'];
-        $repo = $data['repo'];
-        $branch = $data['branch'];
-        $config_filepath = backdrop_get_path('module', 'borg_qa') . '/gitlc.yml';
-        $data['config_file'] = $config_filepath;
-        if($config = file_get_contents($config_filepath)){
-          return array(
-            'config' => base64_encode($config),
-          );
-        }
+      /** Gitlc config reguest from Gitlc server.
+       *
+       * @param $data array
+       *   - owner: GitHub organisation or user.
+       *   - repo: GitHub repository name.
+       *   - branch: repository branch that is going to be deployed.
+       *
+       * @return
+       *   array with 'config' value where gitlc.yml file is base64 encoded.
+       */
+      $owner = $data['owner'];
+      $repo = $data['repo'];
+      $branch = $data['branch'];
+      $config_filepath = backdrop_get_path('module', 'borg_qa') . '/gitlc.yml';
+      $data['config_file'] = $config_filepath;
+      if ($config = file_get_contents($config_filepath)) {
+        return array(
+          'config' => base64_encode($config),
+        );
+      }
       break;
     case 'init':
-        /** Gitlc init request from Gitlc server. Happen if it's first deployment. Good to call install script.
-         *
-         * @param $data array
-         *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
-         *     - env_vars: Enviorment values set by script or Gitlc.
-         *   - repo_name: GitHub repository name.
-         *   - repo_owner: GitHub repository owner.
-         *   - branch: repository branch that is going to be deployed.
-         *   - pull_request: PR number or FALSE.
-         *
-         * @return
-         *   array with 'env_vars'. All enviotment variables will be available via ENV in scripts.
-         */
-        
-        if(!$domain = borg_qa_get_value($data['config']['env_vars'], 'domain')){
-          $answer = array(
-            'error' => TRUE,
-            'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'))
-          );
-          return $answer;
-        }
-        
-        $answer['env_vars'] = array();
-        
-        $suffix = $data['repo_name'] . $data['repo_owner'] . $data['branch'];
-        if($data['pull_request']){
-          $suffix = 'pr' . $data['pull_request'] . $data['repo_name'] . $data['repo_owner'] . $data['branch'];
-        }
+      /** Gitlc init request from Gitlc server. Happen if it's first deployment. Good to call install script.
+       *
+       * @param $data array
+       *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
+       *     - env_vars: Enviorment values set by script or Gitlc.
+       *   - repo_name: GitHub repository name.
+       *   - repo_owner: GitHub repository owner.
+       *   - branch: repository branch that is going to be deployed.
+       *   - pull_request: PR number or FALSE.
+       *
+       * @return
+       *   array with 'env_vars'. All enviotment variables will be available via ENV in scripts.
+       */
 
-        // Database user limited with 16 digit total. Let's md5 it and cut to 16 - strlen($data['config']['username'] . "_") - 1.
-        $md5 = md5($suffix);
-        $database_user = substr($md5, 0, 16 - strlen($data['config']['username'] . '_') - 1);
-        
-        $answer['env_vars']['database_user']= $data['config']['username'] . '_' . $database_user;
-
-        $database_name = $md5;
-        $answer['env_vars']['database_name']= $data['config']['username'] . '_' . $database_name;
-        
-        $database_password = user_password(8);
-        $answer['env_vars']['database_password']= $database_password;
-        //Init RP
-        rp_api_init_robin_panel();
-        
-        $config = config('rp_api.settings');
-        $username = $config->get('username');
-
-        //Add domain
-        borg_qa_add_domain($username, $domain);
-        
-        //Add Database
-        borg_qa_add_db($username, $database_name);
-        
-        //Add User and Grant it
-        borg_qa_add_dbuser($username, $database_user,$database_name, $database_password);
-        
-        // Set Website User and Pass
-        $answer['env_vars']['site_user'] = 'admin';
-        $answer['env_vars']['site_password'] = user_password(8);
-        // Add comment to PR.
-        if($data['pull_request']){
-          $repo = array(
-            'owner' => $data['repo_owner'],
-            'name' => $data['repo_name'],
-          );
-          $githubapi = githubapi_get_class($repo);
-          $settings = array(
-            ':number' => $data['pull_request'],
-            'body' => t("Website: http://!url\nUsername: !user\nPassword: !pass\n", 
-              array(
-                '!url' => $domain,
-                '!user' => $answer['env_vars']['site_user'],
-                '!pass' => $answer['env_vars']['site_password'],
-              )
-            ),
-          );
-          $githubapi->createIssueComment($settings);
-        }
-        
+      if (!$domain = borg_qa_get_value($data['config']['env_vars'], 'domain')) {
+        $answer = array(
+          'error' => TRUE,
+          'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'))
+        );
         return $answer;
+      }
+
+      $answer['env_vars'] = array();
+
+      $suffix = $data['repo_name'] . $data['repo_owner'] . $data['branch'];
+      if ($data['pull_request']) {
+        $suffix = 'pr' . $data['pull_request'] . $data['repo_name'] . $data['repo_owner'] . $data['branch'];
+      }
+
+      // Database user limited with 16 digit total. Let's md5 it and cut to 16 - strlen($data['config']['username'] . "_") - 1.
+      $md5 = md5($suffix);
+      $database_user = substr($md5, 0, 16 - strlen($data['config']['username'] . '_') - 1);
+
+      $answer['env_vars']['database_user'] = $data['config']['username'] . '_' . $database_user;
+
+      $database_name = $md5;
+      $answer['env_vars']['database_name'] = $data['config']['username'] . '_' . $database_name;
+
+      $database_password = user_password(8);
+      $answer['env_vars']['database_password'] = $database_password;
+      //Init RP
+      rp_api_init_robin_panel();
+
+      $config = config('rp_api.settings');
+      $username = $config->get('username');
+
+      //Add domain
+      borg_qa_add_domain($username, $domain);
+
+      //Add Database
+      borg_qa_add_db($username, $database_name);
+
+      //Add User and Grant it
+      borg_qa_add_dbuser($username, $database_user, $database_name, $database_password);
+
+      // Set Website User and Pass
+      $answer['env_vars']['site_user'] = 'admin';
+      $answer['env_vars']['site_password'] = user_password(8);
+      // Add comment to PR.
+      if ($data['pull_request']) {
+        $repo = array(
+          'owner' => $data['repo_owner'],
+          'name' => $data['repo_name'],
+        );
+        $githubapi = githubapi_get_class($repo);
+        $settings = array(
+          ':number' => $data['pull_request'],
+          'body' => t("Website: http://!url\nUsername: !user\nPassword: !pass\n",
+            array(
+              '!url' => $domain,
+              '!user' => $answer['env_vars']['site_user'],
+              '!pass' => $answer['env_vars']['site_password'],
+            )
+          ),
+        );
+        $githubapi->createIssueComment($settings);
+      }
+
+      return $answer;
       break;
     case 'remove':
-        /** Gitlc remove request from Gitlc server. Happen if branch deleted or PR closed. Good to cleanup data.
-         *
-         * @param $data array
-         *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
-         *     - env_vars: Enviorment values set by script or Gitlc.
-         *   - repo_name: GitHub repository name.
-         *   - repo_owner: GitHub repository owner.
-         *   - branch: repository branch that is going to be deployed.
-         *   - pull_request: PR number or FALSE.
-         *
-         * @return
-         *   Nothig. This webhook happen after remove script get processed.
-         */
+      /** Gitlc remove request from Gitlc server. Happen if branch deleted or PR closed. Good to cleanup data.
+       *
+       * @param $data array
+       *   - config: current config structure. Usefull if provided by .gitlc.yml file in GitHub Repository.
+       *     - env_vars: Enviorment values set by script or Gitlc.
+       *   - repo_name: GitHub repository name.
+       *   - repo_owner: GitHub repository owner.
+       *   - branch: repository branch that is going to be deployed.
+       *   - pull_request: PR number or FALSE.
+       *
+       * @return
+       *   Nothig. This webhook happen after remove script get processed.
+       */
 
-        if(!$domain = borg_qa_get_value($data['config']['env_vars'], 'domain')){
-          $answer = array(
-            'error' => TRUE,
-            'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'))
-          );
-          return $answer;
-        }
-        
-        $suffix = $data['repo_name'] . $data['repo_owner'] . $data['branch'];
-        if($data['pull_request']){
-          $suffix = 'pr' . $data['pull_request'] . $data['repo_name'] . $data['repo_owner'] . $data['branch'];
-        }
+      if (!$domain = borg_qa_get_value($data['config']['env_vars'], 'domain')) {
+        $answer = array(
+          'error' => TRUE,
+          'message' => t('Please set env_vars:!variable', array('!variable' => 'domain'))
+        );
+        return $answer;
+      }
 
-        // Database user limited with 16 digit total. Let's md5 it and cut to 16 - strlen($data['config']['username'] . "_") - 1.
-        $md5 = md5($suffix);
-        $database_user = substr($md5, 0, 16 - strlen($data['config']['username'] . '_') - 1);
-        $database_name = $md5;
-        
-        //Init RP
-        rp_api_init_robin_panel();
-        
-        $config = config('rp_api.settings');
-        $username = $config->get('username');
-        
-        borg_qa_del_domain($username, $domain);
-        borg_qa_del_db($username, $database_name);
-        borg_qa_del_dbuser($username, $database_user);
-        
-        if($data['pull_request']){
-          $repo = array(
-            'owner' => $data['repo_owner'],
-            'name' => $data['repo_name'],
-          );
-          $githubapi = githubapi_get_class($repo);
-          $settings = array(
-            ':number' => $data['pull_request'],
-            'body' => t("Website: http://!url Removed", array('!url' => $domain)),
-          );
-          $githubapi->createIssueComment($settings);
-        }
-        
+      $suffix = $data['repo_name'] . $data['repo_owner'] . $data['branch'];
+      if ($data['pull_request']) {
+        $suffix = 'pr' . $data['pull_request'] . $data['repo_name'] . $data['repo_owner'] . $data['branch'];
+      }
+
+      // Database user limited with 16 digit total. Let's md5 it and cut to 16 - strlen($data['config']['username'] . "_") - 1.
+      $md5 = md5($suffix);
+      $database_user = substr($md5, 0, 16 - strlen($data['config']['username'] . '_') - 1);
+      $database_name = $md5;
+
+      //Init RP
+      rp_api_init_robin_panel();
+
+      $config = config('rp_api.settings');
+      $username = $config->get('username');
+
+      borg_qa_del_domain($username, $domain);
+      borg_qa_del_db($username, $database_name);
+      borg_qa_del_dbuser($username, $database_user);
+
+      if ($data['pull_request']) {
+        $repo = array(
+          'owner' => $data['repo_owner'],
+          'name' => $data['repo_name'],
+        );
+        $githubapi = githubapi_get_class($repo);
+        $settings = array(
+          ':number' => $data['pull_request'],
+          'body' => t("Website: http://!url Removed", array('!url' => $domain)),
+        );
+        $githubapi->createIssueComment($settings);
+      }
+
       break;
   }
   return $data;
 }
 
-function borg_qa_get_value($env_vars, $variable){
-  if(isset($env_vars[$variable])){
+function borg_qa_get_value($env_vars, $variable) {
+  if (isset($env_vars[$variable])) {
     return $env_vars[$variable];
   }
   FALSE;
 }
 
-function borg_qa_add_domain($user, $domain){
+function borg_qa_add_domain($user, $domain) {
   $settings = array(
     'user' => $user,
     'domain' => $domain,
@@ -262,7 +265,7 @@ function borg_qa_add_domain($user, $domain){
   rp_api_execute_command('AddDomain', $settings);
 }
 
-function borg_qa_add_db($user, $database){
+function borg_qa_add_db($user, $database) {
   $settings = array(
     'user' => $user,
     'db' => $database,
@@ -270,7 +273,7 @@ function borg_qa_add_db($user, $database){
   rp_api_execute_command('MysqlAddDB', $settings);
 }
 
-function borg_qa_add_dbuser($user, $database_user, $database_name, $password){
+function borg_qa_add_dbuser($user, $database_user, $database_name, $password) {
   $settings = array(
     'user' => $user,
     'dbuser' => $database_user,
@@ -278,7 +281,7 @@ function borg_qa_add_dbuser($user, $database_user, $database_name, $password){
     'dbhost' => 'localhost',
   );
   rp_api_execute_command('MysqlAddUser', $settings);
-  
+
   $grand_settings = array(
     'user' => $user,
     'name' => $database_name,
@@ -289,7 +292,7 @@ function borg_qa_add_dbuser($user, $database_user, $database_name, $password){
   rp_api_execute_command('MysqlUserGrant', $grand_settings);
 }
 
-function borg_qa_del_domain($user, $domain){
+function borg_qa_del_domain($user, $domain) {
   $settings = array(
     'user' => $user,
     'domain' => $domain,
@@ -298,7 +301,7 @@ function borg_qa_del_domain($user, $domain){
   rp_api_execute_command('DelDomain', $settings);
 }
 
-function borg_qa_del_db($user, $database_name){
+function borg_qa_del_db($user, $database_name) {
   $settings = array(
     'user' => $user,
     'db' => $database_name,
@@ -306,7 +309,7 @@ function borg_qa_del_db($user, $database_name){
   rp_api_execute_command('MysqlDelDB', $settings);
 }
 
-function borg_qa_del_dbuser($user, $database_user){
+function borg_qa_del_dbuser($user, $database_user) {
   $settings = array(
     'user' => $user,
     'dbuser' => $database_user,
@@ -315,7 +318,7 @@ function borg_qa_del_dbuser($user, $database_user){
   rp_api_execute_command('MysqlDelUser', $settings);
 }
 
-function borg_qa_add_public_key($username, $public_key){
+function borg_qa_add_public_key($username, $public_key) {
   $settings = array(
     'user' => $username,
     'public_key' => $public_key,

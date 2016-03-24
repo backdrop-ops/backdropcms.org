@@ -16,17 +16,46 @@ require_once 'libraries/php-curl-class/src/Curl/Curl.php';
  */
 class GitlcAPI {
 
-  // Curl Class object.
-  protected $curl = FALSE;
-  // Token required to interact with Gitlc API.
-  protected $token = FALSE;
-  // Organisation or User name.
-  protected $owner_name = FALSE;
-  // Repository name.
-  protected $repo_name = FALSE;
-  // Debug mode. If enabled, data will be printed via backdrop_set_message.
+  /**
+   * The Curl object used for performing HTTP requests.
+   *
+   * @var \Curl\Curl
+   */
+  protected $curl;
+
+  /**
+   * Token required to interact with Gitlc API.
+   *
+   * @var string
+   */
+  protected $token = '';
+
+  /**
+   * Organisation or User name.
+   *
+   * @var string
+   */
+  protected $owner_name;
+
+  /**
+   * Repository name.
+   *
+   * @var string
+   */
+  protected $repo_name;
+
+  /**
+   * Debug mode. If enabled, data will be printed via backdrop_set_message().
+   *
+   * @var bool
+   */
   protected $debug = FALSE;
-  // Latest error message from GitlcAPI.
+
+  /**
+   * Latest error message from GitlcAPI.
+   *
+   * @var string
+   */
   protected $error_message = '';
 
   /**
@@ -80,6 +109,7 @@ class GitlcAPI {
   public function setToken($token = '') {
     $this->token = $token;
   }
+
   /**
    * Get store token.
    *
@@ -106,18 +136,19 @@ class GitlcAPI {
    * @return array
    *   An array of request information:
    *     - code: the last error number. @see curl_errno.
-   *     - message: A clear text error message for the last cURL operation. @see curl_error.
+   *     - message: A clear text error message for the last cURL operation.
+   *   @see curl_error.
    *     - request_headers: an array of request headers.
    *     - response_headers: an array of response headers.
    */
   public function testingGetHeaders() {
-    return array (
-        'code' => $this->curl->curlErrorCode,
-        'message' => $this->curl->curlErrorMessage,
-        'request_headers' => $this->curl->requestHeaders,
-        'response_headers' => $this->curl->responseHeaders,
-        'curl' => $this->curl
-      );
+    return array(
+      'code' => $this->curl->curlErrorCode,
+      'message' => $this->curl->curlErrorMessage,
+      'request_headers' => $this->curl->requestHeaders,
+      'response_headers' => $this->curl->responseHeaders,
+      'curl' => $this->curl
+    );
   }
 
   /**
@@ -140,57 +171,61 @@ class GitlcAPI {
    * @return
    *   String with error message.
    */
-  public function getGitlcAPIErrorMessage(){
+  public function getGitlcAPIErrorMessage() {
     return $this->error_message;
   }
+
   /**
    * Determine if request has been cached.
    *
-   * @access protected
    * @return
    *   FALSE if error. Object with answer if request success.
    */
   protected function getResponse() {
     if ($this->debug) {
-      backdrop_set_message('<pre>'.print_r($this->testingGetHeaders(), true).'</pre>');
+      backdrop_set_message('<pre>' . print_r($this->testingGetHeaders(), TRUE) . '</pre>');
     }
     if ($this->isError()) {
-      if(isset($this->curl->response->error) && $this->curl->response->error){
-        if(isset($this->curl->response->message)){
+      if (isset($this->curl->response->error) && $this->curl->response->error) {
+        if (isset($this->curl->response->message)) {
           $this->error_message = $this->curl->response->message;
         }
       }
-      
+
       if ($message = $this->getGitlcAPIErrorMessage()) {
-        backdrop_set_message(t('Gitlc error message !message', array('!message' => $message)), 'error'); 
+        backdrop_set_message(t('Gitlc error message !message', array('!message' => $message)), 'error');
       }
-      else{
+      else {
         $code = $this->curl->errorCode;
         $message = $this->curl->errorMessage;
-        backdrop_set_message(t('Communication error: !code !message', array('!code' => $code, '!message' => $message)), 'error');
+        backdrop_set_message(t('Communication error: !code !message', array(
+          '!code' => $code,
+          '!message' => $message
+        )), 'error');
       }
-      
+
       return FALSE;
     }
-    if(is_object($this->curl->response)){
-      return (array)$this->curl->response;
+    if (is_object($this->curl->response)) {
+      return (array) $this->curl->response;
     }
-    if('null' == $this->curl->response or NULL == $this->curl->response){
+    if ('null' == $this->curl->response or NULL == $this->curl->response) {
       return FALSE;
     }
     return $this->curl->response;
   }
 
-   /**
+  /**
    * Perform GET request to Gitlc API and return answer.
    *
-   * @access protected
    * @param $command
    *   String value. Gitlc API url with tokens Like :owner, :repo and ect.
    * @param $params array
-   *   Values for request and tokens for request url. Like :owner, :repo, :id and etc.
-   * @return
-   *   FALSE if request failed. Object if success.
+   *   Values for request and tokens for request url. Like :owner, :repo, :id
+   *   and etc.
+   *
+   * @return array|bool|null
+   *   FALSE if request failed. An array of data on success.
    */
   protected function getRequest($command, $params = array()) {
 
@@ -201,18 +236,19 @@ class GitlcAPI {
     }
 
     $this->curl->get(GITLC_API_URI . '/' . $command, $params);
-    $response =  $this->getResponse();
+    $response = $this->getResponse();
     return $response;
   }
 
   /**
    * Perform PUT request to Gitlc API and return answer.
    *
-   * @access protected
    * @param $command
    *   String value. Gitlc API url with tokens Like :owner, :repo and ect.
    * @param $params array
-   *   Values for request and tokens for request url. Like :owner, :repo, :id and etc.
+   *   Values for request and tokens for request url. Like :owner, :repo, :id
+   *   and etc.
+   *
    * @return
    *   FALSE if request failed. Object if success.
    */
@@ -220,47 +256,48 @@ class GitlcAPI {
 
     $this->prepareCommand($command, $params);
 
-    $query='';
     if ($this->getToken()) {
       $this->curl->setHeader('Token', $this->getToken());
     }
 
     $this->curl->put(GITLC_API_URI . '/' . $command, $params);
-    $response =  $this->getResponse();
+    $response = $this->getResponse();
     return $response;
   }
 
   /**
    * Perform POST request to Gitlc API and return answer.
    *
-   * @access protected
    * @param $command
    *   String value. Gitlc API url with tokens Like :owner, :repo and ect.
    * @param $params array
-   *   Values for request and tokens for request url. Like :owner, :repo, :id and etc.
+   *   Values for request and tokens for request url. Like :owner, :repo, :id
+   *   and etc.
+   *
    * @return
    *   FALSE if request failed. Object if success.
    */
   protected function postRequest($command, $params = array()) {
 
     $this->prepareCommand($command, $params);
-    $query='';
+
     if ($this->getToken()) {
       $this->curl->setHeader('Token', $this->getToken());
     }
     $this->curl->post(GITLC_API_URI . '/' . $command, $params);
-    $response =  $this->getResponse();
+    $response = $this->getResponse();
     return $response;
   }
 
   /**
    * Perform DELETE request to Gitlc API and return answer.
    *
-   * @access protected
    * @param $command
    *   String value. Gitlc API url with tokens Like :owner, :repo and ect.
    * @param $params array
-   *   Values for request and tokens for request url. Like :owner, :repo, :id and etc.
+   *   Values for request and tokens for request url. Like :owner, :repo, :id
+   *   and etc.
+   *
    * @return
    *   FALSE if request failed. Object if success.
    */
@@ -268,24 +305,23 @@ class GitlcAPI {
 
     $this->prepareCommand($command, $params);
 
-    $query='';
     if ($this->getToken()) {
       $this->curl->setHeader('Token', $this->getToken());
     }
 
     $this->curl->delete(GITLC_API_URI . '/' . $command, $params);
-    $response =  $this->getResponse();
+    $response = $this->getResponse();
     return $response;
   }
 
- /**
+  /**
    * Replace tokens with values in request url.
    *
-   * @access private
    * @param $command
    *   String value. Gitlc API url with tokens Like :owner, :repo and ect.
    * @param $params array
-   *   Values for request and tokens for request url. Like :owner, :repo, :id and etc.
+   *   Values for request and tokens for request url. Like :owner, :repo, :id
+   *   and etc.
    */
   private function prepareCommand(&$command, &$params) {
     foreach ($params as $key => $val) {
@@ -301,7 +337,8 @@ class GitlcAPI {
    * https://developer.github.com/v3/repos/#get
    *
    * @return
-   *   Return repository information or FALSE if there is no repository or no access.
+   *   Return repository information or FALSE if there is no repository or no
+   *   access.
    *
    * @see SetRepoName
    * @see SetOwnerName
@@ -320,19 +357,20 @@ class GitlcAPI {
    *
    * @param $settings array
    *   An array of settings for hook
-   *     - url: The URL to which the payloads will be delivered. 
-   *     - secret: If provided, payloads will be delivered with an Signature header.
+   *     - url: The URL to which the payloads will be delivered.
+   *     - secret: If provided, payloads will be delivered with an Signature
+   *   header.
+   *
    * @return
    *   Return hook information or FALSE if there is no access.
    *
    * @see SetRepoName
    * @see SetOwnerName
    */
-  public function createHook($settings)
-  {
+  public function createHook($settings) {
     $settings[':owner'] = $this->owner_name;
     $settings[':repo'] = $this->repo_name;
-    return $this->postRequest( 'repos/:owner/:repo/hook', $settings ); 
+    return $this->postRequest('repos/:owner/:repo/hook', $settings);
   }
 
   /**
@@ -340,19 +378,20 @@ class GitlcAPI {
    *
    * @param $settings array
    *   An array of settings for hook
-   *     - url: The URL to which the payloads will be delivered. 
-   *     - secret: If provided, payloads will be delivered with an Signature header.
+   *     - url: The URL to which the payloads will be delivered.
+   *     - secret: If provided, payloads will be delivered with an Signature
+   *   header.
+   *
    * @return
    *   Return hook information or FALSE if there is no access.
    *
    * @see SetRepoName
    * @see SetOwnerName
    */
-  public function updateHook($settings)
-  {
+  public function updateHook($settings) {
     $settings[':owner'] = $this->owner_name;
     $settings[':repo'] = $this->repo_name;
-    return $this->putRequest( 'repos/:owner/:repo/hook', $settings ); 
+    return $this->putRequest('repos/:owner/:repo/hook', $settings);
   }
 
   /**
@@ -365,7 +404,7 @@ class GitlcAPI {
    */
   public function deleteHook() {
     return $this->deleteRequest(
-        'repos/:owner/:repo/hook', array(
+      'repos/:owner/:repo/hook', array(
         ':owner' => $this->owner_name,
         ':repo' => $this->repo_name,
       )
