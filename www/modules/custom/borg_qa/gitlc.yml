@@ -12,10 +12,10 @@ deploy:
     scripts:
       init: '/home/qa/tools/scripts/init_deploy.sh'
     webhooks:
-      init: http://backdropcms.org/webhook/init
-      remove: http://backdropcms.org/webhook/remove
+      init: https://backdropcms.org/webhook/init
+      remove: https://backdropcms.org/webhook/remove
   pull_request:
-    server: backdrop.vps-private.net
+    server: qa.backdropcms.org
     username: qa
     dir: '{home}/github/{repo_owner}/{repo_name}/pr/{pr_number}'
     env_vars:
@@ -27,5 +27,5 @@ deploy:
     scripts:
       init: '/home/qa/tools/scripts/init_deploy.sh'
     webhooks:
-      init: http://backdropcms.org/webhook/init
-      remove: http://backdropcms.org/webhook/remove
+      init: https://backdropcms.org/webhook/init
+      remove: https://backdropcms.org/webhook/remove
