@@ -169,8 +169,19 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * Prepare variables for node template
  */
 function borg_preprocess_node(&$variables){
+  // For news posts, change the username to a real name.
+  if ($variables['node']->type == 'post') {
+    // Change the submitted by language.
+    $author = user_load($variables['node']->uid);
+    $lang = $author->langcode;
+    if (!empty($author->field_name[$lang])) {
+      $variables['name'] = l($author->field_name[$lang][0]['safe_value'], 'user/' . $author->uid);
+    }
+  }
+
   // Change the submitted by language.
-  $variables['submitted'] = str_replace('Submitted by', 'Posted by', $variables['submitted']);
+  $variables['submitted'] = t('Posted by by !username on !datetime', array('!username' => $variables['name'], '!datetime' => $variables['date']));
+
   // Add a picture to blog posts.
   if ($variables['type'] == 'post' && $variables['view_mode'] == 'full') {
     // Get the profile photo.
