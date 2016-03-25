@@ -40,12 +40,4 @@ function template_preprocess_layout__double_fixed_inner(&$variables) {
       $variables['main_attributes']['class'][] = 'has-background';
     }
   }
-
-  // Add the equal-height javascript library.
-  $path = backdrop_get_path('theme', 'borg');
-  $lib = $path . '/js/lib/match-height/jquery.matchHeight.js';
-  backdrop_add_js($lib);
-  // Then add the height matching.
-  $match_path = $path . '/js/match-height.js';
-  //backdrop_add_js($match_path);
 }
