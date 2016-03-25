@@ -1,7 +1,7 @@
 {
-    "_config_name": "field.field.field_gender",
-    "field_name": "field_gender",
-    "type": "list_text",
+    "_config_name": "field.field.field_forhire",
+    "field_name": "field_forhire",
+    "type": "list_boolean",
     "translatable": false,
     "module": "list",
     "active": 1,
@@ -10,12 +10,10 @@
     "deleted": 0,
     "entity_types": [],
     "settings": {
-        "allowed_values": {
-            "male": "Male",
-            "female": "Female",
-            "bi": "Bigender",
-            "other": "Other"
-        },
+        "allowed_values": [
+            "",
+            "Available for hire"
+        ],
         "allowed_values_function": ""
     },
     "storage": {

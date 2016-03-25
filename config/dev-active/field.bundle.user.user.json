@@ -10,22 +10,22 @@
     "extra_fields": {
         "form": {
             "redirect": {
-                "weight": "15"
+                "weight": "17"
             },
             "account": {
-                "weight": "1"
+                "weight": "0"
             },
             "timezone": {
-                "weight": "14"
+                "weight": "16"
             },
             "googleanalytics": {
-                "weight": "4"
+                "weight": "6"
             }
         },
         "display": {
             "member_for": {
                 "default": {
-                    "weight": "10",
+                    "weight": "12",
                     "visible": false
                 }
             }
