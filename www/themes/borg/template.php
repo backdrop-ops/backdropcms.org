@@ -214,8 +214,8 @@ function borg_menu_link(array $variables) {
 
   $menu_name = isset($element['#original_link']['menu_name']) ? $element['#original_link']['menu_name'] : NULL;
   if ($menu_name === 'main-menu' || $menu_name === 'menu-handbook') {
-    // Add the font awesome icon.
-    if ($element['#href']) {
+    // Add the font awesome icon where there's a drawer.
+    if ($element['#href'] && $element['#href'] == 'node/1') {
       $element['#title'] .= ' <i class="fa fa-forward fa-fw"></i>';
       $element['#localized_options']['html'] = TRUE;
     }
