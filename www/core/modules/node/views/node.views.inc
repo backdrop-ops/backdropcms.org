@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Provide views data and handlers for node.module.
@@ -733,18 +734,11 @@ function node_row_node_view_preprocess_node(&$variables) {
  * Implements hook_views_query_substitutions().
  */
 function node_views_query_substitutions() {
-  $substitutions = array(
+  return array(
     '***ADMINISTER_NODES***' => intval(user_access('administer nodes')),
     '***VIEW_OWN_UNPUBLISHED_NODES***' => intval(user_access('view own unpublished content')),
-    '***VIEW_ANY_UNPUBLISHED_NODES***' => intval(user_access('view any unpublished content')),
     '***BYPASS_NODE_ACCESS***' =>  intval(user_access('bypass node access')),
   );
-
-  foreach (node_type_get_types() as $type => $name) {
-    $substitutions["***VIEW_UNPUBLISHED_$type***"] = intval(user_access('view any unpublished ' . $type . ' content'));
-  }
-
-  return $substitutions;
 }
 
 /**
