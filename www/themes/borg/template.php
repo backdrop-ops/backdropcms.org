@@ -24,8 +24,10 @@ function borg_form_user_profile_form_alter(&$form, &$form_state) {
 
   $fields_for_account_fieldset = array('current_pass', 'mail', 'pass');
   foreach ($fields_for_account_fieldset as $field_name) {
-    $account_fieldset[$field_name] = $form['account'][$field_name];
-    hide($form['account'][$field_name]);
+    if (isset($form['account'][$field_name])) {
+      $account_fieldset[$field_name] = $form['account'][$field_name];
+      hide($form['account'][$field_name]);
+    }
   }
   $form['account']['account_fieldset'] = $account_fieldset;
 
