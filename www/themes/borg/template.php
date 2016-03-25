@@ -38,6 +38,7 @@ function borg_form_user_profile_form_alter(&$form, &$form_state) {
   $form['field_forhire']['#weight'] = -49;
 
   $form['field_gender']['#weight'] = 3;
+  $form['field_gender'][LANGUAGE_NONE]['#options']['_none'] = t('- Not specified -');
   $form['field_bio']['#weight'] = 4;
   $form['field_photo']['#weight'] = 5;
   $form['field_header_photo']['#weight'] = 6;
