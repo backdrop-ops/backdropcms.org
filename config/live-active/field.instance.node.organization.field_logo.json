@@ -1,0 +1,46 @@
+{
+    "_config_name": "field.instance.node.organization.field_logo",
+    "field_name": "field_logo",
+    "entity_type": "node",
+    "bundle": "organization",
+    "label": "Logo",
+    "widget": {
+        "weight": "2",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "thumbnail"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "file_directory": "images/logos",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "max_resolution": "",
+        "min_resolution": "",
+        "alt_field": 0,
+        "title_field": 0,
+        "default_image": "",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "0",
+            "settings": {
+                "image_style": "",
+                "image_link": "",
+                "image_float": ""
+            },
+            "module": "image"
+        }
+    }
+}

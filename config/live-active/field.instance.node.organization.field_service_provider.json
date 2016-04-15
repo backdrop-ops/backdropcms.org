@@ -1,0 +1,36 @@
+{
+    "_config_name": "field.instance.node.organization.field_service_provider",
+    "field_name": "field_service_provider",
+    "entity_type": "node",
+    "bundle": "organization",
+    "label": "Service Provider",
+    "widget": {
+        "weight": "0",
+        "type": "options_onoff",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "display_label": 0
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": 1
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "6",
+            "settings": []
+        }
+    }
+}
