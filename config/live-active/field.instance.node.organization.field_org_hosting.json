@@ -5,7 +5,7 @@
     "bundle": "organization",
     "label": "Hosting Type",
     "widget": {
-        "weight": "7",
+        "weight": "6",
         "type": "options_buttons",
         "module": "options",
         "active": 1,
@@ -23,7 +23,7 @@
         "default": {
             "label": "above",
             "type": "list_default",
-            "weight": "5",
+            "weight": "4",
             "settings": [],
             "module": "list"
         }

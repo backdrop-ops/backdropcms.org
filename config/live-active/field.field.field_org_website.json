@@ -1,17 +1,15 @@
 {
-    "_config_name": "field.field.field_org_headquarters",
-    "field_name": "field_org_headquarters",
-    "type": "text",
+    "_config_name": "field.field.field_org_website",
+    "field_name": "field_org_website",
+    "type": "link_field",
     "translatable": false,
-    "module": "text",
+    "module": "link",
     "active": 1,
     "locked": 0,
     "cardinality": "1",
     "deleted": 0,
     "entity_types": [],
-    "settings": {
-        "max_length": "255"
-    },
+    "settings": [],
     "storage": {
         "type": "field_sql_storage",
         "settings": [],

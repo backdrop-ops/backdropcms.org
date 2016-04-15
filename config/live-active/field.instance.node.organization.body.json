@@ -1,30 +1,32 @@
 {
-    "_config_name": "field.instance.node.organization.field_org_headquarters",
-    "field_name": "field_org_headquarters",
+    "_config_name": "field.instance.node.organization.body",
+    "field_name": "body",
     "entity_type": "node",
     "bundle": "organization",
-    "label": "Headquarters",
+    "label": "Description",
     "widget": {
         "weight": "4",
-        "type": "text_textfield",
+        "type": "text_textarea_with_summary",
         "module": "text",
         "active": 1,
         "settings": {
-            "size": "60"
+            "rows": "10",
+            "summary_rows": 5
         }
     },
-    "description": "Where is your organization located?",
+    "description": "",
     "required": 0,
     "deleted": 0,
     "default_value": null,
     "default_value_function": null,
     "settings": {
-        "text_processing": "0",
+        "text_processing": "1",
+        "display_summary": 0,
         "user_register_form": false
     },
     "display": {
         "default": {
-            "label": "inline",
+            "label": "hidden",
             "type": "text_default",
             "weight": "2",
             "settings": [],

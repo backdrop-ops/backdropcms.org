@@ -1,9 +1,9 @@
 {
-    "_config_name": "field.instance.node.organization.field_websites",
-    "field_name": "field_websites",
+    "_config_name": "field.instance.node.organization.field_org_website",
+    "field_name": "field_org_website",
     "entity_type": "node",
     "bundle": "organization",
-    "label": "Website(s)",
+    "label": "Website",
     "widget": {
         "weight": "3",
         "type": "link_field",
@@ -28,8 +28,8 @@
             "url_cutoff": "80"
         },
         "attributes": {
-            "target": "default",
-            "rel": "",
+            "target": "_blank",
+            "rel": "nofollow",
             "configurable_class": 0,
             "class": "",
             "configurable_title": 0,
