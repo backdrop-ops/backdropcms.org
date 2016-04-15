@@ -57,8 +57,10 @@
     "node_supporter_pattern": "",
     "taxonomy_term_tags_pattern": "tags/[term:name]",
     "node_post_pattern": "news/[node:title]",
-    "node__pattern": "events/[node:title]",
+    "node__pattern": "service-providers/[node:title]",
     "node_docs_pattern": "",
     "node_event_pattern": "events/[node:title]",
-    "node_quote_pattern": ""
+    "node_quote_pattern": "",
+    "taxonomy_term_services_pattern": "services/[term:name]",
+    "node_organization_pattern": "service-providers/[node:title]"
 }

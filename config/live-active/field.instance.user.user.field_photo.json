@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Headshot",
     "widget": {
-        "weight": "2",
+        "weight": "4",
         "type": "image_image",
         "module": "image",
         "active": 1,
@@ -34,7 +34,7 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "0",
+            "weight": "4",
             "settings": []
         }
     }

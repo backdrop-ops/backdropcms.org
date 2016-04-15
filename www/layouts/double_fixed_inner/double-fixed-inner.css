@@ -38,6 +38,12 @@
     padding-top: 125px;
   }
 }
+
+/* remove the Backdrop logo from personal pages */
+.layout--double-fixed-inner .l-content::before {
+  background-image: none;
+}
+
 .layout--double-fixed-inner .l-content-wrapper {
   text-align: left;
   max-width: 728px;
@@ -49,27 +55,39 @@
     background-color: #ffffff;
   }
 }
-
-
-@media all and (min-width: 501px) {
+@media all and (min-width: 1200px) {
   .layout--double-fixed-inner .l-content-wrapper {
-    padding: 0 20px 0 245px;
-    max-width: 453px;
-  }
-  .layout--double-fixed-inner .l-inner {
-    position: relative;
-    min-height: 450px;
-  }
-  .layout--double-fixed-inner .l-sidebar-inner {
-    position: absolute;
-    width: 200px;
-    left: -230px;
-    top: -150px;
+    max-width: 828px;
   }
 }
+
+
 @media all and (min-width: 851px) {
-  .layout--double-fixed-inner .l-content-wrapper {
-    padding: 0 35px 0 260px;
+  .layout--double-fixed-inner #page-title {
+    margin-top: 0;
+  }
+}
+
+@media all and (min-width: 555px) {
+  .layout--double-fixed-inner .l-content-wrapper .l-inner {
+    display: -webkit-flex; /* Safari */
+    display: flex;
+    -webkit-align-items: stretch; /* Safari */
+    align-items:         stretch;
+    flex-direction: row-reverse;
+  }
+  .layout--double-fixed-inner .l-content-wrapper .l-inner .l-content-inner {
+    -webkit-flex: 3 1 auto;
+    flex: 3 1 auto;
+    -webkit-order: 1;
+    order: 1;
+  }
+  .layout--double-fixed-inner .l-content-wrapper .l-inner .l-sidebar-inner {
+    -webkit-flex: 1 0 auto;
+    flex: 1 0 auto;
+    -webkit-order: 2;
+    order: 2;
+    max-width: 250px;
   }
 }
 

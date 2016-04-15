@@ -35,29 +35,6 @@
 
       <div class="l-content-wrapper">
 
-        <div class="l-content-top">
-          <a id="main-content"></a>
-          <?php print render($title_prefix); ?>
-          <?php if ($title): ?>
-            <h1 class="title" id="page-title">
-              <?php print $title; ?>
-            </h1>
-          <?php endif; ?>
-          <?php print render($title_suffix); ?>
-
-          <?php print $content['content-top']; ?>
-        </div>
-
-        <?php if ($tabs): ?>
-          <div class="tabs">
-            <?php print $tabs; ?>
-          </div>
-        <?php endif; ?>
-
-        <?php if ($action_links): ?>
-          <?php print $action_links; ?>
-        <?php endif; ?>
-
         <?php if ($messages): ?>
           <section class="l-messages">
             <?php print $messages; ?>
@@ -65,11 +42,32 @@
         <?php endif; ?>
 
         <div class="l-inner clearfix">
-          <div class="l-sidebar-inner">
-            <?php print $content['content_sidebar']; ?>
-          </div>
-          <div class="l-content-inner">
+          <div class="l-content-inner match-height">
+            <div class="l-content-top">
+              <a id="main-content"></a>
+              <?php print render($title_prefix); ?>
+              <?php if ($title): ?>
+                <h1 class="title" id="page-title">
+                  <?php print $title; ?>
+                </h1>
+              <?php endif; ?>
+              <?php print render($title_suffix); ?>
+            </div>
+
+            <?php if ($tabs): ?>
+              <div class="tabs">
+                <?php print $tabs; ?>
+              </div>
+            <?php endif; ?>
+
+            <?php if ($action_links): ?>
+              <?php print $action_links; ?>
+            <?php endif; ?>
+
             <?php print $content['content']; ?>
+          </div>
+          <div class="l-sidebar-inner match-height">
+            <?php print $content['content_sidebar']; ?>
           </div>
         </div>
 

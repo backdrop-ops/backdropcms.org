@@ -336,10 +336,26 @@
                 "defaults": {
                     "pager": false,
                     "pager_options": false,
-                    "title": false
+                    "title": false,
+                    "header": false
                 },
                 "pager_options": null,
-                "title": "News & Announcements"
+                "title": "News & Announcements",
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 0,
+                        "content": "<h2>The Backdrop Blog:</h2>\n",
+                        "format": "filtered_html",
+                        "tokenize": 0
+                    }
+                }
             }
         },
         "feed_1": {

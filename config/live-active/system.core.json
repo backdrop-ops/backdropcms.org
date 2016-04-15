@@ -40,7 +40,7 @@
     "log_identity": "backdrop",
     "log_facility": 128,
     "log_format": "!base_url|!timestamp|!type|!ip|!request_uri|!referer|!uid|!link|!message",
-    "error_level": "all",
+    "error_level": "some",
     "active_menus_default": {
         "1": "menu-handbook",
         "2": "main-menu",
@@ -52,7 +52,7 @@
     "file_default_scheme": "public",
     "file_public_path": "files",
     "file_temporary_path": "/tmp",
-    "file_private_path": "",
+    "file_private_path": "../private-files",
     "image_jpeg_quality": 75,
     "install_profile": "standard",
     "clean_url": "1",
@@ -73,10 +73,11 @@
     "site_favicon_mimetype": "",
     "canonical_secure": 0,
     "user_mail_status_canceled_notify": 0,
-    "file_transliterate_lowercase": false,
-    "file_transliterate_uploads": true,
-    "file_transliterate_uploads_display_name": false,
+    "file_transliterate_lowercase": 0,
+    "file_transliterate_uploads": 1,
+    "file_transliterate_uploads_display_name": 0,
     "maintenance_page_maximum_age": 10,
     "page_cache_background_fetch": 1,
-    "page_cache_keep_stale_age": 172800
+    "page_cache_keep_stale_age": 172800,
+    "row_limit": "1000"
 }

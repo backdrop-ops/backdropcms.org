@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Ways in which I contribute to Backdrop CMS",
     "widget": {
-        "weight": "12",
+        "weight": "14",
         "type": "options_buttons",
         "module": "options",
         "active": 1,
@@ -23,7 +23,7 @@
         "default": {
             "label": "above",
             "type": "list_default",
-            "weight": "8",
+            "weight": "1",
             "settings": [],
             "module": "list"
         }

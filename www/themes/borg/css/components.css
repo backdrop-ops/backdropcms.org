@@ -1,4 +1,4 @@
-/*******************************************************************************
+view-profile-sidebar/*******************************************************************************
  * components.scss
  *
  * Contains specific styles for common HTML components.
@@ -41,8 +41,8 @@ ul.primary {
   border-collapse: collapse;
   line-height: normal;
   list-style: none;
-  margin: 5px;
-  padding: 0 0 0 1em; /* LTR */
+  margin: 5px 0;
+  padding: 0 0 0 .5em; /* LTR */
   white-space: nowrap;
   box-sizing: border-box;
 }
@@ -60,7 +60,7 @@ ul.primary li a {
   border-width: 2px;
   height: auto;
   margin-right: 0.5em; /* LTR */
-  padding: 10px 25px 7px 25px;
+  padding: 8px 20px 5px 20px;
   text-decoration: none;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -72,7 +72,7 @@ ul.primary li.active a {
   background-color: #fff;
   border: 2px solid #d7d7d7;
   border-bottom: none;
-  padding-bottom: 9px;
+  padding-bottom: 7px;
 }
 ul.primary li a:hover {
   background-color: #eee;
@@ -426,7 +426,7 @@ article.node-post .field-name-body {
   margin-left: 125px;
   font-size: 125%;
 }
-.views-field-title {
+.view-quotes .views-field-title {
   clear: left;
 }
 .view-quotes .subtext {
@@ -887,7 +887,12 @@ body.front .block-block-4 h2 {
  ******************************************************************************/
 
 main.account-page #page-title {
-  padding-top: 50px;
+  padding-top: 40px;
+}
+@media all and (min-width: 851px) {
+  main.account-page #page-title {
+    padding-top: 80px;
+  }
 }
 
 article.profile {
@@ -914,6 +919,10 @@ article.profile .field-name-field-contributions li {
  * User Profile Sidebar
  ******************************************************************************/
 
+.view-profile-sidebar {
+  padding-top: 20px;
+  padding-right: 20px;
+}
 .view-profile-sidebar .views-field {
   margin-bottom: 15px;
 }
@@ -928,6 +937,9 @@ article.profile .field-name-field-contributions li {
   margin: 0;
 }
 
+.view-profile-sidebar .views-field-field-photo {
+  margin-right: 10px;
+}
 .view-profile-sidebar .views-field-field-photo .field-content {
   text-align: center;
 }
@@ -935,6 +947,11 @@ article.profile .field-name-field-contributions li {
   border-radius: 50%;
   background: #ffffff;
   margin: 0 auto;
+}
+@media all and (min-width: 555px) {
+  .view-profile-sidebar .views-field-field-photo img {
+    width: 100%;
+  }
 }
 
 .view-profile-sidebar .views-field-field-name {
@@ -1395,4 +1412,47 @@ a.tabledrag-handle .handle {
  ******************************************************************************/
 .block-borg-blocks-rss {
   text-align: center;
+}
+
+/*******************************************************************************
+ * Embedded tweets
+ ******************************************************************************/
+iframe.twitter-tweet-rendered {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/*******************************************************************************
+ * Service providers listing
+ ******************************************************************************/
+.view-providers .view-content {
+  border-top: 1px solid #d4d4d6;
+}
+.view-providers .views-row {
+  border-bottom: 1px solid #d4d4d6;
+  padding: 28px 0;
+}
+.view-providers h3 {
+  margin: .5em 0 0;
+}
+.view-providers p {
+  margin: .5em 0;
+}
+.view-providers .views-field-field-logo a {
+  display: inline-block;
+  text-align: center;
+}
+.view-providers .views-field-field-logo img {
+  margin: 0 auto;
+}
+@media all and (min-width: 600px) {
+  .view-providers .views-field {
+    margin-left: 230px;
+  }
+  .view-providers .views-field-field-logo {
+    width: 230px;
+    float: left;
+    margin-left: 0;
+    text-align: left;
+  }
 }

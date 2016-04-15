@@ -5,6 +5,76 @@
  */
 
 /*******************************************************************************
+ * Alter functions: modify renderable structures before used.
+ ******************************************************************************/
+
+/**
+ * Implements hook_form_id_alter()
+ * Modify the user edit form for usability++
+ */
+function borg_form_user_profile_form_alter(&$form, &$form_state) {
+  drupal_add_js('core/misc/vertical-tabs.js');
+  $account_fieldset = array(
+    '#type'         => 'fieldset',
+    '#title'        => t('Change Email or Password'),
+    '#collapsible'  => true,
+    '#collapsed'    => true,
+    '#weight'       => -9,
+  );
+
+  $fields_for_account_fieldset = array('current_pass', 'mail', 'pass');
+  foreach ($fields_for_account_fieldset as $field_name) {
+    if (isset($form['account'][$field_name])) {
+      $account_fieldset[$field_name] = $form['account'][$field_name];
+      hide($form['account'][$field_name]);
+    }
+  }
+  $form['account']['account_fieldset'] = $account_fieldset;
+
+  $form['account']['#weight'] = 1;
+  $form['account']['name']['#weight'] = -50;
+
+  $form['field_name']['#weight'] = -51;
+  $form['field_forhire']['#weight'] = -49;
+
+  $form['field_gender']['#weight'] = 3;
+  $form['field_gender'][LANGUAGE_NONE]['#options']['_none'] = t('- Not specified -');
+  $form['field_bio']['#weight'] = 4;
+  $form['field_photo']['#weight'] = 5;
+  $form['field_header_photo']['#weight'] = 6;
+  $form['field_expertise']['#weight'] = 7;
+  $form['field_industries']['#weight'] = 8;
+
+  $social_fieldset = array(
+    '#type'         => 'fieldset',
+    '#title'        => t('Online'),
+    '#collapsible'  => true,
+    '#collapsed'    => false,
+    '#weight'       => 9,
+  );
+
+  $form['field_social']['#weight'] = 1;
+  $form['field_irc']['#weight'] = 2;
+  $form['field_websites']['#weight'] = 3;
+
+  $fields_for_account_fieldset = array('field_irc', 'field_social', 'field_websites');
+  foreach ($fields_for_account_fieldset as $field_name) {
+    $social_fieldset[$field_name] = $form[$field_name];
+    hide($form[$field_name]);
+  }
+  $form['social_fieldset'] = $social_fieldset;
+
+  $form['field_contributions']['#weight'] = 10;
+  $form['field_contributions_other']['#weight'] = 11;
+
+  $form['contact']['#weight'] = 21;
+  $form['timezone']['#weight'] = 22;
+  $form['timezone']['#collapsed'] = TRUE;
+  $form['redirect']['#weight'] = 23;
+}
+
+
+/*******************************************************************************
  * Preprocess functions: prepare variables for templates.
  ******************************************************************************/
 
@@ -99,8 +169,19 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * Prepare variables for node template
  */
 function borg_preprocess_node(&$variables){
+  // For news posts, change the username to a real name.
+  if ($variables['node']->type == 'post') {
+    // Change the submitted by language.
+    $author = user_load($variables['node']->uid);
+    $lang = $author->langcode;
+    if (!empty($author->field_name[$lang])) {
+      $variables['name'] = l($author->field_name[$lang][0]['safe_value'], 'user/' . $author->uid);
+    }
+  }
+
   // Change the submitted by language.
-  $variables['submitted'] = str_replace('Submitted by', 'Posted by', $variables['submitted']);
+  $variables['submitted'] = t('Posted by by !username on !datetime', array('!username' => $variables['name'], '!datetime' => $variables['date']));
+
   // Add a picture to blog posts.
   if ($variables['type'] == 'post' && $variables['view_mode'] == 'full') {
     // Get the profile photo.
@@ -133,8 +214,8 @@ function borg_menu_link(array $variables) {
 
   $menu_name = isset($element['#original_link']['menu_name']) ? $element['#original_link']['menu_name'] : NULL;
   if ($menu_name === 'main-menu' || $menu_name === 'menu-handbook') {
-    // Add the font awesome icon.
-    if ($element['#href']) {
+    // Add the font awesome icon where there's a drawer.
+    if ($element['#href'] && $element['#href'] == 'node/1') {
       $element['#title'] .= ' <i class="fa fa-forward fa-fw"></i>';
       $element['#localized_options']['html'] = TRUE;
     }
@@ -180,60 +261,4 @@ function borg_feed_icon($variables) {
   $text = t('Subscribe to !feed-title', array('!feed-title' => $variables['title']));
   $image = '<i class="fa fa-rss-square"></i><span class="element-invisible">' . $text . '</span>';
   return l($image, $variables['url'], array('html' => TRUE, 'attributes' => array('class' => array('feed-icon'), 'title' => $text)));
-}
-
-/**
- * Implements hook_form_id_alter()
- * Modify the user edit form for usability++
- */
-function borg_form_user_profile_form_alter(&$form, &$form_state) {
-  drupal_add_js('core/misc/vertical-tabs.js');
-  $account_fieldset = array(
-    '#type'         => 'fieldset',
-    '#title'        => t('Change Email or Password'),
-    '#collapsible'  => true,
-    '#collapsed'    => true,
-    '#weight'       => -9,
-  );
-
-  $fields_for_account_fieldset = array('current_pass', 'mail', 'pass');
-  foreach ($fields_for_account_fieldset as $field_name) {
-    $account_fieldset[$field_name] = $form['account'][$field_name];
-    hide($form['account'][$field_name]);
-  }
-  $form['account']['account_fieldset'] = $account_fieldset;
-
-  $form['account']['#weight'] = 1;
-  $form['account']['name']['#weight'] = -50;
-
-  $form['field_name']['#weight'] = 2;
-  $form['field_gender']['#weight'] = 3;
-  $form['field_bio']['#weight'] = 4;
-  $form['field_photo']['#weight'] = 5;
-  $form['field_header_photo']['#weight'] = 6;
-  $form['field_expertise']['#weight'] = 7;
-  $form['field_industries']['#weight'] = 8;
-
-  $social_fieldset = array(
-    '#type'         => 'fieldset',
-    '#title'        => t('Social'),
-    '#collapsible'  => true,
-    '#collapsed'    => false,
-    '#weight'       => 9,
-  );
-
-  $form['field_social']['#weight'] = 9;
-  $form['field_irc']['#weight'] = 10;
-  $form['field_websites']['#weight'] = 11;
-
-  $fields_for_account_fieldset = array('field_irc', 'field_social', 'field_websites');
-  foreach ($fields_for_account_fieldset as $field_name) {
-    $social_fieldset[$field_name] = $form[$field_name];
-    hide($form[$field_name]);
-  }
-  $form['social_fieldset'] = $social_fieldset;
-
-  $form['field_contributions']['#weight'] = 9;
-  $form['field_contributions_other']['#weight'] = 10;
-  $form['contact']['#weight'] = 11;
 }
