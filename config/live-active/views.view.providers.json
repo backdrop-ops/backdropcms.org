@@ -310,7 +310,51 @@
                         "field": "type",
                         "value": {
                             "organization": "organization"
-                        }
+                        },
+                        "group": 1
+                    },
+                    "field_service_provider_value": {
+                        "id": "field_service_provider_value",
+                        "table": "field_data_field_service_provider",
+                        "field": "field_service_provider_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "1": "1"
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
                     },
                     "field_services_tid": {
                         "id": "field_services_tid",
@@ -321,7 +365,7 @@
                         "ui_name": "",
                         "operator": "or",
                         "value": [],
-                        "group": "1",
+                        "group": 1,
                         "exposed": true,
                         "expose": {
                             "operator_id": "field_services_tid_op",
@@ -370,7 +414,13 @@
                         "order": "DESC"
                     }
                 },
-                "title": "Backdrop Service Providers"
+                "title": "Backdrop Service Providers",
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
             }
         },
         "page": {
@@ -387,6 +437,73 @@
                         "link_to_node": 0
                     }
                 }
+            }
+        },
+        "block_1": {
+            "display_title": "Block (taxonomy term)",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "arguments": {
+                    "tid": {
+                        "id": "tid",
+                        "table": "taxonomy_index",
+                        "field": "tid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "default",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 0,
+                            "title": "All"
+                        },
+                        "title_enable": 0,
+                        "title": "",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "taxonomy_tid",
+                        "default_argument_options": {
+                            "term_page": "1",
+                            "anyall": ",",
+                            "node": 0,
+                            "limit": 0,
+                            "vocabularies": []
+                        },
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 0,
+                        "validate": {
+                            "type": "none",
+                            "fail": "not found"
+                        },
+                        "validate_options": [],
+                        "break_phrase": 0,
+                        "add_table": 0,
+                        "require_value": 0,
+                        "reduce_duplicates": 0,
+                        "set_breadcrumb": 0
+                    }
+                },
+                "defaults": {
+                    "arguments": false,
+                    "title": false
+                },
+                "title": "",
+                "display_description": ""
             }
         }
     }

@@ -22,10 +22,9 @@
     "display": {
         "default": {
             "label": "above",
-            "type": "list_default",
-            "weight": "4",
-            "settings": [],
-            "module": "list"
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
         }
     }
 }
