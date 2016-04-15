@@ -426,7 +426,7 @@ article.node-post .field-name-body {
   margin-left: 125px;
   font-size: 125%;
 }
-.views-field-title {
+.view-quotes .views-field-title {
   clear: left;
 }
 .view-quotes .subtext {
@@ -1412,4 +1412,39 @@ a.tabledrag-handle .handle {
  ******************************************************************************/
 .block-borg-blocks-rss {
   text-align: center;
+}
+
+/*******************************************************************************
+ * Service providers listing
+ ******************************************************************************/
+.view-providers .view-content {
+  border-top: 1px solid #d4d4d6;
+}
+.view-providers .views-row {
+  border-bottom: 1px solid #d4d4d6;
+  padding: 28px 0;
+}
+.view-providers h3 {
+  margin: .5em 0 0;
+}
+.view-providers p {
+  margin: .5em 0;
+}
+.view-providers .views-field-field-logo a {
+  display: inline-block;
+  text-align: center;
+}
+.view-providers .views-field-field-logo img {
+  margin: 0 auto;
+}
+@media all and (min-width: 600px) {
+  .view-providers .views-field {
+    margin-left: 230px;
+  }
+  .view-providers .views-field-field-logo {
+    width: 230px;
+    float: left;
+    margin-left: 0;
+    text-align: left;
+  }
 }
