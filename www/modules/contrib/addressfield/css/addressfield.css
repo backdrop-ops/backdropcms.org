@@ -1,0 +1,29 @@
+/* CSS for the addressfield element */
+
+.addressfield-container-inline > .form-item {
+  float: left; /* LTR */
+  margin-right: 1em; /* LTR */
+}
+[dir="rtl"] .addressfield-container-inline > .form-item {
+  float: right;
+  margin-right: 0;
+  margin-left: 1em;
+}
+
+.addressfield-container-inline.country-GB > .form-item {
+  float: none;
+  margin-right: auto; /* LTR */
+}
+[dir="rtl"] .addressfield-container-inline.country-GB > .form-item {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Clear-fix markup for the inline container */
+.addressfield-container-inline:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}

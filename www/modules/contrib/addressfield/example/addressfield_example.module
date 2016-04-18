@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ * Example module: How to implement an addressfield format handler.
+ */
+
+/**
+ * Implements hook_addressfield_format_info().
+ */
+function addressfield_example_addressfield_format_info() {
+  return array(
+    'address_ch' => array(
+      'title' => t('Example Address form (CH add-on)'),
+      'format callback' => 'addressfield_format_address_ch_generate',
+      'type' => 'address',
+      'weight' => -80,
+      'file' => 'formats/address-ch-example.inc',
+    ),
+  );
+}
