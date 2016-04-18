@@ -1476,3 +1476,18 @@ iframe.twitter-tweet-rendered {
 .view-contractors .views-field-field-name {
   font-size: 20px;
 }
+
+/*******************************************************************************
+ * Addressfield widget
+ ******************************************************************************/
+.addressfield-wrapper input.form-autocomplete,
+.addressfield-wrapper input.form-text,
+.addressfield-wrapper input.form-number {
+  padding: 1px;
+}
+.addressfield-wrapper .form-item {
+  margin-top: 0;
+}
+div.addressfield-container-inline {
+  display: inline;
+}
