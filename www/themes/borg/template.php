@@ -33,24 +33,25 @@ function borg_form_user_profile_form_alter(&$form, &$form_state) {
 
   $form['account']['#weight'] = 1;
   $form['account']['name']['#weight'] = -50;
-
   $form['field_name']['#weight'] = -51;
-  $form['field_forhire']['#weight'] = -49;
 
-  $form['field_gender']['#weight'] = 3;
+  $form['field_forhire']['#weight'] = 2;
+  $form['field_services']['#weight'] = 3;
+  $form['field_expertise']['#weight'] = 4;
+
+  $form['field_bio']['#weight'] = 5;
+  $form['field_photo']['#weight'] = 6;
+  $form['field_header_photo']['#weight'] = 7;
+  $form['field_gender']['#weight'] = 8;
   $form['field_gender'][LANGUAGE_NONE]['#options']['_none'] = t('- Not specified -');
-  $form['field_bio']['#weight'] = 4;
-  $form['field_photo']['#weight'] = 5;
-  $form['field_header_photo']['#weight'] = 6;
-  $form['field_expertise']['#weight'] = 7;
-  $form['field_industries']['#weight'] = 8;
+  $form['field_industries']['#weight'] = 9;
 
   $social_fieldset = array(
     '#type'         => 'fieldset',
-    '#title'        => t('Online'),
+    '#title'        => t('Find me Online'),
     '#collapsible'  => true,
     '#collapsed'    => false,
-    '#weight'       => 9,
+    '#weight'       => 10,
   );
 
   $form['field_social']['#weight'] = 1;
@@ -64,8 +65,8 @@ function borg_form_user_profile_form_alter(&$form, &$form_state) {
   }
   $form['social_fieldset'] = $social_fieldset;
 
-  $form['field_contributions']['#weight'] = 10;
-  $form['field_contributions_other']['#weight'] = 11;
+  $form['field_contributions']['#weight'] = 11;
+  $form['field_contributions_other']['#weight'] = 12;
 
   $form['contact']['#weight'] = 21;
   $form['timezone']['#weight'] = 22;
