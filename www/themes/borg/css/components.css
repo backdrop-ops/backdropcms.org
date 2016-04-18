@@ -1402,9 +1402,11 @@ a.tabledrag-handle .handle {
   font-size: 38px;
   margin: 0 0 .5em 0;
 }
-.layout--double-fixed-inner-rev .l-sidebar-inner .block {
-  margin-left: 25px;
-  margin-bottom: 25px;
+@media (min-width: 850px) {
+  .layout--double-fixed-inner-rev .l-sidebar-inner .block {
+    margin-left: 25px;
+    margin-bottom: 25px;
+  }
 }
 
 /*******************************************************************************
@@ -1451,7 +1453,7 @@ iframe.twitter-tweet-rendered {
   }
   .view-providers .views-field-field-logo {
     width: 230px;
-    float: left;git
+    float: left;
     text-align: left;
     margin-left: 0;
   }
@@ -1460,16 +1462,17 @@ iframe.twitter-tweet-rendered {
 /*******************************************************************************
  * Contractors listing
  ******************************************************************************/
+.block-views-contractors-block {
+  text-align: center;
+  margin-bottom: 50px;
+}
 .block-views-contractors-block h2.block-title {
   font-size: 28px;
   margin-top: 57px;
 }
-.view-contractors h4 {
-  margin-bottom: 0;
+.view-contractors .views-row {
+  margin-bottom: 25px;
 }
-.view-contractors .views-field-field-photo {
-  float: left;
-}
-.view-contractors .views-field-field-photo img {
-  margin-right: 10px;
+.view-contractors .views-field-field-name {
+  font-size: 20px;
 }

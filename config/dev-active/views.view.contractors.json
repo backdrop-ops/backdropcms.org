@@ -123,7 +123,7 @@
                             "preserve_tags": "",
                             "html": 0
                         },
-                        "element_type": "h4",
+                        "element_type": "",
                         "element_class": "",
                         "element_label_type": "",
                         "element_label_class": "",
@@ -455,7 +455,13 @@
                         }
                     }
                 },
-                "title": "Contractors for Hire"
+                "title": "Contractors for Hire",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "clearfix",
+                    "default_row_class": 1,
+                    "row_class_special": 0
+                }
             }
         },
         "block": {
