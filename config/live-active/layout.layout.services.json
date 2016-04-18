@@ -2,7 +2,7 @@
     "_config_name": "layout.layout.services",
     "path": "services",
     "name": "services",
-    "title": "services",
+    "title": "Services",
     "description": null,
     "module": null,
     "weight": 0,
@@ -10,8 +10,8 @@
     "layout": "double_fixed_inner_rev",
     "disabled": false,
     "settings": {
-        "title": "",
-        "title_display": "default",
+        "title": "Services for Backdrop CMS",
+        "title_display": "custom",
         "title_block": null
     },
     "positions": {
@@ -23,7 +23,9 @@
             "71d45547-437f-4ca9-a902-2d77613192c0",
             "131eaf6d-c0b6-4fe5-9e00-a4d051c043f8"
         ],
-        "content-top": [],
+        "content-top": [
+            "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c"
+        ],
         "content": [
             "96f302dc-b471-4fed-b311-1737463dcc3e",
             "863498ad-5fde-4331-a500-a36e921cb887"
@@ -120,6 +122,31 @@
                     "contexts": []
                 },
                 "uuid": "131eaf6d-c0b6-4fe5-9e00-a4d051c043f8",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>There are many wonderful companies and individuals hat provide&nbsp;services for Backdrop CMS. If you are looking for assistance with design, development, hosting, or anything else web-related,&nbsp;please browse our list below.</p>\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c",
                 "style": {
                     "plugin": "default",
                     "data": {
