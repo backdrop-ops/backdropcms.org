@@ -1451,8 +1451,25 @@ iframe.twitter-tweet-rendered {
   }
   .view-providers .views-field-field-logo {
     width: 230px;
-    float: left;
-    margin-left: 0;
+    float: left;git
     text-align: left;
+    margin-left: 0;
   }
+}
+
+/*******************************************************************************
+ * Contractors listing
+ ******************************************************************************/
+.block-views-contractors-block h2.block-title {
+  font-size: 28px;
+  margin-top: 57px;
+}
+.view-contractors h4 {
+  margin-bottom: 0;
+}
+.view-contractors .views-field-field-photo {
+  float: left;
+}
+.view-contractors .views-field-field-photo img {
+  margin-right: 10px;
 }
