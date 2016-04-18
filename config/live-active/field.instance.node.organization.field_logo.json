@@ -41,6 +41,17 @@
                 "image_float": ""
             },
             "module": "image"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "0",
+            "settings": {
+                "image_style": "medium",
+                "image_link": "",
+                "image_float": "left"
+            },
+            "module": "image"
         }
     }
 }
