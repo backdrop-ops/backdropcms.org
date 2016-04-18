@@ -1,0 +1,46 @@
+{
+    "_config_name": "field.instance.user.user.field_location",
+    "field_name": "field_location",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Location",
+    "widget": {
+        "weight": "7",
+        "type": "addressfield_standard",
+        "module": "addressfield",
+        "active": 1,
+        "settings": {
+            "available_countries": [],
+            "default_country": "site_default",
+            "format_handlers": {
+                "address": "address",
+                "address_hide_street_two": "address_hide_street_two",
+                "address_optional": "address_optional",
+                "address_hide_country": 0,
+                "address_hide_postal_code": 0,
+                "address_hide_administrative_area": 0,
+                "address_hide_locality": 0,
+                "address_hide_street": 0,
+                "organisation": 0,
+                "name_oneline": 0,
+                "name_full": 0
+            }
+        }
+    },
+    "description": "",
+    "required": 1,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": 1
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "4",
+            "settings": []
+        }
+    }
+}
