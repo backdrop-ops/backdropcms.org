@@ -14,7 +14,7 @@ define('BORG_GITHUB_ISSUES_CODE_REPO_NAME', 'backdrop');
  */
 function borg_github_issues_githubapi_payload($event_name, $record, $repo) {
   $payload = $record['data'];
-  $expr = '/(?<!\S)#([0-9]*)/i';
+  $expr = '/(?<!\S)#([0-9]+)/i';
 
   $code_owner_name = settings_get('borg_github_issues_code_owner_name');
   if (empty($code_owner_name)) {
