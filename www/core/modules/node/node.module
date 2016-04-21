@@ -1214,6 +1214,9 @@ function node_permission() {
     'view any unpublished content' => array(
       'title' => t('View any unpublished content'),
     ),
+    'view any unpublished content' => array(
+      'title' => t('View any unpublished content'),
+    ),
     'view revisions' => array(
       'title' => t('View content revisions'),
     ),
@@ -2469,6 +2472,12 @@ function node_access($op, $node, $account = NULL) {
 
   // Check if authors can view their own unpublished nodes.
   if ($op == 'view' && !$node->status && user_access('view own unpublished content', $account) && $account->uid == $node->uid && $account->uid != 0) {
+    $rights[$account->uid][$cid][$op] = TRUE;
+    return TRUE;
+  }
+
+  // Check if user can view any unpublished nodes.
+  if ($op == 'view' && !$node->status && user_access('view any unpublished content', $account) && $account->uid != 0) {
     $rights[$account->uid][$cid][$op] = TRUE;
     return TRUE;
   }
