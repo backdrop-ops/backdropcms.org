@@ -16,3 +16,7 @@ This project contains an [issue tracker](https://github.com/backdrop-ops/backdro
 You can help make improvements to backdropcms.org by submitting pull requests to this repository.
 
 Please do not create pull requests for content changes, instead please create an issue requesting editorial access to the site.
+
+## Patches
+
+A list of currently applied patches are located in PATCHES.md
