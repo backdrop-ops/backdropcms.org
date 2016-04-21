@@ -212,15 +212,15 @@
                             "post": "post"
                         }
                     },
-                    "status_extra": {
-                        "id": "status_extra",
+                    "status": {
+                        "id": "status",
                         "table": "node",
-                        "field": "status_extra",
+                        "field": "status",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
                         "operator": "=",
-                        "value": "",
+                        "value": "1",
                         "group": "1",
                         "exposed": false,
                         "expose": {
