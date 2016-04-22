@@ -47,3 +47,14 @@ function borg_cleanup_form_user_register_form_alter(&$form, &$form_state) {
   $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you request to receive a new password.');
   unset($form['account']['pass']['#description']);
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Removes useless description text.
+ */
+function borg_cleanup_form_user_profile_form_alter(&$form, &$form_state) {
+  unset($form['account']['pass']['#description']);
+  $form['account']['mail']['#description'] = str_replace('A valid e-mail address. All e-mails from the system will be sent to this address. ', '', $form['account']['mail']['#description']);
+  $form['account']['mail']['#description'] = str_replace(' or wish to receive certain news or notifications by e-mail', '', $form['account']['mail']['#description']);
+}
