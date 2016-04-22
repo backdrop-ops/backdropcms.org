@@ -148,7 +148,25 @@ input[type="submit"]:hover {
 
 .field-type-text-long,
 .form-item {
-  margin: 0 0 2.5em;
+  margin: 0 0 1.75em;
+}
+.form-item::last-child {
+  margin-bottom: 0;
+}
+
+#social-field-wrapper .description,
+.form-item .description {
+  padding: .25em 0 .25em 0;
+  color: #7D7D7D;
+}
+
+.form-type-radios label,
+.form-type-checkbox label {
+  margin-left: 5px;
+}
+.form-type-radios .description,
+.form-type-checkbox .description {
+  margin-left: 1.6em;
 }
 
 .filter-wrapper {

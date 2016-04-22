@@ -202,6 +202,147 @@ function borg_preprocess_node(&$variables){
  * Theme function overrides.
  ******************************************************************************/
 
+function borg_form_element($variables) {
+  $element = &$variables['element'];
+
+  // This function is invoked as theme wrapper, but the rendered form element
+  // may not necessarily have been processed by form_builder().
+  $element += array(
+    '#title_display' => 'before',
+    '#wrapper_attributes' => array(),
+  );
+  $attributes = $element['#wrapper_attributes'];
+
+  // Add element #id for #type 'item'.
+  if (isset($element['#markup']) && !empty($element['#id'])) {
+    $attributes['id'] = $element['#id'];
+  }
+  // Add element's #type and #name as class to aid with JS/CSS selectors.
+  $attributes['class'][] = 'form-item';
+  if (!empty($element['#type'])) {
+    $attributes['class'][] = 'form-type-' . strtr($element['#type'], '_', '-');
+  }
+  if (!empty($element['#name'])) {
+    $attributes['class'][] = 'form-item-' . strtr($element['#name'], array(' ' => '-', '_' => '-', '[' => '-', ']' => ''));
+  }
+  // Add a class for disabled elements to facilitate cross-browser styling.
+  if (!empty($element['#attributes']['disabled'])) {
+    $attributes['class'][] = 'form-disabled';
+  }
+  $output = '<div' . backdrop_attributes($attributes) . '>' . "\n";
+
+  // If #title is not set, we don't display any label or required marker.
+  if (!isset($element['#title'])) {
+    $element['#title_display'] = 'none';
+  }
+  $prefix = isset($element['#field_prefix']) ? '<span class="field-prefix">' . $element['#field_prefix'] . '</span> ' : '';
+  $suffix = isset($element['#field_suffix']) ? ' <span class="field-suffix">' . $element['#field_suffix'] . '</span>' : '';
+
+  switch ($element['#title_display']) {
+    case 'before':
+    case 'invisible':
+      if ($element['#type'] == 'textarea' || $element['#type'] == 'checkboxes' || $element['#type'] == 'radios' || 
+         (array_key_exists('#field_name', $element) && $element['#field_name'] == 'field_expertise')) {
+        $output .= ' ' . theme('form_element_label', $variables);
+        if (!empty($element['#description'])) {
+          $output .= '<div class="description">' . $element['#description'] . "</div>\n";
+        }
+        $output .= ' ' . $prefix . $element['#children'] . $suffix . "\n";
+      }
+      else {
+        $output .= ' ' . theme('form_element_label', $variables);
+        $output .= ' ' . $prefix . $element['#children'] . $suffix . "\n";
+        if (!empty($element['#description'])) {
+          $output .= '<div class="description">' . $element['#description'] . "</div>\n";
+        }
+      }
+      break;
+
+    case 'after':
+      $output .= ' ' . $prefix . $element['#children'] . $suffix;
+      $output .= ' ' . theme('form_element_label', $variables) . "\n";
+      if (!empty($element['#description'])) {
+        $output .= '<div class="description">' . $element['#description'] . "</div>\n";
+      }
+      break;
+
+    case 'none':
+    case 'attribute':
+      if ($element['#type'] == 'password') {
+        // Output no label and no required marker, only the children.
+        if (!empty($element['#description'])) {
+          $output .= '<div class="description">' . $element['#description'] . "</div>\n";
+        }
+        $output .= ' ' . $prefix . $element['#children'] . $suffix . "\n";
+      }
+      else {
+        // Output no label and no required marker, only the children.
+        $output .= ' ' . $prefix . $element['#children'] . $suffix . "\n";
+        if (!empty($element['#description'])) {
+          $output .= '<div class="description">' . $element['#description'] . "</div>\n";
+        }
+      }
+      break;
+  }
+
+  $output .= "</div>\n";
+
+  return $output;
+}
+
+/**
+ * Custom theme output for widget.
+ */
+function borg_socialfield_drag_components($variables) {
+  $element = $variables['element'];
+  backdrop_add_tabledrag('socialfield-table', 'order', 'sibling', 'item-row-weight');
+  $services = config_get('socialfield.settings', 'services');
+
+  $header = array(t($element['#title']), '', '', '');
+  $rows = array();
+  $index = 0;
+
+  for ($i=0; $i<$element['#num_elements']; $i++) {
+    while (!isset($element['element_' . $index])) {
+      // There is no element with this index. Moving on to the next possible element.
+      $index++;
+    }
+    $current_element = $element['element_' . $index];
+
+    $rows[] = array(
+      'data' => array(
+        '<div class="social-links">' .
+          '<span class="socialfield socialfield-' . $current_element['#service'] . '">' .
+            '<i class="icon ' . $services[$current_element['#service']]['icon'] . '">' . t($services[$current_element['#service']]['name']) . '</i>' .
+          '</span>' .
+        '</div>',
+        backdrop_render($current_element['url']),
+        backdrop_render($current_element['weight']),
+        backdrop_render($current_element['operation']),
+      ),
+      'class' => array('draggable'),
+      'weight' => $current_element['weight']['#value'],
+    );
+
+    $index++;
+  }
+
+  // Sorting elements by their weight.
+  backdrop_sort($rows, array('weight'));
+
+  $output = theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+    'attributes' => array(
+      'id' => 'socialfield-table',
+    ),
+  ));
+  $output .= '<div class="description">' . backdrop_render($element['description']) . '</div>';
+  $output .= backdrop_render($element['add_one_social']);
+
+  return $output;
+}
+
 /**
  * Overrides theme_menu_link().
  */
