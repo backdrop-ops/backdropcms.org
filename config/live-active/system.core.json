@@ -53,7 +53,7 @@
     "file_public_path": "files",
     "file_temporary_path": "/tmp",
     "file_private_path": "../private-files",
-    "image_jpeg_quality": 75,
+    "image_jpeg_quality": "95",
     "install_profile": "standard",
     "clean_url": "1",
     "theme_default": "borg",
@@ -79,5 +79,6 @@
     "maintenance_page_maximum_age": 10,
     "page_cache_background_fetch": 1,
     "page_cache_keep_stale_age": 172800,
-    "row_limit": "1000"
+    "row_limit": "1000",
+    "image_toolkit": "gd"
 }

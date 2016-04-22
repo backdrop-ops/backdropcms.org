@@ -1,6 +1,6 @@
 {
     "_config_name": "layout.layout.services",
-    "path": "services",
+    "path": "support/services",
     "name": "services",
     "title": "Services",
     "description": null,
@@ -34,6 +34,7 @@
             "f2335aaa-3444-4cc4-8c00-a75bdd4562e2"
         ],
         "footer": [
+            "9401402d-1468-486b-b407-7ffcea4f39d4",
             "1059b15c-21f3-4934-8800-b28ce7c4e37f",
             "0f1df073-3119-486f-8c00-ab1442e3a986",
             "329a77bb-525a-4486-bb00-f3a7f9824fe7"
@@ -143,7 +144,7 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>There are many wonderful companies and individuals hat provide&nbsp;services for Backdrop CMS. If you are looking for assistance with design, development, hosting, or anything else web-related,&nbsp;please browse our list below.</p>\n",
+                    "content": "<h3>There are many wonderful companies and individuals that provide suport and services for Backdrop CMS. If you are looking for assistance with design, development, hosting, or maintenance,&nbsp;please browse the&nbsp;list below.</h3>\n",
                     "format": "filtered_html"
                 },
                 "uuid": "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c",
@@ -216,6 +217,29 @@
                     "contexts": []
                 },
                 "uuid": "f2335aaa-3444-4cc4-8c00-a75bdd4562e2",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "9401402d-1468-486b-b407-7ffcea4f39d4": {
+            "plugin": "views:supporters-block",
+            "data": {
+                "module": "views",
+                "delta": "supporters-block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "9401402d-1468-486b-b407-7ffcea4f39d4",
                 "style": {
                     "plugin": "default",
                     "data": {

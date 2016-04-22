@@ -5,7 +5,7 @@
     "tag": "default",
     "disabled": false,
     "base_table": "node",
-    "human_name": "Providers",
+    "human_name": "Service Providers",
     "core": "1.3.4",
     "display": {
         "default": {
@@ -399,8 +399,8 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 0,
-                        "content": "<p>Please&nbsp;<a href=\"/user/login\">log in</a>&nbsp;to&nbsp;<a href=\"/node/add/organization\">add your organization</a>&nbsp;to our list of Backdrop service providers.</p>\n",
-                        "format": "filtered_html",
+                        "content": "<p><small>Please&nbsp;<a href=\"/user/login\">log in</a>&nbsp;to&nbsp;<a href=\"/node/add/organization\">add your organization</a>&nbsp;to our list of Backdrop service providers.</small></p>\n",
+                        "format": "full_html",
                         "tokenize": 0
                     }
                 }
