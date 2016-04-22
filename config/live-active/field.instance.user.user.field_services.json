@@ -3,7 +3,7 @@
     "field_name": "field_services",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Services offered",
+    "label": "Areas of Expertise",
     "widget": {
         "weight": "12",
         "type": "options_buttons",
@@ -11,7 +11,7 @@
         "active": 1,
         "settings": []
     },
-    "description": "If you have marked yourself as \"Available for hire\" your name will appear on the pages for the services indicated here.",
+    "description": "Please provide a list of your areas of expertise with Backdrop CMS. If you have marked yourself as \"Available for hire\" your name may appear on service-specific pages.",
     "required": 0,
     "deleted": 0,
     "default_value": null,
