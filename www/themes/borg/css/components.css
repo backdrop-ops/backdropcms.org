@@ -1,4 +1,4 @@
-view-profile-sidebar/*******************************************************************************
+/*******************************************************************************
  * components.scss
  *
  * Contains specific styles for common HTML components.
@@ -1008,6 +1008,9 @@ article.profile .field-name-field-contributions li {
 }
 .user-profile-form table tbody {
   border-top: 1px solid #ccc; /* matches row bottom border */
+}
+.user-profile-form table.tabledrag-processed tbody {
+  border-top: 1px solid #eee; /* matches row bottom border */
 }
 .user-profile-form table td {
   padding: 3px 4px;
