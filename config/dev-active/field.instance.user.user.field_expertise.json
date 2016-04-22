@@ -3,7 +3,7 @@
     "field_name": "field_expertise",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Areas of Expertise",
+    "label": "Areas of Expertise (Other)",
     "widget": {
         "weight": "13",
         "type": "text_textfield",
@@ -13,7 +13,7 @@
             "size": "60"
         }
     },
-    "description": "Please provide a list of your areas of expertise with Backdrop CMS. For example: module development, theme development, website architecture, marketing, etc.",
+    "description": "",
     "required": 0,
     "deleted": 0,
     "default_value": null,
