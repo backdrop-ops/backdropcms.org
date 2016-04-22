@@ -1509,4 +1509,6 @@ div.addressfield-container-inline::after {
 .node-organization .field-name-field-org-website.clearfix::after {
   clear: none;
 }
-
+.node-organization .field-name-body {
+  clear: both;
+}
