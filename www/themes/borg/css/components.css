@@ -1491,6 +1491,22 @@ iframe.twitter-tweet-rendered {
 .addressfield-wrapper .form-item {
   margin-top: 0;
 }
-div.addressfield-container-inline {
+div.addressfield-container-inline::after {
   display: inline;
 }
+
+/*******************************************************************************
+ * Organization profile
+ ******************************************************************************/
+.node-organization .field-name-field-logo {
+  float: left;
+}
+.node-organization .field-name-field-location,
+.node-organization .field-name-field-org-website {
+  margin-left: 180px;
+  display: block;
+}
+.node-organization .field-name-field-org-website.clearfix::after {
+  clear: none;
+}
+
