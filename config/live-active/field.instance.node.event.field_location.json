@@ -1,11 +1,11 @@
 {
-    "_config_name": "field.instance.node.organization.field_location",
+    "_config_name": "field.instance.node.event.field_location",
     "field_name": "field_location",
     "entity_type": "node",
-    "bundle": "organization",
+    "bundle": "event",
     "label": "Location",
     "widget": {
-        "weight": "5",
+        "weight": "3",
         "type": "addressfield_standard",
         "module": "addressfield",
         "active": 1,
@@ -28,7 +28,7 @@
         }
     },
     "description": "",
-    "required": 1,
+    "required": 0,
     "deleted": 0,
     "default_value": null,
     "default_value_function": null,
@@ -42,9 +42,9 @@
             "weight": "2",
             "settings": {
                 "use_widget_handlers": 1,
-                "format_handlers": {
-                    "address": "address"
-                }
+                "format_handlers": [
+                    "address"
+                ]
             },
             "module": "addressfield"
         }
