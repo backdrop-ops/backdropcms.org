@@ -110,15 +110,16 @@ $last_processed_weekly_timestamp = state_get('project_usage_last_weekly', REQUES
 $start_of_current_week = project_usage_weekly_timestamp();
 if ($last_processed_weekly_timestamp < $start_of_current_week) {
   // Start with the week following last processed one.
-  $weekly_timestamp = project_usage_weekly_timestamp($last_processed_weekly_timestamp, 1);
+  $next_weekly_timestamp = project_usage_weekly_timestamp($last_processed_weekly_timestamp, 1);
 
   // Process all weeks up until the current one.
-  while ($weekly_timestamp < $start_of_current_week) {
-    project_usage_process_weekly($weekly_timestamp);
+  while ($next_weekly_timestamp < $start_of_current_week) {
     // Increment the timestamp to the next week.
-    $weekly_timestamp = project_usage_weekly_timestamp($weekly_timestamp, 1);
+    $last_weekly_timestamp = $next_weekly_timestamp;
+    $next_weekly_timestamp = project_usage_weekly_timestamp($last_weekly_timestamp, 1);
+    project_usage_process_weekly($last_weekly_timestamp);
   }
-  state_set('project_usage_last_weekly', $weekly_timestamp);
+  state_set('project_usage_last_weekly', $last_weekly_timestamp);
 
   // Reset the list of active weeks.
   project_usage_get_active_weeks(TRUE);
