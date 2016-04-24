@@ -63,6 +63,9 @@ function borg_pbs_project_browser_server_query($filters) {
   // Only return nodes with releases.
   $query->join('project_release', 'p', 'n.nid = p.project_nid');
 
+  // Group by NID to remove duplicates caused by joining to release table.
+  $query->groupBy('n.nid');
+
 /**********************************************************
 // This is to filter by a project's available core version numbers
 // Since we're currently only at v1.x, this is commented out.
@@ -113,9 +116,6 @@ function borg_pbs_project_browser_server_query($filters) {
         break;
     }
   }
-
-  // Group by NID to remove duplicates caused by joining to release table.
-  $query->groupBy('n.nid');
 
   $result = $query->execute();
 
