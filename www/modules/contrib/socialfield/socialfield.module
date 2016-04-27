@@ -142,6 +142,7 @@ function socialfield_property_callback_property_info_callback(&$info, $entity_ty
  */
 function socialfield_field_instance_settings_form($field, $instance) {
   $social_services = config_get('socialfield.settings', 'services');
+  dpm($social_services);
   $options = array();
   foreach ($social_services as $name => $service) {
     $options[$name] = $service['name'];
@@ -150,6 +151,9 @@ function socialfield_field_instance_settings_form($field, $instance) {
   // Removing services from instance settings that were deleted from module settings.
   $used_services = &$instance['settings']['used_services'];
   $used_services = array_intersect($used_services, array_keys($social_services));
+  // Adding services to instance settings that were added into module settings.
+  $weight_values = range(-10, count($social_services) - 11);
+  $instance['settings']['weights'] = array_combine(array_keys($social_services), $weight_values);
 
   $form = array(
     '#type' => 'container',
@@ -175,6 +179,7 @@ function _socialfield_field_instance_settings_form($form, &$form_state) {
   $services = config_get('socialfield.settings', 'services');
 
   $rows = array();
+  dpm($form_state['#weights']);
   foreach ($form_state['#weights'] as $service_name => $weight) {
     // Checking if service was deleted from module configuration.
     if (!isset($services[$service_name])) {
