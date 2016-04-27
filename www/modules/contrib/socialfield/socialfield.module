@@ -84,6 +84,17 @@ function socialfield_theme($existing, $type, $theme, $path) {
 }
 
 /**
+ * Checks to see if a service with that name already exists.
+ */
+function socialfield_service_exists($name){
+  $services = array_change_key_case(config_get('socialfield.settings', 'services'), CASE_LOWER);
+  if (array_key_exists(strtolower($name), $services)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
  * Implements hook_field_info().
  */
 function socialfield_field_info() {

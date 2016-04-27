@@ -59,8 +59,8 @@ function socialfield_add_service($form, $form_state) {
   $form['service'] = array(
     '#type' => 'machine_name',
     '#title' => t('Service machine name'),
-    '#disabled' => TRUE,
     '#machine_name' => array(
+      'exists' => 'socialfield_service_exists',
       'source' => array('service_name'),
     ),
   );
