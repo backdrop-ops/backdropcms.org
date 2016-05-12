@@ -118,8 +118,8 @@ if ($last_processed_weekly_timestamp < $start_of_current_week) {
     $last_weekly_timestamp = $next_weekly_timestamp;
     $next_weekly_timestamp = project_usage_weekly_timestamp($last_weekly_timestamp, 1);
     project_usage_process_weekly($last_weekly_timestamp);
+    state_set('project_usage_last_weekly', $last_weekly_timestamp);
   }
-  state_set('project_usage_last_weekly', $last_weekly_timestamp);
 
   // Reset the list of active weeks.
   project_usage_get_active_weeks(TRUE);

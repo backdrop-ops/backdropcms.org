@@ -151,7 +151,7 @@ function borg_pbs_project_browser_server_query($filters) {
       'image' => $image_url,
       'usage' => project_usage_get_project_total_usage($node->nid),
       'project url' => url('node/' . $node->nid, array('absolute' => TRUE)),
-      'project status url' => 'http://updates.backdropcms.org/release-history/' . $node->project['name'] . '/' . $filters['version'] . '.x',
+      'project status url' => 'https://updates.backdropcms.org/release-history/' . $node->project['name'] . '/' . $filters['version'] . '.x',
       'last updated' => $node->changed,
       'maintenance status' => '',
       'development status' => '',
