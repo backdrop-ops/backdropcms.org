@@ -25,24 +25,27 @@
             "pinterest": "pinterest",
             "facebook": "facebook",
             "twitter": "twitter",
-            "linkedin": "linkedin"
+            "linkedin": "linkedin",
+            "github": "github"
         },
         "services": {
             "twitter": "twitter",
             "facebook": "facebook",
-            "linkedin": "linkedin"
+            "linkedin": "linkedin",
+            "github": "github"
         },
         "weights": {
-            "facebook": "-10",
-            "twitter": "-9",
-            "instagram": "-8",
-            "googleplus": "-7",
-            "linkedin": "-6",
-            "youtube": "-5",
-            "flickr": "-4",
-            "pinterest": "-3",
-            "reddit": "-2",
-            "slideshare": "-1"
+            "facebook": "-9",
+            "twitter": "-8",
+            "instagram": "-7",
+            "googleplus": "-6",
+            "linkedin": "-5",
+            "youtube": "-4",
+            "flickr": "-3",
+            "pinterest": "-2",
+            "reddit": "-1",
+            "slideshare": "0",
+            "github": "-10"
         }
     },
     "display": {
