@@ -181,7 +181,7 @@ function borg_preprocess_node(&$variables){
   }
 
   // Change the submitted by language.
-  $variables['submitted'] = t('Posted by by !username on !datetime', array('!username' => $variables['name'], '!datetime' => $variables['date']));
+  $variables['submitted'] = t('Posted by !username on !datetime', array('!username' => $variables['name'], '!datetime' => $variables['date']));
 
   // Add a picture to blog posts.
   if ($variables['type'] == 'post' && $variables['view_mode'] == 'full') {
