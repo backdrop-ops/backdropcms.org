@@ -37,14 +37,14 @@ test:
       scripts:
         init: '{deploy_dir}/core/misc/zen-ci/init_test.sh'
       tests:
-        - '{deploy_dir}/core/misc/zen-ci/run_tests.sh'
+        - '{deploy_dir}/core/misc/zen-ci/run_tests.php'
     pull_request:
       box: 'backdrop-php53'
       dir: '{home}/github/pr/{pr_number}'
       scripts:
         init: '{deploy_dir}/core/misc/zen-ci/init_test.sh'
       tests:
-        - '{deploy_dir}/core/misc/zen-ci/run_tests.sh'
+        - '{deploy_dir}/core/misc/zen-ci/run_tests.php'
   php70:
     branch:
       box: 'backdrop-php70'
@@ -52,11 +52,11 @@ test:
       scripts:
         init: '{deploy_dir}/core/misc/zen-ci/init_test.sh'
       tests:
-        - '{deploy_dir}/core/misc/zen-ci/run_tests.sh'
+        - '{deploy_dir}/core/misc/zen-ci/run_tests.php'
     pull_request:
       box: 'backdrop-php70'
       dir: '{home}/github/pr/{pr_number}'
       scripts:
         init: '{deploy_dir}/core/misc/zen-ci/init_test.sh'
       tests:
-        - '{deploy_dir}/core/misc/zen-ci/run_tests.sh'
+        - '{deploy_dir}/core/misc/zen-ci/run_tests.php'
