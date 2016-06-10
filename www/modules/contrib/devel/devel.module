@@ -665,11 +665,8 @@ function backtrace_error_handler($error_level, $message, $filename, $line, $cont
     $variables = array('%error' => $type[0], '%message' => $message, '%function' => $backtrace[1]['function'] .'()', '%file' => $filename, '%line' => $line);
     $msg = t('%error: %message in %function (line %line of %file).', $variables);
 
-    // Show message if error_level is ERROR_REPORTING_DISPLAY_SOME or higher.
-    // (This is Drupal's error_level, which is different from $error_level,
-    // and we purposely ignore the difference between _SOME and _ALL,
-    // see #970688!)
-    if (config_get('devel.settings', 'error_level') >= 1) {
+    // Show only if error reporting level is "some" or "all".
+    if (config_get('system.core', 'error_level') == ERROR_REPORTING_DISPLAY_SOME || config_get('system.core', 'error_level') == ERROR_REPORTING_DISPLAY_ALL) {
       $error_handlers = devel_get_handlers();
       if (!empty($error_handlers[DEVEL_ERROR_HANDLER_STANDARD])) {
         backdrop_set_message($msg, ($type[1] <= WATCHDOG_ERROR ? 'error' : 'warning'));
@@ -1773,11 +1770,8 @@ function ddebug_backtrace($return = FALSE, $pop = 0) {
     $paths[BACKDROP_ROOT] = strlen(BACKDROP_ROOT) + 1;
     $nbsp = "\xC2\xA0";
 
-    // Show message if error_level is ERROR_REPORTING_DISPLAY_SOME or higher.
-    // (This is Drupal's error_level, which is different from $error_level,
-    // and we purposely ignore the difference between _SOME and _ALL,
-    // see #970688!)
-    if (config_get('system.core', 'error_level') >= 1) {
+    // Show only if error reporting level is "some" or "all".
+    if (config_get('system.core', 'error_level') == ERROR_REPORTING_DISPLAY_SOME || config_get('system.core', 'error_level') == ERROR_REPORTING_DISPLAY_ALL) {
       while (!empty($backtrace)) {
         $call = array();
         if (isset($backtrace[0]['file'])) {
@@ -1796,7 +1790,9 @@ function ddebug_backtrace($return = FALSE, $pop = 0) {
           else {
             $function = $backtrace[1]['function'] . '()';
           }
-          $call['args'] = $backtrace[1]['args'];
+          if (isset($backtrace[1]['args'])) {
+            $call['args'] = $backtrace[1]['args'];
+          }
         }
         else {
           $function = 'main()';
