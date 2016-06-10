@@ -19,8 +19,8 @@ function on_the_web_update_1000() {
   $config->set('sitename', update_variable_get('on_the_web_sitename', TRUE));
   foreach ($services as $service => $info) {
     $config->set($service . '_page', update_variable_get('on_the_web_' . $service . '_page', ''));
-    $config->set($service . '_page', update_variable_get('on_the_web_' . $service . '_weight', 0));
     update_variable_del('on_the_web_' . $service . '_page');
+    $config->set($service . '_weight', update_variable_get('on_the_web_' . $service . '_weight', 0));
     update_variable_del('on_the_web_' . $service . '_weight');
   }
   $config->save();

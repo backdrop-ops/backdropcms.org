@@ -26,7 +26,7 @@ function on_the_web_menu() {
 function on_the_web_config_info() {
   $prefixes['on_the_web.settings'] = array(
     'label' => t('Links to social media sites, and their order.'),
-    'group' => t('On The Web'),
+    'group' => t('Configuration'),
   );
 
   return $prefixes;
