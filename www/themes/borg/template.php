@@ -112,6 +112,9 @@ $(window).load(function() {
       $variables['classes'][$array_key] = 'layout-one-sidebar';
     }
   }
+  if (module_exists('admin_bar') && user_access('admin_bar')) {
+    $variables['classes'][] = 'admin-bar';
+  }
 }
 
 /**

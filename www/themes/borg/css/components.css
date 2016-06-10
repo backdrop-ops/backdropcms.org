@@ -4,24 +4,29 @@
  * Contains specific styles for common HTML components.
  ******************************************************************************/
 
+a.site-name {
+  display: block;
+  /* Top of "b" and bottom of "p" should have equal distance to lines. */
+  padding: 16px 0 20px;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 200;
+  letter-spacing: -.04em;
+  float: left;
+  width: 66.6666%;
+}
+
 .logo {
   display: none;
 }
 @media all and (min-width: 851px) {
   .logo {
     display: block;
+    float: left;
+    width: 33.3333%;
+    box-sizing: border-box;
+    border-left: 2px solid #ffffff;
   }
-}
-
-.site-name {
-  border-top: 2px solid #fff;
-  display: block;
-  /* Top of "b" and bottom of "p" should have equal distance to lines. */
-  padding: 8px 0 16px;
-  text-align: center;
-  font-size: 54px;
-  font-weight: 200;
-  letter-spacing: -.04em;
 }
 
 /*******************************************************************************
@@ -119,6 +124,7 @@ ul.secondary a.active {
   margin: 0;
 }
 .block-system-main-menu li.first {
+  clear: both;
   border-top: 2px solid #fff;
 }
 .block-system-main-menu li a {
@@ -1397,6 +1403,13 @@ a.tabledrag-handle .handle {
   .block-views-news-block .view-footer {
     padding-left: 25px;
   }
+}
+
+/*******************************************************************************
+ * Sidebar Admn Bar adjustment.
+ ******************************************************************************/
+body.admin-bar .l-sidebar {
+  padding-top: 33px;
 }
 
 /*******************************************************************************
