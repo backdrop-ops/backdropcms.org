@@ -1,0 +1,37 @@
+{
+    "_config_name": "field.instance.node.post.field_files",
+    "field_name": "field_files",
+    "entity_type": "node",
+    "bundle": "post",
+    "label": "Files",
+    "widget": {
+        "weight": "4",
+        "type": "file_generic",
+        "module": "file",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "file_directory": "post",
+        "file_extensions": "txt pdf jpg gif png mp3 zip gz tar rtf",
+        "max_filesize": "",
+        "description_field": 0,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "file_default",
+            "settings": [],
+            "module": "file",
+            "weight": 2
+        }
+    }
+}

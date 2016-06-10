@@ -62,7 +62,7 @@
             "status": 1,
             "weight": -49,
             "settings": {
-                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure>",
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th>",
                 "filter_html_help": 1,
                 "filter_html_nofollow": 0
             },
@@ -81,13 +81,18 @@
                     ]
                 },
                 {
-                    "name": "Lists",
+                    "name": "Links",
                     "items": [
-                        "BulletedList",
-                        "NumberedList",
                         "BackdropLink",
                         "BackdropUnlink",
                         "Anchor"
+                    ]
+                },
+                {
+                    "name": "Lists",
+                    "items": [
+                        "BulletedList",
+                        "NumberedList"
                     ]
                 },
                 {
@@ -123,10 +128,6 @@
             "max_dimensions": {
                 "width": "",
                 "height": ""
-            },
-            "dimensions": {
-                "max_width": "",
-                "max_height": ""
             }
         },
         "plugins": {
