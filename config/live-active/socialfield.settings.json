@@ -50,6 +50,11 @@
             "name": "Slideshare",
             "icon": "fa fa-slideshare",
             "validation_pattern": "*slideshare.net/*"
+        },
+        "github": {
+            "name": "Github",
+            "icon": "fa fa-github-square",
+            "validation_pattern": "*github.com/*"
         }
     }
 }
