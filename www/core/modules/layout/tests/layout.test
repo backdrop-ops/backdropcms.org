@@ -47,6 +47,64 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'title' => $this->randomString(),
     ));
   }
+
+  /**
+   * Test that layout templates may be enabled and disabled.
+   */
+  function testLayoutTemplates() {
+    // Attempt to disable the 1 column layout (should fail).
+    $this->backdropGet('admin/structure/layouts/settings');
+    $edit = array(
+      'templates[boxton]' => FALSE,
+      'templates[moscone]' => TRUE,
+      'templates[moscone_flipped]' => TRUE,
+      'templates[simmons]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Save configuration'));
+    $this->assertText(t('The "Boxton" layout template is currently in use and may not be excluded.'));
+
+    // Check to see that the Simmons layout is an existing option.
+    $this->backdropGet('admin/structure/layouts/manage/default/settings');
+    $this->assertText('Simmons');
+
+    // Disable the Bartik layout.
+    $edit = array(
+      'templates[boxton]' => TRUE,
+      'templates[moscone]' => TRUE,
+      'templates[moscone_flipped]' => TRUE,
+      'templates[simmons]' => FALSE,
+    );
+    $this->backdropPost('admin/structure/layouts/settings', $edit, t('Save configuration'));
+    $this->assertText(t('Your configuration has been saved.'));
+
+    // Check to see that the Simmons layout is no longer an option.
+    $this->backdropGet('admin/structure/layouts/manage/default/settings');
+    $this->assertNoText('Simmons');
+
+    // Check that hidden templates are not shown by default.
+    $this->assertNoText('3/3/4 columns');
+
+    // Enable hidden layouts manually.
+    config_set('layout.settings', 'excluded_templates', array());
+
+    // Check that the hidden templates are now available.
+    $this->backdropGet('admin/structure/layouts/manage/default/settings');
+    $this->assertText('3/3/4 columns');
+    $this->backdropGet('admin/structure/layouts/settings');
+    $this->assertText('3/3/4 columns');
+
+    // Disable the legacy Bartik layout.
+    $edit = array(
+      'templates[three_three_four_column]' => FALSE,
+    );
+    $this->backdropPost('admin/structure/layouts/settings', $edit, t('Save configuration'));
+    $this->assertNoText('3/3/4 columns');
+
+    // Post again just make sure the hidden option doesn't return.
+    $this->backdropPost('admin/structure/layouts/settings', array(), t('Save configuration'));
+    $this->assertNoText('3/3/4 columns');
+  }
+
   /**
    * Add and remove blocks from a custom layout path.
    */
@@ -61,7 +119,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'title' => $layout_title,
       'name' => $layout_name,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
       'path' => $layout_url,
     );
     $this->backdropPost(NULL, $edit, t('Create layout'));
@@ -353,9 +411,9 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
   }
 
   /**
-   * Test block conditions.
+   * Test block path and type conditions.
    */
-  function testBlockConditions() {
+  function testBlockPathTypeConditions() {
     // Create a new layout overriding node/%.
     $layout_name = strtolower($this->randomName());
     $layout_title = $this->randomString();
@@ -363,12 +421,12 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'title' => $layout_title,
       'name' => $layout_name,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
       'path' => $layout_url,
     );
     $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
 
-    // Add a testing block, shown only on post nodes.
+    // Add a testing block, shown only on page nodes.
     $this->clickLink(t('Add block'), 3);
     $this->clickLink(t('Layout foo block'));
     $block_title = $this->randomString();
@@ -380,11 +438,39 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'condition' => 'node_type',
     );
-    $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $this->backdropPost(NULL, $edit, t('Load condition'));
     $edit = array(
-      'bundles[post]' => TRUE,
+      'bundles[page]' => TRUE,
     );
     $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $this->backdropPost(Null, array(), t('Save configuration'));
+    $this->backdropPost(Null, array(), t('Save layout'));
+
+    $this->backdropGet('node/' . $this->test_node1->nid);
+    $this->assertNoText(check_plain($block_title), 'Block not shown on post content.');
+
+    $this->backdropGet('node/' . $this->test_node2->nid);
+    $this->assertText(check_plain($block_title), 'Block shown on page content.');
+
+    // Get the block UUID.
+    layout_reset_caches();
+    $layout = layout_load($layout_name);
+    $block_uuid = end($layout->positions['sidebar']);
+
+    // Edit condition to show this block only on post nodes.
+    $this->backdropGet('admin/structure/layouts/manage/' . $layout_name . '/configure-block/editor/' . $block_uuid);
+    $this->backdropPost(NULL, array(), t('Configure'));
+    $this->assertRaw('<label for="edit-bundles">Node Type </label>');
+
+    $edit = array(
+      'condition' => 'node_type',
+    );
+    $this->backdropPost(NULL, $edit, t('Load condition'));
+    $edit = array(
+      'bundles[post]' => TRUE,
+      'bundles[page]' => FALSE,
+    );
+    $this->backdropPost(NULL, $edit, t('Save visibility condition'));
     $this->backdropPost(Null, array(), t('Save configuration'));
     $this->backdropPost(Null, array(), t('Save layout'));
 
@@ -394,18 +480,13 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $this->backdropGet('node/' . $this->test_node2->nid);
     $this->assertNoText(check_plain($block_title), 'Block not shown on page content.');
 
-    // Get the block UUID.
-    layout_reset_caches();
-    $layout = layout_load($layout_name);
-    $block_uuid = end($layout->positions['sidebar']);
-
     // Add another condition to show this block only on a single node path.
     $this->backdropGet('admin/structure/layouts/manage/' . $layout_name . '/configure-block/editor/' . $block_uuid);
     $this->backdropPost(NULL, array(), t('Add visibility condition'));
     $edit = array(
       'condition' => 'path',
     );
-    $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $this->backdropPost(NULL, $edit, t('Load condition'));
     $edit = array(
       'paths' => 'node/' . $this->test_node1->nid,
     );
@@ -426,6 +507,89 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
   }
 
   /**
+   * Test block entity ID conditions.
+   */
+  function testBlockEntityIDConditions() {
+    // Create a new layout overriding node/%.
+    $layout_name = strtolower($this->randomName());
+    $layout_title = $this->randomString();
+    $layout_url = 'node/%';
+    $edit = array(
+      'title' => $layout_title,
+      'name' => $layout_name,
+      'layout_template' => 'moscone_flipped',
+      'path' => $layout_url,
+    );
+    $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
+
+    // Create another post node.
+    $second_post = $this->backdropCreateNode(array(
+      'type' => 'post',
+      'title' => $this->randomString(),
+    ));
+
+    // Add another testing block.
+    $this->clickLink(t('Add block'), 3);
+    $this->clickLink(t('Layout foo block'));
+    $block_title = $this->randomString();
+    $edit = array(
+      'title_display' => LAYOUT_TITLE_CUSTOM,
+      'title' => $block_title,
+    );
+    $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $edit = array(
+      'condition' => 'node_nid',
+    );
+    $this->backdropPost(NULL, $edit, t('Load condition'));
+    $edit = array(
+      'entity_id' => $this->test_node1->nid,
+    );
+    $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $this->backdropPost(Null, array(), t('Save configuration'));
+    $this->backdropPost(Null, array(), t('Save layout'));
+
+    $this->backdropGet('node/' . $this->test_node1->nid);
+    $this->assertText(check_plain($block_title), 'Block shown and node ID matches.');
+
+    $this->backdropGet('node/' . $second_post->nid);
+    $this->assertNoText(check_plain($block_title), 'Block not shown when node ID does not match.');
+
+    // Get the block UUID.
+    layout_reset_caches();
+    $layout = layout_load($layout_name);
+    $block_uuid = end($layout->positions['sidebar']);
+
+    // Add another condition to show this block only for a particular user ID.
+    $this->backdropGet('admin/structure/layouts/manage/' . $layout_name . '/configure-block/editor/' . $block_uuid);
+    $this->backdropPost(NULL, array(), t('Add visibility condition'));
+    $edit = array(
+      'condition' => 'user_uid',
+    );
+    $this->backdropPost(NULL, $edit, t('Load condition'));
+    $edit = array(
+      'entity_id' => $this->web_user->uid,
+    );
+    $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $this->backdropPost(NULL, array(), t('Save configuration'));
+    $this->backdropPost(Null, array(), t('Save layout'));
+
+    $this->backdropGet('node/' . $this->test_node1->nid);
+    $this->assertNoText(check_plain($block_title), 'Block not shown when user ID does not match.');
+
+    $this->backdropGet('node/' . $second_post->nid);
+    $this->assertNoText(check_plain($block_title), 'Block not shown when user ID does not match.');
+
+    // Login as a the web user and test that the block is now shown.
+    $this->backdropLogin($this->web_user);
+
+    $this->backdropGet('node/' . $this->test_node1->nid);
+    $this->assertText(check_plain($block_title), 'Block shown when user ID and node ID matches.');
+
+    $this->backdropGet('node/' . $second_post->nid);
+    $this->assertNoText(check_plain($block_title), 'Block not shown when user ID and node ID does not match.');
+  }
+
+  /**
    * Test the support for contexts within conditions and blocks.
    */
   function testContexts() {
@@ -436,7 +600,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'title' => $layout_title,
       'name' => $layout_name,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
       'path' => $layout_path,
     );
     // Check the path first to populate available contexts.
@@ -525,7 +689,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'title' => $layout_title,
       'name' => $layout_name,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
       'path' => $layout_path,
     );
     // Save directly without checking contexts.
@@ -570,7 +734,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'condition' => 'node_type',
     );
-    $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $this->backdropPost(NULL, $edit, t('Load condition'));
     $edit = array(
       'bundles[post]' => TRUE,
     );
@@ -627,7 +791,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'title' => $layout_title,
       'name' => $layout_name,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
       'path' => $layout_path,
     );
     // Save directly without checking contexts.
@@ -732,7 +896,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'name' => $layout_name,
       'title' => $layout_name,
       'path' => $layout_path,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
     );
     $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
 
@@ -769,7 +933,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'condition' => 'path',
     );
-    $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $this->backdropPost(NULL, $edit, t('Load condition'));
 
     // This condition will make the menu item available on the front page, and
     // on the layout path itself. Note that the "layout_name" is the first part
@@ -811,7 +975,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'name' => $tab_layout_name,
       'title' => $tab_layout_name,
       'path' => $tab_layout_path,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
     );
     $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
 
@@ -842,7 +1006,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'name' => $subtab_layout_name,
       'title' => $subtab_layout_name,
       'path' => $subtab_layout_path_last,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
     );
     $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
 
@@ -891,6 +1055,24 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
   }
 
   /**
+   * Test region styles.
+   */
+  function testRegionStyles() {
+    $this->backdropGet('admin/structure/layouts/manage/default/configure-region/editor/header');
+    $edit = array(
+      'element' => 'aside',
+      'classes' => 'new-test-class',
+    );
+    $this->backdropPost(NULL, $edit, t('Save configuration'));
+    $this->backdropGet('admin/structure/layouts/manage/default');
+    $this->backdropPost(NULL, array(), t('Save layout'));
+
+    $this->backdropGet('node');
+    $style_exists = $this->xpath('//header[contains(@class,"l-header")]//aside[contains(@class,"new-test-class")]');
+    $this->assertTrue($style_exists, 'Style exists on header div.');
+  }
+
+  /**
    * Ensure that reassignment of menu items works when deleting layouts.
    */
   function testMenuItemReassignment() {
@@ -901,7 +1083,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'name' => $layout_name,
       'title' => $layout_name,
       'path' => $layout_path,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
     );
     $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
 
@@ -928,7 +1110,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'name' => $second_layout_name,
       'title' => $second_layout_name,
       'path' => $layout_path,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
     );
     $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
 
@@ -981,7 +1163,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'name' => $layout_name,
       'title' => $layout_name,
       'path' => $layout_path,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
     );
     $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
 
@@ -991,7 +1173,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
 
     // Change the layout to the test layout, which has identical regions.
     $edit = array(
-      'layout' => 'layout_test_layout',
+      'layout_template' => 'layout_test_layout',
     );
     $this->backdropPost('admin/structure/layouts/manage/' . $layout_name . '/settings', $edit, t('Save layout'));
 
@@ -999,9 +1181,9 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $layout = layout_load($layout_name);
     $this->assertBlocksMatch($layout, $default_layout);
 
-    // Change the layout to the one_column layout, eliminating the sidebar.
+    // Change the layout to the boxton layout, eliminating the sidebar.
     $edit = array(
-      'layout' => 'one_column',
+      'layout_template' => 'boxton',
     );
     $this->backdropPost('admin/structure/layouts/manage/' . $layout_name . '/settings', $edit, t('Save layout'));
 
@@ -1013,6 +1195,71 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
 
     $intersection = array_intersect(array_keys($layout->content), $deleted_uuids);
     $this->assertEqual($intersection, array(), 'The sidebar blocks have been removed from the layout content array.');
+  }
+
+  /**
+   * Tests Taxonomy contexts within layouts.
+   */
+  function testTaxonomyContext() {
+    module_enable(array('taxonomy'));
+
+    // Create a default vocabulary named "Tags", enabled for the 'post' content type.
+    $vocabulary = new TaxonomyVocabulary(array(
+      'name' => 'Tags',
+      'description' => 'Use tags to group posts on similar topics into categories.',
+      'machine_name' => 'tags',
+    ));
+    taxonomy_vocabulary_save($vocabulary);
+
+    $field = array(
+      'field_name' => 'field_' . $vocabulary->machine_name,
+      'type' => 'taxonomy_term_reference',
+      // Set cardinality to unlimited for tagging.
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+      'settings' => array(
+        'allowed_values' => array(
+          array(
+            'vocabulary' => $vocabulary->machine_name,
+            'parent' => 0,
+          ),
+        ),
+      ),
+    );
+    field_create_field($field);
+
+    $instance = array(
+      'field_name' => 'field_' . $vocabulary->machine_name,
+      'entity_type' => 'node',
+      'label' => 'Tags',
+      'bundle' => 'post',
+      'widget' => array(
+        'type' => 'taxonomy_autocomplete',
+      ),
+    );
+    field_create_instance($instance);
+
+    // Make a new layout that creates a custom path with wildcards.
+    $layout_name = strtolower($this->randomName());
+    $layout_title = $this->randomName();
+    $layout_path = 'taxonomy/term/%';
+    $edit = array(
+      'title' => $layout_title,
+      'name' => $layout_name,
+      'layout_template' => 'moscone_flipped',
+      'path' => $layout_path,
+    );
+    // Check the path first to populate available contexts.
+    $this->backdropPost('admin/structure/layouts/add', $edit, t('Check path'));
+
+    // Try to add a condition to the layout itself to only show on the Tag
+    // vocabulary.
+    $this->backdropPost(NULL, array(), t('Add visibility condition'));
+
+    $this->backdropPost(NULL, array('condition' => 'taxonomy_term_vocabulary'), t('Load condition'));
+    $this->backdropPost(NULL, array('bundles[tags]' => TRUE), t('Add visibility condition'));
+    $this->backdropPost(NULL, array(), t('Create layout'));
+
+    $this->assertText(t('Layout created. Blocks may now be added to this layout.'));
   }
 
   /**
@@ -1042,12 +1289,78 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
             $blocks_match = FALSE;
           }
         }
-        $this->assertTrue($blocks_match, format_string('Blocks copied from @layout1 into @layout2 match in the @region region.', array('@layout1' => $copied_from_layout->layout, '@layout2' => $layout->layout, '@region' => $region_name)));
+        $this->assertTrue($blocks_match, format_string('Blocks copied from @layout1 into @layout2 match in the @region region.', array('@layout1' => $copied_from_layout->layout_template, '@layout2' => $layout->layout_template, '@region' => $region_name)));
       }
       else {
-        debug(format_string('The new layout @layout does not have the region @region, so no blocks are being copied.', array('@layout' => $layout->layout, '@region' => $region_name)));
+        debug(format_string('The new layout @layout does not have the region @region, so no blocks are being copied.', array('@layout' => $layout->layout_template, '@region' => $region_name)));
       }
     }
+  }
+
+  /**
+   * Tests layout_modules_uninstalled().
+   */
+  function testBlockUninstall() {
+    $this->backdropGet('admin/structure/layouts');
+    $this->clickLink(t('Add layout'));
+
+    // Create a new layout at a new path.
+    $layout_name = strtolower($this->randomName());
+    $layout_title = $this->randomString();
+    $layout_url = 'layout-test-path';
+    $edit = array(
+      'title' => $layout_title,
+      'name' => $layout_name,
+      'layout_template' => 'moscone_flipped',
+      'path' => $layout_url,
+    );
+    $this->backdropPost(NULL, $edit, t('Create layout'));
+
+    // Add a block to the sidebar.
+    $this->clickLink(t('Add block'), 3);
+    $this->assertText(t('A testing block for layouts.'));
+    $this->clickLink(t('Layout foo block'));
+    $edit = array(
+      'block_settings[count]' => 5,
+    );
+    $this->backdropPost(NULL, $edit, t('Add block'));
+
+    // Save the layout.
+    $this->backdropPost(NULL, array(), t('Save layout'));
+
+    // Check that the new block is on the edit page.
+    $this->backdropGet('admin/structure/layouts/manage/' . $layout_name);
+    $this->assertText(t('A testing block for layouts.'));
+
+    // Add the same block to the default layout.
+    $this->backdropGet('admin/structure/layouts/manage/default');
+
+    // Add the same block to the sidebar.
+    $this->clickLink(t('Add block'), 3);
+    $this->assertText(t('A testing block for layouts.'));
+    $this->clickLink(t('Layout foo block'));
+    $edit = array(
+      'block_settings[count]' => 5,
+    );
+    $this->backdropPost(NULL, $edit, t('Add block'));
+
+    // Save the layout.
+    $this->backdropPost(NULL, array(), t('Save layout'));
+
+    // Check that the new block is on the edit page.
+    $this->backdropGet('admin/structure/layouts/manage/default');
+    $this->assertText(t('A testing block for layouts.'));
+
+    // Uninstall the module providing the block.
+    module_disable(array('layout_test'));
+    backdrop_uninstall_modules(array('layout_test'));
+    $this->assertFalse(module_exists('layout_test'), 'The module has been uninstalled.');
+
+    // Check that the new block is on none of the layout edit pages.
+    $this->backdropGet('admin/structure/layouts/manage/default');
+    $this->assertNoText(t('A testing block for layouts.'));
+    $this->backdropGet('admin/structure/layouts/manage/' . $layout_name);
+    $this->assertNoText(t('A testing block for layouts.'));
   }
 }
 
@@ -1151,7 +1464,7 @@ class LayoutSelectionTest extends BackdropWebTestCase {
       'name' => $layout_name,
       'title' => $layout_name,
       'path' => $layout_path,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
     );
 
     // Note that this adds a condition, not saving the layout yet.
@@ -1161,7 +1474,7 @@ class LayoutSelectionTest extends BackdropWebTestCase {
     $edit = array(
       'condition' => 'user_role',
     );
-    $this->backdropPost(NULL, $edit, t('Add visibility condition'));
+    $this->backdropPost(NULL, $edit, t('Load condition'));
 
     // Allow authenticated users to see the layout only.
     $edit = array(
@@ -1189,12 +1502,12 @@ class LayoutSelectionTest extends BackdropWebTestCase {
   }
 
   private function assertIsDefaultLayout($message = '') {
-    $result = $this->xpath('//div[contains(@class, "layout--two-column")]');
+    $result = $this->xpath('//div[contains(@class, "layout--moscone-flipped")]');
     $this->assertEqual(count($result), 1, $message ? $message : format_string('Admin layout used at @path', array('@path' => $this->getUrl())));
   }
 
   private function assertIsAdminLayout($message = '') {
-    $result = $this->xpath('//div[contains(@class, "layout--one-column")]');
+    $result = $this->xpath('//div[contains(@class, "layout--boxton")]');
     $this->assertEqual(count($result), 1, $message ? $message : format_string('Admin layout used at @path', array('@path' => $this->getUrl())));
   }
 }
@@ -1401,7 +1714,7 @@ class LayoutHookTestCase extends BackdropWebTestCase {
     $edit = array(
       'title' => $layout_title,
       'name' => $layout_name,
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
       'path' => $layout_url,
     );
     $this->backdropPost(NULL, $edit, t('Create layout'));
@@ -1456,10 +1769,10 @@ class LayoutHookTestCase extends BackdropWebTestCase {
     ));
 
     // Go to the Default layout's edit page and change the layout to the 
-    // one_column layout.
+    // boxton layout.
     state_set('layout_test', array());
     $edit = array(
-      'layout' => 'one_column',
+      'layout_template' => 'boxton',
     );
     $this->backdropPost('admin/structure/layouts/manage/default/settings', $edit, t('Save layout'));
     $this->assertHookMessageOrder(array(
@@ -1475,6 +1788,5 @@ class LayoutHookTestCase extends BackdropWebTestCase {
     $this->assertHookMessageOrder(array(
       'layout_test_layout_revert called',
     ));
-
   }
 }
