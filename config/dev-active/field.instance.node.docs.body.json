@@ -5,17 +5,18 @@
     "bundle": "docs",
     "label": "Body",
     "widget": {
-        "type": "text_textarea_with_summary",
-        "settings": {
-            "rows": 10,
-            "summary_rows": 5
-        },
         "weight": 31,
-        "module": "text"
+        "type": "text_textarea_with_summary",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "30",
+            "summary_rows": 5
+        }
     },
     "settings": {
-        "display_summary": true,
-        "text_processing": 1,
+        "text_processing": "1",
+        "display_summary": 1,
         "user_register_form": false
     },
     "display": {

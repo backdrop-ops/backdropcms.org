@@ -315,56 +315,8 @@
                         "field": "type",
                         "value": {
                             "organization": "organization"
-                        }
-                    },
-                    "field_services_tid": {
-                        "id": "field_services_tid",
-                        "table": "field_data_field_services",
-                        "field": "field_services_tid",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "or",
-                        "value": [],
-                        "group": "1",
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "field_services_tid_op",
-                            "label": "Services offered",
-                            "description": "",
-                            "use_operator": 0,
-                            "operator": "field_services_tid_op",
-                            "identifier": "services",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": 0,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            },
-                            "reduce": 0
                         },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        },
-                        "reduce_duplicates": 0,
-                        "type": "select",
-                        "limit": true,
-                        "vocabulary": "services",
-                        "hierarchy": 0,
-                        "error_message": 1
+                        "group": 1
                     }
                 },
                 "sorts": {
@@ -402,6 +354,12 @@
                         "content": "<p><small>Please&nbsp;<a href=\"/user/login\">log in</a>&nbsp;to&nbsp;<a href=\"/node/add/organization\">add your organization</a>&nbsp;to our list of Backdrop service providers.</small></p>\n",
                         "format": "full_html",
                         "tokenize": 0
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
                     }
                 }
             }

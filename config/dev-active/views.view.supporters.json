@@ -28,7 +28,8 @@
                 "pager": {
                     "type": "some",
                     "options": {
-                        "items_per_page": "50"
+                        "items_per_page": "100",
+                        "offset": "0"
                     }
                 },
                 "style_plugin": "default",
