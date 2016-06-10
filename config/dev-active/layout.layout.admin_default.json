@@ -1,13 +1,13 @@
 {
     "_config_name": "layout.layout.admin_default",
-    "path": null,
+    "path": "",
     "name": "admin_default",
     "title": "Default Administrative Layout",
     "description": null,
     "module": "layout",
     "weight": 1,
     "storage": 2,
-    "layout": "one_column",
+    "layout_template": "boxton",
     "disabled": false,
     "settings": {
         "title": "",
@@ -22,6 +22,7 @@
         "content": [
             "default"
         ],
+        "bottom": [],
         "footer": []
     },
     "content": {
