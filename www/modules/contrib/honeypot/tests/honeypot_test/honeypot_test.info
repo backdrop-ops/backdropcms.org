@@ -1,0 +1,11 @@
+name = Honeypot test
+description = Support module for Honeypot internal testing purposes.
+backdrop = 1.x
+type = module
+package = Testing
+hidden = TRUE
+
+; Added by Backdrop CMS packaging script on 2016-05-18
+project = honeypot
+version = 1.x-1.0.5
+timestamp = 1463582131

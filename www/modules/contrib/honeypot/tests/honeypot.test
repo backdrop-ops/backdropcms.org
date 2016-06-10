@@ -6,7 +6,7 @@
  */
 
 /**
- * Test the functionality of the Honeypot module for an admin user.
+ * Test the functionality of the Honeypot module for forms.
  */
 class HoneypotFormTestCase extends BackdropWebTestCase {
   protected $adminUser;
@@ -23,7 +23,7 @@ class HoneypotFormTestCase extends BackdropWebTestCase {
 
   public function setUp() {
     // Enable modules required for this test.
-    parent::setUp(array('honeypot', 'comment'));
+    parent::setUp(array('honeypot', 'comment', 'honeypot_test'));
 
     $config = config('honeypot.settings');
 
@@ -173,6 +173,112 @@ class HoneypotFormTestCase extends BackdropWebTestCase {
     $this->backdropPost('node/add/post', $edit, t('Save'));
     $this->assertNoText(t('There was a problem with your form submission.'), 'Honeypot not blocking node form saves.');
   }
+
+  /**
+   * Test programmatic submission.
+   */
+  public function testProgrammaticSubmission() {
+    // Enable time limit protection.
+    config_set('honeypot.settings', 'time_limit', 5);
+    // Setup user for which we are going to trigger the password reset.
+    $this->webUser->name   = 'robo-user';
+    $this->webUser->mail   = $this->webUser->name . '@example.com';
+    $this->webUser->status = 1;
+    user_save($this->webUser);
+
+    // Trigger the password reset through a programmatic submission.
+    $this->backdropGet('honeypot_test/submit_form');
+
+    // Verify that the submission did not return any validation errors.
+    $form_errors = backdrop_json_decode($this->content);
+    $this->assertNoRaw('There was a problem with your form submission. Please wait 6 seconds and try again.');
+    $this->assertFalse($form_errors, 'The were no validation errors when submitting the form.');
+  }
+}
+
+/**
+ * Test the functionality of the Honeypot module for an admin user.
+ */
+class HoneypotAdminFormTestCase extends BackdropWebTestCase {
+  protected $adminUser;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Honeypot admin form',
+      'description' => 'Ensure the Honeypot admin form functions properly.',
+      'group' => 'Form API',
+    );
+  }
+
+  public function setUp() {
+    // Enable modules required for this test.
+    parent::setUp(array('honeypot'));
+
+    // Set up admin user.
+    $this->adminUser = $this->backdropCreateUser(array(
+      'administer honeypot',
+      'bypass honeypot protection',
+    ));
+  }
+
+  /**
+   * Test a valid element name.
+   */
+  public function testElementNameUpdateSuccess() {
+    // Log in the web user.
+    $this->backdropLogin($this->adminUser);
+
+    // Set up form and submit it.
+    $edit['honeypot_element_name'] = "test";
+    $this->backdropPost('admin/config/content/honeypot', $edit, t('Save configuration'));
+
+    // Form should have been submitted successfully.
+    $this->assertText(t('The honeypot settings have been saved.'), 'Honeypot element name assertion works for valid names.');
+
+    // Set up form and submit it.
+    $edit['honeypot_element_name'] = "test-1";
+    $this->backdropPost('admin/config/content/honeypot', $edit, t('Save configuration'));
+
+    // Form should have been submitted successfully.
+    $this->assertText(t('The honeypot settings have been saved.'), 'Honeypot element name assertion works for valid names with dashes and numbers.');
+  }
+
+  /**
+   * Test an invalid element name (invalid first character).
+   */
+  public function testElementNameUpdateFirstCharacterFail() {
+    // Log in the admin user.
+    $this->backdropLogin($this->adminUser);
+
+    // Set up form and submit it.
+    $edit['honeypot_element_name'] = "1test";
+    $this->backdropPost('admin/config/content/honeypot', $edit, t('Save configuration'));
+
+    // Form submission should fail.
+    $this->assertText(t('The element name must start with a letter.'), 'Honeypot element name assertion works for invalid names.');
+  }
+
+  /**
+   * Test an invalid element name (invalid character in name).
+   */
+  public function testElementNameUpdateInvalidCharacterFail() {
+    // Log in the admin user.
+    $this->backdropLogin($this->adminUser);
+
+    // Set up form and submit it.
+    $edit['honeypot_element_name'] = "special-character-&";
+    $this->backdropPost('admin/config/content/honeypot', $edit, t('Save configuration'));
+
+    // Form submission should fail.
+    $this->assertText(t('The element name cannot contain spaces or other special characters.'), 'Honeypot element name assertion works for invalid names with special characters.');
+
+    // Set up form and submit it.
+    $edit['honeypot_element_name'] = "space in name";
+    $this->backdropPost('admin/config/content/honeypot', $edit, t('Save configuration'));
+
+    // Form submission should fail.
+    $this->assertText(t('The element name cannot contain spaces or other special characters.'), 'Honeypot element name assertion works for invalid names with spaces.');
+  }
 }
 
 /**
@@ -215,7 +321,7 @@ class HoneypotCssTestCase extends BackdropWebTestCase {
   }
 
   /**
-   * Test cron-based CSS file regeneration
+   * Test cron-based CSS file regeneration.
    */
   public function testHoneypotCssRegenerationOnCron() {
     $honeypot_css = honeypot_get_css_file_path();
@@ -231,5 +337,35 @@ class HoneypotCssTestCase extends BackdropWebTestCase {
 
     // Make sure the Honeypot CSS file exists.
     $this->assertTrue(file_exists($honeypot_css));
+  }
+
+  /**
+   * Test cron-based CSS file update.
+   */
+  public function testHoneypotCssUpdateOnCron() {
+    $honeypot_css = honeypot_get_css_file_path();
+    $original_element_name = config_get('honeypot.settings','element_name', 'url');
+
+    // Update the honeypot element name.
+    config_set('honeypot.settings', 'element_name', 'test');
+
+    // Make sure the Honeypot CSS file still exists.
+    $this->assertTrue(file_exists($honeypot_css));
+
+    // Run cron.
+    honeypot_cron();
+
+    // Make sure the Honeypot CSS file was updated with the new element name.
+    $handle = fopen($honeypot_css, 'r');
+    $contents = fread($handle, filesize($honeypot_css));
+    fclose($handle);
+    $updated_element_name_in_css = (strpos($contents, 'test') === 1);
+    $this->assertTrue($updated_element_name_in_css);
+
+    // For debug.
+    $this->verbose($contents);
+
+    // Revert the honeypot element name back to the original.
+    config_set('honeypot.settings','element_name', $original_element_name);
   }
 }
