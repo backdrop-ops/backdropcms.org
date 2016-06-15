@@ -1,8 +1,22 @@
 {
     "_config_name": "book.settings",
-    "book_allowed_types": [
-        "book"
-    ],
+    "book_allowed_types": {
+        "book": "book",
+        "docs": "docs",
+        "core": 0,
+        "core_release": 0,
+        "event": 0,
+        "organization": 0,
+        "page": 0,
+        "post": 0,
+        "project_layout": 0,
+        "project_module": 0,
+        "project_release": 0,
+        "project_theme": 0,
+        "quote": 0,
+        "sa": 0,
+        "supporter": 0
+    },
     "book_child_type": "book",
     "book_block_mode": "all pages"
 }
