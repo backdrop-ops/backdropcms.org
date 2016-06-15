@@ -1,9 +1,9 @@
 {
     "_config_name": "search.settings",
     "node_rank_comments": 0,
-    "node_rank_relevance": "0",
+    "node_rank_relevance": "10",
     "node_rank_sticky": "0",
-    "node_rank_promote": "0",
+    "node_rank_promote": "2",
     "search_minimum_word_size": "3",
     "search_overlap_cjk": 1,
     "search_cron_limit": "100",
@@ -27,5 +27,6 @@
     },
     "search_and_or_limit": 7,
     "search_default_module": "node",
-    "node_rank_recent": "0"
+    "node_rank_recent": "1",
+    "transliteration": 0
 }

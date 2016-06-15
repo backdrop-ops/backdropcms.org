@@ -1,13 +1,13 @@
 {
     "_config_name": "layout.layout.admin_default",
-    "path": null,
+    "path": "",
     "name": "admin_default",
     "title": "Default Administrative Layout",
     "description": null,
     "module": "layout",
     "weight": 1,
     "storage": 2,
-    "layout": "one_column",
+    "layout_template": "boxton",
     "disabled": false,
     "settings": {
         "title": "",
@@ -15,6 +15,15 @@
         "title_block": null
     },
     "positions": {
+        "sidebar": [],
+        "sidebar2": [],
+        "third1": [],
+        "third2": [],
+        "third3": [],
+        "quarter1": [],
+        "quarter2": [],
+        "quarter3": [],
+        "quarter4": [],
         "header": [
             "31491bca-6a85-4c0d-8a1d-298ad90d30a7"
         ],
