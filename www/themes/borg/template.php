@@ -86,7 +86,7 @@ function borg_preprocess_page(&$variables) {
   // Add the Source Sans Pro font.
   backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700', array('type' => 'external'));
   // Add FontAwesome.
-  backdrop_add_css('https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css', array('type' => 'external'));
+  backdrop_add_js('https://use.fontawesome.com/baf3c35582.js', array('type' => 'external'));
 
   // Add Flexslider to the front page only.
   if (backdrop_is_front_page()) {
@@ -111,6 +111,9 @@ $(window).load(function() {
     if ($array_key !== FALSE) {
       $variables['classes'][$array_key] = 'layout-one-sidebar';
     }
+  }
+  if (module_exists('admin_bar') && user_access('admin_bar')) {
+    $variables['classes'][] = 'admin-bar';
   }
 }
 

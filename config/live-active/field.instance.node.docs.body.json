@@ -5,26 +5,27 @@
     "bundle": "docs",
     "label": "Body",
     "widget": {
+        "weight": "2",
         "type": "text_textarea_with_summary",
+        "module": "text",
+        "active": 1,
         "settings": {
-            "rows": 10,
+            "rows": "15",
             "summary_rows": 5
-        },
-        "weight": 31,
-        "module": "text"
+        }
     },
     "settings": {
-        "display_summary": true,
-        "text_processing": 1,
+        "text_processing": "1",
+        "display_summary": 0,
         "user_register_form": false
     },
     "display": {
         "default": {
             "label": "hidden",
             "type": "text_default",
+            "weight": "1",
             "settings": [],
-            "module": "text",
-            "weight": 0
+            "module": "text"
         },
         "teaser": {
             "label": "hidden",

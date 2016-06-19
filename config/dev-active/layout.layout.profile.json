@@ -7,7 +7,6 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout": "double_fixed_inner",
     "disabled": false,
     "settings": {
         "title": "",
@@ -259,5 +258,6 @@
                 }
             }
         }
-    }
+    },
+    "layout_template": "double_fixed_inner"
 }

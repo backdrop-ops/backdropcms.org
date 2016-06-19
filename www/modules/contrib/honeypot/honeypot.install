@@ -6,7 +6,7 @@
  */
 
 /**
- * Implements of hook_schema().
+ * Implements hook_schema().
  */
 function honeypot_schema() {
   $schema['honeypot_user'] = array(
@@ -17,6 +17,12 @@ function honeypot_schema() {
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
+      ),
+      'hostname' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Hostname of user that that triggered honeypot.',
       ),
       'timestamp' => array(
         'description' => 'Date/time when the form submission failed, as Unix timestamp.',
@@ -112,16 +118,48 @@ function honeypot_update_1000() {
 }
 
 /**
- * @} End of "defgroup updates-7.x-to-1.x"
- * The next series of updates should start at 2000.
- */
-
-/**
  * Ensure a css file is created
  */
-function honeypot_update_2001() {
+function honeypot_update_1001() {
   backdrop_load('module', 'honeypot');
   module_load_include('inc', 'honeypot', 'honeypot.admin');
   honeypot_create_css(config_get('honeypot.settings', 'element_name'));
 }
 
+/**
+ * Adds the 'hostname' column to the {honeypot_user} table.
+ */
+function honeypot_update_1002() {
+  if (!db_field_exists('honeypot_user', 'hostname')) {
+    $schema = honeypot_schema();
+    $spec = $schema['honeypot_user']['fields']['hostname'];
+    $spec['initial'] = '';
+    db_add_field('honeypot_user', 'hostname', $spec);
+  }
+}
+
+/**
+ * Transfer previous honeypot trigger info from {flood} to {honeypot_user}.
+ */
+function honeypot_update_1003() {
+  // Move all 'honeypot' events, which are honeypot captures for anonymous
+  // users, to the {honeypot_user}-table, since the latter now supports
+  // tracking based on ip/hostname for anonymous users.
+  $query = db_select('flood', 'f')
+    ->condition('event', 'honeypot');
+  $query->addExpression('0', 'uid');
+  $query->addField('f', 'identifier', 'hostname');
+  $query->addField('f', 'timestamp');
+  db_insert('honeypot_user')
+    ->from($query)
+    ->execute();
+
+  // Clean up the flood table by removing our events, since we are no longer
+  // relying on the flood mechanism to track anonymous honeypot captures.
+  flood_clear_event('honeypot');
+}
+
+/*
+ * @} End of "defgroup updates-7.x-to-1.x"
+ * The next series of updates should start at 2000.
+ */

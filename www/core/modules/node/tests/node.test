@@ -1396,6 +1396,27 @@ class NodeTypeTestCase extends BackdropWebTestCase {
       $this->assertTrue(isset($types[$type]->disabled) && empty($types[$type]->disabled), format_string('%type type is enabled.', array('%type' => $type)));
     }
   }
+
+  /**
+   * Ensures that node_type_has_content function works correctly.
+   *
+   * Add new node type and test function returns correct result with and
+   * without content present.
+   */
+  function testNodeTypeHasContent() {
+    // Test node type to assert no content has been created.
+    $this->assertFalse(node_type_has_content('post'), 'The post node type has no content associated with it.');
+
+    // Create a post.
+    $node = new Node();
+    $node->type = 'post';
+    node_object_prepare($node);
+    $node->title = 'A new post';
+    node_save($node);
+
+    // Test node type to assert content has been created.
+    $this->assertTrue(node_type_has_content('post'), 'The post node type has content associated with it.');
+  }
 }
 
 /**
@@ -1821,14 +1842,14 @@ class NodeBlockFunctionalTest extends BackdropWebTestCase {
     $edit = array(
       'title' => 'Post layout',
       'name' => 'post_layout',
-      'layout' => 'two_column',
+      'layout_template' => 'moscone_flipped',
       'path' => 'node/%',
     );
     $this->backdropPost('admin/structure/layouts/add', $edit, t('Create layout'));
 
     // Add a condition to specify only the post type should have this layout.
     $this->backdropPost('admin/structure/layouts/manage/post_layout/settings', array(), t('Add visibility condition'));
-    $this->backdropPost(NULL, array('condition' => 'node_type'), t('Add visibility condition'));
+    $this->backdropPost(NULL, array('condition' => 'node_type'), t('Load condition'));
     $this->backdropPost(NULL, array('bundles[post]' => 1), t('Add visibility condition'));
     $this->backdropPost(NULL, array(), t('Save layout'));
 
@@ -2515,6 +2536,7 @@ class NodeEntityViewModeAlterTest extends NodeWebTestCase {
  * Tests the cache invalidation of node operations.
  */
 class NodePageCacheTest extends NodeWebTestCase {
+  protected $profile = 'minimal';
 
   /**
    * An admin user with administrative permissions for nodes.
@@ -2526,6 +2548,11 @@ class NodePageCacheTest extends NodeWebTestCase {
 
     config_set('system.core', 'cache', 1);
     config_set('system.core', 'page_cache_maximum_age', 300);
+
+    $this->backdropCreateContentType(array(
+      'type' => 'page',
+      'name' => 'Page',
+    ));
 
     $this->admin_user = $this->backdropCreateUser(array(
         'bypass node access',

@@ -6,10 +6,10 @@
     "status": "1",
     "weight": "0",
     "roles": {
-        "anonymous": "anonymous",
         "authenticated": "authenticated",
+        "4": "4",
         "3": "3",
-        "4": 0
+        "anonymous": 0
     },
     "filters": {
         "codefilter": {
@@ -62,7 +62,7 @@
             "status": 1,
             "weight": -49,
             "settings": {
-                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure>",
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th><span>",
                 "filter_html_help": 1,
                 "filter_html_nofollow": 0
             },
@@ -81,13 +81,17 @@
                     ]
                 },
                 {
+                    "name": "Links",
+                    "items": [
+                        "BackdropLink",
+                        "BackdropUnlink"
+                    ]
+                },
+                {
                     "name": "Lists",
                     "items": [
                         "BulletedList",
-                        "NumberedList",
-                        "BackdropLink",
-                        "BackdropUnlink",
-                        "Anchor"
+                        "NumberedList"
                     ]
                 },
                 {
@@ -110,7 +114,8 @@
                         "RemoveFormat",
                         "Source",
                         "Maximize",
-                        "Format"
+                        "Format",
+                        "Styles"
                     ]
                 }
             ]
@@ -123,15 +128,54 @@
             "max_dimensions": {
                 "width": "",
                 "height": ""
-            },
-            "dimensions": {
-                "max_width": "",
-                "max_height": ""
             }
         },
         "plugins": {
             "style": {
-                "style_list": []
+                "style_list": [
+                    {
+                        "name": "Call-Out",
+                        "element": "span",
+                        "attributes": {
+                            "class": "callout"
+                        }
+                    },
+                    {
+                        "name": "Example",
+                        "element": "span",
+                        "attributes": {
+                            "class": "example"
+                        }
+                    },
+                    {
+                        "name": "Navigation",
+                        "element": "span",
+                        "attributes": {
+                            "class": "navigation"
+                        }
+                    },
+                    {
+                        "name": "Link",
+                        "element": "span",
+                        "attributes": {
+                            "class": "link"
+                        }
+                    },
+                    {
+                        "name": "Button",
+                        "element": "span",
+                        "attributes": {
+                            "class": "button"
+                        }
+                    },
+                    {
+                        "name": "Monospace",
+                        "element": "span",
+                        "attributes": {
+                            "class": "monospace"
+                        }
+                    }
+                ]
             }
         }
     }

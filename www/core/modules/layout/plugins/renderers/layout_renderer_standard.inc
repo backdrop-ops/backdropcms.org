@@ -129,11 +129,11 @@ class LayoutRendererStandard {
    */
   function __construct(Layout $layout, array $renderer_plugin) {
     $this->plugin = $renderer_plugin;
-    $layout_info = layout_get_layout_info($layout->layout);
+    $layout_info = layout_get_layout_template_info($layout->layout_template);
     $this->layout = &$layout;
 
     if (empty($layout_info)) {
-      throw new LayoutMissingException(t('The layout plugin "@plugin" could not been found to display the "@title" layout.', array('@plugin' => $layout->layout, '@title' => $layout->title)));
+      throw new LayoutMissingException(t('The layout plugin "@plugin" could not been found to display the "@title" layout.', array('@plugin' => $layout->layout_template, '@title' => $layout->title)));
     }
     else {
       $this->layout_info = $layout_info;
@@ -265,7 +265,6 @@ class LayoutRendererStandard {
       'style' => !empty($settings['style']) ? $settings['style'] : 'default',
       'style settings' => isset($settings['style_settings']['default']) ? $settings['style_settings']['default'] : array(),
     );
-
     $regions = array();
     if (empty($settings)) {
       // No region settings exist, init all with the defaults.
@@ -281,18 +280,19 @@ class LayoutRendererStandard {
       }
     }
     else {
-      // @todo: Region style settings are not fully implemented yet.
       // Some settings exist; iterate through each region and set individually.
       foreach ($this->layout_info['regions'] as $region_id => $title) {
         // Ensure this region has at least an empty blocks array.
         $blocks = !empty($region_block_list[$region_id]) ? $region_block_list[$region_id] : array();
+
         if (empty($settings[$region_id]['style']) || $settings[$region_id]['style'] == -1) {
           $regions[$region_id] = $default;
         }
         else {
           $regions[$region_id]['style'] = $settings[$region_id]['style'];
-          $regions[$region_id]['style settings'] = isset($settings['style_settings'][$region_id]) ? $settings['style_settings'][$region_id] : array();
         }
+
+        $regions[$region_id]['style settings'] = isset($settings[$region_id]) ? $settings[$region_id] : array();
         $regions[$region_id]['uuids'] = $blocks;
       }
     }
@@ -339,7 +339,7 @@ class LayoutRendererStandard {
 
     module_load_include('inc', 'layout', 'layout.theme');
     if (empty($this->layout_info['template'])) {
-      $theme = 'layout__' . $this->layout->layout;
+      $theme = 'layout__' . $this->layout->layout_template;
     }
     else {
       $theme = str_replace('-', '_', $this->layout_info['template']);
@@ -360,6 +360,11 @@ class LayoutRendererStandard {
         foreach ($file_names as $file_name) {
           $this->addCss($this->layout_info['path'] . '/' . $file_name, array('media' => $media));
         }
+      }
+    }
+    if (!empty($this->layout_info['libraries'])) {
+      foreach ($this->layout_info['libraries'] as $library) {
+        $this->addLibrary('layout', $library);
       }
     }
   }
@@ -386,6 +391,13 @@ class LayoutRendererStandard {
         $this->prefix .= '<link rel="stylesheet" href="' . $url . '" />' . "\n";
         break;
     }
+  }
+
+  /**
+   * Add Library information to the renderer.
+   */
+  function addLibrary($module, $name) {
+    backdrop_add_library($module, $name);
   }
 
   /**
@@ -526,18 +538,14 @@ class LayoutRendererStandard {
    *   The rendered, HTML string output of the passed-in region.
    */
   function renderRegion($region_id, $blocks) {
-    $style_name = $this->prepared['regions'][$region_id]['style'];
     $style_settings = $this->prepared['regions'][$region_id]['style settings'];
-    $style = layout_get_style_info($style_name);
-
-    if ($style['region theme']) {
-      $output = theme($style['region theme'], array('layout' => $this->layout, 'blocks' => $blocks, 'settings' => $style_settings, 'style' => $style));
-    }
-    else {
-      $output = implode('', $blocks);
+    $tag = isset($style_settings['element']) ? $style_settings['element'] : '';
+    $classes = array();
+    if (isset($style_settings['classes'])) {
+      $classes =  explode(' ', $style_settings['classes']);
     }
 
-    return $output;
+    return theme('layout_region_inner', array('blocks' => $blocks, 'tag' => $tag, 'classes' => $classes));
   }
 
   /**

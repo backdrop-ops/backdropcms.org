@@ -618,7 +618,7 @@ function system_menu() {
     'file' => 'system.admin.inc',
   );
   $items['admin/appearance/list'] = array(
-    'title' => 'Themes',
+    'title' => 'List themes',
     'description' => 'Select and configure themes.',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -1,
@@ -656,6 +656,7 @@ function system_menu() {
         'access callback' => '_system_themes_access',
         'access arguments' => array($key),
         'file' => 'system.admin.inc',
+        'weight' => 20,
       );
     }
   }
@@ -671,16 +672,16 @@ function system_menu() {
     'weight' => -3,
   );
   $items['admin/modules/list'] = array(
-    'title' => 'Modules',
+    'title' => 'List modules',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
   $items['admin/modules/list/confirm'] = array(
-    'title' => 'Modules',
+    'title' => 'List modules',
     'access arguments' => array('administer modules'),
     'type' => MENU_VISIBLE_IN_BREADCRUMB,
   );
   $items['admin/modules/uninstall'] = array(
-    'title' => 'Uninstall',
+    'title' => 'Uninstall modules',
     'page arguments' => array('system_modules_uninstall'),
     'access arguments' => array('administer modules'),
     'type' => MENU_LOCAL_TASK,
@@ -1856,13 +1857,13 @@ function system_stream_wrappers() {
     'public' => array(
       'name' => t('Public files'),
       'class' => 'BackdropPublicStreamWrapper',
-      'description' => t('Public local files served by the webserver.'),
+      'description' => t('Public local files served by the webserver'),
       'type' => STREAM_WRAPPERS_LOCAL_NORMAL,
     ),
     'temporary' => array(
       'name' => t('Temporary files'),
       'class' => 'BackdropTemporaryStreamWrapper',
-      'description' => t('Temporary local files for upload and previews.'),
+      'description' => t('Temporary local files for upload and previews'),
       'type' => STREAM_WRAPPERS_LOCAL_HIDDEN,
     ),
   );
@@ -1872,7 +1873,7 @@ function system_stream_wrappers() {
     $wrappers['private'] = array(
       'name' => t('Private files'),
       'class' => 'BackdropPrivateStreamWrapper',
-      'description' => t('Private local files served by Backdrop.'),
+      'description' => t('Private local files served by Backdrop'),
       'type' => STREAM_WRAPPERS_LOCAL_NORMAL,
     );
   }
@@ -1944,9 +1945,9 @@ function _system_themes_access($theme) {
  * @endcode
  * Example (update_manager_install_form_submit()):
  * @code
- *  system_authorized_init('update_authorize_run_install',
- *    backdrop_get_path('module', 'update') . '/update.authorize.inc',
- *    $arguments, t('Update manager'));
+ *  system_authorized_init('installer_authorize_run_install',
+ *    backdrop_get_path('module', 'installer') . '/installer.authorize.inc',
+ *    $arguments, t('Installer'));
  *  $form_state['redirect'] = system_authorized_get_url();
  * @endcode
  *
@@ -2333,11 +2334,11 @@ function system_block_view($delta = '', $settings = array()) {
       // All system menu blocks.
       $system_menus = menu_list_system_menus();
       if (isset($system_menus[$delta])) {
-        // Load customizations from Menu module if present.
-        $all_menus = function_exists('menu_get_menus') ? menu_get_menus() : array();
-        $custom_title = isset($all_menus[$delta]) ? $all_menus[$delta] : $system_menus[$delta];
-        $block['subject'] = t($custom_title);
-        $block['content'] = menu_tree($delta);
+        module_load_include('inc', 'system', 'system.menu');
+        $settings += system_menu_block_defaults($delta);
+        $data = system_menu_block_build($settings);
+        $block['subject'] = $data['subject'];
+        $block['content'] = $data['content'];
         return $block;
       }
       break;
@@ -2350,6 +2351,13 @@ function system_block_view($delta = '', $settings = array()) {
 function system_block_configure($delta, $settings) {
   if ($delta === 'header') {
     return system_header_block_form($settings);
+  }
+  // System-defined menu blocks.
+  foreach (menu_list_system_menus() as $menu_name => $title) {
+    if ($delta === $menu_name) {
+      module_load_include('inc', 'system', 'system.menu');
+      return _system_block_configure($delta, $settings);
+    }
   }
 }
 

@@ -4,19 +4,27 @@
  * Contains general styles for common HTML patterns.
  ******************************************************************************/
 
-/* make font-awesome heading icons larger and with more space */
-h2 i.fa {
-  font-size: 125%;
+/* make font-awesome heading icons have more space */
+h2 i.fa,
+h3 i.fa,
+h4 i.fa {
   margin-right: 10px;
+}
+h5 i.fa,
+h6 i.fa {
+  margin-right: 5px;
+}
+
+/* make larger font-awesome heading icons vertically offset */
+h2 i.fa-lg {
   position: relative;
   top: 3px;
 }
-h4 i.fa {
-  font-size: 200%;
-  margin-right: 10px;
+h4 i.fa-2x {
   position: relative;
-  top: 6px;
+  top: 5px;
 }
+
 
 /*******************************************************************************
  * Buttons

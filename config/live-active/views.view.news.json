@@ -383,7 +383,7 @@
                 "row_plugin": "node_rss",
                 "row_options": {
                     "relationship": "none",
-                    "item_length": "default",
+                    "item_length": "full",
                     "links": 0
                 },
                 "fields": {
@@ -539,7 +539,7 @@
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
                         "click_sort_column": "value",
-                        "type": "text_trimmed",
+                        "type": "text_default",
                         "settings": {
                             "trim_length": "600"
                         },

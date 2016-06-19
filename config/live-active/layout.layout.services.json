@@ -7,7 +7,6 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout": "double_fixed_inner_rev",
     "disabled": false,
     "settings": {
         "title": "Services for Backdrop CMS",
@@ -329,5 +328,6 @@
                 }
             }
         }
-    }
+    },
+    "layout_template": "double_fixed_inner_rev"
 }
