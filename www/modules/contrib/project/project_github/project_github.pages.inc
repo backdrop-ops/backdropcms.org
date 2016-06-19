@@ -191,14 +191,20 @@ function _project_github_create_package(array &$errors, array &$payload) {
   mkdir($directory);
 
   // Copy the file down locally.
-  $result = backdrop_http_request($source_zip_url, array(
+  $zip_download_result = backdrop_http_request($source_zip_url, array(
     'headers' => array(
       'Authorization' => 'token ' . $access_token,
     ),
   ));
-  if ($result->code == 200) {
-    file_put_contents($directory . '/original.zip', $result->data);
+  if ($zip_download_result->code == 200) {
+    file_put_contents($directory . '/original.zip', $zip_download_result->data);
   }
+  else {
+    $errors[] = 'Download ZIP from GitHub HTTP request: ' . print_r($zip_download_result, 1);
+    watchdog('project_github', 'Error creating release for @project @tag. Errors: <pre>@errors</pre>', array('@project' => $project_name, '@tag' => $tag_name, '@errors' => implode("\n\n", $errors), WATCHDOG_ERROR));
+    return FALSE;
+  }
+
   $archive = new ZipArchive();
   $archive->open($directory . '/original.zip');
   $archive->extractTo($directory);
@@ -268,7 +274,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
   // Successful upload.
   if ($upload_result->code == 201) {
     $success = TRUE;
-    $asset_url = $result->data['url'];
+    $asset_url = $zip_download_result->data['url'];
   }
   // If a file by the same name already exists, assume it is acceptable.
   elseif ($upload_result->code == 400 && $upload_result->error === 'status code 422') {
@@ -317,7 +323,6 @@ function _project_github_create_package(array &$errors, array &$payload) {
     watchdog('project_github', 'Successfully created release for @project @tag and pushed the package to GitHub.', array('@project' => $project_name, '@tag' => $tag_name), WATCHDOG_INFO);
   }
   else {
-    watchdog('project_github', 'Error creating release for @project @tag.', array('@project' => $project_name, '@tag' => $tag_name), WATCHDOG_INFO);
     $errors[] = 'Upload HTTP request: ' . print_r($upload_result, 1);
     if (isset($search_result)) {
       $errors[] = 'Asset list request: ' . print_r($search_result, 1);
@@ -325,6 +330,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
     if (isset($rename_result)) {
       $errors[] = 'Rename asset request: ' . print_r($rename_result, 1);
     }
+    watchdog('project_github', 'Error creating release for @project @tag. Errors: <pre>@errors</pre>', array('@project' => $project_name, '@tag' => $tag_name, '@errors' => implode("\n\n", $errors), WATCHDOG_ERROR));
   }
   return $success;
 }
