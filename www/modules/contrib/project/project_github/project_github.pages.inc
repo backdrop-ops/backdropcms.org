@@ -208,6 +208,10 @@ function _project_github_create_package(array &$errors, array &$payload) {
 
   $archive = new ZipArchive();
   $result = $archive->open($directory . '/original.zip');
+  if ($result === ZipArchive::ER_NOZIP) {
+    usleep(50000);
+    $result = $archive->open($directory . '/original.zip');
+  }
   watchdog('project_github', 'Open zip file result: ' . $result);
   $archive->extractTo($directory);
   $archive->close();
