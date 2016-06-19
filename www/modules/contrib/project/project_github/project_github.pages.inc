@@ -201,11 +201,11 @@ function _project_github_create_package(array &$errors, array &$payload) {
   if ($zip_download_result->code == 200) {
     file_put_contents($directory . '/original.zip', $zip_download_result->data);
   }
-  else {
+  //else {
     $errors[] = 'Download ZIP from GitHub HTTP request: ' . print_r($zip_download_result, 1);
     watchdog('project_github', 'Error creating release for @project @tag. Errors: <pre>@errors</pre>', array('@project' => $project_name, '@tag' => $tag_name, '@errors' => implode("\n\n", $errors), WATCHDOG_ERROR));
     return FALSE;
-  }
+  //}
 
   $archive = new ZipArchive();
   $result = $archive->open($directory . '/original.zip');
