@@ -5,27 +5,27 @@
     "bundle": "docs",
     "label": "Body",
     "widget": {
-        "weight": 31,
+        "weight": "2",
         "type": "text_textarea_with_summary",
         "module": "text",
         "active": 1,
         "settings": {
-            "rows": "30",
+            "rows": "15",
             "summary_rows": 5
         }
     },
     "settings": {
         "text_processing": "1",
-        "display_summary": 1,
+        "display_summary": 0,
         "user_register_form": false
     },
     "display": {
         "default": {
             "label": "hidden",
             "type": "text_default",
+            "weight": "1",
             "settings": [],
-            "module": "text",
-            "weight": 0
+            "module": "text"
         },
         "teaser": {
             "label": "hidden",
