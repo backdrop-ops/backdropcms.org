@@ -208,14 +208,14 @@ function _project_github_create_package(array &$errors, array &$payload) {
   $result = $archive->open($directory . '/original.zip');
   if ($result === ZipArchive::ER_NOZIP) {
     watchdog('project_github', 'Open zip file result: ' . $result);
-    watchdog('project_github', substr(file_get_contents($directory . '/original.zip', 2000)));
+    watchdog('project_github', substr(file_get_contents($directory . '/original.zip'), 0, 2000));
   }
   $archive->extractTo($directory);
   $archive->close();
   unset($archive);
 
   // Remove the archive now that it's expanded.
-  unlink($directory . '/original.zip');
+  //unlink($directory . '/original.zip');
 
   // Make a list of all files sans the archive.
   $files = file_scan_directory($directory, '/.*/', array('nomask' => '/^$/'));
@@ -269,7 +269,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
   ));
 
   // Delete the working directory (including the new archive).
-  file_unmanaged_delete_recursive($directory);
+  //file_unmanaged_delete_recursive($directory);
 
   $success = FALSE;
   $asset_url = NULL;
