@@ -196,7 +196,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
     ),
   ));
   if ($zip_download_result->code == 200) {
-    file_put_contents($directory . '/original.zip', $zip_download_result->data, LOCK_EX);
+    file_put_contents($directory . '/original.zip', $zip_download_result->data);
   }
   else {
     $errors[] = 'Download ZIP from GitHub HTTP request: ' . print_r($zip_download_result, 1);
