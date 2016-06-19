@@ -189,6 +189,9 @@ function _project_github_create_package(array &$errors, array &$payload) {
   unlink($directory);
   mkdir($directory);
 
+  // ZipArchive does not work well with stream wrappers, use the real path.
+  $directory = backdrop_realpath($directory);
+
   // Copy the file down locally.
   $zip_download_result = backdrop_http_request($source_zip_url, array(
     'headers' => array(
@@ -197,7 +200,6 @@ function _project_github_create_package(array &$errors, array &$payload) {
   ));
   if ($zip_download_result->code == 200) {
     file_put_contents($directory . '/original.zip', $zip_download_result->data);
-    $original_archive_path = backdrop_realpath($directory . '/original.zip');
   }
   else {
     $errors[] = 'Download ZIP from GitHub HTTP request: ' . print_r($zip_download_result, 1);
@@ -206,17 +208,17 @@ function _project_github_create_package(array &$errors, array &$payload) {
   }
 
   $archive = new ZipArchive();
-  $result = $archive->open($original_archive_path);
+  $result = $archive->open($directory . '/original.zip');
   if ($result !== TRUE) {
     watchdog('project_github', 'Open zip file result: ' . $result);
-    watchdog('project_github', substr(file_get_contents($original_archive_path), 0, 2000));
+    watchdog('project_github', substr(file_get_contents($directory . '/original.zip'), 0, 2000));
   }
   $archive->extractTo($directory);
   $archive->close();
   unset($archive);
 
   // Remove the archive now that it's expanded.
-  //unlink($original_archive_path);
+  //unlink($directory . '/original.zip');
 
   // Make a list of all files sans the archive.
   $files = file_scan_directory($directory, '/.*/', array('nomask' => '/^$/'));
