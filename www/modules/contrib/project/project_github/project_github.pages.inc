@@ -185,8 +185,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
   $tag_name = ltrim($tag_name, 'v');
 
   // Create a temporary directory in which to do our work.
-  $tempdir = backdrop_realpath('temporary://');
-  $directory = tempnam($tempdir, 'project_pkg_');
+  $directory = backdrop_tempnam('temporary://', 'project_pkg_');
   unlink($directory);
   mkdir($directory);
 
@@ -197,8 +196,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
     ),
   ));
   if ($zip_download_result->code == 200) {
-    file_put_contents($directory . '/original.zip', $zip_download_result->data);
-    clearstatcache(TRUE, $directory . '/original.zip');
+    file_put_contents($directory . '/original.zip', $zip_download_result->data, LOCK_EX);
   }
   else {
     $errors[] = 'Download ZIP from GitHub HTTP request: ' . print_r($zip_download_result, 1);
@@ -209,11 +207,8 @@ function _project_github_create_package(array &$errors, array &$payload) {
   $archive = new ZipArchive();
   $result = $archive->open($directory . '/original.zip');
   if ($result === ZipArchive::ER_NOZIP) {
-
     watchdog('project_github', 'Open zip file result: ' . $result);
     watchdog('project_github', substr(file_get_contents($directory . '/original.zip', 2000)));
-    usleep(50000);
-    $archive->open($directory . '/original.zip');
   }
   $archive->extractTo($directory);
   $archive->close();
