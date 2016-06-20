@@ -90,6 +90,10 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
   // Update the title using the project title as well from the .info file.
   $project_node->title = $info['name'];
 
+  // Set the text format to Filtered HTML. The default is whatever is used for
+  // anonymous users, which currently is plain_text.
+  $project_node->body[LANGUAGE_NONE][0]['format'] = 'filtered_html';
+
   // If this is a theme, attach the screenshot as the image.
   if ($project_node->type === 'project_theme') {
     // At this point we have found the .info file, but need its contents.
