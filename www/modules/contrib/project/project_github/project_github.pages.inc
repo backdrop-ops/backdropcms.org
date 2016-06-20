@@ -191,11 +191,18 @@ function _project_github_create_package(array &$errors, array &$payload) {
   mkdir($directory);
 
   // Copy the file down locally.
-  $zip_download_result = backdrop_http_request($source_zip_url, array(
+  $auth_headers = array(
     'headers' => array(
       'Authorization' => 'token ' . $access_token,
     ),
-  ));
+  );
+  // Temporary hack: Do one request, but throw the result away. The first
+  // request is returned with a "chunked" response that Backdrop can't handle,
+  // so do a second one that will contain the entire ZIP.
+  // See https://github.com/backdrop-ops/backdropcms.org/issues/264.
+  backdrop_http_request($source_zip_url, $auth_headers);
+  $zip_download_result = backdrop_http_request($source_zip_url, $auth_headers);
+
   if ($zip_download_result->code == 200) {
     file_put_contents($directory . '/original.zip', $zip_download_result->data);
   }
