@@ -185,12 +185,10 @@ function _project_github_create_package(array &$errors, array &$payload) {
   $tag_name = ltrim($tag_name, 'v');
 
   // Create a temporary directory in which to do our work.
-  $directory = backdrop_tempnam('temporary://', 'project_pkg_');
+  $tempdir = backdrop_realpath('temporary://');
+  $directory = tempnam($tempdir, 'project_pkg_');
   unlink($directory);
   mkdir($directory);
-
-  // ZipArchive does not work well with stream wrappers, use the real path.
-  $directory = backdrop_realpath($directory);
 
   // Copy the file down locally.
   $zip_download_result = backdrop_http_request($source_zip_url, array(
@@ -201,24 +199,20 @@ function _project_github_create_package(array &$errors, array &$payload) {
   if ($zip_download_result->code == 200) {
     file_put_contents($directory . '/original.zip', $zip_download_result->data);
   }
-  //else {
+  else {
     $errors[] = 'Download ZIP from GitHub HTTP request: ' . print_r($zip_download_result, 1);
     watchdog('project_github', 'Error creating release for @project @tag. Errors: <pre>@errors</pre>', array('@project' => $project_name, '@tag' => $tag_name, '@errors' => implode("\n\n", $errors), WATCHDOG_ERROR));
     return FALSE;
-  //}
+  }
 
   $archive = new ZipArchive();
-  $result = $archive->open($directory . '/original.zip');
-  if ($result !== TRUE) {
-    watchdog('project_github', 'Open zip file result: ' . $result);
-    watchdog('project_github', substr(file_get_contents($directory . '/original.zip'), 0, 2000));
-  }
+  $archive->open($directory . '/original.zip');
   $archive->extractTo($directory);
   $archive->close();
   unset($archive);
 
   // Remove the archive now that it's expanded.
-  //unlink($directory . '/original.zip');
+  unlink($directory . '/original.zip');
 
   // Make a list of all files sans the archive.
   $files = file_scan_directory($directory, '/.*/', array('nomask' => '/^$/'));
@@ -272,7 +266,7 @@ function _project_github_create_package(array &$errors, array &$payload) {
   ));
 
   // Delete the working directory (including the new archive).
-  //file_unmanaged_delete_recursive($directory);
+  file_unmanaged_delete_recursive($directory);
 
   $success = FALSE;
   $asset_url = NULL;
