@@ -1,0 +1,312 @@
+{
+    "_config_name": "layout.layout.support",
+    "path": "support-alpha",
+    "name": "support",
+    "title": "Support",
+    "description": null,
+    "module": null,
+    "weight": 0,
+    "storage": 1,
+    "layout_template": "double_fixed_inner_rev",
+    "disabled": false,
+    "settings": {
+        "title": "Get help with Backdrop CMS",
+        "title_display": "custom",
+        "title_block": null
+    },
+    "positions": {
+        "sidebar": [
+            "c2aa251f-a884-4ab0-bb4c-765adfae3828",
+            "8c924952-e403-4fa8-a203-3e915942230c"
+        ],
+        "drawer": [
+            "77695da8-bd77-4c30-8448-720b2e2af607",
+            "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80"
+        ],
+        "content-top": [],
+        "content": [
+            "4543880d-1a0a-413e-8300-0045a93106df",
+            "1bf26084-5e1f-49da-9e4a-74d812df73ba",
+            "36ba10f1-d0f3-4e17-ad00-ff5114fedc38"
+        ],
+        "content_sidebar": [
+            "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6"
+        ],
+        "footer": [
+            "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
+            "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
+            "daef468e-fc1c-4894-be00-aa3ba55fdbb5"
+        ]
+    },
+    "content": {
+        "c2aa251f-a884-4ab0-bb4c-765adfae3828": {
+            "plugin": "borg_blocks:branding",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "branding",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "c2aa251f-a884-4ab0-bb4c-765adfae3828",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "8c924952-e403-4fa8-a203-3e915942230c": {
+            "plugin": "system:main-menu",
+            "data": {
+                "module": "system",
+                "delta": "main-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "8c924952-e403-4fa8-a203-3e915942230c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "77695da8-bd77-4c30-8448-720b2e2af607": {
+            "plugin": "borg_blocks:handbook",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "handbook",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "77695da8-bd77-4c30-8448-720b2e2af607",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80": {
+            "plugin": "search:form",
+            "data": {
+                "module": "search",
+                "delta": "form",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "4543880d-1a0a-413e-8300-0045a93106df": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Coming Soon: Documentation",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>Read through a curated collection of&nbsp;online documentation, where you’ll find information on everything from installing Backdrop CMS for the first time to creating your own layouts, themes, and&nbsp;modules.</p>\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "4543880d-1a0a-413e-8300-0045a93106df",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1bf26084-5e1f-49da-9e4a-74d812df73ba": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Coming soon: Forum",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>Join&nbsp;the Backdrop Community and&nbsp;excange&nbsp;ideas in the form of&nbsp;questions, answers, and discussions on any given topic.</p>\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "1bf26084-5e1f-49da-9e4a-74d812df73ba",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "36ba10f1-d0f3-4e17-ad00-ff5114fedc38": {
+            "plugin": "views:providers-block_2",
+            "data": {
+                "module": "views",
+                "delta": "providers-block_2",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Online Resources",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>The Backdrop CMS community uses a handful of tools for communication.</p>\n\n<ul>\n  <li><a href=\"https://gitter.im/backdrop/backdrop-issues\"><i class=\"fa fa-comments-o\"></i> Live Chat: GitterIM</a></li>\n  <li><a href=\"http://twitter.com/backdropcms\"><i class=\"fa fa-twitter\"></i> Twitter (use #BackdropCMS)</a></li>\n  <li><a href=\"http://github.com/backdrop/backdrop-issues/issues\"><i class=\"fa fa-github\"></i> Issue Queue: Github</a></li>\n  <li><a href=\"http://api.backdropcms.org/\"><i class=\"fa fa-puzzle-piece\"></i> Developer Documentation</a></li>\n  <li><a href=\"https://plus.google.com/+BackdropcmsOrg\"><i class=\"fa fa-google-plus\"></i> Weekly Meetings: Google hangouts</a></li>\n  <li><a href=\"https://www.youtube.com/user/backdropcms\"><i class=\"fa fa-youtube\"></i> Video archives: YouTube</a></li>\n  <li><a href=\"http://www.facebook.com/backdropcms\"><i class=\"fa fa-facebook\"></i> Facebook group</a></li>\n  <li><a href=\"https://www.linkedin.com/groups/6930143\"><i class=\"fa fa-linkedin\"></i> LinkedIn group</a></li>\n</ul>",
+                    "format": "full_html"
+                },
+                "uuid": "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35": {
+            "plugin": "block:3",
+            "data": {
+                "module": "block",
+                "delta": "3",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "ae9d462d-018b-4cb0-ad00-d520b595ff6e": {
+            "plugin": "on_the_web:social_links",
+            "data": {
+                "module": "on_the_web",
+                "delta": "social_links",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "services": {
+                            "display": "auto",
+                            "enabled": {
+                                "youtube": "youtube",
+                                "google": "google",
+                                "facebook": "facebook",
+                                "twitter": "twitter"
+                            }
+                        }
+                    },
+                    "contexts": []
+                },
+                "uuid": "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "daef468e-fc1c-4894-be00-aa3ba55fdbb5": {
+            "plugin": "block:5",
+            "data": {
+                "module": "block",
+                "delta": "5",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "daef468e-fc1c-4894-be00-aa3ba55fdbb5",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
