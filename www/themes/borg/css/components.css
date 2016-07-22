@@ -4,6 +4,10 @@
  * Contains specific styles for common HTML components.
  ******************************************************************************/
 
+.block-borg-blocks-branding {
+  min-height: 80px;
+}
+
 a.site-name {
   display: block;
   /* Top of "b" and bottom of "p" should have equal distance to lines. */
