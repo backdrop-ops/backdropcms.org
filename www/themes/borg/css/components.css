@@ -1530,3 +1530,12 @@ div.addressfield-container-inline::after {
 .node-organization .field-name-body {
   clear: both;
 }
+
+/*******************************************************************************
+ * Documentation status field
+ ******************************************************************************/
+.field-name-field-docs-status {
+  padding: 15px;
+  background-color: #f7f7f7;
+}
+
