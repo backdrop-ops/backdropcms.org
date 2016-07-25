@@ -1,0 +1,67 @@
+<?php
+/**
+ * @file
+ * Install and update functions for the youtube module.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function youtube_field_schema($field) {
+  $columns = array(
+    'input' => array(
+      'type' => 'varchar',
+      'length' => 1024,
+      'not null' => FALSE,
+    ),
+    'video_id' => array(
+      'type' => 'varchar',
+      'length' => 15,
+      'not null' => FALSE,
+    ),
+  );
+  $indexes = array(
+    'video_id' => array('video_id'),
+  );
+  return array(
+    'columns' => $columns,
+    'indexes' => $indexes,
+  );
+}
+
+/**
+ * Moves Youtube Field settings from variable to config.
+ */
+function youtube_update_1000() {
+  // Migrate variables if any.
+  $config = config('youtube.settings');
+  $config->set('youtube_suggest', update_variable_get('youtube_suggest', true));
+  $config->set('youtube_modestbranding', update_variable_get('youtube_modestbranding', true));
+  $config->set('youtube_theme', update_variable_get('youtube_theme', false));
+  $config->set('youtube_color', update_variable_get('youtube_color', false));
+  $config->set('youtube_enablejsapi', update_variable_get('youtube_enablejsapi', false));
+  $config->set('youtube_player_class', update_variable_get('youtube_player_class', "youtube-field-player"));
+  $config->set('youtube_privacy', update_variable_get('youtube_privacy', false));
+  $config->set('youtube_thumb_dir', update_variable_get('youtube_thumb_dir', "youtube"));
+  $config->set('youtube_thumb_hires', update_variable_get('youtube_thumb_hires', false));
+  $config->set('youtube_wmode', update_variable_get('youtube_wmode', true));
+  $config->save();
+  // Delete the migrated variables.
+  update_variable_del('youtube_suggest');
+  update_variable_del('youtube_modestbranding');
+  update_variable_del('youtube_theme');
+  update_variable_del('youtube_color');
+  update_variable_del('youtube_enablejsapi');
+  update_variable_del('youtube_player_class');
+  update_variable_del('youtube_privacy');
+  update_variable_del('youtube_thumb_dir');
+  update_variable_del('youtube_thumb_hires');
+  update_variable_del('youtube_wmode');
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function youtube_update_last_removed() {
+  return 7103;
+}

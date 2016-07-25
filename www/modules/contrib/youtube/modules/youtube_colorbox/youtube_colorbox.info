@@ -1,0 +1,13 @@
+name = YouTube Field Colorbox
+description = Provides Colorbox support to YouTube Field thumbnail display settings.
+package = Fields
+type = module
+version = BACKDROP_VERSION
+backdrop = 1.x
+dependencies[] = colorbox
+dependencies[] = youtube
+
+; Added by Backdrop CMS packaging script on 2015-08-28
+project = youtube
+version = 1.x-1.0.0
+timestamp = 1440824584
