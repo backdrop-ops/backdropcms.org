@@ -1,0 +1,206 @@
+<?php
+
+/**
+ * @file
+ * Provides Colorbox support to YouTube Field display settings.
+ */
+
+/**
+ * Implements hook_field_formatter_info_alter().
+ */
+function youtube_colorbox_field_formatter_info_alter(&$info) {
+  $info['youtube_thumbnail']['settings']['colorbox']['parameters'] = array(
+    'width' => 640,
+    'height' => 480,
+    'autoplay' => '1',
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function youtube_colorbox_form_youtube_settings_form_alter(&$form, &$form_state) {
+  // Provide warning about the need to set 'Enable Colorbox load' to TRUE in the
+  // Colorbox module settings. Otherwise links provided by YouTube Colorbox will
+  // not work as expected. This warning appears in the YouTube module settings.
+  if (!variable_get('colorbox_load', FALSE)) {
+    $args = array('!colorbox_settings' => l('Colorbox module settings', 'admin/config/media/colorbox'));
+    $message = t('Please enable \'Enable Colorbox load\' in the !colorbox_settings for thumbnails linked by YouTube Field Colorbox to work as expected.', $args);
+    backdrop_set_message($message, 'warning');
+  }
+}
+
+/**
+ * Adds Colorbox settings to the 'youtube_thumbnail'
+ *
+ * @param array $element
+ *   The field formatter form to add settings to.
+ * @param array $instance
+ *   The instance of the field being formatted.
+ * @param array $settings
+ *   Existing form settings.
+ * @param string $field_name
+ *   The machine name of the field.
+ *
+ * @see youtube_field_formatter_settings_form()
+ */
+function youtube_colorbox_thumbnail_field_formatter_settings(&$element, $instance, $settings, $field_name) {
+  $colorbox = $settings['colorbox'];
+
+  // Set the states input name variable. JS states functionality will otherwise
+  // break in Panels if the entity type is 'ctools'.
+  $input_name = 'fields[' . $field_name . '][settings_edit_form][settings][image_link]';
+  $input_name = ($instance['entity_type'] != 'ctools') ? $input_name : 'image_link';
+
+  // Setting elements.
+  $element['colorbox'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Colorbox Settings'),
+    '#states' => array(
+     'visible' => array(
+        ':input[name="' . $input_name . '"]' => array('value' => 'colorbox'),
+      ),
+    ),
+    '#tree' => TRUE,
+  );
+  $element['colorbox']['parameters'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Parameters'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $element['colorbox']['parameters']['width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Width'),
+    '#size' => 5,
+    '#required' => TRUE,
+    '#field_suffix' => 'px',
+    '#default_value' => $colorbox['parameters']['width'],
+    '#element_validate' => array('youtube_colorbox_element_is_int'),
+  );
+  $element['colorbox']['parameters']['height'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Height'),
+    '#size' => 5,
+    '#required' => TRUE,
+    '#field_suffix' => 'px',
+    '#default_value' => $colorbox['parameters']['height'],
+    '#element_validate' => array('youtube_colorbox_element_is_int'),
+  );
+  $element['colorbox']['parameters']['autoplay'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Play video automatically when loaded (autoplay).'),
+    '#default_value' => $colorbox['parameters']['autoplay'],
+    '#return_value' => 1,
+  );
+  $element['colorbox']['parameters']['loop'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Loop the playback of the video (loop).'),
+    '#default_value' => $colorbox['parameters']['loop'],
+    '#return_value' => 1,
+  );
+  $element['colorbox']['parameters']['showinfo'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Hide video title and uploader info (showinfo).'),
+    '#default_value' => $colorbox['parameters']['showinfo'],
+    '#return_value' => 1,
+  );
+  $element['colorbox']['parameters']['controls'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Always hide video controls (controls).'),
+    '#default_value' => $colorbox['parameters']['controls'],
+    '#return_value' => 1,
+  );
+  $element['colorbox']['parameters']['autohide'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Hide video controls after play begins (autohide).'),
+    '#default_value' => $colorbox['parameters']['autohide'],
+    '#return_value' => 1,
+  );
+  $element['colorbox']['parameters']['iv_load_policy'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Hide video annotations by default (iv_load_policy).'),
+    '#default_value' => $colorbox['parameters']['iv_load_policy'],
+    '#return_value' => 3,
+  );
+  $element['colorbox']['gallery'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Group all videos on the page into a gallery'),
+    '#default_value' => $colorbox['gallery'],
+  );
+}
+
+/**
+ * An element validation callback to check if the value is a positive integer.
+ */
+function youtube_colorbox_element_is_int($element, $form_state, $form) {
+  if (intval($element['#value']) < 1) {
+    $args = array('@element_title' => $element['#title']);
+    form_error($element, t('@element_title must be a positive integer value.', $args));
+  }
+}
+
+/**
+ * Provides the linked thumbnail's URI that will open a Colorbox.
+ *
+ * @param array $item
+ *   The field item to provide a link for.
+ * @param array $settings
+ *   The field item's display settings.
+ */
+function youtube_colorbox_field_item_uri($item, $settings) {
+  // Field display settings.
+  $parameters = $settings['colorbox']['parameters'];
+
+  // Invert parameters that should be 0 when their options are selected.
+  $invert_parameters = array('showinfo', 'controls');
+  foreach ($invert_parameters as $parameter) {
+    if (isset($parameters[$parameter])) {
+      $parameters[$parameter] = $parameters[$parameter] ? 0 : 1;
+    }
+  }
+
+  // Global YouTube module configuration.
+  $config = config('youtube.settings')
+  $domain = $config->get('privacy') ? 'youtube-nocookie.com' : 'youtube.com';
+  $player_class = $config->get('player_class');
+  if (!$config->get('suggest')) {
+    $parameters['rel'] = '0';
+  }
+  if ($config->get('modestbranding')) {
+    $parameters['modestbranding'] = '1';
+  }
+  if ($config->get('theme')) {
+    $parameters['theme'] = 'light';
+  }
+  if ($config->get('color')) {
+    $parameters['color'] = 'white';
+  }
+  if ($config->get('enablejsapi')) {
+    global $base_url;
+    $parameters['enablejsapi'] = '1';
+    $parameters['origin'] = $base_url;
+  }
+  if ($config->get('wmode')) {
+    $parameters['wmode'] = 'opaque';
+  }
+
+  $uri = array(
+    'path' => 'https://' . $domain . '/embed/' . $item['video_id'],
+    'options' => array(
+      'attributes' => array(
+        'class' => array('colorbox-load', $player_class),
+        'id' => backdrop_html_id($player_class),
+      ),
+      'html' => TRUE,
+      'external' => TRUE,
+      'query' => $parameters,
+    ),
+  );
+
+  if (!empty($settings['colorbox']['gallery'])) {
+    $uri['options']['attributes']['rel'] = 'youtube-gallery';
+  }
+
+  return $uri;
+}
