@@ -5,7 +5,7 @@
     "bundle": "feature",
     "label": "Screenshot (desktop)",
     "widget": {
-        "weight": "2",
+        "weight": "3",
         "type": "image_image",
         "module": "image",
         "active": 1,
@@ -32,15 +32,15 @@
     },
     "display": {
         "default": {
-            "label": "above",
+            "label": "hidden",
             "type": "image",
+            "weight": "3",
             "settings": {
                 "image_style": "",
                 "image_link": "",
                 "image_float": ""
             },
-            "module": "image",
-            "weight": 1
+            "module": "image"
         }
     }
 }
