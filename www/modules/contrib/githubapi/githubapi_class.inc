@@ -243,9 +243,10 @@ class GitHubAPI {
     if ($age_header = $this->curl->responseHeaders['Cache-Control']) {
       $age_header_array = explode(',', $age_header);
       foreach ($age_header_array as $age_header_part) {
-        list($part_key, $part_value) = explode('=', $age_header_part);
-        if ($part_key === 'max-age') {
-          $age = $part_value;
+        $age_header_part = trim($age_header_part);
+        if (strpos($age_header_part, 'max-age') === 0) {
+          list(, $age) = explode('=', $age_header_part);
+          break;
         }
       }
       if ($user->uid == 0) {
