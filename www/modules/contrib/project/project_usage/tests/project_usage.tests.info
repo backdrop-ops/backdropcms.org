@@ -21,3 +21,8 @@ name = project_usage_get_weeks_since()
 description = Test the project_usage_get_weeks_since() function.
 group = Project Usage
 file = date_rounding.test
+
+; Added by Backdrop CMS packaging script on 2016-03-06
+project = project
+version = 1.x-1.0.0-beta6
+timestamp = 1457312992

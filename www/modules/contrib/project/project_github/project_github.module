@@ -8,43 +8,30 @@ define('GITHUB_PROJECT_CREATED', 'created');
 define('GITHUB_PROJECT_EXISTS', 'exists');
 define('GITHUB_PROJECT_FAILED', FALSE);
 
-
 /**
- * Implements hook_githubapi_payload().
+ * Implements hook_menu().
  */
-function project_github_githubapi_payload($event_name, $record, $repo) {
-  $payload = $record['data'];
-  module_load_include('inc', 'project_github', 'project_github.pages');
-  switch ($event_name) {
-    case 'push':
-      // Check if we even have a project that matches for making a release.
-      $project_node = project_github_load_project($payload['repository']['full_name']);
-      if (!$project_node || empty($project_node->project['github_sync_readme'])) {
-        return;
-      }
-      if (project_github_update_readme($project_node)) {
-        $project_node->save();
-      }
-    break;
-    case 'release':
-      $package_result = _project_github_create_package($errors, $payload);
-      if ($package_result) {
-        $project_node_result = _project_github_create_project($errors, $payload);
-      }
-      // If a project node was created or already exists, create the release with
-      // package created above.
-      if ($project_node_result) {
-        $release_node_result = _project_github_create_project_release($errors, $payload);
-      }
-      // For better reporting for project authors who may not have access to the
-      // group-wide web hook settings, attempt to upload a report of the failures
-      // to the release as an asset.
-      if (!empty($errors)) {
-        _project_github_upload_error_log($errors, $payload);
-      }
-    break;
-    
-  }
+function project_github_menu() {
+  // Each webhook callback should uses "project_github_listener_callback" as the
+  // page callback, then pass in the name of the action-specific callback as
+  // the first page argument. This approach is similar to the common pattern
+  // of the page callback being "backdrop_get_form" and the page arguments
+  // being the form callback name.
+  $items['project/github/release'] = array(
+    'page callback' => 'project_github_listener_callback',
+    'page arguments' => array('_project_github_handle_release', array('release')),
+    'access callback' => 'project_github_listener_access',
+    'file' => 'project_github.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  $items['project/github/push'] = array(
+    'page callback' => 'project_github_listener_callback',
+    'page arguments' => array('_project_github_handle_push', array('push')),
+    'access callback' => 'project_github_listener_access',
+    'file' => 'project_github.pages.inc',
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
 }
 
 /**

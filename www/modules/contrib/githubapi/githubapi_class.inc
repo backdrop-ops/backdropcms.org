@@ -6,83 +6,36 @@
 
 use \Curl\Curl;
 
-require_once './libraries/php-curl-class/src/Curl/CaseInsensitiveArray.php';
-require_once './libraries/php-curl-class/src/Curl/Curl.php';
+require_once 'libraries/php-curl-class/src/Curl/CaseInsensitiveArray.php';
+require_once 'libraries/php-curl-class/src/Curl/Curl.php';
+
 
 /**
  * GitHub API wrapper class.
  */
 class GitHubAPI {
 
-  /**
-   * Curl class object.
-   *
-   * @var \Curl\Curl
-   */
-  protected $curl;
-
-  /**
-   * Token required to interact with GitHub API.
-   *
-   * @var string
-   */
-  protected $token;
-
-  /**
-   * URI of the directory where GET requests to API will be cached.
-   *
-   * Each token is given its own cache folder so that requests between different
-   * tokens do not collide.
-   *
-   * @var string
-   */
-  protected $current_cache_folder;
-
-  /**
-   * Debug mode. If enabled, data will be printed via backdrop_set_message().
-   *
-   * @var bool
-   */
+  // Curl Class object.
+  protected $curl = FALSE;
+  // Token required to interact with GitHub API.
+  protected $token = FALSE;
+  // Folder where Get Requests to API will be cached.
+  protected $cache_folder = FALSE;
+  // Debug mode. If enabled, data will be printed via backdrop_set_message.
   protected $debug = FALSE;
-
-  /**
-   * Timestamp if request has been served from cache. FALSE if not cached.
-   *
-   * @var boolean|int
-   */
+  // We store cache based on token. It's a path to personal folder for current token.
+  protected $current_cache_folder = FALSE;
+  // TRUE If request has been served from cache.
   protected $cache_expiration = FALSE;
-
-  /**
-   * Set to TRUE to disable cache and request directly to GitHub API.
-   *
-   * @var bool
-   */
+  // TRUE to disable cache and request directly to GitHub API.
   protected $disable_cache = FALSE;
-
-  /**
-   * GitHub organization or user name that will be used to authorize requests.
-   *
-   * @var string
-   */
-  protected $owner_name;
-
-  /**
-   * GitHub Repository name on which requests will be made.
-   *
-   * @var string
-   */
-  protected $repo_name;
-
-  /**
-   * How long API requests will be cached in seconds.
-   *
-   * @var int
-   */
-  protected $age = 0;
-
-  /**
-   * How many results to list per page.
-   */
+  // Organisation or User name.
+  protected $owner_name = FALSE;
+  // Repository name.
+  protected $repo_name = FALSE;
+  // For how long we cache result.
+  protected $age = FALSE;
+  // How much results per page.
   public $per_page = 100;
 
   /**
@@ -102,7 +55,6 @@ class GitHubAPI {
     $this->curl->setUserAgent('Backdrop CMS GitHub API module');
     $this->curl->setHeader('Accept', '*/*');
   }
-
   /**
    * Set owner name for requests.
    */
@@ -139,7 +91,7 @@ class GitHubAPI {
   }
 
   /**
-   * Get the stored token.
+   * Get store token.
    *
    * @return
    *   A string value. Stored token for GitHub API access.
@@ -169,21 +121,20 @@ class GitHubAPI {
    *     - response_headers: an array of response headers.
    */
   public function testingGetHeaders() {
-    return array(
-      'code' => $this->curl->curlErrorCode,
-      'message' => $this->curl->curlErrorMessage,
-      'request_headers' => $this->curl->requestHeaders,
-      'response_headers' => $this->curl->responseHeaders
-    );
+    return array (
+        'code' => $this->curl->curlErrorCode,
+        'message' => $this->curl->curlErrorMessage,
+        'request_headers' => $this->curl->requestHeaders,
+        'response_headers' => $this->curl->responseHeaders
+      );
   }
 
   /**
    * Get Curl details if error happen.
    *
-   * @return array|FALSE
-   *   An array of errors if any has occurred. FALSE if there are no errors.
-   *
-   * @see GitHubAPI::testingGetHeaders().
+   * @return 
+   *   An array of request information. @see testingGetHeaders.
+   *   FALSE if there is no error.
    */
   public function getErrors() {
     if ($this->isError()) {
@@ -219,7 +170,7 @@ class GitHubAPI {
   /**
    * Set debug value. False by default.
    *
-   * @param $age int
+   * @param $age integer
    *   Time in seconds. We will cache result based on request time + $age.
    */
   public function setAge($age) {
@@ -230,7 +181,7 @@ class GitHubAPI {
    * Get current caching age.
    *
    * @access private
-   * @return int
+   * @return  integer
    *   Time in seconds @see setAge.
    */
   private function getResponseAge() {
@@ -238,45 +189,32 @@ class GitHubAPI {
     if ($this->age) {
       return $this->age;
     }
-
-    $age = 0;
     if ($age_header = $this->curl->responseHeaders['Cache-Control']) {
-      $age_header_array = explode(',', $age_header);
-      foreach ($age_header_array as $age_header_part) {
-        list($part_key, $part_value) = explode('=', $age_header_part);
-        if ($part_key === 'max-age') {
-          $age = $part_value;
-        }
-      }
+      list($type, $maxage, $smaxage) = explode(',', $age_header);
+      list($name, $age) = explode('=', $maxage);
       if ($user->uid == 0) {
         // Default max age is 60. Let's cache for anonymous users for 5 min.
         $age = $age * 5;
       }
+      return $age;
     }
-    return $age;
+    return 0;
   }
 
   /**
    * Save cache for future requests.
    *
    * @access private
-   * @param string $command
-   *   GitHub API url with already placed owner and repo if required.
-   * @param array $params
-   *   Values for request. We create a hash file based on params and command to
-   *   make sure that cache is unique for request.
-   *
-   * @return bool
-   *   TRUE if the request was cached and FALSE if not.
+   * @param $command
+   *   String value. GitHub API url with already placed owner and repo if required.
+   * @param $params array
+   *   Values for request. We create a hash file based on params and command to make sure that cache is unique for request.
    */
   private function cacheRequest($command, $params) {
     if ($this->disable_cache) {
       return FALSE;
     }
-    $serialize_object = serialize(array(
-      'command' => $command,
-      'params' => $params
-    ));
+    $serialize_object = serialize(array('command' => $command, 'params' => $params));
     $file_name = hash('sha256', $serialize_object);
 
     $contents['response'] = $this->curl->response;
@@ -285,7 +223,7 @@ class GitHubAPI {
 
     $uri = $this->current_cache_folder . '/' . $file_name;
     file_unmanaged_save_data($contents, $uri, FILE_EXISTS_REPLACE);
-    return TRUE;
+
   }
 
   /**
@@ -303,15 +241,12 @@ class GitHubAPI {
     if ($this->disable_cache) {
       return FALSE;
     }
-    $serialize_object = serialize(array(
-      'command' => $command,
-      'params' => $params
-    ));
+    $serialize_object = serialize(array('command' => $command, 'params' => $params));
     $file_name = hash('sha256', $serialize_object);
 
     $uri = $this->current_cache_folder . '/' . $file_name;
 
-    $filename = backdrop_realpath($uri);
+    $filename = drupal_realpath($uri);
 
     if (file_exists($filename)) {
       $timestamp = filemtime($filename);
@@ -324,10 +259,9 @@ class GitHubAPI {
             backdrop_set_message('Cache returned!');
           }
           return $contents->response;
-        }
-        else {
+        } else {
           if ($this->debug) {
-            backdrop_set_message('No cache returned!' . ($timestamp + $contents->age) . '>' . REQUEST_TIME);
+            backdrop_set_message('No cache returned!'. ($timestamp + $contents->age) . '>'.REQUEST_TIME);
           }
         }
       }
@@ -338,7 +272,7 @@ class GitHubAPI {
   /**
    * Determine if request has been cached.
    *
-   * @return
+   * @return 
    *   FALSE if not and time when cache get expired in TIMESTAMP.
    */
   public function isCached() {
@@ -349,12 +283,12 @@ class GitHubAPI {
    * Determine if request has been cached.
    *
    * @access protected
-   * @return stdClass|FALSE
+   * @return 
    *   FALSE if error. Object with answer if request success.
    */
   protected function getResponse() {
     if ($this->debug) {
-      backdrop_set_message('<pre>' . print_r($this->testingGetHeaders(), TRUE) . '</pre>');
+      backdrop_set_message('<pre>'.print_r($this->testingGetHeaders(), true).'</pre>');
     }
     if ($this->isError()) {
       return FALSE;
@@ -363,7 +297,7 @@ class GitHubAPI {
     return $this->curl->response;
   }
 
-  /**
+   /**
    * Perform GET request to GitHub API and return answer.
    *
    * @access protected
@@ -371,10 +305,10 @@ class GitHubAPI {
    *   String value. GitHub API url with tokens like :owner, :repo and ect.
    * @param $params array
    *   Values for request and tokens for request url. LIke :owner, :repo, :id and etc.
-   * @return stdClass|FALSE
+   * @return
    *   FALSE if request failed. Object if success.
    */
-  public function getRequest($command, $params = array()) {
+  protected function getRequest($command, $params = array()) {
 
     $this->prepareCommand($command, $params);
 
@@ -390,7 +324,7 @@ class GitHubAPI {
     }
 
     $this->curl->get(GITHUB_API_URI . '/' . $command, $params);
-    $response = $this->getResponse();
+    $response =  $this->getResponse();
     $this->cacheRequest($command, $params);
     return $response;
   }
@@ -403,21 +337,21 @@ class GitHubAPI {
    *   String value. GitHub API url with tokens like :owner, :repo and ect.
    * @param $params array
    *   Values for request and tokens for request url. LIke :owner, :repo, :id and etc.
-   * @return stdClass|FALSE
+   * @return
    *   FALSE if request failed. Object if success.
    */
-  public function putRequest($command, $params = array()) {
-    // @todo: Add committer method and set this value.
-    //$params['committer'] = $this->getCommittrer();
+  protected function putRequest($command, $params = array()) {
+
+    $params['committer'] = $this->getCommittrer();
     $this->prepareCommand($command, $params);
 
-    $query = '';
+    $query='';
     if ($this->getToken()) {
       $query = '?access_token=' . $this->getToken();
     }
 
     $this->curl->put(GITHUB_API_URI . '/' . $command . $query, $params);
-    $response = $this->getResponse();
+    $response =  $this->getResponse();
     return $response;
   }
 
@@ -432,15 +366,15 @@ class GitHubAPI {
    * @return
    *   FALSE if request failed. Object if success.
    */
-  public function postRequest($command, $params = array()) {
+  protected function postRequest($command, $params = array()) {
 
     $this->prepareCommand($command, $params);
-    $query = '';
+    $query='';
     if ($this->getToken()) {
       $query = '?access_token=' . $this->getToken();
     }
     $this->curl->post(GITHUB_API_URI . '/' . $command . $query, $params);
-    $response = $this->getResponse();
+    $response =  $this->getResponse();
     return $response;
   }
 
@@ -455,17 +389,17 @@ class GitHubAPI {
    * @return
    *   FALSE if request failed. Object if success.
    */
-  public function deleteRequest($command, $params = array()) {
+  protected function deleteRequest($command, $params = array()) {
 
     $this->prepareCommand($command, $params);
 
-    $query = '';
+    $query='';
     if ($this->getToken()) {
       $query = '?access_token=' . $this->getToken();
     }
 
     $this->curl->delete(GITHUB_API_URI . '/' . $command . $query, $params);
-    $response = $this->getResponse();
+    $response =  $this->getResponse();
     return $response;
   }
 
@@ -563,10 +497,10 @@ class GitHubAPI {
    */
   public function getRepo() {
     return $this->getRequest(
-      'repos/:owner/:repo', array(
+        'repos/:owner/:repo', array(
         ':owner' => $this->owner_name,
         ':repo' => $this->repo_name,
-      )
+        )
     );
   }
 
@@ -578,10 +512,10 @@ class GitHubAPI {
    *   An array of settings for hook
    *     - name: Must be passed as "web".
    *     - config: Key/Value:
-   *        - url: The URL to which the payloads will be delivered.
+   *        - url: The URL to which the payloads will be delivered. 
    *        - content_type: The media type used to serialize the payloads. Supported values include json and form. The default is form.
    *        - secret: If provided, payloads will be delivered with an X-Hub-Signature header.
-   *        - insecure_ssl: Determines whether the SSL certificate of the host for url will be verified when delivering payloads.
+   *        - insecure_ssl: Determines whether the SSL certificate of the host for url will be verified when delivering payloads. 
    *     - events: Determines what events the hook is triggered for. Default: ["push"].
    *     - active: Determines whether the hook is actually triggered on pushes.
    * @return
@@ -610,11 +544,11 @@ class GitHubAPI {
    */
   public function deleteHook($id) {
     return $this->deleteRequest(
-      'repos/:owner/:repo/hooks/:id', array(
+        'repos/:owner/:repo/hooks/:id', array(
         ':owner' => $this->owner_name,
         ':repo' => $this->repo_name,
         ':id' => $id,
-      )
+        )
     );
   }
 
@@ -626,10 +560,10 @@ class GitHubAPI {
    *   An array of settings for hook
    *     - name: Must be passed as "web".
    *     - config: Key/Value:
-   *        - url: The URL to which the payloads will be delivered.
+   *        - url: The URL to which the payloads will be delivered. 
    *        - content_type: The media type used to serialize the payloads. Supported values include json and form. The default is form.
    *        - secret: If provided, payloads will be delivered with an X-Hub-Signature header.
-   *        - insecure_ssl: Determines whether the SSL certificate of the host for url will be verified when delivering payloads.
+   *        - insecure_ssl: Determines whether the SSL certificate of the host for url will be verified when delivering payloads. 
    *     - events: Determines what events the hook is triggered for. Default: ["push"].
    *     - active: Determines whether the hook is actually triggered on pushes.
    * @return
@@ -655,10 +589,10 @@ class GitHubAPI {
    */
   public function deleteOrgHook($id) {
     return $this->deleteRequest(
-      'orgs/:org/hooks/:id', array(
+        'orgs/:org/hooks/:id', array(
         ':org' => $this->owner_name,
         ':id' => $id,
-      )
+        )
     );
   }
 
@@ -666,7 +600,7 @@ class GitHubAPI {
    * Get a single commit.
    * https://developer.github.com/v3/repos/commits/#get-a-single-commit
    *
-   * @param $sha
+   * @param $sha 
    *   hash for commit
    * @return
    *   Return commit information or FALSE if there is no access.
@@ -676,11 +610,11 @@ class GitHubAPI {
    */
   public function getCommit($sha) {
     return $this->getRequest(
-      'repos/:owner/:repo/commits/:sha', array(
+        'repos/:owner/:repo/commits/:sha', array(
         ':owner' => $this->owner_name,
         ':repo' => $this->repo_name,
         ':sha' => $sha,
-      )
+        )
     );
   }
 
@@ -721,7 +655,7 @@ class GitHubAPI {
    * @see SetRepoName
    * @see SetOwnerName
    */
-  public function createIssueComment($settings) {
+   public function createIssueComment($settings) {
     $settings[':owner'] = $this->owner_name;
     $settings[':repo'] = $this->repo_name;
     return $this->postRequest('repos/:owner/:repo/issues/:number/comments', $settings);
@@ -737,213 +671,12 @@ class GitHubAPI {
    * @see SetRepoName
    * @see SetOwnerName
    */
-  public function getReadme() {
+   public function getReadme() {
     $readme = $this->getRequest('repos/:owner/:repo/readme');
     if (!empty($readme->content)) {
       return base64_decode($readme->content);
     }
     return FALSE;
-  }
-
-  /**
-   * Get Archive file content by :ref from repository.
-   * https://developer.github.com/v3/repos/contents/#get-archive-link
-   *
-   * @return
-   *   Return content of the archive.
-   *
-   * @see SetRepoName
-   * @see SetOwnerName
-   */
-  public function getArchive($settings) {
-    $settings[':owner'] = $this->owner_name;
-    $settings[':repo'] = $this->repo_name;
-
-    if (!isset($settings[':archive_format']) || in_array($settings[':archive_format'], array(
-        'tarball',
-        'zipball'
-      ))
-    ) {
-      $settings[':archive_format'] = 'zipball';
-    }
-
-    if (!isset($settings[':ref'])) {
-      $url = 'repos/:owner/:repo/:archive_format';
-    }
-    else {
-      $url = 'repos/:owner/:repo/:archive_format/:ref';
-    }
-
-    // First request return 302 with linkg to download;
-    $this->getRequest($url, $settings);
-
-    if (isset($this->curl->responseHeaders['Location'])) {
-      $url = $this->curl->responseHeaders['Location'];
-      $this->curl->get($url);
-      $content = $this->curl->response;
-      return $content;
-    }
-
-    return FALSE;
-  }
-
-  /**
-   * Get Releases list for repo.
-   * https://developer.github.com/v3/repos/releases/#list-releases-for-a-repository
-   *
-   * @return array
-   *   List of releases.
-   *
-   * @see SetRepoName
-   * @see SetOwnerName
-   */
-  public function getReleases() {
-    $settings[':owner'] = $this->owner_name;
-    $settings[':repo'] = $this->repo_name;
-
-    return $this->getRequest('repos/:owner/:repo/releases', $settings);
-  }
-
-  /**
-   * Get Release by Tag name.
-   * https://developer.github.com/v3/repos/releases/#get-a-release-by-tag-name
-   *
-   * @param $settings array
-   *   An array of settings for new comment
-   *     - :tag: Tag name for release.
-   *
-   * @return object
-   *   Release information.
-   *
-   * @see SetRepoName
-   * @see SetOwnerName
-   */
-  public function getRelease($settings) {
-    $settings[':owner'] = $this->owner_name;
-    $settings[':repo'] = $this->repo_name;
-
-    return $this->getRequest('repos/:owner/:repo/releases/tags/:tag', $settings);
-  }
-
-  /**
-   * Add Asset to release.
-   * https://developer.github.com/v3/repos/releases/#upload-a-release-asset
-   *
-   * @param $settings array
-   *   An array of settings for new comment
-   *     - filename: THe file name, include extension.
-   *     - label: Label to display instead of file.
-   *     - content: The contents of the comment.
-   *     - :tag: Tag name for release.
-   *
-   * @return object
-   *   Release information.
-   *
-   * @see SetRepoName
-   * @see SetOwnerName
-   */
-  public function addAsset($settings) {
-
-    $get_release_settings = array(
-      ':tag' => $settings[':tag'],
-    );
-
-    $release = $this->getRelease($get_release_settings);
-
-    $upload_url = $release->upload_url;
-    $upload_url = preg_replace('/{.*}/', '', $upload_url);
-
-    $query = array();
-    $query['name'] = $settings['filename'];
-    if (isset($settings['label'])) {
-      $query['label'] = $settings['label'];
-    }
-
-
-    $upload_url = $upload_url . "?" . backdrop_http_build_query($query);
-
-
-    $this->curl->setHeader('Content-Type', $this->getMimeType($settings['filename']));
-    $this->curl->setHeader('Authorization', 'token ' . $this->getToken());
-    $this->curl->post($upload_url, $settings['content']);
-
-    if ($this->curl->error) {
-      return FALSE;
-    }
-    return TRUE;
-  }
-
-  /**
-   * Return content type based on file name.
-   * @param $filename string
-   * @return string
-   *   Content type.
-   */
-  private function getMimeType($filename) {
-    $mime_types = array(
-
-      'txt' => 'text/plain',
-      'htm' => 'text/html',
-      'html' => 'text/html',
-      'php' => 'text/html',
-      'css' => 'text/css',
-      'js' => 'application/javascript',
-      'json' => 'application/json',
-      'xml' => 'application/xml',
-      'swf' => 'application/x-shockwave-flash',
-      'flv' => 'video/x-flv',
-
-      // images
-      'png' => 'image/png',
-      'jpe' => 'image/jpeg',
-      'jpeg' => 'image/jpeg',
-      'jpg' => 'image/jpeg',
-      'gif' => 'image/gif',
-      'bmp' => 'image/bmp',
-      'ico' => 'image/vnd.microsoft.icon',
-      'tiff' => 'image/tiff',
-      'tif' => 'image/tiff',
-      'svg' => 'image/svg+xml',
-      'svgz' => 'image/svg+xml',
-
-      // archives
-      'zip' => 'application/zip',
-      'rar' => 'application/x-rar-compressed',
-      'exe' => 'application/x-msdownload',
-      'msi' => 'application/x-msdownload',
-      'cab' => 'application/vnd.ms-cab-compressed',
-
-      // audio/video
-      'mp3' => 'audio/mpeg',
-      'qt' => 'video/quicktime',
-      'mov' => 'video/quicktime',
-
-      // adobe
-      'pdf' => 'application/pdf',
-      'psd' => 'image/vnd.adobe.photoshop',
-      'ai' => 'application/postscript',
-      'eps' => 'application/postscript',
-      'ps' => 'application/postscript',
-
-      // ms office
-      'doc' => 'application/msword',
-      'rtf' => 'application/rtf',
-      'xls' => 'application/vnd.ms-excel',
-      'ppt' => 'application/vnd.ms-powerpoint',
-
-      // open office
-      'odt' => 'application/vnd.oasis.opendocument.text',
-      'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
-    );
-
-    $pathinfo = pathinfo($filename);
-    $ext = $pathinfo['extension'];
-    backdrop_set_message(print_r($pathinfo, TRUE));
-
-    if (isset($mime_types[$ext])) {
-      return $mime_types[$ext];
-    }
-    return 'application/octet-stream';
   }
 
 }
