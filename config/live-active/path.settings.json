@@ -62,5 +62,6 @@
     "taxonomy_term_services_pattern": "services/[term:name]",
     "node_organization_pattern": "organization/[node:title]",
     "node_supporter_pattern": "",
-    "node_showcase_pattern": "showcase/[node:title]"
+    "node_showcase_pattern": "showcase/[node:title]",
+    "node_feature_pattern": "features/[node:title]"
 }
