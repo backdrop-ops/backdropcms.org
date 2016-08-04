@@ -204,16 +204,11 @@ function githubapi_payload_process() {
     }
     if ($event_name) {
       $sender = $event['sender'];
-      $repository = $event['repository'];
-
-      unset($event['repository']);
-      unset($event['sender']);
-
       $record = array(
         'type' => $event_name,
         'sender' => $sender,
         'rid' => $repo['id'],
-        'data' => $event,
+        'data' => array_diff_key($event, array('sender' => NULL)),
         'timestamp' => REQUEST_TIME,
       );
       backdrop_write_record('githubapi_payload', $record);
