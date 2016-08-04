@@ -12,6 +12,7 @@
 function borg_cleanup_menu_alter(&$items) {
   $items['user/login']['type'] = MENU_CALLBACK;
   $items['user/pasword']['type'] = MENU_CALLBACK;
+  $items['node']['page callback'] = 'backdrop_not_found';
 }
 
 /**
