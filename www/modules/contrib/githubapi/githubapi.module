@@ -6,7 +6,7 @@
  * @author Gor Martsen <gor@me.com>
  */
 
- // URL Github API.
+// URL Github API.
 define('GITHUB_API_URI', 'https://api.github.com');
 
 // URL Github.
@@ -16,6 +16,7 @@ define('GITHUB_SCOPE', 'user:email,repo,admin:repo_hook,read:org,admin:org_hook'
 define('GITHUB_HOOK_NAME', 'web');
 define('GITHUB_PAYLOAD_PATH', 'githubapi/payload');
 define('GITHUB_PAYLOAD_CONTENT_TYPE', 'json');
+define('GITHUB_API_USER_AGENT', 'Backdrop CMS GitHub API module');
 
 /**
  * Implements hook_config_info().
@@ -70,6 +71,17 @@ function githubapi_menu() {
     'type' => MENU_CALLBACK,
   );
 
+  $items['admin/config/system/githubapi/%/download'] = array(
+    'title' => 'Download Archive',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('githubapi_repo_download', 4),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    'description' => 'Github API configuration.',
+    'file' => 'githubapi.page.inc',
+    'type' => MENU_CALLBACK,
+  );
+
 
   $items['githubapi/register'] = array(
     'type' => MENU_CALLBACK,
@@ -89,7 +101,7 @@ function githubapi_menu() {
   return $items;
 }
 
-function gitlc_github_rid_load($rid){
+function gitlc_github_rid_load($rid) {
   return db_select('githubapi_repositories', 'gr')
     ->fields('gr')
     ->condition('id', $rid)
@@ -119,37 +131,37 @@ function githubapi_payload_process() {
 
     $repository_name = '';
 
-    if(isset($event['repository']) && isset($event['repository']['name'])){
+    if (isset($event['repository']) && isset($event['repository']['name'])) {
       $repository_name = $event['repository']['name'];
     }
 
     $owner_name = '';
-    if(isset($event['repository']['owner'])){
-      if(isset($event['repository']['owner']['login'])){
+    if (isset($event['repository']['owner'])) {
+      if (isset($event['repository']['owner']['login'])) {
         $owner_name = $event['repository']['owner']['login'];
       }
-      if(isset($event['repository']['owner']['name'])){
+      if (isset($event['repository']['owner']['name'])) {
         $owner_name = $event['repository']['owner']['name'];
       }
     }
 
-    if($event_name == 'membership'){
-      if(isset($event['organization']['login'])){
+    if ($event_name == 'membership') {
+      if (isset($event['organization']['login'])) {
         $owner_name = $event['organization']['login'];
       }
     }
-    if($event_name == 'ping'){
-      if(isset($event['organization']['login'])){
+    if ($event_name == 'ping') {
+      if (isset($event['organization']['login'])) {
         $owner_name = $event['organization']['login'];
       }
     }
-    
-    if(empty($owner_name)){
+
+    if (empty($owner_name)) {
       backdrop_add_http_header('Status', '403 Unsupported Event type.');
       exit('We did not find owner information.');
     }
 
-    if(empty($repository_name)){
+    if (empty($repository_name)) {
       $repo = db_select('githubapi_repositories', 'gr')
         ->fields('gr')
         ->condition('name', "*")
@@ -157,18 +169,19 @@ function githubapi_payload_process() {
         ->execute()
         ->fetchAssoc();
       $repo['name'] = '';
-      if(empty($repo)){
+      if (empty($repo)) {
         backdrop_add_http_header('Status', '403 We do not process this repo.');
         exit('We did not find repo information.');
       }
-    }else{
+    }
+    else {
       $repo = db_select('githubapi_repositories', 'gr')
         ->fields('gr')
         ->condition('name', $repository_name)
         ->condition('owner', $owner_name)
         ->execute()
         ->fetchAssoc();
-      if(empty($repo)){
+      if (empty($repo)) {
         $repo = db_select('githubapi_repositories', 'gr')
           ->fields('gr')
           ->condition('name', "*")
@@ -176,8 +189,8 @@ function githubapi_payload_process() {
           ->execute()
           ->fetchAssoc();
         $repo['name'] = $repository_name;
-      }        
-      if(empty($repo)){
+      }
+      if (empty($repo)) {
         backdrop_add_http_header('Status', '403 We do not process this repo.');
         exit('We did not find repo information.');
       }
@@ -204,27 +217,25 @@ function githubapi_payload_process() {
         'timestamp' => REQUEST_TIME,
       );
       backdrop_write_record('githubapi_payload', $record);
-      
-      
 
       module_invoke_all('githubapi_payload', $event_name, $record, $repo);
 
       backdrop_add_http_header('Status', '200 Success');
       exit('Payload was processed.');
-      
     }
-  }else{
+  }
+  else {
     backdrop_add_http_header('Status', '403 Bad request');
     exit('HTTP_X_GITHUB_EVENT has to be provided.');
   }
 }
 
-function githubapi_get_class($repo){
+function githubapi_get_class($repo) {
   module_load_include('inc', 'githubapi', 'githubapi_class');
 
   $config = config('githubapi.settings');
   $token = settings_get('githubapi_token');
-  if(empty($token)){
+  if (empty($token)) {
     $token = $config->get('token');
   }
 
@@ -235,10 +246,10 @@ function githubapi_get_class($repo){
   return $githubapi;
 }
 
-function githubapi_get_token(){
+function githubapi_get_token() {
   $config = config('githubapi.settings');
   $token = settings_get('githubapi_token');
-  if(empty($token)){
+  if (empty($token)) {
     $token = $config->get('token');
   }
   return $token;

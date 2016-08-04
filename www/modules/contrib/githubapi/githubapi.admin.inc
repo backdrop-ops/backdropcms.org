@@ -4,16 +4,16 @@
  * Administration pages provided by github API module.
  */
 
- /**
+/**
  * Menu callback for admin/config/system/githubapi/settings.
  */
 function githubapi_admin_settings() {
   $config = config('githubapi.settings');
-  
+
   // Use setting.php values if exists.
   $client_id = settings_get('githubapi_client_id');
   $client_secret = settings_get('githubapi_client_secret');
-  
+
   $form['client_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Client ID'),
@@ -30,28 +30,28 @@ function githubapi_admin_settings() {
     '#disabled' => !empty($client_secret) ? TRUE : FALSE,
   );
   $form['actions']['#type'] = 'actions';
-  
+
   // Allow save button only if values not stored in settings.php
-  if(empty($client_id) || empty($client_secret)){
+  if (empty($client_id) || empty($client_secret)) {
     $form['actions']['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Save configuration'),
     );
   }
-  
+
   $token = settings_get('githubapi_token');
-  
-  if(empty($token)){
+  if (empty($token)) {
     $token = $config->get('token');
   }
-  
-  if(empty($token)){
+
+  if (empty($token)) {
     $form['actions']['auth'] = array(
       '#type' => 'submit',
       '#value' => t('Authorize an Application'),
       '#submit' => array('githubapi_link_user_submit'),
     );
-  }else{
+  }
+  else {
     $form['actions']['delete'] = array(
       '#type' => 'submit',
       '#value' => t('Revoke authorization for an Application'),
@@ -68,17 +68,17 @@ function githubapi_admin_settings() {
 function githubapi_admin_settings_submit($form, &$form_state) {
 
   $config = config('githubapi.settings');
-  
+
   $client_id = settings_get('githubapi_client_id');
   $client_secret = settings_get('githubapi_client_secret');
-  
+
   // Store only if value not stored in settings.php.
-  if(empty($client_id)){
+  if (empty($client_id)) {
     $config->set('client_id', $form_state['values']['client_id']);
   }
 
   // Store only if value not stored in settings.php.
-  if(empty($client_secret)){
+  if (empty($client_secret)) {
     $config->set('client_secret', $form_state['values']['client_secret']);
   }
   $config->save();
@@ -88,15 +88,15 @@ function githubapi_admin_settings_submit($form, &$form_state) {
 /**
  * Get token handler for the githubapi_admin_settings() form.
  */
-function githubapi_link_user_submit($form, &$form_state){
+function githubapi_link_user_submit($form, &$form_state) {
   global $base_url;
-  
+
   $config = config('githubapi.settings');
   $params = array();
 
   $client_id = settings_get('githubapi_client_id');
-  if(empty($client_id)){
-    $client_id = $config->get('client_id');  
+  if (empty($client_id)) {
+    $client_id = $config->get('client_id');
   }
   $params['client_id'] = $client_id;
 
@@ -115,41 +115,41 @@ function githubapi_link_user_submit($form, &$form_state){
 /**
  * Revoke authorization for an application.
  */
-function githubapi_revoke_submit($form, &$form_state){
-  
+function githubapi_revoke_submit($form, &$form_state) {
+
   $config = config('githubapi.settings');
-  
+
   $client_id = settings_get('githubapi_client_id');
-  if(empty($client_id)){
+  if (empty($client_id)) {
     $client_id = $config->get('client_id');
   }
-  
+
   $client_secret = settings_get('githubapi_client_secret');
-  if(empty($client_secret)){
+  if (empty($client_secret)) {
     $client_secret = $config->get('client_secret');
   }
   $token = settings_get('githubapi_token');
-  if(empty($token)){
+  if (empty($token)) {
     $token = $config->get('token');
   }
-  
+
   $url = GITHUB_API_URI . '/applications/' . $client_id . '/tokens/' . $token;
-  
+
   $options['headers']['Authorization'] = 'Basic ' . base64_encode($client_id . ':' . $client_secret);
   $options['method'] = 'DELETE';
-  $result = backdrop_http_request($url, $options );
-  
-  switch($result->code){
+  $result = backdrop_http_request($url, $options);
+
+  switch ($result->code) {
     case 204:
-        backdrop_set_message(t('Authorization for an application deleted'));
-        $config->set('token', '');
-        $config->save();
+      backdrop_set_message(t('Authorization for an application deleted'));
+      $config->set('token', '');
+      $config->save();
       break;
     case 401:
-        backdrop_set_message(t('Unexpected Basic authorization error. Make sure that client_id and client_secret is properly set.'), 'error');
+      backdrop_set_message(t('Unexpected Basic authorization error. Make sure that client_id and client_secret is properly set.'), 'error');
       break;
     default:
-        backdrop_set_message(t('Unexpected behaviour. Debug data: status_message = !error.', array('!error' => $result->error), 'error'));
+      backdrop_set_message(t('Unexpected behaviour. Debug data: status_message = !error.', array('!error' => $result->error), 'error'));
 
   }
 }
@@ -164,15 +164,15 @@ function githubapi_get_access_token() {
     $config = config('githubapi.settings');
 
     $client_id = settings_get('githubapi_client_id');
-    if(empty($client_id)){
+    if (empty($client_id)) {
       $client_id = $config->get('client_id');
     }
-    
+
     $client_secret = settings_get('githubapi_client_secret');
-    if(empty($client_secret)){
+    if (empty($client_secret)) {
       $client_secret = $config->get('client_secret');
     }
-  
+
     $params = array();
     $params['client_id'] = $client_id;
     $params['client_secret'] = $client_secret;

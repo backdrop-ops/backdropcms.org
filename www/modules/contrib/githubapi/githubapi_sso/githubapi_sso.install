@@ -1,0 +1,29 @@
+<?php
+/**
+ * @file
+ * Install, update, and uninstall functions for the githubapi sso module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function githubapi_sso_schema() {
+  $schema['githubapi_sso_login'] = array(
+    'description' => 'If github login does not match users.name, we store github login here.',
+    'fields' => array(
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('uid'),
+  );
+  return $schema;
+}

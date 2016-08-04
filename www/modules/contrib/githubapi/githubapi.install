@@ -115,11 +115,11 @@ function githubapi_schema() {
         'length' => 255,
         'not null' => TRUE,
         'default' => '',
-      ),      
+      ),
     ),
     'indexes' => array(
       'owner_name' => array('owner', 'name'),
-      'secret' => array('secret'),      
+      'secret' => array('secret'),
     ),
 
     'unique keys' => array(

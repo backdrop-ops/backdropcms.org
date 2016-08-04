@@ -1,0 +1,388 @@
+<?php
+
+/**
+ * This module provides SSO feature via GitHub API integration.
+ *
+ * @author Gor Martsen <gor@me.com>
+ */
+
+define('GITHUB_SSO_SCOPE', 'user:email');
+
+
+/**
+ * Implements hook_menu().
+ */
+function githubapi_sso_menu() {
+  $items = array();
+
+  $items['githubapi/register/sso'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Connect to Github',
+    'page callback' => 'githubapi_sso_get_access_token',
+    'access callback' => TRUE,
+  );
+
+  $items['user/githubapi_sso'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Connect to Github',
+    'page callback' => 'githubapi_sso_redirect_to_github',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_user_delete().
+ */
+function githubapi_sso_user_delete($account) {
+  db_delete('githubapi_sso_login')
+    ->condition('uid', $account->uid)
+    ->execute();
+}
+
+/**
+ * Implements hook_menu().
+ */
+function githubapi_sso_user_view($account, $view_mode, $langcode) {
+  global $user;
+  $githubapi_sso_status = '';
+  $githubapi_sso = db_select('githubapi_sso_login', 'gsl')
+    ->fields('gsl')
+    ->condition('uid', $account->uid)
+    ->execute()
+    ->fetchObject();
+
+  if ($user->uid == $account->uid) {
+    if ($githubapi_sso) {
+      $githubapi_sso_status = backdrop_get_form('githubapi_sso_unlink', $githubapi_sso);
+    }
+    else {
+      $githubapi_sso_status = backdrop_get_form('githubapi_sso_link', $account);
+    }
+  }
+  else {
+    if ($githubapi_sso) {
+      $githubapi_sso_status = array(
+        '#markup' => t('Connected to GitHub account !name',
+          array('!name' => l($githubapi_sso->name, 'https://github.com/' . $githubapi_sso->name))),
+      );
+    }
+  }
+  $account->content['githubapi_sso'] = $githubapi_sso_status;
+}
+
+/**
+ * Alter user login block form.
+ */
+function githubapi_sso_form_user_login_block_alter(&$form, &$form_state, $form_id) {
+  $form['links']['#items'][] = l(t('Login with GitHub account'), 'user/githubapi_sso');
+}
+
+/**
+ * Alter user login form.
+ */
+function githubapi_sso_form_user_login_alter(&$form, &$form_state, $form_id) {
+  $form['actions']['githubapi_sso'] = array(
+    '#type' => 'submit',
+    '#value' => t('Login with GitHub account'),
+  );
+
+  $form['#validate'][] = 'githubapi_sso_login_validate';
+
+}
+
+/**
+ * Display link to github button.
+ */
+function githubapi_sso_link($form, &$form_state, $account) {
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Connect GitHub account'),
+  );
+  return $form;
+}
+
+/**
+ * Process Login page Github login form validation.
+ * We use validation step to redirect user before user_login validate happen.
+ */
+function githubapi_sso_login_validate($form, &$form_state) {
+  if ($form_state['clicked_button']['#id'] == 'edit-githubapi-sso') {
+    // Before redirect to github, let's clear session error from user login validation.
+    unset($_SESSION['messages']['error']);
+    githubapi_sso_redirect_to_github();
+  }
+}
+
+/**
+ * Process Github connect form submission.
+ */
+function githubapi_sso_link_submit($form, &$form_state) {
+  githubapi_sso_redirect_to_github();
+}
+
+function githubapi_sso_redirect_to_github() {
+  global $base_url;
+
+  $config = config('githubapi.settings');
+  $params = array();
+
+  $client_id = settings_get('githubapi_client_id');
+  if (empty($client_id)) {
+    $client_id = $config->get('client_id');
+  }
+  $params['client_id'] = $client_id;
+
+  $params['scope'] = GITHUB_SSO_SCOPE;
+
+  $params['redirect_uri'] = $base_url . '/githubapi/register/sso';
+
+  $query = http_build_query($params);
+
+  $link = GITHUB_URI . '/login/oauth/authorize?' . $query;
+
+  backdrop_goto($link, array('absolute' => TRUE));
+}
+
+/**
+ * Display unlink to github button.
+ */
+function githubapi_sso_unlink($form, &$form_state, $githubapi_sso) {
+  $form_state['githubapi_sso'] = $githubapi_sso;
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Disconnect !name GitHub account', array('!name' => $githubapi_sso->name)),
+  );
+  return $form;
+}
+
+/**
+ * Process Github disconnect form submission.
+ */
+function githubapi_sso_unlink_submit($form, &$form_state) {
+  $githubapi_sso = $form_state['githubapi_sso'];
+  backdrop_set_message(t('GitHub account Disconnected.'));
+  db_delete('githubapi_sso_login')
+    ->condition('uid', $githubapi_sso->uid)
+    ->execute();
+}
+
+/**
+ * Menu callback; Process an Github authentication.
+ */
+function githubapi_sso_get_access_token() {
+  global $user;
+  if (isset($_GET['code'])) {
+    $config = config('githubapi.settings');
+
+    $client_id = settings_get('githubapi_client_id');
+    if (empty($client_id)) {
+      $client_id = $config->get('client_id');
+    }
+
+    $client_secret = settings_get('githubapi_client_secret');
+    if (empty($client_secret)) {
+      $client_secret = $config->get('client_secret');
+    }
+
+    $params = array();
+    $params['client_id'] = $client_id;
+    $params['client_secret'] = $client_secret;
+    $params['code'] = filter_xss($_GET['code']);
+
+    $query = http_build_query($params);
+    $response = file_get_contents(GITHUB_URI . '/login/oauth/access_token?' . $query);
+
+    parse_str($response, $result);
+
+    if (isset($result['access_token'])) {
+      $token = $result['access_token'];
+      $user_info = githubapi_sso_get_user_info($token);
+      if ($user->uid > 0) {
+        github_sso_assign($user_info);
+      }
+      else {
+        github_sso_login($user_info, $token);
+      }
+    }
+  }
+  // If we didn't get a token or code, connection to Github failed.
+  backdrop_set_message(t('Failed connecting to GitHub. Please try again latter.'), 'error');
+  backdrop_goto('user');
+}
+
+/**
+ * Process attach github login to user loged user.
+ *
+ * @param $user_info array that contain github user data.
+ */
+function github_sso_assign($user_info) {
+  // We need to check if it's already used.
+  $githubapi_sso = db_select('githubapi_sso_login', 'gsl')
+    ->fields('gsl')
+    ->condition('name', $user_info['login'])
+    ->execute()
+    ->fetchObject();
+
+  if ($githubapi_sso) {
+    // This login already assigned.
+    backdrop_set_message(t('This github login already assigned to another user.'), 'error');
+    backdrop_set_message(t('Failed connecting to GitHub.'), 'error');
+    backdrop_goto('user');
+  }
+  else {
+    db_insert('githubapi_sso_login')
+      ->fields(array(
+        'uid' => $user->uid,
+        'name' => $user_info['login'],
+      ))
+      ->execute();
+    backdrop_set_message(t('We connected to GitHub now.'));
+    backdrop_goto('user');
+  }
+}
+
+/**
+ * Process login and attach github login to user name.
+ *
+ * @param $user_info array that contain github user data.
+ */
+function github_sso_login($user_info) {
+  global $user;
+  $githubapi_sso = db_select('githubapi_sso_login', 'gsl')
+    ->fields('gsl')
+    ->condition('name', $user_info['login'])
+    ->execute()
+    ->fetchObject();
+
+  if ($githubapi_sso) {
+    // This login already assigned.
+    $account = user_load($githubapi_sso->uid);
+    if ($account->status == 1) {
+      $user = $account;
+      user_login_finalize();
+      backdrop_goto('user');
+    }
+    else {
+      backdrop_set_message(t('The account for %name has not been activated or is blocked.', array('%name' => $account->name)), 'error');
+      backdrop_goto('');
+    }
+  }
+  else {
+    // This login is not assigned and we are not logged in.
+    // Sounds like new user are registerring.
+    $account = user_load_by_name($user_info['login']);
+
+    if ($account) {
+      backdrop_set_message(t('Login !name already registered. Please login or register first.', array('!name' => $user_info['login'])));
+      backdrop_goto('');
+    }
+
+    $account = user_load_by_mail($user_info['email']);
+
+    if ($account) {
+      backdrop_set_message(t('Email !name already registered. Please login or register first.', array('!name' => $user_info['email'])));
+      backdrop_goto('');
+    }
+
+    // We don't have any account with email or login match github. Let's register new one!
+    $userinfo = array(
+      'name' => $user_info['login'],
+      'mail' => $user_info['email'],
+      'pass' => user_password(),
+      'status' => config_get('system.core', 'user_register') == USER_REGISTER_VISITORS,
+      'roles' => array(),
+    );
+
+    $account = entity_create('user', $userinfo);
+    $account->save();
+
+    db_insert('githubapi_sso_login')
+      ->fields(array(
+        'uid' => $account->uid,
+        'name' => $user_info['login'],
+      ))
+      ->execute();
+
+    watchdog('user', 'New user: %name (%email).', array(
+      '%name' => $account->name,
+      '%email' => $account->mail
+    ), WATCHDOG_NOTICE, l(t('edit'), 'user/' . $account->uid . '/edit'));
+
+    if (!config_get('system.core', 'user_email_verification') && $account->status) {
+      _user_mail_notify('register_no_approval_required', $account);
+      backdrop_set_message(t('Registration successful. You are now logged in.'));
+      $user = user_load($account->uid);
+      user_login_finalize();
+      backdrop_goto('user');
+    }
+    // No administrator approval required.
+    elseif ($account->status) {
+      $op = 'register_no_approval_required';
+      _user_mail_notify($op, $account);
+      backdrop_set_message(t('A welcome message with further instructions has been sent to your e-mail address.'));
+      backdrop_goto('');
+    }
+    // Administrator approval required.
+    else {
+      _user_mail_notify('register_pending_approval', $account);
+      backdrop_set_message(t('Thank you for applying for an account. Your account is currently pending approval by the site administrator.<br />In the meantime, a welcome message with further instructions has been sent to your e-mail address.'));
+      backdrop_goto('');
+    }
+  }
+}
+
+/**
+ * Get the user info provided by github.
+ *
+ * @param $token The token for the github user
+ */
+function githubapi_sso_get_user_info($token) {
+
+  // Collects the User information from GitHub.
+  $options = array(
+    'method' => 'GET',
+    'timeout' => 7200,
+    'headers' => array(
+      'User-Agent' => GITHUB_API_USER_AGENT,
+    ),
+  );
+  $request = backdrop_http_request(GITHUB_API_URI . '/user?access_token=' . $token, $options);
+
+  $github_user = FALSE;
+  if ($request->code == 200) {
+    $github_user = drupal_json_decode($request->data);
+
+    if (empty($github_user['email'])) {
+      $github_user_emails = githubapi_sso_get_user_emails($token);
+      $first_email = reset($github_user_emails);
+      $github_user['email'] = $first_email['email'];
+      $github_user['emails'] = $github_user_emails;
+    }
+  }
+  return $github_user;
+}
+
+/**
+ * Get the private email addresses from the user.
+ *
+ * @param $token The token for the github user
+ */
+function githubapi_sso_get_user_emails($token) {
+  // Collects the User information from GitHub.
+  $options = array(
+    'method' => 'GET',
+    'timeout' => 7200,
+    'headers' => array(
+      'User-Agent' => GITHUB_API_USER_AGENT,
+    ),
+  );
+  $request = backdrop_http_request(GITHUB_API_URI . '/user/emails?access_token=' . $token, $options);
+
+  $github_user_emails = FALSE;
+  if ($request->code == 200) {
+    $github_user_emails = drupal_json_decode($request->data);
+  }
+  return $github_user_emails;
+}
