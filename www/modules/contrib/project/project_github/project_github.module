@@ -27,6 +27,8 @@ function project_github_githubapi_payload($event_name, $record, $repo) {
       }
     break;
     case 'release':
+      $errors = array();
+      $project_node_result = NULL;
       $package_result = _project_github_create_package($errors, $payload);
       if ($package_result) {
         $project_node_result = _project_github_create_project($errors, $payload);
