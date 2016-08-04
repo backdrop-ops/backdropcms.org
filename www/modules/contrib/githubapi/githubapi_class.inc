@@ -755,8 +755,8 @@ class GitHubAPI {
     ), array(
       'Accept' => 'application/vnd.github.v3.html',
     ));
-    if (!empty($readme->content)) {
-      return base64_decode($readme->content);
+    if (is_string($readme)) {
+      return $readme;
     }
     return FALSE;
   }
