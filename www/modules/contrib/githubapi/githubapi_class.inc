@@ -367,15 +367,16 @@ class GitHubAPI {
    * Perform GET request to GitHub API and return answer.
    *
    * @access protected
-   * @param $command
+   * @param string $command
    *   String value. GitHub API url with tokens like :owner, :repo and ect.
-   * @param $params array
+   * @param array $params
    *   Values for request and tokens for request url. LIke :owner, :repo, :id and etc.
+   * @param array $headers
+   *   Additional headers to be sent in the request.
    * @return stdClass|FALSE
    *   FALSE if request failed. Object if success.
    */
-  public function getRequest($command, $params = array()) {
-
+  public function getRequest($command, $params = array(), $headers = array()) {
     $this->prepareCommand($command, $params);
 
     if ($this->getToken()) {
@@ -387,6 +388,12 @@ class GitHubAPI {
 
     if ($response = $this->getCacheRequest($command, $params)) {
       return $response;
+    }
+
+    // Always start with a fresh cURL object before each request.
+    $this->reInitCurl();
+    foreach ($headers as $header_key => $header_value) {
+      $this->curl->setHeader($header_key, $header_value);
     }
 
     $this->curl->get(GITHUB_API_URI . '/' . $command, $params);
@@ -416,6 +423,7 @@ class GitHubAPI {
       $query = '?access_token=' . $this->getToken();
     }
 
+    $this->reInitCurl();
     $this->curl->put(GITHUB_API_URI . '/' . $command . $query, $params);
     $response = $this->getResponse();
     return $response;
@@ -439,6 +447,7 @@ class GitHubAPI {
     if ($this->getToken()) {
       $query = '?access_token=' . $this->getToken();
     }
+    $this->reInitCurl();
     $this->curl->post(GITHUB_API_URI . '/' . $command . $query, $params);
     $response = $this->getResponse();
     return $response;
@@ -464,6 +473,7 @@ class GitHubAPI {
       $query = '?access_token=' . $this->getToken();
     }
 
+    $this->reInitCurl();
     $this->curl->delete(GITHUB_API_URI . '/' . $command . $query, $params);
     $response = $this->getResponse();
     return $response;
@@ -728,11 +738,12 @@ class GitHubAPI {
   }
 
   /**
-   * Get README.md file content from repository.
+   * Get README.md file content from repository as HTML.
+   *
    * https://developer.github.com/v3/repos/contents/#get-the-readme
    *
    * @return
-   *   Return content of the file already decoded.
+   *   Return HTML content of the file already decoded.
    *
    * @see SetRepoName
    * @see SetOwnerName
@@ -741,6 +752,8 @@ class GitHubAPI {
     $readme = $this->getRequest('repos/:owner/:repo/readme', array(
       ':owner' => $this->owner_name,
       ':repo' => $this->repo_name,
+    ), array(
+      'Accept' => 'application/vnd.github.v3.html',
     ));
     if (!empty($readme->content)) {
       return base64_decode($readme->content);
