@@ -738,7 +738,10 @@ class GitHubAPI {
    * @see SetOwnerName
    */
   public function getReadme() {
-    $readme = $this->getRequest('repos/:owner/:repo/readme');
+    $readme = $this->getRequest('repos/:owner/:repo/readme', array(
+      ':owner' => $this->owner_name,
+      ':repo' => $this->repo_name,
+    ));
     if (!empty($readme->content)) {
       return base64_decode($readme->content);
     }
