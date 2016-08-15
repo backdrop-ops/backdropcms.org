@@ -66,18 +66,41 @@ function borg_pbs_project_browser_server_query($filters) {
   // Group by NID to remove duplicates caused by joining to release table.
   $query->groupBy('n.nid');
 
-/**********************************************************
-// This is to filter by a project's available core version numbers
-// Since we're currently only at v1.x, this is commented out.
-   //Filter out projects based on Backdrop version number.
+  /**********************************************************
+  // This is to filter by a project's available core version numbers
+  // Since we're currently only at v1.x, this is commented out.
+  //Filter out projects based on Backdrop version number.
   if (isset($filters['version'])) {
     $query->join('project_release_supported_versions', 's', 'n.nid = s.nid', 's.version_api' = $filters['version'] . '.x');
   }
-**********************************************************/
- 
+  **********************************************************/
+
   // Filter out projects based on the text query.
   if (!empty($filters['text'])) {
-    $query->condition('n.title', '%' . db_like($filters['text']) . '%', 'LIKE');
+    // Create a subquery based on the search index table.
+    // See node_search_execute().
+    $search_query = db_select('search_index', 'i', array('target' => 'slave'))
+      ->extend('SearchQuery')
+      ->extend('PagerDefault');
+    $search_query->join('node', 'n', 'n.nid = i.sid');
+    $search_query->condition('n.status', 1);
+    $search_query->addTag('node_access');
+    $search_query->searchExpression(trim($filters['text']), 'node');
+    $search_query->setOption('type', 'n.type');
+    $search_query->setOption('langcode', 'n.langcode');
+
+    // Only continue if the first pass query matches.
+    $search_results = array();
+    if ($search_query->executeFirstPass()) {
+      $search_results = $search_query->execute()->fetchAllAssoc('sid');
+    }
+    // If any matching projects, add as a WHERE condition.
+    if (!empty($search_results)){
+      $query->condition('n.nid', array_keys($search_results), 'IN');
+    }
+    else {
+      return array();
+    }
   }
 
   // Only send back the requested amount.
@@ -102,6 +125,8 @@ function borg_pbs_project_browser_server_query($filters) {
         break;
         
       case 'score':
+        // @todo: Integrate into the above search query and use the relevance
+        // score from that query.
       break;
 
       // This is wrong of course: its not really filtering by name but by UID,
