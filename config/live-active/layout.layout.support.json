@@ -27,7 +27,8 @@
         "content": [
             "4543880d-1a0a-413e-8300-0045a93106df",
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
-            "36ba10f1-d0f3-4e17-ad00-ff5114fedc38"
+            "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
+            "e21a9e69-e89f-4b7a-b809-9e961daa1208"
         ],
         "content_sidebar": [
             "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
@@ -195,6 +196,29 @@
                     "contexts": []
                 },
                 "uuid": "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "e21a9e69-e89f-4b7a-b809-9e961daa1208": {
+            "plugin": "views:providers-block_3",
+            "data": {
+                "module": "views",
+                "delta": "providers-block_3",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "e21a9e69-e89f-4b7a-b809-9e961daa1208",
                 "style": {
                     "plugin": "default",
                     "data": {

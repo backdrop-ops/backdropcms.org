@@ -2,7 +2,7 @@
     "_config_name": "honeypot.settings",
     "protect_all_forms": 0,
     "expire": 300,
-    "log": 0,
+    "log": 1,
     "element_name": "url",
     "time_limit": "0",
     "unprotected_forms": [
@@ -28,8 +28,13 @@
         "honeypot_form_project_module_node_form": 0,
         "honeypot_form_project_release_node_form": 0,
         "honeypot_form_project_theme_node_form": 0,
-        "honeypot_form_quote_node_form": 0,
+        "honeypot_form_quote_node_form": 1,
         "honeypot_form_sa_node_form": 0,
-        "honeypot_form_supporter_node_form": 0
+        "honeypot_form_supporter_node_form": 1,
+        "honeypot_form_docs_node_form": 0,
+        "honeypot_form_event_node_form": 1,
+        "honeypot_form_feature_node_form": 0,
+        "honeypot_form_organization_node_form": 1,
+        "honeypot_form_showcase_node_form": 1
     }
 }

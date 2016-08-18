@@ -5,7 +5,7 @@
     "bundle": "docs",
     "label": "Body",
     "widget": {
-        "weight": "2",
+        "weight": "3",
         "type": "text_textarea_with_summary",
         "module": "text",
         "active": 1,
@@ -23,7 +23,7 @@
         "default": {
             "label": "hidden",
             "type": "text_default",
-            "weight": "1",
+            "weight": "2",
             "settings": [],
             "module": "text"
         },

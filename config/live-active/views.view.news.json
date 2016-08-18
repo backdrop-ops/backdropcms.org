@@ -310,7 +310,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 0,
-                        "content": "<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\"><img src=\"https://backdropcms.org/files/beginningbackdropcms.jpg\" /></a><br/>\n“<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a>” by Todd Tomlinson, author of “Pro Drupal 7 Development”, is available now from <a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Amazon</a>.",
+                        "content": "<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\"><img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" /></a><br/>\n“<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a>” by Todd Tomlinson, author of “Pro Drupal 7 Development”, is available now from <a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Amazon</a>.",
                         "format": "full_html",
                         "tokenize": 0
                     }
@@ -327,10 +327,28 @@
                 },
                 "path": "news",
                 "pager": {
-                    "type": "some",
+                    "type": "full",
                     "options": {
                         "items_per_page": "10",
-                        "offset": "0"
+                        "offset": "0",
+                        "id": "0",
+                        "total_pages": "",
+                        "quantity": "9",
+                        "tags": {
+                            "first": "« first",
+                            "previous": "‹ previous",
+                            "next": "next ›",
+                            "last": "last »"
+                        },
+                        "expose": {
+                            "items_per_page": 0,
+                            "items_per_page_label": "Items per page",
+                            "items_per_page_options": "5, 10, 20, 40, 60",
+                            "items_per_page_options_all": 0,
+                            "items_per_page_options_all_label": "- All -",
+                            "offset": 0,
+                            "offset_label": "Offset"
+                        }
                     }
                 },
                 "defaults": {
