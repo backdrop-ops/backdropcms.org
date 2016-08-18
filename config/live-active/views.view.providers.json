@@ -26,7 +26,7 @@
                 "exposed_form": {
                     "type": "basic",
                     "options": {
-                        "submit_button": "Refine",
+                        "submit_button": "Apply",
                         "reset_button": 0,
                         "reset_button_label": "Reset",
                         "exposed_sorts_label": "Sort by",
@@ -317,6 +317,48 @@
                             "organization": "organization"
                         },
                         "group": 1
+                    },
+                    "field_services_tid": {
+                        "id": "field_services_tid",
+                        "table": "field_data_field_services",
+                        "field": "field_services_tid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": [],
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "use_operator": false,
+                            "operator": "field_services_tid_op",
+                            "identifier": "field_services_tid",
+                            "label": "Areas of Expertise (field_services)",
+                            "description": null,
+                            "remember": false,
+                            "multiple": false,
+                            "required": false,
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": false,
+                        "type": "select",
+                        "limit": true,
+                        "vocabulary": "services",
+                        "hierarchy": 0,
+                        "error_message": true
                     }
                 },
                 "sorts": {
@@ -377,6 +419,131 @@
                     "title": {
                         "link_to_node": 0
                     }
+                },
+                "filters": {
+                    "status": {
+                        "value": 1,
+                        "table": "node",
+                        "field": "status",
+                        "id": "status",
+                        "expose": {
+                            "operator": false
+                        },
+                        "group": 1
+                    },
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "organization": "organization"
+                        },
+                        "group": 1
+                    },
+                    "field_services_tid": {
+                        "id": "field_services_tid",
+                        "table": "field_data_field_services",
+                        "field": "field_services_tid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": [],
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "field_services_tid_op",
+                            "label": "Services offered",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "field_services_tid_op",
+                            "identifier": "field_services_tid",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            },
+                            "reduce": 0
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0,
+                        "type": "select",
+                        "limit": true,
+                        "vocabulary": "services",
+                        "hierarchy": 0,
+                        "error_message": 1
+                    },
+                    "field_location_country": {
+                        "id": "field_location_country",
+                        "table": "field_data_field_location",
+                        "field": "field_location_country",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "US": "US"
+                        },
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "field_location_country_op",
+                            "label": "Country",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "field_location_country_op",
+                            "identifier": "field_location_country",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            },
+                            "reduce": 0
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                },
+                "defaults": {
+                    "filters": false,
+                    "filter_groups": false
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
                 }
             }
         },
@@ -389,7 +556,132 @@
                     "options": []
                 },
                 "block_description": "Service Providers",
-                "display_description": ""
+                "display_description": "",
+                "filters": {
+                    "status": {
+                        "value": 1,
+                        "table": "node",
+                        "field": "status",
+                        "id": "status",
+                        "expose": {
+                            "operator": false
+                        },
+                        "group": 1
+                    },
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "organization": "organization"
+                        },
+                        "group": 1
+                    },
+                    "field_services_tid": {
+                        "id": "field_services_tid",
+                        "table": "field_data_field_services",
+                        "field": "field_services_tid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": [],
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "field_services_tid_op",
+                            "label": "Areas of Expertise (field_services)",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "field_services_tid_op",
+                            "identifier": "field_services_tid",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            },
+                            "reduce": 0
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0,
+                        "type": "select",
+                        "limit": true,
+                        "vocabulary": "services",
+                        "hierarchy": 0,
+                        "error_message": 1
+                    },
+                    "field_location_country": {
+                        "id": "field_location_country",
+                        "table": "field_data_field_location",
+                        "field": "field_location_country",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "US": "US"
+                        },
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "field_location_country_op",
+                            "label": "Country",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "field_location_country_op",
+                            "identifier": "field_location_country",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            },
+                            "reduce": 0
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                },
+                "defaults": {
+                    "filters": false,
+                    "filter_groups": false
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
             }
         },
         "block_2": {
@@ -665,7 +957,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 0,
-                        "content": "<h3>Development</h3>\n",
+                        "content": "<h3>Development Experts</h3>\n",
                         "format": "filtered_html",
                         "tokenize": 0
                     }
@@ -946,7 +1238,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 0,
-                        "content": "<h3>Hosting</h3>\n",
+                        "content": "<h3>Hosting Providers</h3>\n",
                         "format": "filtered_html",
                         "tokenize": 0
                     }
