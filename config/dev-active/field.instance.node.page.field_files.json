@@ -23,7 +23,7 @@
     },
     "display": {
         "default": {
-            "label": "above",
+            "label": "hidden",
             "type": "file_default",
             "weight": "1",
             "settings": [],
@@ -31,5 +31,7 @@
         }
     },
     "required": 0,
-    "description": ""
+    "description": "",
+    "default_value": null,
+    "default_value_function": null
 }

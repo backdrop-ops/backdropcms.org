@@ -6,7 +6,7 @@
     "deleted": "0",
     "label": "Body",
     "widget": {
-        "weight": "31",
+        "weight": "2",
         "type": "text_textarea_with_summary",
         "module": "text",
         "active": 1,
@@ -24,9 +24,9 @@
         "default": {
             "label": "hidden",
             "type": "text_default",
+            "weight": "1",
             "settings": [],
-            "module": "text",
-            "weight": 0
+            "module": "text"
         },
         "teaser": {
             "label": "hidden",
@@ -40,5 +40,6 @@
     },
     "required": 0,
     "description": "",
-    "default_value": null
+    "default_value": null,
+    "default_value_function": null
 }

@@ -1,6 +1,6 @@
 {
     "_config_name": "layout.layout.support",
-    "path": "support-alpha",
+    "path": "support",
     "name": "support",
     "title": "Support",
     "description": null,
@@ -27,10 +27,12 @@
         "content": [
             "4543880d-1a0a-413e-8300-0045a93106df",
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
-            "36ba10f1-d0f3-4e17-ad00-ff5114fedc38"
+            "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
+            "e21a9e69-e89f-4b7a-b809-9e961daa1208"
         ],
         "content_sidebar": [
-            "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6"
+            "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
+            "aa20864f-9388-46a1-a608-8eb21c6b7b63"
         ],
         "footer": [
             "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
@@ -204,6 +206,29 @@
                 }
             }
         },
+        "e21a9e69-e89f-4b7a-b809-9e961daa1208": {
+            "plugin": "views:providers-block_3",
+            "data": {
+                "module": "views",
+                "delta": "providers-block_3",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "e21a9e69-e89f-4b7a-b809-9e961daa1208",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6": {
             "plugin": "layout:custom_block",
             "data": {
@@ -215,7 +240,7 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>The Backdrop CMS community uses a handful of tools for communication.</p>\n\n<ul>\n  <li><a href=\"https://gitter.im/backdrop/backdrop-issues\"><i class=\"fa fa-comments-o\"></i> Live Chat: GitterIM</a></li>\n  <li><a href=\"http://twitter.com/backdropcms\"><i class=\"fa fa-twitter\"></i> Twitter (use #BackdropCMS)</a></li>\n  <li><a href=\"http://github.com/backdrop/backdrop-issues/issues\"><i class=\"fa fa-github\"></i> Issue Queue: Github</a></li>\n  <li><a href=\"http://api.backdropcms.org/\"><i class=\"fa fa-puzzle-piece\"></i> Developer Documentation</a></li>\n  <li><a href=\"https://plus.google.com/+BackdropcmsOrg\"><i class=\"fa fa-google-plus\"></i> Weekly Meetings: Google hangouts</a></li>\n  <li><a href=\"https://www.youtube.com/user/backdropcms\"><i class=\"fa fa-youtube\"></i> Video archives: YouTube</a></li>\n  <li><a href=\"http://www.facebook.com/backdropcms\"><i class=\"fa fa-facebook\"></i> Facebook group</a></li>\n  <li><a href=\"https://www.linkedin.com/groups/6930143\"><i class=\"fa fa-linkedin\"></i> LinkedIn group</a></li>\n</ul>",
+                    "content": "<p>The Backdrop CMS community uses a handful of tools for communication.</p>\n\n<ul>\n  <li><a href=\"https://gitter.im/backdrop/backdrop-issues\"><i class=\"fa fa-comments-o\"></i> Live Chat: GitterIM</a></li>\n  <li><a href=\"http://github.com/backdrop/backdrop-issues/issues\"><i class=\"fa fa-github\"></i> Issue Queue: Github</a></li>\n  <li><a href=\"http://api.backdropcms.org/\"><i class=\"fa fa-puzzle-piece\"></i> Developer Documentation (API)</a></li>\n  <li><a href=\"https://plus.google.com/+BackdropcmsOrg\"><i class=\"fa fa-google-plus\"></i> Weekly Meetings: Google hangouts</a></li>\n  <li><a href=\"https://www.youtube.com/user/backdropcms\"><i class=\"fa fa-youtube\"></i> Video archives: YouTube</a></li>\n  <li><a href=\"https://www.linkedin.com/groups/6930143\"><i class=\"fa fa-linkedin\"></i> LinkedIn group</a></li>\n  <li><a href=\"http://www.facebook.com/backdropcms\"><i class=\"fa fa-facebook\"></i> Facebook group</a></li>\n  <li><a href=\"http://twitter.com/backdropcms\"><i class=\"fa fa-twitter\"></i> Twitter (use #BackdropCMS)</a></li>\n</ul>",
                     "format": "full_html"
                 },
                 "uuid": "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
@@ -224,6 +249,31 @@
                     "data": {
                         "settings": {
                             "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "aa20864f-9388-46a1-a608-8eb21c6b7b63": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Books",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>Two new books by Todd Tomlinson, author of “Pro Drupal 7 Development”:</p>\n\n<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\"><img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" /></a><br/>\n“<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a>”\n\n<a href=\"http://www.amazon.com/Migrating-Drupal-Backdrop-Todd-Tomlinson/dp/1484217594\"><img src=\"https://backdropcms.org/files/inline-images/book.jpg\" /></a><br/>\n“<a href=\"http://www.amazon.com/Migrating-Drupal-Backdrop-Todd-Tomlinson/dp/1484217594\">Migrating from Drupal to Backdrop</a>”",
+                    "format": "full_html"
+                },
+                "uuid": "aa20864f-9388-46a1-a608-8eb21c6b7b63",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "backdrop-books"
                         }
                     }
                 }

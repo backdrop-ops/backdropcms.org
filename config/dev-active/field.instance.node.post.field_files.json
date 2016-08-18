@@ -29,9 +29,15 @@
         "default": {
             "label": "above",
             "type": "file_default",
+            "weight": "3",
             "settings": [],
-            "module": "file",
-            "weight": 2
+            "module": "file"
+        },
+        "teaser": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
         }
     }
 }

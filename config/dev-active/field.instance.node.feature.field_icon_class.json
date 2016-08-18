@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.feature.field_icon_class",
+    "field_name": "field_icon_class",
+    "entity_type": "node",
+    "bundle": "feature",
+    "label": "Icon class",
+    "widget": {
+        "weight": "1",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "10"
+        }
+    },
+    "description": "Please select a CSS class for a <a href=\"http://fontawesome.io/icons/\">fontAwesome icon</a> and add it here. Example: <em>fa fa-bicycle</em>",
+    "required": 1,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "6",
+            "settings": []
+        }
+    }
+}

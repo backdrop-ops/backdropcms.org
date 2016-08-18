@@ -1,6 +1,6 @@
 {
-    "_config_name": "field.bundle.node.page",
-    "bundle": "page",
+    "_config_name": "field.bundle.node.feature",
+    "bundle": "feature",
     "entity_type": "node",
     "view_modes": {
         "teaser": {
@@ -26,9 +26,6 @@
         "form": {
             "title": {
                 "weight": "0"
-            },
-            "redirect": {
-                "weight": "3"
             }
         },
         "display": []
