@@ -1446,33 +1446,80 @@ iframe.twitter-tweet-rendered {
 }
 
 /*******************************************************************************
- * Service providers listing
+ * Backdrop books
+ ******************************************************************************/
+.backdrop-books {
+  margin-top: 50px;
+  text-align: center;
+}
+.backdrop-books .block-title {
+  text-align: left;
+}
+.backdrop-books img {
+  margin: 10px auto 0 auto;
+}
+
+/*******************************************************************************
+ * Service providers listing - logos
+ ******************************************************************************/
+
+.view-providers {
+  margin-bottom: 100px;
+}
+.view-providers .view-header h3 {
+  text-align: center;
+}
+.view-providers .view-content {
+  background-color:  #f7f7f7;
+  padding-top: 15px;
+}
+.view-providers table {
+  width: 100%;
+}
+.view-providers table td {
+  padding: 5px 0;
+}
+.view-providers .view-footer {
+  background-color:  #f7f7f7;
+  padding: 15px;
+}
+.view-providers .view-footer p {
+  margin: 0;
+  text-align: center;
+  color: #979797;
+}
+
+
+/*******************************************************************************
+ * Service providers listing - page
  ******************************************************************************/
 .block-views-providers-block-1 .view-content {
   border-top: 1px solid #d4d4d6;
+  background-color: transparent;
 }
-.view-providers .views-row {
+.view-display-id-block_1 .views-row {
+  clear: left;
   border-bottom: 1px solid #d4d4d6;
   padding: 28px 0;
 }
-.view-providers h3 {
+.view-display-id-block_1 h3 {
   margin: .5em 0 0;
 }
-.view-providers p {
+.view-display-id-block_1 p {
   margin: .5em 0;
 }
-.view-providers .views-field-field-logo a {
+.view-display-id-block_1 .views-field-field-logo a {
   display: inline-block;
   text-align: center;
 }
-.view-providers .views-field-field-logo img {
+.view-display-id-block_1 .views-field-field-logo img {
   margin: 0 auto;
 }
 @media all and (min-width: 600px) {
-  .view-providers .views-field {
+  .view-display-id-block_1 .views-field {
     margin-left: 180px;
   }
-  .view-providers .views-field-field-logo {
+  .view-display-id-block_1 .views-field-field-logo {
     width: 180px;
     float: left;
     text-align: left;
