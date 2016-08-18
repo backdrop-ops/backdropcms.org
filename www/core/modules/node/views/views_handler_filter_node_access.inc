@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Definition of views_handler_filter_node_access.
@@ -16,6 +17,9 @@ class views_handler_filter_node_access extends views_handler_filter {
     return FALSE;
   }
 
+  /**
+   * See _node_access_where_sql() for a non-views query based implementation.
+   */
   function query() {
     if (!user_access('administer nodes') && module_implements('node_grants')) {
       $table = $this->ensure_my_table();

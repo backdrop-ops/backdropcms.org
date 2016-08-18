@@ -13,6 +13,7 @@ dependencies[] = contextual
 dependencies[] = date
 dependencies[] = email
 dependencies[] = image
+dependencies[] = installer
 dependencies[] = layout
 dependencies[] = link
 dependencies[] = list
@@ -20,15 +21,17 @@ dependencies[] = menu
 dependencies[] = number
 dependencies[] = options
 dependencies[] = path
+dependencies[] = redirect
 dependencies[] = taxonomy
 dependencies[] = dblog
 dependencies[] = search
 dependencies[] = field_ui
 dependencies[] = file
+dependencies[] = update
 dependencies[] = views
 dependencies[] = views_ui
 
-; Added by Backdrop CMS packaging script on 2016-03-21
+; Added by Backdrop CMS packaging script on 2016-06-22
 project = backdrop
-version = 1.3.4
-timestamp = 1458622179
+version = 1.4.3
+timestamp = 1466656516
