@@ -425,7 +425,48 @@ class PathPatternFunctionalTestHelper extends PathPatternTestHelper {
  */
 class PathPatternFunctionalTestCase extends PathPatternFunctionalTestHelper {
   /**
-   * Basic functional testing of Path patterns.
+   * Create a new content type with new path pattern.
+   */
+  function testNodeTypeCreate() {
+    // Create a user with more permissions.
+    $permissions = array(
+      'administer path patterns',
+      'administer content types',
+      'administer taxonomy',
+      'administer account settings',
+    );
+    $this->admin_user = $this->backdropCreateUser($permissions);
+    $this->backdropLogin($this->admin_user);
+
+    // Set the path pattern when creating a new content type.
+    $this->backdropGet('admin/structure/types/add');
+    $edit = array(
+      'name' => 'foo',
+      'type' => 'foo',
+      'path_pattern' => 'foo/[node:title]',
+    );
+    $this->backdropPost(NULL, $edit, t('Save content type'));
+
+    // Create a test node that should have pattern "foo/node1".
+    backdrop_static_reset();
+    $node1 = $this->backdropCreateNode(array('type' => 'foo', 'title' => 'node1'));
+    $this->assertEntityAlias('node', $node1, 'foo/node1');
+
+    // Change the path pattern on the content type.
+    $this->backdropGet('admin/structure/types/manage/foo/configure');
+    $edit = array(
+      'path_pattern' => 'bar/[node:title]',
+    );
+    $this->backdropPost(NULL, $edit, t('Save content type'));
+
+    // Create a test node that should have updated pattern "bar/node2".
+    backdrop_static_reset();
+    $node2 = $this->backdropCreateNode(array('type' => 'foo', 'title' => 'node2'));
+    $this->assertEntityAlias('node', $node2, 'bar/node2');
+  }
+
+  /**
+   * Basic functional testing of node Path patterns.
    */
   function testNodeEditing() {
     $config = config('path.settings');
@@ -676,25 +717,25 @@ class PathPatternFunctionalTestCase extends PathPatternFunctionalTestHelper {
     $this->backdropCreateContentType(array('type' => 'post', 'name' => 'Post'));
     $edit = array('path_pattern' => 'post/[node:title]/foo');
     $this->backdropPost('admin/structure/types/manage/post', $edit, 'Save content type');
-    // Check the page url pattern is on the pathauto form.
+    // Check that the page URL alias pattern is on the pathauto form.
     $this->backdropGet('admin/config/search/path/patterns');
-    $this->assertFieldByName('node_post_pattern', 'post/[node:title]/foo', 'URL pattern set with node type settings appears on path config page.');
+    $this->assertFieldByName('node_post_pattern', 'post/[node:title]/foo', 'URL alias pattern set with node type settings appears on path config page.');
 
     // Test alternate interfaces - vocab configuration.
     $vocabulary = $this->addVocabulary();
     $pattern = $vocabulary->machine_name . '/[term:name]/foo';
     $edit = array('path_pattern' =>  $pattern);
     $this->backdropPost('admin/structure/taxonomy/' . $vocabulary->machine_name . '/configure', $edit, 'Save');
-    // Check the page url pattern is on the pathauto form.
+    // Check that the page URL alias pattern is on the pathauto form.
     $this->backdropGet('admin/config/search/path/patterns');
-    $this->assertFieldByName('taxonomy_term_' . $vocabulary->machine_name . '_pattern', $pattern, 'URL pattern set with vocabulary settings appears on path config page.');
+    $this->assertFieldByName('taxonomy_term_' . $vocabulary->machine_name . '_pattern', $pattern, 'URL alias pattern set with vocabulary settings appears on path config page.');
 
     // Test alternate interfaces - user configuration.
     $edit = array('path_pattern' => 'accounts/[user:name]/foo');
     $this->backdropPost('admin/config/people/settings', $edit, 'Save configuration');
-    // Check the page url pattern is on the pathauto form.
+    // Check that the page URL alias pattern is on the pathauto form.
     $this->backdropGet('admin/config/search/path/patterns');
-    $this->assertFieldByName('user_pattern', 'accounts/[user:name]/foo', 'URL pattern set with user account settings appears on path config page.');
+    $this->assertFieldByName('user_pattern', 'accounts/[user:name]/foo', 'URL alias pattern set with user account settings appears on path config page.');
   }
 
   function testPatternsValidation() {
@@ -702,8 +743,8 @@ class PathPatternFunctionalTestCase extends PathPatternFunctionalTestHelper {
     $edit['node_pattern'] = '[node:title]/[user:name]/[term:name]';
     $edit['node_page_pattern'] = 'page';
     $this->backdropPost('admin/config/search/path/patterns', $edit, 'Save configuration');
-    $this->assertText('The Default URL pattern (applies to all content types with blank patterns below) is using the following invalid tokens: [user:name], [term:name].');
-    $this->assertText('The Pattern for all Page URLs cannot contain fewer than one token.');
+    $this->assertText('The Default URL alias pattern (applies to all content types with blank URL alias patterns below) is using the following invalid tokens: [user:name], [term:name].');
+    $this->assertText('The URL alias pattern for all Page URLs cannot contain fewer than one token.');
     $this->assertNoText('The configuration options have been saved.');
 
     $edit['node_pattern'] = '[node:title]';
