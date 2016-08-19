@@ -514,6 +514,13 @@ function project_release_field_extra_fields() {
   foreach ($types as $type_name) {
     $extra['node'][$type_name] = array(
       'form' => $project_form_additions,
+      'display' => array(
+        'project_release_downloads' => array(
+          'label' => t('Project information'),
+          'description' => t('Download and release notes.'),
+          'weight' => 0,
+        ),
+      ),
     );
   }
 

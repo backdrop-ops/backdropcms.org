@@ -45,7 +45,7 @@ function project_github_githubapi_payload($event_name, $record, $repo) {
         _project_github_upload_error_log($errors, $payload);
       }
     break;
-    
+
   }
 }
 
@@ -140,6 +140,14 @@ function project_github_field_extra_fields() {
   foreach ($types as $type_name) {
     $extra['node'][$type_name] = array(
       'form' => $form_additions,
+
+      'display' => array(
+        'github_info' => array(
+          'label' => t('GitHub project info'),
+          'description' => t('Links to the github project page, issue queue, and wiki.'),
+          'weight' => 0,
+        ),
+      ),
     );
   }
 
@@ -170,9 +178,64 @@ function project_github_node_presave(Node $node) {
 }
 
 /**
+ * Implements hook_node_view().
+ */
+function project_github_node_view(Node $node, $view_mode, $langcode) {
+  $node->content['github_info'] = array(
+    '#theme' => 'github_info',
+    '#github_path' => $node->project['github_path'],
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function project_github_block_info() {
+  $blocks['project_github'] = array(
+    'info' => t('GitHub project information'),
+    'description' => t('Links to the github project page, issue queue, and wiki.'),
+    'required contexts' => array('node' => 'node'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view();
+ */
+function project_github_block_view($delta = '', $settings = array(), $contexts = array()) {
+  $block = array();
+
+  switch ($delta) {
+    case 'project_github':
+      $block['subject'] = t('GitHub');
+      $block['content'] = array(
+        '#theme' => 'github_info',
+        '#github_path' => $contexts['node']->project['github_path'],
+      );
+      break;
+  }
+
+  return $block;
+}
+
+/**
  * Load a project node based on its GitHub path.
  */
 function project_github_load_project($github_path) {
   $nid = db_query("SELECT nid FROM {project} WHERE github_path = :path", array(':path' => $github_path))->fetchField();
   return $nid ? node_load($nid) : FALSE;
 }
+
+/**
+ * Implements hook_theme().
+ */
+function project_github_theme($existing, $type, $theme, $path) {
+  return array(
+    'github_info' => array(
+      'variables' => array('github_path' => NULL),
+      'file' => 'project_github.theme.inc',
+    ),
+  );
+}
+

@@ -9,7 +9,7 @@ Node: Add view unpublished nodes permission.
 Patches to Backdrop Contrib:
 ============================
 
-project module - views support
-  https://github.com/backdrop-contrib/project/issues/11
-  https://github.com/backdrop-contrib/project/pull/12.patch
+project module - github links on project page.
+  https://github.com/backdrop-contrib/project/issues/16
+  https://github.com/backdrop-contrib/project/pull/17.patch
 
