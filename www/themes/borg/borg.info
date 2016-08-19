@@ -13,6 +13,8 @@ stylesheets[screen][] = css/patterns.css
 stylesheets[screen][] = css/components.css
 stylesheets[screen][] = css/ckeditor-iframe.css
 
+ckeditor_stylesheets[] = css/ckeditor-iframe.css
+
 ; Custom javascript to be added:
 scripts[] = js/borg.js
 ;scripts[] = js/ga-events.js
