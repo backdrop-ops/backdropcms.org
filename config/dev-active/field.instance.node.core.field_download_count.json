@@ -1,17 +1,17 @@
 {
-    "_config_name": "field.instance.node.project_theme.field_download_count",
+    "_config_name": "field.instance.node.core.field_download_count",
     "field_name": "field_download_count",
     "entity_type": "node",
-    "bundle": "project_theme",
+    "bundle": "core",
     "label": "Download Count",
     "widget": {
-        "weight": "10",
+        "weight": "7",
         "type": "number",
         "module": "number",
         "active": 0,
         "settings": []
     },
-    "description": "This field is filled out programmatically on nightly cron runs from the module borg_project_metrics.",
+    "description": "",
     "required": 0,
     "deleted": 0,
     "default_value": null,
@@ -25,9 +25,9 @@
     },
     "display": {
         "default": {
-            "label": "above",
+            "label": "inline",
             "type": "hidden",
-            "weight": "3",
+            "weight": "2",
             "settings": []
         }
     }

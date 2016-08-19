@@ -26,15 +26,9 @@
     "display": {
         "default": {
             "label": "above",
-            "type": "number_integer",
-            "weight": "0",
-            "settings": {
-                "thousand_separator": "",
-                "prefix_suffix": 1,
-                "decimal_separator": ".",
-                "scale": 0
-            },
-            "module": "number"
+            "type": "hidden",
+            "weight": "2",
+            "settings": []
         },
         "full": {
             "label": "above",

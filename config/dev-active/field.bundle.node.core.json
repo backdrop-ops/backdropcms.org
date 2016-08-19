@@ -27,8 +27,14 @@
         "display": {
             "github_info": {
                 "default": {
-                    "weight": "0",
+                    "weight": "3",
                     "visible": false
+                }
+            },
+            "project_release_downloads": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
                 }
             }
         }

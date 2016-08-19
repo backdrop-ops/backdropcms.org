@@ -46,12 +46,18 @@
         "display": {
             "github_info": {
                 "default": {
-                    "weight": "2",
+                    "weight": "3",
                     "visible": false
                 },
                 "full": {
                     "weight": "2",
                     "visible": false
+                }
+            },
+            "project_release_downloads": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
                 }
             }
         }
