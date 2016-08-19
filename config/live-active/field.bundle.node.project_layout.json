@@ -7,7 +7,7 @@
             "custom_settings": true
         },
         "full": {
-            "custom_settings": false
+            "custom_settings": true
         },
         "rss": {
             "custom_settings": false
@@ -43,6 +43,23 @@
                 "weight": "-4"
             }
         },
-        "display": []
+        "display": {
+            "github_info": {
+                "default": {
+                    "weight": "3",
+                    "visible": false
+                },
+                "full": {
+                    "weight": "2",
+                    "visible": false
+                }
+            },
+            "project_release_downloads": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
+                }
+            }
+        }
     }
 }

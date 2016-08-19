@@ -3,7 +3,7 @@
     "field_name": "field_download_count",
     "entity_type": "node",
     "bundle": "project_module",
-    "label": "Download Count",
+    "label": "Downloads",
     "widget": {
         "weight": "33",
         "type": "number",
@@ -25,9 +25,9 @@
     },
     "display": {
         "default": {
-            "label": "hidden",
+            "label": "above",
             "type": "number_integer",
-            "weight": "1",
+            "weight": "3",
             "settings": {
                 "thousand_separator": "",
                 "decimal_separator": ".",
