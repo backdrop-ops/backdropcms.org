@@ -2,7 +2,26 @@
     "_config_name": "field.bundle.node.project_layout",
     "bundle": "project_layout",
     "entity_type": "node",
-    "view_modes": [],
+    "view_modes": {
+        "teaser": {
+            "custom_settings": true
+        },
+        "full": {
+            "custom_settings": true
+        },
+        "rss": {
+            "custom_settings": false
+        },
+        "search_index": {
+            "custom_settings": false
+        },
+        "search_result": {
+            "custom_settings": false
+        },
+        "print": {
+            "custom_settings": false
+        }
+    },
     "extra_fields": {
         "form": {
             "title": {
@@ -24,6 +43,17 @@
                 "weight": "-4"
             }
         },
-        "display": []
+        "display": {
+            "github_info": {
+                "default": {
+                    "weight": "2",
+                    "visible": false
+                },
+                "full": {
+                    "weight": "2",
+                    "visible": false
+                }
+            }
+        }
     }
 }

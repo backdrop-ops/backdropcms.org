@@ -1,9 +1,7 @@
 {
     "_config_name": "layout.settings",
     "excluded_templates": [
-        "two_column",
-        "two_column_flipped",
-        "three_three_four_column",
+        "one_column",
         "geary",
         "harris",
         "moscone",
@@ -12,6 +10,9 @@
         "simmons",
         "sutro",
         "taylor",
-        "taylor_flipped"
+        "taylor_flipped",
+        "two_column",
+        "two_column_flipped",
+        "three_three_four_column"
     ]
 }

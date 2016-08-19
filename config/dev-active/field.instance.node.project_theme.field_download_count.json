@@ -27,14 +27,14 @@
         "default": {
             "label": "above",
             "type": "number_integer",
+            "weight": "0",
             "settings": {
                 "thousand_separator": "",
                 "decimal_separator": ".",
                 "scale": 0,
                 "prefix_suffix": true
             },
-            "module": "number",
-            "weight": 2
+            "module": "number"
         }
     }
 }

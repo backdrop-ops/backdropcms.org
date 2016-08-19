@@ -173,6 +173,9 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * Prepare variables for node template
  */
 function borg_preprocess_node(&$variables){
+  // Change the submitted by language.
+  $variables['submitted'] = t('Posted by !username on !datetime', array('!username' => $variables['name'], '!datetime' => $variables['date']));
+
   // For news posts, change the username to a real name.
   if ($variables['node']->type == 'post') {
     // Change the submitted by language.
@@ -183,9 +186,6 @@ function borg_preprocess_node(&$variables){
     }
   }
 
-  // Change the submitted by language.
-  $variables['submitted'] = t('Posted by !username on !datetime', array('!username' => $variables['name'], '!datetime' => $variables['date']));
-
   // Add a picture to blog posts.
   if ($variables['type'] == 'post' && $variables['view_mode'] == 'full') {
     // Get the profile photo.
@@ -193,10 +193,10 @@ function borg_preprocess_node(&$variables){
     $langcode = $author->langcode;
     $variables['user_picture'] = theme('image_style', array('style_name' => 'medium', 'uri' => $author->field_photo[$langcode][0]['uri']));
   }
+
   if (substr($variables['type'], 0, 8) == 'project_'){
     $path = backdrop_get_path('theme', 'borg');
     $variables['content']['project_release_downloads']['#prefix'] = '<h2>' . t('Downloads')  . '</h2>';
-    $variables['content']['project_release_downloads']['#weight'] = -10;
     backdrop_add_css($path . '/css/project-styles.css');
   }
 }
@@ -244,7 +244,7 @@ function borg_form_element($variables) {
   switch ($element['#title_display']) {
     case 'before':
     case 'invisible':
-      if ($element['#type'] == 'textarea' || $element['#type'] == 'checkboxes' || $element['#type'] == 'radios' || 
+      if ($element['#type'] == 'textarea' || $element['#type'] == 'checkboxes' || $element['#type'] == 'radios' ||
          (array_key_exists('#field_name', $element) && $element['#field_name'] == 'field_expertise')) {
         $output .= ' ' . theme('form_element_label', $variables);
         if (!empty($element['#description'])) {

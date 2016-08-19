@@ -22,9 +22,9 @@
         "default": {
             "label": "hidden",
             "type": "text_default",
+            "weight": "1",
             "settings": [],
-            "module": "text",
-            "weight": 0
+            "module": "text"
         },
         "teaser": {
             "label": "hidden",
@@ -34,6 +34,13 @@
             },
             "module": "text",
             "weight": 0
+        },
+        "full": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "1",
+            "settings": [],
+            "module": "text"
         }
     },
     "description": "",
