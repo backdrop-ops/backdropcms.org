@@ -1,6 +1,6 @@
 {
-    "_config_name": "field.bundle.node.project_module",
-    "bundle": "project_module",
+    "_config_name": "field.bundle.node.project_layout",
+    "bundle": "project_layout",
     "entity_type": "node",
     "view_modes": {
         "teaser": {
@@ -41,9 +41,6 @@
             },
             "project_releases_enabled": {
                 "weight": "-4"
-            },
-            "redirect": {
-                "weight": "30"
             }
         },
         "display": []

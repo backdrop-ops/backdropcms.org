@@ -34,13 +34,13 @@
         "default": {
             "label": "above",
             "type": "image",
+            "weight": "1",
             "settings": {
                 "image_style": "",
                 "image_link": "",
                 "image_float": ""
             },
-            "module": "image",
-            "weight": 1
+            "module": "image"
         }
     }
 }

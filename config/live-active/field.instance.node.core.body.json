@@ -10,7 +10,7 @@
             "rows": 20,
             "summary_rows": 5
         },
-        "weight": 31,
+        "weight": "6",
         "module": "text"
     },
     "settings": {
@@ -22,9 +22,9 @@
         "default": {
             "label": "hidden",
             "type": "text_default",
+            "weight": "0",
             "settings": [],
-            "module": "text",
-            "weight": 0
+            "module": "text"
         },
         "teaser": {
             "label": "hidden",
