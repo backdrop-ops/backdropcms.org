@@ -52,6 +52,15 @@ span.dropbutton {
   border-radius: 5px;
   padding: 3px 5px;
 }
+span.vartical-tab {
+  display: inline-block;
+  background-color: #fff;
+  border-left: 4px solid #0074bd;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+  padding: 6px 10px;
+}
 span.table-header {
   font-weight: 600;
   text-transform: uppercase;
