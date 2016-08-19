@@ -1,0 +1,19 @@
+{
+    "_config_name": "field.field.field_download_count",
+    "field_name": "field_download_count",
+    "type": "number_integer",
+    "translatable": false,
+    "module": "number",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": [],
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}
