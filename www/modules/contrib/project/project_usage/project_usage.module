@@ -104,6 +104,9 @@ function project_usage_theme() {
       'file' => 'project_usage.pages.inc',
       'path' => $path,
     ),
+    'project_usage_total' => array(
+      'variables' => array('total' => NULL),
+    ),
   );
 }
 
@@ -218,9 +221,50 @@ function project_usage_get_release_usage($nid) {
 }
 
 /**
+ * Implements hook_node_load().
+ */
+function project_usage_node_load($nodes, $types) {
+  // Decide whether any of $types are relevant to our purposes.
+  $projects = project_project_node_types();
+  if (count(array_intersect($projects, $types))) {
+    foreach (array_keys($nodes) as $nid) {
+      $count = db_query("SELECT count FROM {project_usage_week_project} WHERE nid = :nid ORDER BY timestamp DESC LIMIT 1", array(':nid' => $nid))->fetchCol();
+      $nodes[$nid]->project['usage'] = reset($count);
+    }
+  }
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function project_usage_field_extra_fields() {
+  $extra = array();
+  $types = project_project_node_types();
+  foreach ($types as $type_name) {
+    $extra['node'][$type_name] = array(
+      'display' => array(
+        'project_usage' => array(
+          'label' => t('Project usage'),
+          'description' => t('Usage statastics.'),
+          'weight' => 0,
+        ),
+      ),
+    );
+  }
+
+  return $extra;
+}
+
+/**
  * Implements hook_node_view().
  */
 function project_usage_node_view($node) {
+  if (project_node_is_project($node)) {
+    $node->content['project_usage'] = array(
+      '#theme' => 'project_usage_total',
+      '#total' => $node->project['usage'],
+    );
+  }
   if (project_release_node_is_release($node)) {
     $node->content['links']['project_usage'] = array(
       '#theme' => 'links__node__project_usage',
@@ -233,4 +277,48 @@ function project_usage_node_view($node) {
       '#attributes' => array('class' => array('links', 'inline')),
     );
   }
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function project_usage_block_info() {
+  $blocks['project_usage'] = array(
+    'info' => t('Project usage'),
+    'description' => t('Active usage.'),
+    'required contexts' => array('node' => 'node'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view();
+ */
+function project_usage_block_view($delta = '', $settings = array(), $contexts = array()) {
+  $block = array();
+
+  switch ($delta) {
+    case 'project_usage':
+      $block['subject'] = t('Usage Statistics');
+      $block['content'] = array(
+        '#theme' => 'project_usage_total',
+        '#total' => $contexts['node']->project['usage'],
+      );
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements theme_project_usage().
+ */
+function theme_project_usage_total($variables) {
+  $output  = '<div class="project-usage">';
+  $output .= '  <div class="usage-total">' . number_format($variables['total']) . '</div>';
+  $output .= '  <div class="usage-label">' . t('Active installs') . '</div>';
+  $output .= '</div>';
+
+  return $output;
 }

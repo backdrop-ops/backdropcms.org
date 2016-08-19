@@ -181,10 +181,12 @@ function project_github_node_presave(Node $node) {
  * Implements hook_node_view().
  */
 function project_github_node_view(Node $node, $view_mode, $langcode) {
-  $node->content['github_info'] = array(
-    '#theme' => 'github_info',
-    '#github_path' => $node->project['github_path'],
-  );
+  if (project_node_is_project($node)) {
+    $node->content['github_info'] = array(
+      '#theme' => 'github_info',
+      '#github_path' => $node->project['github_path'],
+    );
+  }
 }
 
 /**
