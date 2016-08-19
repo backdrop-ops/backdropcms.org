@@ -1,0 +1,76 @@
+<?php
+/**
+ * @file borg_project_metrics.module
+ *   This module gets the metrics for Backdrop Contrib projects from github.com
+ */
+
+/**
+ * Get all the project_module, project_theme and project_layout nodes.
+ */
+function _get_project_nodes() {
+  $or = db_or();
+  $or->condition('type', 'project_module');
+  $or->condition('type', 'project_theme');
+  $or->condition('type', 'project_layout');
+  $result = db_select('node', 'n')
+    ->fields('n')
+    ->condition($or)
+    ->execute();
+  $project_modules = array();
+  foreach($result as $r) {
+    $nid = $r->nid;
+    $node = node_load($r->nid);
+    $github_path = $node->project['github_path'];
+    $project_modules[] = array($github_path, $nid);
+  }
+  return $project_modules;
+}
+
+/**
+ * Get the number of downloads for a project.
+ *
+ * @param string $project
+ *   The project to retrieve the number of downloads for, i.e. webform or
+ *   on_the_web.
+ */
+function _get_downloads($project = '') {
+  global $settings;
+  $url = "https://api.github.com/repos/$project/releases";
+  $token = $settings['githubapi_token'];
+  $authorization = "Authorization: token $token";
+
+  // Initiate a curl session.
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+  curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+  $content = curl_exec($ch);
+  curl_close($ch);
+  $json = json_decode($content);
+  $total = 0;
+  foreach($json as $j) {
+    $total += $j->assets[0]->download_count;
+  }
+  return $total;
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * @see _get_project_nodes()
+ * @see _get_downloads()
+ */
+function borg_project_metrics_cron() {
+  // Run at ~2AM EST.
+  if (date('G') == 22) {
+    $project_nodes = _get_project_nodes();
+    foreach($project_nodes as $m) {
+      $num = _get_downloads($m[0]);
+      $node = node_load($m[1]);
+      $node->field_download_count['und'][0]['value'] = $num;
+      $node->save();
+    }
+  }
+}
