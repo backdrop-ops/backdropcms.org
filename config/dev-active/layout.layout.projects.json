@@ -28,6 +28,9 @@
             "cf46b35a-9f1b-4f5d-bc00-bda51d35fe3b"
         ],
         "content_sidebar": [
+            "cf8c10df-fd63-4cb1-8c00-d94702f6000c",
+            "276421d9-5b8d-4e03-9f01-01e468529f11",
+            "93fc73fc-86d3-4840-9141-65e29bef9e2d",
             "ec44e1e9-2b5e-4ef5-ae2e-46d8f2ec8689",
             "b4b3a835-c7a3-4022-bd00-dfc3e01a7313"
         ],
@@ -158,6 +161,75 @@
                 }
             }
         },
+        "cf8c10df-fd63-4cb1-8c00-d94702f6000c": {
+            "plugin": "views:project_release_download_table-block_1",
+            "data": {
+                "module": "views",
+                "delta": "project_release_download_table-block_1",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "cf8c10df-fd63-4cb1-8c00-d94702f6000c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "276421d9-5b8d-4e03-9f01-01e468529f11": {
+            "plugin": "project_release:current_release",
+            "data": {
+                "module": "project_release",
+                "delta": "current_release",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "276421d9-5b8d-4e03-9f01-01e468529f11",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "93fc73fc-86d3-4840-9141-65e29bef9e2d": {
+            "plugin": "project_usage:project_usage",
+            "data": {
+                "module": "project_usage",
+                "delta": "project_usage",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "93fc73fc-86d3-4840-9141-65e29bef9e2d",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "ec44e1e9-2b5e-4ef5-ae2e-46d8f2ec8689": {
             "plugin": "field:field_block:node-field_download_count",
             "data": {
@@ -196,7 +268,7 @@
                 "module": "project_github",
                 "delta": "project_github",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "none",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
