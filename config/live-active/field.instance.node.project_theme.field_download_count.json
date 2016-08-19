@@ -25,16 +25,10 @@
     },
     "display": {
         "default": {
-            "label": "inline",
-            "type": "number_integer",
-            "weight": "2",
-            "settings": {
-                "thousand_separator": "",
-                "decimal_separator": ".",
-                "scale": 0,
-                "prefix_suffix": true
-            },
-            "module": "number"
+            "label": "above",
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
         }
     }
 }

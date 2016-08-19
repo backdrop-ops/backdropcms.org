@@ -46,6 +46,31 @@
                 "weight": "30"
             }
         },
-        "display": []
+        "display": {
+            "github_info": {
+                "default": {
+                    "weight": "4",
+                    "visible": false
+                }
+            },
+            "project_download_link": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
+                }
+            },
+            "project_release_link": {
+                "default": {
+                    "weight": "1",
+                    "visible": true
+                }
+            },
+            "project_release_downloads": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
+                }
+            }
+        }
     }
 }
