@@ -407,3 +407,33 @@ function borg_feed_icon($variables) {
   $image = '<i class="fa fa-rss-square"></i><span class="element-invisible">' . $text . '</span>';
   return l($image, $variables['url'], array('html' => TRUE, 'attributes' => array('class' => array('feed-icon'), 'title' => $text)));
 }
+
+function borg_menu_local_tasks($variables) {
+  $output = '';
+
+  if (!empty($variables['primary'])) {
+    // Remove the releases tab.
+    if (arg(0) == 'node' && is_numeric(arg(1)) && !arg(2)) {
+      foreach ($variables['primary'] as $key => $link) {
+        if (strstr($link['#link']['path'], '/releases')) {
+          unset($variables['primary'][$key]);
+        }
+      }
+    }
+
+    if (count($variables['primary']) > 1) {
+      $variables['primary']['#prefix'] = '<h2 class="element-invisible">' . t('Primary tabs') . '</h2>';
+      $variables['primary']['#prefix'] .= '<ul class="tabs primary">';
+      $variables['primary']['#suffix'] = '</ul>';
+      $output .= backdrop_render($variables['primary']);
+    }
+  }
+  if (!empty($variables['secondary'])) {
+    $variables['secondary']['#prefix'] = '<h2 class="element-invisible">' . t('Secondary tabs') . '</h2>';
+    $variables['secondary']['#prefix'] .= '<ul class="tabs secondary">';
+    $variables['secondary']['#suffix'] = '</ul>';
+    $output .= backdrop_render($variables['secondary']);
+  }
+
+  return $output;
+}
