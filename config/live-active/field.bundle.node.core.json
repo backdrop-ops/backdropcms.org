@@ -1,6 +1,6 @@
 {
-    "_config_name": "field.bundle.node.project_module",
-    "bundle": "project_module",
+    "_config_name": "field.bundle.node.core",
+    "bundle": "core",
     "entity_type": "node",
     "view_modes": {
         "teaser": {
@@ -25,25 +25,22 @@
     "extra_fields": {
         "form": {
             "title": {
-                "weight": "-5"
+                "weight": "0"
             },
             "project_name": {
-                "weight": "-4"
+                "weight": "2"
             },
             "project_sandbox": {
-                "weight": "-2"
+                "weight": "4"
             },
             "project_github_path": {
-                "weight": "-3"
+                "weight": "3"
             },
             "project_github_sync_readme": {
-                "weight": "-1"
+                "weight": "5"
             },
             "project_releases_enabled": {
-                "weight": "-4"
-            },
-            "redirect": {
-                "weight": "30"
+                "weight": "1"
             }
         },
         "display": []
