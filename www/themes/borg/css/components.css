@@ -1299,13 +1299,24 @@ a.tabledrag-handle .handle {
 
 
 /*******************************************************************************
- * Project releases view
+ * Project releases views
  ******************************************************************************/
 .view-project-releases-by-project .view-empty {
   margin: 1em 0;
   font-size: 1.2em;
 }
+.view-project-release-download-table table {
+  width: 100%;
+}
 
+.l-content-inner {
+  text-align: center;
+}
+.layout--double-fixed-inner-rev .block-system-main {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: left;
+}
 
 /*******************************************************************************
  * Latest News View block
@@ -1501,29 +1512,49 @@ iframe.twitter-tweet-rendered {
   border-top: 1px solid #d4d4d6;
   background-color: transparent;
 }
-.view-display-id-block_1 .views-row {
+
+/*******************************************************************************
+ * Project nodes
+ ******************************************************************************/
+
+.project-usage .usage-total {
+  font-weight: bold;
+}
+.project-usage .usage-label {
+  color: #979797;
+}
+
+.field-name-field-download-count .field-item {
+  font-weight: bold;
+}
+.field-name-field-download-count .field-label {
+  color: #979797;
+  font-weight: normal;
+}
+
+.node-project-module .view-project-release-download-table .views-row {
   clear: left;
   border-bottom: 1px solid #d4d4d6;
   padding: 28px 0;
 }
-.view-display-id-block_1 h3 {
+.node-project-module .view-project-release-download-table h3 {
   margin: .5em 0 0;
 }
-.view-display-id-block_1 p {
+.node-project-module .view-project-release-download-table p {
   margin: .5em 0;
 }
-.view-display-id-block_1 .views-field-field-logo a {
+.node-project-module .view-project-release-download-table .views-field-field-logo a {
   display: inline-block;
   text-align: center;
 }
-.view-display-id-block_1 .views-field-field-logo img {
+.node-project-module .view-project-release-download-table .views-field-field-logo img {
   margin: 0 auto;
 }
 @media all and (min-width: 600px) {
-  .view-display-id-block_1 .views-field {
+  .node-project-module .view-project-release-download-table .views-field {
     margin-left: 180px;
   }
-  .view-display-id-block_1 .views-field-field-logo {
+  .node-project-module .view-project-release-download-table .views-field-field-logo {
     width: 180px;
     float: left;
     text-align: left;
