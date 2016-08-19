@@ -42,6 +42,7 @@
 .layout--double-fixed-inner-rev .l-content-inner,
 .layout--double-fixed-inner-rev .l-sidebar-inner {
   text-align: left;
+  padding: 15px 0;
 }
 
 @media all and (min-width: 501px) {
