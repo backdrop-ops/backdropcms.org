@@ -51,6 +51,10 @@
                 "default": {
                     "weight": "4",
                     "visible": false
+                },
+                "teaser": {
+                    "weight": "4",
+                    "visible": false
                 }
             },
             "project_download_link": {
@@ -69,12 +73,20 @@
                 "default": {
                     "weight": "0",
                     "visible": true
+                },
+                "teaser": {
+                    "weight": "3",
+                    "visible": false
                 }
             },
             "project_usage": {
                 "default": {
                     "weight": "3",
                     "visible": false
+                },
+                "teaser": {
+                    "weight": "1",
+                    "visible": true
                 }
             }
         }
