@@ -173,7 +173,7 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * Prepare variables for node template
  */
 function borg_preprocess_node(&$variables){
-  // Change the submitted by language.
+  // Change the submitted by language for all nodes.
   $variables['submitted'] = t('Posted by !username on !datetime', array('!username' => $variables['name'], '!datetime' => $variables['date']));
 
   // For news posts, change the username to a real name.
@@ -186,7 +186,7 @@ function borg_preprocess_node(&$variables){
     }
   }
 
-  // Add a picture to blog posts.
+  // For blog posts, add a picture.
   if ($variables['type'] == 'post' && $variables['view_mode'] == 'full') {
     // Get the profile photo.
     $author = user_load($variables['uid']);
@@ -194,6 +194,7 @@ function borg_preprocess_node(&$variables){
     $variables['user_picture'] = theme('image_style', array('style_name' => 'medium', 'uri' => $author->field_photo[$langcode][0]['uri']));
   }
 
+  // For project nodes...
   if (substr($variables['type'], 0, 8) == 'project_'){
     $path = backdrop_get_path('theme', 'borg');
     unset($variables['content']['project_release_downloads']['#prefix']);

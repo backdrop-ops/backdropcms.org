@@ -26,8 +26,14 @@
     "display": {
         "default": {
             "label": "above",
+            "type": "hidden",
+            "weight": "2",
+            "settings": []
+        },
+        "teaser": {
+            "label": "above",
             "type": "number_integer",
-            "weight": "3",
+            "weight": "0",
             "settings": {
                 "thousand_separator": "",
                 "decimal_separator": ".",
