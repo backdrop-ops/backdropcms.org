@@ -12,6 +12,7 @@ function _get_project_nodes() {
   $or->condition('type', 'project_module');
   $or->condition('type', 'project_theme');
   $or->condition('type', 'project_layout');
+  $or->condition('type', 'core');
   $result = db_select('node', 'n')
     ->fields('n')
     ->condition($or)
