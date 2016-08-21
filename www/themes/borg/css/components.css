@@ -1299,7 +1299,7 @@ a.tabledrag-handle .handle {
 
 
 /*******************************************************************************
- * Project releases views
+ * Releases views
  ******************************************************************************/
 .view-project-releases-by-project .view-empty {
   margin: 1em 0;
@@ -1527,8 +1527,12 @@ iframe.twitter-tweet-rendered {
   font-weight: normal;
 }
 
+.block-project-github-project-github h3 {
+  margin-bottom: 0.25em;
+}
 .block-project-github-project-github li {
-  margin-left: 1em;
+  list-style-type: none;
+  margin-left: 0;
 }
 
 label.github-clone-label {
