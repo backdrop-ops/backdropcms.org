@@ -49,7 +49,7 @@
         "display": {
             "github_info": {
                 "default": {
-                    "weight": "4",
+                    "weight": "5",
                     "visible": false
                 }
             },
@@ -57,6 +57,12 @@
                 "default": {
                     "weight": "0",
                     "visible": true
+                }
+            },
+            "project_usage": {
+                "default": {
+                    "weight": "3",
+                    "visible": false
                 }
             }
         }
