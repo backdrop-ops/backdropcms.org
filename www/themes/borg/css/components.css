@@ -1527,6 +1527,18 @@ iframe.twitter-tweet-rendered {
   font-weight: normal;
 }
 
+.block-project-github-project-github li {
+  margin-left: 1em;
+}
+
+label.github-clone-label {
+  color: #979797;
+}
+.github-clone input {
+  font-size: 90%;
+  width: 100%;
+}
+
 .node-project-module .view-project-release-download-table .views-row {
   clear: left;
   border-bottom: 1px solid #d4d4d6;
