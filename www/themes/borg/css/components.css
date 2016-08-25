@@ -898,6 +898,35 @@ body.front .block-block-4 h2 {
 }
 
 /*******************************************************************************
+ * PMC list
+ ******************************************************************************/
+ ul.committers,
+ ul.pmc {
+  padding-left: 0;
+ }
+ ul.committers li,
+ ul.pmc li {
+  display: block;
+  line-height: 100px;
+ }
+ ul.committers img,
+ ul.pmc img {
+  float: left;
+  margin-right: 15px;
+  width: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #ffffff;
+}
+@media (min-width: 1000px) {
+  ul.pmc li {
+    display: inline-block;
+    width: 49%;
+  }
+}
+
+
+/*******************************************************************************
  * User Profile
  ******************************************************************************/
 
@@ -913,6 +942,7 @@ main.account-page #page-title {
 article.profile {
   clear: none;
   margin-top: 0;
+  text-align: left;
 }
 article.profile .field-name-field-contributions {
   margin-top: 40px;
@@ -1299,7 +1329,7 @@ a.tabledrag-handle .handle {
 
 
 /*******************************************************************************
- * Project releases views
+ * Releases views
  ******************************************************************************/
 .view-project-releases-by-project .view-empty {
   margin: 1em 0;
@@ -1527,8 +1557,12 @@ iframe.twitter-tweet-rendered {
   font-weight: normal;
 }
 
+.block-project-github-project-github h3 {
+  margin-bottom: 0.25em;
+}
 .block-project-github-project-github li {
-  margin-left: 1em;
+  list-style-type: none;
+  margin-left: 0;
 }
 
 label.github-clone-label {
