@@ -1573,29 +1573,29 @@ label.github-clone-label {
   width: 100%;
 }
 
-.node-project-module .view-project-release-download-table .views-row {
+.node-project .view-project-release-download-table .views-row {
   clear: left;
   border-bottom: 1px solid #d4d4d6;
   padding: 28px 0;
 }
-.node-project-module .view-project-release-download-table h3 {
+.node-project .view-project-release-download-table h3 {
   margin: .5em 0 0;
 }
-.node-project-module .view-project-release-download-table p {
+.node-project .view-project-release-download-table p {
   margin: .5em 0;
 }
-.node-project-module .view-project-release-download-table .views-field-field-logo a {
+.node-project .view-project-release-download-table .views-field-field-logo a {
   display: inline-block;
   text-align: center;
 }
-.node-project-module .view-project-release-download-table .views-field-field-logo img {
+.node-project .view-project-release-download-table .views-field-field-logo img {
   margin: 0 auto;
 }
 @media all and (min-width: 600px) {
-  .node-project-module .view-project-release-download-table .views-field {
+  .node-project .view-project-release-download-table .views-field {
     margin-left: 180px;
   }
-  .node-project-module .view-project-release-download-table .views-field-field-logo {
+  .node-project .view-project-release-download-table .views-field-field-logo {
     width: 180px;
     float: left;
     text-align: left;

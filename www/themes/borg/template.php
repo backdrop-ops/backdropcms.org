@@ -198,6 +198,7 @@ function borg_preprocess_node(&$variables){
   if (($variables['type'] == 'core') || substr($variables['type'], 0, 8) == 'project_'){
     $path = backdrop_get_path('theme', 'borg');
     unset($variables['content']['project_release_downloads']['#prefix']);
+    $variables['classes'][] = 'node-project';
     backdrop_add_css($path . '/css/project-styles.css');
   }
 }

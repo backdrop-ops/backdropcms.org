@@ -11,7 +11,7 @@
 }
 /* End temp styles */
 
-.node-project-module h2,
+.node-project h2,
 .node-project-theme h2,
 .node-project-layout h2,
 .node-project-release .form-item label{
@@ -23,34 +23,28 @@
   font-weight: 600;
 }
 
-.node-project-module .view-project-release-download-table .view-content {
+.node-project .view-project-release-download-table .view-content {
   font-size: 1.3em;
 }
 
-.node-project-module .view-project-release-download-table th {
+.node-project .view-project-release-download-table th {
   font-weight: 400;
   font-size: .8em;
 }
 
-.node-project-module .view-project-release-download-table th,
-.node-project-module .view-project-release-download-table td {
-  padding: 0 .8em .5em 0;
+.node-project .view-project-release-download-table th,
+.node-project .view-project-release-download-table td {
+  padding: 0 .8em .0 0;
   vertical-align: bottom;
 }
 
-@media (min-width: 520px) {
-  .node-project-module .view-project-release-download-table td {
-    padding: 0 2em .5em 0;
-  }
-}
-
-.node-project-module .view-project-release-download-table .recommended td:first-child a {
+.node-project .view-project-release-download-table .recommended td:first-child a {
   display: inline-block;
   font-size: 1.4em;
   margin: 0 .2em 0 0;
 }
 
-.node-project-module .view-project-release-download-table .recommended td:first-child a:after {
+.node-project .view-project-release-download-table .recommended td:first-child a:after {
   content: "\f0ab";
   font-family: 'FontAwesome';
   display: inline-block;
