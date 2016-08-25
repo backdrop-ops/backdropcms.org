@@ -898,6 +898,35 @@ body.front .block-block-4 h2 {
 }
 
 /*******************************************************************************
+ * PMC list
+ ******************************************************************************/
+ ul.committers,
+ ul.pmc {
+  padding-left: 0;
+ }
+ ul.committers li,
+ ul.pmc li {
+  display: block;
+  line-height: 100px;
+ }
+ ul.committers img,
+ ul.pmc img {
+  float: left;
+  margin-right: 15px;
+  width: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #ffffff;
+}
+@media (min-width: 1000px) {
+  ul.pmc li {
+    display: inline-block;
+    width: 49%;
+  }
+}
+
+
+/*******************************************************************************
  * User Profile
  ******************************************************************************/
 
@@ -913,6 +942,7 @@ main.account-page #page-title {
 article.profile {
   clear: none;
   margin-top: 0;
+  text-align: left;
 }
 article.profile .field-name-field-contributions {
   margin-top: 40px;
