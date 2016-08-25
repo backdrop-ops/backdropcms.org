@@ -879,7 +879,7 @@ class GitHubAPI {
 
     $upload_url = $upload_url . "?" . backdrop_http_build_query($query);
 
-
+    $this->reInitCurl();
     $this->curl->setHeader('Content-Type', $this->getMimeType($settings['filename']));
     $this->curl->setHeader('Authorization', 'token ' . $this->getToken());
     $this->curl->post($upload_url, $settings['content']);
