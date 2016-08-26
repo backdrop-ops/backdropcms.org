@@ -86,14 +86,15 @@ function borg_github_update_1000() {
  * Fix incorrect links within releases that used the wrong zip file.
  */
 function borg_github_update_1001() {
-  $result = db_query("SELECT * from {project_release} pr INNER JOIN {project} p ON pr.project_nid = p.nid where download_link NOT LIKE '%.zip'");
+  $result = db_query("SELECT pr.*, p.name, p.github_path from {project_release} pr INNER JOIN {project} p ON pr.project_nid = p.nid where download_link NOT LIKE '%.zip'");
   foreach ($result as $row) {
     $new_url = 'https://github.com/' . $row->github_path . '/releases/download/' . $row->version . '/' . $row->name . '.zip';
-    db_update('project_release')
+    $result = db_update('project_release')
       ->fields(array(
         'download_link' => $new_url,
       ))
       ->condition('nid', $row->nid)
       ->execute();
+    dvm($result);
   }
 }
