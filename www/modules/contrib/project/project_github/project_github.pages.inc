@@ -13,8 +13,8 @@
  *   The GitHub webhook payload. Note that the "assets" property of this payload
  *   will be modified to include the newly uploaded package, so it may be
  *   referenced by later events without retrieving the asset again.
- * @return bool
- *   TRUE if the package is modified and uploaded successfully. FALSE otherwise.
+ * @return array|FALSE
+ *   The package information array if successful. FALSE if the upload failed.
  */
 function _project_github_create_package(array &$errors, array &$payload) {
   // The name of the project, e.g. "webform".
@@ -91,18 +91,21 @@ function _project_github_create_package(array &$errors, array &$payload) {
   $short_tag_name = preg_replace('/^(v?\d+\.x\-)/', '', $tag_name);
   $archive_title = "Download $project_name $short_tag_name (zip)";
 
-  $success = project_github_add_release_zip($payload['repository']['full_name'], $tag_name, $archive_name, $archive_title, file_get_contents($archive_path));
+  $new_asset_data = project_github_add_release_zip($payload['repository']['full_name'], $tag_name, $archive_name, $archive_title, file_get_contents($archive_path));
 
   // Delete the working directory (including the new archive).
   file_unmanaged_delete_recursive($directory);
 
-  if ($success) {
+  if ($new_asset_data) {
+    // Modify the payload array to include the new asset.
+    $payload['release']['assets'][] = $new_asset_data;
     watchdog('project_github', 'Successfully created release for @project @tag and pushed the package to GitHub.', array('@project' => $project_name, '@tag' => $tag_name), WATCHDOG_INFO);
   }
   else {
     watchdog('project_github', 'Error creating release for @project @tag.', array('@project' => $project_name, '@tag' => $tag_name), WATCHDOG_INFO);
   }
-  return $success;
+
+  return $new_asset_data;
 }
 
 /**
@@ -434,9 +437,9 @@ function project_github_get_release_zip($repository_full_name, $tag) {
  *   The label of the attachment when shown on the GitHub release.
  * @param string $content
  *   The full content of the archive as a string.
- * @return string|FALSE
- *   The zip file content as a string if the archive was found. FALSE if failed
- *   to download.
+ * @return array|FALSE
+ *   The newly added asset information response from GitHub. Or FALSE if the
+ *   asset upload failed.
  */
 function project_github_add_release_zip($repository_full_name, $tag, $filename, $label, $content) {
   $repo = project_github_convert_full_name($repository_full_name);
@@ -449,5 +452,13 @@ function project_github_add_release_zip($repository_full_name, $tag, $filename, 
     'content' => $content,
   );
 
-  return $githubapi->addAsset($add_asset);
+  // GitHub API returns a stdClass on success. Convert to an array to match
+  // the format of other $payload data variables.
+  $result = $githubapi->addAsset($add_asset);
+  if ($result) {
+    return (array) $result;
+  }
+  else {
+    return FALSE;
+  }
 }
