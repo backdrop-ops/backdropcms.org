@@ -90,6 +90,9 @@
   [dir="rtl"] .layout--double-fixed .l-sidebar {
     right: 0;
   }
+  .admin-bar .layout--double-fixed .l-sidebar {
+    top: 33px;
+  }
 
   .layout--double-fixed .l-drawer {
     width: 230px;
@@ -101,6 +104,9 @@
   }
   [dir="rtl"] .layout--double-fixed .l-drawer {
     right: 230px;
+  }
+  .admin-bar .layout--double-fixed .l-drawer {
+    top: 33px;
   }
 }
 

@@ -141,6 +141,9 @@
   [dir="rtl"] .layout--double-fixed-inner .l-sidebar {
     right: 0;
   }
+  .admin-bar .layout--double-fixed-inner .l-sidebar {
+    top: 33px;
+  }
 
   .layout--double-fixed-inner .l-drawer {
     width: 230px;
@@ -152,6 +155,9 @@
   }
   [dir="rtl"] .layout--double-fixed-inner .l-drawer {
     right: 230px;
+  }
+  .admin-bar .layout--double-fixed-inner .l-drawer {
+    top: 33px;
   }
 }
 

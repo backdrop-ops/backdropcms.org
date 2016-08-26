@@ -119,6 +119,9 @@
   [dir="rtl"] .layout--double-fixed-inner-rev .l-sidebar {
     right: 0;
   }
+  .admin-bar .layout--double-fixed-inner-rev .l-sidebar {
+    top: 33px;
+  }
 
   .layout--double-fixed-inner-rev .l-drawer {
     width: 230px;
@@ -130,6 +133,9 @@
   }
   [dir="rtl"] .layout--double-fixed-inner-rev .l-drawer {
     right: 230px;
+  }
+  .admin-bar .layout--double-fixed-inner-rev .l-drawer {
+    top: 33px;
   }
 }
 
