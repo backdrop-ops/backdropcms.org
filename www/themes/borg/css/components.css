@@ -368,9 +368,13 @@ article.node-post .field-name-body {
   position: absolute;
   right: 30px;
   bottom: -15px;
+  width: 100%;
+}
+.field-name-field-tags .field-item {
+  display: inline-block;
 }
 .field-name-field-tags a {
-  float: right;
+  display: inline-block;
   height: 30px;
   line-height: 30px;
   position: relative;
