@@ -14,6 +14,7 @@
         "formblock_expose": 0,
         "formblock_show_help": 0,
         "menu_options": {
+            "devel": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
@@ -22,7 +23,7 @@
             "user-menu": 0
         },
         "menu_parent": "main-menu:0",
-        "status_default": "1",
+        "status_default": "0",
         "promote_enabled": 1,
         "promote_default": 0,
         "sticky_enabled": 1,
