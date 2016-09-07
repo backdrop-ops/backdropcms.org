@@ -5,15 +5,13 @@
     "bundle": "post",
     "label": "Tags",
     "widget": {
-        "type": "taxonomy_autocomplete",
         "weight": "3",
-        "settings": {
-            "size": 60,
-            "autocomplete_path": "taxonomy/autocomplete"
-        },
-        "module": "taxonomy"
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
     },
-    "description": "",
+    "description": "Please select up to 5 \"Tags\" from the list above.",
     "required": 0,
     "deleted": 0,
     "default_value": null,

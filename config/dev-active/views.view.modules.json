@@ -765,6 +765,21 @@
                         "1": "AND",
                         "2": "OR"
                     }
+                },
+                "empty": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": true,
+                        "content": "<p>No results found.</p>\n",
+                        "format": "filtered_html",
+                        "tokenize": 0
+                    }
                 }
             }
         },
