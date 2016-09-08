@@ -1543,6 +1543,32 @@ iframe.twitter-tweet-rendered {
   border-top: 1px solid #d4d4d6;
   background-color: transparent;
 }
+.block-views-providers-block-1 .views-row {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #d4d4d6;
+}
+.view-providers h3 {
+  margin: 0;
+}
+.view-providers .views-field-field-logo {
+  padding-top: 15px;
+}
+
+@media (min-width: 500px) {
+  .view-providers h3 {
+    margin: 1.5em 0 1em;
+  }
+  .view-providers .views-field {
+    margin-left: 175px;
+  }
+  .view-providers .views-field-field-logo {
+    float: left;
+    padding-top: 0;
+    margin-bottom: 15px;
+    margin-right: 15px;
+    margin-left: 0px;
+  }
+}
 
 /*******************************************************************************
  * Project nodes
