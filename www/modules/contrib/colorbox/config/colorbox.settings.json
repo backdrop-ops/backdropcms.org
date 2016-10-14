@@ -1,0 +1,47 @@
+{
+    "_config_name": "colorbox.settings",
+    "colorbox_image_style": "",
+    "colorbox_insert_gallery": "0",
+    "colorbox_load": "0",
+    "colorbox_inline": "0",
+    "colorbox_style": "default",
+
+    "colorbox_custom_settings_activate": "0",
+    "colorbox_transition_type": "elastic",
+    "colorbox_transition_speed": "350",
+    "colorbox_opacity": "0.85",
+    "colorbox_text_current": "{current} of {total}",
+
+    "colorbox_text_previous": "« Prev",
+    "colorbox_text_next": "Next »",
+    "colorbox_text_close": "Close",
+    "colorbox_overlayclose": "1",
+    "colorbox_maxwidth": "98%",
+
+    "colorbox_maxheight": "98%",
+    "colorbox_initialwidth": "300",
+    "colorbox_initialheight": "250",
+    "colorbox_fixed": "1",
+    "colorbox_slideshow": "0",
+
+    "colorbox_scrolling": "1",
+    "colorbox_slideshow": "0",
+    "colorbox_slideshowauto": "1",
+    "colorbox_slideshowspeed": "2500",
+    "colorbox_text_start": "start slideshow",
+
+    "colorbox_text_stop": "stop slideshow",
+    "colorbox_mobile_detect": "1",
+    "colorbox_mobile_device_width": "480px",
+    "colorbox_caption_trim": "0",
+    "colorbox_caption_trim_length": "75",
+
+    "colorbox_visibility": "0",
+    "colorbox_pages": "admin*\nimagebrowser*\nimg_assist*\nimce*\nnode/add/*\nnode/*/edit\nprint/*\nprintpdf/*\nsystem/ajax\nsystem/ajax/*",
+    "colorbox_compression_type": "minified",
+    "colorbox_title_trim": "NULL",
+    "colorbox_title_trim_length": "NULL",
+
+    "colorbox_token_recursion_limit": "3",
+    "token_tree_recursion_limit": "3"
+}

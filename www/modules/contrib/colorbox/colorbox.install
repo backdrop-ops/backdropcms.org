@@ -1,0 +1,109 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the colorbox module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function colorbox_uninstall() {
+  db_delete('variable')->condition('name', db_like('colorbox_') . '%', 'LIKE')->execute();
+}
+
+function colorbox_update_1000() {
+  $config = config('colorbox.settings');
+
+  $config->set('colorbox_image_style', update_variable_get('colorbox_image_style'));
+  $config->set('colorbox_insert_gallery', update_variable_get('colorbox_insert_gallery'));
+  $config->set('colorbox_load', update_variable_get('colorbox_load'));
+  $config->set('colorbox_inline', update_variable_get('colorbox_inline'));
+  $config->set('colorbox_style', update_variable_get('colorbox_style'));
+
+  $config->set('colorbox_custom_settings_activate', update_variable_get('colorbox_custom_settings_activate'));
+  $config->set('colorbox_transition_type', update_variable_get('colorbox_transition_type'));
+  $config->set('colorbox_transition_speed', update_variable_get('colorbox_transition_speed'));
+  $config->set('colorbox_opacity', update_variable_get('colorbox_opacity'));
+  $config->set('colorbox_text_current', update_variable_get('colorbox_text_current'));
+
+  $config->set('colorbox_text_previous', update_variable_get('colorbox_text_previous'));
+  $config->set('colorbox_text_next', update_variable_get('colorbox_text_next'));
+  $config->set('colorbox_text_close', update_variable_get('colorbox_text_close'));
+  $config->set('colorbox_overlayclose', update_variable_get('colorbox_overlayclose'));
+  $config->set('colorbox_maxwidth', update_variable_get('colorbox_maxwidth'));
+
+  $config->set('colorbox_maxheight', update_variable_get('colorbox_maxheight'));
+  $config->set('colorbox_initialwidth', update_variable_get('colorbox_initialwidth'));
+  $config->set('colorbox_initialheight', update_variable_get('colorbox_initialheight'));
+  $config->set('colorbox_fixed', update_variable_get('colorbox_fixed'));
+  $config->set('colorbox_slideshow', update_variable_get('colorbox_slideshow'));
+
+  $config->set('colorbox_scrolling', update_variable_get('colorbox_scrolling'));
+  $config->set('colorbox_slideshow', update_variable_get('colorbox_slideshow'));
+  $config->set('colorbox_slideshowauto', update_variable_get('colorbox_slideshowauto'));
+  $config->set('colorbox_slideshowspeed', update_variable_get('colorbox_slideshowspeed'));
+  $config->set('colorbox_text_start', update_variable_get('colorbox_text_start'));
+
+  $config->set('colorbox_text_stop', update_variable_get('colorbox_text_stop'));
+  $config->set('colorbox_mobile_detect', update_variable_get('colorbox_mobile_detect'));
+  $config->set('colorbox_mobile_device_width', update_variable_get('colorbox_mobile_device_width'));
+  $config->set('colorbox_caption_trim', update_variable_get('colorbox_caption_trim'));
+  $config->set('colorbox_caption_trim_length', update_variable_get('colorbox_caption_trim_length'));
+
+  $config->set('colorbox_visibility', update_variable_get('colorbox_visibility'));
+  $config->set('colorbox_pages', update_variable_get('colorbox_pages'));
+  $config->set('colorbox_compression_type', update_variable_get('colorbox_compression_type'));
+  $config->set('colorbox_title_trim', update_variable_get('colorbox_title_trim'));
+  $config->set('colorbox_title_trim_length', update_variable_get('colorbox_title_trim_length'));
+
+  $config->set('token_tree_recursion_limit', update_variable_get('token_tree_recursion_limit'));
+  $config->set('colorbox_token_recursion_limit', update_variable_get('colorbox_token_recursion_limit'));
+
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('colorbox_image_style');
+  update_variable_del('colorbox_insert_gallery');
+  update_variable_del('colorbox_load');
+  update_variable_del('colorbox_inline');
+  update_variable_del('colorbox_style');
+
+  update_variable_del('colorbox_custom_settings_activate');
+  update_variable_del('colorbox_transition_type');
+  update_variable_del('colorbox_transition_speed');
+  update_variable_del('colorbox_opacity');
+  update_variable_del('colorbox_text_current');
+
+  update_variable_del('colorbox_text_previous');
+  update_variable_del('colorbox_text_next');
+  update_variable_del('colorbox_text_close');
+  update_variable_del('colorbox_overlayclose');
+  update_variable_del('colorbox_maxwidth');
+
+  update_variable_del('colorbox_maxheight');
+  update_variable_del('colorbox_initialwidth');
+  update_variable_del('colorbox_initialheight');
+  update_variable_del('colorbox_fixed');
+  update_variable_del('colorbox_slideshow');
+
+  update_variable_del('colorbox_scrolling');
+  update_variable_del('colorbox_slideshow');
+  update_variable_del('colorbox_slideshowauto');
+  update_variable_del('colorbox_slideshowspeed');
+  update_variable_del('colorbox_text_start');
+
+  update_variable_del('colorbox_text_stop');
+  update_variable_del('colorbox_mobile_detect');
+  update_variable_del('colorbox_mobile_device_width');
+  update_variable_del('colorbox_caption_trim');
+  update_variable_del('colorbox_caption_trim_length');
+
+  update_variable_del('colorbox_visibility');
+  update_variable_del('colorbox_pages');
+  update_variable_del('colorbox_compression_type');
+  update_variable_del('colorbox_title_trim');
+  update_variable_del('colorbox_title_trim_length');
+
+  update_variable_del('token_tree_recursion_limit');
+  update_variable_del('colorbox_token_recursion_limit');
+}
