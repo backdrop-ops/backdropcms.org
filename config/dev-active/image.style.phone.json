@@ -1,0 +1,15 @@
+{
+    "_config_name": "image.style.phone",
+    "label": "Phone (195x330)",
+    "name": "phone",
+    "effects": [
+        {
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": "195",
+                "height": "330"
+            },
+            "weight": 1
+        }
+    ]
+}

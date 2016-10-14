@@ -23,9 +23,9 @@
         "default": {
             "label": "above",
             "type": "list_default",
+            "weight": "4",
             "settings": [],
-            "module": "list",
-            "weight": 4
+            "module": "list"
         }
     }
 }

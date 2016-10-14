@@ -5,7 +5,7 @@
     "bundle": "showcase",
     "label": "Blurb",
     "widget": {
-        "weight": "2",
+        "weight": "3",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -13,7 +13,7 @@
             "size": "60"
         }
     },
-    "description": "Summarize this project In 120 characters or less.",
+    "description": "Summarize this project in 120 characters or less.",
     "required": 1,
     "deleted": 0,
     "default_value": null,
@@ -25,10 +25,9 @@
     "display": {
         "default": {
             "label": "hidden",
-            "type": "text_default",
-            "weight": "1",
-            "settings": [],
-            "module": "text"
+            "type": "hidden",
+            "weight": "6",
+            "settings": []
         }
     }
 }

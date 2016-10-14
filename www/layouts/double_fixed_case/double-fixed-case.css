@@ -1,0 +1,185 @@
+/*******************************************************************************
+ * Front-end only
+ ******************************************************************************/
+
+/* Clearfix for all regions. */
+.layout--double-fixed-case .l-main-wrapper:after,
+.layout--double-fixed-case .l-footer:after,
+.layout--double-fixed-case .l-container:after,
+.layout--double-fixed-case .l-content-top:after,
+.layout--double-fixed-case .l-content:after,
+.layout--double-fixed-case .l-sidebar:after,
+.layout--double-fixed-case .l-drawer:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.layout--double-fixed-case .l-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  clear: both;
+  text-align: center;
+}
+.layout--double-fixed-case .l-content {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  text-align: left;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  text-align: center;
+  padding: 5px;
+}
+.layout--double-fixed-case .l-inner {
+  min-height: 450px;
+}
+.layout--double-fixed-case .l-content-top,
+.layout--double-fixed-case .l-content-inner,
+.layout--double-fixed-case .l-sidebar-inner {
+  text-align: left;
+  padding: 15px 0;
+}
+
+.l-inner-wrapper {
+  padding: 15px 0;
+}
+
+@media all and (min-width: 501px) {
+  .layout--double-fixed-case .l-content {
+    padding: 0 25px;
+  }
+}
+@media all and (min-width: 1024px) {
+  .layout--double-fixed-case .l-inner {
+    max-width: 100%;
+  }
+  .layout--double-fixed-case .l-content-inner {
+    float: left;
+    width: 70%;
+    margin-left: 0;
+    margin-right: -70%;
+  }
+  .layout--double-fixed-case .l-sidebar-inner {
+    float: left;
+    width: 30%;
+    margin-left: 70%;
+    margin-right: -100%;
+    overflow: hidden;
+  }
+}
+
+/******************************************************************************
+ * Sidebar & Drawer & Footer - do not change.
+ ******************************************************************************/
+.layout--double-fixed-case .l-sidebar,
+.layout--double-fixed-case .l-drawer {
+  text-align: left;
+}
+
+.layout--double-fixed-case .l-footer {
+  padding: 20px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  min-height: 100px;
+}
+
+@media all and (min-width: 851px) {
+  .layout--double-fixed-case .l-sidebar,
+  .layout--double-fixed-case .l-drawer {
+    display: inline;
+    float: right; /* LTR */
+    position: relative;
+  }
+  [dir="rtl"] .layout--double-fixed-case .l-sidebar,
+  [dir="rtl"] .layout--double-fixed-case .l-drawer {
+    float: left;
+  }
+
+  /* Two Sidebars */
+  .layout-both-sidebars .layout--double-fixed-case .l-container {
+    padding-left: 230px;
+  }
+  [dir="rtl"] .layout-both-sidebars .layout--double-fixed-case .l-container {
+    padding-left: 0;
+    padding-right: 230px;
+  }
+
+  /* One Sidebar */
+  .layout--double-fixed-case .l-sidebar {
+    width: 230px;
+    height: 100%;
+    width: 230px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: auto;
+  }
+  [dir="rtl"] .layout--double-fixed-case .l-sidebar {
+    right: 0;
+  }
+  .admin-bar .layout--double-fixed-case .l-sidebar {
+    top: 33px;
+  }
+
+  .layout--double-fixed-case .l-drawer {
+    width: 230px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 230px;
+    overflow: auto;
+  }
+  [dir="rtl"] .layout--double-fixed-case .l-drawer {
+    right: 230px;
+  }
+  .admin-bar .layout--double-fixed-case .l-drawer {
+    top: 33px;
+  }
+}
+
+/*******************************************************************************
+ * Admin only CSS
+ ******************************************************************************/
+
+#layout-edit-main .layout--double-fixed-case {
+  position: relative;
+}
+#layout-edit-main .layout--double-fixed-case .l-container {
+  padding: 0;
+}
+#layout-edit-main .layout--double-fixed-case .l-inner {
+  padding: 0;
+}
+#layout-edit-main .layout--double-fixed-case .l-content {
+  position: relative;
+  float: left;
+  margin-left: 50%;
+  width: 50%;
+  padding: 0;
+}
+
+#layout-edit-main .layout--double-fixed-case .l-sidebar {
+  position: absolute;
+  float: left;
+  width: 25%;
+  top: 0;
+  left: 25%;
+}
+#layout-edit-main .layout--double-fixed-case .l-drawer {
+  position: absolute;
+  float: left;
+  width: 25%;
+  margin: 0;
+  top: 0;
+  left: 0;
+}
+
+.layout-editor-region {
+  padding: 0 10px;
+}

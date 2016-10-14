@@ -1,0 +1,19 @@
+{
+    "_config_name": "field.field.field_url",
+    "field_name": "field_url",
+    "type": "link_field",
+    "translatable": false,
+    "module": "link",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": [],
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}

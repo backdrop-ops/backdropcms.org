@@ -1,16 +1,16 @@
 {
-    "_config_name": "field.instance.node.showcase.field_bullets",
-    "field_name": "field_bullets",
+    "_config_name": "field.instance.node.showcase.field_pullquote",
+    "field_name": "field_pullquote",
     "entity_type": "node",
     "bundle": "showcase",
-    "label": "Bullet Points",
+    "label": "Pull Quotes",
     "widget": {
-        "weight": "5",
-        "type": "text_textfield",
+        "weight": "9",
+        "type": "text_textarea",
         "module": "text",
         "active": 1,
         "settings": {
-            "size": "60"
+            "rows": "5"
         }
     },
     "description": "",
@@ -24,9 +24,9 @@
     },
     "display": {
         "default": {
-            "label": "hidden",
+            "label": "above",
             "type": "hidden",
-            "weight": "7",
+            "weight": "8",
             "settings": []
         }
     }
