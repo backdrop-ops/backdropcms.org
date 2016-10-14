@@ -146,9 +146,7 @@ function system_themes_page() {
 
     if (empty($theme->status)) {
      // Ensure this theme is compatible with this version of core.
-     // Require the 'content' region to make sure the main page
-     // content has a common place in all themes.
-      $theme->incompatible_core = !isset($theme->info['backdrop']) || ($theme->info['backdrop'] != BACKDROP_CORE_COMPATIBILITY) || (!isset($theme->info['regions']['content']));
+      $theme->incompatible_core = !isset($theme->info['backdrop']) || ($theme->info['backdrop'] != BACKDROP_CORE_COMPATIBILITY);
       $theme->incompatible_php = version_compare(phpversion(), $theme->info['php']) < 0;
     }
     $query['token'] = backdrop_get_token('system-theme-operation-link');
@@ -2096,6 +2094,7 @@ function system_site_maintenance_mode_submit($form, &$form_state) {
     backdrop_set_message(t('The site is now in maintenance mode. Only users with the "Access site in maintenance mode" permission will be able to access the site.'), 'warning');
   }
   elseif ($form['maintenance_mode']['#default_value'] != $form_state['values']['maintenance_mode']) {
+    backdrop_get_messages();
     backdrop_set_message(t('The site is no longer in maintenance mode.'));
   }
   else {
@@ -2472,6 +2471,174 @@ function system_date_time_lookup($form, &$form_state) {
   $parent_id = $element['#wrapper_attributes']['id'];
   $commands[] = ajax_command_html("#$parent_id .field-suffix", '<span>' . $element['#field_suffix'] . '</span>');
   return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Form to convert existing database tables to utf8mb4 if supported.
+ */
+function system_utf8mb4_convert_form($form, &$form_state) {
+  // Reuse the installation requirements checking and messages.
+  module_load_install('system');
+  $requirements = _system_check_db_utf8mb4_requirements('runtime');
+
+  $connection = Database::getConnection();
+  $utf8mb4_active = $connection->utf8mb4IsActive();
+  $utf8mb4_supported = $connection->utf8mb4IsSupported();
+  $utf8mb4_tables_converted = state_get('database_utf8mb4_active', FALSE);
+
+  $form['help'] = array(
+    '#markup' => '<p>' . $requirements['description'] . '</p>',
+  );
+
+  // Not active and/or supported. Existing messages should be sufficient.
+  if (!$utf8mb4_active || !$utf8mb4_supported) {
+    return $form;
+  }
+
+  // Already active and supported. Indicate completion.
+  if ($utf8mb4_active && $utf8mb4_supported && $utf8mb4_tables_converted) {
+    $form['help']['#markup'] .= '<p>' . t('This feature is already enabled on your site, no further action is needed.') . '</p>';
+    return $form;
+  }
+
+  $form['help']['#markup'] .= '<p>' . t('This operation is irreversible! Make sure that you have backed up your database before continuing. Your site will be put into maintenance mode during the upgrade. A site with hundreds of pieces of content should take a few minutes. Sites with thousands of pieces of content may take @minutes minutes or more.', array('@minutes' => 10)) . '</p>';
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Upgrade database to 4 byte UTF-8'),
+  );
+  $form['actions']['cancel'] = array(
+    '#type' => 'link',
+    '#title' => t('Cancel'),
+    '#href' => 'admin/reports/status',
+  );
+
+  return $form;
+}
+
+/**
+ * Form submit function; convert existing database tables to utf8mb4.
+ *
+ * @see system_utf8mb4_convert_form()
+ */
+function system_utf8mb4_convert_form_submit($form, &$form_state) {
+  global $databases;
+
+  // Enter maintenance mode.
+  state_set('maintenance_mode', TRUE);
+
+  // Build the list of tables to convert.
+  $database = $databases['default']['default'];
+  $like = '';
+  if (!empty($database['prefix'])) {
+    $like = ' LIKE "' . $database['prefix'] . '%"';
+  }
+  $table_names = db_query('SHOW TABLES' . $like)->fetchCol();
+
+  $batch = array(
+    'operations' => array(
+      array('_system_utf8mb4_convert_batch', array($table_names))
+    ),
+    'finished' => '_system_utf8mb4_convert_batch_finished',
+    'title' => t('Converting database tables'),
+    'progress_message' => '',
+    'init_message' => t('Collecting list of tables...'),
+    'error_message' => t('The update has encountered an error.'),
+    'file' => backdrop_get_path('module', 'system') . '/system.admin.inc',
+  );
+  batch_set($batch);
+}
+
+/**
+ * Executes a batch operation for system_utf8mb4_convert_form_submit().
+ *
+ * @param array $tables
+ *   Associative array of table names to update.
+ * @param array $context
+ *   Batch array of contextual key/values.
+ */
+function _system_utf8mb4_convert_batch($tables, &$context) {
+  global $databases;
+
+  // Instantiate a character set converter object.
+  $converter = new DatabaseCharsetConverter();
+
+  // Initial run, prepare sandbox and results arrays.
+  if (!isset($context['sandbox']['progress'])) {
+    $context['sandbox']['progress'] = 0;
+    $context['sandbox']['max'] = count($tables) + 1;
+    $context['sandbox']['tables_to_process'] = $tables;
+    $context['results']['converted'] = array();
+    $context['results']['errors'] = array();
+
+    // If converting the database itself fails, bail out entirely.
+    try {
+      $result = $converter->convertDatabase($databases['default']['default']['database']);
+      if (!$result) {
+        $context['results']['errors'][] = t('The database %name could not be converted.', array('%name' => $databases['default']['default']['database']));
+        $context['finished'] = 1;
+        return;
+      }
+    }
+    catch (PDOException $e) {
+      $context['results']['errors'] = $e->getMessage();
+      $context['finished'] = 1;
+      return;
+    }
+  }
+  // Subsequent runs, convert each table.
+  else {
+    // When converting tables, record but continue after failures.
+    $table_name = array_shift($context['sandbox']['tables_to_process']);
+    try {
+      $result = $converter->convertTable($table_name);
+      if (!$result) {
+        $context['results']['errors'][] = t('The table %name could not be converted.', array('%name' => $table_name));
+      }
+    }
+    catch (PDOException $e) {
+      $context['results']['errors'][] = $e->getMessage();
+    }
+
+    // Store result for post-processing in the finished callback.
+    $context['results']['converted'][] = $table_name;
+  }
+
+  // Update our progress information.
+  $context['sandbox']['progress']++;
+  if (!empty($context['sandbox']['tables_to_process'])) {
+    $context['message'] = t('Converting database table "@table_name"...', array('@table_name' => reset($context['sandbox']['tables_to_process'])));
+    $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+  }
+  else {
+    $context['message'] = t('Completing...');
+    $context['finished'] = 1;
+  }
+}
+
+/**
+ * Performs post-processing for node_access_rebuild().
+ *
+ * @param bool $success
+ *   A boolean indicating whether the re-build process has completed.
+ * @param array $results
+ *   An array of results information.
+ * @param array $operations
+ *   An array of function calls (not used in this function).
+ */
+function _system_utf8mb4_convert_batch_finished($success, $results, $operations) {
+  if ($success) {
+    backdrop_set_message(t('Upgrade successful. @count database tables have been converted to use 4 byte UTF-8.', array('@count' => count($results['converted']))));
+    state_set('maintenance_mode', FALSE);
+    state_set('database_utf8mb4_active', TRUE);
+  }
+  else {
+    backdrop_set_message(t('An error was encountered while converting tables! You should restore a database backup, correct any errors, and then try again. Errors reported:') . theme('item_list', $results['errors']), 'error');
+  }
+  backdrop_goto('admin/reports/status');
 }
 
 /**

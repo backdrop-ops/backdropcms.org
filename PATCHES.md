@@ -1,10 +1,7 @@
 Patches to Backdrop Core:
 =========================
 
-Node: Add view unpublished nodes permission.
-  https://github.com/backdrop/backdrop-issues/issues/897
-  https://github.com/backdrop/backdrop/pull/1328.patch
-
+none.
 
 Patches to Backdrop Contrib:
 ============================

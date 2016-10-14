@@ -308,6 +308,7 @@ function taxonomy_menu() {
   $items['taxonomy/autocomplete'] = array(
     'title' => 'Autocomplete taxonomy',
     'page callback' => 'taxonomy_autocomplete',
+    'delivery callback' => 'backdrop_json_deliver',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
     'file' => 'taxonomy.pages.inc',
@@ -744,6 +745,7 @@ function taxonomy_vocabulary_static_reset(array $ids = NULL) {
  * @see taxonomy_vocabulary_load_multiple()
  */
 function taxonomy_vocabulary_get_names() {
+  watchdog_deprecated_function('taxonomy', __FUNCTION__);
   return taxonomy_vocabulary_load_multiple(FALSE);
 }
 
@@ -1019,7 +1021,7 @@ function taxonomy_autoload_info() {
  *   EntityFieldQuery to retrieve a list of entity IDs loadable by
  *   this function.
  *
- * @return
+ * @return TaxonomyTerm[]
  *   An array of taxonomy term entities, indexed by tid. When no results are
  *   found, an empty array is returned.
  */
@@ -1131,6 +1133,7 @@ function taxonomy_vocabulary_load($machine_name) {
  * @see taxonomy_vocabulary_load()
  */
 function taxonomy_vocabulary_machine_name_load($machine_name) {
+  watchdog_deprecated_function('taxonomy', __FUNCTION__);
   return taxonomy_vocabulary_load($machine_name);
 }
 

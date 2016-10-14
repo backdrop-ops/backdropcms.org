@@ -190,6 +190,12 @@ description = Test that $_GET['destination'] and $_REQUEST['destination'] cannot
 group = Bootstrap
 file = bootstrap.test
 
+[BootstrapWatchdogTestCase]
+name = Watchdog
+description = Check the basic watchdog functionality
+group = Bootstrap
+file = bootstrap.test
+
 [CacheSavingCase]
 name = Cache saving test
 description = Check our variables are saved and restored the right way.
@@ -1300,7 +1306,7 @@ description = Test the file tokens.
 group = Token
 file = token.test
 
-; Added by Backdrop CMS packaging script on 2016-08-18
+; Added by Backdrop CMS packaging script on 2016-09-16
 project = backdrop
-version = 1.4.4
-timestamp = 1471581450
+version = 1.5.0
+timestamp = 1474011685

@@ -87,18 +87,23 @@ function filter_format_editor_image_form($form, &$form_state, $format) {
     $form_state['storage']['dialog_selector'] = $form_state['input']['dialogOptions']['target'];
   }
 
+  // Record if image uploading is requested by the calling element.
+  $element_supports_uploads = !isset($form_state['input']['dialogOptions']['uploads']) || (bool) $form_state['input']['dialogOptions']['uploads'];
+
   // Pull in any default values set by the editor.
   $values = array();
   if (isset($form_state['input']['editor_object'])) {
     $values = $form_state['input']['editor_object'];
   }
 
-  // Set the dialog title.
+  // Set the dialog title and submit button label.
   if (!empty($values['src'])) {
     backdrop_set_title(t('Edit image'));
+    $submit_button_label = t('Update');
   }
   else {
     backdrop_set_title(t('Insert image'));
+    $submit_button_label = t('Insert');
   }
 
   // Construct strings to use in the upload validators.
@@ -135,7 +140,7 @@ function filter_format_editor_image_form($form, &$form_state, $format) {
     ),
     '#parents' => array('fid'),
     '#weight' => -10,
-    '#access' => $upload_settings['status'] && user_access('upload editor images'),
+    '#access' => $element_supports_uploads && $upload_settings['status'] && user_access('upload editor images'),
   );
 
   // Use a "textfield" rather than "url" to allow relative paths.
@@ -221,7 +226,7 @@ function filter_format_editor_image_form($form, &$form_state, $format) {
   $form['actions']['#type'] = 'actions';
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Save'),
+    '#value' => $submit_button_label,
     '#ajax' => array(
       'callback' => 'filter_format_editor_dialog_save',
       'event' => 'click',

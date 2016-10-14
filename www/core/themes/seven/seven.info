@@ -3,14 +3,13 @@ description = The default administration theme for Backdrop CMS.
 version = BACKDROP_VERSION
 type = theme
 backdrop = 1.x
-stylesheets[screen][] = css/seven.fonts.css
 stylesheets[screen][] = css/seven.base.css
 stylesheets[screen][] = css/style.css
 stylesheets[screen][] = css/responsive-tabs.css
 
 scripts[] = js/script.js
 
-; Added by Backdrop CMS packaging script on 2016-08-18
+; Added by Backdrop CMS packaging script on 2016-09-16
 project = backdrop
-version = 1.4.4
-timestamp = 1471581450
+version = 1.5.0
+timestamp = 1474011685
