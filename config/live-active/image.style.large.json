@@ -1,18 +1,18 @@
 {
     "_config_name": "image.style.large",
-    "overridden": false,
+    "overridden": true,
     "module": "image",
-    "label": "Large (480x480)",
+    "label": "Large (1024x1024)",
     "name": "large",
-    "effects": [
-        {
+    "effects": {
+        "2": {
             "name": "image_scale",
             "data": {
-                "width": 480,
-                "height": 480,
-                "upscale": 1
+                "width": "1024",
+                "height": "",
+                "upscale": 0
             },
-            "weight": 1
+            "weight": 2
         }
-    ]
+    }
 }

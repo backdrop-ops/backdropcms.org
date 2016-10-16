@@ -1,0 +1,15 @@
+{
+    "_config_name": "image.style.tablet",
+    "label": "Tablet (768x576)",
+    "name": "tablet",
+    "effects": [
+        {
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": "768",
+                "height": "576"
+            },
+            "weight": "1"
+        }
+    ]
+}
