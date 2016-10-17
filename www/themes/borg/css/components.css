@@ -1730,7 +1730,7 @@ div.addressfield-container-inline::after {
   background-position: top left, bottom right;
   background-repeat: no-repeat;
   background-size: 140px;
-  margin: 40px 0;
+  margin: 20px 0;
   color: #451649;
   padding: 30px 55px;
   font-style: normal;
@@ -1738,22 +1738,18 @@ div.addressfield-container-inline::after {
   line-height: 31px;
   text-align: left;
 }
-.node-type-showcase .tablet {
-  float: left;
-  width: 66%;
+.node-type-showcase .screen {
   text-align: center;
+  padding: 20px;
+  background-color: #F7F7F7;
+  margin: 0 10px;
 }
-.node-type-showcase .phone {
-  float: left;
-  width: 33%;
-  text-align: center;
+@media all and (min-width: 1024px) {
+  .node-type-showcase .screen {
+    margin: 0 15px;
+  }
 }
-.node-type-showcase {
 
-}
-.node-type-showcase {
-
-}
 
 /*******************************************************************************
  * Screenshot styles - Browser.
@@ -1802,36 +1798,51 @@ div.addressfield-container-inline::after {
  ******************************************************************************/
 
 .tablet-ui {
-  border-radius: 25px;
+  border-radius: 20px;
   background-color: #0D0D0D;
-  padding: 32px 42px;
-  max-width: 522px;
+  padding: 22px 35px;
+  max-width: 100%;
   margin: 0 auto;
   position: relative;
 }
 .tablet-ui img {
   width: 100%;
+  border-radius: 2px;
 }
 .tablet-ui .dot {
   top: 50%;
-  margin-top: -11px;
-  width: 22px;
-  height: 22px;
-  border-radius: 22px;
+  margin-top: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
   border: 1px solid #ffffff;
   position: absolute;
-  left: 12px;
+  left: 8px;
 }
 .tablet-ui .camera {
   top: 50%;
-  margin-top: 2px;
-  width: 4px;
-  height: 4px;
-  border-radius: 4px;
+  margin-top: 1px;
+  width: 2px;
+  height: 3px;
+  border-radius: 2px;
   border: 1px solid #ffffff;
   background-color: #cccccc;
   position: absolute;
-  right: 30px;
+  right: 15px;
+}
+@media all and (max-width: 400px) {
+  .tablet-ui {
+    padding: 10px 25px;
+  }
+  .tablet-ui img {
+    border-radius: 1px;
+  }
+  .tablet-ui .dot {
+    margin-top: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+  }
 }
 
 /*******************************************************************************
@@ -1841,8 +1852,7 @@ div.addressfield-container-inline::after {
 .phone-ui {
   border-radius: 25px;
   background-color: #0D0D0D;
-  padding: 32px 15px;
-  max-width: 222px;
+  padding: 32px 6px;
   margin: 0 auto;
   position: relative;
 }
@@ -1869,6 +1879,24 @@ div.addressfield-container-inline::after {
   border: 1px solid #ffffff;
   position: absolute;
   bottom: 10px;
+}
+@media all and (max-width: 400px) {
+  .phone-ui {
+    padding: 22px 4px;
+  }
+  .phone-ui .bar {
+    width: 30px;
+    margin-left: -15px;
+    height: 1px;
+    border-radius: 2px;
+  }
+  .phone-ui .dot {
+    width: 12px;
+    margin-left: -6px;
+    height: 12px;
+    border-radius: 12px;
+    bottom: 8px;
+  }
 }
 
 /*******************************************************************************

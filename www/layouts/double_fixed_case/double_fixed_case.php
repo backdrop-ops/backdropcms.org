@@ -13,6 +13,8 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
   $variables['row_second'] = FALSE;
   $variables['row_third'] = FALSE;
   $variables['row_fourth'] = FALSE;
+  $variables['row_fifth'] = FALSE;
+  $variables['row_sixth'] = FALSE;
 
   if ($variables['content']['sidebar'] && $variables['content']['drawer']) {
     $variables['classes'][] = 'layout-both-sidebars';
@@ -85,20 +87,38 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
           $tablet = theme('image_style', array('style_name' => 'tablet', 'uri' => $node->field_screen_md[$lang][$delta]['uri']));
           if (isset($node->field_screen_sm[$lang][$delta])) {
             $phone = theme('image_style', array('style_name' => 'phone', 'uri' => $node->field_screen_sm[$lang][$delta]['uri']));
-            $output  = '<div class="tablet">';
+            $output  = '';
+            if ($delta/2) {
+              $output .= '<div class="col-sm-4">';
+              $output .= '<div class="screen">';
+              $output .= '  <div class="phone-ui">';
+              $output .= '    <span class="bar"></span>';
+              $output .= $phone;
+              $output .= '    <span class="dot"></span>';
+              $output .= '  </div>';
+              $output .= '</div>';
+              $output .= '</div>';
+            }
+            $output .= '<div class="col-sm-8">';
+            $output .= '<div class="screen">';
             $output .= '  <div class="tablet-ui">';
             $output .= '    <span class="camera"></span>';
             $output .= $tablet;
             $output .= '    <span class="dot"></span>';
             $output .= '  </div>';
             $output .= '</div>';
-            $output .= '<div class="phone">';
-            $output .= '  <div class="phone-ui">';
-            $output .= '    <span class="bar"></span>';
-            $output .= $phone;
-            $output .= '    <span class="dot"></span>';
-            $output .= '  </div>';
             $output .= '</div>';
+            if (!$delta/2) {
+              $output .= '<div class="col-sm-4">';
+              $output .= '<div class="screen">';
+              $output .= '  <div class="phone-ui">';
+              $output .= '    <span class="bar"></span>';
+              $output .= $phone;
+              $output .= '    <span class="dot"></span>';
+              $output .= '  </div>';
+              $output .= '</div>';
+              $output .= '</div>';
+            }
             $combo_rows[$delta] = $output;
           }
         }
@@ -115,42 +135,37 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
       }
 
       // Assemble the rows.
-      if (!empty($desktop_rows)) {
-        $variables['row_first'] = array_shift($desktop_rows);
-        if (!empty($quote_rows)) {
-          $variables['row_second'] = array_shift($quote_rows);
-          if (!empty($combo_rows)) {
-            $variables['row_third'] = array_shift($combo_rows);
-            if (!empty($desktop_rows)) {
-              $variables['row_fourth'] = array_shift($desktop_rows);
-            }
-          }
+      $rows = array(
+        'row_first',
+        'row_second',
+        'row_third',
+        'row_fourth',
+        'row_fifth',
+        'row_sixth',
+      );
+
+      $last = 'none';
+      foreach ($rows as $var_index) {
+        // First check for a desktop screenshot.
+        if (!empty($desktop_rows) && ($last != 'desktop')) {
+          $variables[$var_index] = array_shift($desktop_rows);
+          $last = 'desktop';
+          continue;
         }
-        elseif (!empty($combo_rows)) {
-          $variables['row_second'] = array_shift($combo_rows);
-          if (!empty($desktop_rows)) {
-            $variables['row_third'] = array_shift($desktop_rows);
-            if (!empty($combo_rows)) {
-              $variables['row_fourth'] = array_shift($combo_rows);
-            }
-          }
+        // Check for quotes.
+        elseif (!empty($quote_rows) && ($last != 'quote')) {
+          $variables[$var_index] = array_shift($quote_rows);
+          $last = 'quote';
+          continue;
         }
-      }
-      elseif (!empty($combo_rows)) {
-        $variables['row_first'] = array_shift($combo_rows);
-        if (!empty($quote_rows)) {
-          $variables['row_second'] = array_shift($quote_rows);
-          if (!empty($combo_rows)) {
-            $variables['row_third'] = array_shift($combo_rows);
-            if (!empty($quote_rows)) {
-              $variables['row_fourth'] = array_shift($quote_rows);
-            }
-          }
+        // Check for other screenshots.
+        elseif (!empty($combo_rows) && ($last != 'combo')) {
+          $variables[$var_index] = array_shift($combo_rows);
+          $last = 'combo';
+          continue;
         }
       }
-      elseif (!empty($quote_rows)) {
-        $variables['row_first'] = array_shift($quote_rows);
-      }
+
     }
   }
 }

@@ -3,9 +3,6 @@
  * @file
  * Template for a 2 column layout.
  *
- * This template provides a two column layout with the sidebar on the right and
- * a roughly 60/40 split.
- *
  * Variables:
  * - $title: The page title, for use in the actual HTML content.
  * - $messages: Status and error messages. Should be displayed prominently.
@@ -33,38 +30,39 @@
   <div class="l-container">
     <main role="main" class="l-content">
 
-        <div<?php print backdrop_attributes($top_attributes); ?>>
-          <a id="main-content"></a>
-          <?php print render($title_prefix); ?>
-          <?php if ($title): ?>
-            <h1 class="title" id="page-title">
-              <?php print $title; ?>
-            </h1>
-          <?php endif; ?>
-          <?php print render($title_suffix); ?>
+      <div<?php print backdrop_attributes($top_attributes); ?>>
+        <a id="main-content"></a>
+        <?php print render($title_prefix); ?>
+        <?php if ($title): ?>
+          <h1 class="title" id="page-title">
+            <?php print $title; ?>
+          </h1>
+        <?php endif; ?>
+        <?php print render($title_suffix); ?>
 
-          <?php print $content['content-top']; ?>
+        <?php print $content['content-top']; ?>
+      </div>
+
+      <?php if ($tabs): ?>
+        <div class="tabs">
+          <?php print $tabs; ?>
         </div>
+      <?php endif; ?>
 
-        <?php if ($tabs): ?>
-          <div class="tabs">
-            <?php print $tabs; ?>
-          </div>
-        <?php endif; ?>
+      <?php if ($action_links): ?>
+        <?php print $action_links; ?>
+      <?php endif; ?>
 
-        <?php if ($action_links): ?>
-          <?php print $action_links; ?>
-        <?php endif; ?>
+      <?php if ($messages): ?>
+        <section class="l-messages">
+          <?php print $messages; ?>
+        </section>
+      <?php endif; ?>
 
-        <?php if ($messages): ?>
-          <section class="l-messages">
-            <?php print $messages; ?>
-          </section>
-        <?php endif; ?>
+      <div class="l-inner">
 
-        <div class="l-inner">
-
-          <div class="l-inner-wrapper clearfix">
+        <div class="container clearfix">
+          <div class="row">
             <div class="l-content-inner">
               <?php print $content['content']; ?>
             </div>
@@ -72,35 +70,59 @@
               <?php print $content['content_sidebar']; ?>
             </div>
           </div>
+        </div>
 
-          <?php if ($row_first): ?>
-            <div class="l-inner-wrapper clearfix">
+        <?php if ($row_first): ?>
+          <div class="container clearfix">
+            <div class="row">
               <?php print $row_first; ?>
             </div>
-          <?php endif; ?>
-          <?php if ($row_second): ?>
-            <div class="l-inner-wrapper clearfix">
+          </div>
+        <?php endif; ?>
+        <?php if ($row_second): ?>
+          <div class="container clearfix">
+            <div class="row">
               <?php print $row_second; ?>
             </div>
-          <?php endif; ?>
-          <?php if ($row_third): ?>
-            <div class="l-inner-wrapper clearfix">
+          </div>
+        <?php endif; ?>
+        <?php if ($row_third): ?>
+          <div class="container clearfix">
+            <div class="row">
               <?php print $row_third; ?>
             </div>
-          <?php endif; ?>
-          <?php if ($row_fourth): ?>
-            <div class="l-inner-wrapper clearfix">
+          </div>
+        <?php endif; ?>
+        <?php if ($row_fourth): ?>
+          <div class="container clearfix">
+            <div class="row">
               <?php print $row_fourth; ?>
             </div>
-          <?php endif; ?>
+          </div>
+        <?php endif; ?>
+        <?php if ($row_fifth): ?>
+          <div class="container clearfix">
+            <div class="row">
+              <?php print $row_fifth; ?>
+            </div>
+          </div>
+        <?php endif; ?>
+        <?php if ($row_sixth): ?>
+          <div class="container clearfix">
+            <div class="row">
+              <?php print $row_sixth; ?>
+            </div>
+          </div>
+        <?php endif; ?>
 
-        </div>
+      </div><!-- /.l-inner -->
 
       <?php if ($content['footer']): ?>
         <div class="l-footer">
-            <?php print $content['footer']; ?>
+          <?php print $content['footer']; ?>
         </div>
       <?php endif; ?>
+
     </main>
 
     <?php if ($content['sidebar']): ?>
