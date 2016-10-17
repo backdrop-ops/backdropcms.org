@@ -11,10 +11,10 @@
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "thumbnail"
+            "preview_image_style": "phone"
         }
     },
-    "description": "",
+    "description": "Images should be exactly 320px wide by 542px tall.",
     "required": 0,
     "deleted": 0,
     "default_value": null,
@@ -23,8 +23,8 @@
         "file_directory": "images/showcase/screen/sm",
         "file_extensions": "png gif jpg jpeg",
         "max_filesize": "",
-        "max_resolution": "3000x9000",
-        "min_resolution": "",
+        "max_resolution": "320x542",
+        "min_resolution": "320x542",
         "alt_field": 1,
         "title_field": 0,
         "default_image": "",

@@ -3,7 +3,7 @@
     "field_name": "field_pullquote",
     "entity_type": "node",
     "bundle": "showcase",
-    "label": "Pull Quotes",
+    "label": "Quotes",
     "widget": {
         "weight": "9",
         "type": "text_textarea",
@@ -19,7 +19,7 @@
     "default_value": null,
     "default_value_function": null,
     "settings": {
-        "text_processing": "0",
+        "text_processing": "1",
         "user_register_form": false
     },
     "display": {
