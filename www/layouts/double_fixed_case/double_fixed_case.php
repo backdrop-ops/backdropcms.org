@@ -159,7 +159,7 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
           continue;
         }
         // Check for other screenshots.
-        elseif (!empty($combo_rows) && ($last != 'combo')) {
+        elseif (!empty($combo_rows)) {
           $variables[$var_index] = array_shift($combo_rows);
           $last = 'combo';
           continue;
