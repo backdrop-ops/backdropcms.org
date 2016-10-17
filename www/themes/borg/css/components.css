@@ -1711,15 +1711,16 @@ div.addressfield-container-inline::after {
 .node-type-showcase h3.field-name-field-blurb {
   margin-top: 0;
 }
+.node-type-showcase .l-content-top {
+  text-align: left;
+}
 .node-type-showcase .l-content-top.has-background {
-  min-height: 200px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding-left: 25px;
-  padding-right: 25px;
   margin-left: -5px;
   margin-right: -5px;
+  position: relative;
 }
 @media all and (min-width: 501px) {
   .node-type-showcase .l-content-top.has-background {
@@ -1731,14 +1732,53 @@ div.addressfield-container-inline::after {
 @media all and (min-width: 1024px) {
   .node-type-showcase .l-content-top.has-background {
     min-height: 400px;
-    padding-left: 100px;
-    padding-right: 100px;
   }
 }
+.node-type-showcase .l-content-top.has-background .l-content-top-inner {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.25) none repeat scroll 0 0;
+}
+@media all and (min-width: 501px) {
+  .node-type-showcase .l-content-top.has-background .l-content-top-inner {
+    height: auto;
+    position: absolute;
+    bottom: 0;
+  }
+}
+@media all and (min-width: 851px) {
+  .node-type-showcase .l-content-top.has-background .l-content-top-inner {
+    left: 25px;
+    right: 25px;
+  }
+}
+@media all and (min-width: 1024px) {
+  .node-type-showcase .l-content-top.has-background .l-content-top-inner {
+    left: 100px;
+    right: 100px;
+  }
+}
+
+
 .node-type-showcase .has-background #page-title,
 .node-type-showcase .has-background h3.field-name-field-blurb {
   color: #ffffff;
+  display: block;
+  margin: 0;
+  padding: 15px;
 }
+@media all and (min-width: 851px) {
+  .node-type-showcase .has-background #page-title,
+  .node-type-showcase .has-background h3.field-name-field-blurb  {
+    display: inline-block;
+  }
+}
+.node-type-showcase .has-background #page-title {
+  padding-bottom: 0;
+}
+.node-type-showcase .has-background h3.field-name-field-blurb {
+  padding-top: 0;
+}
+
 .node-type-showcase blockquote {
   border: 15px solid #F7F7F7;
   background-color: #F7F7F7;

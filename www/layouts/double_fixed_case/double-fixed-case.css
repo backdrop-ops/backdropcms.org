@@ -38,20 +38,10 @@
 .layout--double-fixed-case .l-inner {
   min-height: 450px;
 }
-.layout--double-fixed-case .l-content-top,
 .layout--double-fixed-case .l-content-inner,
 .layout--double-fixed-case .l-sidebar-inner {
   text-align: left;
   padding: 15px 0;
-}
-
-/* move heading to bottom of bg image */
-.layout--double-fixed-case .l-content-top.has-background {
-  position: relative;
-}
-.layout--double-fixed-case .l-content-top.has-background .l-content-top-inner {
-  position: absolute;
-  bottom: 0;
 }
 
 .layout--double-fixed-case .container {
