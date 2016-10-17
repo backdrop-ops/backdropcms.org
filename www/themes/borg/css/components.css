@@ -1706,20 +1706,36 @@ div.addressfield-container-inline::after {
 
 .node-type-showcase #page-title {
   margin-bottom: 0;
+  line-height: 1em;
 }
 .node-type-showcase h3.field-name-field-blurb {
   margin-top: 0;
 }
 .node-type-showcase .l-content-top.has-background {
-  height: 400px;
-  background-position: bottom left;
+  min-height: 200px;
   background-size: cover;
-  padding-left: 100px;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-left: 25px;
+  padding-right: 25px;
+  margin-left: -5px;
+  margin-right: -5px;
 }
-.node-type-showcase .has-background #page-title {
-  margin-top: 280px;
-  color: #ffffff;
+@media all and (min-width: 501px) {
+  .node-type-showcase .l-content-top.has-background {
+    min-height: 350px;
+    margin-left: -25px;
+    margin-right: -25px;
+  }
 }
+@media all and (min-width: 1024px) {
+  .node-type-showcase .l-content-top.has-background {
+    min-height: 400px;
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
+.node-type-showcase .has-background #page-title,
 .node-type-showcase .has-background h3.field-name-field-blurb {
   color: #ffffff;
 }

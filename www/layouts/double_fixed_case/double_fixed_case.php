@@ -128,7 +128,7 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
       if (!empty($node->field_pullquote[$lang])) {
         foreach ($node->field_pullquote[$lang] as $delta => $info) {
           $output  = '<blockquote>';
-          $output .= $info['safe_value'];
+          $output .= check_markup($info['value'], $info['format']);
           $output .= '</blockquote>';
           $quote_rows[$delta] = $output;
         }

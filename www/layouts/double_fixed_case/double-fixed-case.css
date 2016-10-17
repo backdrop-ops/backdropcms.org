@@ -45,6 +45,15 @@
   padding: 15px 0;
 }
 
+/* move heading to bottom of bg image */
+.layout--double-fixed-case .l-content-top.has-background {
+  position: relative;
+}
+.layout--double-fixed-case .l-content-top.has-background .l-content-top-inner {
+  position: absolute;
+  bottom: 0;
+}
+
 .layout--double-fixed-case .container {
   text-align: center;
 }
