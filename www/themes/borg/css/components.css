@@ -191,6 +191,10 @@ ul.secondary a.active {
 .block-borg-blocks-handbook ul.menu li.first.expanded span {
   padding: 0px 0 10px 0;
 }
+.block-borg-blocks-handbook ul.menu ul {
+  margin: 0;
+  padding: 0;
+}
 
 /*******************************************************************************
  * Search block
