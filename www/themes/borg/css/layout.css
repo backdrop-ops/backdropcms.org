@@ -25,6 +25,9 @@ body.front #page-title {
   margin-bottom: 30px;
 }
 
+.l-messages {
+  text-align: left;
+}
 
 @media all and (min-width: 851px) {
   body {
