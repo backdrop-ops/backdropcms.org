@@ -1960,9 +1960,13 @@ div.addressfield-container-inline::after {
 }
 
 /*******************************************************************************
- * Documentation status field
+ * Documentation status/level fields
  ******************************************************************************/
+.field-name-field-docs-level {
+  padding: 15px 15px 5px 15px;
+  background-color: #f7f7f7;
+}
 .field-name-field-docs-status {
-  padding: 15px;
+  padding: 5px 15px 15px 15px;
   background-color: #f7f7f7;
 }
