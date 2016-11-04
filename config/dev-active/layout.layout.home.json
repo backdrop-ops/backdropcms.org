@@ -38,7 +38,8 @@
             "d6581d63-76d2-4da6-820e-1445176ab358",
             "23c3eb78-a138-4cd1-a411-179dc4717218",
             "d7055483-47cd-4413-9e2a-426d4915b907"
-        ]
+        ],
+        "title": []
     },
     "content": {
         "0f1b9743-2dc8-4ace-9931-49b69a559232": {
@@ -73,7 +74,12 @@
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "tree",
+                        "level": "1",
+                        "depth": "1"
+                    },
                     "contexts": []
                 },
                 "uuid": "27013356-7af8-4532-8b09-9d2c147ea872",

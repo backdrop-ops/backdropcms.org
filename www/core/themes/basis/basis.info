@@ -11,15 +11,18 @@ stylesheets[all][] = css/component/small-text-components.css
 stylesheets[all][] = css/component/header.css
 stylesheets[all][] = css/component/footer.css
 stylesheets[all][] = css/component/menu-dropdown.css
-stylesheets[all][] = css/component/breadcrumb.css
 stylesheets[all][] = css/component/backdrop-form.css
-stylesheets[all][] = css/component/fieldset.css
-stylesheets[all][] = css/component/pager.css
-stylesheets[all][] = css/component/status-messages.css
 stylesheets[all][] = css/component/tabledrag.css
-stylesheets[all][] = css/component/teasers.css
-stylesheets[all][] = css/component/progress.css
+stylesheets[all][] = css/component/vertical-tabs.css
+stylesheets[all][] = css/component/fieldset.css
 stylesheets[all][] = css/component/dialog.css
+stylesheets[all][] = css/component/progress.css
+stylesheets[all][] = css/component/status-messages.css
+stylesheets[all][] = css/component/admin-tabs.css
+stylesheets[all][] = css/component/breadcrumb.css
+stylesheets[all][] = css/component/pager.css
+stylesheets[all][] = css/component/hero.css
+stylesheets[all][] = css/component/teasers.css
 stylesheets[all][] = css/utility.css
 stylesheets[all][] = css/skin.css
 stylesheets[print][] = css/print.css
@@ -30,7 +33,7 @@ stylesheets[all][] = menu-dropdown.theme.css
 
 scripts[] = js/script.js
 
-; Added by Backdrop CMS packaging script on 2016-09-16
+; Added by Backdrop CMS packaging script on 2016-10-16
 project = backdrop
-version = 1.5.0
-timestamp = 1474011685
+version = 1.5.1
+timestamp = 1476682872
