@@ -6,7 +6,12 @@
  */
 body {
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  /**
+   * Default font size for site should be set on body element in rem units.
+   * This is better for some accessibility technologies. Although it's not true
+   * under all circumstances, think of 1rem as being equal to 16px.
+   */
+  font-size: 1rem;
   line-height: 1.6;
   background: #fff;
 }
@@ -436,17 +441,18 @@ fieldset .fieldset-legend {
  * Breadcrumb
  */
 .breadcrumb {
-  background: #586172;
+  background: #dee2ea;
 }
 
-.breadcrumb li a {
-  color: #fff;
+.breadcrumb a {
+  color: #000;
 }
 
 /* Arrow color */
 .breadcrumb li:after {
-  border-color: #20252e;
+  border-color: #fff;
 }
+
 
 /**
  * Tabledrag
@@ -487,15 +493,17 @@ abbr.tabledrag-changed {
 
 /**
  * Status messages
+ * Uncomment background-image styles to override, URL will need to be
+ * updated to work in a sub-theme.
  */
-/* Neutral / Good status message colors */
+/* Neutral or Good status message colors */
 .status {
   color: #234600;
   background-color: #E9EEBC;
 }
 
 div.status:before {
-  background-image: url(../../../misc/message-24-ok.png);
+  /* background-image: url(../../../misc/message-24-ok.png); */
   background-color: #CFDE56;
 }
 
@@ -506,7 +514,7 @@ div.status:before {
 }
 
 div.warning:before {
-  background-image: url(../../../misc/message-24-warning.png);
+  /* background-image: url(../../../misc/message-24-warning.png); */
   background-color: #FCE400;
 }
 
@@ -517,39 +525,43 @@ div.warning:before {
 }
 
 div.error:before {
-  background-image: url(../../../misc/message-24-error.png);
+  /* background-image: url(../../../misc/message-24-error.png); */
   background-color: #EE3D23;
 }
 
 /* Desktop size icons */
 @media only screen and (min-width: 34em) {
   div.status:before {
-    background-image: url(../../../misc/message-32-ok.png);
+    /* background-image: url(../../../misc/message-32-ok.png); */
   }
 
   div.warning:before {
-    background-image: url(../../../misc/message-32-warning.png);
+    /* background-image: url(../../../misc/message-32-warning.png); */
   }
 
   div.error:before {
-    background-image: url(../../../misc/message-32-error.png);
+    /* background-image: url(../../../misc/message-32-error.png); */
   }
 }
 
-/* SVG overrides */
+/**
+ * SVG overrides for status messages
+ * Using linear-gradient so the style only applies to browsers that can render
+ * SVGs.
+ */
 div.status:before {
-  background-image: -webkit-linear-gradient(transparent, transparent), url(../../../misc/message-ok.svg);
-  background-image: linear-gradient(transparent, transparent), url(../../../misc/message-ok.svg);
+  /* background-image: -webkit-linear-gradient(transparent, transparent), url(../../../misc/message-ok.svg); */
+  /* background-image: linear-gradient(transparent, transparent), url(../../../misc/message-ok.svg); */
 }
 
 div.warning:before {
-  background-image: -webkit-linear-gradient(transparent, transparent), url(../../../misc/message-warning.svg);
-  background-image: linear-gradient(transparent, transparent), url(../../../misc/message-warning.svg);
+  /* background-image: -webkit-linear-gradient(transparent, transparent), url(../../../misc/message-warning.svg); */
+  /* background-image: linear-gradient(transparent, transparent), url(../../../misc/message-warning.svg); */
 }
 
 div.error:before {
-  background-image: -webkit-linear-gradient(transparent, transparent), url(../../../misc/message-error.svg);
-  background-image: linear-gradient(transparent, transparent), url(../../../misc/message-error.svg);
+  /* background-image: -webkit-linear-gradient(transparent, transparent), url(../../../misc/message-error.svg); */
+  /* background-image: linear-gradient(transparent, transparent), url(../../../misc/message-error.svg); */
 }
 
 /**
@@ -887,7 +899,7 @@ ul.action-links a {
 /* Default background when hero doesn't have image */
 .block-hero-no-image {
   background-color: #0074bd;
-  background-image: url(../../images/texture.png);
+  background-image: url(../images/texture.png);
   background-repeat: no-repeat;
   background-position: center center;
   background-blend-mode: luminosity; /* Colorizes bg image */

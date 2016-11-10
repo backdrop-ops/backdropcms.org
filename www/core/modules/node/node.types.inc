@@ -79,8 +79,10 @@ function node_overview_types() {
  */
 function node_type_form($form, &$form_state, $type = NULL) {
   if (!isset($type->type)) {
-    // This is a new type. Populate with the defaults.
+    // This is a new type. Populate with the defaults...
     $type = node_type_set_defaults();
+    // ...and set the page title.
+    backdrop_set_title(t('Add content type'));
   }
 
   // Make the type object available to implementations of hook_form_alter().
@@ -302,7 +304,20 @@ function node_type_form($form, &$form_state, $type = NULL) {
     );
   }
 
+  $path = 'admin/structure/types';
+  $options = array();
+  $options['attributes']['class'][] = 'form-cancel';
+
+  $form['actions']['cancel'] = array(
+    '#type' => 'link',
+    '#title' => t('Cancel'),
+    '#href' => $path,
+    '#options' => $options,
+    '#weight' => 50,
+  );
+
   return $form;
+
 }
 
 /**
