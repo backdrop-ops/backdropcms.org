@@ -12,8 +12,8 @@ function theme_github_info($variables) {
   $clone_url = $url . '.git';
   $items = array(
     l(t('Project page'), $url),
-    l(t('Issue Queue'), $url . '/issues'),
-    l(t('Documentation'), $url . '/wiki'),
+    l(t('Issue Queue'), $url . '-issues/issues'),
+    l(t('Documentation'), 'user-guide'),
   );
 
   $list = theme('item_list', array('items' => $items, 'title' => t('GitHub')));
