@@ -32,13 +32,11 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
 
   switch ($delta) {
     case 'branding':
-      $options = array('attributes' => array('class' => array('site-name')));
-      $output = l(t('backdrop'), '', $options);
 
-      $uri = backdrop_get_path('module', 'borg_blocks') . '/images/logo.png';
-      $image = theme('image', array('uri' => $uri, 'alt' => t('Backdrop CMS Logo')));
+      $uri = backdrop_get_path('module', 'borg_blocks') . '/images/backdrop-logo-reverse.png';
+      $image = theme('image', array('uri' => $uri, 'alt' => t('Backdrop')));
       $options = array('html' => TRUE, 'attributes' => array('class' => array('logo'), 'title' => t('Backdrop CMS Home')));
-      $output .= l($image, '', $options);
+      $output = l($image, '', $options);
 
       $block['subject'] = NULL;
       $block['content'] = $output;

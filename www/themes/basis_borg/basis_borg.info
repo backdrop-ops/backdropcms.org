@@ -1,0 +1,9 @@
+name = Backdrop.org Based on Basis
+description = 2017 version of the main theme for the Backdrop primary site.
+version = 1.x
+backdrop = 1.x
+base theme = basis
+
+stylesheets[all][] = css/component/header.css
+stylesheets[all][] = css/component/header-search.css
+stylesheets[all][] = css/skin.css

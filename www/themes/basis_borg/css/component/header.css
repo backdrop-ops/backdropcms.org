@@ -1,0 +1,78 @@
+/**
+ * @file
+ * Header region styling.
+ */
+@media (min-width: 34em) {
+  .l-header-inner,
+  .l-header .block-menu,
+  .l-header .block-content,
+  .l-header .menu,
+  .l-header .menu > li,
+  .l-header .menu > li > a {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+    min-height: 6.125rem;
+  }
+}
+
+.l-header a {
+  -webkit-transition: background-color 0.25s ease-out;
+  transition: background-color 0.25s ease-out;
+}
+
+/**
+ * Menus in header area
+ */
+@media (min-width: 34em) {
+  .l-header .block-system-main-menu {
+    clear: both;
+  }
+}
+
+.l-header .menu,
+.l-header .menu li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.l-header .menu:after {
+  /* Clearfix menus */
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.l-header .menu > li {
+  float: left;
+}
+
+[dir="rtl"] .l-header .menu > li {
+  float: right;
+}
+
+.l-header .menu a {
+  display: block;
+  padding: 1rem 1.25rem;
+}
+
+@media (min-width: 34em) {
+  /* Specific selector to avoid contextual links */
+  .l-header .menu a {
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (min-width: 48em) {
+  .l-header .menu > li > a {
+    padding-top: 1.625em; /* Align menu baseline with logo baseline */
+  }
+
+  .l-header .menu-dropdown > li > a span.sub-arrow {
+    margin-top: 0.125rem;
+  }
+}

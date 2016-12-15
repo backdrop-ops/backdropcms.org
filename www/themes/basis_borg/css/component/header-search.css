@@ -1,0 +1,104 @@
+.l-header .block-search-form {
+  float: right;
+}
+
+@media (min-width: 75em) {
+  .l-header .block-search-form {
+  }
+}
+
+.l-header .search-block-form > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  height: 3em;
+}
+
+.l-header .search-box .form-item-search-block-form {
+  margin: 0;
+}
+
+.l-header .search-box .form-search {
+  border-radius: 1.4375em 0 0 1.4375em;
+  border-color: #fff;
+  padding: 0.5em 0 0.5em;
+  text-indent: 1.25em;
+  width: 10em;
+}
+
+@media (min-width: 75em) {
+  .l-header .search-box .form-search {
+    width: 11em;
+  }
+}
+
+.l-header .search-box .form-search:focus {
+  border-color: #54bdff;
+}
+
+.l-header .search-box .form-submit {
+  position: relative;
+  display: block;
+  width: 3em;
+  height: 2.625em;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0 1.4375em 1.4375em 0;
+  -webkit-transform: scale(0.5);
+  transform: scale(0.5);
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+  font-size: 2rem;
+  background: #fff;
+  -webkit-appearance: none;
+  text-indent: -9999em;
+  overflow: hidden;
+}
+
+.l-header .search-box .form-submit:hover,
+.l-header .search-box .form-submit:focus {
+  background: #efefef;
+}
+
+.l-header .search-box .form-actions {
+  position: relative;
+}
+
+.l-header .search-box .form-actions:before, .l-header .search-box .form-actions:after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+
+.l-header .search-box .form-actions:before {
+  top: 0.4375em;
+  left: 0.5em;
+  width: 0.875em;
+  height: 0.875em;
+  border-radius: 50%;
+  border: 0.1875em solid #000;
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+}
+.l-header .search-box .form-actions:after {
+  top: 1.5em;
+  left: 1.3125em;
+  width: 0;
+  height: 0.5em;
+  border: 0.1875em solid #000;
+  border-right-width: 0.0625em;
+  -webkit-transform: rotate(-45deg) scale(0.9);
+  transform: rotate(-45deg) scale(0.9);
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+}
+
+.l-header .search-box .form-actions:hover:before,
+.l-header .search-box .form-actions:hover:after {
+  border-color: #0074bd;
+}
