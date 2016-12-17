@@ -25,7 +25,7 @@ function basis_borg_preprocess_layout(&$variables) {
   );
 
   // Add helper class and stylesheet to add-on search pages
-  if ($variables['layout']->name) {
+  if (in_array($variables['layout']->name, $project_search_layouts)) {
     $variables['classes'][] = 'layout--category-project-search';
     backdrop_add_css($basis_borg_path . '/css/layout/project-search.css', $css_options);
   }
