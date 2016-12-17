@@ -1,0 +1,173 @@
+.l-header {
+  margin-bottom: 0;
+}
+
+.page-title {
+  font-size: 4rem;
+  font-weight: 200;
+  margin-bottom: 0;
+}
+
+.l-wrapper {
+  overflow: hidden;
+}
+
+.l-content .view-header {
+  position: relative;
+  z-index: 0;
+  padding: 1em 0;
+}
+
+.l-content .view-header:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: 100vw;
+  height: 100%;
+  padding-bottom: 7rem;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  background: url('../../image/texture-gray.png');
+  z-index: -1;
+}
+
+.l-content .view-header h2 {
+  margin-top: 0;
+}
+
+.l-content .views-exposed-widgets {
+  position: relative;
+  z-index: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 66.667%;
+  width: calc(66.667% - 2rem);
+  margin: 0 0 5rem;
+}
+
+@media (min-width: 48em) {
+  .l-content .views-exposed-widgets {
+    font-size: 1.8125rem;
+  }
+}
+
+.l-content .views-widget-filter-combine {
+  padding: 0;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.l-content .views-submit-button {
+  padding: 0;
+}
+
+.l-content .views-widget-filter-combine,
+.l-content .form-submit {
+  display: block;
+}
+
+.l-content .views-widget-filter-combine .views-widget,
+.l-content .views-widget-filter-combine .form-item,
+.l-content .views-widget-filter-combine .form-text {
+  width: 100%;
+}
+
+.l-content .views-widget-filter-combine .form-text {
+  height: 2.625em;
+}
+
+.project-search--results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-search--results .result {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  margin: 0 0 2em;
+  padding: 0 0 2em;
+  border-bottom: 0.125em solid #eee;
+}
+
+.project-search--results .result__information-wrapper {
+  width: 66.667%;
+  padding: 0.0625em 2em 0 0;
+}
+
+.project-search--results .result h3 {
+  display: inline-block;
+  margin: 0 0 0.5em;
+  padding: 0 0.25em 0 0;
+  font-size: 1.75em;
+  font-weight: 200;
+}
+
+.project-search--results .result h3 a {
+  text-decoration: none;
+}
+
+.project-search--results .result .since {
+  display: inline-block;
+  font-style: italic;
+}
+
+.project-search--results .result__description > :first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.project-search--results .result__description br {
+  display: none;
+}
+
+.project-search--results .result__metadata-wrapper {
+  width: 33.333%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result__metadata-wrapper li {
+  margin: 0;
+  padding: 0;
+}
+
+.project-search--results .download-link {
+  margin: 0;
+  float: left;
+}
+
+.project-search--results .download-link .button {
+  margin: 0 0.5em 0.5em 0;
+}
+
+.project-search--results .download-size {
+  padding-top: 0.125em;
+  line-height: 2.625em;
+}
+
+.project-search--results .version,
+.project-search--results .created,
+.project-search--results .view-node {
+  clear: both;
+  padding-left: 0.5em;
+}
+
+.project-search--results .created {
+  text-transform: capitalize;
+}

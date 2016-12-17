@@ -184,6 +184,7 @@ fieldset .fieldset-legend {
 .l-header .logo {
   display: block;
   padding: 1em 1.375em;
+  margin-left: -1.375em;
 }
 
 .front .l-header .logo {
@@ -509,10 +510,10 @@ input.form-submit,
 button.form-submit,
 .button {
   text-align: center;
-  text-transform: uppercase;
+  text-transform: none;
   color: #333;
   letter-spacing: 0.025em;
-  line-height: 2.875;
+  line-height: 2.625;
   background: #e5e5e6;
 }
 
@@ -707,12 +708,12 @@ ul.action-links a {
 .pager-next,
 .pager-last,
 .pager-item {
-  background: #586172;
+  background: #555;
   color: #fff;
 }
 
 .pager-ellipsis {
-  color: #586172;
+  color: #555;
 }
 
 .pager-first a,
@@ -759,7 +760,7 @@ ul.action-links a {
 }
 
 .progress .filled {
-  background: #586172;
+  background: #555;
 }
 
 /* Progress Bar Animation */
@@ -842,7 +843,7 @@ ul.action-links a {
  */
 nav.tabs:before {
   /* Background behind primary tabs */
-  background-color: #586172;
+  background-color: #555;
 }
 
 ul.primary {
@@ -857,7 +858,7 @@ ul.primary li.active a,
 .expand-dropdown-tabs-control,
 .responsive-tabs-mobile .expand-dropdown-tabs-control:before,
 .responsive-tabs-mobile .expand-dropdown-tabs-label {
-  border-color: #586172; /* Should be color of bg behind tabs */
+  border-color: #555; /* Should be color of bg behind tabs */
   color: #757575;
   background-color: #dee2ea;
 }
@@ -994,7 +995,7 @@ ul.secondary li a:active {
 }
 
 .responsive-tabs-mobile-header-padder {
-  background: #586172;
+  background: #555;
 }
 
 /**

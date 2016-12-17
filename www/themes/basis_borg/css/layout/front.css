@@ -1,0 +1,158 @@
+.front .l-header {
+  margin-bottom: 0;
+}
+
+.l-page-title {
+  /* Hide page title since it's visually redundant with Backdrop logo */
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  overflow: hidden;
+  height: 1px;
+  width: 1px;
+}
+
+.l-top {
+  padding: 1em 0 1em;
+  background-color: #c3e8ff;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(195, 232, 255, 1) 1rem,
+      rgba(195, 232, 255, 0) 15rem
+    ),
+    url('../../image/texture-clouds.png')
+    ;
+}
+
+.slogan-wrapper {
+  width: 75%;
+  margin: 0 auto 1em;
+}
+
+.slogan-wrapper,
+.download-or-try-wrapper {
+  text-align: center;
+}
+
+.download-or-try {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.5rem;
+}
+
+.download-or-try .button {
+  line-height: 2.25;
+}
+
+.download-or-try li {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.download-or-try a {
+  margin-bottom: 0.5em;
+}
+
+.download-or-try:after {
+  content: '';
+  display: block;
+  width: 50%;
+  margin: 1.25em auto 0.75em;
+  padding: 25.935% 0 0;
+  background: url(../../image/homepage-hero-basis.png) no-repeat;
+  background-size: 100% auto;
+}
+
+.download-or-try li:last-child a {
+  margin-right: 0;
+}
+
+.download-or-try-wrapper .subtext {
+  display: inline-block;
+  margin: 0;
+  padding: 0.5em 1em;
+  clear: both;
+  background: rgba(195, 232, 255, 0.75);
+  box-shadow: rgba(195, 232, 255, 0.75) 0 0 15px;
+}
+
+.download-or-try-wrapper .subtext a {
+  color: #063653;
+  text-decoration: none;
+}
+
+.download-or-try-wrapper .subtext a:hover {
+  text-decoration: underline;
+}
+
+.field-name-body h4 {
+  font-weight: 400;
+}
+
+.l-content {
+  overflow: hidden;
+}
+
+.spin-up-on-pantheon-wrapper {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  background: url(../../image/texture-gray.png);
+}
+
+.spin-up-on-pantheon-wrapper .pantheon-logo {
+  display: block;
+  padding: 1em 3em 1em 0;
+}
+
+.spin-up-on-pantheon-wrapper .pantheon-logo img {
+  max-width: 20rem;
+}
+
+
+.spin-up-on-pantheon-wrapper h3 {
+  margin: 0;
+}
+
+.spin-up-on-pantheon-wrapper .button {
+  margin: 0;
+  line-height: 2.25;
+}
+
+@media (min-width: 48em) {
+  .spin-up-on-pantheon-wrapper .container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+
+  .spin-up-on-pantheon-wrapper .pantheon-logo {
+    -ms-flex-item-align: stretch;
+    align-self: stretch;
+    -ms-flex-preferred-size: 14.75rem;
+    flex-basis: 14.75rem;
+  }
+
+  .spin-up-on-pantheon-wrapper h3,
+  .spin-up-on-pantheon-wrapper .button {
+    white-space: nowrap;
+    font-size: 1.375rem;
+  }
+
+  .spin-up-on-pantheon-wrapper h3 {
+    flex-grow: 1;
+  }
+
+  .spin-up-on-pantheon-wrapper .pantheon-logo {
+    flex-grow: 2;
+  }
+}
+
+

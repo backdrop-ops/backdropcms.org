@@ -1,0 +1,14 @@
+/**
+ * Add lighter weight Open Sans Font
+ */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 200;
+  src: url('/core/misc/opensans/OpenSans-Light-webfont.eot'); /* Old IE */
+  src:
+    url('/core/misc/opensans/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
+    url('/core/misc/opensans/OpenSans-Light-webfont.woff') format('woff'),
+    url('/core/misc/opensans/OpenSans-Light-webfont.ttf') format('truetype'),
+    url('/core/misc/opensans/OpenSans-Light-webfont.svg#open_sansregular') format('svg');
+}

@@ -7,34 +7,34 @@
     "module": null,
     "weight": -2,
     "storage": 1,
+    "layout_template": "boxton",
     "disabled": false,
     "settings": {
         "title": "",
-        "title_display": "default",
-        "title_block": null
+        "title_display": "none",
+        "title_block": "17cb1ef0-56d6-4b63-8807-7d632a6b2db8"
     },
     "positions": {
-        "sidebar": [
-            "dcc08931-fe27-45e8-8a09-9ea6d72e5fa2",
-            "1b3a6d21-38e2-4794-9300-b8f01bbe34fb"
+        "header": [
+            "17cb1ef0-56d6-4b63-8807-7d632a6b2db8",
+            "491e0d23-4841-4d3f-9200-0082f1a241e4",
+            "e17ceeb7-840f-4868-8200-e17f435fc9e5"
         ],
-        "drawer": [
-            "e470526e-403a-46dc-9d00-e4d302e44088",
-            "64a6ef50-73e1-4075-a200-bd39a1f312f1"
-        ],
-        "content-top": [],
+        "top": [],
         "content": [
             "7dd5f366-d6f5-4333-bc00-0cf61eb8b873",
             "5f724926-7372-4f1e-a241-65f975859b0e"
         ],
+        "bottom": [],
         "footer": [
             "c8dcf840-64d3-48f9-a007-7aaca560f9d3",
             "47d4f23d-79a4-4271-b100-0b50cbeeaf53",
             "2ad0172c-3184-484e-af5d-935381f16c20"
-        ]
+        ],
+        "title": []
     },
     "content": {
-        "dcc08931-fe27-45e8-8a09-9ea6d72e5fa2": {
+        "17cb1ef0-56d6-4b63-8807-7d632a6b2db8": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "module": "borg_blocks",
@@ -46,7 +46,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "dcc08931-fe27-45e8-8a09-9ea6d72e5fa2",
+                "uuid": "17cb1ef0-56d6-4b63-8807-7d632a6b2db8",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -57,19 +57,24 @@
                 }
             }
         },
-        "1b3a6d21-38e2-4794-9300-b8f01bbe34fb": {
+        "491e0d23-4841-4d3f-9200-0082f1a241e4": {
             "plugin": "system:main-menu",
             "data": {
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "3"
+                    },
                     "contexts": []
                 },
-                "uuid": "1b3a6d21-38e2-4794-9300-b8f01bbe34fb",
+                "uuid": "491e0d23-4841-4d3f-9200-0082f1a241e4",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -80,42 +85,19 @@
                 }
             }
         },
-        "e470526e-403a-46dc-9d00-e4d302e44088": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "e470526e-403a-46dc-9d00-e4d302e44088",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "64a6ef50-73e1-4075-a200-bd39a1f312f1": {
+        "e17ceeb7-840f-4868-8200-e17f435fc9e5": {
             "plugin": "search:form",
             "data": {
                 "module": "search",
                 "delta": "form",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "64a6ef50-73e1-4075-a200-bd39a1f312f1",
+                "uuid": "e17ceeb7-840f-4868-8200-e17f435fc9e5",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -251,6 +233,5 @@
                 }
             }
         }
-    },
-    "layout_template": "double_fixed"
+    }
 }

@@ -4,6 +4,9 @@ version = 1.x
 backdrop = 1.x
 base theme = basis
 
+stylesheets[all][] = css/webfont.css
+stylesheets[all][] = css/component/backdrop-form.css
+stylesheets[all][] = css/component/css-art.css
 stylesheets[all][] = css/component/header.css
 stylesheets[all][] = css/component/header-search.css
 stylesheets[all][] = css/skin.css

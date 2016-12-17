@@ -1,0 +1,77 @@
+.l-header .search-box .form-submit,
+.view-modules .views-exposed-form .form-submit {
+  position: relative;
+  display: block;
+  width: 3em;
+  height: 2.625em;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
+  background: #0074bd;
+  -webkit-appearance: none;
+  text-indent: -9999em;
+  overflow: hidden;
+}
+
+.l-header .search-box .form-submit:hover,
+.l-header .search-box .form-submit:focus,
+.view-modules .views-exposed-form .form-submit:hover,
+.view-modules .views-exposed-form .form-submit:focus {
+  background: #006db0;
+}
+
+.l-header .search-box .form-actions,
+.view-modules .views-exposed-form .views-submit-button {
+  position: relative;
+  width: 3em;
+}
+
+.l-header .search-box .form-actions:before,
+.l-header .search-box .form-actions:after,
+.view-modules .views-exposed-form .views-submit-button:before,
+.view-modules .views-exposed-form .views-submit-button:after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  transition: border-color 0.25s;
+}
+
+.l-header .search-box .form-actions:before,
+.view-modules .views-exposed-form .views-submit-button:before {
+  top: 0.4375em;
+  left: 0.75em;
+  width: 0.875em;
+  height: 0.875em;
+  border-radius: 50%;
+  border: 0.1875em solid #eee;
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+}
+.l-header .search-box .form-actions:after,
+.view-modules .views-exposed-form .views-submit-button:after {
+  top: 1.5em;
+  left: 1.5625em;
+  width: 0;
+  height: 0.5em;
+  border: 0.1875em solid #eee;
+  border-right-width: 0.0625em;
+  -webkit-transform: rotate(-45deg) scale(0.9);
+  transform: rotate(-45deg) scale(0.9);
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+}
+
+.l-header .search-box .form-actions:hover:before,
+.l-header .search-box .form-actions:hover:after,
+.l-header .search-box .form-actions:focus:before,
+.l-header .search-box .form-actions:focus:after,
+.view-modules .views-exposed-form .views-submit-button:hover:before,
+.view-modules .views-exposed-form .views-submit-button:hover:after,
+.view-modules .views-exposed-form .views-submit-button:focus:before,
+.view-modules .views-exposed-form .views-submit-button:focus:after {
+  border-color: #fff;
+}
