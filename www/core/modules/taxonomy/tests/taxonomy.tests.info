@@ -82,6 +82,12 @@ description = Verifies operation of a taxonomy-based EntityFieldQuery.
 group = Taxonomy
 file = taxonomy.test
 
+[TaxonomyQueryAlterTestCase]
+name = Taxonomy query tags
+description = Verifies that taxonomy_term_access tags are added to queries.
+group = Taxonomy
+file = taxonomy.test
+
 [TaxonomyViewsHandlerRelationshipNodeTermDataTest]
 name = Views taxonomy relationship
 description = Tests the taxonomy term on node relationship handler for Views.
@@ -89,7 +95,7 @@ group = Taxonomy
 file = taxonomy_views_handler_relationship_node_term_data.test
 
 
-; Added by Backdrop CMS packaging script on 2016-10-16
+; Added by Backdrop CMS packaging script on 2016-11-16
 project = backdrop
-version = 1.5.1
-timestamp = 1476682872
+version = 1.5.2
+timestamp = 1479323823
