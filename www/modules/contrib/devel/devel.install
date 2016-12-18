@@ -4,8 +4,6 @@
  * Implements hook_enable().
  */
 function devel_enable() {
-  $t = get_t();
-
   // New module weights in core: put devel as the very last in the chain.
   db_update('system')
     ->fields(array(
@@ -14,29 +12,6 @@ function devel_enable() {
     ->condition('type', 'module')
     ->condition('name', 'devel')
     ->execute();
-
-  // Create a custom menu, if Menu module is enabled.
-  // @see devel_modules_installed()
-  if (module_exists('menu')) {
-    $menu = array(
-      'menu_name' => 'devel',
-      'title' => $t('Development'),
-      'description' => $t('Development link'),
-    );
-    menu_save($menu);
-  }
-}
-
-/**
- * Implements hook_uninstall().
- */
-function devel_uninstall() {
-  // Delete the development menu.
-  if (module_exists('menu')) {
-    if ($devel_menu = menu_load('devel')) {
-      menu_delete($devel_menu);
-    }
-  }
 }
 
 /**
@@ -108,4 +83,19 @@ function devel_update_1001() {
   config('devel.settings')
     ->set('_config_static', TRUE)
     ->save();
+}
+
+/**
+ * Delete the Development menu and just put menu items in the Admin Bar.
+ */
+function devel_update_1002() {
+  config('menu.menu.devel')->delete();
+  db_query("DELETE FROM {menu_links} WHERE menu_name = 'devel'");
+}
+
+/**
+ * Remove option for Krumo skin.
+ */
+function devel_update_1003() {
+  config('devel.settings')->clear('krumo_skin')->save();
 }

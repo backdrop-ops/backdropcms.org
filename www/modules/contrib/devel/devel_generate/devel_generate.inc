@@ -474,47 +474,22 @@ function devel_generate_word($length){
   return substr($word, 0, $length);
 }
 
-function devel_create_content($type = NULL) {
-  $nparas = mt_rand(1,12);
-  $type = empty($type) ? mt_rand(0,3) : $type;
-
-  $output = "";
-  switch($type % 3) {
-    // MW: This appears undesireable. Was giving <p> in text fields
-    // case 1: // html
-    //       for ($i = 1; $i <= $nparas; $i++) {
-    //         $output .= devel_create_para(mt_rand(10,60),1);
-    //       }
-    //       break;
-    //
-    //     case 2: // brs only
-    //       for ($i = 1; $i <= $nparas; $i++) {
-    //         $output .= devel_create_para(mt_rand(10,60),2);
-    //       }
-    //       break;
-
-    default: // plain text
-      for ($i = 1; $i <= $nparas; $i++) {
-        $output .= devel_create_para(mt_rand(10,60)) ."\n\n";
-      }
-  }
-
-  return $output;
-}
-
-function devel_create_para($words, $type = 0) {
+/**
+ * Generate text content for a certain number of paragraphs.
+ *
+ * @return string
+ */
+function devel_create_content($include_p_tags = FALSE, $paragraph_count = NULL) {
+  $paragraph_count = $paragraph_count ? $paragraph_count : mt_rand(1,12);
   $output = '';
-  switch ($type) {
-    case 1:
-      $output .= "<p>" . devel_create_greeking($words)  . "</p>";
-      break;
-
-    case 2:
-      $output .= devel_create_greeking($words) . "<br />";
-      break;
-
-    default:
-      $output .= devel_create_greeking($words);
+  for ($i = 1; $i <= $paragraph_count; $i++) {
+    $word_count = mt_rand(10, 60);
+    if ($include_p_tags) {
+      $output .= "<p>" . devel_create_greeking($word_count)  . "</p>\n\n";
+    }
+    else {
+      $output .= devel_create_greeking($word_count) . "\n\n";
+    }
   }
   return $output;
 }
@@ -601,22 +576,6 @@ function devel_get_users() {
 }
 
 /**
- * Generate statistics information for a node.
- *
- * @param $node
- *   A node object.
- */
-function devel_generate_add_statistics($node) {
-  $statistic = array(
-    'nid' => $node->nid,
-    'totalcount' => mt_rand(0, 500),
-    'timestamp' => REQUEST_TIME - mt_rand(0, $node->created),
-  );
-  $statistic['daycount'] = mt_rand(0, $statistic['totalcount']);
-  db_insert('node_counter')->fields($statistic)->execute();
-}
-
-/**
  * Handle the devel_generate_content_form request to kill all of the content.
  * This is used by both the batch and non-batch branches of the code.
  *
@@ -670,8 +629,10 @@ function devel_generate_content_add_node(&$results) {
   $node->uid = $users[array_rand($users)];
   $type = node_type_get_type($node);
   $node->title = $type->has_title ? devel_create_greeking(mt_rand(2, $results['title_length']), TRUE) : '';
-  $node->revision = mt_rand(0,1);
-  $node->promote = mt_rand(0, 1);
+  $node->sticky = 0;
+  $node->revision = empty($type->settings['revision_enabled']) ? 0 : mt_rand(0,1);
+  $node->promote = empty($type->settings['promote_enabled']) ? 0 : mt_rand(0, 1);
+
   // Avoid NOTICE.
   if (!isset($results['time_range'])) {
     $results['time_range'] = 0;

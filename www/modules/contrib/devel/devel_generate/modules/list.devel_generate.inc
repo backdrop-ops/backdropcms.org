@@ -1,5 +1,8 @@
 <?php
-// Id$
+/**
+ * @file
+ * Devel generate support for List module.
+ */
 
 function list_devel_generate($object, $field, $instance, $bundle) {
   if (field_behaviors_widget('multiple values', $instance) == FIELD_BEHAVIOR_CUSTOM) {

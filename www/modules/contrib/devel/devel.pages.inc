@@ -17,20 +17,9 @@ function devel_function_reference() {
   sort($ufunctions);
   $api = config_get('devel.settings', 'api_url');
   foreach ($ufunctions as $function) {
-    $links[] = l($function, "http://$api/api/$version/function/$function");
+    $links[] = l($function, "http://$api/api/function/$function/$version");
   }
   return theme('item_list', array('items' => $links));
-}
-
-/**
- * Menu callback; clears all caches, then redirects to the previous page.
- */
-function devel_cache_clear() {
-  backdrop_flush_all_caches();
-
-  backdrop_set_message('Cache cleared.');
-
-  backdrop_goto();
 }
 
 // A menu callback. Called by the AJAX link in query log.
@@ -79,15 +68,6 @@ function devel_querylog_arguments($request_id, $qid) {
   // print and return nothing thus avoiding page wrapper.
   print $output;
   $GLOBALS['devel_shutdown'] = FALSE;
-}
-
-/**
- * Menu callback; clear the database, resetting the menu to factory defaults.
- */
-function devel_menu_rebuild() {
-  menu_rebuild();
-  backdrop_set_message(t('The menu router has been rebuilt.'));
-  backdrop_goto();
 }
 
 /**

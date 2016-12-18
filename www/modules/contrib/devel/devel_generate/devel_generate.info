@@ -1,12 +1,12 @@
-name = Devel generate
+name = Devel Generate
 description = Generate dummy users, nodes, and taxonomy terms.
 package = Development
 backdrop = 1.x
 dependencies[] = devel
-configure = admin/config/development/generate
+configure = devel/generate
 type = module
 
-; Added by Backdrop CMS packaging script on 2015-12-30
+; Added by Backdrop CMS packaging script on 2016-08-28
 project = devel
-version = 1.x-1.5.5
-timestamp = 1451520231
+version = 1.x-1.6.0
+timestamp = 1472448918

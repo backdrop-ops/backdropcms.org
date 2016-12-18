@@ -130,7 +130,7 @@ function devel_admin_settings() {
       DEVEL_ERROR_HANDLER_BACKTRACE_KRUMO => t('Krumo backtrace above the rendered page'),
     ),
     '#multiple' => TRUE,
-    '#default_value' => empty($error_handlers) ? DEVEL_ERROR_HANDLER_NONE : $error_handlers,
+    '#default_value' => empty($error_handlers) ? DEVEL_ERROR_HANDLER_STANDARD : $error_handlers,
     '#description' => t('Select the error handler(s) to use, in case you <a href="@choose">choose to show errors on screen</a>.', array('@choose' => url('admin/config/development/logging'))) . '<ul>' .
                       '<li>' . t('<em>None</em> is a good option when stepping through the site in your debugger.') . '</li>' .
                       '<li>' . t('<em>Standard Backdrop</em> does not display all the information that is often needed to resolve an issue.') . '</li>' .
@@ -142,21 +142,6 @@ function devel_admin_settings() {
   if (empty($_POST) && !empty($_GET['demo'])) {
     devel_demonstrate_error_handlers($_GET['demo']);
   }
-
-  $form['krumo_skin'] = array(
-    '#type' => 'radios',
-    '#title' => t('Krumo display'),
-    '#description' => t('Select a skin for your debug messages or select <em>disabled</em> to display object and array output in standard PHP format.'),
-    '#options' => array(
-      'default' => t('Default'),
-      'blue' => t('Blue'),
-      'green' => t('Green'),
-      'orange' => t('Orange'),
-      'white' => t('White'),
-      'disabled' => t('Disabled'),
-    ),
-    '#default_value' => $config->get('krumo_skin'),
-  );
 
   $form['rebuild_theme_registry'] = array(
    '#type' => 'checkbox',
@@ -195,7 +180,6 @@ function devel_admin_settings_submit($form, &$form_state) {
   $config->set('redirect_page', (bool) $values['redirect_page']);
   $config->set('permission_raw_names', (bool) $values['permission_raw_names']);
   $config->set('devel_error_handlers', array_values(array_filter($values['devel_error_handlers'])));
-  $config->set('krumo_skin', $values['krumo_skin']);
   $config->set('rebuild_theme_registry', (bool) $values['rebuild_theme_registry']);
 
   $config->save();

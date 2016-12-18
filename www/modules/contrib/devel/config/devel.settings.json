@@ -13,9 +13,8 @@
     "redirect_page": false,
     "permission_raw_names": false,
     "error_handlers": [
-      "standard"
+        "standard"
     ],
-    "krumo_skin": "default",
     "debug_mail_file_format": "%to-%subject-%datetime.mail.txt",
     "debug_mail_directory": "temporary://devel-mails"
 }

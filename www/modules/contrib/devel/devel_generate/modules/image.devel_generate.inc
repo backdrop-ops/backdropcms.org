@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Devel generate support for Image module.
+ */
 
 define('DEVEL_GENERATE_IMAGE_MAX', 5);
 

@@ -1,5 +1,8 @@
 <?php
-// Id$
+/**
+ * @file
+ * Devel generate support for Number module.
+ */
 
 function number_devel_generate($object, $field, $instance, $bundle) {
   if (field_behaviors_widget('multiple values', $instance) == FIELD_BEHAVIOR_CUSTOM) {

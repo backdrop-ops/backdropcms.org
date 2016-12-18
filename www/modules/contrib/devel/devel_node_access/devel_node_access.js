@@ -17,7 +17,7 @@
       // random token to bypass caching.
       var url = Backdrop.settings.basePath
               + "?q="
-              + 'devel/node_access/by_user/json/'
+              + 'admin/devel/node_access/by_user/json/'
               + cell
               + '/'
               + Math.floor((1000000000 * Math.random())).toString(16);

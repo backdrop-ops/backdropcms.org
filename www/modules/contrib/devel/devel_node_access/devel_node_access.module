@@ -21,36 +21,13 @@ function devel_node_access_permission() {
 }
 
 /**
- * Implements hook_help().
- */
-function devel_node_access_help($path, $arg) {
-  switch ($path) {
-    case 'admin/settings/modules#description':
-      return t('Development helper for node_access table');
-      break;
-    case 'admin/help#devel_node_access':
-      $output  = '<p>' . t('This module helps in site development.  Specifically, when an access control module is used to limit access to some or all nodes, this module provides some feedback showing the node_access table in the database.') . "</p>\n";
-      $output .= '<p>' . t('The node_access table is one method Drupal provides to hide content from some users while displaying it to others.  By default, Drupal shows all nodes to all users.  There are a number of optional modules which may be installed to hide content from some users.') . "</p>\n";
-      $output .= '<p>' . t('If you have not installed any of these modules, you really have no need for the devel_node_access module.  This module is intended for use during development, so that developers and admins can confirm that the node_access table is working as expected.  You probably do not want this module enabled on a production site.') . "</p>\n";
-      $output .= '<p>' . t('This module provides two blocks.  One called Devel Node Access by User is visible when a single node is shown on a page.  This block shows which users can view, update or delete the node shown.  Note that this block uses an inefficient algorithm to produce its output.  You should only enable this block on sites with very few user accounts.') . "</p>\n";
-      $output .= '<p>' . t('The second block provided by this module shows the entries in the node_access table for any nodes shown on the current page.  You can enable the debug mode on the <a href="@settings_page">settings page</a> to display much more information, but this can cause considerable overhead.  Because the tables shown are wide, it is recommended to enable the blocks in the page footer rather than a sidebar.',
-                          array('@settings_page' => url('admin/config/development/devel', array('fragment' => 'edit-devel-node-access')))
-                          ) . "</p>\n";
-      $output .= '<p>' . t('This module also provides a <a href="@summary_page">summary page</a> which shows general information about your node_access table.  If you have installed the Views module, you may browse node_access by realm.',
-                          array('@summary_page' => url('devel/node_access/summary'))
-                          ) . "</p>\n";
-      return $output;
-  }
-}
-
-/**
  * Implements hook_menu().
  */
 function devel_node_access_menu() {
   $items = array();
 
   // Create a callback for use by devel_node_access_user_ajax().
-  $items['devel/node_access/by_user/%/%'] = array(
+  $items['admin/devel/node_access/by_user/%/%'] = array(
     'page callback'    => 'devel_node_access_user_ajax',
     'page arguments'   => array(3, 4),
     'access arguments' => array(DNA_ACCESS_VIEW),
@@ -58,11 +35,10 @@ function devel_node_access_menu() {
   );
 
   // Add this to the custom menu 'devel' created by the devel module.
-  $items['devel/node_access/summary'] = array(
+  $items['admin/devel/node_access/summary'] = array(
     'title'            => 'Node_access summary',
     'page callback'    => 'dna_summary',
     'access arguments' => array(DNA_ACCESS_VIEW),
-    'menu_name'        => 'devel',
   );
 
   return $items;
@@ -134,7 +110,7 @@ function dna_summary() {
   if ($num) {
     $output .= '<h3>' . t('Legacy Nodes') . "</h3>\n";
     $output .= '<p>' .
-      t('You have !num nodes in your node table which are not represented in your node_access table.  If you have an access control module installed, these nodes may be hidden from all users.  This could be caused by publishing nodes before enabling the access control module.  If this is the case, manually updating each node should add it to the node_access table and fix the problem.', array('!num' => l($num, 'devel/node_access/view/NULL')))
+      t('You have !num nodes in your node table which are not represented in your node_access table.  If you have an access control module installed, these nodes may be hidden from all users.  This could be caused by publishing nodes before enabling the access control module.  If this is the case, manually updating each node should add it to the node_access table and fix the problem.', array('!num' => l($num, 'admin/devel/node_access/view/NULL')))
       . "</p>\n";
     if (!empty($access_granted_to_all_nodes)) {
       $output .= '<p>' .
