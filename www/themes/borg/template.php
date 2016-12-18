@@ -545,3 +545,36 @@ function borg_menu_local_tasks($variables) {
 
   return $output;
 }
+
+/**
+ * Overrides theme_github_info().
+ */
+function borg_github_info($variables) {
+  $url = 'https://github.com/' . $variables['github_path'];
+  $clone_url = $url . '.git';
+
+  if ($variables['github_path'] != 'backdrop/backdrop') {
+    $items = array(
+      l(t('Project page'), $url),
+      l(t('Issue Queue'), $url . '/issues'),
+      l(t('Documentation'), $url . '/wiki'),
+    );
+  }
+  else {
+    $items = array(
+      l(t('Project page'), $url),
+      l(t('Issue Queue'), $url . '-issues/issues'),
+      l(t('Documentation'), 'user-guide'),
+    );
+  }
+
+
+  $list = theme('item_list', array('items' => $items, 'title' => t('GitHub')));
+
+  $clone  = '<div class="github-clone">';
+  $clone .= '<label class="github-clone-label">' . t('Clone URL') . '</label>';
+  $clone .= '<input type="text" readonly="" aria-label="Clone this repository at ' . $clone_url . '" value="' . $clone_url . '">';
+  $clone .= '</div>';
+
+  return $list . $clone;
+}
