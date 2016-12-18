@@ -95,7 +95,7 @@ function honeypot_form_alter(&$form, &$form_state, $form_id) {
   elseif ($forms_to_protect = honeypot_get_protected_forms()) {
     foreach ($forms_to_protect as $protect_form_id) {
       // For most forms, do a straight check on the form ID.
-      if ($form_id == strpos($protect_form_id, 'honeypot_form_')) {
+      if ($form_id == $protect_form_id) {
         honeypot_add_form_protection($form, $form_state, array('honeypot', 'time_restriction'));
       }
       // For webforms use a special check for variable form ID.
@@ -165,7 +165,7 @@ function honeypot_get_protected_forms() {
         // Add each form that's enabled to the $forms array.
         foreach ($form_settings as $form_id => $enabled) {
           if ($enabled) {
-            $forms[] = $form_id;
+            $forms[] = substr($form_id, 14);
           }
         }
       }

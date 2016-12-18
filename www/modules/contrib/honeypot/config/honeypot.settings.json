@@ -6,7 +6,8 @@
     "element_name": "url",
     "time_limit": "5",
     "unprotected_forms": [
-        "user_login_form",
+        "user_login",
+        "user_login_block",
         "search_form",
         "search_block_form",
         "views_exposed_form",

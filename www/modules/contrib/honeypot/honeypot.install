@@ -159,6 +159,23 @@ function honeypot_update_1003() {
   flood_clear_event('honeypot');
 }
 
+/**
+ * Issue #9: update unprotected_forms list to include more forms found in Backdrop.
+ */
+
+function honeypot_update_1004() {
+  $config = config('honeypot.settings');
+  $config->set('unprotected_forms', array(
+    'user_login',
+    'user_login_block',
+    'search_form',
+    'search_block_form',
+    'views_exposed_form',
+    'honeypot_admin_form'
+  ));
+  $config->save();
+}
+
 /*
  * @} End of "defgroup updates-7.x-to-1.x"
  * The next series of updates should start at 2000.
