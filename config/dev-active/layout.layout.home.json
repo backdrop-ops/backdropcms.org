@@ -266,7 +266,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "l-content-wrapper"
+                            "classes": "l-content-wrapper col-lg-6 u-float-lg-left u-padding-lg-right"
                         }
                     }
                 }
@@ -289,7 +289,7 @@
                     "plugin": "dynamic",
                     "data": {
                         "settings": {
-                            "classes": "",
+                            "classes": " col-lg-6 u-float-lg-left  u-padding-lg-left",
                             "wrapper_tag": "div",
                             "title_tag": "h2",
                             "title_classes": "block-title l-content-wrapper",

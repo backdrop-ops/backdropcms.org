@@ -30,3 +30,22 @@ function basis_borg_preprocess_layout(&$variables) {
     backdrop_add_css($basis_borg_path . '/css/layout/project-search.css', $css_options);
   }
 }
+
+/**
+ * Overrides theme_menu_tree().
+ */
+function basis_borg_menu_tree(&$variables) {
+  if ($variables['theme_hook_original'] == 'menu_tree__main_menu' && $variables['depth'] == 0) {
+    if (empty($variables['attributes']['id'])) {
+      $variables['attributes']['id'] = 'header-main-menu';
+    }
+  $burger_toggler = '<input id="burger-toggler--state" class="burger-toggler--state element-invisible" type="checkbox" aria-controls="' . $variables['attributes']['id'] .'">'.
+    '<label class="burger-toggler__button" for="burger-toggler--state">' .
+      '<span class="burger-toggler__button-icon"></span><span class="burger-toggler__button-text">Menu</span>' .
+      '<span class="burger-toggler__assistive-text element-invisible">Toggle main menu visibility</span>'.
+    '</label>';
+
+    return $burger_toggler . '<ul ' . backdrop_attributes($variables['attributes']) . '>' . $variables['tree'] . '</ul>';
+  }
+  return '<ul ' . backdrop_attributes($variables['attributes']) . '>' . $variables['tree'] . '</ul>';
+}

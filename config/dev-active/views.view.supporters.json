@@ -32,7 +32,7 @@
                         "offset": "0"
                     }
                 },
-                "style_plugin": "default",
+                "style_plugin": "list",
                 "row_plugin": "fields",
                 "fields": {
                     "field_your_website": {
@@ -295,7 +295,16 @@
                     }
                 },
                 "title": "We support Backdrop CMS",
-                "css_class": "clearfix"
+                "css_class": "clearfix",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "col-md-4 col-xs-6 u-padding-xs-bottom supporter",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "type": "ul",
+                    "wrapper_class": "",
+                    "class": "semantic row"
+                }
             }
         },
         "block": {

@@ -56,12 +56,33 @@ code p {
 }
 
 h1 {
-  font-size: 3.5em;
+  font-size: 1.75em;
 }
 
 h2 {
   margin-top: 1em;
-  font-size: 2.25em;
+  font-size: 1.5em;
+}
+
+h1,
+h2 {
+  font-weight: 400;
+}
+
+@media (min-width: 48em) {
+  h1 {
+    font-size: 3.5em;
+  }
+
+  h2 {
+    font-size: 2.25em;
+  }
+
+  h1,
+  h2 {
+    font-weight: 200;
+  }
+
 }
 
 h2:first-child {
@@ -170,7 +191,14 @@ fieldset .fieldset-legend {
   background: #000;
 }
 
-@media (min-width: 48em) {
+.l-header .menu > li {
+  box-shadow: inset 0 -0.1875rem 0 0 #808080;
+}
+
+@media (min-width: 62em) {
+  .l-header .menu > li {
+    box-shadow: none;
+  }
   .l-header,
   .l-header .menu > li > a {
     box-shadow: inset 0 -0.1875rem 0 0 #808080;
@@ -196,16 +224,6 @@ fieldset .fieldset-legend {
 
 .l-header a:active {
   background: #114a75;
-}
-
-.l-header .block-borg-blocks-branding {
-  width: 15.25rem;
-}
-
-.l-header .logo {
-  display: block;
-  padding: 1em 1.375em;
-  margin-left: -1.375em;
 }
 
 .front .l-header .logo {
@@ -246,15 +264,6 @@ fieldset .fieldset-legend {
 /**
  * Responsive menu styles
  */
-.menu-dropdown ul {
-  background: rgba(0, 0, 0, 0.25);
-  border-bottom-color: #20252e;
-}
-
-.js .menu-dropdown > li {
-  border-bottom-color: #292929;
-}
-
 .menu-dropdown a.disabled {
   color: #bbbbbb;
 }
@@ -1018,68 +1027,3 @@ ul.secondary li a:active {
 .responsive-tabs-mobile-header-padder {
   background: #555;
 }
-
-/**
- * Font related override utility classes
- */
-.color-inverse {
-  color: #fff;
-}
-
-.font-size-xxxxlarge {
-  font-size: 2.625rem;
-}
-
-.font-size-xxxlarge {
-  font-size: 2.25rem;
-}
-
-.font-size-xxlarge {
-  font-size: 1.8125rem;
-}
-
-.font-size-xlarge {
-  font-size: 1.625rem;
-  font-weight: 400;
-}
-
-.font-size-large {
-  font-size: 1.4375rem;
-}
-
-.font-size-medium {
-  font-size: 1.25rem;
-}
-
-.font-size-normal {
-  font-size: 1rem;
-}
-
-.font-size-small {
-  font-size: 0.875rem;
-}
-
-.font-size-xsmall {
-  font-size: 0.75rem;
-}
-
-.font-weight-bold {
-  font-weight: 600;
-}
-
-.font-weight-normal {
-  font-weight: 400;
-}
-
-.font-weight-light {
-  font-weight: 200;
-}
-
-.font-style-italic {
-  font-style: italic;
-}
-
-.font-style-normal {
-  font-style: normal;
-}
-

@@ -38,7 +38,13 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+}
+
+@media (min-width: 48em) {
+  .download-or-try {
+    font-size: 1.5rem;
+  }
 }
 
 .download-or-try .button {
@@ -52,17 +58,39 @@
 }
 
 .download-or-try a {
-  margin-bottom: 0.5em;
+  margin-right: 0;
+}
+
+@media (min-width: 48em) {
+  .download-or-try li {
+    display: inline-block;
+  }
+
+  .download-or-try a {
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+  }
+
 }
 
 .download-or-try:after {
   content: '';
   display: block;
-  width: 50%;
+  width: 80%;
   margin: 1.25em auto 0.75em;
-  padding: 25.935% 0 0;
+  /* Aspect ratio hack:
+  padding-top = $image-height / $image-width * $elements-width-percentage */
+  padding: 41.6% 0 0;
   background: url(../../image/homepage-hero-basis.png) no-repeat;
   background-size: 100% auto;
+}
+
+@media (min-width: 48em) {
+  .download-or-try:after {
+    width: 50%;
+    /* Aspect ratio hack adjustment with new width */
+    padding: 25.935% 0 0;
+  }
 }
 
 .download-or-try li:last-child a {

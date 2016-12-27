@@ -1,0 +1,431 @@
+/**
+ * Font related override utility classes
+ */
+.color-inverse {
+  color: #fff;
+}
+
+.font-size-xxxxlarge {
+  font-size: 2.625rem;
+}
+
+.font-size-xxxlarge {
+  font-size: 2.25rem;
+}
+
+.font-size-xxlarge {
+  font-size: 1.8125rem;
+}
+
+.font-size-xlarge {
+  font-size: 1.625rem;
+  font-weight: 400;
+}
+
+.font-size-large {
+  font-size: 1.4375rem;
+}
+
+.font-size-medium {
+  font-size: 1.25rem;
+}
+
+.font-size-normal {
+  font-size: 1rem;
+}
+
+.font-size-small {
+  font-size: 0.875rem;
+}
+
+.font-size-xsmall {
+  font-size: 0.75rem;
+}
+
+.font-weight-bold {
+  font-weight: 600;
+}
+
+.font-weight-normal {
+  font-weight: 400;
+}
+
+.font-weight-light {
+  font-weight: 200;
+}
+
+.font-style-italic {
+  font-style: italic;
+}
+
+.font-style-normal {
+  font-style: normal;
+}
+
+/**
+ * Custom utility classes
+ */
+.disable-text-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/**
+ * Semantic class
+ *
+ * Styles to remove default styles when tags are meant to be semantic only
+ * Does not change the default setting for the display style.
+ */
+h1.semantic,
+h2.semantic,
+h3.semantic,
+h4.semantic,
+h5.semantic,
+h6.semantic,
+p.semantic{
+  font-size: 100%;
+  font-weight: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+blockquote.semantic {
+  margin: 0;
+  padding: 0;
+}
+
+code.semantic,
+kbd.semantic,
+pre.semantic {
+  font: inherit;
+  white-space: normal;
+}
+
+pre.semantic {
+  margin: 0;
+}
+
+address.semantic,
+cite.semantic,
+dfn.semantic,
+em.semantic,
+var.semantic {
+  font-style: inherit;
+}
+
+code.semantic,
+samp.semantic {
+  font: inherit;
+}
+
+del.semantic,
+ins.semantic,
+s.semantic,
+strike.semantic {
+  text-decoration: inherit;
+}
+
+q.semantic:before,
+q.semantic:after {
+  content: '';
+}
+
+sub.semantic,
+sup.semantic {
+  position: static;
+  font-size: inherit;
+  line-height: inherit;
+  vertical-align: inherit;
+}
+
+strong.semantic {
+  font-weight: inherit;
+}
+
+figure.semantic {
+  margin: 0;
+}
+
+mark.semantic {
+  background: transparent;
+  color: inherit;
+}
+
+ul.semantic,
+ol.semantic {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+dl.semantic {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+dl.semantic > dd {
+  margin-left: 0;
+}
+
+/**
+ * Float classes
+ */
+.u-float-left {
+  float: left;
+}
+
+.u-float-right {
+  float: right;
+}
+
+.u-float-none {
+  float: none;
+}
+
+.u-clear-left {
+  clear: left;
+}
+
+.u-clear-right {
+  clear: right;
+}
+
+@media (min-width: 34em) {
+  .u-float-sm-left {
+    float: left;
+  }
+
+  .u-float-sm-right {
+    float: right;
+  }
+
+  .u-float-sm-none {
+    float: none;
+  }
+
+  .u-clear-sm-left {
+    clear: left;
+  }
+
+  .u-clear-sm-right {
+    clear: right;
+  }
+
+}
+
+@media (min-width: 48em) {
+  .u-float-md-left {
+    float: left;
+  }
+
+  .u-float-md-right {
+    float: right;
+  }
+
+  .u-float-md-none {
+    float: none;
+  }
+
+  .u-clear-md-left {
+    clear: left;
+  }
+
+  .u-clear-md-right {
+    clear: right;
+  }
+
+}
+
+@media (min-width: 62em) {
+  .u-float-lg-left {
+    float: left;
+  }
+
+  .u-float-lg-right {
+    float: right;
+  }
+
+  .u-float-lg-none {
+    float: none;
+  }
+
+  .u-clear-lg-left {
+    clear: left;
+  }
+
+  .u-clear-lg-right {
+    clear: right;
+  }
+
+}
+
+@media (min-width: 75em) {
+  .u-float-xl-left {
+    float: left;
+  }
+
+  .u-float-xl-right {
+    float: right;
+  }
+
+  .u-float-xl-none {
+    float: none;
+  }
+
+  .u-clear-xl-left {
+    clear: left;
+  }
+
+  .u-clear-xl-right {
+    clear: right;
+  }
+
+}
+
+/**
+ * Padding
+ */
+.u-padding-xs-horizontal {
+  padding-right: 2rem;
+  padding-left: 2rem;
+}
+
+.u-padding-xs-left {
+  padding-left: 2rem;
+}
+
+.u-padding-xs-right {
+  padding-right: 2rem;
+}
+
+.u-padding-xs-vertical {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.u-padding-xs-top {
+  padding-top: 2rem;
+}
+
+.u-padding-xs-bottom {
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 34em) {
+  .u-padding-sm-horizontal {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+
+  .u-padding-sm-left {
+    padding-left: 2rem;
+  }
+
+  .u-padding-sm-right {
+    padding-right: 2rem;
+  }
+
+  .u-padding-sm-vertical {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .u-padding-sm-top {
+    padding-top: 2rem;
+  }
+
+  .u-padding-sm-bottom {
+    padding-bottom: 2rem;
+  }
+
+}
+
+@media (min-width: 48em) {
+  .u-padding-md-horizontal {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+
+  .u-padding-md-left {
+    padding-left: 2rem;
+  }
+
+  .u-padding-md-right {
+    padding-right: 2rem;
+  }
+
+  .u-padding-md-vertical {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .u-padding-md-top {
+    padding-top: 2rem;
+  }
+
+  .u-padding-md-bottom {
+    padding-bottom: 2rem;
+  }
+
+}
+
+@media (min-width: 62em) {
+  .u-padding-lg-horizontal {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+
+  .u-padding-lg-left {
+    padding-left: 2rem;
+  }
+
+  .u-padding-lg-right {
+    padding-right: 2rem;
+  }
+
+  .u-padding-lg-vertical {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .u-padding-lg-top {
+    padding-top: 2rem;
+  }
+
+  .u-padding-lg-bottom {
+    padding-bottom: 2rem;
+  }
+
+}
+
+@media (min-width: 75em) {
+  .u-padding-xl-horizontal {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+
+  .u-padding-xl-left {
+    padding-left: 2rem;
+  }
+
+  .u-padding-xl-right {
+    padding-right: 2rem;
+  }
+
+  .u-padding-xl-vertical {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .u-padding-xl-top {
+    padding-top: 2rem;
+  }
+
+  .u-padding-xl-bottom {
+    padding-bottom: 2rem;
+  }
+
+}
