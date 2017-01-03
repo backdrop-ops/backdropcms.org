@@ -11,5 +11,11 @@ stylesheets[all][] = css/component/menu-dropdown.css
 stylesheets[all][] = css/component/burger-toggler.css
 stylesheets[all][] = css/component/header.css
 stylesheets[all][] = css/component/header-search.css
+stylesheets[all][] = css/component/menu-tree.css
+stylesheets[all][] = css/component/book-pager.css
+stylesheets[all][] = css/layout.css
 stylesheets[all][] = css/utility.css
 stylesheets[all][] = css/skin.css
+
+; Removing stylesheets
+stylesheets[all][] = book.theme.css

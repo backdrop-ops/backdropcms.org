@@ -1,0 +1,116 @@
+ /* @todo Temporary styles until final design is implemented */
+.layout--category-project-release h2,
+.view-project-release-download-table .view-header,
+.view-project-release-download-table th,
+.layout--category-project-release ul.links.inline {
+  display: none;
+}
+
+.l-header {
+  margin-bottom: 0;
+}
+
+.l-page-title {
+  position: relative;
+  z-index: 0;
+  padding: 1em 0;
+}
+
+.l-page-title:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: 100vw;
+  height: 100%;
+  padding-bottom: 3.1875rem;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  background: url('../../image/texture-gray.png');
+  z-index: -1;
+}
+
+nav.tabs {
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 1.5rem;
+}
+
+nav.tabs:before {
+  display: none;
+}
+
+ul.primary {
+  padding: 0;
+}
+
+.layout--category-project-release .content h2 {
+  display: block;
+}
+/* End temp styles */
+
+.node.view-mode-full h2,
+.node.view-mode-full h2,
+.node.view-mode-full h2,
+.node.view-mode-full .form-item label{
+  font-size: 1em;
+  margin: 2em 0 1em;
+  padding: 1.5em 0 0;
+  border-top: 0.1875rem solid #c6cad2;
+  font-weight: 600;
+}
+
+.view-project-release-download-table .view-content {
+  font-size: 1.3em;
+}
+
+.view-project-release-download-table th {
+  font-weight: 400;
+  font-size: .8em;
+}
+
+.view-project-release-download-table th,
+.view-project-release-download-table td {
+  padding: 0 .8em .0 0;
+  border: 0;
+  vertical-align: bottom;
+}
+
+.view-project-release-download-table .recommended td:first-child a {
+  display: inline-block;
+  font-size: 1.4em;
+  margin: 0 .2em 0 0;
+}
+
+.view-project-release-download-table .recommended td:first-child a:after {
+  content: "\f0ab";
+  font-family: 'FontAwesome';
+  display: inline-block;
+  padding: 0 0 0 .2em;
+}
+
+/* This should add a headline to docs that don't have one */
+.field-name-body .field-item > p:first-child:before {
+  content: 'Documentation';
+  display: block;
+  font-size: 1em;
+  margin: 2em 0 1em;
+  padding: 1.5em 0 0;
+  border-top: 0.1875rem solid #c6cad2;
+  font-weight: 600;
+}
+
+.layout--category-project-release .form-item {
+  font-size: 1.3em;
+}
+
+.github-clone input {
+  display: block;
+  width: 100%;
+  padding: 0.25em 0;
+  text-indent: 0.5em;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 0.75rem;
+  cursor: text;
+}

@@ -1,0 +1,69 @@
+.menu-tree,
+.menu-tree li,
+.menu-tree ul,
+.block-book-navigation ul,
+.block-book-navigation li {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-tree,
+.block-book-navigation {
+  font-size: 1.125em;
+}
+
+.menu-tree,
+.menu-tree ul,
+.block-book-navigation ul {
+  padding: 0 0 0.75em;
+}
+
+.menu-tree ul,
+.block-book-navigation ul ul {
+  padding-left: 1.125em;
+}
+
+.menu-tree li,
+.block-book-navigation li {
+  background: #fff;
+}
+
+.menu-tree li.has-children a,
+.block-book-navigation li.has-children > a {
+  font-weight: 600;
+}
+
+.menu-tree li.active:before,
+.block-book-navigation ul ul li.active:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -1.125em;
+  display: block;
+  width: 0;
+  height: 100%;
+  border-left: 0.25em solid #0074bd;
+}
+
+.menu-tree a,
+.block-book-navigation a {
+  display: inline-block;
+  padding: 0.25em 0;
+  text-decoration: none;
+}
+
+.menu-tree:before,
+.menu-tree ul:before,
+.block-book-navigation ul:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 0;
+  height: 100%;
+  height: calc(100% - 1em);
+  border-left: 0.25em solid #c6cad2;
+}

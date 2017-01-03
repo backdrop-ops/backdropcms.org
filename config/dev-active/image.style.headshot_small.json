@@ -1,0 +1,15 @@
+{
+    "_config_name": "image.style.headshot_small",
+    "label": "headshot_small",
+    "name": "headshot_small",
+    "effects": [
+        {
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": "150",
+                "height": "150"
+            },
+            "weight": "1"
+        }
+    ]
+}

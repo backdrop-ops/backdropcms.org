@@ -55,6 +55,10 @@ code p {
   padding: 0;
 }
 
+iframe {
+  max-width: 100%;
+}
+
 h1 {
   font-size: 1.75em;
 }
@@ -62,6 +66,11 @@ h1 {
 h2 {
   margin-top: 1em;
   font-size: 1.5em;
+}
+
+.l-sidebar h2 {
+  font-size: 1.4375em;
+  font-weight: 400;
 }
 
 h1,
@@ -91,6 +100,14 @@ h2:first-child {
 
 h3 {
   margin-top: 1.25em;
+}
+
+.l-sidebar h3 {
+  font-size: 1.25em;
+}
+
+.l-sidebar h4 {
+  font-size: 1.125em;
 }
 
 ol {
@@ -538,21 +555,26 @@ select.form-select:focus {
 
 input.form-submit,
 button.form-submit,
-.button {
-  text-align: center;
+.button,
+.links .node-readmore a {
+  display: inline-block;
+  padding: 0.41667em 1.25em;
+  line-height: 1.4;
+  border: 0.125em solid #c6cad2;
+  border-radius: 2.875em;
+  transition: background 0.25s;
   text-transform: none;
-  color: #333;
-  letter-spacing: 0.025em;
-  line-height: 2.625;
-  background: #e5e5e6;
+  outline: none;
 }
 
 .button:hover,
 .button:focus,
 input.form-submit:hover,
-input.form-submit:focus {
-  color: #333;
+input.form-submit:focus,
+.links .node-readmore a:hover,
+.links .node-readmore a:focus {
   background: #e5e5e6;
+  outline: none;
 }
 
 .button:active,
@@ -570,19 +592,29 @@ button.button-primary,
 .ui-widget-header .ui-state-default {
   color: #fff;
   border: 0.125rem solid #0074bd;
-  color: #0074bd;
   border-radius: 2.875em;
+  color: #0074bd;
   background: #fff;
   text-decoration: none;
 }
 
 .button:hover,
+.button:focus,
 input.button-primary:hover,
 input.button-primary:focus,
 button.button-primary:hover,
 button.button-primary:focus {
-  color: #114a75;
+  color: #fff;
+  border-color: #0074bd;
+  background-color: #0074bd;
+}
+
+.button:active,
+input.button-primary:active,
+button.button-primary:active {
+  color: #fff;
   border-color: #114a75;
+  background-color: #114a75;
 }
 
 input.button-primary:active,
@@ -873,7 +905,7 @@ ul.action-links a {
  */
 nav.tabs:before {
   /* Background behind primary tabs */
-  background-color: #555;
+  background-image: url(../image/texture-gray.png);
 }
 
 ul.primary {
@@ -888,9 +920,9 @@ ul.primary li.active a,
 .expand-dropdown-tabs-control,
 .responsive-tabs-mobile .expand-dropdown-tabs-control:before,
 .responsive-tabs-mobile .expand-dropdown-tabs-label {
-  border-color: #555; /* Should be color of bg behind tabs */
-  color: #757575;
-  background-color: #dee2ea;
+  border-color: #999; /* Should be color of bg behind tabs */
+  color: #000;
+  background-color: #ccc;
 }
 
 ul.primary li.active a,
@@ -1026,4 +1058,39 @@ ul.secondary li a:active {
 
 .responsive-tabs-mobile-header-padder {
   background: #555;
+}
+
+.layout--name-default-with-sub-nav .block-system-main {
+  font-size: 1.1875em;
+}
+
+/**
+ * Make user picture have a clipped corner effect
+ */
+.field-name-field-photo {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.post-meta .field-name-field-photo {
+  width: 4.5em;
+  height: 4.5em;
+}
+
+.field-name-field-photo img {
+  display: block;
+}
+
+.field-name-field-photo:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40%;
+  height: 0;
+  padding: 40% 0 0;
+  -webkit-transform: translate(50%, 50%) rotate(45deg);
+  transform: translate(50%, 50%) rotate(45deg);
+  background: #fff;
 }

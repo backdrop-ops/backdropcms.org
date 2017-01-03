@@ -1,0 +1,87 @@
+.news-listing-list .post-meta {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0 0 1em;
+}
+
+.news-listing-list .post-meta .field-name-field-photo {
+  position: relative;
+  width: 3em;
+  height: 3em;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+.news-listing-list .post-meta .field-name-field-photo img {
+}
+
+.news-listing-list .submitted {
+  padding-left: 0.75em;
+}
+
+.news-listing-list .post-read-more {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  margin: 0 0 1em;
+}
+
+.news-listing-list .field-name-field-tags {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  padding: 0.25em 0 0;
+  clear: both;
+}
+
+.news-listing-list .field-name-field-tags .field-item {
+  padding: 0 0 0 0.5em;
+}
+
+.news-listing-list .field-name-field-tags a {
+  display: inline-block;
+  padding: 0.125em 0.625em;
+  border: 0.125em solid #eee;
+  border-radius: 0.25em;
+  background: #eee;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-transition: background 0.25s;
+  transition: background 0.25s;
+}
+
+.news-listing-list .field-name-field-tags a:hover,
+.news-listing-list .field-name-field-tags a:focus {
+  background: #fff;
+}
+
+.news-listing-list .content img {
+  margin: 0 0 1.5em 1.5em;
+  float: right;
+}
+
+.news-listing-list .links {
+  overflow: visible;
+}
+
+.news-listing-list .links a {
+  white-space: nowrap;
+}

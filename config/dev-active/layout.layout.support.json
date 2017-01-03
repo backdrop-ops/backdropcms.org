@@ -7,7 +7,7 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout_template": "double_fixed_inner_rev",
+    "layout_template": "boxton",
     "disabled": false,
     "settings": {
         "title": "Get help with Backdrop CMS",
@@ -15,33 +15,28 @@
         "title_block": null
     },
     "positions": {
-        "sidebar": [
-            "c2aa251f-a884-4ab0-bb4c-765adfae3828",
-            "8c924952-e403-4fa8-a203-3e915942230c"
+        "header": [
+            "b50f8d7b-b1d9-4f5b-9101-1fafdd41eb8b",
+            "a207f2b9-ed77-4284-af00-e27bb6cf1f27",
+            "effc2f98-f53f-4d5f-b900-e86594d943b8"
         ],
-        "drawer": [
-            "77695da8-bd77-4c30-8448-720b2e2af607",
-            "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80"
-        ],
-        "content-top": [],
+        "top": [],
         "content": [
             "4543880d-1a0a-413e-8300-0045a93106df",
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
             "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
             "e21a9e69-e89f-4b7a-b809-9e961daa1208"
         ],
-        "content_sidebar": [
-            "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
-            "aa20864f-9388-46a1-a608-8eb21c6b7b63"
-        ],
+        "bottom": [],
         "footer": [
             "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
             "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
             "daef468e-fc1c-4894-be00-aa3ba55fdbb5"
-        ]
+        ],
+        "title": []
     },
     "content": {
-        "c2aa251f-a884-4ab0-bb4c-765adfae3828": {
+        "b50f8d7b-b1d9-4f5b-9101-1fafdd41eb8b": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "module": "borg_blocks",
@@ -53,7 +48,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "c2aa251f-a884-4ab0-bb4c-765adfae3828",
+                "uuid": "b50f8d7b-b1d9-4f5b-9101-1fafdd41eb8b",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -64,19 +59,24 @@
                 }
             }
         },
-        "8c924952-e403-4fa8-a203-3e915942230c": {
+        "a207f2b9-ed77-4284-af00-e27bb6cf1f27": {
             "plugin": "system:main-menu",
             "data": {
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "3"
+                    },
                     "contexts": []
                 },
-                "uuid": "8c924952-e403-4fa8-a203-3e915942230c",
+                "uuid": "a207f2b9-ed77-4284-af00-e27bb6cf1f27",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -87,42 +87,19 @@
                 }
             }
         },
-        "77695da8-bd77-4c30-8448-720b2e2af607": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "77695da8-bd77-4c30-8448-720b2e2af607",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80": {
+        "effc2f98-f53f-4d5f-b900-e86594d943b8": {
             "plugin": "search:form",
             "data": {
                 "module": "search",
                 "delta": "form",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80",
+                "uuid": "effc2f98-f53f-4d5f-b900-e86594d943b8",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -224,56 +201,6 @@
                     "data": {
                         "settings": {
                             "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "Online Resources",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>The Backdrop CMS community uses a handful of tools for communication.</p>\n\n<ul>\n  <li><a href=\"https://gitter.im/backdrop/backdrop-issues\"><i class=\"fa fa-comments-o\"></i> Live Chat: GitterIM</a></li>\n  <li><a href=\"http://github.com/backdrop/backdrop-issues/issues\"><i class=\"fa fa-github\"></i> Issue Queue: Github</a></li>\n  <li><a href=\"http://api.backdropcms.org/\"><i class=\"fa fa-puzzle-piece\"></i> Developer Documentation (API)</a></li>\n  <li><a href=\"https://plus.google.com/+BackdropcmsOrg\"><i class=\"fa fa-google-plus\"></i> Weekly Meetings: Google hangouts</a></li>\n  <li><a href=\"https://www.youtube.com/user/backdropcms\"><i class=\"fa fa-youtube\"></i> Video archives: YouTube</a></li>\n  <li><a href=\"https://www.linkedin.com/groups/6930143\"><i class=\"fa fa-linkedin\"></i> LinkedIn group</a></li>\n  <li><a href=\"http://www.facebook.com/backdropcms\"><i class=\"fa fa-facebook\"></i> Facebook group</a></li>\n  <li><a href=\"http://twitter.com/backdropcms\"><i class=\"fa fa-twitter\"></i> Twitter (use #BackdropCMS)</a></li>\n</ul>",
-                    "format": "full_html"
-                },
-                "uuid": "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "aa20864f-9388-46a1-a608-8eb21c6b7b63": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "Books",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>Two new books by Todd Tomlinson, author of “Pro Drupal 7 Development”:</p>\n\n<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\"><img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" /></a><br/>\n“<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a>”\n\n<a href=\"http://www.amazon.com/Migrating-Drupal-Backdrop-Todd-Tomlinson/dp/1484217594\"><img src=\"https://backdropcms.org/files/inline-images/book.jpg\" /></a><br/>\n“<a href=\"http://www.amazon.com/Migrating-Drupal-Backdrop-Todd-Tomlinson/dp/1484217594\">Migrating from Drupal to Backdrop</a>”",
-                    "format": "full_html"
-                },
-                "uuid": "aa20864f-9388-46a1-a608-8eb21c6b7b63",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": "backdrop-books"
                         }
                     }
                 }

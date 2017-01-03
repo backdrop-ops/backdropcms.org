@@ -27,7 +27,10 @@
         "content": [
             "712c691e-6273-4634-8000-d97d82d86e88",
             "1630bca7-324e-4158-b200-e5e7f99143fe",
+            "d58c9f4d-1339-41bf-af00-e0ec7e705578",
+            "a0ea0b0c-3879-46ff-b543-677043a065b1",
             "67447c68-4227-4401-ad00-f50c7b1a6690",
+            "d30149ef-749f-4ab8-b704-04542eea404c",
             "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51",
             "eb9135d6-652f-45c3-9a00-c8de2519591d"
         ],
@@ -226,6 +229,56 @@
                 }
             }
         },
+        "d58c9f4d-1339-41bf-af00-e0ec7e705578": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Free and Open Source",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>Open Source has the ability to change the world for the better. All code included with Backdrop is under an <a href=\"/about/license\">Open Source license</a> that allows anyone to use it free of charge, regardless of their beliefs or intentions. All code included with Backdrop has always been, and always will be, Free and Open Source.</p>\n\n<p><a href=\"/philosophy\">Find our more about our philosophy and principles</a></p>\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "d58c9f4d-1339-41bf-af00-e0ec7e705578",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "free-open-source col-lg-6 u-float-lg-left u-padding-lg-right"
+                        }
+                    }
+                }
+            }
+        },
+        "a0ea0b0c-3879-46ff-b543-677043a065b1": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Get Involved",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>There are many ways to support Backdrop CMS:</p>\n\n<ul>\n\t<li><a href=\"https://www.google.com/calendar/ical/7vr3v8ko1cu39mvdv4m19thn5g%40group.calendar.google.com/public/basic.ics\">We meet weekly (iCal Feed)</a> to discuss features, issues, design, code &amp; community outreach</li>\n\t<li><a href=\"https://github.com/backdrop/backdrop-issues/issues\">Request features, report bugs, discuss ideas in the queues (GitHub)</a></li>\n\t<li><a href=\"/donate\">Donate to the project via Paypal</a>, donate at certain levels and <a href=\"/shop\">you can get a t-shirt or a hoodie</a></li>\n</ul>\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "a0ea0b0c-3879-46ff-b543-677043a065b1",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "get-involved col-lg-6 u-float-lg-left u-padding-lg-left"
+                        }
+                    }
+                }
+            }
+        },
         "67447c68-4227-4401-ad00-f50c7b1a6690": {
             "plugin": "views:news-block",
             "data": {
@@ -243,7 +296,32 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
+                            "classes": "col-lg-6 u-float-lg-left u-padding-lg-right u-clear-lg-left"
+                        }
+                    }
+                }
+            }
+        },
+        "d30149ef-749f-4ab8-b704-04542eea404c": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\" class=\"learn-backdrop-book-cover\"><img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" /></a>\n<h2>Learn How to use Backdrop</h2>\n<h3><a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a></h3> <div>by Todd Tomlinson</div>\n<p>Author of “Pro Drupal 7 Development”, is available now from <a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Amazon</a>.</p>",
+                    "format": "full_html"
+                },
+                "uuid": "d30149ef-749f-4ab8-b704-04542eea404c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "learn-backdrop col-lg-6 u-float-lg-left u-padding-lg-left"
                         }
                     }
                 }
@@ -266,7 +344,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "l-content-wrapper col-lg-6 u-float-lg-left u-padding-lg-right"
+                            "classes": "l-content-wrapper col-lg-6 u-float-lg-left u-padding-lg-right u-clear-lg-left"
                         }
                     }
                 }
@@ -279,7 +357,7 @@
                 "delta": "supporter",
                 "settings": {
                     "title_display": "custom",
-                    "title": "Show your support for Backdrop CMS",
+                    "title": "Show your support",
                     "style": "dynamic",
                     "block_settings": [],
                     "contexts": []

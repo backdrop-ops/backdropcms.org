@@ -7,7 +7,7 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout_template": "double_fixed_inner_rev",
+    "layout_template": "moscone_flipped",
     "disabled": false,
     "settings": {
         "title": "",
@@ -15,32 +15,31 @@
         "title_block": null
     },
     "positions": {
-        "sidebar": [
-            "7b375897-7e90-4c26-b159-89cfcaa8ba35",
-            "fb73fad0-2b82-4e46-8500-fe0527414abd"
+        "header": [
+            "48233e3e-764b-4ab1-af09-9e86bd7b9711",
+            "92f34f58-b728-473a-9e48-7285b92b8922",
+            "420a3dfb-2e66-4a60-a900-de4f2511ca2c"
         ],
-        "drawer": [
-            "cf0a1805-094b-4df6-bc00-f1a75157b6c2",
-            "c7018f1e-b445-4631-9436-54536b25f7e0"
-        ],
-        "content-top": [],
+        "top": [],
         "content": [
             "cf46b35a-9f1b-4f5d-bc00-bda51d35fe3b"
         ],
-        "content_sidebar": [
-            "cf8c10df-fd63-4cb1-8c00-d94702f6000c",
-            "ec44e1e9-2b5e-4ef5-ae2e-46d8f2ec8689",
-            "93fc73fc-86d3-4840-9141-65e29bef9e2d",
-            "b4b3a835-c7a3-4022-bd00-dfc3e01a7313"
+        "sidebar": [
+            "5ec8cdff-6557-4e88-8500-a47beaf0cdfc",
+            "b1fdc2e9-ffb1-4a35-a300-cd6cc1d9ad8b",
+            "1da6b9b5-6829-4bb9-a038-562a377530bf",
+            "1b9d7de8-754f-4d19-bc3b-59432248df2c"
         ],
+        "bottom": [],
         "footer": [
             "4fbe9b97-2be8-401e-ab42-663e996d1908",
             "e1da808a-a0d6-4889-9107-7b39e316eb74",
             "2a9da480-ebda-4d24-ab00-b60b903a299e"
-        ]
+        ],
+        "title": []
     },
     "content": {
-        "7b375897-7e90-4c26-b159-89cfcaa8ba35": {
+        "48233e3e-764b-4ab1-af09-9e86bd7b9711": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "module": "borg_blocks",
@@ -52,7 +51,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "7b375897-7e90-4c26-b159-89cfcaa8ba35",
+                "uuid": "48233e3e-764b-4ab1-af09-9e86bd7b9711",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -63,19 +62,24 @@
                 }
             }
         },
-        "fb73fad0-2b82-4e46-8500-fe0527414abd": {
+        "92f34f58-b728-473a-9e48-7285b92b8922": {
             "plugin": "system:main-menu",
             "data": {
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "3"
+                    },
                     "contexts": []
                 },
-                "uuid": "fb73fad0-2b82-4e46-8500-fe0527414abd",
+                "uuid": "92f34f58-b728-473a-9e48-7285b92b8922",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -86,42 +90,19 @@
                 }
             }
         },
-        "cf0a1805-094b-4df6-bc00-f1a75157b6c2": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "cf0a1805-094b-4df6-bc00-f1a75157b6c2",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "c7018f1e-b445-4631-9436-54536b25f7e0": {
+        "420a3dfb-2e66-4a60-a900-de4f2511ca2c": {
             "plugin": "search:form",
             "data": {
                 "module": "search",
                 "delta": "form",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "c7018f1e-b445-4631-9436-54536b25f7e0",
+                "uuid": "420a3dfb-2e66-4a60-a900-de4f2511ca2c",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -160,7 +141,7 @@
                 }
             }
         },
-        "cf8c10df-fd63-4cb1-8c00-d94702f6000c": {
+        "5ec8cdff-6557-4e88-8500-a47beaf0cdfc": {
             "plugin": "views:project_release_download_table-block_1",
             "data": {
                 "module": "views",
@@ -172,7 +153,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "cf8c10df-fd63-4cb1-8c00-d94702f6000c",
+                "uuid": "5ec8cdff-6557-4e88-8500-a47beaf0cdfc",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -183,13 +164,13 @@
                 }
             }
         },
-        "ec44e1e9-2b5e-4ef5-ae2e-46d8f2ec8689": {
+        "b1fdc2e9-ffb1-4a35-a300-cd6cc1d9ad8b": {
             "plugin": "field:field_block:node-field_download_count",
             "data": {
                 "module": "field",
                 "delta": "field_block",
                 "settings": {
-                    "title_display": "none",
+                    "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
@@ -204,7 +185,7 @@
                     "delta_limit": "",
                     "delta_reversed": 0
                 },
-                "uuid": "ec44e1e9-2b5e-4ef5-ae2e-46d8f2ec8689",
+                "uuid": "b1fdc2e9-ffb1-4a35-a300-cd6cc1d9ad8b",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -215,19 +196,19 @@
                 }
             }
         },
-        "93fc73fc-86d3-4840-9141-65e29bef9e2d": {
+        "1da6b9b5-6829-4bb9-a038-562a377530bf": {
             "plugin": "project_usage:project_usage",
             "data": {
                 "module": "project_usage",
                 "delta": "project_usage",
                 "settings": {
-                    "title_display": "none",
+                    "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "93fc73fc-86d3-4840-9141-65e29bef9e2d",
+                "uuid": "1da6b9b5-6829-4bb9-a038-562a377530bf",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -238,19 +219,19 @@
                 }
             }
         },
-        "b4b3a835-c7a3-4022-bd00-dfc3e01a7313": {
+        "1b9d7de8-754f-4d19-bc3b-59432248df2c": {
             "plugin": "project_github:project_github",
             "data": {
                 "module": "project_github",
                 "delta": "project_github",
                 "settings": {
-                    "title_display": "none",
+                    "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "b4b3a835-c7a3-4022-bd00-dfc3e01a7313",
+                "uuid": "1b9d7de8-754f-4d19-bc3b-59432248df2c",
                 "style": {
                     "plugin": "default",
                     "data": {

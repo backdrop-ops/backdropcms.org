@@ -2,9 +2,10 @@
     "_config_name": "block.custom.9",
     "delta": "9",
     "info": "Twitter widget",
-    "title": "Tweets",
+    "title": "",
     "body": {
-        "value": "            <a class=\"twitter-timeline\"  href=\"https://twitter.com/backdropcms\" data-widget-id=\"384881800230612992\">Tweets by @backdropcms</a>\r\n            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>\r\n          ",
+        "value": "            <a class=\"twitter-timeline\"  href=\"https://twitter.com/backdropcms\" data-widget-id=\"384881800230612992\">Tweets by @backdropcms</a>\n            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>\n          ",
         "format": "full_html"
-    }
+    },
+    "description": "A reusable custom block."
 }

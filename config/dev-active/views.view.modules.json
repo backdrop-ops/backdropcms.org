@@ -962,12 +962,12 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 0,
-                        "content": "<h2>Themes are skins for your site that allow you to change the look, feel, and general appearance.</h2>",
-                        "format": "filtered_html",
+                        "content": "<h1 class=\"page-title\">Themes for Backdrop CMS</h1>\n<h2>Themes are skins for your site that allow you to change the look, feel, and general appearance.</h2>\n",
+                        "format": "full_html",
                         "tokenize": 0
                     }
                 },
-                "title": "Themes for Backdrop CMS"
+                "title": ""
             }
         },
         "layouts": {
@@ -1137,12 +1137,12 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 0,
-                        "content": "<h2>Layouts divide pages on your site into different columns or regions where content can be placed.</h2>",
-                        "format": "filtered_html",
+                        "content": "<h1 class=\"page-title\">Layouts for Backdrop CMS</h1>\n<h2>Layouts divide pages on your site into different columns or regions where content can be placed.</h2>\n",
+                        "format": "full_html",
                         "tokenize": 0
                     }
                 },
-                "title": "Layouts for Backdrop CMS"
+                "title": ""
             }
         },
         "feed_1": {

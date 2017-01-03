@@ -32,7 +32,7 @@
                         "items_per_page": "1"
                     }
                 },
-                "style_plugin": "default",
+                "style_plugin": "list",
                 "row_plugin": "node",
                 "fields": {
                     "title": {
@@ -267,7 +267,16 @@
                     "links": 1,
                     "comments": 0
                 },
-                "header": []
+                "header": [],
+                "style_options": {
+                    "row_class": "news-listing",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "uses_fields": 0,
+                    "type": "ul",
+                    "wrapper_class": "",
+                    "class": "news-listing-list semantic"
+                }
             }
         },
         "block": {
@@ -300,21 +309,7 @@
                     "separator": "",
                     "hide_empty": 0
                 },
-                "footer": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "empty": 0,
-                        "content": "<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\"><img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" /></a><br/>\n“<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a>” by Todd Tomlinson, author of “Pro Drupal 7 Development”, is available now from <a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Amazon</a>.",
-                        "format": "full_html",
-                        "tokenize": 0
-                    }
-                }
+                "footer": []
             }
         },
         "page_1": {
@@ -358,22 +353,8 @@
                     "header": false
                 },
                 "pager_options": null,
-                "title": "News & Announcements",
-                "header": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "empty": 0,
-                        "content": "<h2>The Backdrop Blog:</h2>\n",
-                        "format": "filtered_html",
-                        "tokenize": 0
-                    }
-                }
+                "title": "News, Blog & Announcements",
+                "header": []
             }
         },
         "feed_1": {

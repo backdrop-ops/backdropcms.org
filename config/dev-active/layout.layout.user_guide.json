@@ -7,38 +7,37 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout_template": "double_fixed_inner_rev",
-    "disabled": false,
+    "layout_template": "moscone_flipped",
+    "disabled": true,
     "settings": {
         "title": "",
         "title_display": "default",
         "title_block": null
     },
     "positions": {
-        "sidebar": [
-            "097f5235-00e7-4ce1-ac00-d49b0e0588bb",
-            "9d55288e-828e-4c47-8000-f51089d1a51a"
+        "header": [
+            "2de64e13-04bc-4b0c-a200-0ecb0ed2fc47",
+            "45c5ffce-6301-43c8-ab09-9dc5acf1d723",
+            "aa7fab07-c5bc-4e00-a200-ab69d2809baa"
         ],
-        "drawer": [
-            "b117c07c-a1ec-48d9-bd00-ec0591daacbc",
-            "ecc067b0-ed32-4052-9201-01ebdfeda5de"
-        ],
-        "content-top": [],
+        "top": [],
         "content": [
             "35318ea2-97a4-49f4-b801-1b60e9ace706",
             "ead0b165-6c3c-41a4-9c31-49cf350497d9"
         ],
-        "content_sidebar": [
-            "89d0e596-9881-41cf-9d5f-95d793000534"
+        "sidebar": [
+            "dcf825ee-dec6-4965-af2d-45527d6cd777"
         ],
+        "bottom": [],
         "footer": [
             "14e6d29f-104b-44cf-8c00-b14be74ea7f1",
             "a7e09823-2c39-4b98-8300-dccebf2aea09",
             "746c2691-2468-4403-be00-c3e1aba4da73"
-        ]
+        ],
+        "title": []
     },
     "content": {
-        "097f5235-00e7-4ce1-ac00-d49b0e0588bb": {
+        "2de64e13-04bc-4b0c-a200-0ecb0ed2fc47": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "module": "borg_blocks",
@@ -50,7 +49,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "097f5235-00e7-4ce1-ac00-d49b0e0588bb",
+                "uuid": "2de64e13-04bc-4b0c-a200-0ecb0ed2fc47",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -61,19 +60,24 @@
                 }
             }
         },
-        "9d55288e-828e-4c47-8000-f51089d1a51a": {
+        "45c5ffce-6301-43c8-ab09-9dc5acf1d723": {
             "plugin": "system:main-menu",
             "data": {
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "3"
+                    },
                     "contexts": []
                 },
-                "uuid": "9d55288e-828e-4c47-8000-f51089d1a51a",
+                "uuid": "45c5ffce-6301-43c8-ab09-9dc5acf1d723",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -84,42 +88,19 @@
                 }
             }
         },
-        "b117c07c-a1ec-48d9-bd00-ec0591daacbc": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "b117c07c-a1ec-48d9-bd00-ec0591daacbc",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "ecc067b0-ed32-4052-9201-01ebdfeda5de": {
+        "aa7fab07-c5bc-4e00-a200-ab69d2809baa": {
             "plugin": "search:form",
             "data": {
                 "module": "search",
                 "delta": "form",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "ecc067b0-ed32-4052-9201-01ebdfeda5de",
+                "uuid": "aa7fab07-c5bc-4e00-a200-ab69d2809baa",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -181,7 +162,7 @@
                 }
             }
         },
-        "89d0e596-9881-41cf-9d5f-95d793000534": {
+        "dcf825ee-dec6-4965-af2d-45527d6cd777": {
             "plugin": "book:navigation",
             "data": {
                 "module": "book",
@@ -195,7 +176,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "89d0e596-9881-41cf-9d5f-95d793000534",
+                "uuid": "dcf825ee-dec6-4965-af2d-45527d6cd777",
                 "style": {
                     "plugin": "default",
                     "data": {

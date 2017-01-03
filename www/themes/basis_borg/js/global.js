@@ -11,6 +11,7 @@ $(document).jQuery(document).ready(function($) {
     '</label>');
 
   $('.block-system-main-menu .block-content').prepend($hamburgerToggler);
+  console.log('farts');
 });
 
 
