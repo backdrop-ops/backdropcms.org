@@ -29,14 +29,17 @@ function borg_cleanup_admin_paths_alter(&$paths) {
  * Removes useless description text from log in form, adds additional links.
  */
 function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
-  $form['actions']['forgot'] = array(
-    '#markup' => '<small>' . l(t('Forgot password?'), 'user/password') . '</small>',
+  $extra['forgot'] = array(
+    '#markup' => '<li>' . l(t('Forgot password?'), 'user/password') . '</li>',
     '#weight' => 10,
   );
-  $form['actions']['register'] = array(
-    '#markup' => '<small>' . l(t('Create a new account!'), 'user/register') . '</small>',
+  $extra['register'] = array(
+    '#markup' => '<li>' . l(t('Create a new account!'), 'user/register') . '</li>',
     '#weight' => 11,
   );
+  $extra['#prefix'] = '<ul class="login-actions-extra">';
+  $extra['#suffix'] = '</ul>';
+  $form['#suffix'] = render($extra);
 }
 
 /**

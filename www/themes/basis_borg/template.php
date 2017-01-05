@@ -49,12 +49,16 @@ function basis_borg_preprocess_layout(&$variables) {
       break;
   }
 
+  if (arg(0) == 'user' && !is_numeric(arg(1))) {
+    $variables['tabs'] = FALSE;
+  }
+
   // Process nodes
   if (arg(0) == 'node' && is_numeric(arg(1)) && !arg(2)) {
     _basis_borg_preprocess_layout__node($variables);
   }
   // Add processing for user layouts
-  else if (arg(0) == 'user' && !is_numeric(arg(1))) {
+  else if (arg(0) == 'user' && is_numeric(arg(1))) {
     _basis_borg_preprocess_layout__user($variables);
   }
 }
@@ -92,6 +96,12 @@ function basis_borg_preprocess_node(&$variables) {
 }
 
 /**
+ * Implements template_preprocess_field().
+ */
+function basis_borg_preprocess_field(&$variables) {
+}
+
+/**
  * Implements template_preprocess_views_view().
  */
 function basis_borg_preprocess_views_view(&$variables) {
@@ -119,11 +129,11 @@ function basis_borg_menu_tree(&$variables) {
     if (empty($variables['attributes']['id'])) {
       $variables['attributes']['id'] = 'header-main-menu';
     }
-  $burger_toggler = '<input id="burger-toggler--state" class="burger-toggler--state element-invisible" type="checkbox" aria-controls="' . $variables['attributes']['id'] .'">'.
-    '<label class="burger-toggler__button" for="burger-toggler--state">' .
-      '<span class="burger-toggler__button-icon"></span><span class="burger-toggler__button-text">Menu</span>' .
-      '<span class="burger-toggler__assistive-text element-invisible">Toggle main menu visibility</span>'.
-    '</label>';
+    $burger_toggler = '<input id="burger-toggler--state" class="burger-toggler--state element-invisible" type="checkbox" aria-controls="' . $variables['attributes']['id'] .'">'.
+      '<label class="burger-toggler__button" for="burger-toggler--state">' .
+        '<span class="burger-toggler__button-icon"></span><span class="burger-toggler__button-text">Menu</span>' .
+        '<span class="burger-toggler__assistive-text element-invisible">Toggle main menu visibility</span>'.
+      '</label>';
 
     return $burger_toggler . '<ul ' . backdrop_attributes($variables['attributes']) . '>' . $variables['tree'] . '</ul>';
   }
@@ -134,7 +144,7 @@ function basis_borg_menu_tree(&$variables) {
  * Implements hook_form_id_alter()
  * Modify the user edit form for usability++
  */
-function borg_form_user_profile_form_alter(&$form, &$form_state) {
+function basis_borg_form_user_profile_form_alter(&$form, &$form_state) {
   backdrop_add_js('core/misc/vertical-tabs.js');
   $account_fieldset = array(
     '#type'         => 'fieldset',
@@ -244,20 +254,31 @@ function _basis_borg_preprocess_layout__node_showcase(&$variables, $node) {
  * Helper function for user layouts
  */
 function _basis_borg_preprocess_layout__user(&$variables) {
-  $variables['tabs'] = FALSE;
+  _basis_borg_add_css('layout/account.css');
 
-  // Special handling for header image.
-  if (!arg(2)) {
-    // We are on the user profile page.
-    $variables['main_attributes']['class'][] = 'account-page';
+  $variables['classes'][] = 'account-page';
+  if (arg(2)) {
+    $variables['classes'][] = 'account-page--edit';
+  }
+  else {
+    // @todo I needed to set theme_hook_suggestion and the array theme_hook_suggestions.. ??
+    $variables['theme_hook_suggestion'] = 'layout__moscone__account';
+    $variables['theme_hook_suggestions'] = array('layout__moscone__account');
+
+    // Special handling for header image.
     // Check to see if there is a profile image.
     $account = user_load(arg(1)); // Entity cache should save us here?
     if (isset($account->field_header_photo[LANGUAGE_NONE][0]['uri'])) {
       // Generate an image at the correct size.
       $image = image_style_url('header', $account->field_header_photo[LANGUAGE_NONE][0]['uri']);
-      $variables['main_attributes']['style'] = 'background-image: url(' . $image . ')';
-      // Add an addidional class.
-      $variables['main_attributes']['class'][] = 'has-background';
+      $top_bg_image = '.l-wrapper:before {background-image: url(' . $image . ');}';
+      _basis_borg_add_css($top_bg_image, array(
+        'type' => 'inline',
+        'weight' => 800
+      ));
+
+      // Add an additional class.
+      $variables['classes'][] = 'layout--has-wrapper-background';
     }
   }
 }

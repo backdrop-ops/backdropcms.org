@@ -297,3 +297,32 @@ ul.action-links a:after {
 .dropbutton li {
   margin: 0;
 }
+
+/**
+ * Fix stupid issue from core
+ */
+form .tabledrag-processed {
+  margin-left: 3rem;
+  max-width: calc(100% - 3rem);
+}
+
+/**
+ * Fix socialfield issues
+ */
+@media (min-width: 48em) {
+  form .field-name-field-social td:nth-child(2) {
+    max-width: 21em;
+  }
+}
+
+@media (min-width: 62em) {
+  form .field-name-field-social td:nth-child(2) {
+    max-width: 22em;
+  }
+}
+
+@media (min-width: 75em) {
+  form .field-name-field-social td:nth-child(2) {
+    max-width: 30em;
+  }
+}

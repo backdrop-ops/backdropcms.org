@@ -1067,7 +1067,8 @@ ul.secondary li a:active {
 /**
  * Make user picture have a clipped corner effect
  */
-.field-name-field-photo {
+.field-name-field-photo,
+.block-views-profile-sidebar-block .views-field-field-photo .field-content {
   position: relative;
   overflow: hidden;
   display: inline-block;
@@ -1078,11 +1079,13 @@ ul.secondary li a:active {
   height: 4.5em;
 }
 
-.field-name-field-photo img {
+.field-name-field-photo img,
+.block-views-profile-sidebar-block .views-field-field-photo img {
   display: block;
 }
 
-.field-name-field-photo:after {
+.field-name-field-photo:after,
+.block-views-profile-sidebar-block .views-field-field-photo .field-content:after {
   content: '';
   position: absolute;
   bottom: 0;

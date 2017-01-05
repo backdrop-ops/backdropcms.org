@@ -1,0 +1,97 @@
+.layout {
+  overflow: hidden;
+}
+
+.l-wrapper {
+  position: relative;
+}
+
+.layout--has-wrapper-background .l-wrapper {
+  padding-top: 20%;
+}
+
+.layout--has-wrapper-background .l-wrapper:before {
+  content: '';
+  position: absolute;
+  top: -2rem;
+  left: 0;
+  display: block;
+  box-sizing: content-box;
+  width: 100vw;
+  /* Using aspect ratio hack */
+  height: 0;
+  padding-top: 33.333%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+}
+
+.l-wrapper-inner {
+  position: relative;
+  z-index: 1;
+  padding-top: 0.9375em;
+  background: #fff;
+}
+
+.page-title {
+  font-size: 2.5em;
+  padding: 0 0 1rem;
+  margin: 0;
+}
+
+@media (min-width: 48em) {
+  .page-title {
+    padding: 1.75rem 0;
+    font-size: 3em;
+  }
+}
+
+@media (min-width: 62em) {
+  .page-title {
+    padding: 2.75rem 0 2.6875rem;
+  }
+}
+
+@media (min-width: 75em) {
+  .page-title {
+    padding: 4.125rem 0;
+  }
+}
+
+.account-page--edit .page-title {
+  padding: 0 0 1rem;
+}
+
+.view-profile-sidebar ul {
+  margin: 0;
+}
+
+.views-field {
+  margin: 0 0 1.5em;
+}
+
+.views-label {
+  font-weight: bold;
+}
+
+.views-field-field-photo {
+  text-align: center; /* Center image if it's not 100% */
+}
+
+.views-field-field-websites ul,
+.views-field-field-websites li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.views-field-field-websites li {
+  padding: 0 0 0.25em;
+}
+
+/**
+ * Account Edit Overrides
+ */
+.user-profile-form .form-email {
+  display: block;
+}
