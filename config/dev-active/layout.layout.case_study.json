@@ -7,7 +7,7 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout_template": "double_fixed_case",
+    "layout_template": "boxton",
     "disabled": false,
     "settings": {
         "title": "",
@@ -15,23 +15,18 @@
         "title_block": null
     },
     "positions": {
-        "sidebar": [
-            "6861f467-69f3-49d2-b200-b3ecefa33399",
-            "aa9d3322-75f0-4929-8e00-d608eb4274a3"
+        "header": [
+            "64eea544-d01c-49c2-a02b-43cfbb4fb28c",
+            "f9e2dbdd-40b4-4ed0-a306-6f6277279748",
+            "09b86004-6e1f-4846-8707-7c71ab75118a"
         ],
-        "drawer": [
-            "be818341-53e1-4039-a304-4c21856d6488",
-            "17856469-7870-4f5e-bb34-52be74aa14c7"
-        ],
-        "content-top": [
-            "88a2487b-2251-4f98-bd52-823757d700e5"
+        "top": [
+            "9d184d52-c206-4a42-b85d-9300f2b7838c"
         ],
         "content": [
             "c1c3ad25-27d6-4800-a007-7d0b9460236a"
         ],
-        "content_sidebar": [
-            "0743d2f0-c50e-4650-be03-3e63480889f4"
-        ],
+        "bottom": [],
         "footer": [
             "7d5a314c-3650-45d3-8400-b3aaaabbdda9",
             "4a0c3dcb-4c18-470d-9924-3683cacb842d",
@@ -40,7 +35,7 @@
         "title": []
     },
     "content": {
-        "6861f467-69f3-49d2-b200-b3ecefa33399": {
+        "64eea544-d01c-49c2-a02b-43cfbb4fb28c": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "module": "borg_blocks",
@@ -52,7 +47,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "6861f467-69f3-49d2-b200-b3ecefa33399",
+                "uuid": "64eea544-d01c-49c2-a02b-43cfbb4fb28c",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -63,19 +58,24 @@
                 }
             }
         },
-        "aa9d3322-75f0-4929-8e00-d608eb4274a3": {
+        "f9e2dbdd-40b4-4ed0-a306-6f6277279748": {
             "plugin": "system:main-menu",
             "data": {
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "3"
+                    },
                     "contexts": []
                 },
-                "uuid": "aa9d3322-75f0-4929-8e00-d608eb4274a3",
+                "uuid": "f9e2dbdd-40b4-4ed0-a306-6f6277279748",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -86,42 +86,19 @@
                 }
             }
         },
-        "be818341-53e1-4039-a304-4c21856d6488": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "be818341-53e1-4039-a304-4c21856d6488",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "17856469-7870-4f5e-bb34-52be74aa14c7": {
+        "09b86004-6e1f-4846-8707-7c71ab75118a": {
             "plugin": "search:form",
             "data": {
                 "module": "search",
                 "delta": "form",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "17856469-7870-4f5e-bb34-52be74aa14c7",
+                "uuid": "09b86004-6e1f-4846-8707-7c71ab75118a",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -132,7 +109,7 @@
                 }
             }
         },
-        "88a2487b-2251-4f98-bd52-823757d700e5": {
+        "9d184d52-c206-4a42-b85d-9300f2b7838c": {
             "plugin": "field:field_block:node-field_blurb",
             "data": {
                 "module": "field",
@@ -150,7 +127,7 @@
                     "delta_limit": "",
                     "delta_reversed": 0
                 },
-                "uuid": "88a2487b-2251-4f98-bd52-823757d700e5",
+                "uuid": "9d184d52-c206-4a42-b85d-9300f2b7838c",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -184,35 +161,6 @@
                             "title_classes": "block-title",
                             "content_tag": "div",
                             "content_classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "0743d2f0-c50e-4650-be03-3e63480889f4": {
-            "plugin": "field:field_block:node-field_bullets",
-            "data": {
-                "module": "field",
-                "delta": "field_block",
-                "settings": {
-                    "title_display": "none",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "label": "above",
-                    "formatter": "text_default",
-                    "formatter_settings": [],
-                    "delta_offset": "0",
-                    "delta_limit": "",
-                    "delta_reversed": 0
-                },
-                "uuid": "0743d2f0-c50e-4650-be03-3e63480889f4",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
                         }
                     }
                 }

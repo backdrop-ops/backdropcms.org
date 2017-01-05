@@ -1,0 +1,79 @@
+.layout--has-top-background .l-top {
+  padding-top: 15em;
+  padding-bottom: 0;
+}
+
+.layout--has-top-background .l-top-inner {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+
+.layout--has-top-background .page-title {
+  margin: 0;
+  padding: 0.125em 0 0;
+  line-height: 1.3;
+}
+
+.layout--has-top-background .field-name-field-blurb {
+  margin: 0;
+  padding: 0 0 0.75em;
+}
+
+.showcase-details-row {
+  padding-top: 1.5rem;
+  margin: 0 0 2rem;
+}
+
+.showcase-highlight-row {
+  width: 100%;
+}
+
+.showcase-highlight-row > div {
+  margin: 0 0 2rem;
+}
+
+.showcase-highlight-row > div > * {
+  /* Force center the screenshot row contents in case they aren't 100% */
+  position: relative;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+}
+
+.showcase-highlight-row blockquote {
+  border: 15px solid #F7F7F7;
+  background-color: #F7F7F7;
+  background-image:
+    url(/themes/borg/images/quote-open.png),
+    url(/themes/borg/images/quote-close.png);
+  background-position:
+    top left,
+    bottom right;
+  background-repeat: no-repeat;
+  background-size: 140px;
+  margin: 20px 0;
+  color: #451649;
+  padding: 30px 55px;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 31px;
+  text-align: left;
+}
+
+/*******************************************************************************
+ * Contractors listing
+ ******************************************************************************/
+.block-views-contractors-block {
+  text-align: center;
+  margin-bottom: 50px;
+}
+.block-views-contractors-block h2.block-title {
+  font-size: 28px;
+  margin-top: 57px;
+}
+.view-contractors .views-row {
+  margin-bottom: 25px;
+}
+.view-contractors .views-field-field-name {
+  font-size: 20px;
+}

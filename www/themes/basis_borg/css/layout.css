@@ -19,3 +19,15 @@
 .l-sidebar iframe {
   width: 100%;
 }
+
+.layout--has-top-background .l-header {
+  margin-bottom: 0;
+}
+
+.layout--has-top-background .l-top {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
+}

@@ -1,0 +1,95 @@
+/*******************************************************************************
+ * Service providers listing - page
+ ******************************************************************************/
+.block-views-providers-block-1 .view-content {
+  border-top: 1px solid #d4d4d6;
+  background-color: transparent;
+}
+.block-views-providers-block-1 .views-row {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #d4d4d6;
+}
+.view-providers .views-field-field-logo {
+  padding-top: 15px;
+}
+.view-providers .iews-field-title h3 {
+  margin: 0;
+}
+
+@media (min-width: 500px) {
+  .view-providers h3 {
+    margin: 1.5em 0 1em;
+  }
+  .view-providers .views-field {
+    margin-left: 175px;
+  }
+  .view-providers .views-field-field-logo {
+    float: left;
+    padding-top: 0;
+    margin-bottom: 15px;
+    margin-right: 15px;
+    margin-left: 0px;
+  }
+}
+
+/*******************************************************************************
+ * Service providers listing - logos
+ ******************************************************************************/
+
+.view-providers {
+  margin-bottom: 100px;
+}
+.view-providers .view-header h3 {
+  text-align: center;
+}
+.view-providers .view-content {
+  background-color:  #f7f7f7;
+  padding-top: 15px;
+}
+.view-providers table {
+  width: 100%;
+}
+.view-providers table td {
+  padding: 5px 0;
+}
+@media (min-width: 500px) {
+  .view-providers table td {
+    padding: 15px 0;
+  }
+}
+.view-providers table .views-field {
+  margin-left: auto;
+}
+.view-providers table .views-field-field-logo {
+  float: none;
+  margin-bottom: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+.view-providers .view-footer {
+  background-color:  #f7f7f7;
+  padding: 15px;
+}
+.view-providers .view-footer p {
+  margin: 0;
+  text-align: center;
+  color: #979797;
+}
+
+/*******************************************************************************
+ * Contractors listing
+ ******************************************************************************/
+.block-views-contractors-block {
+  text-align: center;
+  margin-bottom: 50px;
+}
+.block-views-contractors-block h2.block-title {
+  font-size: 28px;
+  margin-top: 57px;
+}
+.view-contractors .views-row {
+  margin-bottom: 25px;
+}
+.view-contractors .views-field-field-name {
+  font-size: 20px;
+}

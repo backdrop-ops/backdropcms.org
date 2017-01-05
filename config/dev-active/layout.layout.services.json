@@ -7,6 +7,7 @@
     "module": null,
     "weight": 0,
     "storage": 1,
+    "layout_template": "moscone_flipped",
     "disabled": false,
     "settings": {
         "title": "Services for Backdrop CMS",
@@ -14,33 +15,30 @@
         "title_block": null
     },
     "positions": {
-        "sidebar": [
-            "40fdcf69-7813-404d-af09-9a6798c50500",
-            "fa3d50bf-12ba-4276-8f00-db34f9abc799"
+        "header": [
+            "92745172-c3d6-412d-bc00-0a191d9ddc05",
+            "69bab521-c148-499e-9902-021aeec089b8",
+            "890d7309-9358-4f99-9923-35d5b8d68fab"
         ],
-        "drawer": [
-            "71d45547-437f-4ca9-a902-2d77613192c0",
-            "131eaf6d-c0b6-4fe5-9e00-a4d051c043f8"
-        ],
-        "content-top": [
-            "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c"
-        ],
+        "top": [],
         "content": [
             "96f302dc-b471-4fed-b311-1737463dcc3e",
             "863498ad-5fde-4331-a500-a36e921cb887"
         ],
-        "content_sidebar": [
-            "f2335aaa-3444-4cc4-8c00-a75bdd4562e2"
+        "sidebar": [
+            "569ef8c3-53ae-4e0c-a934-525a273fa9eb"
         ],
+        "bottom": [],
         "footer": [
             "9401402d-1468-486b-b407-7ffcea4f39d4",
             "1059b15c-21f3-4934-8800-b28ce7c4e37f",
             "0f1df073-3119-486f-8c00-ab1442e3a986",
             "329a77bb-525a-4486-bb00-f3a7f9824fe7"
-        ]
+        ],
+        "title": []
     },
     "content": {
-        "40fdcf69-7813-404d-af09-9a6798c50500": {
+        "92745172-c3d6-412d-bc00-0a191d9ddc05": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "module": "borg_blocks",
@@ -52,7 +50,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "40fdcf69-7813-404d-af09-9a6798c50500",
+                "uuid": "92745172-c3d6-412d-bc00-0a191d9ddc05",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -63,19 +61,24 @@
                 }
             }
         },
-        "fa3d50bf-12ba-4276-8f00-db34f9abc799": {
+        "69bab521-c148-499e-9902-021aeec089b8": {
             "plugin": "system:main-menu",
             "data": {
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "3"
+                    },
                     "contexts": []
                 },
-                "uuid": "fa3d50bf-12ba-4276-8f00-db34f9abc799",
+                "uuid": "69bab521-c148-499e-9902-021aeec089b8",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -86,67 +89,19 @@
                 }
             }
         },
-        "71d45547-437f-4ca9-a902-2d77613192c0": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "71d45547-437f-4ca9-a902-2d77613192c0",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "131eaf6d-c0b6-4fe5-9e00-a4d051c043f8": {
+        "890d7309-9358-4f99-9923-35d5b8d68fab": {
             "plugin": "search:form",
             "data": {
                 "module": "search",
                 "delta": "form",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "custom",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "131eaf6d-c0b6-4fe5-9e00-a4d051c043f8",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<h3>There are many wonderful companies and individuals that provide support and services for Backdrop CMS. If you are looking for assistance with design, development, hosting, or maintenance,&nbsp;please browse the&nbsp;list below.</h3>\n",
-                    "format": "filtered_html"
-                },
-                "uuid": "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c",
+                "uuid": "890d7309-9358-4f99-9923-35d5b8d68fab",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -203,7 +158,7 @@
                 }
             }
         },
-        "f2335aaa-3444-4cc4-8c00-a75bdd4562e2": {
+        "569ef8c3-53ae-4e0c-a934-525a273fa9eb": {
             "plugin": "views:contractors-block",
             "data": {
                 "module": "views",
@@ -215,7 +170,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "f2335aaa-3444-4cc4-8c00-a75bdd4562e2",
+                "uuid": "569ef8c3-53ae-4e0c-a934-525a273fa9eb",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -328,6 +283,5 @@
                 }
             }
         }
-    },
-    "layout_template": "double_fixed_inner_rev"
+    }
 }

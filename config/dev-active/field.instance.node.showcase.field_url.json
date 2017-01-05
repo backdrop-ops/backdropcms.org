@@ -41,9 +41,11 @@
     "display": {
         "default": {
             "label": "hidden",
-            "type": "link_default",
+            "type": "link_domain",
             "weight": "0",
-            "settings": [],
+            "settings": {
+                "strip_www": 1
+            },
             "module": "link"
         }
     }

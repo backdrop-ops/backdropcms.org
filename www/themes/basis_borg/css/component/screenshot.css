@@ -1,0 +1,147 @@
+/*******************************************************************************
+ * Screenshot styles - Browser.
+ ******************************************************************************/
+
+.browser-ui {
+  padding: 30px 0 0;
+  border-radius: 5px;
+  border-bottom: 1px solid #ccc;
+  background: #ddd;
+  display: inline-block;
+  position: relative;
+  line-height: 0;
+  -moz-box-shadow: 2px 2px 3px rgba(204,204,204,1), -2px 2px 3px rgba(204,204,204,1);
+  -webkit-box-shadow: 2px 2px 3px rgba(204,204,204,1), -2px 2px 3px rgba(204,204,204,1);
+  box-shadow: 2px 2px 3px rgba(204,204,204,1), -2px 2px 3px rgba(204,204,204,1);
+}
+.browser-ui .frame {
+  display: block;
+  height: 15px;
+  position: absolute;
+  top: 8px;
+  left: 3px;
+}
+.browser-ui span {
+  height: 11px;
+  width: 11px;
+  border-radius: 11px;
+  background-color: #ffffff;
+  border: 1px solid #dadada;
+  float: left;
+  margin: 0 0 0 6px;
+}
+.browser-ui span.red {
+  background-color: #E96E4C;
+}
+.browser-ui span.yellow {
+  background-color: #E6A935;
+}
+.browser-ui span.green {
+  background-color: #85C33D;
+}
+
+/*******************************************************************************
+ * Screenshot styles - Tablet
+ ******************************************************************************/
+
+.tablet-ui {
+  border-radius: 20px;
+  background-color: #0D0D0D;
+  padding: 22px 35px;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+.tablet-ui img {
+  width: 100%;
+  border-radius: 2px;
+}
+.tablet-ui .dot {
+  top: 50%;
+  margin-top: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  border: 1px solid #ffffff;
+  position: absolute;
+  left: 8px;
+}
+.tablet-ui .camera {
+  top: 50%;
+  margin-top: 1px;
+  width: 2px;
+  height: 3px;
+  border-radius: 2px;
+  border: 1px solid #ffffff;
+  background-color: #cccccc;
+  position: absolute;
+  right: 15px;
+}
+@media all and (max-width: 400px) {
+  .tablet-ui {
+    padding: 10px 25px;
+  }
+  .tablet-ui img {
+    border-radius: 1px;
+  }
+  .tablet-ui .dot {
+    margin-top: -6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+  }
+}
+
+/*******************************************************************************
+ * Screenshot styles - Phone
+ ******************************************************************************/
+
+.phone-ui {
+  border-radius: 25px;
+  background-color: #0D0D0D;
+  padding: 32px 6px;
+  margin: 0 auto;
+  position: relative;
+}
+.phone-ui img {
+  width: 100%;
+}
+.phone-ui .bar {
+  left: 50%;
+  margin-left: -25px;
+  width: 50px;
+  height: 3px;
+  border-radius: 3px;
+  border: 1px solid #ffffff;
+  background-color: #cccccc;
+  position: absolute;
+  top: 10px;
+}
+.phone-ui .dot {
+  left: 50%;
+  margin-left: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  border: 1px solid #ffffff;
+  position: absolute;
+  bottom: 10px;
+}
+@media all and (max-width: 400px) {
+  .phone-ui {
+    padding: 22px 4px;
+  }
+  .phone-ui .bar {
+    width: 30px;
+    margin-left: -15px;
+    height: 1px;
+    border-radius: 2px;
+  }
+  .phone-ui .dot {
+    width: 12px;
+    margin-left: -6px;
+    height: 12px;
+    border-radius: 12px;
+    bottom: 8px;
+  }
+}
