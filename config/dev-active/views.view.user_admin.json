@@ -516,31 +516,32 @@
                         },
                         "reduce_duplicates": 0
                     },
-                    "name": {
-                        "id": "name",
-                        "table": "users",
-                        "field": "name",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
-                        "ui_name": "",
+                        "ui_name": "Global: Combine username and Full name fields",
                         "operator": "contains",
                         "value": "",
-                        "group": "1",
+                        "group": 1,
                         "exposed": true,
                         "expose": {
-                            "operator_id": "name_op",
+                            "operator_id": "combine_op",
                             "label": "Name",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "name_op",
-                            "identifier": "name",
+                            "operator": "combine_op",
+                            "identifier": "combine_name",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
                             "remember_roles": {
                                 "authenticated": "authenticated",
                                 "anonymous": 0,
-                                "administrator": 0
+                                "4": 0,
+                                "3": 0
                             }
                         },
                         "is_grouped": false,
@@ -555,6 +556,10 @@
                             "default_group": "All",
                             "default_group_multiple": [],
                             "group_items": []
+                        },
+                        "fields": {
+                            "name": "name",
+                            "field_name": "field_name"
                         }
                     }
                 },
