@@ -23,12 +23,12 @@
         "file_directory": "images/profile",
         "file_extensions": "png gif jpg jpeg",
         "max_filesize": "",
-        "max_resolution": "350x350",
-        "min_resolution": "",
         "alt_field": 0,
         "title_field": 0,
         "default_image": "public://default_images_0",
-        "user_register_form": 0
+        "user_register_form": 0,
+        "max_dimensions": "350x350",
+        "min_dimensions": ""
     },
     "display": {
         "default": {

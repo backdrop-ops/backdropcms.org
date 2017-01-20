@@ -23,12 +23,12 @@
         "file_directory": "theme-screenshots",
         "file_extensions": "png",
         "max_filesize": "10MB",
-        "max_resolution": "2048x1536",
-        "min_resolution": "292x219",
         "alt_field": 0,
         "title_field": 0,
         "default_image": "",
-        "user_register_form": false
+        "user_register_form": false,
+        "max_dimensions": "2048x1536",
+        "min_dimensions": "292x219"
     },
     "display": {
         "default": {

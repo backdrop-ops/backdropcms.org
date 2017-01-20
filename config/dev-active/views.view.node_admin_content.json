@@ -478,7 +478,7 @@
                         "order": "DESC"
                     }
                 },
-                "title": "Admin Content",
+                "title": "Content",
                 "relationships": {
                     "uid": {
                         "id": "uid",
@@ -599,7 +599,7 @@
                 "path": "admin/content/node",
                 "menu": {
                     "type": "default tab",
-                    "title": "Find content",
+                    "title": "Manage content",
                     "description": "",
                     "name": "management",
                     "weight": "-1",
