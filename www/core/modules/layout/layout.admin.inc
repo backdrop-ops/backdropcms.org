@@ -253,7 +253,6 @@ function layout_settings_form($form, &$form_state, Layout $layout) {
   // Get the list of layout template options.
   $all_template_info = layout_get_layout_template_info();
   $excluded = config_get('layout.settings', 'excluded_templates');
-  //dpm($excluded);
   foreach ($all_template_info as $template_name => $template_info) {
     if (!in_array($template_name, $excluded)) {
       $form['layout_template']['#options'][$template_name] = theme('layout_template_option', array('template_info' => $template_info));
@@ -1060,7 +1059,7 @@ function layout_title_settings_form($form, &$form_state, Layout $layout) {
   $block_options = array();
   foreach ($layout->content as $uuid => $block) {
     $title = $all_blocks[$block->module][$block->delta]['info'];
-    if (!empty($title) && $title !== 'Add a custom block') {
+    if (!empty($title) && $title !== 'Custom block') {
       $block_options[$uuid] = $title;
     }
   }
@@ -1181,7 +1180,7 @@ function layout_block_configure_form($form, &$form_state, Layout $layout, Block 
   $form['actions']['#type'] = 'actions';
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => empty($block->uuid) ? t('Add block') : t('Save block'),
+    '#value' => empty($block->uuid) ? t('Add block') : t('Update block'),
   );
 
   $form['#tree'] = TRUE;

@@ -133,7 +133,8 @@ ul.menu li.expanded {
   padding-bottom: 5px;
 }
 .breadcrumb li,
-.breadcrumb li a {
+.breadcrumb li a,
+.breadcrumb li span {
   vertical-align: middle;
 }
 .breadcrumb li:after {
@@ -508,6 +509,8 @@ table {
   width: 100%;
   font-size: 0.923em;
   margin: 0 0 10px;
+  border-collapse: collapse;
+  border-spacing: 0;
   border: 0;
 }
 tr.even,
@@ -672,7 +675,7 @@ fieldset .fieldset-legend {
   left: 0; /* LTR */
   top: 0;
   width: 100%;
-  margin-top: .35em;
+  margin-top: .25em;
   padding-left: 15px; /* LTR */
   text-transform: uppercase;
 }
@@ -743,7 +746,7 @@ fieldset .fieldset-wrapper {
 }
 .js fieldset.collapsed .fieldset-legend a:before {
   left: .8em;
-  top: .7em;
+  top: .75em;
   border: .32em solid transparent;
   border-left-color: black;
 }
@@ -864,7 +867,7 @@ a.button {
   color: #444b53;
   background: #e5e5e6;
   letter-spacing: 0.4px;
-  line-height: 46px;
+  line-height: 43px;
   border: 0;
   padding: 0 25px;
   margin-bottom: 1em;
@@ -1011,6 +1014,7 @@ select.form-select {
   -moz-border-radius: 4px;
   border-radius: 4px;
   will-change: border-color;
+  height: 43px;
 }
 select.form-select:focus {
   color: #000;

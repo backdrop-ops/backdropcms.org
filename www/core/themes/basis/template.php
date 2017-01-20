@@ -34,7 +34,12 @@ function basis_preprocess_page(&$variables) {
  */
 function basis_preprocess_layout(&$variables) {
   if ($variables['is_front']) {
+    // Add a special front-page class.
     $variables['classes'][] = 'layout-front';
+    // Add a special front-page template suggestion.
+    $original = $variables['theme_hook_original'];
+    $variables['theme_hook_suggestions'][] = $original . '__front';
+    $variables['theme_hook_suggestion'] = $original . '__front';
   }
 }
 
@@ -45,23 +50,17 @@ function basis_preprocess_layout(&$variables) {
  */
 function basis_preprocess_header(&$variables) {
   $logo = $variables['logo'];
+  $logo_attributes = $variables['logo_attributes'];
 
   // Add classes and height/width to logo.
   if ($logo) {
-    $logo_attributes = array();
     $logo_wrapper_classes = array();
     $logo_wrapper_classes[] = 'header-logo-wrapper';
-    $logo_size = getimagesize($logo);
-    if (!empty($logo_size)) {
-      if ($logo_size[0] < $logo_size[1]) {
-        $logo_wrapper_classes[] = 'header-logo-tall';
-      }
-      $logo_attributes['width'] = $logo_size[0];
-      $logo_attributes['height'] = $logo_size[1];
+    if ($logo_attributes['width'] <= $logo_attributes['height']) {
+      $logo_wrapper_classes[] = 'header-logo-tall';
     }
 
     $variables['logo_wrapper_classes'] = $logo_wrapper_classes;
-    $variables['logo_attributes'] = $logo_attributes;
   }
 }
 

@@ -176,7 +176,7 @@ function comment_theme() {
  */
 function comment_menu() {
   $items['admin/content/comment'] = array(
-    'title' => 'Comments',
+    'title' => 'Manage comments',
     'description' => 'List and edit site comments and the comment approval queue.',
     'page callback' => 'comment_admin',
     'access arguments' => array('administer comments'),
@@ -925,7 +925,7 @@ function comment_view(Comment $comment, Node $node, $view_mode = 'full', $langco
   unset($comment->content);
 
   $build += array(
-    '#theme' => 'comment__node_' . $node->type,
+    '#theme' => 'comment__node_' . $node->type . '__' . $view_mode,
     '#comment' => $comment,
     '#node' => $node,
     '#view_mode' => $view_mode,

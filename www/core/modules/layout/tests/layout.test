@@ -171,7 +171,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'title_display' => LAYOUT_TITLE_CUSTOM,
       'title' => $block_new_title,
     );
-    $this->backdropPost($block_edit_url, $edit, t('Save block'));
+    $this->backdropPost($block_edit_url, $edit, t('Update block'));
     $this->backdropPost(NULL, array(), t('Save layout'));
     $this->backdropGet($layout_url);
     $this->assertText(check_plain($block_new_title));
@@ -180,7 +180,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'title_display' => LAYOUT_TITLE_NONE,
     );
-    $this->backdropPost($block_edit_url, $edit, t('Save block'));
+    $this->backdropPost($block_edit_url, $edit, t('Update block'));
     $this->backdropPost(NULL, array(), t('Save layout'));
     $this->backdropGet($layout_url);
     $this->assertNoText('Foo subject');
@@ -192,7 +192,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'title_display' => LAYOUT_TITLE_DEFAULT,
       'style_settings[classes]' => $custom_class,
     );
-    $this->backdropPost($block_edit_url, $edit, t('Save block'));
+    $this->backdropPost($block_edit_url, $edit, t('Update block'));
     $this->backdropPost(NULL, array(), t('Save layout'));
 
     $this->backdropGet($layout_url);
@@ -212,7 +212,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'style' => 'dynamic',
     );
-    $this->backdropPost($block_edit_url, $edit, t('Save block'));
+    $this->backdropPost($block_edit_url, $edit, t('Update block'));
     $edit = array(
       'style_settings[wrapper_tag]' => 'aside',
       'style_settings[title_tag]' => 'h3',
@@ -220,7 +220,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'style_settings[content_tag]' => 'p',
       'style_settings[content_classes]' => $content_class,
     );
-    $this->backdropPost($block_edit_url, $edit, t('Save block'));
+    $this->backdropPost($block_edit_url, $edit, t('Update block'));
     $this->backdropPost(NULL, array(), t('Save layout'));
 
     $this->backdropGet($layout_url);
@@ -256,7 +256,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'region' => 'footer',
     );
-    $this->backdropPost($block_edit_url, $edit, t('Save block'));
+    $this->backdropPost($block_edit_url, $edit, t('Update block'));
     $this->backdropPost(NULL, array(), t('Save layout'));
 
     $this->backdropGet($layout_url);
@@ -340,7 +340,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'bundles[page]' => TRUE,
     );
     $this->backdropPost(NULL, $edit, t('Add visibility condition'));
-    $this->backdropPost(Null, array(), t('Save block'));
+    $this->backdropPost(Null, array(), t('Update block'));
     $this->backdropPost(Null, array(), t('Save layout'));
 
     $this->backdropGet('node/' . $this->test_node1->nid);
@@ -368,7 +368,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'bundles[page]' => FALSE,
     );
     $this->backdropPost(NULL, $edit, t('Save visibility condition'));
-    $this->backdropPost(Null, array(), t('Save block'));
+    $this->backdropPost(Null, array(), t('Update block'));
     $this->backdropPost(Null, array(), t('Save layout'));
 
     $this->backdropGet('node/' . $this->test_node1->nid);
@@ -388,7 +388,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'paths' => 'node/' . $this->test_node1->nid,
     );
     $this->backdropPost(NULL, $edit, t('Add visibility condition'));
-    $this->backdropPost(NULL, array(), t('Save block'));
+    $this->backdropPost(NULL, array(), t('Update block'));
     $this->backdropPost(Null, array(), t('Save layout'));
 
     // Create another post node and check the combination of conditions work.
@@ -442,7 +442,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'entity_id' => $this->test_node1->nid,
     );
     $this->backdropPost(NULL, $edit, t('Add visibility condition'));
-    $this->backdropPost(Null, array(), t('Save block'));
+    $this->backdropPost(Null, array(), t('Update block'));
     $this->backdropPost(Null, array(), t('Save layout'));
 
     $this->backdropGet('node/' . $this->test_node1->nid);
@@ -467,7 +467,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
       'entity_id' => $this->web_user->uid,
     );
     $this->backdropPost(NULL, $edit, t('Add visibility condition'));
-    $this->backdropPost(NULL, array(), t('Save block'));
+    $this->backdropPost(NULL, array(), t('Update block'));
     $this->backdropPost(Null, array(), t('Save layout'));
 
     $this->backdropGet('node/' . $this->test_node1->nid);
@@ -564,7 +564,7 @@ class LayoutInterfaceTest extends BackdropWebTestCase {
     $edit = array(
       'contexts[my_node]' => '3',
     );
-    $this->backdropPost(NULL, $edit, t('Save block'));
+    $this->backdropPost(NULL, $edit, t('Update block'));
     $this->backdropPost(NULL, array(), t('Save layout'));
 
     // Now the second node should be used as the title in the page.
@@ -1302,7 +1302,7 @@ class LayoutBlockTest extends BackdropWebTestCase {
 
     // Add a Custom Text block to the sidebar.
     $this->clickLink(t('Add block'), 3);
-    $this->clickLink(t('Add a custom block'));
+    $this->clickLink(t('Custom block'));
     $edit = array(
       'title' => $block_title_1,
       'content[value]' => $block_content_1,
@@ -1315,7 +1315,7 @@ class LayoutBlockTest extends BackdropWebTestCase {
 
     // Add a Custom Text block without subject.
     $this->clickLink(t('Add block'), 3);
-    $this->clickLink(t('Add a custom block'));
+    $this->clickLink(t('Custom block'));
     $edit = array(
       'content[value]' => $block_content_2,
     );
@@ -1323,7 +1323,7 @@ class LayoutBlockTest extends BackdropWebTestCase {
 
     // Add a Custom Text block without content.
     $this->clickLink(t('Add block'), 3);
-    $this->clickLink(t('Add a custom block'));
+    $this->clickLink(t('Custom block'));
     $edit = array(
       'title' => $block_title_3,
     );
@@ -1361,13 +1361,13 @@ class LayoutBlockTest extends BackdropWebTestCase {
     $edit = array(
       'reusable' => TRUE,
     );
-    $this->backdropPost('admin/structure/layouts/manage/default/configure-block/editor/' . $first_block_uuid, $edit, t('Save block'));
+    $this->backdropPost('admin/structure/layouts/manage/default/configure-block/editor/' . $first_block_uuid, $edit, t('Update block'));
     $this->assertText(t('Admin label is required when making a block reusable.'));
     $edit['label'] = 'My custom block label';
-    $this->backdropPost(NULL, $edit, t('Save block'));
+    $this->backdropPost(NULL, $edit, t('Update block'));
     $this->assertText(t('An internal name is required when making a block reusable.'));
     $edit['delta'] = 'my_custom_block';
-    $this->backdropPost(NULL, $edit, t('Save block'));
+    $this->backdropPost(NULL, $edit, t('Update block'));
 
     // Now back on the layout main page. Check the new admin label is shown.
     $this->assertText('My custom block label');
@@ -1423,7 +1423,7 @@ class LayoutBlockTest extends BackdropWebTestCase {
 
     // Block 1: Add a hero block with no image to the content area.
     $this->clickLink(t('Add block'), 2);
-    $this->clickLink(t('Add a hero block'));
+    $this->clickLink(t('Hero block'));
     $edit = array(
       'title' => $hero_title_1,
       'content[value]' => $hero_content_1,
@@ -1432,7 +1432,7 @@ class LayoutBlockTest extends BackdropWebTestCase {
 
     // Block 2: Add a hero block with only content and an image.
     $this->clickLink(t('Add block'), 2);
-    $this->clickLink(t('Add a hero block'));
+    $this->clickLink(t('Hero block'));
     $edit = array(
       'content[value]' => $hero_content_2,
       'files[image]' => $good_realpath_filename,
@@ -1441,7 +1441,7 @@ class LayoutBlockTest extends BackdropWebTestCase {
 
     // Block 3: Add a hero block with only an image.
     $this->clickLink(t('Add block'), 2);
-    $this->clickLink(t('Add a hero block'));
+    $this->clickLink(t('Hero block'));
 
     // Confirm a too-small background image fails validation.
     $edit = array(
@@ -1697,7 +1697,7 @@ class LayoutBlockTextTest extends BackdropWebTestCase {
     $image_string = theme('image', $file_info);
 
     $this->backdropGet('admin/structure/layouts/manage/default/add-block/editor/sidebar');
-    $this->clickLink(t('Add a custom block'));
+    $this->clickLink(t('Custom block'));
     $this->backdropPost(NULL, array(
       'title' => 'Custom block test',
       'content[value]' => $this->randomString(32) . $image_string,

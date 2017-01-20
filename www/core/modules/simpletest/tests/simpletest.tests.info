@@ -232,9 +232,15 @@ description = Tests alteration of arguments passed to backdrop_alter().
 group = Common
 file = common.test
 
-[CommonURLUnitTestCase]
+[CommonURLWebTestCase]
 name = URL generation tests
-description = Confirm that url(), backdrop_get_query_parameters(), backdrop_http_build_query(), and l() work correctly with various input.
+description = Confirm that url() and l() work correctly with various input.
+group = Common
+file = common.test
+
+[CommonURLUnitTestCase]
+name = URL checking tests
+description = Confirm URL parsing functions work correctly with various input.
 group = Common
 file = common.test
 
@@ -393,6 +399,12 @@ name = Feed icon
 description = Check escaping of theme_feed_icon().
 group = System
 file = common.test
+
+[ConfigObjectTestCase]
+name = Config object tests
+description = low-level object tests of the Config class and friends.
+group = System
+file = config_obj.test
 
 [DatabaseConnectionTestCase]
 name = Connection tests
@@ -940,6 +952,12 @@ description = Tests the form API url element.
 group = Form API
 file = form.test
 
+[SystemSettingsFormTest]
+name = System Settings Form
+description = Tests system_settings_form().
+group = System
+file = form.test
+
 [GraphUnitTest]
 name = Graph
 description = Graph handling unit tests.
@@ -1306,7 +1324,7 @@ description = Test the file tokens.
 group = Token
 file = token.test
 
-; Added by Backdrop CMS packaging script on 2016-11-16
+; Added by Backdrop CMS packaging script on 2017-01-15
 project = backdrop
-version = 1.5.2
-timestamp = 1479323823
+version = 1.6.0
+timestamp = 1484537173

@@ -273,10 +273,6 @@ fieldset .fieldset-legend {
   }
 }
 
-.l-header .block-system-main-menu {
-  text-align: center;
-}
-
 /**
  * Menus in header area
  * More layout styles included since they'll be effected by menu item count
@@ -900,7 +896,7 @@ ul.action-links a {
 .block-hero-no-image {
   background-color: #0074bd;
   background-image: url(../images/texture.png);
-  background-repeat: no-repeat;
+  background-repeat: repeat;
   background-position: center center;
   background-blend-mode: luminosity; /* Colorizes bg image */
 }
@@ -1007,6 +1003,13 @@ ul.secondary li a:active {
 }
 
 /**
+ * Contextual Links font-size
+ */
+.contextual-links-wrapper {
+  font-size: 0.9rem;
+}
+
+/**
  * Responsive tabs
  */
 .responsive-tabs-mobile ul.primary {
@@ -1082,6 +1085,49 @@ ul.secondary li a:active {
 
 .responsive-tabs-mobile-header-padder {
   background: #586172;
+}
+
+/**
+ * Comments
+ */
+.comments .indented:before {
+  top: -1em;
+  left: 0;
+  width: 0.5em;
+  height: 1.5em;
+  border-left-color: #dee2ea;
+  border-bottom-color: #dee2ea;
+}
+
+.comments .indented:after {
+  border-top-color: #dee2ea;
+  border-right-color: #dee2ea;
+}
+
+.comment-header:before {
+  border-bottom-color: #dee2ea;
+  border-left-color: #dee2ea;
+  background: #fff;
+}
+
+.comment .comment-text {
+  border-color: #dee2ea;
+}
+
+.comment-title {
+  padding: 1em 1.25em 0.25em;
+}
+
+.comment-title h3 {
+  font-size: 1.125em;
+}
+
+.comment-time {
+  font-size: 0.875em;
+}
+
+.comment-footer {
+  background: #dee2ea;
 }
 
 /**

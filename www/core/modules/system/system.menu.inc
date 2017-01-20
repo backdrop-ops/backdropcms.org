@@ -22,9 +22,11 @@ function system_menu_block_defaults($menu_name) {
   );
   if ($menu_name == 'main-menu') {
     $defaults['depth'] = 1;
+    $defaults['toggle'] = TRUE;
   }
   else {
     $defaults['depth'] = 0;
+    $defaults['toggle'] = FALSE;
   }
   return $defaults;
 }
@@ -101,6 +103,12 @@ function system_menu_block_form($config) {
       ),
     ),
   );
+  $form['toggle'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Display menu toggle button on small screens',
+    '#default_value' => $config['toggle'],
+    '#description' => t('A menu toggle button, commonly known as a hamburger icon, allows the menu to be hidden initially on devices with small screens, but then easily expanded.'),
+  );
 
   return $form;
 }
@@ -163,6 +171,12 @@ function system_menu_block_build(array $config) {
       if ($config['style'] === 'dropdown') {
         $data['content']['#attached']['library'][] = array('system', 'smartmenus');
       }
+    }
+    if (!empty($config['toggle']) && $config['toggle'] == TRUE) {
+      $id = backdrop_html_id('menu-toggle-state');
+      $data['content']['#wrapper_attributes']['data-menu-toggle-id'] = $id;
+      $data['content']['#prefix'] = theme('menu_toggle', array('enabled' => $config['toggle'], 'id' => $id, 'text' => t('Menu')));
+      $data['content']['#attached']['css'][] = backdrop_get_path('module', 'system') . '/css/menu-toggle.theme.css';
     }
     if (!empty($config['style_settings'])) {
       $data['content']['#wrapper_attributes']['data-menu-style'] = backdrop_json_encode($config['style_settings']);

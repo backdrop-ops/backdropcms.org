@@ -708,7 +708,6 @@ function system_menu() {
     'title' => 'Administration',
     'description' => 'Administration tools.',
     'position' => 'left',
-    'weight' => -12,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
     'file' => 'system.admin.inc',
@@ -885,37 +884,12 @@ function system_menu() {
 
   // Search settings.
   $items['admin/config/search'] = array(
-    'title' => 'Search and metadata',
-    'description' => 'Local site search, metadata and SEO.',
+    'title' => 'Search',
+    'description' => 'Local site search settings.',
     'position' => 'left',
     'weight' => -10,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
-    'file' => 'system.admin.inc',
-  );
-  // @deprecated: Remove backwards-compatibility redirect in 2.0.
-  $items['admin/config/search/clean-urls'] = array(
-    'page callback' => 'backdrop_goto_deprecated',
-    'page arguments' => array('admin/config/search/urls'),
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_CALLBACK,
-    'file' => 'system.admin.inc',
-  );
-  $items['admin/config/search/urls'] = array(
-    'title' => 'URL handling',
-    'description' => 'Handling URL-related configuration of your site.',
-    'page callback' => 'backdrop_get_form',
-    'page arguments' => array('system_urls_settings'),
-    'access arguments' => array('administer site configuration'),
-    'file' => 'system.admin.inc',
-    'weight' => 5,
-  );
-  $items['admin/config/search/urls/check'] = array(
-    'title' => 'Clean URL check',
-    'page callback' => 'backdrop_json_output',
-    'page arguments' => array(array('status' => TRUE)),
-    'access callback' => TRUE,
-    'type' => MENU_CALLBACK,
     'file' => 'system.admin.inc',
   );
 
@@ -947,7 +921,73 @@ function system_menu() {
     'file' => 'system.admin.inc',
     'weight' => 20,
   );
+
+  // URL handling.
+  $items['admin/config/urls'] = array(
+    'title' => 'URL handling',
+    'description' => 'Settings related to URLs including path aliases and URL recirects.',
+    'position' => 'right',
+    'weight' => -20,
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+  );
+  $items['admin/config/urls/settings'] = array(
+    'title' => 'URL settings',
+    'description' => 'General URL-related configuration for your site.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('system_urls_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'system.admin.inc',
+  );
+  $items['admin/config/urls/settings/check'] = array(
+    'title' => 'Clean URL check',
+    'page callback' => 'backdrop_json_output',
+    'page arguments' => array(array('status' => TRUE)),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'system.admin.inc',
+  );
+
+  // @deprecated: Remove backwards-compatibility redirect in 2.0.
+  $items['admin/config/search/urls'] = array(
+    'page callback' => 'backdrop_goto_deprecated',
+    'page arguments' => array('admin/config/urls/settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+  );
+  // @deprecated: Remove backwards-compatibility redirect in 2.0.
+  $items['admin/config/search/clean-urls'] = array(
+    'page callback' => 'backdrop_goto_deprecated',
+    'page arguments' => array('admin/config/urls/settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_CALLBACK,
+  );
+  // @deprecated: Remove backwards-compatibility redirect in 2.0.
+  $items['admin/config/search/urls/check'] = array(
+    'page callback' => 'backdrop_goto_deprecated',
+    'page arguments' => array('admin/config/urls/settings/check'),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
   // Additional categories
+  $items['admin/config/content'] = array(
+    'title' => 'Content authoring',
+    'description' => 'Settings related to formatting and authoring content.',
+    'position' => 'left',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+  );
+  $items['admin/config/metadata'] = array(
+    'title' => 'Metadata',
+    'description' => 'Settings related to meta tags, and other data commonly used by search engines.',
+    'position' => 'left',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file' => 'system.admin.inc',
+  );
   $items['admin/config/user-interface'] = array(
     'title' => 'User interface',
     'description' => 'Tools that enhance the user interface.',
@@ -955,22 +995,12 @@ function system_menu() {
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
     'file' => 'system.admin.inc',
-    'weight' => -15,
   );
   $items['admin/config/workflow'] = array(
     'title' => 'Workflow',
-    'description' => 'Content workflow, editorial workflow tools.',
+    'description' => 'Settings related to editorial workflow.',
     'position' => 'right',
     'weight' => 5,
-    'page callback' => 'system_admin_menu_block_page',
-    'access arguments' => array('access administration pages'),
-    'file' => 'system.admin.inc',
-  );
-  $items['admin/config/content'] = array(
-    'title' => 'Content authoring',
-    'description' => 'Settings related to formatting and authoring content.',
-    'position' => 'left',
-    'weight' => -15,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
     'file' => 'system.admin.inc',
@@ -2172,6 +2202,7 @@ function system_init() {
     backdrop_add_css($path . '/css/system.admin.css', array('group' => CSS_SYSTEM));
   }
   backdrop_add_css($path . '/css/system.theme.css', array('group' => CSS_SYSTEM, 'every_page' => TRUE));
+  backdrop_add_css($path . '/css/messages.theme.css', array('group' => CSS_SYSTEM, 'every_page' => TRUE));
 
   // Ignore slave database servers for this request.
   //
@@ -2378,7 +2409,7 @@ function system_block_view($delta = '', $settings = array()) {
       return $block;
     case 'breadcrumb':
       $block['subject'] = NULL;
-      $block['content'] = theme('breadcrumb', array('breadcrumb' => backdrop_get_breadcrumb()));
+      $block['content'] = system_breadcrumb_block($settings);
       return $block;
     case 'powered-by':
       $block['subject'] = NULL;
@@ -2405,6 +2436,14 @@ function system_block_view($delta = '', $settings = array()) {
 function system_block_configure($delta, $settings) {
   if ($delta === 'header') {
     return system_header_block_form($settings);
+  }
+  elseif ($delta === 'breadcrumb') {
+    $form['current'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Display the current page title as the last breadcrumb'),
+      '#default_value' => !empty($settings['current']),
+    );
+    return $form;
   }
   // System-defined menu blocks.
   foreach (menu_list_system_menus() as $menu_name => $title) {
@@ -3003,17 +3042,23 @@ function system_header_block_form($settings) {
     '#empty_option' => '- ' . t('None') . ' -',
     '#default_value' => $settings['menu'],
   );
-  $form['logo'] = array(
+  $form['components'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Site information'),
+    '#description' => t('Show or hide various components of your site header. To change the values of these components, visit the !site_info page.',
+      array('!site_info' => l(t('Site information'), 'admin/config/system/site-information'))),
+  );
+  $form['components']['logo'] = array(
     '#type' => 'checkbox',
     '#title' => t('Logo'),
     '#default_value' => $settings['logo'],
   );
-  $form['site_name'] = array(
+  $form['components']['site_name'] = array(
     '#type' => 'checkbox',
     '#title' => t('Site name'),
     '#default_value' => $settings['site_name'],
   );
-  $form['site_slogan'] = array(
+  $form['components']['site_slogan'] = array(
     '#type' => 'checkbox',
     '#title' => t('Site slogan'),
     '#default_value' => $settings['site_slogan'],
@@ -3030,18 +3075,33 @@ function system_header_block($settings) {
   $settings += array(
     'menu' => 'user-menu',
     'logo' => TRUE,
-    'site_slogan' => TRUE,
     'site_name' => TRUE,
+    'site_slogan' => TRUE,
   );
 
   $menu = $settings['menu'] ? menu_navigation_links($settings['menu']) : NULL;
   $site_config = config('system.core');
   $variables['logo']        = $settings['logo'] ? backdrop_get_logo() : NULL;
+  $variables['logo_attributes'] = $settings['logo'] ? array_diff_key(backdrop_get_logo_info(), array('path' => '')) : array();
   $variables['site_name']   = $settings['site_name'] ? check_plain($site_config->get('site_name')) : '';
   $variables['site_slogan'] = $settings['site_slogan'] ? filter_xss_admin($site_config->get('site_slogan')) : '';
   $variables['menu']        = $menu ? theme('links__header_menu', array('links' => $menu)) : NULL;
 
   return theme('header', $variables);
+}
+
+/**
+ * Output the content for the breadcrumb block.
+ *
+ * @see system_block_view()
+ */
+function system_breadcrumb_block($settings = array()) {
+  $crumbs = backdrop_get_breadcrumb();
+  if (isset($settings['current']) && $settings['current'] == TRUE) {
+    $crumbs[] = '<span>' . backdrop_get_title() . '</span>';
+  }
+
+  return theme('breadcrumb', array('breadcrumb' => $crumbs));
 }
 
 /**
@@ -3655,8 +3715,8 @@ function system_get_date_formats($date_format_name = NULL) {
  *   Include hidden, non-configurable date formats, such as those used by HTML5
  *   date/time elements.
  *
- * @return
- *   The date format id if it exists and is not hidden, FALSE otherwise.
+ * @return mixed
+ *   The date format array if it exists and is not hidden, FALSE otherwise.
  */
 function system_date_format_load($date_format_name, $include_hidden = TRUE) {
   if (($format = system_get_date_formats($date_format_name)) && ($include_hidden || empty($format['hidden']))) {
@@ -3761,13 +3821,6 @@ function system_autoload_info() {
     'FileStorageController' => 'file.entity.inc',
 
     // Views handlers.
-    'views_handler_argument_file_fid' => 'views/views_handler_argument_file_fid.inc',
-    'views_handler_field_file' => 'views/views_handler_field_file.inc',
-    'views_handler_field_file_extension' => 'views/views_handler_field_file_extension.inc',
-    'views_handler_field_file_filemime' => 'views/views_handler_field_file_filemime.inc',
-    'views_handler_field_file_uri' => 'views/views_handler_field_file_uri.inc',
-    'views_handler_field_file_status' => 'views/views_handler_field_file_status.inc',
-    'views_handler_filter_file_status' => 'views/views_handler_filter_file_status.inc',
     'views_handler_filter_system_type' => 'views/views_handler_filter_system_type.inc',
   );
 }
@@ -3851,4 +3904,176 @@ function system_admin_paths() {
     'admin/reports/status/php' => FALSE,
   );
   return $paths;
+}
+
+/**
+ * Sets up a form to save information automatically.
+ *
+ * This function adds a submit handler and a submit button to a form array. The
+ * submit function saves all the data in the form.
+ *
+ * If $form['#config'] is present in the form, the values will be saved to the
+ * named settings file (e.g., mymodule.settings). If sub-elements or groups of
+ * sub-elements have their own '#config' keys, then values of those elements and
+ * their children will be saved to that settings file.
+ *
+ * For example, consider the form:
+ *
+ * @code
+ * $primary_config = config('mymodule.settings');
+ * $secondary_config = config('mymodule.second');
+ * $tertiary_config = config('mymodule.third');
+ * $form = array(
+ *   '#config' => 'mymodule.settings',
+ *   'first_setting' => array(
+ *     '#type' => 'textfield',
+ *     '#title' => t('First Setting'),
+ *     '#default_setting' => $settings_config->get('first_setting'),
+ *   ),
+ *   'second_setting' => array( ... ),
+ *
+ *   'bonus_fieldset' => array(
+ *     '#type' => 'fieldset',
+ *     '#title' => t('Secondary Settings'),
+ *     '#config' => 'mymodule.second',
+ *
+ *     'bonus_one' => array( ... ),
+ *     'bonus_two' => array( ... ),
+ *
+ *     'bonus_three' => array(
+ *       '#type' => 'textfield',
+ *       '#default_setting' => $tertiary_config->get('bonus_three'),
+ *       '#config' => 'mymodule.third',
+ *     ),
+ *   ),
+ * );
+ * @endcode
+ *
+ * The top-level '#config' is "mymodule.settings". The values of 'first_setting'
+ * and 'second_setting' will both be saved to "mymodule.settings".
+ *
+ * The 'bonus_fieldset' has its own '#config' setting, "mymodule.second", which
+ * overrides the top-level '#config' setting, so 'bonus_one' and 'bonus_two'
+ * will be saved to "mymodule.second".
+ *
+ * The 'bonus_three' has its own '#config' setting, "mymodule.third", which
+ * overrides the one from the fieldset. The value of 'bonus_three' will be
+ * saved to the "mymodule.third".
+ *
+ * Modules that implement hook_form_alter() can use the '#config' settings to
+ * save their data to their own settings file by setting the '#config' parameter
+ * in thier elements or fieldsets.
+ *
+ * If no top-level $form['#config'] value is present, then the values will be
+ * saved to variables using variable_set() from the Drupal compatibility layer.
+ * This behavior is deprecated and will be remove in Backdrop 2.0.
+ *
+ * If you need to manipulate the data in a custom manner, you can either put
+ * your own submission handler in the form array before calling this function,
+ * or just use your own submission handler instead of calling this function.
+ *
+ * @param $form
+ *   An associative array containing the structure of the form.
+ *
+ * @return
+ *   The form structure.
+ *
+ * @see system_settings_form_submit()
+ * @see _system_sort_form_values_by_config()
+ *
+ * @since 1.6.0 Restored and made compatible with configuration management.
+ */
+function system_settings_form($form) {
+  $form['actions']['#type'] = 'actions';
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Save configuration'));
+
+  if (empty($form['#config']) && !settings_get('backdrop_drupal_compatibility')) {
+    drupal_set_message(t('Drupal compatibility layer is disabled and this form has not be updated to use Backdrop configuration management.  Changes will not be saved.'), 'warning');
+  }
+
+  if (!empty($_POST) && form_get_errors()) {
+    backdrop_set_message(t('The settings have not been saved because of the errors.'), 'error');
+  }
+  $form['#submit'][] = 'system_settings_form_submit';
+  if (!isset($form['#theme'])) {
+    $form['#theme'] = 'system_settings_form';
+  }
+  return $form;
+}
+
+/**
+ * Form submission handler for system_settings_form().
+ *
+ * If you want node type configure style handling of your checkboxes,
+ * add an array_filter value to your form.
+ *
+ * @since 1.6.0 Restored and made compatible with configuration management.
+ */
+function system_settings_form_submit($form, &$form_state) {
+  form_state_values_clean($form_state);
+
+  if (!empty($form['#config'])) {
+    $configs = _system_sort_form_values_by_config($form, $form_state, $form['#config']);
+    foreach ($configs as $bucket => $data) {
+      config_set_multiple($bucket, $data);
+    }
+  }
+  else {
+    watchdog('form', 'Backdrop 2.0 and later will require forms using system_settings_form() to set $form[\'#config\'].', array(), WATCHDOG_DEPRECATED);
+    if (!settings_get('backdrop_drupal_compatibility')) {
+      backdrop_set_message(t('Settings not saved: Drupal compatibility layer is disabled and this form has not be updated to use Backdrop configuration management.', 'error'));
+      return;
+    }
+
+    foreach ($form_state['values'] as $key => $value) {
+      if (is_array($value) && isset($form_state['values']['array_filter'])) {
+        $value = array_keys(array_filter($value));
+      }
+      variable_set($key, $value);
+    }
+  }
+
+  backdrop_set_message(t('The configuration options have been saved.'));
+}
+
+/**
+ * Sorts the $form_state['values'] array into CMI buckets by $form['#config'].
+ *
+ * This function recursively searches the form to assign values from
+ * $form_state['values'] into specific CMI buckets.  The top of $form must
+ * contain a $form['#config'] entry with the name of the default CMI bucket
+ * to use.  If an element contains its own $form['#config'] entry, that CMI
+ * bucket name will be used for that element and any child elements in the
+ * form.
+ *
+ * @param $form
+ *   An associative array containing the structure of a portion of the form.
+ * @param &$form_state
+ *   A keyed array containing the current state of the form.
+ * @param $inherited_bucket
+ *   The name of the bucket to use if $form['#config'] is not set.
+ * @param $configs
+ *   A keyed array that will contain the form values sorted by CMI bucket when
+ *   the function returns.  Defaults to an empty array.
+ * @return
+ *    Returns an array where the keys are the names of the CMI buckets (e.g.,
+ *    system.settings) and the values are key => value arrays of the settings
+ *    for each bucket.
+ */
+function _system_sort_form_values_by_config($form, &$form_state, $inherited_bucket, $configs = array()) {
+  foreach (element_children($form) as $key) {
+    $form_fragment = $form[$key];
+
+    // Specific elements or groups of elements can specify a bucket.
+    $bucket = empty($form_fragment['#config']) ? $inherited_bucket : $form_fragment['#config'];
+    // Save this element, if the value is present.
+    if (array_key_exists($key, $form_state['values'])) {
+      $configs[$bucket][$key] = $form_state['values'][$key];
+    }
+    // Descend into subgroups.
+    if (is_array($form_fragment) && count(element_children($form_fragment))) {
+      $configs = _system_sort_form_values_by_config($form_fragment, $form_state, $bucket, $configs);
+    }
+  }
+  return $configs;
 }

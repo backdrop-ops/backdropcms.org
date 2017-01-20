@@ -1837,6 +1837,32 @@ function theme_menu_local_actions($variables) {
 }
 
 /**
+ * Returns rendered HTML for a menu toggle.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *     - enabled: A boolean indicating whether the menu toggle should be shown.
+ *     - id: Unique identifier, generated with backdrop_html_id().
+ *     - text: Translated text for the menu toggle button.
+ *
+ * @see theme_menu_toggle()
+ * @ingroup themeable
+ */
+function theme_menu_toggle($variables) {
+  $output = '';
+  if ($variables['enabled']) {
+    $id = $variables['id'];
+    $output  = '<input id="' . $id . '" class="menu-toggle-state element-invisible" type="checkbox"  aria-controls="' . $id . '" />';
+    $output .= '<label class="menu-toggle-button" for="' . $id . '">';
+    $output .= '  <span class="menu-toggle-button-icon"></span>';
+    $output .= '  <span class="menu-toggle-button-text">' . $variables['text'] . '</span>';
+    $output .= '  <span class="menu-toggle-assistive-text element-invisible">' . t('Toggle menu visibility') . '</span>';
+    $output .= '</label>';
+  }
+  return $output;
+}
+
+/**
  * Gets the custom theme for the current page, if there is one.
  *
  * @param $initialize
