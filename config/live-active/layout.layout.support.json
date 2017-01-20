@@ -38,7 +38,8 @@
             "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
             "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
             "daef468e-fc1c-4894-be00-aa3ba55fdbb5"
-        ]
+        ],
+        "title": []
     },
     "content": {
         "c2aa251f-a884-4ab0-bb4c-765adfae3828": {
@@ -140,11 +141,11 @@
                 "delta": "custom_block",
                 "settings": {
                     "title_display": "default",
-                    "title": "Coming Soon: Documentation",
+                    "title": "Documentation",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>Read through a curated collection of&nbsp;online documentation, where you’ll find information on everything from installing Backdrop CMS for the first time to creating your own layouts, themes, and&nbsp;modules.</p>\n",
+                    "content": "<p>Read through a curated collection of&nbsp;online documentation, where you’ll find information on everything from installing Backdrop CMS for the first time to creating your own layouts, themes, and&nbsp;modules.</p>\n\n<p><a href=\"https://backdropcms.org/user-guide\">Read our new User Guide</a></p>\n",
                     "format": "filtered_html"
                 },
                 "uuid": "4543880d-1a0a-413e-8300-0045a93106df",

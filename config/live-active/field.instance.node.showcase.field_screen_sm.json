@@ -23,12 +23,12 @@
         "file_directory": "images/showcase/screen/sm",
         "file_extensions": "png gif jpg jpeg",
         "max_filesize": "",
-        "max_resolution": "320x542",
-        "min_resolution": "320x542",
         "alt_field": 1,
         "title_field": 0,
         "default_image": "",
-        "user_register_form": false
+        "user_register_form": false,
+        "max_dimensions": "320x542",
+        "min_dimensions": "320x542"
     },
     "display": {
         "default": {
