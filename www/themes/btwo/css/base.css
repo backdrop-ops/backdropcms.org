@@ -1,0 +1,179 @@
+/*******************************************************************************
+ * base.scss
+ *
+ * Contains base styles for HTML elements only.
+ ******************************************************************************/
+
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Source Sans Pro', "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 16px;
+}
+
+p {
+  font-size: 110%;
+  line-height: 1.45;
+  margin: 1em 0;
+}
+
+a {
+  color: #007CBA;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #007CBA;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+h1 {
+  font-weight: 300 /* Light */;
+  font-size: 60px;
+  letter-spacing: 0.01em;
+}
+
+h2 {
+  margin: 1em 0;
+  font-weight: 300; /* Light */
+  font-size: 38px;
+  letter-spacing: 0.01em;
+}
+
+@media (min-width: 520px) {
+  h2 {
+    font-size: 42px;
+  }
+}
+
+h3 {
+  margin: 1.5em 0 1em;
+  font-weight: 400; /* Normal */
+  font-size: 24px;
+  letter-spacing: 0.01em;
+}
+
+h4 {
+  margin: 1.5em 0 1em;
+  /* Semibold: Note Source Sans Pro has no 500 value. */
+  /* https://www.google.com/fonts/specimen/Source+Sans+Pro */
+  font-weight: 600; /* Semi-bold */
+  font-size: 20px;
+}
+
+ul {
+  margin: .75em 0;
+  padding-left: 2em;
+}
+li {
+  margin: .5em 0;
+}
+
+ol {
+  margin: 0 0 1.5em 1em;
+  padding: 0;
+}
+ol > li {
+  padding: 0 0 0 .4em;
+}
+
+blockquote {
+  font-style: italic;
+  margin: 0;
+}
+blockquote p {
+  margin: .5em 0;
+}
+figure {
+  margin: 0 25px;
+}
+figcaption {
+  margin-top: 5px;
+  color: #969595;
+  font-size: 80%;
+}
+small {
+  font-size: 90%;
+}
+
+div.codeblock pre {
+  padding: 6px 12px;
+}
+div.codeblock code {
+  font-size: .8em;
+  line-height: 1.6;
+}
+div.indent {
+  margin: 0 25px;
+}
+
+/*******************************************************************************
+ * Forms.
+ ******************************************************************************/
+label {
+  margin: 0 0 0.5em;
+}
+input,
+textarea {
+  padding: 4px 8px;
+  color: #555;
+  border: 2px solid #ccc;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  background-color: #fff;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+input[type="submit"] {
+  border: 2px solid #ccc;
+  background: rgba(216, 216, 216, 0.11);
+  border-radius: 10px;
+  width: auto;
+
+  -webkit-transition: background-color .5s;
+  -moz-transition: background-color .5s;
+  -ms-transition: background-color .5s;
+  -o-transition: background-color .5s;
+  transition: background-color .5s;
+}
+input[type="submit"]:hover {
+  background-color: #ebebeb;
+  border-color: #adadad;
+}
+
+.field-type-text-long,
+.form-item {
+  margin: 0 0 1.75em;
+}
+.form-item::last-child {
+  margin-bottom: 0;
+}
+
+#social-field-wrapper .description,
+.form-item .description {
+  padding: .25em 0 .25em 0;
+  color: #7D7D7D;
+}
+
+.form-type-radios label,
+.form-type-checkbox label {
+  margin-left: 5px;
+}
+.form-type-radios .description,
+.form-type-checkbox .description {
+  margin-left: 1.6em;
+}
+
+.filter-wrapper {
+  padding: 0.5em;
+}
+.filter-wrapper label {
+  display: block;
+}

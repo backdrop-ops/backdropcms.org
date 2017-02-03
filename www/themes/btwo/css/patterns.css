@@ -1,0 +1,137 @@
+/*******************************************************************************
+ * style.scss
+ *
+ * Contains general styles for common HTML patterns.
+ ******************************************************************************/
+
+/* make font-awesome heading icons have more space */
+h2 i.fa,
+h3 i.fa,
+h4 i.fa {
+  margin-right: 10px;
+}
+h5 i.fa,
+h6 i.fa {
+  margin-right: 5px;
+}
+
+/* make larger font-awesome heading icons vertically offset */
+h2 i.fa-lg {
+  position: relative;
+  top: 3px;
+}
+h4 i.fa-2x {
+  position: relative;
+  top: 5px;
+}
+
+
+/*******************************************************************************
+ * Buttons
+ ******************************************************************************/
+a.button {
+  display: inline-block;
+  background-color: white;
+  border: 2px solid #007CBA;
+  border-radius: 30px;
+  height: 50px;
+  margin: 10px 0;
+  text-transform: uppercase;
+  font-size: 25px;
+  line-height: 50px;
+  padding: 0 20px;
+  position: relative;
+  white-space: nowrap;
+
+  -webkit-transition: background-color .33s;
+  -webkit-transition: color .33s;
+  -moz-transition: background-color .33s;
+  -moz-transition: color .33s;
+  -ms-transition: background-color .33s;
+  -ms-transition: olor .33s;
+  -o-transition: background-color .33s;
+  -o-transition: color .33s;
+  transition: background-color .33s;
+  transition: color .33s;
+}
+a.button:hover {
+  background-color: #007CBA;
+  color: white;
+}
+a.button span {
+  display: block;
+  position: absolute;
+  top: -13px;
+  right: -13px;
+  font-size: 14px;
+  line-height: 24px;
+  padding: 0 12px;
+  color: #fff;
+  background-color: #979797;
+  border-radius: 10px;
+}
+
+/*******************************************************************************
+ * Form buttons
+ ******************************************************************************/
+.form-actions {
+  text-align: right;
+}
+.form-actions input {
+  margin: 0 15px;
+}
+
+/*******************************************************************************
+ * Subtext
+ ******************************************************************************/
+.subtext {
+  font-size: 80%;
+  font-weight: 400;
+  color: #969595;
+}
+
+/*******************************************************************************
+ * Backdrop mark drawn with CSS
+ * Is fluid, defaults to 100% width, but can be changed and the graphic will scale
+ * Text can be added inside element for screenreaders (e.g. Backdrop)
+ ******************************************************************************/
+.backdrop-mark {
+  position: relative;
+  display: block;
+  text-indent: -9999em;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  padding: 100% 0 0;
+  background: #000;
+}
+.backdrop-mark:before, .backdrop-mark:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: block;
+  width: 50%;
+  height: 50%;
+}
+.backdrop-mark:before {
+  z-index: 1;
+  background: #fff;
+}
+.backdrop-mark:after {
+  z-index: 2;
+  -webkit-transform: rotate(45deg) scaleY(1.5);
+      -ms-transform: rotate(45deg) scaleY(1.5);
+          transform: rotate(45deg) scaleY(1.5);
+  -webkit-transform-origin: bottom left;
+      -ms-transform-origin: bottom left;
+          transform-origin: bottom left;
+  background: #000;
+}
+.backdrop-mark img {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}

@@ -1,0 +1,115 @@
+/*******************************************************************************
+ * layout.scss
+ *
+ * Contains styles relating to layout. Any adjustment of margins/padding/widths,
+ * etc. should be in the layouts/double_fixed/double-fixed.css file!
+ ******************************************************************************/
+
+
+/*******************************************************************************
+ * Admin Bar
+ ******************************************************************************/
+.admin-bar body {
+  border-top: 22px solid #2d2d2d !important;
+}
+
+/*******************************************************************************
+ * Header
+ ******************************************************************************/
+.l-header {
+  background-color: #000000;
+  padding: 33px;
+}
+
+.l-header .block-system-header {
+  float: left;
+  margin-right: 150px;
+}
+.l-header .block-system-main-menu {
+  padding: 0 300px;
+}
+.l-header .block-on-the-web-social-links {
+  float: right;
+  margin-left: 150px;
+}
+
+/*******************************************************************************
+ * Messages
+ ******************************************************************************/
+.l-messages {
+  text-align: left;
+}
+
+/*******************************************************************************
+ * Page title
+ ******************************************************************************/
+#page-title {
+  font-size: 45px;
+  letter-spacing: -.04em;
+}
+@media (min-width: 520px) {
+  #page-title {
+    font-size: 64px;
+  }
+}
+@media (min-width: 1024px) {
+  #page-title {
+    margin-top: 75px;
+  }
+}
+body.front #page-title {
+  font-size: 400%;
+  padding-bottom: 18px;
+  border-bottom: 2px solid #969696;
+  margin-bottom: 30px;
+}
+
+/*******************************************************************************
+ * Home page rainbow
+ ******************************************************************************/
+body.front .l-top {
+  background: transparent url('../images/rainbow.png') top left no-repeat;
+  background-size: 100%;
+  padding: 50px;
+  text-align: center;
+}
+
+body.front .l-top h1.page-title {
+  color: #ffffff;
+}
+body.front .l-top .slogan-wrapper h2 {
+  color: #ffffff;
+}
+
+/*******************************************************************************
+ * Main content
+ ******************************************************************************/
+.l-content {
+  /* Hide overflow to allow blocks to stretch to 100% width, such as the
+     homepage supporter form. */
+  overflow: hidden;
+}
+
+/*******************************************************************************
+ * Bottom
+ ******************************************************************************/
+.l-bottom {
+  border-top: 4px solid #E8E6E5;
+  padding: 40px;
+}
+.l-bottom h2.block-title {
+  font-size: 18px;
+  color: #000000;
+}
+
+/*******************************************************************************
+ * Footer
+ ******************************************************************************/
+.l-footer {
+  background-color: #E8E6E5;
+  padding: 30px;
+}
+
+/*******************************************************************************
+ * Page-specific overrides
+ ******************************************************************************/

@@ -1,0 +1,22 @@
+name = Backdrop CMS v2
+description = The main theme for the Backdrop primary site. Version 2.
+version = 1.x
+backdrop = 1.x
+
+; Core stylesheets to replace:
+stylesheets[all][] = css/system.theme.css
+
+; Custom stylesheets to be added:
+stylesheets[screen][] = css/base.css
+stylesheets[screen][] = css/layout.css
+stylesheets[screen][] = css/patterns.css
+stylesheets[screen][] = css/components.css
+stylesheets[screen][] = css/menu-dropdown.theme.css
+stylesheets[screen][] = css/menu-dropdown.css
+stylesheets[screen][] = css/ckeditor-iframe.css
+
+ckeditor_stylesheets[] = css/ckeditor-iframe.css
+
+; Custom javascript to be added:
+scripts[] = js/borg.js
+;scripts[] = js/ga-events.js
