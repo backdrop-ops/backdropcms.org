@@ -1,7 +1,9 @@
 Patches to Backdrop Core:
 =========================
 
-none.
+System
+  https://github.com/backdrop/backdrop-issues/issues/2473
+  https://github.com/backdrop/backdrop/pull/1778
 
 Patches to Backdrop Contrib:
 ============================
