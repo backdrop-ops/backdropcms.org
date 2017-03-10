@@ -1,0 +1,74 @@
+<?php
+
+/**
+ * @file
+ * Install file for Bakery.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function bakery_schema() {
+  return array(
+    'bakery_user' => array(
+      'description' => 'Keep track of UID on subsites, master only.',
+      'fields' => array(
+        'uid' => array(
+          'description' => 'User ID on master site.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'slave' => array(
+          'description' => 'Slave site.',
+          'type' => 'varchar',
+          'length' => 128,
+          'not null' => TRUE,
+        ),
+        'slave_uid' => array(
+          'description' => 'User ID on slave site.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+      ),
+      'primary key' => array('uid', 'slave'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_install().
+ */
+function bakery_install() {
+  config_set('bakery.settings', 'freshness', ini_get('session.cookie_lifetime'));
+}
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Remove Bakery variables.
+ */
+function bakery_update_1000() {
+  $config = config('bakery.settings');
+
+  $config->set('key', update_variable_get('bakery_key', ''));
+  $config->set('domain', update_variable_get('bakery_domain', ''));
+  $config->set('is_master', update_variable_get('bakery_is_master', 0));
+  $config->set('master', update_variable_get('bakery_master', 'http://backdrop.org/'));
+  $config->set('slaves', update_variable_get('bakery_slaves', array()));
+  $config->set('supported_fields', update_variable_get('bakery_supported_fields', array('mail' => 'mail', 'name' => 'name')));
+  $config->set('help_text', update_variable_get('bakery_help_text', 'Otherwise you can contact the site administrators.'));
+  $config->set('cookie_extension', update_variable_get('bakery_cookie_extension', ''));
+  $config->save();
+
+  update_variable_del('bakery_key');
+  update_variable_del('bakery_domain');
+  update_variable_del('bakery_is_master');
+  update_variable_del('bakery_master');
+  update_variable_del('bakery_slaves');
+  update_variable_del('bakery_supported_fields');
+  update_variable_del('bakery_help_text');
+  update_variable_del('bakery_freshness');
+  update_variable_del('bakery_cookie_extension');
+}

@@ -1,0 +1,11 @@
+type = module
+name = Bakery
+description = Provides single-sign-on support across second-level domains.
+backdrop = 1.x
+
+configure = admin/config/system/bakery
+
+; Added by Backdrop CMS packaging script on 2017-03-09
+project = bakery
+version = 1.x-2.0.0
+timestamp = 1489109277
