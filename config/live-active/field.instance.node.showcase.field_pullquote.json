@@ -5,7 +5,7 @@
     "bundle": "showcase",
     "label": "Quotes",
     "widget": {
-        "weight": "9",
+        "weight": "10",
         "type": "text_textarea",
         "module": "text",
         "active": 1,
@@ -13,7 +13,7 @@
             "rows": "5"
         }
     },
-    "description": "",
+    "description": "Please provide remarks from the site owner, editors, visitors, or anyone - particularly relating to the use of Backdrop CMS.",
     "required": 0,
     "deleted": 0,
     "default_value": null,
@@ -26,7 +26,7 @@
         "default": {
             "label": "above",
             "type": "hidden",
-            "weight": "8",
+            "weight": "10",
             "settings": []
         }
     }

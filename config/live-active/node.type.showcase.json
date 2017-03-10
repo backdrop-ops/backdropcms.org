@@ -1,10 +1,10 @@
 {
     "_config_name": "node.type.showcase",
     "type": "showcase",
-    "name": "Showcase",
+    "name": "Website for Showcase",
     "base": "node_content",
     "module": "node",
-    "description": "Add a case study to appear in the Backdrop CMS Showcase",
+    "description": "Add a website case study to appear in the Backdrop CMS Showcase",
     "help": "",
     "modified": true,
     "disabled": false,
@@ -15,10 +15,10 @@
         "formblock_show_help": 0,
         "menu_options": {
             "devel": 0,
+            "menu-footer-menu": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
-            "navigation": 0,
             "menu-user-guide": 0,
             "user-menu": 0
         },

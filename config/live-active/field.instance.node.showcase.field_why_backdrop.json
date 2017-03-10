@@ -1,11 +1,11 @@
 {
-    "_config_name": "field.instance.node.sa.field_sa_coordinated_by",
-    "field_name": "field_sa_coordinated_by",
+    "_config_name": "field.instance.node.showcase.field_why_backdrop",
+    "field_name": "field_why_backdrop",
     "entity_type": "node",
-    "bundle": "sa",
-    "label": "Coordinated By",
+    "bundle": "showcase",
+    "label": "Why was Backdrop chosen for this project?",
     "widget": {
-        "weight": "8",
+        "weight": "11",
         "type": "text_textarea",
         "module": "text",
         "active": 1,
@@ -16,11 +16,7 @@
     "description": "",
     "required": 0,
     "deleted": 0,
-    "default_value": [
-        {
-            "value": "<ul>\r\n<li><a href=\"https://github.com/username\">Real Name</a> of the Backdrop CMS Security Team</li>\r\n<li><a href=\"https://github.com/username\">Real Name</a></li>\r\n</ul>\r\n"
-        }
-    ],
+    "default_value": null,
     "default_value_function": null,
     "settings": {
         "text_processing": "1",
@@ -30,7 +26,7 @@
         "default": {
             "label": "above",
             "type": "text_default",
-            "weight": "7",
+            "weight": "3",
             "settings": [],
             "module": "text"
         }
