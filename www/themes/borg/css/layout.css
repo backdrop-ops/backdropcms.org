@@ -29,18 +29,6 @@ body.front #page-title {
   text-align: left;
 }
 
-@media all and (min-width: 851px) {
-  body {
-    padding-left: 230px;
-  }
-
-  [dir="rtl"] body {
-    padding-left: 0;
-    padding-right: 230px;
-  }
-}
-
-
 /*******************************************************************************
  * Main content.
  ******************************************************************************/
@@ -88,87 +76,9 @@ main:before {
 }
 
 /*******************************************************************************
- * Sidebar
- ******************************************************************************/
-.l-sidebar {
-  background-color: #000;
-  color: #fff;
-  z-index: 2; /* Position above the drawer. */
-}
-.l-sidebar a {
-  color: #fff;
-}
-
-/*******************************************************************************
- * Drawer
- ******************************************************************************/
-.l-drawer {
-  overflow: auto;
-  z-index: 1; /* Position below the sidebar. */
-  background-color: #F7F7F7;
-  color: #000;
-
-  -webkit-transition: left 0.3s ease;
-  -moz-transition: left 0.3s ease;
-  -o-transition: left 0.3s ease;
-  transition: left 0.3s ease;
-}
-@media (min-width: 850px) {
-  .l-drawer {
-    border-right: 2px solid #979797;
-  }
-}
-.l-container {
-  -webkit-transition: padding 0.3s ease;
-  -moz-transition: padding 0.3s ease;
-  -o-transition: padding 0.3s ease;
-  transition: padding 0.3s ease;
-}
-.drawer-closed .l-drawer {
-  left: -2px;
-}
-.l-drawer span {
-  display: block;
-  padding: 10px 0;
-}
-.l-drawer ul.menu {
-  padding: 0;
-  width: 100%;
-}
-.l-drawer ul.menu li {
-  list-style-type: none;
-  padding: 5px 0;
-  margin: 0;
-}
-.l-drawer ul.menu li ul.menu {
-  margin-top: 0;
-}
-.l-drawer a {
-  position: relative;
-  display: block;
-}
-.l-drawer a i {
-  position: absolute;
-  bottom: 2px;
-  width: 0.39em;
-  margin: 0 0 0 10px;
-  overflow: hidden;
-  display: none;
-}
-.l-drawer a.active-trail {
-  font-weight: 600;
-}
-.l-drawer a:hover i,
-.l-drawer a.active-trail i {
-  font-weight: normal;
-  display: inline-block;
-}
-
-/*******************************************************************************
  * Footer
  ******************************************************************************/
-.layout--double-fixed-inner .l-footer,
-.layout--double-fixed .l-footer {
+.l-footer {
   text-align: center;
   padding-top: 60px;
   padding-bottom: 60px;
@@ -181,22 +91,4 @@ main:before {
 }
 .l-footer .block {
   padding: 5px;
-}
-
-/*******************************************************************************
- * Page-specific overrides
- ******************************************************************************/
-body.node-type-core .layout--double-fixed-inner-rev .l-content,
-body.node-type-project-theme .layout--double-fixed-inner-rev .l-content,
-body.node-type-project-module .layout--double-fixed-inner-rev .l-content,
-body.node-type-project-layout .layout--double-fixed-inner-rev .l-content {
-  max-width: 960px;
-  margin: 0 auto;
-  text-align: left;
-}
-body.node-type-core .layout--double-fixed-inner-rev .l-sidebar-inner .block,
-body.node-type-project-theme .layout--double-fixed-inner-rev .l-sidebar-inner .block,
-body.node-type-project-module .layout--double-fixed-inner-rev .l-sidebar-inner .block,
-body.node-type-project-layout .layout--double-fixed-inner-rev .l-sidebar-inner .block {
-  padding-left: 50px;
 }
