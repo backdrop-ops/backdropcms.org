@@ -1,31 +1,30 @@
 {
-    "_config_name": "field.instance.node.showcase.body",
+    "_config_name": "field.instance.node.project_dummy.body",
     "field_name": "body",
     "entity_type": "node",
-    "bundle": "showcase",
-    "label": "Describe the project",
+    "bundle": "project_dummy",
+    "label": "Body",
     "widget": {
-        "weight": "5",
         "type": "text_textarea_with_summary",
-        "module": "text",
-        "active": 1,
         "settings": {
-            "rows": "10",
+            "rows": 10,
             "summary_rows": 5
-        }
+        },
+        "weight": -4,
+        "module": "text"
     },
     "settings": {
-        "text_processing": "1",
-        "display_summary": 0,
+        "display_summary": true,
+        "text_processing": 1,
         "user_register_form": false
     },
     "display": {
         "default": {
             "label": "hidden",
             "type": "text_default",
-            "weight": "2",
             "settings": [],
-            "module": "text"
+            "module": "text",
+            "weight": 0
         },
         "teaser": {
             "label": "hidden",
@@ -37,8 +36,8 @@
             "weight": 0
         }
     },
-    "description": "What were its goals?, What were its requirements? What was the outcome?",
-    "required": 1,
+    "description": "",
+    "required": 0,
     "deleted": 0,
     "default_value": null,
     "default_value_function": null

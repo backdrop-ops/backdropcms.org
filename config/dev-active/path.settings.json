@@ -53,7 +53,7 @@
     "node_project_module_pattern": "project/[node:project_name]",
     "node_project_release_pattern": "project/[node:project_name]/releases/[node:title]",
     "node_project_theme_pattern": "project/[node:project_name]",
-    "node_sa_pattern": "",
+    "node_sa_pattern": "security/[node:field_sa_id]",
     "taxonomy_term_tags_pattern": "tags/[term:name]",
     "node_post_pattern": "news/[node:title]",
     "node_docs_pattern": "user-guide/[node:title]",
@@ -61,8 +61,9 @@
     "node_quote_pattern": "",
     "taxonomy_term_services_pattern": "services/[term:name]",
     "node_organization_pattern": "organization/[node:title]",
-    "node_supporter_pattern": "",
     "node_showcase_pattern": "showcase/[node:title]",
     "node_feature_pattern": "features/[node:title]",
-    "taxonomy_term_feature_type_pattern": "features/[term:name]"
+    "taxonomy_term_feature_type_pattern": "features/[term:name]",
+    "node_project_dummy_pattern": "project/[node:title]",
+    "node_supporter_pattern": ""
 }

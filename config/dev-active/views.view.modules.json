@@ -511,7 +511,8 @@
                         "ui_name": "",
                         "operator": "in",
                         "value": {
-                            "project_module": "project_module"
+                            "project_module": "project_module",
+                            "project_dummy": "project_dummy"
                         },
                         "group": 1,
                         "exposed": false,
@@ -715,7 +716,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "latest",
-                        "required": 1
+                        "required": 0
                     },
                     "project_releases": {
                         "id": "project_releases",
@@ -776,7 +777,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": true,
-                        "content": "<p>No results found.</p>\n",
+                        "content": "<p class=\"text-align-center\">No results found.</p>\n",
                         "format": "filtered_html",
                         "tokenize": 0
                     }
@@ -825,6 +826,7 @@
                         "ui_name": "",
                         "operator": "in",
                         "value": {
+                            "project_dummy": "project_dummy",
                             "project_theme": "project_theme"
                         },
                         "group": "1",
@@ -1000,7 +1002,8 @@
                         "ui_name": "",
                         "operator": "in",
                         "value": {
-                            "project_layout": "project_layout"
+                            "project_layout": "project_layout",
+                            "project_dummy": "project_dummy"
                         },
                         "group": "1",
                         "exposed": false,

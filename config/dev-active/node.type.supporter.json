@@ -12,7 +12,7 @@
     "disabled": false,
     "orig_type": "supporter",
     "settings": {
-        "status_default": "1",
+        "status_default": "0",
         "sticky_enabled": 0,
         "sticky_default": 0,
         "promote_enabled": 0,
@@ -26,6 +26,7 @@
         "formblock_expose": 1,
         "formblock_show_help": 0,
         "menu_options": {
+            "devel": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
