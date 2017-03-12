@@ -7,7 +7,7 @@
     "module": "layout",
     "weight": 0,
     "storage": 2,
-    "layout_template": "boxton",
+    "layout_template": "moscone",
     "disabled": false,
     "settings": {
         "title": "",
@@ -24,6 +24,10 @@
             "default",
             "62b827f3-5a2e-463d-ac3f-63fd43e95bdc",
             "98d68aba-5c3a-4f32-b900-a490c259747b"
+        ],
+        "sidebar": [
+            "8a85d3c6-059e-4ca7-ac62-989a4d3f6476",
+            "5058cb9f-cd84-4ae0-994c-769ace157a7f"
         ],
         "bottom": [],
         "footer": [
@@ -167,6 +171,52 @@
                         }
                     }
                 ]
+            }
+        },
+        "8a85d3c6-059e-4ca7-ac62-989a4d3f6476": {
+            "plugin": "borg_blocks:handbook",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "handbook",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "8a85d3c6-059e-4ca7-ac62-989a4d3f6476",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "5058cb9f-cd84-4ae0-994c-769ace157a7f": {
+            "plugin": "search:form",
+            "data": {
+                "module": "search",
+                "delta": "form",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "5058cb9f-cd84-4ae0-994c-769ace157a7f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
             }
         },
         "3f6bea0b-e674-4374-8103-3ab4762617fb": {
