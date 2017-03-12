@@ -148,6 +148,7 @@ ul.secondary a.active {
      display: inline-block;
      margin-left: 20px;
      padding-bottom: 4px;
+     border-bottom: 2px solid #000;
    }
    .block-system-main-menu li:hover {
      border-bottom: 2px solid #aaa;
