@@ -5,19 +5,15 @@
  ******************************************************************************/
 
 .block-borg-blocks-branding {
-  min-height: 80px;
+  float: left;
 }
 
 a.site-name {
   display: block;
-  /* Top of "b" and bottom of "p" should have equal distance to lines. */
-  padding: 16px 0 20px;
-  text-align: center;
   font-size: 34px;
   font-weight: 200;
   letter-spacing: -.04em;
   float: left;
-  width: 66.6666%;
 }
 
 .logo {
@@ -27,9 +23,9 @@ a.site-name {
   .logo {
     display: block;
     float: left;
-    width: 33.3333%;
+    width: 40px;
     box-sizing: border-box;
-    border-left: 2px solid #ffffff;
+    margin-left: 10px;
   }
 }
 
@@ -120,51 +116,40 @@ ul.secondary a.active {
 /*******************************************************************************
  * Main menu
  ******************************************************************************/
-.block-system-main-menu ul {
-  padding: 0;
-  width: 100%;
-  margin: 0;
-}
-.block-system-main-menu li {
-  list-style-type: none;
-  padding: 0 13px 0 23px;
-  border-bottom: 2px solid #fff;
-  margin: 0;
-}
-.block-system-main-menu li.first {
-  clear: both;
-  border-top: 2px solid #fff;
-}
-.block-system-main-menu li a {
-  font-weight: 200;
-  display: inline-block;
-  padding: 8px 0;
-  width: 100%;
-  position: relative;
-  font-size: 20px;
-  line-height: 36px;
-}
-.block-system-main-menu li a i {
-  /* Font Awesome needs unmodified font weights. */
-  font-weight: normal;
-}
-.block-system-main-menu a:hover,
-.block-system-main-menu li.active a {
-  font-weight: 300;
-}
-.block-system-main-menu i {
-  display: inline-block;
-  position: absolute;
-  top: 15px;
-  right: 10px;
-  width: .42em;
-  overflow: hidden;
-}
-.block-system-main-menu a:hover i,
-.block-system-main-menu li.active i,
-.block-system-main-menu li.active-trail i {
-  color: #27ACE2;
-}
+
+ /* Main menu at mobile width */
+ @media all and (max-width: 851px) {
+   .block-system-main-menu {
+     padding-top: 12px;
+     padding-bottom: 20px;
+   }
+   .block-system-main-menu .menu-toggle-button {
+     float: right;
+   }
+   .block-system-main-menu ul {
+     margin-top: 50px;
+   }
+ }
+
+ /* Main menu at full width */
+ @media all and (min-width: 851px) {
+   .block-system-main-menu {
+     float: right;
+   }
+   .block-system-main-menu ul {
+     list-style-type: none;
+     margin: 0;
+     padding-top: 5px;
+   }
+   .block-system-main-menu li {
+     display: inline-block;
+     margin-left: 20px;
+   }
+   .block-system-main-menu li a:hover,
+   .block-system-main-menu li a:active {
+     text-decoration: underline;
+   }
+ }
 
 /*******************************************************************************
  * Handbook menu
