@@ -7,7 +7,7 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout_template": "double_fixed_inner_rev",
+    "layout_template": "moscone_flipped",
     "disabled": false,
     "settings": {
         "title": "",
@@ -15,27 +15,25 @@
         "title_block": null
     },
     "positions": {
-        "sidebar": [
+        "header": [
             "097f5235-00e7-4ce1-ac00-d49b0e0588bb",
             "9d55288e-828e-4c47-8000-f51089d1a51a"
         ],
-        "drawer": [
-            "b117c07c-a1ec-48d9-bd00-ec0591daacbc",
-            "ecc067b0-ed32-4052-9201-01ebdfeda5de"
-        ],
-        "content-top": [],
+        "top": [],
         "content": [
             "35318ea2-97a4-49f4-b801-1b60e9ace706",
             "ead0b165-6c3c-41a4-9c31-49cf350497d9"
         ],
-        "content_sidebar": [
+        "sidebar": [
             "89d0e596-9881-41cf-9d5f-95d793000534"
         ],
+        "bottom": [],
         "footer": [
             "14e6d29f-104b-44cf-8c00-b14be74ea7f1",
             "a7e09823-2c39-4b98-8300-dccebf2aea09",
             "746c2691-2468-4403-be00-c3e1aba4da73"
-        ]
+        ],
+        "title": []
     },
     "content": {
         "097f5235-00e7-4ce1-ac00-d49b0e0588bb": {
@@ -74,52 +72,6 @@
                     "contexts": []
                 },
                 "uuid": "9d55288e-828e-4c47-8000-f51089d1a51a",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "b117c07c-a1ec-48d9-bd00-ec0591daacbc": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "b117c07c-a1ec-48d9-bd00-ec0591daacbc",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "ecc067b0-ed32-4052-9201-01ebdfeda5de": {
-            "plugin": "search:form",
-            "data": {
-                "module": "search",
-                "delta": "form",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "ecc067b0-ed32-4052-9201-01ebdfeda5de",
                 "style": {
                     "plugin": "default",
                     "data": {

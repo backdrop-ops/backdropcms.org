@@ -7,7 +7,7 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout_template": "double_fixed_inner_rev",
+    "layout_template": "moscone_flipped",
     "disabled": false,
     "settings": {
         "title": "Get help with Backdrop CMS",
@@ -15,25 +15,22 @@
         "title_block": null
     },
     "positions": {
-        "sidebar": [
+        "header": [
             "c2aa251f-a884-4ab0-bb4c-765adfae3828",
             "8c924952-e403-4fa8-a203-3e915942230c"
         ],
-        "drawer": [
-            "77695da8-bd77-4c30-8448-720b2e2af607",
-            "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80"
-        ],
-        "content-top": [],
+        "top": [],
         "content": [
             "4543880d-1a0a-413e-8300-0045a93106df",
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
             "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
             "e21a9e69-e89f-4b7a-b809-9e961daa1208"
         ],
-        "content_sidebar": [
+        "sidebar": [
             "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
             "aa20864f-9388-46a1-a608-8eb21c6b7b63"
         ],
+        "bottom": [],
         "footer": [
             "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
             "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
@@ -78,52 +75,6 @@
                     "contexts": []
                 },
                 "uuid": "8c924952-e403-4fa8-a203-3e915942230c",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "77695da8-bd77-4c30-8448-720b2e2af607": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "77695da8-bd77-4c30-8448-720b2e2af607",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80": {
-            "plugin": "search:form",
-            "data": {
-                "module": "search",
-                "delta": "form",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "a9b9dc8e-03ed-4bf2-b900-f75f2377ae80",
                 "style": {
                     "plugin": "default",
                     "data": {
