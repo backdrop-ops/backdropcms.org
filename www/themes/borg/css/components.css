@@ -129,6 +129,9 @@ ul.secondary a.active {
    .block-system-main-menu ul {
      margin-top: 50px;
    }
+   .block-system-main-menu a:hover {
+     text-decoration: underline;
+   }
  }
 
  /* Main menu at full width */
@@ -144,10 +147,13 @@ ul.secondary a.active {
    .block-system-main-menu li {
      display: inline-block;
      margin-left: 20px;
+     padding-bottom: 4px;
    }
-   .block-system-main-menu li a:hover,
-   .block-system-main-menu li a:active {
-     text-decoration: underline;
+   .block-system-main-menu li:hover {
+     border-bottom: 2px solid #aaa;
+   }
+   .block-system-main-menu li.active {
+     border-bottom: 2px solid #fff;
    }
  }
 
