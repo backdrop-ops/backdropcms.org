@@ -161,15 +161,27 @@ ul.secondary a.active {
 /*******************************************************************************
  * Handbook menu
  ******************************************************************************/
-.block-borg-blocks-handbook ul.menu li.first.expanded {
-  border-top: 0;
-  padding: 0 30px;
+.block-borg-blocks-handbook ul.menu {
+    background-color: #F7F7F7;
+    border: 1px solid #979797;
+    padding: 20px;
+}
+
+.block-borg-blocks-handbook ul.menu li {
+    list-style: none;
+    padding: 0px;
 }
 
 .block-borg-blocks-handbook ul.menu li.expanded {
-  border-top: solid 2px #979797;
-  padding: 0 30px;
-  margin-top: 30px;
+  border-top: solid 1px #979797;
+  margin-top: 20px;
+  padding-top: 15px;
+}
+
+.block-borg-blocks-handbook ul.menu li.first.expanded {
+  border-top: 0;
+  margin-top: 0px;
+  padding-top: 0px;
 }
 
 .block-borg-blocks-handbook ul.menu li.expanded span {
@@ -1449,13 +1461,6 @@ a.tabledrag-handle .handle {
   .block-views-news-block .view-footer {
     padding-left: 25px;
   }
-}
-
-/*******************************************************************************
- * Sidebar Admn Bar adjustment.
- ******************************************************************************/
-body.admin-bar .l-sidebar {
-  padding-top: 33px;
 }
 
 /*******************************************************************************
