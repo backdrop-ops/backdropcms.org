@@ -1595,6 +1595,11 @@ iframe.twitter-tweet-rendered {
   color: #979797;
 }
 
+.block-field-node-field-download-count,
+.block-project-usage-project-usage {
+  margin-top: 20px;
+}
+
 .field-name-field-download-count .field-item {
   font-weight: bold;
 }
