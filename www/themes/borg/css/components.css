@@ -243,7 +243,11 @@ ul.secondary a.active {
 /*******************************************************************************
  * Front page
  ******************************************************************************/
-body.front .l-content-top {
+body.front .l-content {
+  overflow: visible;
+}
+
+body.front .block.full-width {
   background-color: #f7f7f7;
   border-bottom: 2px solid #d7d7d7;
   border-top: 2px solid #d7d7d7;

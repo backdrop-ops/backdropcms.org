@@ -22,8 +22,6 @@
         "top": [],
         "content": [
             "07136c38-dd48-48b6-922f-47e22754307a",
-            "1fc51eed-d471-4cb7-a25a-909693289f22",
-            "2b280c5f-4345-4658-a600-bf38407d3099",
             "712c691e-6273-4634-8000-d97d82d86e88",
             "67447c68-4227-4401-ad00-f50c7b1a6690",
             "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51",
@@ -109,59 +107,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "1fc51eed-d471-4cb7-a25a-909693289f22": {
-            "plugin": "block:2",
-            "data": {
-                "module": "block",
-                "delta": "2",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "2",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "1fc51eed-d471-4cb7-a25a-909693289f22",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "2b280c5f-4345-4658-a600-bf38407d3099": {
-            "plugin": "block:1",
-            "data": {
-                "module": "block",
-                "delta": "1",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "1",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "2b280c5f-4345-4658-a600-bf38407d3099",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
+                            "classes": "full-width"
                         }
                     }
                 }
