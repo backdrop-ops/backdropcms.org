@@ -17,16 +17,11 @@ a.site-name {
 }
 
 .logo {
-  display: none;
-}
-@media all and (min-width: 851px) {
-  .logo {
-    display: block;
-    float: left;
-    width: 40px;
-    box-sizing: border-box;
-    margin-left: 10px;
-  }
+  display: block;
+  float: left;
+  width: 40px;
+  box-sizing: border-box;
+  margin-left: 10px;
 }
 
 .field-name-body a {
@@ -118,7 +113,7 @@ ul.secondary a.active {
  ******************************************************************************/
 
  /* Main menu at mobile width */
- @media all and (max-width: 851px) {
+ @media all and (max-width: 48em) {
    .block-system-main-menu {
      padding-top: 12px;
      padding-bottom: 20px;
@@ -135,7 +130,7 @@ ul.secondary a.active {
  }
 
  /* Main menu at full width */
- @media all and (min-width: 851px) {
+ @media all and (min-width: 48em) {
    .block-system-main-menu {
      float: right;
    }
