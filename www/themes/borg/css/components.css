@@ -1832,7 +1832,7 @@ div.addressfield-container-inline::after {
   padding-top: 0;
 }
 
-.node-type-showcase blockquote {
+.field-name-field-pullquote .field-item  {
   border: 15px solid #F7F7F7;
   background-color: #F7F7F7;
   background-image: url(../images/quote-open.png), url(../images/quote-close.png);
@@ -1864,7 +1864,7 @@ div.addressfield-container-inline::after {
  * Screenshot styles - Browser.
  ******************************************************************************/
 
-.browser-ui {
+.field-name-field-screen-lg .field-item {
   padding: 30px 0 0;
   border-radius: 5px;
   border-bottom: 1px solid #ccc;
@@ -1875,6 +1875,7 @@ div.addressfield-container-inline::after {
   -moz-box-shadow: 2px 2px 3px rgba(204,204,204,1), -2px 2px 3px rgba(204,204,204,1);
   -webkit-box-shadow: 2px 2px 3px rgba(204,204,204,1), -2px 2px 3px rgba(204,204,204,1);
   box-shadow: 2px 2px 3px rgba(204,204,204,1), -2px 2px 3px rgba(204,204,204,1);
+  margin-bottom: 20px;
 }
 .browser-ui .frame {
   display: block;
@@ -1906,15 +1907,16 @@ div.addressfield-container-inline::after {
  * Screenshot styles - Tablet
  ******************************************************************************/
 
-.tablet-ui {
+.field-name-field-screen-md .field-item {
   border-radius: 20px;
   background-color: #0D0D0D;
   padding: 22px 35px;
   max-width: 100%;
   margin: 0 auto;
   position: relative;
+  margin-bottom: 20px;
 }
-.tablet-ui img {
+.field-name-field-screen-md .field-item img {
   width: 100%;
   border-radius: 2px;
 }
@@ -1958,16 +1960,27 @@ div.addressfield-container-inline::after {
  * Screenshot styles - Phone
  ******************************************************************************/
 
-.phone-ui {
+.field-name-field-screen-sm .field-item {
   border-radius: 25px;
   background-color: #0D0D0D;
   padding: 32px 6px;
   margin: 0 auto;
   position: relative;
+  width: 16em;
+  float: left;
+  margin: 0 15px 20px 0;
 }
-.phone-ui img {
+.field-name-field-screen-sm .field-item  img {
   width: 100%;
 }
+
+/* clearfix */
+.field-name-field-screen-sm:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 .phone-ui .bar {
   left: 50%;
   margin-left: -25px;

@@ -24,10 +24,11 @@
     },
     "display": {
         "default": {
-            "label": "above",
-            "type": "hidden",
-            "weight": "10",
-            "settings": []
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "4",
+            "settings": [],
+            "module": "text"
         }
     }
 }
