@@ -1,0 +1,22 @@
+{
+    "_config_name": "bakery.settings",
+    "key": "j8kL2hp4ua)pjZEUUJuxo22NRMGP99mMkaK7oVBLmp]ceVvcab2swR",
+    "domain": ".backdropcms.org",
+    "is_master": 1,
+    "master": "https://backdropcms.org/",
+    "slaves": [
+        "https://forum.backdropcms.org/"
+    ],
+    "supported_fields": {
+        "name": "name",
+        "mail": "mail",
+        "status": "status",
+        "language": "language",
+        "signature": "signature",
+        "picture": 0
+    },
+    "help_text": "If you need help, please feel free to email the website administrators: info@backdropcms.org.",
+    "freshness": "2000000",
+    "cookie_extension": "",
+    "bakery_insecure_ssl": false
+}
