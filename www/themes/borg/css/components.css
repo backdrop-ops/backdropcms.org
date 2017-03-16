@@ -1706,16 +1706,64 @@ div.addressfield-container-inline::after {
 }
 
 /*******************************************************************************
+ * Header photo field block.
+ ******************************************************************************/
+
+.block-field-node-field-header-photo,
+.block-field-user-field-header-photo {
+  clear: both;
+  padding-top: 16px;
+  padding-bottom: calc(33vw - 200px);
+}
+
+@media all and (max-width: 48em) {
+  .block-field-node-field-header-photo,
+  .block-field-user-field-header-photo {
+    padding-bottom: calc(33vw - 20px);
+  }
+}
+
+.block-field-node-field-header-photo .field,
+.block-field-user-field-header-photo .field {
+  position: absolute;
+  left: 0;
+  width: 100vw;
+  z-index: 10;
+}
+
+.block-field-node-field-header-photo .field img,
+.block-field-user-field-header-photo .field img {
+  width: 100%;
+}
+
+/* The absolute positioning gets bumped if the parent is relatively positioned */
+.block-field-node-field-header-photo.contextual-links-region,
+.block-field-user-field-header-photo.contextual-links-region {
+  position: static;
+}
+
+/* Have the page content appear above the header with a white background.*/
+.l-wrapper-inner {
+   position: relative;
+   z-index: 20;
+   background-color: rgba(255, 255, 255, 0.9);
+ }
+
+
+/*******************************************************************************
  * Showcases.
  ******************************************************************************/
 
-.node-type-showcase #page-title {
-  margin-bottom: 0;
+.node-type-showcase .page-title {
+  margin: 0;
+  padding-top: 20px;
   line-height: 1em;
 }
+
 .node-type-showcase h3.field-name-field-blurb {
-  margin-top: 0;
+  margin: 20px 0;
 }
+
 .node-type-showcase .l-content-top {
   text-align: left;
 }
