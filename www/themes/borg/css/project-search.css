@@ -1,11 +1,52 @@
-h1 {
-  margin-bottom: 10px;
+.project-search h1.page-title {
+  padding-bottom: 10px;
+}
+@media (min-width: 34em) { /* 544px */
+  .project-search .page-title {
+    padding: 10px 0;
+  }
+}
+@media (min-width: 48em) { /* 768px */
+  .project-search .page-title {
+    padding: 0.67em 0;
+  }
 }
 
 .view-modules h2 {
   margin-top: 0;
   color: #929597;
-  font-size: 30px;
+  font-size: 24px;
+  line-height: 32px;
+}
+@media (min-width: 30em) { /* 480px */
+  .view-modules h2 {
+    font-size: 30px;
+    line-height: 36px;
+  }
+}
+
+.l-wrapper {
+  background: transparent url('../images/gray.png') top left repeat-x;
+}
+@media (min-width: 30em) { /* 480px */
+  .l-wrapper {
+    background-position: 0 -60px;
+  }
+}
+@media (min-width: 34em) { /* 544px */
+  .l-wrapper {
+    background-position: 0 0px;
+  }
+}
+@media (min-width: 48em) { /* 768px */
+  .l-wrapper {
+    background-position: 0 -80px;
+  }
+}
+@media (min-width: 62em) { /* 992px */
+  .l-wrapper {
+    background-position: 0 0px;
+  }
 }
 
 .views-exposed-widgets {
@@ -111,9 +152,7 @@ h1 {
  * Search results styling
  */
 .view-modules .view-content {
-  border: 1px solid #d4d6d6;
-  border-width: 1px 0;
-  background: #fafafa;
+
 }
 
 .project-search--results {

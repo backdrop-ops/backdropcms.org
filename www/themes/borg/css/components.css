@@ -1717,7 +1717,9 @@ div.addressfield-container-inline::after {
 .l-wrapper-inner {
    position: relative;
    z-index: 20;
-   background-color: rgba(255, 255, 255, 0.9);
+   /* white background here won't work for pages where we need to see the bg */
+    /* can we use a more specific selector where this is needed? */
+   /* background-color: rgba(255, 255, 255, 0.9); */
  }
 
 
@@ -1768,7 +1770,7 @@ div.addressfield-container-inline::after {
     right: 25px;
   }
 }
-@media (min-width: 48em) { /*768px */
+@media (min-width: 48em) { /* 768px */
   .node-type-showcase .l-top.has-background .l-top-inner {
     left: 50px;
     right: 50px;

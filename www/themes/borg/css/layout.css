@@ -14,8 +14,8 @@
   }
 }
 @media (min-width: 62em) { /* 992px */
-  .page-title {
-    margin-top: 75px;
+  .l-page-title {
+    padding-top: 75px;
   }
 }
 body.front .page-title {
