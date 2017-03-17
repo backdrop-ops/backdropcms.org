@@ -277,6 +277,16 @@ article.node footer .arrow-down {
   display: none;
 }
 
+article.node.view-mode-full {
+  text-align: center;
+}
+article.node.view-mode-full .content {
+  text-align: left;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+
 /*******************************************************************************
  * Blog - teaser
  ******************************************************************************/
