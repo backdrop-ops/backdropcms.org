@@ -100,18 +100,13 @@ $(window).load(function() {
     backdrop_add_js($script, array('type' => 'inline'));
   }
 
-  $node = menu_get_object();
-  if (isset($node) && isset($node->type) && $node->type === 'book') {
-    $variables['classes'][] = 'drawer-open';
-    $variables['classes'][] = 'layout-both-sidebars';
+  if (arg(0) == 'modules' || arg(0) == 'themes' || arg(0) == 'layouts') {
+    $variables['classes'][] = 'project-search';
+
+    $path = backdrop_get_path('theme', 'borg');
+    backdrop_add_css($path . '/css/project-search.css');
   }
-  else {
-    $variables['classes'][] = 'drawer-closed';
-    $array_key = array_search('layout-both-sidebars', $variables['classes']);
-    if ($array_key !== FALSE) {
-      $variables['classes'][$array_key] = 'layout-one-sidebar';
-    }
-  }
+
   if (module_exists('admin_bar') && user_access('admin_bar')) {
     $variables['classes'][] = 'admin-bar';
   }
@@ -123,16 +118,6 @@ $(window).load(function() {
 function borg_preprocess_layout(&$variables) {
   if (arg(0) == 'user' && !is_numeric(arg(1))) {
     $variables['tabs'] = FALSE;
-  }
-}
-
-/**
- * Preprocess views_view
- */
-function borg_preprocess_views_view(&$variables) {
-  if ($variables['name'] == 'modules') {
-    $path = backdrop_get_path('theme', 'borg');
-    backdrop_add_css($path . '/css/project-search.css');
   }
 }
 
