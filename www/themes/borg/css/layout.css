@@ -4,21 +4,21 @@
  * Contains styles relating to layout. Any adjustment of margins/padding/widths,
  * etc. should be in the layouts/double_fixed/double-fixed.css file!
  ******************************************************************************/
-#page-title {
+.page-title {
   font-size: 45px;
   letter-spacing: -.04em;
 }
 @media (min-width: 520px) {
-  #page-title {
+  .page-title {
     font-size: 64px;
   }
 }
 @media (min-width: 1024px) {
-  #page-title {
+  .page-title {
     margin-top: 75px;
   }
 }
-body.front #page-title {
+body.front .page-title {
   font-size: 400%;
   padding-bottom: 18px;
   border-bottom: 2px solid #969696;
