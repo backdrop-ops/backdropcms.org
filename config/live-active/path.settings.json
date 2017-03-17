@@ -46,7 +46,7 @@
     "taxonomy_term_pattern": "",
     "user_pattern": "account/[user:name]",
     "node_book_pattern": "",
-    "node_core_pattern": "project/releases/[node:title]",
+    "node_core_pattern": "project/[node:title]",
     "node_core_release_pattern": "releases/[node:title]",
     "node_page_pattern": "[node:title]",
     "node_project_layout_pattern": "project/[node:project_name]",
