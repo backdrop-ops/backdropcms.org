@@ -37,6 +37,17 @@ a.site-name {
 }
 
 /*******************************************************************************
+ * Allow Center alignment for all content
+ ******************************************************************************/
+.block-system-main {
+  text-align: center;
+}
+.block-system-main .content {
+  text-align: left;
+  margin: 0 auto;
+}
+
+/*******************************************************************************
  * Tabs & Sub-tabs.
  ******************************************************************************/
 ul.primary {
@@ -843,9 +854,10 @@ body.front .block-block-4 h2 {
 /*******************************************************************************
  * Login form
  ******************************************************************************/
+
 #user-login .form-item {
   padding: 15px 0;
-  display: flex;
+  margin: 0;
 }
 /* Clearfix for .form-item */
 #user-login .form-item:after {
@@ -853,17 +865,46 @@ body.front .block-block-4 h2 {
   display: table;
   clear: both;
 }
-
-#user-login .form-item label {
-  width: 90px;
-  display: inline-block;
+#user-login .form-required {
+  display: none;
 }
 #user-login .form-item input {
   width: 100%;
-  flex: 1;
 }
 #user-login small {
   margin: 0 10px;
+  display: block;
+  padding-top: 10px;
+}
+
+@media (min-width: 34em) { /* 544px */
+  #user-login {
+    max-width: 450px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  #user-login .form-item {
+    display: flex;
+    margin: 0 0 1.75em;
+  }
+
+  #user-login .form-item label {
+    min-width: 75px;
+    padding-right: 5px;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 28px;
+    margin-bottom: 0;
+  }
+  #user-login .form-item input {
+    width: 370px;
+  }
+
+  #user-login small {
+    display: inline;
+    padding-top: 0;
+  }
 }
 
 /*******************************************************************************
@@ -957,7 +998,7 @@ body.front .block-block-4 h2 {
 main.account-page .page-title {
   padding-top: 40px;
 }
-@media (min-width: 48em) { /*768px */
+@media (min-width: 48em) { /* 768px */
   main.account-page .page-title {
     padding-top: 80px;
   }
