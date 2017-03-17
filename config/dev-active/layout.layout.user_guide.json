@@ -2,7 +2,7 @@
     "_config_name": "layout.layout.user_guide",
     "path": "node/%",
     "name": "user_guide",
-    "title": "User Guide",
+    "title": "User Guide / Handbook",
     "description": null,
     "module": null,
     "weight": 0,
@@ -25,7 +25,8 @@
             "ead0b165-6c3c-41a4-9c31-49cf350497d9"
         ],
         "sidebar": [
-            "89d0e596-9881-41cf-9d5f-95d793000534"
+            "89d0e596-9881-41cf-9d5f-95d793000534",
+            "17c3e7e6-2f99-492b-a400-f994fcbccc90"
         ],
         "bottom": [],
         "footer": [
@@ -155,7 +156,58 @@
                             "classes": ""
                         }
                     }
-                }
+                },
+                "conditions": [
+                    {
+                        "plugin": "node_type",
+                        "data": {
+                            "settings": {
+                                "bundles": [
+                                    "docs"
+                                ],
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "17c3e7e6-2f99-492b-a400-f994fcbccc90": {
+            "plugin": "book:navigation",
+            "data": {
+                "module": "book",
+                "delta": "navigation",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "Handbook",
+                    "style": "default",
+                    "block_settings": {
+                        "book_mode": "book pages"
+                    },
+                    "contexts": []
+                },
+                "uuid": "17c3e7e6-2f99-492b-a400-f994fcbccc90",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                },
+                "conditions": [
+                    {
+                        "plugin": "node_type",
+                        "data": {
+                            "settings": {
+                                "bundles": [
+                                    "book"
+                                ],
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
             }
         },
         "14e6d29f-104b-44cf-8c00-b14be74ea7f1": {
@@ -244,6 +296,7 @@
             "data": {
                 "settings": {
                     "bundles": [
+                        "book",
                         "docs"
                     ],
                     "load_condition_nojs": "Load condition"
