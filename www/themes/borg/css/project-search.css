@@ -143,7 +143,7 @@ h1 {
   font-weight: 600;
   font-size: 27px;
 }
-@media all and (min-width: 550px) {
+@media (min-width: 34em) { /* 544px */
   .result h3 {
     display: inline-block;
   }
@@ -157,7 +157,7 @@ h1 {
   color: #86898a;
   font-size: 0.9em;
 }
-@media all and (min-width: 550px) {
+@media (min-width: 34em) { /* 544px */
   .result div.since {
     display: inline-block;
   }

@@ -8,12 +8,12 @@
   font-size: 45px;
   letter-spacing: -.04em;
 }
-@media (min-width: 520px) {
+@media (min-width: 34em) { /* 544px */
   .page-title {
     font-size: 64px;
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: 62em) { /* 992px */
   .page-title {
     margin-top: 75px;
   }
