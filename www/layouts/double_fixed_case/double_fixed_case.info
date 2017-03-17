@@ -1,4 +1,4 @@
-name = Double Fixed Sidebars - Case Study
+name = Case Study
 version = 1.x
 backdrop = 1.x
 
@@ -6,12 +6,16 @@ backdrop = 1.x
 file = double_fixed_case.php
 
 ; Specify regions for this layout.
-regions[sidebar] = Sidebar
-regions[drawer] = Drawer
-regions[content-top] = Content Top
-regions[content] = Content
-regions[content_sidebar] = Inner Sidebar
-regions[footer] = Footer
+
+regions[header]          = Header
+regions[content-top]     = Top
+regions[content]         = Content
+regions[content_sidebar] = Sidebar
+regions[bottom]          = Bottom
+regions[footer]          = Footer
 
 ; Content is the default region by default, but specify it for clarity.
 default region = content
+
+; Include the Bootstrap4 Grid System
+libraries[] = bootstrap4-gs

@@ -33,14 +33,9 @@
     "display": {
         "default": {
             "label": "hidden",
-            "type": "image",
+            "type": "hidden",
             "weight": "7",
-            "settings": {
-                "image_style": "",
-                "image_link": "",
-                "image_float": ""
-            },
-            "module": "image"
+            "settings": []
         }
     }
 }

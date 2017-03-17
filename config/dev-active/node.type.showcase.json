@@ -1,7 +1,7 @@
 {
     "_config_name": "node.type.showcase",
     "type": "showcase",
-    "name": "Showcase Site",
+    "name": "Website for Showcase",
     "base": "node_content",
     "module": "node",
     "description": "Add a website case study to appear in the Backdrop CMS Showcase",
@@ -9,7 +9,7 @@
     "modified": true,
     "disabled": false,
     "has_title": true,
-    "title_label": "Project Title",
+    "title_label": "Project",
     "settings": {
         "formblock_expose": 0,
         "formblock_show_help": 0,

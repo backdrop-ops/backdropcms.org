@@ -34,7 +34,7 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
   }
 
   // Add region class via backdrop_attributes().
-  $variables['top_attributes'] = array('class' => array('l-content-top'));
+  $variables['top_attributes'] = array('class' => array('l-top'));
 
   // Special handling for header image.
   if (arg(0) == 'node' && is_numeric(arg(1)) && !arg(2)) {
@@ -69,13 +69,15 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
       if ($desktop_count) {
         foreach ($node->field_screen_lg[$lang] as $delta => $info) {
           $image = theme('image_style', array('style_name' => 'large', 'uri' => $node->field_screen_lg[$lang][$delta]['uri']));
-          $output  = '<div class="browser-ui">';
-          $output .= '  <div class="frame">';
-          $output .= '    <span class="red"></span>';
-          $output .= '    <span class="yellow"></span>';
-          $output .= '    <span class="green"></span>';
+          $output  = '<div class="col-sm-12">';
+          $output .= '  <div class="browser-ui">';
+          $output .= '    <div class="frame">';
+          $output .= '      <span class="red"></span>';
+          $output .= '      <span class="yellow"></span>';
+          $output .= '      <span class="green"></span>';
+          $output .= '    </div>';
+          $output .= '    ' . $image;
           $output .= '  </div>';
-          $output .= '  ' . $image;
           $output .= '</div>';
           $desktop_rows[$delta] = $output;
         }

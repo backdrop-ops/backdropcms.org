@@ -27,116 +27,102 @@
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   </div>
 
-  <div class="l-container">
-    <main role="main" class="l-content">
+  <?php if ($content['header']): ?>
+    <header class="l-header" role="banner" aria-label="<?php print t('Site header'); ?>">
+      <div class="l-header-inner container container-fluid">
+        <?php print $content['header']; ?>
+      </div>
+    </header>
+  <?php endif; ?>
 
-      <div<?php print backdrop_attributes($top_attributes); ?>>
-        <div class="l-content-top-inner">
+  <?php if (!empty($content['content-top'])): ?>
+    <div<?php print backdrop_attributes($top_attributes); ?>>
+      <div class="l-top-inner container container-fluid">
+        <div class="l-page-title">
+          <a id="main-content"></a>
           <?php print render($title_prefix); ?>
           <?php if ($title): ?>
-            <h1 class="title" id="page-title">
-              <?php print $title; ?>
-            </h1>
+            <h1 class="page-title"><?php print $title; ?></h1>
           <?php endif; ?>
           <?php print render($title_suffix); ?>
-
-          <?php print $content['content-top']; ?>
         </div>
+
+        <?php print $content['content-top']; ?>
       </div>
+    </div>
+  <?php endif; ?>
 
-      <?php if ($tabs): ?>
-        <div class="tabs">
-          <?php print $tabs; ?>
-        </div>
-      <?php endif; ?>
-
-      <?php if ($action_links): ?>
-        <?php print $action_links; ?>
-      <?php endif; ?>
+  <div class="l-wrapper">
+    <div class="l-wrapper-inner container clearfix">
 
       <?php if ($messages): ?>
-        <section class="l-messages">
+        <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
           <?php print $messages; ?>
-        </section>
-      <?php endif; ?>
-
-      <div class="l-inner">
-
-        <div class="container clearfix">
-          <div class="row">
-            <div class="l-content-inner">
-              <a id="main-content"></a>
-              <?php print $content['content']; ?>
-            </div>
-            <div class="l-sidebar-inner">
-              <?php print $content['content_sidebar']; ?>
-            </div>
-          </div>
-        </div>
-
-        <?php if ($row_first): ?>
-          <div class="container clearfix">
-            <div class="row">
-              <?php print $row_first; ?>
-            </div>
-          </div>
-        <?php endif; ?>
-        <?php if ($row_second): ?>
-          <div class="container clearfix">
-            <div class="row">
-              <?php print $row_second; ?>
-            </div>
-          </div>
-        <?php endif; ?>
-        <?php if ($row_third): ?>
-          <div class="container clearfix">
-            <div class="row">
-              <?php print $row_third; ?>
-            </div>
-          </div>
-        <?php endif; ?>
-        <?php if ($row_fourth): ?>
-          <div class="container clearfix">
-            <div class="row">
-              <?php print $row_fourth; ?>
-            </div>
-          </div>
-        <?php endif; ?>
-        <?php if ($row_fifth): ?>
-          <div class="container clearfix">
-            <div class="row">
-              <?php print $row_fifth; ?>
-            </div>
-          </div>
-        <?php endif; ?>
-        <?php if ($row_sixth): ?>
-          <div class="container clearfix">
-            <div class="row">
-              <?php print $row_sixth; ?>
-            </div>
-          </div>
-        <?php endif; ?>
-
-      </div><!-- /.l-inner -->
-
-      <?php if ($content['footer']): ?>
-        <div class="l-footer">
-          <?php print $content['footer']; ?>
         </div>
       <?php endif; ?>
 
-    </main>
+      <?php if ($tabs): ?>
+        <nav class="tabs" role="tablist" aria-label="<?php print t('Admin content navigation tabs.'); ?>">
+          <?php print $tabs; ?>
+        </nav>
+      <?php endif; ?>
 
-    <?php if ($content['sidebar']): ?>
-      <div class="l-sidebar">
-        <?php print $content['sidebar']; ?>
-      </div>
-    <?php endif; ?>
+      <?php print $action_links; ?>
 
-    <?php if ($content['drawer']): ?>
-      <div class="l-drawer">
-        <?php print $content['drawer']; ?>
+      <?php if (!empty($content['top'])): ?>
+        <div class="l-top">
+          <?php print $content['top']; ?>
+        </div>
+      <?php endif; ?>
+
+      <div class="row">
+        <main class="l-content col-md-8" role="main" aria-label="<?php print t('Main content'); ?>">
+          <?php print $content['content']; ?>
+        </main>
+        <div class="l-sidebar l-sidebar-first col-md-4">
+          <?php print $content['content_sidebar']; ?>
+        </div>
       </div>
-    <?php endif; ?>
-  </div>
+
+      <?php if ($row_first): ?>
+        <div class="row">
+          <?php print $row_first; ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($row_second): ?>
+        <div class="row">
+          <?php print $row_second; ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($row_third): ?>
+        <div class="row">
+          <?php print $row_third; ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($row_fourth): ?>
+        <div class="row">
+          <?php print $row_fourth; ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($row_fifth): ?>
+        <div class="row">
+          <?php print $row_fifth; ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($row_sixth): ?>
+        <div class="row">
+          <?php print $row_sixth; ?>
+        </div>
+      <?php endif; ?>
+
+    </div><!-- /.l-wrapper-inner -->
+  </div><!-- /.l-wrapper -->
+
+  <?php if ($content['footer']): ?>
+    <footer class="l-footer"  role="footer">
+      <div class="l-footer-inner container container-fluid">
+        <?php print $content['footer']; ?>
+      </div>
+    </footer>
+  <?php endif; ?>
 </div>
