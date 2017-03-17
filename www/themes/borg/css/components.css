@@ -236,10 +236,10 @@ ul.secondary a.active {
 .book-navigation {
   margin-top: 50px;
 }
-.book-pager {
+.book-navigation .book-pager {
   border-top: 2px solid #969696;
   border-bottom: 2px solid #969696;
-  margin: 1em 0;
+  margin: 3em 0 0 0;
 }
 .book-add-child a {
   margin: 1em 0;
