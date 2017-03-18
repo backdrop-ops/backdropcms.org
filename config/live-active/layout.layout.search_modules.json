@@ -7,6 +7,7 @@
     "module": null,
     "weight": -2,
     "storage": 1,
+    "layout_template": "boxton",
     "disabled": false,
     "settings": {
         "title": "",
@@ -14,24 +15,22 @@
         "title_block": null
     },
     "positions": {
-        "sidebar": [
+        "header": [
             "dcc08931-fe27-45e8-8a09-9ea6d72e5fa2",
             "1b3a6d21-38e2-4794-9300-b8f01bbe34fb"
         ],
-        "drawer": [
-            "e470526e-403a-46dc-9d00-e4d302e44088",
-            "64a6ef50-73e1-4075-a200-bd39a1f312f1"
-        ],
-        "content-top": [],
+        "top": [],
         "content": [
             "7dd5f366-d6f5-4333-bc00-0cf61eb8b873",
             "5f724926-7372-4f1e-a241-65f975859b0e"
         ],
+        "bottom": [],
         "footer": [
             "c8dcf840-64d3-48f9-a007-7aaca560f9d3",
             "47d4f23d-79a4-4271-b100-0b50cbeeaf53",
             "2ad0172c-3184-484e-af5d-935381f16c20"
-        ]
+        ],
+        "title": []
     },
     "content": {
         "dcc08931-fe27-45e8-8a09-9ea6d72e5fa2": {
@@ -70,52 +69,6 @@
                     "contexts": []
                 },
                 "uuid": "1b3a6d21-38e2-4794-9300-b8f01bbe34fb",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "e470526e-403a-46dc-9d00-e4d302e44088": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "e470526e-403a-46dc-9d00-e4d302e44088",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "64a6ef50-73e1-4075-a200-bd39a1f312f1": {
-            "plugin": "search:form",
-            "data": {
-                "module": "search",
-                "delta": "form",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "64a6ef50-73e1-4075-a200-bd39a1f312f1",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -251,6 +204,5 @@
                 }
             }
         }
-    },
-    "layout_template": "double_fixed"
+    }
 }

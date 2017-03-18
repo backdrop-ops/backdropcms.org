@@ -7,7 +7,7 @@
     "module": "layout",
     "weight": 0,
     "storage": 2,
-    "layout_template": "double_fixed",
+    "layout_template": "boxton",
     "disabled": false,
     "settings": {
         "title": "",
@@ -15,20 +15,17 @@
         "title_block": null
     },
     "positions": {
-        "sidebar": [
+        "header": [
             "6af74ef4-4c62-472a-aa00-d12b128df6d2",
             "9d4d7374-2a8e-4218-8b22-3440dc62a2ff"
         ],
-        "drawer": [
-            "8a85d3c6-059e-4ca7-ac62-989a4d3f6476",
-            "5058cb9f-cd84-4ae0-994c-769ace157a7f"
-        ],
-        "content-top": [],
+        "top": [],
         "content": [
             "default",
             "62b827f3-5a2e-463d-ac3f-63fd43e95bdc",
             "98d68aba-5c3a-4f32-b900-a490c259747b"
         ],
+        "bottom": [],
         "footer": [
             "3f6bea0b-e674-4374-8103-3ab4762617fb",
             "58a52df4-ec8f-441b-a463-994fe39766df",
@@ -73,52 +70,6 @@
                     "contexts": []
                 },
                 "uuid": "9d4d7374-2a8e-4218-8b22-3440dc62a2ff",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "8a85d3c6-059e-4ca7-ac62-989a4d3f6476": {
-            "plugin": "borg_blocks:handbook",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "handbook",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "8a85d3c6-059e-4ca7-ac62-989a4d3f6476",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "5058cb9f-cd84-4ae0-994c-769ace157a7f": {
-            "plugin": "search:form",
-            "data": {
-                "module": "search",
-                "delta": "form",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "5058cb9f-cd84-4ae0-994c-769ace157a7f",
                 "style": {
                     "plugin": "default",
                     "data": {
