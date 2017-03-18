@@ -37,17 +37,6 @@ a.site-name {
 }
 
 /*******************************************************************************
- * Allow Center alignment for all content
- ******************************************************************************/
-.block-system-main {
-  text-align: center;
-}
-.block-system-main .content {
-  text-align: left;
-  margin: 0 auto;
-}
-
-/*******************************************************************************
  * Tabs & Sub-tabs.
  ******************************************************************************/
 ul.primary {
@@ -852,6 +841,13 @@ body.front .block-block-4 h2 {
 }
 
 /*******************************************************************************
+ * All user forms
+ ******************************************************************************/
+body.user-form .page-title {
+  text-align: center;
+}
+
+/*******************************************************************************
  * Login form
  ******************************************************************************/
 
@@ -879,18 +875,18 @@ body.front .block-block-4 h2 {
 
 @media (min-width: 34em) { /* 544px */
   #user-login {
-    max-width: 450px;
-    margin: 0 auto;
+    max-width: 500px;
+    margin: 0 auto 10em auto;
     text-align: left;
   }
 
   #user-login .form-item {
     display: flex;
-    margin: 0 0 1.75em;
   }
 
   #user-login .form-item label {
-    min-width: 75px;
+    text-align: right;
+    width: 200px;
     padding-right: 5px;
     display: inline-block;
     font-size: 16px;
@@ -898,7 +894,7 @@ body.front .block-block-4 h2 {
     margin-bottom: 0;
   }
   #user-login .form-item input {
-    width: 370px;
+    width: 360px;
   }
 
   #user-login small {
@@ -910,25 +906,36 @@ body.front .block-block-4 h2 {
 /*******************************************************************************
  * Password reset form
  ******************************************************************************/
+#user-pass {
+  max-width: 500px;
+  margin: 0 auto 10em auto;
+  text-align: left;
+}
 #user-pass .form-item {
   padding: 15px 0;
-  display: flex;
+  margin-bottom: 1em;
 }
 #user-pass .form-item label {
   padding-right: 15px;
-  display: inline-block;
 }
 #user-pass .form-item input {
   width: 100%;
-  flex: 1;
 }
 
 /*******************************************************************************
  * Registration form
  ******************************************************************************/
+#user-register-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
 #user-register-form .form-item {
   padding: 15px 0;
   display: flex;
+}
+#user-register-form fieldset .form-item {
+  padding: 5px 0;
+  margin-bottom: .5em;
 }
 #user-register-form .form-item label {
   width: 180px;
