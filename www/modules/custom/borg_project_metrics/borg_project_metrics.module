@@ -51,8 +51,10 @@ function _get_downloads($project = '') {
   curl_close($ch);
   $json = json_decode($content);
   $total = 0;
-  foreach($json as $j) {
-    $total += $j->assets[0]->download_count;
+  if (!empty($json)) {
+    foreach($json as $j) {
+      $total += $j->assets[0]->download_count;
+    }
   }
   return $total;
 }
@@ -69,9 +71,17 @@ function borg_project_metrics_cron() {
     $project_nodes = _get_project_nodes();
     foreach($project_nodes as $m) {
       $num = _get_downloads($m[0]);
-      $node = node_load($m[1]);
-      $node->field_download_count['und'][0]['value'] = $num;
-      $node->save();
+      if ($num) {
+        try {
+          $node = node_load($m[1]);
+          $node->field_download_count['und'][0]['value'] = $num;
+          $node->save();
+        }
+        catch(Exception $e) {
+          $message = $e->getMessage();
+          watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
+        }
+      }
     }
   }
 }
