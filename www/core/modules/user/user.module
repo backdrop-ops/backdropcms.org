@@ -497,6 +497,10 @@ function user_permission() {
       'title' => t('Administer users'),
       'restrict access' => TRUE,
     ),
+    'assign roles' => array(
+      'title' => t('Assign user roles'),
+      'restrict access' => TRUE,
+    ),
     'administer account settings' => array(
       'title' => t('Administer user account settings'),
       'description' => t('Manage settings that apply to all user accounts.'),
@@ -778,7 +782,7 @@ function user_account_form(&$form, &$form_state) {
     '#title' => t('Roles'),
     '#default_value' => (!$register && isset($account->roles) ? $account->roles : array()),
     '#options' => $roles,
-    '#access' => $roles && user_access('administer permissions'),
+    '#access' => $roles && user_access('assign roles'),
   );
   $form['account']['roles'][BACKDROP_AUTHENTICATED_ROLE] = array(
     '#disabled' => TRUE,
@@ -2715,16 +2719,19 @@ function user_action_info() {
     'weight' => 10,
   );
 
-  $roles = user_roles(TRUE);
+  $roles = user_roles(TRUE, NULL, TRUE);
   $index = 0;
-  foreach ($roles as $role_name => $role_label) {
+  foreach ($roles as $role_name => $role) {
     if ($role_name === BACKDROP_AUTHENTICATED_ROLE) {
+      continue;
+    }
+    if (!user_access('assign roles') && !user_access('administer permissions')) {
       continue;
     }
     $index++;
 
     $actions['user_add_role_' . $role_name] = array(
-      'label' => t('Add role "@label"', array('@label' => $role_label)),
+      'label' => t('Add role "@label"', array('@label' => $role->label)),
       'type' => 'user',
       'callback' => 'user_add_role_action',
       'file' => 'user.actions.inc',
@@ -2732,7 +2739,7 @@ function user_action_info() {
       'role_name' => $role_name,
     );
     $actions['user_remove_role_' . $role_name] = array(
-      'label' => t('Remove role "@label"', array('@label' => $role_label)),
+      'label' => t('Remove role "@label"', array('@label' => $role->label)),
       'type' => 'user',
       'callback' => 'user_remove_role_action',
       'file' => 'user.actions.inc',
