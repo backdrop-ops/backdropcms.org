@@ -1020,16 +1020,10 @@ body.account-page .l-page-title {
   body.account-page .page-title {
     padding: 0.5em 0;
   }
-  body.account-page .l-wrapper-inner {
-    top: -300px;
-  }
 }
 @media (min-width: 75em) {
   body.account-page .page-title {
     padding: 0.67em 0;
-  }
-  body.account-page .l-wrapper-inner {
-    top: -350px;
   }
 }
 
