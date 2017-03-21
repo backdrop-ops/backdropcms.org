@@ -3,7 +3,7 @@
     "field_name": "field_header_photo",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Header Photo",
+    "label": "Banner Image",
     "widget": {
         "weight": "4",
         "type": "image_image",
@@ -23,12 +23,12 @@
         "file_directory": "images/profile/header",
         "file_extensions": "png gif jpg jpeg",
         "max_filesize": "",
+        "max_dimensions": "3000x3000",
+        "min_dimensions": "",
         "alt_field": 0,
         "title_field": 0,
         "user_register_form": 0,
-        "default_image": "",
-        "max_dimensions": "3000x3000",
-        "min_dimensions": ""
+        "default_image": ""
     },
     "display": {
         "default": {
