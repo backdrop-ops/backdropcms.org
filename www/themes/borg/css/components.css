@@ -999,15 +999,37 @@ body.user-form .page-title {
 
 
 /*******************************************************************************
- * User Profile
+ * User Profile / Account page
  ******************************************************************************/
 
-main.account-page .page-title {
-  padding-top: 40px;
+body.account-page .l-page-title {
+  padding-top: 0px;
 }
+
 @media (min-width: 48em) { /* 768px */
-  main.account-page .page-title {
-    padding-top: 80px;
+  body.account-page .page-title {
+    padding: 0.25em 0;
+  }
+  body.account-page .l-wrapper-inner {
+    position: relative;
+    top: -250px;
+    background-color: rgba(255, 255,255, .85);
+  }
+}
+@media (min-width: 62em) { /* 992px */
+  body.account-page .page-title {
+    padding: 0.5em 0;
+  }
+  body.account-page .l-wrapper-inner {
+    top: -300px;
+  }
+}
+@media (min-width: 75em) {
+  body.account-page .page-title {
+    padding: 0.67em 0;
+  }
+  body.account-page .l-wrapper-inner {
+    top: -350px;
   }
 }
 
@@ -1015,11 +1037,6 @@ article.profile {
   clear: none;
   margin-top: 0;
   text-align: left;
-}
-article.profile .field-name-field-contributions {
-  margin-top: 40px;
-  border-top: 1px solid #ccc;
-  padding-top: 10px;
 }
 article.profile .field-name-field-contributions .field-label {
   font-weight: normal;
@@ -1038,8 +1055,9 @@ article.profile .field-name-field-contributions li {
 
 .view-profile-sidebar {
   padding-top: 20px;
-  padding-right: 20px;
+  text-align: center;
 }
+
 .view-profile-sidebar .views-field {
   margin-bottom: 15px;
 }
@@ -1055,7 +1073,7 @@ article.profile .field-name-field-contributions li {
 }
 
 .view-profile-sidebar .views-field-field-photo {
-  margin-right: 10px;
+  margin: 0 10px 15px 10px;
 }
 .view-profile-sidebar .views-field-field-photo .field-content {
   text-align: center;
@@ -1065,24 +1083,10 @@ article.profile .field-name-field-contributions li {
   background: #ffffff;
   margin: 0 auto;
 }
-@media (min-width: 34em) { /* 544px */
-  .view-profile-sidebar .views-field-field-photo img {
-    width: 100%;
-  }
-}
 
 .view-profile-sidebar .views-field-field-name {
   margin-top: 20px;
   padding-top: 20px;
-}
-.view-profile-sidebar .views-field-field-name:before {
-  height: 2px;
-  background: #000000;
-  width: 25px;
-  display: block;
-  content: "";
-  position: relative;
-  top: -20px;
 }
 
 .view-profile-sidebar .views-field-field-websites a {
@@ -1093,24 +1097,66 @@ article.profile .field-name-field-contributions li {
    margin: 20px 0;
    padding: 20px 0;
 }
-.view-profile-sidebar .views-field-created:before {
-  height: 2px;
-  background: #000000;
-  width: 25px;
-  display: block;
-  content: "";
-  position: relative;
-  top: -20px;
+
+
+@media (min-width: 34em) { /* 544px */
+  .view-profile-sidebar .views-field-field-photo img {
+    width: 330px;
+  }
 }
-.view-profile-sidebar .views-field-created:after {
-  height: 2px;
-  background: #000000;
-  width: 25px;
-  display: block;
-  content: "";
-  position: relative;
-  top: 20px;
+@media (min-width: 48em) { /* 768px */
+  .view-profile-sidebar {
+    padding: 0 10px 0 0;
+    text-align: left;
+  }
+  .view-profile-sidebar .views-field-field-photo {
+    margin: 0 0 15px 0;
+  }
+  .view-profile-sidebar .views-field-field-photo img {
+    width: 100%;
+  }
+  .view-profile-sidebar .views-field-field-name:before {
+    height: 2px;
+    background: #000000;
+    width: 25px;
+    display: block;
+    content: "";
+    position: relative;
+    top: -20px;
+  }
+  .view-profile-sidebar .views-field-created:before {
+    height: 2px;
+    background: #000000;
+    width: 25px;
+    display: block;
+    content: "";
+    position: relative;
+    top: -20px;
+  }
+  .view-profile-sidebar .views-field-created:after {
+    height: 2px;
+    background: #000000;
+    width: 25px;
+    display: block;
+    content: "";
+    position: relative;
+    top: 20px;
+  }
 }
+@media (min-width: 62em) { /* 992px */
+  .view-profile-sidebar {
+    padding: 0 10px;
+  }
+  .view-profile-sidebar .views-field-field-photo {
+    margin: 0 15px 15px 15px;
+  }
+}
+@media (min-width: 75em) {
+  .view-profile-sidebar {
+    padding: 0 15px;
+  }
+}
+
 
 /*******************************************************************************
  * User Profile Edit form
@@ -1723,53 +1769,6 @@ div.addressfield-container-inline::after {
 .node-organization .field-name-body {
   clear: both;
 }
-
-/*******************************************************************************
- * Header photo field block.
- ******************************************************************************/
-
-.block-field-node-field-header-photo,
-.block-field-user-field-header-photo {
-  clear: both;
-  padding-top: 16px;
-  padding-bottom: calc(33vw - 200px);
-}
-
-@media all and (max-width: 48em) {
-  .block-field-node-field-header-photo,
-  .block-field-user-field-header-photo {
-    padding-bottom: calc(33vw - 20px);
-  }
-}
-
-.block-field-node-field-header-photo .field,
-.block-field-user-field-header-photo .field {
-  position: absolute;
-  left: 0;
-  width: 100vw;
-  z-index: 10;
-}
-
-.block-field-node-field-header-photo .field img,
-.block-field-user-field-header-photo .field img {
-  width: 100%;
-}
-
-/* The absolute positioning gets bumped if the parent is relatively positioned */
-.block-field-node-field-header-photo.contextual-links-region,
-.block-field-user-field-header-photo.contextual-links-region {
-  position: static;
-}
-
-/* Have the page content appear above the header with a white background.*/
-.l-wrapper-inner {
-   position: relative;
-   z-index: 20;
-   /* white background here won't work for pages where we need to see the bg */
-    /* can we use a more specific selector where this is needed? */
-   /* background-color: rgba(255, 255, 255, 0.9); */
- }
-
 
 /*******************************************************************************
  * Showcases.

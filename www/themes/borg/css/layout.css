@@ -77,3 +77,14 @@ main {
 .l-footer .block {
   padding: 5px;
 }
+
+/*******************************************************************************
+ * XL containers get more breathing room.
+ ******************************************************************************/
+@media (min-width: 75em) {
+  .container {
+    padding-right: 2.9375rem;
+    padding-left: 2.9375rem;
+  }
+}
+

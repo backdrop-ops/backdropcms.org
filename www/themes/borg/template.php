@@ -112,18 +112,27 @@ $(window).load(function() {
   }
 
   if (arg(0) == 'user') {
-    global $user;
-    if (arg(1) == 'login' || ($user->uid == 0 && !arg(1))) {
+    if (arg(1) == 'login') {
       $variables['classes'][] = 'user-form';
       $variables['classes'][] = 'user-login';
     }
-    elseif (arg(1) == 'register') {
+    if (arg(1) == 'register') {
       $variables['classes'][] = 'user-form';
       $variables['classes'][] = 'user-reister';
     }
     elseif (arg(1) == 'password') {
       $variables['classes'][] = 'user-form';
       $variables['classes'][] = 'user-password';
+    }
+    elseif (is_numeric(arg(1)) && ! arg(2)) {
+      $variables['classes'][] = 'account-page';
+    }
+    else {
+      global $user;
+      if ($user->uid == 0 && !arg(1)) {
+        $variables['classes'][] = 'user-form';
+        $variables['classes'][] = 'user-login';
+      }
     }
   }
 }

@@ -1,9 +1,9 @@
 <?php
 /**
  * @file
- * Template for the Boxton layout.
+ * Template for the Moscone layout.
  *
- * *** CHANGES: moved top region to above title, inside .l-wraopper
+ * *** CHANGES: moved top region to outside l-wrapper for full-width.
  *
  * Variables:
  * - $title: The page title, for use in the actual HTML content.
@@ -20,11 +20,12 @@
  *   - $content['header']
  *   - $content['top']
  *   - $content['content']
+ *   - $content['sidebar']
  *   - $content['bottom']
  *   - $content['footer']
  */
 ?>
-<div class="layout--boxton <?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
+<div class="layout--moscone <?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
   <div id="skip-link">
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   </div>
@@ -37,14 +38,14 @@
     </header>
   <?php endif; ?>
 
+  <?php if (!empty($content['top'])): ?>
+    <div class="l-top">
+      <?php print $content['top']; ?>
+    </div>
+  <?php endif; ?>
+
   <div class="l-wrapper">
     <div class="l-wrapper-inner container container-fluid">
-
-      <?php if (!empty($content['top'])): ?>
-        <div class="l-top">
-          <?php print $content['top']; ?>
-        </div>
-      <?php endif; ?>
 
       <?php if ($messages): ?>
         <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
@@ -69,9 +70,14 @@
 
       <?php print $action_links; ?>
 
-      <div class="l-content" role="main" aria-label="<?php print t('Main content'); ?>">
-        <?php print $content['content']; ?>
-      </div>
+      <div class="l-middle row">
+        <main class="l-content col-md-9 col-md-push-3" role="main" aria-label="<?php print t('Main content'); ?>">
+          <?php print $content['content']; ?>
+        </main>
+        <div class="l-sidebar l-sidebar-first col-md-3 col-md-pull-9">
+          <?php print $content['sidebar']; ?>
+        </div>
+      </div><!-- /.l-middle -->
 
       <?php if (!empty($content['bottom'])): ?>
         <div class="l-bottom">
@@ -86,7 +92,7 @@
     <footer class="l-footer"  role="footer">
       <div class="l-footer-inner container container-fluid">
         <?php print $content['footer']; ?>
-      </div><!-- /.container -->
+      </div>
     </footer>
   <?php endif; ?>
-</div><!-- /.layout--boxton -->
+</div><!-- /.layout--moscone -->
