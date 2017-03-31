@@ -1151,6 +1151,13 @@ article.profile .field-name-field-contributions li {
   }
 }
 
+/*******************************************************************************
+ * User Profile Header
+ ******************************************************************************/
+.block-field-user-field-header-photo img {
+  width: 100%;
+  height: auto;
+}
 
 /*******************************************************************************
  * User Profile Edit form
