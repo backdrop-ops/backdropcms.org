@@ -37,11 +37,11 @@
     </header>
   <?php endif; ?>
 
-  <div class="l-wrapper">
+  <div <?php print backdrop_attributes($wrap_attributes); ?>> <!-- .l-wrapper !-->
     <div class="l-wrapper-inner container container-fluid">
 
       <?php if (!empty($content['top'])): ?>
-        <div class="l-top">
+      <div class="l-top">
           <?php print $content['top']; ?>
         </div>
       <?php endif; ?>

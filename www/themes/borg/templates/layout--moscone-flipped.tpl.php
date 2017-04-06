@@ -39,14 +39,14 @@
   <?php endif; ?>
 
   <?php if (!empty($content['top'])): ?>
-    <div class="l-top">
+  <div class="l-top">
       <div class="l-top-inner container container-fluid">
         <?php print $content['top']; ?>
       </div>
     </div>
   <?php endif; ?>
 
-  <div class="l-wrapper">
+  <div <?php print backdrop_attributes($wrap_attributes); ?>> <!-- .l-wrapper !-->
     <div class="l-wrapper-inner container container-fluid">
 
       <?php if ($messages): ?>

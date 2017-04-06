@@ -141,8 +141,22 @@ $(window).load(function() {
  * Prepares variables for layout templates.
  */
 function borg_preprocess_layout(&$variables) {
+  $variables['wrap_attributes'] = array('class' => array('l-wrapper'));
+
   if (arg(0) == 'user' && !is_numeric(arg(1))) {
     $variables['tabs'] = FALSE;
+  }
+  // Special handling for header image.
+  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2)) {
+    // Check to see if there is a profile image.
+    $account = user_load(arg(1)); // Entity cache should save us here?
+    if (isset($account->field_header_photo[LANGUAGE_NONE][0]['uri'])) {
+      // Generate an image at the correct size.
+      $image = image_style_url('header', $account->field_header_photo[LANGUAGE_NONE][0]['uri']);
+      $variables['wrap_attributes']['style'] = 'background-image: url(' . $image . ')';
+      // Add an addidional class.
+      $variables['wrap_attributes']['class'][] = 'has-background';
+    }
   }
 }
 

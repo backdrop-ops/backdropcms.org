@@ -997,40 +997,68 @@ body.user-form .page-title {
   }
 }
 
+/*******************************************************************************
+ * All pages with header image on wrapper.
+ ******************************************************************************/
+.l-wrapper.has-background {
+  background-size: 100%;
+  background-position: top center;
+  background-repeat: no-repeat;
+  margin-left: -5px;
+  margin-right: -5px;
+  position: relative;
+  padding-top: 100px;
+}
+
+@media (min-width: 26em) {
+  .l-wrapper.has-background {
+    padding-top: 150px;
+  }
+}
+@media (min-width: 48em) {
+  .l-wrapper.has-background {
+    padding-top: 175px;
+  }
+}
+@media (min-width: 62em) {
+  .l-wrapper.has-background {
+    padding-top: 200px;
+  }
+}
+@media (min-width: 75em) {
+  .l-wrapper.has-background {
+    padding-top: 250px;
+  }
+}
+
+.l-wrapper.has-background .l-wrapper-inner {
+  background-color: #ffffff;
+}
+
 
 /*******************************************************************************
  * User Profile / Account page
  ******************************************************************************/
 
-body.account-page .l-page-title {
-  padding-top: 0px;
+main.account-page #page-title {
+  padding-top: 40px;
+}
+@media all and (min-width: 851px) {
+  main.account-page #page-title {
+    padding-top: 80px;
+  }
 }
 
-@media (min-width: 48em) { /* 768px */
-  body.account-page .page-title {
-    padding: 0.25em 0;
-  }
-  body.account-page .l-wrapper-inner {
-    position: relative;
-    top: -250px;
-    background-color: rgba(255, 255,255, .85);
-  }
-}
-@media (min-width: 62em) { /* 992px */
-  body.account-page .page-title {
-    padding: 0.5em 0;
-  }
-}
-@media (min-width: 75em) {
-  body.account-page .page-title {
-    padding: 0.67em 0;
-  }
-}
 
 article.profile {
   clear: none;
   margin-top: 0;
   text-align: left;
+}
+article.profile .field-name-field-contributions {
+  margin-top: 40px;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
 }
 article.profile .field-name-field-contributions .field-label {
   font-weight: normal;
