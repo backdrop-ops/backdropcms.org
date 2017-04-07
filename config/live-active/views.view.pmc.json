@@ -5,7 +5,7 @@
     "tag": "default",
     "disabled": false,
     "base_table": "users",
-    "human_name": "PMC",
+    "human_name": "PMC members & Core committers",
     "core": "1.4.4",
     "display": {
         "default": {
@@ -461,14 +461,18 @@
             }
         },
         "block": {
-            "display_title": "PMC",
+            "display_title": "PMC members",
             "display_plugin": "block",
             "display_options": {
                 "query": {
                     "type": "views_query",
                     "options": []
                 },
-                "display_description": ""
+                "display_description": "",
+                "title": "PMC members",
+                "defaults": {
+                    "title": false
+                }
             }
         },
         "block_1": {
@@ -567,14 +571,16 @@
                 },
                 "defaults": {
                     "filters": false,
-                    "filter_groups": false
+                    "filter_groups": false,
+                    "title": false
                 },
                 "filter_groups": {
                     "operator": "AND",
                     "groups": {
                         "1": "AND"
                     }
-                }
+                },
+                "title": "Core committers"
             }
         }
     }
