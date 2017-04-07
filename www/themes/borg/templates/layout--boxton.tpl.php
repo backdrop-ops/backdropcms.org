@@ -37,14 +37,14 @@
     </header>
   <?php endif; ?>
 
+  <?php if (!empty($content['top'])): ?>
+    <div class="l-top">
+      <?php print $content['top']; ?>
+    </div>
+  <?php endif; ?>
+
   <div <?php print backdrop_attributes($wrap_attributes); ?>> <!-- .l-wrapper !-->
     <div class="l-wrapper-inner container container-fluid">
-
-      <?php if (!empty($content['top'])): ?>
-      <div class="l-top">
-          <?php print $content['top']; ?>
-        </div>
-      <?php endif; ?>
 
       <?php if ($messages): ?>
         <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
@@ -73,14 +73,14 @@
         <?php print $content['content']; ?>
       </div>
 
-      <?php if (!empty($content['bottom'])): ?>
-        <div class="l-bottom">
-          <?php print $content['bottom']; ?>
-        </div>
-      <?php endif; ?>
-
     </div><!-- /.l-wrapper-inner -->
   </div><!-- /.l-wrapper -->
+
+  <?php if (!empty($content['bottom'])): ?>
+    <div class="l-bottom">
+      <?php print $content['bottom']; ?>
+    </div>
+  <?php endif; ?>
 
   <?php if ($content['footer']): ?>
     <footer class="l-footer"  role="footer">

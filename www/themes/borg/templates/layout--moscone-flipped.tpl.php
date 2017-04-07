@@ -81,14 +81,14 @@
         </div>
       </div><!-- /.l-middle -->
 
-      <?php if (!empty($content['bottom'])): ?>
-        <div class="l-bottom">
-          <?php print $content['bottom']; ?>
-        </div>
-      <?php endif; ?>
-
     </div><!-- /.l-wrapper-inner -->
   </div><!-- /.l-wrapper -->
+
+  <?php if (!empty($content['bottom'])): ?>
+    <div class="l-bottom">
+      <?php print $content['bottom']; ?>
+    </div>
+  <?php endif; ?>
 
   <?php if ($content['footer']): ?>
     <footer class="l-footer"  role="footer">

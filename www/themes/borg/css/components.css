@@ -242,18 +242,24 @@ body.front .l-content {
   overflow: visible;
 }
 
-body.front .block.full-width {
+body.front .l-top,
+body.front .l-bottom {
   background-color: #f7f7f7;
   border-bottom: 2px solid #d7d7d7;
   border-top: 2px solid #d7d7d7;
-  margin-left: -500px;
-  margin-right: -500px;
-  margin-bottom: 50px;
-  padding: 0 500px 25px 500px;
+  padding: 0 0 25px 0;
 }
+body.front .l-top {
+  margin-bottom: 50px;
+}
+
 body.front .node-page {
   clear: both;
   margin: 80px 0;
+  text-align: center;
+}
+body.front .node-page .content {
+  margin: 0 auto;
 }
 body.front .node-page h1,
 body.front .node-page h2,
@@ -269,6 +275,44 @@ body.front .node-page ul {
   padding: 0;
 }
 
+/*******************************************************************************
+ * Front page tagline.
+ ******************************************************************************/
+body.front .block-block-4 {
+  text-align: center;
+}
+body.front .block-block-4 h1 {
+  font-size: 44px;
+}
+body.front .block-block-4 h2 {
+  font-size: 26px;
+  line-height: 1.2;
+  color: #3F4142;
+  font-weight: 300;
+  margin: 0 0 1em 0;
+}
+body.front .block-block-4 a.button {
+  margin: 10px auto;
+  font-size: 20px;
+}
+
+@media (min-width: 34em) {
+  body.front .block-block-4 {
+    text-align: left;
+  }
+  body.front .block-block-4 h2 {
+    font-size: 34px;
+    margin: .5em 0;
+  }
+  body.front .block-block-4 h1 {
+    font-size: 60px;
+    font-weight: normal;
+  }
+  body.front .block-block-4 a.button {
+    margin: 10px 30px 10px 0;
+    font-size: 25px;
+  }
+}
 
 /*******************************************************************************
  * Nodes
@@ -543,12 +587,7 @@ ol.flex-control-paging > li:before {
  ******************************************************************************/
 .block-formblock-supporter {
   clear: left;
-  background-color: #F7F7F7;
-  margin-left: -500px;
-  margin-right: -500px;
-  padding: 34px 500px 50px;
-  border-top: 2px solid #d7d7d7;
-  border-bottom: 2px solid #d7d7d7;
+  padding: 34px 0 50px;
   text-align: center;
 }
 .block-formblock-supporter form {
@@ -783,16 +822,6 @@ a.feed-icon {
 }
 .block-block-3 #mce-EMAIL {
   margin-right: 5px;
-}
-
-/*******************************************************************************
- * Front page tagline.
- ******************************************************************************/
-body.front .block-block-4 h2 {
-  font-size: 34px;
-  line-height: 1.2;
-  color: #3F4142;
-  font-weight: 300;
 }
 
 /*******************************************************************************
@@ -1495,10 +1524,9 @@ a.tabledrag-handle .handle {
 .block-views-news-block {
   text-align: center;
   background-color: #F7F7F7;
-  margin: 50px -500px 100px -500px;
-  padding: 50px 500px;
-  border-top: 2px solid #d7d7d7;
-  border-bottom: 2px solid #d7d7d7;
+  margin: 50px 0 100px 0;
+  padding: 50px 0;
+  border: 2px solid #d7d7d7;
 }
 .block-views-news-block h2 {
   margin-top: 0;
