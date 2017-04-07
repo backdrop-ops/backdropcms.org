@@ -25,10 +25,11 @@
         "content": [
             "712c691e-6273-4634-8000-d97d82d86e88",
             "67447c68-4227-4401-ad00-f50c7b1a6690",
-            "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51",
+            "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51"
+        ],
+        "bottom": [
             "eb9135d6-652f-45c3-9a00-c8de2519591d"
         ],
-        "bottom": [],
         "footer": [
             "d6581d63-76d2-4da6-820e-1445176ab358",
             "23c3eb78-a138-4cd1-a411-179dc4717218",
@@ -108,7 +109,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "full-width"
+                            "classes": "container"
                         }
                     }
                 }
@@ -148,7 +149,7 @@
                 "module": "views",
                 "delta": "news-block",
                 "settings": {
-                    "title_display": "default",
+                    "title_display": "none",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
@@ -159,7 +160,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
+                            "classes": "full-width"
                         }
                     }
                 }
@@ -208,7 +209,7 @@
                             "classes": "",
                             "wrapper_tag": "div",
                             "title_tag": "h2",
-                            "title_classes": "block-title l-content-wrapper",
+                            "title_classes": "block-title container",
                             "content_tag": "div",
                             "content_classes": "l-content-wrapper"
                         }
