@@ -128,21 +128,21 @@
 }
 
 .book-pager .previous a:before {
-  border-bottom-color: #0074bd;
-  border-left-color: #0074bd;
+  border-bottom-color: #007cba;
+  border-left-color: #007cba;
   left: 1.3125em;
 }
 
 .book-pager .up a:before {
-  border-top-color: #0074bd;
-  border-left-color: #0074bd;
+  border-top-color: #007cba;
+  border-left-color: #007cba;
   top: 55%;
   left: 1.3125em;
 }
 
 .book-pager .next a:after {
-  border-top-color: #0074bd;
-  border-right-color: #0074bd;
+  border-top-color: #007cba;
+  border-right-color: #007cba;
   right: 0.75em;
 }
 

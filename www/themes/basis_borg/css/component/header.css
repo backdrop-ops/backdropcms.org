@@ -102,7 +102,7 @@
   -webkit-box-align: top;
   -ms-flex-align: top;
   align-items: top;
-  padding-bottom: 5em;
+  /* padding-bottom: 5em; */
 }
 
 @media (min-width: 48em) {
@@ -195,7 +195,7 @@
 }
 
 @media (min-width: 48em) {
-
+  /*
   .l-header .block-search-form {
     position: static;
     bottom: auto;
@@ -205,9 +205,9 @@
     -webkit-transform: none;
     transform: none;
   }
-
-  .l-header .logo,
-  .l-header .block-search-form .block-content {
+  */
+  .l-header .logo/*,
+  .l-header .block-search-form .block-content*/ {
     min-height: 6.125rem;
   }
 
@@ -238,6 +238,7 @@
 
 }
 
+/* Necessary to switch from burger menu */
 @media (min-width: 62em) {
   .l-header .menu,
   .l-header .menu > li,
@@ -287,9 +288,8 @@
 }
 
 @media (min-width: 48em) {
-  .l-header .block-system-main-menu,
   .l-header .block-system-main-menu .block-content {
-    width: 7.5em;
+    width: 100%;
   }
 }
 

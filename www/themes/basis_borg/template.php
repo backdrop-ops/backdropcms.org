@@ -23,7 +23,10 @@ function _basis_borg_add_css($data, $options = array()) {
  * Implements template_preprocess_layout().
  */
 function basis_borg_preprocess_layout(&$variables) {
-  $basis_borg_path = backdrop_get_path('theme', 'basis_borg');
+  // Add the Source Sans Pro font.
+  backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700', array('type' => 'external'));
+  // Add FontAwesome.
+  backdrop_add_js('https://use.fontawesome.com/baf3c35582.js', array('type' => 'external'));
 
   // Add homepage stylesheet to homepage
   if ($variables['is_front']) {
@@ -416,5 +419,15 @@ function _basis_borg_preprocess_node__showcase(&$variables) {
       $last = 'combo';
       continue;
     }
+  }
+}
+
+/**
+ * Implements hook_form_id_alter()()
+ */
+function basis_borg_form_supporter_node_form_alter(&$form) {
+  unset($form['actions']['cancel']);
+  if (isset($form['actions']['submit']['#value'])) {
+    $form['actions']['submit']['#value'] = 'Send';
   }
 }

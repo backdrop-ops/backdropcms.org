@@ -1,0 +1,27 @@
+/*******************************************************************************
+ * PMC list
+ ******************************************************************************/
+ ul.committers,
+ ul.pmc {
+  padding-left: 0;
+ }
+ ul.committers li,
+ ul.pmc li {
+  display: block;
+  line-height: 100px;
+ }
+ ul.committers img,
+ ul.pmc img {
+  float: left;
+  margin-right: 15px;
+  width: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #ffffff;
+}
+@media (min-width: 62em) { /* 992px */
+  ul.pmc li {
+    display: inline-block;
+    width: 49%;
+  }
+}

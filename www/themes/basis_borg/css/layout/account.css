@@ -7,14 +7,19 @@
 }
 
 .layout--has-wrapper-background .l-wrapper {
-  padding-top: 20%;
+  margin-top: -4em; /* Should correspond to header margin-bottom */
+}
+
+@media (min-width: 48em) {
+  .layout--has-wrapper-background .l-wrapper {
+    margin-top: 0;
+    padding-top: 20%;
+  }
 }
 
 .layout--has-wrapper-background .l-wrapper:before {
   content: '';
-  position: absolute;
-  top: -2rem;
-  left: 0;
+  position: relative;
   display: block;
   box-sizing: content-box;
   width: 100vw;
@@ -24,6 +29,14 @@
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center bottom;
+}
+
+@media (min-width: 48em) {
+.layout--has-wrapper-background .l-wrapper:before {
+    position: absolute;
+    top: -4rem; /* Should correspond to .l-header's bottom margin */
+    left: 0;
+  }
 }
 
 .l-wrapper-inner {

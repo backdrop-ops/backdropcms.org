@@ -5,6 +5,10 @@
   color: #fff;
 }
 
+.no-break {
+  white-space: nowrap;
+}
+
 .font-size-xxxxlarge {
   font-size: 2.625rem;
 }
@@ -289,143 +293,143 @@ dl.semantic > dd {
  * Padding
  */
 .u-padding-xs-horizontal {
-  padding-right: 2rem;
-  padding-left: 2rem;
+  padding-right: 4rem;
+  padding-left: 4rem;
 }
 
 .u-padding-xs-left {
-  padding-left: 2rem;
+  padding-left: 4rem;
 }
 
 .u-padding-xs-right {
-  padding-right: 2rem;
+  padding-right: 4rem;
 }
 
 .u-padding-xs-vertical {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 }
 
 .u-padding-xs-top {
-  padding-top: 2rem;
+  padding-top: 4rem;
 }
 
 .u-padding-xs-bottom {
-  padding-bottom: 2rem;
+  padding-bottom: 4rem;
 }
 
 @media (min-width: 34em) {
   .u-padding-sm-horizontal {
-    padding-right: 2rem;
-    padding-left: 2rem;
+    padding-right: 4rem;
+    padding-left: 4rem;
   }
 
   .u-padding-sm-left {
-    padding-left: 2rem;
+    padding-left: 4rem;
   }
 
   .u-padding-sm-right {
-    padding-right: 2rem;
+    padding-right: 4rem;
   }
 
   .u-padding-sm-vertical {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
 
   .u-padding-sm-top {
-    padding-top: 2rem;
+    padding-top: 4rem;
   }
 
   .u-padding-sm-bottom {
-    padding-bottom: 2rem;
+    padding-bottom: 4rem;
   }
 
 }
 
 @media (min-width: 48em) {
   .u-padding-md-horizontal {
-    padding-right: 2rem;
-    padding-left: 2rem;
+    padding-right: 3rem;
+    padding-left: 3rem;
   }
 
   .u-padding-md-left {
-    padding-left: 2rem;
+    padding-left: 3rem;
   }
 
   .u-padding-md-right {
-    padding-right: 2rem;
+    padding-right: 3rem;
   }
 
   .u-padding-md-vertical {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
 
   .u-padding-md-top {
-    padding-top: 2rem;
+    padding-top: 3rem;
   }
 
   .u-padding-md-bottom {
-    padding-bottom: 2rem;
+    padding-bottom: 3rem;
   }
 
 }
 
 @media (min-width: 62em) {
   .u-padding-lg-horizontal {
-    padding-right: 2rem;
-    padding-left: 2rem;
+    padding-right: 3rem;
+    padding-left: 3rem;
   }
 
   .u-padding-lg-left {
-    padding-left: 2rem;
+    padding-left: 3rem;
   }
 
   .u-padding-lg-right {
-    padding-right: 2rem;
+    padding-right: 3rem;
   }
 
   .u-padding-lg-vertical {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
   }
 
   .u-padding-lg-top {
-    padding-top: 2rem;
+    padding-top: 3rem;
   }
 
   .u-padding-lg-bottom {
-    padding-bottom: 2rem;
+    padding-bottom: 3rem;
   }
 
 }
 
 @media (min-width: 75em) {
   .u-padding-xl-horizontal {
-    padding-right: 2rem;
-    padding-left: 2rem;
+    padding-right: 4rem;
+    padding-left: 4rem;
   }
 
   .u-padding-xl-left {
-    padding-left: 2rem;
+    padding-left: 4rem;
   }
 
   .u-padding-xl-right {
-    padding-right: 2rem;
+    padding-right: 4rem;
   }
 
   .u-padding-xl-vertical {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
 
   .u-padding-xl-top {
-    padding-top: 2rem;
+    padding-top: 4rem;
   }
 
   .u-padding-xl-bottom {
-    padding-bottom: 2rem;
+    padding-bottom: 4rem;
   }
 
 }

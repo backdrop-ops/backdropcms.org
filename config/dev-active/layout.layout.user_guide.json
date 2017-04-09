@@ -8,7 +8,7 @@
     "weight": 0,
     "storage": 1,
     "layout_template": "moscone_flipped",
-    "disabled": true,
+    "disabled": false,
     "settings": {
         "title": "",
         "title_display": "default",
@@ -17,8 +17,7 @@
     "positions": {
         "header": [
             "2de64e13-04bc-4b0c-a200-0ecb0ed2fc47",
-            "45c5ffce-6301-43c8-ab09-9dc5acf1d723",
-            "aa7fab07-c5bc-4e00-a200-ab69d2809baa"
+            "45c5ffce-6301-43c8-ab09-9dc5acf1d723"
         ],
         "top": [],
         "content": [
@@ -78,29 +77,6 @@
                     "contexts": []
                 },
                 "uuid": "45c5ffce-6301-43c8-ab09-9dc5acf1d723",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "aa7fab07-c5bc-4e00-a200-ab69d2809baa": {
-            "plugin": "search:form",
-            "data": {
-                "module": "search",
-                "delta": "form",
-                "settings": {
-                    "title_display": "custom",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "aa7fab07-c5bc-4e00-a200-ab69d2809baa",
                 "style": {
                     "plugin": "default",
                     "data": {

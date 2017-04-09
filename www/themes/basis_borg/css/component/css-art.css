@@ -12,7 +12,7 @@
   padding: 0;
   box-shadow: none;
   border-radius: 0;
-  background: #0074bd;
+  background: #000;
   -webkit-appearance: none;
   text-indent: -9999em;
   overflow: hidden;
@@ -22,7 +22,7 @@
 .l-header .search-box .form-submit:focus,
 .view-modules .views-exposed-form .form-submit:hover,
 .view-modules .views-exposed-form .form-submit:focus {
-  background: #006db0;
+  background: #222255;
 }
 
 .l-header .search-box .form-actions,

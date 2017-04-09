@@ -17,8 +17,7 @@
     "positions": {
         "header": [
             "a6cd2f10-7b44-4506-b700-b0a162016272",
-            "8a79a8c8-8216-459e-8122-34cf14fdbfde",
-            "71d4f856-01d3-48dc-bf00-ad7651f68b26"
+            "8a79a8c8-8216-459e-8122-34cf14fdbfde"
         ],
         "top": [],
         "content": [
@@ -88,29 +87,6 @@
                 }
             }
         },
-        "71d4f856-01d3-48dc-bf00-ad7651f68b26": {
-            "plugin": "search:form",
-            "data": {
-                "module": "search",
-                "delta": "form",
-                "settings": {
-                    "title_display": "custom",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "71d4f856-01d3-48dc-bf00-ad7651f68b26",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "2f6e717b-b5a5-48ad-be00-bd763837cc07": {
             "plugin": "system:main",
             "data": {
@@ -168,8 +144,8 @@
                 "module": "book",
                 "delta": "navigation",
                 "settings": {
-                    "title_display": "default",
-                    "title": "",
+                    "title_display": "custom",
+                    "title": "Handbook",
                     "style": "default",
                     "block_settings": {
                         "book_mode": "book pages"

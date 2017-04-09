@@ -5,7 +5,7 @@
  * Component styles in this file are simple overrides for easy updating.
  */
 body {
-  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
   /**
    * Default font size for site should be set on body element in rem units.
    * This is better for some accessibility technologies. Although it's not true
@@ -17,7 +17,7 @@ body {
 }
 
 a {
-  color: #0074bd;
+  color: #007cba;
 }
 
 a:focus,
@@ -60,7 +60,7 @@ iframe {
 }
 
 h1 {
-  font-size: 1.75em;
+  font-size: 2.5em;
 }
 
 h2 {
@@ -68,19 +68,13 @@ h2 {
   font-size: 1.5em;
 }
 
-.l-sidebar h2 {
-  font-size: 1.4375em;
-  font-weight: 400;
-}
-
-h1,
-h2 {
-  font-weight: 400;
+.l-sidebar .block:first-child h2 {
+  margin-top: 0;
 }
 
 @media (min-width: 48em) {
   h1 {
-    font-size: 3.5em;
+    font-size: 4em;
   }
 
   h2 {
@@ -165,7 +159,7 @@ fieldset .fieldset-legend {
 
 .more-help-link a:before {
   color: #fff;
-  background: #0074bd;
+  background: #007cba;
 }
 
 /**
@@ -174,21 +168,21 @@ fieldset .fieldset-legend {
  * <span class="icon-external-link"><span class="icon-external-link-arrow"></span></span>
  */
 .icon-external-link {
-  border-color: #0074bd;
+  border-color: #007cba;
 }
 
 .icon-external-link-arrow {
-  background: #0074bd;
+  background: #007cba;
   /* Should be bg color */
   border-color:  #fff;
 }
 
 .icon-external-link-arrow:before {
-  border-color: #0074bd;
+  border-color: #007cba;
 }
 
 .icon-external-link-arrow:after {
-  border-bottom-color: #0074bd;
+  border-bottom-color: #007cba;
 }
 
 /**
@@ -196,7 +190,7 @@ fieldset .fieldset-legend {
  */
 .links li:before,
 .links li:after {
-  border-color: #0074bd;
+  border-color: #007cba;
 }
 
 /**
@@ -562,7 +556,10 @@ button.form-submit,
   line-height: 1.4;
   border: 0.125em solid #c6cad2;
   border-radius: 2.875em;
-  transition: background 0.25s;
+  transition:
+    background 0.25s,
+    color 0.25s,
+    border-color 0.25s;
   text-transform: none;
   outline: none;
 }
@@ -591,9 +588,9 @@ button.button-primary,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
   color: #fff;
-  border: 0.125rem solid #0074bd;
+  border: 0.125rem solid #27ace2;
   border-radius: 2.875em;
-  color: #0074bd;
+  color: #27ace2;
   background: #fff;
   text-decoration: none;
 }
@@ -605,22 +602,22 @@ input.button-primary:focus,
 button.button-primary:hover,
 button.button-primary:focus {
   color: #fff;
-  border-color: #0074bd;
-  background-color: #0074bd;
+  border-color: #27ace2;
+  background-color: #27ace2;
 }
 
 .button:active,
 input.button-primary:active,
 button.button-primary:active {
   color: #fff;
-  border-color: #114a75;
-  background-color: #114a75;
+  border-color: #007cba;
+  background-color: #007cba;
 }
 
 input.button-primary:active,
 button.button-primary:active {
-  box-shadow: inset 0 0 0 0.125em #114a75;
-  background-color: #0074bd;
+  box-shadow: inset 0 0 0 0.125em #007cba;
+  background-color: #27ace2;
   color: #fff;
 }
 
@@ -707,7 +704,7 @@ input.form-search:focus,
 input.form-file:focus,
 textarea.form-textarea:focus {
   color: #000;
-  border-color: #43afe4;
+  border-color: #27ace2;
 }
 
 .form-disabled input.form-autocomplete,
@@ -770,12 +767,12 @@ ul.action-links a {
 .pager-next,
 .pager-last,
 .pager-item {
-  background: #555;
-  color: #fff;
+  /* background: #eee; */
+  color: #27ace2;
 }
 
 .pager-ellipsis {
-  color: #555;
+  color: #999;
 }
 
 .pager-first a,
@@ -783,7 +780,9 @@ ul.action-links a {
 .pager-next a,
 .pager-last a,
 .pager-item a {
-  color: #fff;
+  color: #27ace2;
+  border-bottom: 0.125em solid transparent;
+  transition: border-color 0.25s;
 }
 
 .pager-first a:hover,
@@ -791,11 +790,12 @@ ul.action-links a {
 .pager-next a:hover,
 .pager-last a:hover,
 .pager-item a:hover {
-  background: #3c4350;
+  border-bottom-color: #ddd;
 }
 
 .pager-current {
-  background: #20252e;
+  border-bottom: 0.125em solid #27ace2;
+  color: #999;
 }
 
 .pager-first a:before,
@@ -874,7 +874,7 @@ ul.action-links a {
 
 /* Default background when hero doesn't have image */
 .block-hero-no-image {
-  background-color: #0074bd;
+  background-color: #007cba;
   background-image: url(../images/texture.png);
   background-repeat: no-repeat;
   background-position: center center;
@@ -905,7 +905,7 @@ ul.action-links a {
  */
 nav.tabs:before {
   /* Background behind primary tabs */
-  background-image: url(../image/texture-gray.png);
+  background: #000;
 }
 
 ul.primary {
@@ -920,7 +920,7 @@ ul.primary li.active a,
 .expand-dropdown-tabs-control,
 .responsive-tabs-mobile .expand-dropdown-tabs-control:before,
 .responsive-tabs-mobile .expand-dropdown-tabs-label {
-  border-color: #999; /* Should be color of bg behind tabs */
+  border-color: #777; /* Should be color of bg behind tabs */
   color: #000;
   background-color: #ccc;
 }
@@ -944,7 +944,7 @@ ul.primary li a:focus,
 .responsive-tabs-mobile .expand-dropdown-tabs-control.js-active:before,
 .expand-dropdown-tabs-control.js-active {
   color: #000;
-  background: #bcc2cc;
+  background: #bbb;
 }
 
 ul.primary li a:active,

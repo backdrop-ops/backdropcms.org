@@ -4,7 +4,7 @@
     "info": "Download / Try Out",
     "title": "",
     "body": {
-        "value": "<ul class=\"download-or-try\">\n<li><a href=\"https://github.com/backdrop/backdrop/releases/download/1.5.0/backdrop.zip\" class=\"button download\">Download Backdrop</a></li>\n<li><a class=\"button demo\" href=\"/try-out\" title=\"Take Backdrop CMS for a spin, see if you like it!\">Try Out Backdrop</a></li>\n</ul>\n<p class=\"subtext\"><span>v1.5.0</span> / <a href=\"/requirements\">requirements</a> / <a href=\"/installation\">installing</a> / <a href=\"/upgrade\">upgrading</a></p>",
+        "value": "<ul class=\"download-or-try\">\n<li><a href=\"https://github.com/backdrop/backdrop/releases/download/1.5.0/backdrop.zip\" class=\"button download\">Download Backdrop</a></li>\n<li><a class=\"button demo\" href=\"/try-out\" title=\"Take Backdrop CMS for a spin, see if you like it!\">Try Out Backdrop</a></li>\n</ul>\n<div class=\"demo-screens\"></div>\n<p class=\"subtext\"><span>v1.5.0</span> / <a href=\"/requirements\">requirements</a> / <a href=\"/installation\">installing</a> / <a href=\"/upgrade\">upgrading</a></p>",
         "format": "full_html"
     },
     "description": "A reusable custom block."

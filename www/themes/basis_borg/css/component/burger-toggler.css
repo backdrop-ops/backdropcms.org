@@ -6,10 +6,11 @@
 
 .burger-toggler--state:checked ~ .menu-dropdown {
   height: 100vh;
-  height: calc(100vh - 2.8125em);
+  /* height: calc(100vh - 2.8125em); */
   overflow-y: auto;
 }
 
+/* Necessary to switch from burger menu */
 @media (min-width: 62em) {
   .burger-toggler--state ~ .menu-dropdown,
   ul.menu-dropdown,
@@ -33,6 +34,7 @@
   user-select: none;
 }
 
+/* Necessary to switch from burger menu */
 @media (min-width: 62em) {
   .burger-toggler__button {
     position: relative;

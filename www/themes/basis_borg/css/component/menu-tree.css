@@ -9,6 +9,9 @@
   list-style: none;
 }
 
+.block-book-navigation > .block-content > .menu > li > a {
+}
+
 .menu-tree,
 .block-book-navigation {
   font-size: 1.125em;
@@ -44,7 +47,17 @@
   display: block;
   width: 0;
   height: 100%;
-  border-left: 0.25em solid #0074bd;
+  border-left: 0.125em solid #007cba;
+}
+
+.menu-tree li.active > a,
+.block-book-navigation li.active > a {
+  font-weight: 600;
+}
+
+.menu-tree li.active a,
+.block-book-navigation ul ul li.active a {
+  font-weight: 400;
 }
 
 .menu-tree a,
@@ -65,5 +78,5 @@
   width: 0;
   height: 100%;
   height: calc(100% - 1em);
-  border-left: 0.25em solid #c6cad2;
+  border-left: 0.125em solid #c6cad2;
 }
