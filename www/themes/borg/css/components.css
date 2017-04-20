@@ -339,11 +339,11 @@ article.node footer .arrow-down {
 article.node.view-mode-full {
   text-align: center;
 }
+article.node.view-mode-full footer,
 article.node.view-mode-full .content {
   text-align: left;
   max-width: 700px;
 }
-
 
 /*******************************************************************************
  * Blog - teaser
