@@ -11,7 +11,7 @@
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "thumbnail"
+            "preview_image_style": "medium"
         }
     },
     "description": "",
@@ -23,12 +23,12 @@
         "file_directory": "images/news",
         "file_extensions": "png gif jpg jpeg",
         "max_filesize": "",
+        "max_dimensions": "",
+        "min_dimensions": "",
         "alt_field": 1,
         "title_field": 0,
         "default_image": "",
-        "user_register_form": false,
-        "max_dimensions": "",
-        "min_dimensions": ""
+        "user_register_form": false
     },
     "display": {
         "default": {

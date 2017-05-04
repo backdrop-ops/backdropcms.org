@@ -3,7 +3,7 @@
     "field_name": "field_bullets",
     "entity_type": "node",
     "bundle": "showcase",
-    "label": "Project Summary",
+    "label": "What makes this project ambitious?",
     "widget": {
         "weight": "6",
         "type": "text_textfield",
@@ -13,7 +13,7 @@
             "size": "60"
         }
     },
-    "description": "Please list any key modules used, specific areas of interest, or achievements you'd want people to know about this website at first glance.",
+    "description": "Please list any specific areas of interest, key modules used, or achievements you'd like people to know about this website at first glance.",
     "required": 0,
     "deleted": 0,
     "default_value": null,
