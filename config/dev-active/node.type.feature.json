@@ -1,10 +1,10 @@
 {
     "_config_name": "node.type.feature",
     "type": "feature",
-    "name": "Product Feature",
+    "name": "Feature",
     "base": "node_content",
     "module": "node",
-    "description": "Product Features appear in a list on the home page, and on a \"Features\" page.",
+    "description": "Features appear in a list on the home page, and on a \"Features\" page.",
     "help": "",
     "modified": true,
     "disabled": false,
@@ -15,10 +15,10 @@
         "formblock_show_help": 0,
         "menu_options": {
             "devel": 0,
+            "menu-footer-menu": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
-            "navigation": 0,
             "menu-user-guide": 0,
             "user-menu": 0
         },
