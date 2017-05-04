@@ -228,13 +228,6 @@
 .result__info a {
   color: #00a1d3;
 }
-.result__info a.button {
-  border-radius: 15px;
-  font-size: 16px;
-  height: 30px;
-  line-height: 30px;
-  padding: 0 15px;
-}
 .result__info .view-node a {
   font-size: 16px;
   height: 30px;
@@ -258,22 +251,4 @@
   position: relative;
   top: 1px;
   left: 5px;
-}
-
-.result__version,
-.result__version:before,
-.result__version:after {
-  display: inline-block;
-  font-size: 0.9em;
-  color: #86898a;
-}
-
-.result__version:before {
-  content: '(';
-  padding: 0 0.1em 0 0;
-}
-
-.result__version:after {
-  content: ')';
-  padding: 0 0 0 0.1em;
 }

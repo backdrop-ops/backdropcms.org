@@ -72,6 +72,36 @@ a.button span {
   border-radius: 10px;
 }
 
+a.button-small {
+  border-radius: 15px;
+  font-size: 16px;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 15px;
+  margin-right: 0;
+}
+
+.download-size span,
+.download-size span:before,
+.download-size span:after {
+  display: inline-block;
+  font-size: 0.9em;
+  color: #86898a;
+}
+
+/*******************************************************************************
+ * Download size
+ ******************************************************************************/
+.download-size span:before {
+  content: '(';
+  padding: 0 0.1em 0 0;
+}
+
+.download-size span:after {
+  content: ')';
+  padding: 0 0 0 0.1em;
+}
+
 /*******************************************************************************
  * Form buttons
  ******************************************************************************/
