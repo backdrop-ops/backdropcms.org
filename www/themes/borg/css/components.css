@@ -375,6 +375,16 @@ article.node-post.view-mode-teaser ul.links.inline {
 /*******************************************************************************
  * Blog - full node
  ******************************************************************************/
+
+body.node-type-post  h1.page-title,
+body.node-type-post .block-system-main {
+  text-align: center;
+}
+body.node-type-post .block-system-main article {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
 article.node-post.view-mode-full footer {
   background-color: #f7f7f7;
   border: 1px solid #d7d7d7;
