@@ -1355,34 +1355,31 @@ a.tabledrag-handle .handle {
 /*******************************************************************************
  * Default pager styles
  ******************************************************************************/
-.view .item-list {
-   text-align: center;
-}
 
 .item-list .pager {
-   display: inline-block;
-   margin: 20px 0 0;
-   padding: 0;
+  display: inline-block;
+  margin: 20px 0 0;
+  padding: 0;
 }
 
 .item-list .pager li {
-   position: relative;
-   display: block;
-   float: left;
-   min-width: 2em;
-   height: 2em;
-   margin: 0;
-   padding: 2px;
-   line-height: 2em;
-   font-weight: normal;
+  position: relative;
+  display: block;
+  float: left;
+  min-width: 2em;
+  height: 2em;
+  margin: 0;
+  padding: 2px;
+  line-height: 2em;
+  font-weight: normal;
   font-size: 1.3em;
 }
 
 .item-list .pager li a {
-   display: block;
-   min-width: 2em;
-   height: 2em;
-   color: #86898a;
+  display: block;
+  min-width: 2em;
+  height: 2em;
+  color: #86898a;
 }
 .item-list .pager li a:hover,
 .item-list .pager li a:focus,
