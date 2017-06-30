@@ -14,12 +14,12 @@
         },
         "medium": {
             "label": "Default Medium Date",
-            "pattern": "F jS Y",
+            "pattern": "F jS, Y",
             "module": "system"
         },
         "short": {
             "label": "Default Short Date",
-            "pattern": "M jS Y",
+            "pattern": "M jS, Y",
             "module": "system"
         },
         "html_datetime": {
