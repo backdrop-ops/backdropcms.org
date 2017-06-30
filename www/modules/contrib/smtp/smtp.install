@@ -15,9 +15,8 @@
  * Implements hook_disable().
  */
 function smtp_disable() {
-  $mail_modes = config_get('system.mail', 'mail_system');
-  $mail_modes['default-system'] = 'DefaultMailSystem';
-  config_set('system.mail', 'mail_system', $mail_modes);
+  $mail_system = config_get('smtp.settings', 'smtp_previous_mail_system');
+  config_set('system.mail', 'default-system', $mail_system);
 }
 
 /**
@@ -28,7 +27,7 @@ function smtp_update_1000() {
   $config = config('smtp.settings');
 
   if ($config->get('smtp_on') != 0) {
-    config_set('system.mail', 'mail_system', array('default-system' => 'SmtpMailSystem'));
+    config_set('system.mail', 'default-system', 'SmtpMailSystem');
   }
 
   // Migrate variables.

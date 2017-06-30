@@ -141,7 +141,14 @@ function smtp_admin_settings() {
     $params['subject'] = t('Backdrop SMTP test e-mail');
     $params['body']    = array(t('If you receive this message it means your site is capable of using SMTP to send e-mail.'));
     backdrop_mail('smtp', 'smtp-test', $test_address, $language, $params);
-    backdrop_set_message(t('A test e-mail has been sent to @email. You may want to !check for any error messages.', array('@email' => $test_address, '!check' => l(t('check the logs'), 'admin/reports/dblog'))));
+
+    // Set a friendly message.
+    $messsage = t('A test e-mail has been sent to @email.', array('@email' => $test_address));
+    if (module_exists('dblog') && user_access('access site reports')) {
+      $dbog_url = url('admin/reports/dblog');
+      $messsage .= ' ' . t('You may want to <a href="!url">check the logs</a> for any error messages.', array('!url' => $dbog_url));
+    }
+    backdrop_set_message($messsage);
   }
   $form['email_test'] = array(
     '#type'  => 'fieldset',
@@ -216,21 +223,21 @@ function smtp_admin_settings_form_submit($form, &$form_state) {
   if ((!config_get('smtp.settings', 'smtp_on') && $form_state['values']['smtp_on'])
      || (config_get('smtp.settings', 'smtp_on') && !$form_state['values']['smtp_on'])) {
 
-    // Get system wide config value for mail_system.
-    $mail_modes = config_get('system.mail', 'mail_system');
+    // Get system wide config value for mail system.
+    $mail_system = config_get('system.mail', 'default-system');
 
     // Turning on.
     if ($form_state['values']['smtp_on']) {
-      $config->set('smtp_previous_mail_system', $mail_modes['default-system']);
-      $mail_modes['default-system'] = 'SmtpMailSystem';
+      $config->set('smtp_previous_mail_system', $mail_system);
+      $mail_system = 'SmtpMailSystem';
     }
     // Turning off.
     else {
-      $mail_modes['default-system'] = config_get('smtp.settings', 'smtp_previous_mail_system');
+      $mail_system = config_get('smtp.settings', 'smtp_previous_mail_system');
     }
 
     // Update system wide config value for mail_system.
-    config_set('system.mail', 'mail_system', $mail_modes);
+    config_set('system.mail', 'default-system', $mail_system);
   }
 
   $config->set('smtp_on', $form_state['values']['smtp_on']);
