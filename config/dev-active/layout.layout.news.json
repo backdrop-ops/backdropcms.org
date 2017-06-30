@@ -27,7 +27,8 @@
             "1c732b6a-9279-45af-b242-666a63fa2848",
             "835608c8-c0c4-41e2-9732-50d75dd85de2",
             "e161c1f5-be5c-47c4-a723-352567c8870c",
-            "11f77fa6-ce86-4619-9338-56b87d16920f"
+            "11f77fa6-ce86-4619-9338-56b87d16920f",
+            "0765a3fa-4353-454d-9301-1c346e550eae"
         ],
         "bottom": [],
         "footer": [
@@ -197,6 +198,29 @@
                     "contexts": []
                 },
                 "uuid": "11f77fa6-ce86-4619-9338-56b87d16920f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "0765a3fa-4353-454d-9301-1c346e550eae": {
+            "plugin": "views:backdrop_on_the_web-block_1",
+            "data": {
+                "module": "views",
+                "delta": "backdrop_on_the_web-block_1",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "0765a3fa-4353-454d-9301-1c346e550eae",
                 "style": {
                     "plugin": "default",
                     "data": {

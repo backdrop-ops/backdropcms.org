@@ -1,20 +1,19 @@
 {
-    "_config_name": "field.field.field_gender",
-    "field_name": "field_gender",
+    "_config_name": "field.field.field_mention_type",
+    "field_name": "field_mention_type",
     "type": "list_text",
     "translatable": false,
     "module": "list",
     "active": 1,
     "locked": 0,
-    "cardinality": "-1",
+    "cardinality": "1",
     "deleted": 0,
     "entity_types": [],
     "settings": {
         "allowed_values": {
-            "male": "Male",
-            "female": "Female",
-            "bi": "Bigender",
-            "non": "Non-Binary",
+            "article": "Article",
+            "video": "Video",
+            "podcast": "Podcast",
             "other": "Other"
         },
         "allowed_values_function": ""
