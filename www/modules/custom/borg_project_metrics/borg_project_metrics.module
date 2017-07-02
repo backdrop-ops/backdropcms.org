@@ -84,4 +84,214 @@ function borg_project_metrics_cron() {
       }
     }
   }
+
+  // Get and store backdorp_project_metrics data weekly.
+  if (date('G') == 24) {
+    if (date('l') == 'Monday') {
+      $last_date = _get_display_metric_from_db('commits')['date'];
+      _parse_metrics('commits', $last_date);
+    }
+
+    if (date('l') == 'Tuesday') {
+      // Get and store backdorp_project_metrics data.
+      $last_date = _get_display_metric_from_db('comments')['date'];
+      _parse_metrics('comments', $last_date);
+    }
+  }
+}
+
+/**
+ * Get the number of commits to Backdrop since 15 January 2015.
+ *
+ * @param string $type
+ * String to indicate what metric to get: {users, commits, comments}.
+ *
+ * @param string $date_time
+ * The date from DB borg_project_metrics table to set as since for the get.
+ *
+ * @return array $metrics
+ * Returns an array of json objects each element is a paginated response from the
+ * github api.
+ */
+function _get_metrics(string $type, string $date_time = '2017-06-01T00:00:00Z') {
+  global $settings;
+  $token = $settings['githubapi_token'];
+  $authorization = "Authorization: token $token";
+  $metrics = [];
+  $i = 1;
+  do {
+    // @TODO: put this date back: 2015-01-01T00:00:00Z; currenty using more conservative date for testing.
+    // users url format: /repos/:owner/:repo/issues/comments
+    if ($type == 'users') {
+      $url = "https://api.github.com/repos/backdrop/backdrop/commits?since=$date_time&page=$i";
+    }
+    elseif ($type == 'commits') {
+      $url = "https://api.github.com/repos/backdrop/backdrop/commits?since=$date_time&page=$i";
+    }
+    elseif ($type == 'comments') {
+      $url = "https://api.github.com/repos/backdrop/backdrop-issues/issues/comments?since=$date_time&page=$i";
+    }
+
+    // Initiate a curl session.
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+    curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+    $metrics[$i] = curl_exec($ch);
+    $res_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    curl_close($ch);
+    // drush_print_r("\n\t\t$i\t");
+    // drush_print_r("$res_code\n");
+    // drush_print_r($metrics[$i]);
+    $i++;
+  } while ($res_code == 200 && $i < 3 && !empty($metrics[$i - 1]));
+
+  return $metrics;
+}
+
+/**
+ * Helper function to parse data from githhub api _get_metrics() request and
+ * store the parsed data in backdorp_project_metrics DB table.
+ *
+ * @param string $type
+ * The type {users, commits, comments} of metric to parse.
+ *
+ * @see _get_metrics()
+ */
+function _parse_metrics(string $type) {
+  // Get the last recorded data for the metric.
+  $metrics_data = _get_display_metric_from_db($type);
+
+  // Get the current total so we can increment it.
+  $metrics_total = $metrics_data['total_to_date'];
+
+  // Get the last total_to_date date recorded.
+  $last_date = $metrics_data['date'];
+
+  // Query github API for $type since $last_date and count them.
+  $results = _get_metrics($type, $last_date);
+
+  $num = 0;
+  foreach ($results as $r) {
+    $paginated_metrics = json_decode($r);
+    foreach ($paginated_metrics as $metric) {
+      $num++;
+    }
+  }
+  $metrics = $num;
+
+  $now = date('Y-m-d H:i:s');
+  $total_to_date = $metrics_total + $metrics;
+
+  // Record the metrics in the DB.
+  _put_metrics_into_db($type, $now, $total_to_date);
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function borg_project_metrics_block_info() {
+  $blocks['backdorp_project_metrics'] = array(
+    'info' => t('Backdrop Project Metrics'),
+    'description' => t('The number of commits to Backdrop since the project started.'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function borg_project_metrics_block_view($delta = '', $settings = array()) {
+  $block = array();
+
+  // Get the metrics.
+  $users = _get_display_metric_from_db('users')['total_to_date'];
+  $commits = _get_display_metric_from_db('commits')['total_to_date'];
+  $comments = _get_display_metric_from_db('comments')['total_to_date'];
+
+  // Path to images directory.
+  $images_path = backdrop_get_path('module', 'borg_project_metrics');
+
+  // Block content.
+  $metrics_content = <<<HTML
+    <div class="project-metrics">
+      <div class="users-metric">
+        <p class="users-img"> <img src="$images_path/images/users.svg" width="66" /> </p>
+        <p class="users-number"> $users </p>
+        <p class="users-label"> users </p>
+      </div>
+      <div class="commits-metric">
+        <p class="commits-img"> <img src="$images_path/images/commit.svg" width="66" /> </p>
+        <p class="commits-number"> $commits </p>
+        <p class="commits-label"> commits </p>
+      </div>
+      <div class="comments-metric">
+        <p class="comments-img"> <img src="$images_path/images/comments.svg" width="66" /> </p>
+        <p class="comments-number"> $comments </p>
+        <p class="comments-label"> comments </p>
+      </div>
+    </div>
+    <div class="join-the-fun">
+      <p>
+        Join the fun!
+        <a href="https://github/backdrop/backdrop-issues/issues">
+          backdrop/backdrop
+        </a>
+      </p>
+    </div>
+HTML;
+  switch ($delta) {
+    case 'backdorp_project_metrics':
+      $block['subject'] = NULL;
+      $block['content'] = $metrics_content;
+      return $block;
+  }
+}
+
+/**
+ * Helper function to retrieve metric form DB for backdorp_project_metrics block.
+ *
+ * @param string $type
+ * The type of metric to retrieve: {commits, comments, users}.
+ *
+ * @return array $metric
+ * An array of the db fields of the most recent $type metric.
+ */
+function _get_display_metric_from_db(string $type) {
+  $metric = db_select('borg_project_metrics', 'b')
+    ->fields('b', array('total_to_date', 'date'))
+    ->condition('type', $type)
+    ->orderBy('date', 'desc')
+    ->range(0, 1)
+    ->execute()
+    ->fetchAssoc();
+
+    return $metric;
+}
+
+/**
+ * Helper function to write the metrics to the database.
+ *
+ * @param string $type
+ * The $type: {users, commits, comments} to write to the DB.
+ *
+ * @param string $date
+ * The date to record for the $type metric.
+ *
+ * @param int $total_to_date
+ * The total to record for the $type metric.
+ */
+function _put_metrics_into_db(string $type, string $date, int $total_to_date) {
+  db_insert('borg_project_metrics')
+    ->fields(
+      array(
+        'type' => $type,
+        'date' => $date,
+        'total_to_date' => $total_to_date,
+      )
+    )
+    ->execute();
 }
