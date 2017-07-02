@@ -1,7 +1,7 @@
 <?php
 /**
  * @file borg_project_metrics.module
- *   This module gets the metrics for Backdrop Contrib projects from github.com
+ * This module gets the metrics for Backdrop Contrib projects from github.com
  */
 
 /**
@@ -158,7 +158,9 @@ function _get_metrics(string $type, string $date_time = '2017-06-01T00:00:00Z') 
  * @param string $type
  * The type {users, commits, comments} of metric to parse.
  *
+ * @see _get_display_metric_from_db()
  * @see _get_metrics()
+ * @see _put_metrics_into_db()
  */
 function _parse_metrics(string $type) {
   // Get the last recorded data for the metric.
@@ -195,7 +197,10 @@ function _parse_metrics(string $type) {
 function borg_project_metrics_block_info() {
   $blocks['backdorp_project_metrics'] = array(
     'info' => t('Backdrop Project Metrics'),
-    'description' => t('The number of commits to Backdrop since the project started.'),
+    'description' => t(
+      'The number of users, commits, and comments to Backdrop
+      since the project started.'
+    ),
   );
 
   return $blocks;
