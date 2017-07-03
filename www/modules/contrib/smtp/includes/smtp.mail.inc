@@ -57,7 +57,7 @@ class SmtpMailSystem implements MailSystemInterface {
     $mailer = new PHPMailer();
 
     // Turn on debugging, if requested.
-    if (config_get('smtp.settings', 'smtp_debugging') == 1) {
+    if (config_get('smtp.settings', 'smtp_debugging') == 1 && user_access('administer smtp module')) {
       $mailer->SMTPDebug = TRUE;
     }
 

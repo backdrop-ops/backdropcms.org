@@ -30,9 +30,9 @@ function smtp_config_info() {
  */
 function smtp_autoload_info() {
   return array(
-    'SmtpMailSystem' => 'smtp.mail.inc',
-    'PHPMailer' => 'smtp.phpmailer.inc',
-    'SMTP' => 'smtp.transport.inc',
+    'SmtpMailSystem' => 'includes/smtp.mail.inc',
+    'PHPMailer' => 'includes/smtp.phpmailer.inc',
+    'SMTP' => 'includes/smtp.transport.inc',
   );
 }
 
@@ -42,7 +42,7 @@ function smtp_autoload_info() {
  */
 function smtp_menu() {
   $items['admin/config/system/smtp'] = array(
-    'title'            => 'SMTP Authentication Support',
+    'title'            => 'SMTP Authentication',
     'page callback'    => 'backdrop_get_form',
     'page arguments'   => array('smtp_admin_settings'),
     'access arguments' => array('administer smtp module'),
@@ -58,8 +58,8 @@ function smtp_menu() {
 function smtp_permission() {
   return array(
     'administer smtp module' => array(
-      'title' => t('Administer SMTP Authentication Support module'),
-      'description' => t('Perform administration tasks for SMTP Authentication Support module.'))
+      'title' => t('Administer SMTP Authentication'),
+      'description' => t('Perform administration tasks for SMTP Authentication module.'))
   );
 }
 

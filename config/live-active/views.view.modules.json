@@ -399,7 +399,7 @@
                         "exclude": 0,
                         "alter": {
                             "alter_text": 1,
-                            "text": "<a class=\"button\" href=\"[download_link]\">Download</a>",
+                            "text": "<a class=\"button button-small\" href=\"[download_link]\">Download</a>",
                             "make_link": 0,
                             "path": "",
                             "absolute": 0,
@@ -450,7 +450,7 @@
                         "exclude": 0,
                         "alter": {
                             "alter_text": 1,
-                            "text": "<span class=\"result__version\">[download_size]</span>",
+                            "text": "<span class=\"result-version\">[download_size]</span>",
                             "make_link": 0,
                             "path": "",
                             "absolute": 0,
@@ -1346,8 +1346,8 @@
                         "label": "",
                         "exclude": 0,
                         "alter": {
-                            "alter_text": 0,
-                            "text": "",
+                            "alter_text": 1,
+                            "text": "New release for project: [title]",
                             "make_link": 0,
                             "path": "",
                             "absolute": 0,

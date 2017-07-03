@@ -1,5 +1,5 @@
-SMTP
-====
+SMTP Authentication
+===================
 
 Send (authenticated) email through external SMTP servers.
 

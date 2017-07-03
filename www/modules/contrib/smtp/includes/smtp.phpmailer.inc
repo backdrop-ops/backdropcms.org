@@ -577,8 +577,6 @@ class PHPMailer {
 
       // Choose the mailer and send through it
       switch ($this->Mailer) {
-        case 'sendmail':
-          return $this->SendmailSend($header, $body);
         case 'smtp':
           return $this->SmtpSend($header, $body);
         default:
@@ -593,54 +591,6 @@ class PHPMailer {
       echo $e->getMessage() . "\n";
       return FALSE;
     }
-  }
-
-  /**
-   * Sends mail using the $Sendmail program.
-   * @param string $header The message headers
-   * @param string $body The message body
-   * @access protected
-   * @return bool
-   */
-  protected function SendmailSend($header, $body) {
-    if ($this->Sender != '') {
-      $sendmail = sprintf("%s -oi -f %s -t", escapeshellcmd($this->Sendmail), escapeshellarg($this->Sender));
-    }
-    else {
-      $sendmail = sprintf("%s -oi -t", escapeshellcmd($this->Sendmail));
-    }
-    if ($this->SingleTo === TRUE) {
-      foreach ($this->SingleToArray as $key => $val) {
-        if (!@$mail = popen($sendmail, 'w')) {
-          throw new phpmailerException(t('Could not execute: !smail', array('!smail' => $this->Sendmail)), self::STOP_CRITICAL);
-        }
-        fputs($mail, "To: " . $val . "\n");
-        fputs($mail, $header);
-        fputs($mail, $body);
-        $result = pclose($mail);
-        // implement call back function if it exists
-        $isSent = ($result == 0) ? 1 : 0;
-        $this->doCallback($isSent, $val, $this->cc, $this->bcc, $this->Subject, $body);
-        if ($result != 0) {
-          throw new phpmailerException(t('Could not execute: !smail', array('!smail' => $this->Sendmail)), self::STOP_CRITICAL);
-        }
-      }
-    }
-    else {
-      if (!@$mail = popen($sendmail, 'w')) {
-        throw new phpmailerException(t('Could not execute: !smail', array('!smail' => $this->Sendmail)), self::STOP_CRITICAL);
-      }
-      fputs($mail, $header);
-      fputs($mail, $body);
-      $result = pclose($mail);
-      // implement call back function if it exists
-      $isSent = ($result == 0) ? 1 : 0;
-      $this->doCallback($isSent, $this->to, $this->cc, $this->bcc, $this->Subject, $body);
-      if ($result != 0) {
-        throw new phpmailerException(t('Could not execute: !smail', array('!smail' => $this->Sendmail)), self::STOP_CRITICAL);
-      }
-    }
-    return TRUE;
   }
 
   /**

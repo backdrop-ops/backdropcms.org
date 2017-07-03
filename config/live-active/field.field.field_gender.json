@@ -6,7 +6,7 @@
     "module": "list",
     "active": 1,
     "locked": 0,
-    "cardinality": "1",
+    "cardinality": "-1",
     "deleted": 0,
     "entity_types": [],
     "settings": {
@@ -14,6 +14,7 @@
             "male": "Male",
             "female": "Female",
             "bi": "Bigender",
+            "non": "Non-Binary",
             "other": "Other"
         },
         "allowed_values_function": ""
