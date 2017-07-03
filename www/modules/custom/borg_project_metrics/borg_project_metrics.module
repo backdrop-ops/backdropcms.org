@@ -1,7 +1,13 @@
 <?php
+
 /**
  * @file borg_project_metrics.module
- * This module gets the metrics for Backdrop Contrib projects from github.com
+ * This module gets the download metrics for Backdrop Core and Contrib projects
+ * from github.com.
+ *
+ * It also records some community metrics like commits to core and comments on
+ * backdrop/backdrop-issues issues for display in the backdorp_project_metrics
+ * block.
  */
 
 /**
