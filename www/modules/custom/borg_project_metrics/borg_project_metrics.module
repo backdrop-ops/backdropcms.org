@@ -91,19 +91,30 @@ function borg_project_metrics_cron() {
     }
   }
 
-  // Get and store backdorp_project_metrics data weekly.
-  //if (date('G') == 24) {
-    //if (date('l') == 'Monday') {
-      $last_date = _get_display_metric_from_db('commits')['date'];
-      _parse_metrics('commits', $last_date);
-    //}
+  // Get and store backdorp_project_metrics top level data weekly.
+  if (date('G') == 24) {
+    if (date('l') == 'Monday') {
+      try {
+        $last_date = _get_display_metric_from_db('commits')['date'];
+        _parse_metrics('commits', $last_date);
+      }
+      catch(Exception $e) {
+        $message = $e->getMessage();
+        watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
+      }
+    }
 
-    //if (date('l') == 'Tuesday') {
-      // Get and store backdorp_project_metrics data.
-      $last_date = _get_display_metric_from_db('comments')['date'];
-      _parse_metrics('comments', $last_date);
-    //}
-  //}
+    if (date('l') == 'Tuesday') {
+      try {
+        $last_date = _get_display_metric_from_db('comments')['date'];
+        _parse_metrics('comments', $last_date);
+      }
+      catch(Exception $e) {
+        $message = $e->getMessage();
+        watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
+      }
+    }
+  }
 }
 
 /**
