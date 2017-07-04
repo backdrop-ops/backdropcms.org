@@ -6,7 +6,7 @@
  * from github.com.
  *
  * It also records some community metrics like commits to core and comments on
- * backdrop/backdrop-issues issues for display in the backdorp_project_metrics
+ * backdrop/backdrop-issues issues for display in the backdrop_project_metrics
  * block.
  */
 
@@ -91,7 +91,7 @@ function borg_project_metrics_cron() {
     }
   }
 
-  // Get and store backdorp_project_metrics top level data weekly.
+  // Get and store backdrop_project_metrics top level data weekly.
   if (date('G') == 24) {
     if (date('l') == 'Monday') {
       try {
@@ -182,7 +182,7 @@ function _get_metrics(string $type, string $date_time = '2017-06-01T00:00:00Z') 
 
 /**
  * Helper function to parse data from githhub api _get_metrics() request and
- * store the parsed data in backdorp_project_metrics DB table.
+ * store the parsed data in backdrop_project_metrics DB table.
  *
  * @param string $type
  * The type {users, commits, comments} of metric to parse.
@@ -228,7 +228,7 @@ function _parse_metrics(string $type) {
  * Implements hook_block_info().
  */
 function borg_project_metrics_block_info() {
-  $blocks['backdorp_project_metrics'] = array(
+  $blocks['backdrop_project_metrics'] = array(
     'info' => t('Backdrop Project Metrics'),
     'description' => t(
       'The number of users, commits, and comments to Backdrop
@@ -282,7 +282,7 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
     </div>
 HTML;
   switch ($delta) {
-    case 'backdorp_project_metrics':
+    case 'backdrop_project_metrics':
       $block['subject'] = NULL;
       $block['content'] = $metrics_content;
       return $block;
@@ -290,7 +290,7 @@ HTML;
 }
 
 /**
- * Helper function to retrieve metric form DB for backdorp_project_metrics block.
+ * Helper function to retrieve metric form DB for backdrop_project_metrics block.
  *
  * @param string $type
  * The type of metric to retrieve: {commits, comments, users}.
