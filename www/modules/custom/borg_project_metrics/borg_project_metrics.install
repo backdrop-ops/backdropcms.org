@@ -72,8 +72,8 @@ function borg_project_metrics_update_1002() {
       ->fields(
         array(
           'type' => 'comments',
-          'date' => '2017-07-03 00:00:00',
-          'total_to_date' => 14739,
+          'date' => '2015-01-15 00:00:00',
+          'total_to_date' => 16872,
         )
       )
       ->execute();
