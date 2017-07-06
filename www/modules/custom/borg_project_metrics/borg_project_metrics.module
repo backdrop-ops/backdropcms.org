@@ -132,7 +132,7 @@ function borg_project_metrics_cron() {
  *
  * @see _get_contrib_comments()
  */
-function _get_metrics(string $type, string $date_time = '2017-06-01T00:00:00Z') {
+function _get_metrics(string $type, string $date_time = '2017-06-01 00:00:00') {
   global $settings;
   $token = $settings['githubapi_token'];
   $authorization = "Authorization: token $token";
