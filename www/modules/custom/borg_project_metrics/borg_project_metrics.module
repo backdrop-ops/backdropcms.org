@@ -158,10 +158,15 @@ function borg_project_metrics_get_metrics(string $type, string $date_time = '201
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-    $metrics[$i] = curl_exec($ch);
+    $datum = curl_exec($ch);
     $res_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
     curl_close($ch);
-    $json = json_decode($metrics[$i]);
+    $json = json_decode($datum);
+
+    // Only add to $metrics if the result is not empty.
+    if (!empty($json)) {
+      $metrics[$i] = $datum;
+    }
     $i++;
   } while ($res_code == 200 && !empty($json));
 
@@ -173,7 +178,9 @@ function borg_project_metrics_get_metrics(string $type, string $date_time = '201
       $project = $project[1];
       if ($project != 'backdrop' && !empty($project)) {
         $project_comment_metrics = borg_project_metrics_get_contrib_comments($project, $date_time);
-        $metrics = array_merge($metrics, $project_comment_metrics);
+        if (!empty($project_comment_metrics)) {
+          $metrics = array_merge($metrics, $project_comment_metrics);
+        }
       }
     }
   }
@@ -205,21 +212,22 @@ function borg_project_metrics_parse_metrics(string $type) {
   // Query github API for $type since $last_date and count them.
   $results = borg_project_metrics_get_metrics($type, $last_date);
 
-  $num = 0;
+  $metrics_count = 0;
   foreach ($results as $r) {
     $paginated_metrics = json_decode($r);
-    foreach ($paginated_metrics as $metric) {
-      if (!empty($metric)) {
-        $num++;
+    if (!empty($paginated_metrics)) {
+      foreach ($paginated_metrics as $metric) {
+        if (!empty($metric)) {
+          $metrics_count++;
+        }
       }
     }
   }
-  $metrics = $num;
 
   // Get timestamp.
   date_default_timezone_set('UTC');
   $now = date('Y-m-d H:i:s');
-  $total_to_date = $metrics_total + $metrics;
+  $total_to_date = $metrics_total + $metrics_count;
 
   // Record the metrics in the DB.
   borg_project_metrics_put_metrics_into_db($type, $now, $total_to_date);
@@ -363,10 +371,14 @@ function borg_project_metrics_get_contrib_comments(string $project, string $date
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-    $project_comment_metrics[$i] = curl_exec($ch);
+    $datum = curl_exec($ch);
     $res_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
     curl_close($ch);
-    $json = json_decode($project_comment_metrics[$i]);
+    $json = json_decode($datum);
+    // Only save the metric if it is not empty.
+    if (!empty($json) && $res_code == 200) {
+      $project_comment_metrics[$i] = $datum;
+    }
     $i++;
   } while ($res_code == 200 && !empty($json));
 
