@@ -53,7 +53,7 @@ function borg_project_metrics_update_1002() {
       array(
         'type' => 'users',
         'date' => '2017-07-03 00:00:00',
-        'total_to_date' => 133,
+        'total_to_date' => 256,
       )
     )
     ->execute();
@@ -62,8 +62,8 @@ function borg_project_metrics_update_1002() {
     ->fields(
       array(
         'type' => 'commits',
-        'date' => '2017-07-03 00:00:00',
-        'total_to_date' => 1623,
+        'date' => '2017-07-08 00:00:00',
+        'total_to_date' => 3291,
       )
     )
     ->execute();

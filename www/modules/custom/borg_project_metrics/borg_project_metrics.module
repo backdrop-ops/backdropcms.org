@@ -118,7 +118,8 @@ function borg_project_metrics_cron() {
 }
 
 /**
- * Get the number of commits to Backdrop since 15 January 2015.
+ * Get the number of commits to Backdrop since 1 September 2013
+ * (2013-09-01T05:23:28Z).
  *
  * @param string $type
  * String to indicate what metric to get: {users, commits, comments}.
@@ -132,7 +133,7 @@ function borg_project_metrics_cron() {
  *
  * @see _get_contrib_comments()
  */
-function _get_metrics(string $type, string $date_time = '2017-06-01 00:00:00') {
+function _get_metrics(string $type, string $date_time = '2017-07-08 00:00:00') {
   global $settings;
   $token = $settings['githubapi_token'];
   $authorization = "Authorization: token $token";
