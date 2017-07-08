@@ -13,7 +13,7 @@
 /**
  * Get all the project_module, project_theme and project_layout nodes.
  */
-function _get_project_nodes() {
+function borg_project_metrics_get_project_nodes() {
   $or = db_or();
   $or->condition('type', 'project_module');
   $or->condition('type', 'project_theme');
@@ -40,7 +40,7 @@ function _get_project_nodes() {
  *   The project to retrieve the number of downloads for, i.e. webform or
  *   on_the_web.
  */
-function _get_downloads($project = '') {
+function borg_project_metrics_get_downloads($project = '') {
   global $settings;
   $url = "https://api.github.com/repos/$project/releases";
   $token = $settings['githubapi_token'];
@@ -68,15 +68,15 @@ function _get_downloads($project = '') {
 /**
  * Implements hook_cron().
  *
- * @see _get_project_nodes()
- * @see _get_downloads()
+ * @see borg_project_metrics_get_project_nodes()
+ * @see borg_project_metrics_get_downloads()
  */
 function borg_project_metrics_cron() {
   // Run at ~2AM EST.
   if (date('G') == 22) {
-    $project_nodes = _get_project_nodes();
+    $project_nodes = borg_project_metrics_get_project_nodes();
     foreach($project_nodes as $m) {
-      $num = _get_downloads($m[0]);
+      $num = borg_project_metrics_get_downloads($m[0]);
       if ($num) {
         try {
           $node = node_load($m[1]);
@@ -95,8 +95,8 @@ function borg_project_metrics_cron() {
   if (date('G') == 24) {
     if (date('l') == 'Monday') {
       try {
-        $last_date = _get_display_metric_from_db('commits')['date'];
-        _parse_metrics('commits', $last_date);
+        $last_date = borg_project_metrics_get_display_metric_from_db('commits')['date'];
+        borg_project_metrics_parse_metrics('commits', $last_date);
       }
       catch(Exception $e) {
         $message = $e->getMessage();
@@ -106,8 +106,8 @@ function borg_project_metrics_cron() {
 
     if (date('l') == 'Tuesday') {
       try {
-        $last_date = _get_display_metric_from_db('comments')['date'];
-        _parse_metrics('comments', $last_date);
+        $last_date = borg_project_metrics_get_display_metric_from_db('comments')['date'];
+        borg_project_metrics_parse_metrics('comments', $last_date);
       }
       catch(Exception $e) {
         $message = $e->getMessage();
@@ -131,9 +131,9 @@ function borg_project_metrics_cron() {
  * Returns an array of json objects each element is a paginated response from the
  * github api.
  *
- * @see _get_contrib_comments()
+ * @see borg_project_metrics_get_contrib_comments()
  */
-function _get_metrics(string $type, string $date_time = '2017-07-08 00:00:00') {
+function borg_project_metrics_get_metrics(string $type, string $date_time = '2017-07-08 00:00:00') {
   global $settings;
   $token = $settings['githubapi_token'];
   $authorization = "Authorization: token $token";
@@ -167,12 +167,12 @@ function _get_metrics(string $type, string $date_time = '2017-07-08 00:00:00') {
 
   // If the $type is comments then we also want to get the contrib comments.
   if ($type == 'comments') {
-    $project_nodes = _get_project_nodes();
+    $project_nodes = borg_project_metrics_get_project_nodes();
     foreach ($project_nodes as $m) {
       $project = explode('/', $m[0]);
       $project = $project[1];
       if ($project != 'backdrop' && !empty($project)) {
-        $project_comment_metrics = _get_contrib_comments($project, $date_time);
+        $project_comment_metrics = borg_project_metrics_get_contrib_comments($project, $date_time);
         $metrics = array_merge($metrics, $project_comment_metrics);
       }
     }
@@ -182,19 +182,19 @@ function _get_metrics(string $type, string $date_time = '2017-07-08 00:00:00') {
 }
 
 /**
- * Helper function to parse data from githhub api _get_metrics() request and
- * store the parsed data in backdrop_project_metrics DB table.
+ * Helper function to parse data from githhub api borg_project_metrics_get_metrics()
+ * request and store the parsed data in backdrop_project_metrics DB table.
  *
  * @param string $type
  * The type {users, commits, comments} of metric to parse.
  *
- * @see _get_display_metric_from_db()
- * @see _get_metrics()
- * @see _put_metrics_into_db()
+ * @see borg_project_metrics_get_display_metric_from_db()
+ * @see borg_project_metrics_get_metrics()
+ * @see borg_project_metrics_put_metrics_into_db()
  */
-function _parse_metrics(string $type) {
+function borg_project_metrics_parse_metrics(string $type) {
   // Get the last recorded data for the metric.
-  $metrics_data = _get_display_metric_from_db($type);
+  $metrics_data = borg_project_metrics_get_display_metric_from_db($type);
 
   // Get the current total so we can increment it.
   $metrics_total = $metrics_data['total_to_date'];
@@ -203,7 +203,7 @@ function _parse_metrics(string $type) {
   $last_date = $metrics_data['date'];
 
   // Query github API for $type since $last_date and count them.
-  $results = _get_metrics($type, $last_date);
+  $results = borg_project_metrics_get_metrics($type, $last_date);
 
   $num = 0;
   foreach ($results as $r) {
@@ -222,7 +222,7 @@ function _parse_metrics(string $type) {
   $total_to_date = $metrics_total + $metrics;
 
   // Record the metrics in the DB.
-  _put_metrics_into_db($type, $now, $total_to_date);
+  borg_project_metrics_put_metrics_into_db($type, $now, $total_to_date);
 }
 
 /**
@@ -244,9 +244,9 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
   $block = array();
 
   // Get the metrics.
-  $users = _get_display_metric_from_db('users')['total_to_date'];
-  $commits = _get_display_metric_from_db('commits')['total_to_date'];
-  $comments = _get_display_metric_from_db('comments')['total_to_date'];
+  $users = borg_project_metrics_get_display_metric_from_db('users')['total_to_date'];
+  $commits = borg_project_metrics_get_display_metric_from_db('commits')['total_to_date'];
+  $comments = borg_project_metrics_get_display_metric_from_db('comments')['total_to_date'];
 
   // Path to images directory.
   $images_path = backdrop_get_path('module', 'borg_project_metrics');
@@ -296,7 +296,7 @@ HTML;
  * @return array $metric
  * An array of the db fields of the most recent $type metric.
  */
-function _get_display_metric_from_db(string $type) {
+function borg_project_metrics_get_display_metric_from_db(string $type) {
   $metric = db_select('borg_project_metrics', 'b')
     ->fields('b', array('total_to_date', 'date'))
     ->condition('type', $type)
@@ -320,7 +320,7 @@ function _get_display_metric_from_db(string $type) {
  * @param int $total_to_date
  * The total to record for the $type metric.
  */
-function _put_metrics_into_db(string $type, string $date, int $total_to_date) {
+function borg_project_metrics_put_metrics_into_db(string $type, string $date, int $total_to_date) {
   db_insert('borg_project_metrics')
     ->fields(
       array(
@@ -346,7 +346,7 @@ function _put_metrics_into_db(string $type, string $date, int $total_to_date) {
  * Returns an array of json objects each element is a paginated response from the
  * github api.
  */
-function _get_contrib_comments(string $project, string $date) {
+function borg_project_metrics_get_contrib_comments(string $project, string $date) {
   global $settings;
   $token = $settings['githubapi_token'];
   $authorization = "Authorization: token $token";
