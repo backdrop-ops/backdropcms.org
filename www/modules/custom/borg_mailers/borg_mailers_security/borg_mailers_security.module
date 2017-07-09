@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * @file borg_mailers_security.module
+ * Send out Security Anouncement emails to users who have subscribed.
+ *
+ * Users can check a box upon editing there user profile (/user when logged in)
+ * to opt into the Backdrop Security email list.
+ *
+ * Security emails will go out on publishing a security release node of Backdrop
+ * core or any Backdrop Contrib project.
+ */
+
+/**
+ * Implements hook_node_update().
+ *
+ * @see _borg_mailers_security_subscribers().
+ */
+function borg_mailers_security_node_update(Node $node) {
+  // Check for node type is a project_release or core_release and status = 1.
+  watchdog('borg_mailers_security', 'made it to hook_update, but not inside if yet.', $variables = array(), WATCHDOG_NOTICE, NULL);
+  dpm($node);
+  if (($node->type == 'project_release' || $node->type == 'core_release') && $node->status == 1) {
+    // @TODO: check if we've already sent a mail for this project_release node.
+    // That means we need to create a table to store which nodes have already
+    // sent out mail.
+    $language = language_default();
+    $params = array('node' => $node);
+    $to_array = _borg_mailers_security_subscribers();
+    $to = implode(',', $to_array);
+    backdrop_mail('borg_mailers_security', 'borg_mailers_security_email', $to, $language, $params);
+    watchdog('borg_mailers_security', 'made it to hook_update', $variables = array(), WATCHDOG_NOTICE, NULL);
+  }
+  backdrop_set_message('did it.');
+}
+
+/**
+ * Implements hook_mail().
+ */
+function borg_mailers_security_mail($key, &$message, $params) {
+  if ($key == 'borg_mailers_security_email') {
+    // Just copy over the subject and body as provided.
+    $message['subject'] = $params['node']->title;
+    $body = field_get_items('node', $params['node'], 'body');
+    $message['body'][] = backdrop_html_to_text(
+      '<p>' .
+        t('View online: !url', array('!url' => url('node/' . $params['node']->nid, array('absolute' => TRUE)))) .
+      '</p>' . $body[0]['value']
+    );
+    watchdog('borg_mailers_security', 'made it to hook_mail', $variables = array(), WATCHDOG_NOTICE, NULL);
+  }
+}
+
+/**
+ * Helper function to get the security mailing list subscribers.
+ *
+ * @return array $to
+ * An associative array of email addresses keyed on uid.
+ */
+function _borg_mailers_security_subscribers() {
+  $sql = db_select('field_data_field_security_mailing_list', 'sl')
+    ->fields('sl', array('entity_id'))
+    ->condition('field_security_mailing_list_value', 1)
+    ->execute();
+
+  $to = [];
+  foreach ($sql as $s) {
+    $account = user_load($s->entity_id);
+    $to[$account->uid] = $account->mail;
+  }
+
+  return $to;
+}
