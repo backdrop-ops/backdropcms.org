@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * @file borg_project_metrics.install
+ *   Provide necessary database tables, update hooks, and uninistall.
+ */
+
+/**
+ * Create the borg_project_metrics table.
+ */
+function borg_project_metrics_update_1001() {
+  $schema['borg_project_metrics'] = array(
+    'description' => 'Contains type metrics for Backdrop project users, commits and comments.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The ID of the metric.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'The type of metric one of users, commits, or comments.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'date' => array(
+        'description' => 'The date that the total_to_date field was calculated.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'total_to_date' => array(
+        'description' => 'The number of type metric to date.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'default'=> 0,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  db_create_table('borg_project_metrics', $schema['borg_project_metrics']);
+}
+
+/**
+ * Seed the borg_project_metrics table with initial users, commits, and comments.
+ */
+function borg_project_metrics_update_1002() {
+  db_insert('borg_project_metrics')
+    ->fields(
+      array(
+        'type' => 'users',
+        'date' => '2017-07-08 00:00:00',
+        'total_to_date' => 256,
+      )
+    )
+    ->execute();
+
+  db_insert('borg_project_metrics')
+    ->fields(
+      array(
+        'type' => 'commits',
+        'date' => '2017-07-08 00:00:00',
+        'total_to_date' => 3291,
+      )
+    )
+    ->execute();
+
+    db_insert('borg_project_metrics')
+      ->fields(
+        array(
+          'type' => 'comments',
+          'date' => '2017-07-08 00:00:00',
+          'total_to_date' => 16872,
+        )
+      )
+      ->execute();
+}

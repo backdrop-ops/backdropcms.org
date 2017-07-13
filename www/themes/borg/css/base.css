@@ -182,3 +182,22 @@ input[type="submit"]:hover {
 .filter-wrapper label {
   display: block;
 }
+
+/** borg_project_metrics homepage block **/
+.project-metrics {
+  width: 100%;
+}
+
+.project-metrics div {
+  float: left;
+  width: 30%;
+  min-height: 88px;
+  text-align: center;
+}
+
+.join-the-fun {
+  clear: both;
+  width: 100%;
+  margin-left: 35%;
+}
+/** end of borg_project_metrics homepage block **/
