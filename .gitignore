@@ -2,6 +2,9 @@
 /.idea
 .DS_Store
 
+# Ingnore the private files directory
+private-files
+
 # Backups.
 /*.sql
 /*.sql.gz
