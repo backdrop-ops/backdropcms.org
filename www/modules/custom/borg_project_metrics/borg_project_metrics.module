@@ -95,7 +95,8 @@ function borg_project_metrics_cron() {
   if (date('G') == 24) {
     if (date('l') == 'Monday') {
       try {
-        $last_date = borg_project_metrics_get_display_metric_from_db('commits')['date'];
+        $commits = borg_project_metrics_get_display_metric_from_db('commits');
+        $last_date = $commits['date'];
         borg_project_metrics_parse_metrics('commits', $last_date);
       }
       catch(Exception $e) {
@@ -252,9 +253,14 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
   $block = array();
 
   // Get the metrics.
-  $users = borg_project_metrics_get_display_metric_from_db('users')['total_to_date'];
-  $commits = borg_project_metrics_get_display_metric_from_db('commits')['total_to_date'];
-  $comments = borg_project_metrics_get_display_metric_from_db('comments')['total_to_date'];
+  $user_data = borg_project_metrics_get_display_metric_from_db('users');
+  $users = number_format($user_data['total_to_date']);
+
+  $commit_data = borg_project_metrics_get_display_metric_from_db('commits');
+  $commits = number_format($commit_data['total_to_date']);
+
+  $comment_data = borg_project_metrics_get_display_metric_from_db('comments');
+  $comments = number_format($comment_data['total_to_date']);
 
   // Path to images directory.
   $images_path = backdrop_get_path('module', 'borg_project_metrics');
@@ -262,25 +268,32 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
   // Block content.
   $metrics_content = <<<HTML
     <div class="project-metrics">
-      <div class="users-metric">
-        <p class="users-img"> <img src="$images_path/images/users.svg" width="66" /> </p>
-        <p class="users-number"> $users </p>
-        <p class="users-label"> users </p>
+      <div class="comments-metric">
+        <img class="comments-img" src="$images_path/images/fa-comments.png" width="66" />
+        <p>
+          <span class="comments-number"> $comments </span>
+          <span class="comments-label"> comments </span>
+        </p>
       </div>
       <div class="commits-metric">
-        <p class="commits-img"> <img src="$images_path/images/commit.svg" width="66" /> </p>
-        <p class="commits-number"> $commits </p>
-        <p class="commits-label"> commits </p>
+        <img class="commits-img" src="$images_path/images/fa-code-fork.png" width="66" />
+        <p>
+          <span class="commits-number"> $commits </span>
+          <span class="commits-label"> commits </span>
+        </p>
       </div>
-      <div class="comments-metric">
-        <p class="comments-img"> <img src="$images_path/images/comments.svg" width="66" /> </p>
-        <p class="comments-number"> $comments </p>
-        <p class="comments-label"> comments </p>
+      <div class="users-metric">
+        <img class="users-img" src="$images_path/images/fa-user.png" width="66" />
+        <p>
+          <span class="users-number"> $users </span>
+          <span class="users-label"> contributors </span>
+        </p>
       </div>
     </div>
     <div class="join-the-fun">
       <p>
         Join the fun!
+        <img src="$images_path/images/fa-github.png" width="16" />
         <a href="https://github/backdrop/backdrop-issues/issues">
           backdrop/backdrop
         </a>
