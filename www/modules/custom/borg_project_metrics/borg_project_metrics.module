@@ -267,33 +267,33 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
 
   // Block content.
   $metrics_content = <<<HTML
-    <div class="project-metrics">
-      <div class="comments-metric">
-        <img class="comments-img" src="$images_path/images/fa-comments.png" width="66" />
+    <div class="row project-metrics">
+      <div class="col-sm-4 comments-metric">
+        <img class="comments-img" src="$images_path/images/fa-comments.png" />
         <p>
           <span class="comments-number"> $comments </span>
           <span class="comments-label"> comments </span>
         </p>
       </div>
-      <div class="commits-metric">
-        <img class="commits-img" src="$images_path/images/fa-code-fork.png" width="66" />
+      <div class="col-sm-4 commits-metric">
+        <img class="commits-img" src="$images_path/images/fa-code-fork.png" />
         <p>
           <span class="commits-number"> $commits </span>
           <span class="commits-label"> commits </span>
         </p>
       </div>
-      <div class="users-metric">
-        <img class="users-img" src="$images_path/images/fa-user.png" width="66" />
+      <div class="col-sm-4 users-metric">
+        <img class="users-img" src="$images_path/images/fa-user.png" />
         <p>
           <span class="users-number"> $users </span>
           <span class="users-label"> contributors </span>
         </p>
       </div>
     </div>
-    <div class="join-the-fun">
+    <div class="row join-the-fun">
       <p>
         Join the fun!
-        <img src="$images_path/images/fa-github.png" width="16" />
+        <img class="github-img" src="$images_path/images/fa-github.png" />
         <a href="https://github/backdrop/backdrop-issues/issues">
           backdrop/backdrop
         </a>
