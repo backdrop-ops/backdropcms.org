@@ -199,7 +199,7 @@ function borg_project_metrics_get_metrics($type, $date_time = '2017-07-08 00:00:
  * @see borg_project_metrics_get_metrics()
  * @see borg_project_metrics_put_metrics_into_db()
  */
-function borg_project_metrics_parse_metrics(string $type) {
+function borg_project_metrics_parse_metrics($type) {
   // Get the last recorded data for the metric.
   $metrics_data = borg_project_metrics_get_display_metric_from_db($type);
 
@@ -304,7 +304,7 @@ HTML;
  * @return array $metric
  * An array of the db fields of the most recent $type metric.
  */
-function borg_project_metrics_get_display_metric_from_db(string $type) {
+function borg_project_metrics_get_display_metric_from_db($type) {
   $metric = db_select('borg_project_metrics', 'b')
     ->fields('b', array('total_to_date', 'date'))
     ->condition('type', $type)
@@ -328,7 +328,7 @@ function borg_project_metrics_get_display_metric_from_db(string $type) {
  * @param int $total_to_date
  * The total to record for the $type metric.
  */
-function borg_project_metrics_put_metrics_into_db(string $type, string $date, int $total_to_date) {
+function borg_project_metrics_put_metrics_into_db($type, $date, $total_to_date) {
   db_insert('borg_project_metrics')
     ->fields(
       array(
@@ -354,7 +354,7 @@ function borg_project_metrics_put_metrics_into_db(string $type, string $date, in
  * Returns an array of json objects each element is a paginated response from the
  * github api.
  */
-function borg_project_metrics_get_contrib_comments(string $project, string $date) {
+function borg_project_metrics_get_contrib_comments($project, $date) {
   global $settings;
   $token = $settings['githubapi_token'];
   $authorization = "Authorization: token $token";
