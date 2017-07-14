@@ -69,6 +69,9 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
  * undesirable; causing the page load to scroll down to that form element. In
  * this case the backdropcms.org homepage.
  */
-function borg_project_metrics_form_supporter_node_form_alter(&$form, &$form_state, $form_id) {
-  unset($form['title']['#attributes']['autofocus']);
+function borg_blocks_form_supporter_node_form_alter(&$form, &$form_state, $form_id) {
+  // Only unset for homepage.
+  if (current_path() == 'node/19') {
+    unset($form['title']['#attributes']['autofocus']);
+  }
 }
