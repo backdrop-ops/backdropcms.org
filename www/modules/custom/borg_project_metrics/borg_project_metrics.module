@@ -259,10 +259,10 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
   $comment_data = borg_project_metrics_get_display_metric_from_db('comments');
   $comments = number_format($comment_data['total_to_date']);
 
-  $user_data = borg_project_metrics_get_display_metric_from_db('users');
+  //$user_data = borg_project_metrics_get_display_metric_from_db('users');
   //$users = number_format($user_data['total_to_date']);
   $user_count = db_query("SELECT COUNT(uid) FROM {users} WHERE status = 1")->fetchField();
-  $users = number_format($user_count + $user_data['total_to_date']);
+  $users = number_format($user_count);
 
   // Path to images directory.
   $images_path = backdrop_get_path('module', 'borg_project_metrics');
@@ -288,7 +288,7 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
         <img class="users-img" src="$images_path/images/fa-user.png" />
         <p>
           <span class="users-number"> $users </span>
-          <span class="users-label"> contributors </span>
+          <span class="users-label"> community members </span>
         </p>
       </div>
     </div>
