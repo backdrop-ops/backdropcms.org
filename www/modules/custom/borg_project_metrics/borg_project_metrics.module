@@ -92,7 +92,7 @@ function borg_project_metrics_cron() {
   }
 
   // Get and store backdrop_project_metrics top level data weekly.
-  if (date('G') == 24) {
+  if (date('G') == 23) {
     if (date('l') == 'Monday') {
       try {
         $commits = borg_project_metrics_get_display_metric_from_db('commits');
@@ -296,7 +296,7 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
       <p>
         Join the fun!
         <img class="github-img" src="$images_path/images/fa-github.png" />
-        <a href="https://github/backdrop/backdrop-issues/issues">
+        <a href="https://github.com/backdrop/backdrop-issues/issues">
           backdrop/backdrop
         </a>
       </p>
