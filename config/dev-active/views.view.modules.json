@@ -716,7 +716,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "latest",
-                        "required": 0
+                        "required": 1
                     },
                     "project_releases": {
                         "id": "project_releases",
@@ -726,7 +726,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "release info",
-                        "required": 0
+                        "required": 1
                     }
                 },
                 "row_options": {
@@ -1216,52 +1216,6 @@
                             "default_group": "All",
                             "default_group_multiple": [],
                             "group_items": []
-                        }
-                    },
-                    "combine": {
-                        "id": "combine",
-                        "table": "views",
-                        "field": "combine",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "contains",
-                        "value": "",
-                        "group": 1,
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "combine_op",
-                            "label": "",
-                            "description": "",
-                            "use_operator": 0,
-                            "operator": "combine_op",
-                            "identifier": "s",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        },
-                        "fields": {
-                            "title": "title",
-                            "body": "body"
                         }
                     },
                     "recommended": {

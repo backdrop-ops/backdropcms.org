@@ -24,6 +24,7 @@
         ],
         "content": [
             "712c691e-6273-4634-8000-d97d82d86e88",
+            "1bcb4583-cc63-43dc-8908-08af956e6975",
             "67447c68-4227-4401-ad00-f50c7b1a6690",
             "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51"
         ],
@@ -143,17 +144,50 @@
                 }
             }
         },
+        "1bcb4583-cc63-43dc-8908-08af956e6975": {
+            "plugin": "borg_project_metrics:backdrop_project_metrics",
+            "data": {
+                "module": "borg_project_metrics",
+                "delta": "backdrop_project_metrics",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "1bcb4583-cc63-43dc-8908-08af956e6975",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "67447c68-4227-4401-ad00-f50c7b1a6690": {
             "plugin": "views:news-block",
             "data": {
                 "module": "views",
                 "delta": "news-block",
                 "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "1",
+                    "offset": 0,
+                    "path": "news",
+                    "fields_override": null,
                     "title_display": "none",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
                 },
                 "uuid": "67447c68-4227-4401-ad00-f50c7b1a6690",
                 "style": {
@@ -172,11 +206,21 @@
                 "module": "views",
                 "delta": "supporters-block",
                 "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "22",
+                    "offset": 0,
+                    "path": null,
+                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
                 },
                 "uuid": "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51",
                 "style": {

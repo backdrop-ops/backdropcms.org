@@ -2162,3 +2162,62 @@ input[type=image] {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
+
+/*******************************************************************************
+ * borg_project_metrics homepage block
+ ******************************************************************************/
+.block-borg-project-metrics-backdrop-project-metrics {
+  margin-top: 15px;
+  border-top: 2px solid #d7d7d7;
+  padding-top: 30px;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div {
+  min-height: 88px;
+  text-align: center;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+  max-width: 100px;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+  font-size: 26px;
+}
+.block-borg-project-metrics-backdrop-project-metrics .join-the-fun {
+  text-align: center;
+}
+.block-borg-project-metrics-backdrop-project-metrics .join-the-fun p {
+  margin: 1em auto;
+}
+.block-borg-project-metrics-backdrop-project-metrics .github-img {
+  max-width: 16px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .block-borg-project-metrics-backdrop-project-metrics {
+    padding-top: 45px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+    max-width: 66px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+    font-size: 20px;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-borg-project-metrics-backdrop-project-metrics {
+    padding-top: 60px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+    max-width: 100px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+    font-size: 24px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+    max-width: 120px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+    font-size: 28px;
+  }
+}
+
