@@ -1,9 +1,9 @@
 <?php
 /**
  * @file borg_mailers_security.module
- * Send out Security Anouncement emails to users who have subscribed.
+ * Send out Security Anouncement emails to people who have subscribed.
  *
- * Users can check a box upon editing there user profile (/user when logged in)
+ * People can check a box upon editing there user profile (/user when logged in)
  * to opt into the Backdrop Security email list.
  *
  * Security emails will go out on publishing a security release node of Backdrop
@@ -17,15 +17,15 @@
  * @see _borg_mailers_security_subscribers().
  * @see _borg_mailers_record_mail_sent().
  */
-function borg_mailers_security_node_submit($node) {
+function borg_mailers_security_node_insert($node) {
   // Save the node right quick so we can get an nid.
-  $node->save();
+  //$node->save();
+  dpm($node);
 
   // Check if we have sent mail for this node already.
   $sent = _borg_mailers_check_if_already_sent($node->nid);
 
   if (!$sent) {
-    // Check for node type is a project_release or core_release and status = 1.
     if (($node->type == 'sa') && $node->status == 1) {
       $language = language_default();
       $params = array('node' => $node);
@@ -72,14 +72,14 @@ function borg_mailers_security_mail($key, &$message, $params) {
  * An associative array of email addresses keyed on uid.
  */
 function _borg_mailers_security_subscribers() {
-  $sql = db_select('field_data_field_security_mailing_list', 'sl')
+  $result = db_select('field_data_field_security_mailing_list', 'sl')
     ->fields('sl', array('entity_id'))
     ->condition('field_security_mailing_list_value', 1)
     ->execute();
 
   $to = [];
-  foreach ($sql as $s) {
-    $account = user_load($s->entity_id);
+  foreach ($result as $subscriber) {
+    $account = user_load($subscriber->entity_id);
     $to[$account->uid] = $account->mail;
   }
 

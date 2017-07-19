@@ -53,16 +53,16 @@ function borg_mailers_security_schema() {
  * Implements hook_install().
  *
  * Populate the borg_mailers_security table with entries for existing nodes so
- * we don't send emails about eld content.
+ * we don't send emails about old content.
  */
 function borg_mailers_security_install() {
   // Get the current Security Announcements (sa).
-  $sas = db_select('node', 'n')
+  $announcements = db_select('node', 'n')
     ->fields('n', array('nid'))
     ->condition('type', 'sa')
     ->execute();
 
-  foreach ($sas as $sa) {
+  foreach ($announcements as $sa) {
     $date = date();
     $ins = db_insert('borg_mailers_security')
       ->fields(
