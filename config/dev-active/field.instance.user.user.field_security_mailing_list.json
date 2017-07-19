@@ -3,17 +3,17 @@
     "field_name": "field_security_mailing_list",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Security Mailing List",
+    "label": "Receive BackdropCMS.org security announcements for core and contrib modules",
     "widget": {
         "weight": "18",
         "type": "options_onoff",
         "module": "options",
         "active": 1,
         "settings": {
-            "display_label": 0
+            "display_label": 1
         }
     },
-    "description": "Check this box to receive BackdropCMS.org security announcements for core and contrib modules.",
+    "description": "",
     "required": 0,
     "deleted": 0,
     "default_value": [
