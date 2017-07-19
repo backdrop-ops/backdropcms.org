@@ -30,8 +30,8 @@ function borg_mailers_security_node_submit($node) {
       $language = language_default();
       $params = array('node' => $node);
       $to = _borg_mailers_security_subscribers();
-      foreach ($to as $t) {
-        backdrop_mail('borg_mailers_security', 'borg_mailers_security_email', $t, $language, $params);
+      foreach ($to as $address) {
+        backdrop_mail('borg_mailers_security', 'borg_mailers_security_email', $address, $language, $params);
       }
       // Set a watchdog message and print a message for the user.
       watchdog('borg_mailers_security', t('Mail sent to Backdrop CMS Security list subscribers.'), $variables = array(), WATCHDOG_NOTICE, NULL);
