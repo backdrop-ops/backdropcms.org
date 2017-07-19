@@ -51,12 +51,15 @@ function borg_mailers_security_mail($key, &$message, $params) {
     // Just copy over the subject and body as provided.
     $message['subject'] = $params['node']->title;
     $body = field_get_items('node', $params['node'], 'body');
+    $field_sa_versions = field_get_items('node', $params['node'], 'field_sa_versions');
+    $field_sa_solution = field_get_items('node', $params['node'], 'field_sa_solution');
+
     $message['body'][] = backdrop_html_to_text(
       '<p>' .
         t('View online: !url', array('!url' => url('node/' . $params['node']->nid, array('absolute' => TRUE)))) .
       '</p>' . $body[0]['value'] .
-      '<p>' . $params['node']->field_sa_versions['und'][0]['value'] . ' </p>' .
-      '<p>' . $params['node']->field_sa_solution['und'][0]['value'] . '</p>'
+      '<p>' . $field_sa_versions[0]['value'] . ' </p>' .
+      '<p>' . $field_sa_solution[0]['value'] . '</p>'
     );
     watchdog('borg_mailers_security', 'made it to hook_mail', $variables = array(), WATCHDOG_NOTICE, NULL);
   }
