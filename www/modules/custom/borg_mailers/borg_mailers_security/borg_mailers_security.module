@@ -17,29 +17,6 @@
  */
 function borg_mailers_security_node_insert($node) {
   _borg_mailers_security_worker($node);
-  // // Save the node right quick so we can get an nid.
-  // //$node->save();
-  // dpm($node);
-  //
-  // // Check if we have sent mail for this node already.
-  // $sent = _borg_mailers_check_if_already_sent($node->nid);
-  //
-  // if (!$sent) {
-  //   if (($node->type == 'sa') && $node->status == 1) {
-  //     $language = language_default();
-  //     $params = array('node' => $node);
-  //     $to = _borg_mailers_security_subscribers();
-  //     foreach ($to as $address) {
-  //       backdrop_mail('borg_mailers_security', 'borg_mailers_security_email', $address, $language, $params);
-  //     }
-  //     // Set a watchdog message and print a message for the user.
-  //     watchdog('borg_mailers_security', t('Mail sent to Backdrop CMS Security list subscribers.'), $variables = array(), WATCHDOG_NOTICE, NULL);
-  //     backdrop_set_message(t('Mail sent to Backdrop CMS Security list subscribers.'));
-  //
-  //     // Record that the message was sent.
-  //     _borg_mailers_record_mail_sent($node->nid);
-  //   }
-  // }
 }
 
 /**
