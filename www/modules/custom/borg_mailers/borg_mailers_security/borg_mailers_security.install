@@ -1,0 +1,78 @@
+<?php
+/**
+ * @file borg_mailers_security.install
+ * Install and update hooks for borg_mailers_security.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function borg_mailers_security_schema() {
+  $schema['borg_mailers_security'] = array(
+    'description' => 'Contains data on sent borg_mailers emails.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The ID of the mail message.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'type' => array(
+        'description' => 'The type of mailer one of security, content_notification.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'nid' => array(
+        'description' => 'The nid of the mailer.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'date' => array(
+        'description' => 'The date that the mail was sent.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+      'sent' => array(
+        'description' => 'The number of type metric to date.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'default'=> 0,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ *
+ * Populate the borg_mailers_security table with entries for existing nodes so
+ * we don't send emails about old content.
+ */
+function borg_mailers_security_install() {
+  // Get the current Security Announcements (sa).
+  $announcements = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('type', 'sa')
+    ->execute();
+
+  foreach ($announcements as $sa) {
+    $date = date();
+    $ins = db_insert('borg_mailers_security')
+      ->fields(
+        array(
+          'type' => 'security',
+          'nid' => $sa->nid,
+          'date' => $date,
+          'sent' => 1,
+        )
+      )
+      ->execute();
+  }
+}

@@ -1,0 +1,141 @@
+<?php
+/**
+ * @file borg_mailers_security.module
+ * Send out Security Anouncement emails to people who have subscribed.
+ *
+ * People can check a box upon editing there user profile (/user when logged in)
+ * to opt into the Backdrop Security email list.
+ *
+ * Security emails will go out on publishing a security release node of Backdrop
+ * core or any Backdrop Contrib project.
+ */
+
+/**
+ * Implements hook_node_insert().
+ *
+ * @see _borg_mailers_security_worker().
+ */
+function borg_mailers_security_node_insert($node) {
+  _borg_mailers_security_worker($node);
+}
+
+/**
+ * Implements hook_node_update().
+ *
+ * @see _borg_mailers_security_worker().
+ */
+function borg_mailers_security_node_update($node) {
+  _borg_mailers_security_worker($node);
+}
+/**
+ * Implements hook_mail().
+ */
+function borg_mailers_security_mail($key, &$message, $params) {
+  if ($key == 'borg_mailers_security_email') {
+    // Just copy over the subject and body as provided.
+    $message['subject'] = $params['node']->title;
+    $body = field_get_items('node', $params['node'], 'body');
+    $field_sa_versions = field_get_items('node', $params['node'], 'field_sa_versions');
+    $field_sa_solution = field_get_items('node', $params['node'], 'field_sa_solution');
+
+    $message['body'][] = backdrop_html_to_text(
+      '<p>' .
+        t('View online: !url', array('!url' => url('node/' . $params['node']->nid, array('absolute' => TRUE)))) .
+      '</p>' . $body[0]['value'] .
+      '<p>' . $field_sa_versions[0]['value'] . ' </p>' .
+      '<p>' . $field_sa_solution[0]['value'] . '</p>'
+    );
+    watchdog('borg_mailers_security', 'made it to hook_mail', $variables = array(), WATCHDOG_NOTICE, NULL);
+  }
+}
+
+/**
+ * Helper function to get the security mailing list subscribers.
+ *
+ * @return array $to
+ * An associative array of email addresses keyed on uid.
+ */
+function _borg_mailers_security_subscribers() {
+  $result = db_select('field_data_field_security_mailing_list', 'sl')
+    ->fields('sl', array('entity_id'))
+    ->condition('field_security_mailing_list_value', 1)
+    ->execute();
+
+  $to = [];
+  foreach ($result as $subscriber) {
+    $account = user_load($subscriber->entity_id);
+    $to[$account->uid] = $account->mail;
+  }
+
+  return $to;
+}
+
+/**
+ * Check if mail has already been sent for this Security Announcement (sa).
+ *
+ * @param string $nid
+ * The nid of the node.
+ *
+ * @return bool
+ * TRUE if nid is already recorded; FALSE otherwise.
+ */
+function _borg_mailers_check_if_already_sent($nid) {
+  $query = db_select('borg_mailers_security', 'b')
+    ->fields('b', array('nid'))
+    ->condition('nid', $nid)
+    ->execute();
+  if ($query->rowCount() > 0) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Record mail as sent for this node.
+ */
+function _borg_mailers_record_mail_sent($nid) {
+  $date = date('Y-m-d H:i:s', REQUEST_TIME);
+  $ins = db_insert('borg_mailers_security')
+    ->fields(array(
+      'type' => 'security',
+      'nid' => $nid,
+      'date' => $date,
+      'sent' => 1,
+    ))
+    ->execute();
+}
+
+/**
+ * Helper function to do the work of checking, sending, and recording of sent
+ * emails for the security annoncements.
+ *
+ * @param Node $node
+ * A Security Announcement Node Object.
+ *
+ * @see _borg_mailers_record_mail_sent().
+ * @see _borg_mailers_security_subscribers().
+ * @see _borg_mailers_record_mail_sent().
+ */
+function _borg_mailers_security_worker($node) {
+  // Check if we have sent mail for this node already.
+  $sent = _borg_mailers_check_if_already_sent($node->nid);
+
+  if (!$sent) {
+    if (($node->type == 'sa') && $node->status == 1) {
+      $language = language_default();
+      $params = array('node' => $node);
+      $to = _borg_mailers_security_subscribers();
+      foreach ($to as $address) {
+        backdrop_mail('borg_mailers_security', 'borg_mailers_security_email', $address, $language, $params);
+      }
+      // Set a watchdog message and print a message for the user.
+      watchdog('borg_mailers_security', t('Mail sent to Backdrop CMS Security list subscribers.'), $variables = array(), WATCHDOG_NOTICE, NULL);
+      backdrop_set_message(t('Mail sent to Backdrop CMS Security list subscribers.'));
+
+      // Record that the message was sent.
+      _borg_mailers_record_mail_sent($node->nid);
+    }
+  }
+}
