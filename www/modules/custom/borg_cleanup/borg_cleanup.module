@@ -58,4 +58,35 @@ function borg_cleanup_form_user_profile_form_alter(&$form, &$form_state) {
   unset($form['account']['pass']['#description']);
   $form['account']['mail']['#description'] = str_replace('A valid e-mail address. All e-mails from the system will be sent to this address. ', '', $form['account']['mail']['#description']);
   $form['account']['mail']['#description'] = str_replace(' or wish to receive certain news or notifications by e-mail', '', $form['account']['mail']['#description']);
+
+  $form['email-subscriptions'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Email Subscriptions'),
+    '#weight' => 22,
+    '#collapsible' => TRUE,
+  );
+
+  $account = $form['#user'];
+  $borg_security_list = $form['field_security_mailing_list'];
+  unset($form['field_security_mailing_list']);
+
+  $contact_field = $form['contact']['contact'];
+  unset($form['contact']);
+
+  $form['email-subscriptions']['contact'] = $contact_field;
+  $form['email-subscriptions']['borg-mailers-security'] = $borg_security_list;
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * Make sure our hook borg_cleanup_form_user_profile_form_alter() comes after
+ * contact modules implementation so that we can move the contact field.
+ */
+function borg_cleanup_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'form_alter' && isset($implementations['borg_cleanup'])) {
+    $group = $implementations['borg_cleanup'];
+    unset($implementations['borg_cleanup']);
+    $implementations['borg_cleanup'] = $group;
+  }
 }
