@@ -59,3 +59,19 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
 
   return $block;
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * In https://github.com/backdrop/backdrop/commit/8977e8e8b191a2c7323d555ca486c248a0b55af0
+ * we added the autofocus to the title of node and taxonomy add forms, but on the
+ * front end when a node form is embeded in a block below the fold this is
+ * undesirable; causing the page load to scroll down to that form element. In
+ * this case the backdropcms.org homepage.
+ */
+function borg_blocks_form_supporter_node_form_alter(&$form, &$form_state, $form_id) {
+  // Only unset for homepage.
+  if (current_path() == 'node/19') {
+    unset($form['title']['#attributes']['autofocus']);
+  }
+}
