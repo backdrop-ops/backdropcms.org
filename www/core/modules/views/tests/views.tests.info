@@ -4,6 +4,12 @@ description = Tests pluggable access for views.
 group = Views Plugins
 file = views_access.test
 
+[ViewsAjaxTest]
+name = Ajax
+description = Test views with and without ajax enabled.
+group = Views Handlers
+file = views_ajax.test
+
 [ViewsAnalyzeTest]
 name = Views Analyze
 description = Test the views analyze system.
@@ -310,7 +316,7 @@ description = Tests some  functionality of the view class.
 group = Views
 file = views_view.test
 
-; Added by Backdrop CMS packaging script on 2017-06-21
+; Added by Backdrop CMS packaging script on 2017-08-16
 project = backdrop
-version = 1.7.1
-timestamp = 1498072887
+version = 1.7.2
+timestamp = 1502928560
