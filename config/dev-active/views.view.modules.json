@@ -1765,8 +1765,9 @@
                     }
                 },
                 "pager": {
-                    "type": "none",
+                    "type": "some",
                     "options": {
+                        "items_per_page": "50",
                         "offset": "0"
                     }
                 },
