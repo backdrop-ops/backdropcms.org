@@ -1,7 +1,9 @@
 Patches to Backdrop Core:
 =========================
 
-  none
+  Taxonomy RSS feeds fix
+  https://github.com/backdrop/backdrop-issues/issues/2312
+  https://patch-diff.githubusercontent.com/raw/backdrop/backdrop/pull/2010
 
 
 Patches to Backdrop Contrib:
