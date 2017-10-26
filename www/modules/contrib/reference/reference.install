@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the reference module.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function reference_field_schema($field) {
+  return array(
+    'columns' => array(
+      'target_id' => array(
+        'description' => 'The entity id of the target entity.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'target' => array('target_id'),
+    ),
+  );
+}
