@@ -228,6 +228,51 @@ function borg_preprocess_node(&$variables){
 }
 
 /**
+ * Prepares variables for views-view-grid.tpl.php
+ */
+function borg_preprocess_views_view_grid(&$variables) {
+  $view     = $variables['view'];
+  $cols     = $view->style_plugin->options['columns'];
+  $rows     = $variables['rows'];
+
+  // These views have the columns stay wider at smaller screensizes.
+  $sm_grid_views = array('showcase');
+
+  if (in_array($view->name, $sm_grid_views)) {
+    $column_classes = array(
+      1 => 'col-sm-12',
+      2 => 'col-sm-6',
+      3 => 'col-sm-4',
+      4 => 'col-sm-3',
+      5 => 'col-sm-5ths',
+      6 => 'col-sm-2',
+    );
+  }
+  else {
+    $column_classes = array(
+      1 => 'col-md-12',
+      2 => 'col-md-6',
+      3 => 'col-md-4',
+      4 => 'col-md-3',
+      5 => 'col-md-5ths',
+      6 => 'col-md-2',
+    );
+  }
+
+  $col_class = $column_classes[$cols];
+
+  // Apply the radix classes
+  foreach ($rows as $row_number => $row) {
+    $variables['row_classes'][$row_number][] = 'row';
+    $variables['row_classes'][$row_number][] = 'row-fluid';
+    foreach ($rows[$row_number] as $column_number => $item) {
+      $variables['column_classes'][$row_number][$column_number][] = $col_class;
+    }
+  }
+  $variables['classes'][] = 'container-fluid';
+}
+
+/**
  * Processes variables for book-navigation.tpl.php.
  *
  * @param $variables
