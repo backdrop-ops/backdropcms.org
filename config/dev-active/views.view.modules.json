@@ -736,21 +736,7 @@
                     "hide_empty": 0
                 },
                 "use_ajax": false,
-                "header": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "empty": 0,
-                        "content": "<h2>Modules can add new features to your Backdrop site, or improve the way your existing features currently work.</h2>\n",
-                        "format": "filtered_html",
-                        "tokenize": 0
-                    }
-                },
+                "header": [],
                 "style_options": {
                     "grouping": [],
                     "row_class": "result",
@@ -793,7 +779,8 @@
                     "options": []
                 },
                 "path": "modules",
-                "display_description": ""
+                "display_description": "",
+                "exposed_block": true
             }
         },
         "themes": {
@@ -954,22 +941,9 @@
                         "1": "AND"
                     }
                 },
-                "header": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "empty": 0,
-                        "content": "<h2>Themes are skins for your site that allow you to change the look, feel, and general appearance.</h2>",
-                        "format": "filtered_html",
-                        "tokenize": 0
-                    }
-                },
-                "title": "Themes for Backdrop CMS"
+                "header": [],
+                "title": "Themes for Backdrop CMS",
+                "exposed_block": true
             }
         },
         "layouts": {
@@ -1130,22 +1104,9 @@
                         "1": "AND"
                     }
                 },
-                "header": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "empty": 0,
-                        "content": "<h2>Layouts divide pages on your site into different columns or regions where content can be placed.</h2>",
-                        "format": "filtered_html",
-                        "tokenize": 0
-                    }
-                },
-                "title": "Layouts for Backdrop CMS"
+                "header": [],
+                "title": "Layouts for Backdrop CMS",
+                "exposed_block": true
             }
         },
         "feed_1": {

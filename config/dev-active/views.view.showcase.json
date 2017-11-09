@@ -32,8 +32,8 @@
                         "items_per_page": "50"
                     }
                 },
-                "style_plugin": "default",
-                "row_plugin": "fields",
+                "style_plugin": "grid",
+                "row_plugin": "node",
                 "fields": {
                     "title": {
                         "id": "title",
@@ -498,11 +498,23 @@
                 },
                 "title": "Sites built with Backdrop",
                 "style_options": {
-                    "grouping": [],
-                    "row_class": "container container-fluid",
-                    "default_row_class": 1,
-                    "row_class_special": 1
-                }
+                    "row_class": "",
+                    "default_row_class": 0,
+                    "row_class_special": 0,
+                    "uses_fields": 0,
+                    "columns": "2",
+                    "alignment": "horizontal",
+                    "fill_single_line": 1,
+                    "caption": "",
+                    "summary": ""
+                },
+                "row_options": {
+                    "relationship": "none",
+                    "view_mode": "teaser",
+                    "links": 0,
+                    "comments": 0
+                },
+                "css_class": ""
             }
         },
         "page": {

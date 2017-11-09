@@ -1,0 +1,25 @@
+{
+    "_config_name": "field.field.field_recommended",
+    "field_name": "field_recommended",
+    "type": "list_boolean",
+    "translatable": false,
+    "module": "list",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": {
+        "allowed_values": [
+            "",
+            ""
+        ],
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}
