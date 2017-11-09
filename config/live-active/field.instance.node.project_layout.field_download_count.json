@@ -5,7 +5,7 @@
     "bundle": "project_layout",
     "label": "Download Count",
     "widget": {
-        "weight": "32",
+        "weight": "8",
         "type": "number",
         "module": "number",
         "active": 0,
@@ -27,7 +27,7 @@
         "default": {
             "label": "above",
             "type": "hidden",
-            "weight": "3",
+            "weight": "4",
             "settings": []
         },
         "full": {

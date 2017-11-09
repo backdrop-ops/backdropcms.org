@@ -25,22 +25,22 @@
     "extra_fields": {
         "form": {
             "title": {
-                "weight": "-5"
+                "weight": "0"
             },
             "project_name": {
-                "weight": "-4"
+                "weight": "3"
             },
             "project_sandbox": {
-                "weight": "-2"
+                "weight": "5"
             },
             "project_github_path": {
-                "weight": "-3"
+                "weight": "4"
             },
             "project_github_sync_readme": {
-                "weight": "-1"
+                "weight": "6"
             },
             "project_releases_enabled": {
-                "weight": "-4"
+                "weight": "2"
             },
             "redirect": {
                 "weight": "30"
@@ -49,7 +49,7 @@
         "display": {
             "github_info": {
                 "default": {
-                    "weight": "4",
+                    "weight": "5",
                     "visible": false
                 },
                 "teaser": {
@@ -81,7 +81,7 @@
             },
             "project_usage": {
                 "default": {
-                    "weight": "3",
+                    "weight": "4",
                     "visible": false
                 },
                 "teaser": {
