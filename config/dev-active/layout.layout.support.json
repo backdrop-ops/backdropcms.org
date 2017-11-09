@@ -22,6 +22,7 @@
         "top": [],
         "content": [
             "4543880d-1a0a-413e-8300-0045a93106df",
+            "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
             "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
             "e21a9e69-e89f-4b7a-b809-9e961daa1208"
@@ -92,14 +93,39 @@
                 "delta": "custom_block",
                 "settings": {
                     "title_display": "default",
-                    "title": "Documentation",
+                    "title": "User Guide",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>Read through a curated collection of&nbsp;online documentation, where you’ll find information on everything from installing Backdrop CMS for the first time to creating your own layouts, themes, and&nbsp;modules.</p>\n\n<p><a href=\"https://backdropcms.org/user-guide\">Read our new User Guide</a></p>\n",
+                    "content": "<p>Read through a curated collection of&nbsp;online documentation, where you’ll find information on everything from installing Backdrop CMS for the first time to creating your own layouts, themes, and&nbsp;modules.</p>\r\n\r\n<p><a href=\"https://backdropcms.org/user-guide\">Read our&nbsp;User Guide</a></p>\r\n",
                     "format": "filtered_html"
                 },
                 "uuid": "4543880d-1a0a-413e-8300-0045a93106df",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Developer Documentation",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>If you're digging into the code and looking for some help, check out the&nbsp;API documentation and helpful developer tools available at&nbsp;https://api.backdropcms.org.</p>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -117,11 +143,11 @@
                 "delta": "custom_block",
                 "settings": {
                     "title_display": "default",
-                    "title": "Coming soon: Forum",
+                    "title": "Backdrop Forum",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>Join&nbsp;the Backdrop Community and&nbsp;exchange&nbsp;ideas in the form of&nbsp;questions, answers, and discussions on any given topic.</p>\n",
+                    "content": "<p>Join&nbsp;the Backdrop Forum and&nbsp;exchange&nbsp;ideas with the rest of the community in the form of&nbsp;questions, answers, and discussions on any given topic:&nbsp;https://forum.backdropcms.org</p>\r\n\r\n<p>&nbsp;</p>\r\n",
                     "format": "filtered_html"
                 },
                 "uuid": "1bf26084-5e1f-49da-9e4a-74d812df73ba",
@@ -141,11 +167,21 @@
                 "module": "views",
                 "delta": "providers-block_2",
                 "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "100",
+                    "offset": 0,
+                    "path": "service-providers",
+                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
                 },
                 "uuid": "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
                 "style": {
@@ -164,11 +200,21 @@
                 "module": "views",
                 "delta": "providers-block_3",
                 "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "100",
+                    "offset": 0,
+                    "path": "service-providers",
+                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
                 },
                 "uuid": "e21a9e69-e89f-4b7a-b809-9e961daa1208",
                 "style": {
