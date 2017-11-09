@@ -1,56 +1,74 @@
 {
     "_config_name": "filter.format.full_html",
     "format": "full_html",
-    "name": "Full HTML",
-    "cache": "1",
+    "name": "HTML",
+    "cache": true,
     "status": "1",
     "weight": "1",
-    "roles": [
-        4,
-        3
-    ],
+    "roles": {
+        "4": "4",
+        "3": "3",
+        "anonymous": 0,
+        "authenticated": 0
+    },
     "filters": {
-        "filter_html": {
+        "codefilter": {
+            "status": 1,
+            "weight": 0,
+            "settings": {
+                "nowrap_expand": 0
+            },
+            "module": "codefilter"
+        },
+        "filter_image_caption": {
+            "status": 0,
+            "weight": 4,
             "module": "filter",
-            "status": "0",
-            "weight": "-10",
+            "settings": []
+        },
+        "filter_autop": {
+            "status": 0,
+            "weight": 1,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_url": {
+            "status": 1,
+            "weight": 0,
+            "settings": {
+                "filter_url_length": "72"
+            },
+            "module": "filter"
+        },
+        "filter_htmlcorrector": {
+            "status": 1,
+            "weight": 10,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html_escape": {
+            "status": 0,
+            "weight": -10,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_image_align": {
+            "status": 0,
+            "weight": 5,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html": {
+            "status": 0,
+            "weight": -10,
             "settings": {
                 "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd>",
                 "filter_html_help": 1,
                 "filter_html_nofollow": 0
-            }
-        },
-        "filter_html_escape": {
-            "module": "filter",
-            "status": "0",
-            "weight": "-10",
-            "settings": []
-        },
-        "codefilter": {
-            "module": "codefilter",
-            "status": "1",
-            "weight": "0",
-            "settings": []
-        },
-        "filter_url": {
-            "module": "filter",
-            "status": "1",
-            "weight": "0",
-            "settings": {
-                "filter_url_length": "72"
-            }
-        },
-        "filter_autop": {
-            "module": "filter",
-            "status": "0",
-            "weight": "1",
-            "settings": []
-        },
-        "filter_htmlcorrector": {
-            "module": "filter",
-            "status": "1",
-            "weight": "10",
-            "settings": []
+            },
+            "module": "filter"
         }
-    }
+    },
+    "editor": "",
+    "editor_settings": []
 }

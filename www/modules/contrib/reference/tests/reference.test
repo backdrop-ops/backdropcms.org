@@ -1,0 +1,75 @@
+<?php
+
+/**
+ * @file
+ * Tests for reference.module.
+ */
+
+require_once BACKDROP_ROOT . '/core/modules/field/tests/field.test';
+
+/**
+ * Unit tests for reference fields.
+ */
+class ReferenceFieldTestCase extends BackdropWebTestCase {
+
+  /**
+   * Enable necessary modules.
+   */
+  function setUp() {
+    $modules = func_get_args();
+    if (isset($modules[0]) && is_array($modules[0])) {
+      $modules = $modules[0];
+    }
+    $modules[] = 'reference';
+    parent::setUp($modules);
+
+    // Need to call this so _field_info_collate_types returns reference field.
+    // Otherwise calling field_create_field returns an error.
+    field_info_cache_clear();
+  }
+
+  /**
+   * Create a reference field on the given entity and bundle with the supplied options.
+   */
+  protected function createField($entity_type, $bundle, $options = array()) {
+    // Provide defaults for the options that can be passed in.
+    $this->field_name = isset($options['field_name']) ? $options['field_name'] : strtolower($this->randomName());
+    $this->cardinality = isset($options['cardinality']) ? $options['cardinality'] : 1;
+    $this->target_type = isset($options['target_type']) ? $options['target_type'] : null;
+    $this->target_bundles = isset($options['target_bundles']) ? $options['target_bundles'] : null;
+    $this->target_status = isset($options['target_status']) ? $options['target_status'] : null;
+
+    // Only add settings if supplied, so it doesn't override the field default.
+    $field_settings = array();
+    if ($this->target_type) {
+      $field_settings['entity_type'] = $this->target_type;
+    }
+    // Create the base field.
+    $this->field = field_create_field(array(
+      'field_name' => $this->field_name,
+      'type' => 'reference',
+      'cardinality' => $this->cardinality,
+      'settings' => $field_settings,
+    ));
+    // Only add settings if supplied, so it doesn't override the field default.
+    $instance_settings = array();
+    if ($this->target_bundles) {
+      $instance_settings['bundles'] = $this->target_bundles;
+    }
+    if ($this->target_status) {
+      $instance_settings['status'] = $this->target_status;
+    }
+    // Attach an instance of the field to the given entity type and bundle.
+    $this->instance = field_create_instance(array(
+      'field_name' => $this->field_name,
+      'entity_type' => 'node',
+      'bundle' => 'post',
+      'widget' => array(
+        'type' => 'autocomplete',
+      ),
+      'settings' => $instance_settings,
+    ));
+    // Return the name of the field for reference.
+    return $this->field_name;
+  }
+}

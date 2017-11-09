@@ -1,0 +1,8 @@
+name = Reference
+description = Defines a field type for referencing other entities.
+package = Fields
+version = BACKDROP_VERSION
+type = module
+backdrop = 1.x
+dependencies[] = field
+dependencies[] = entity

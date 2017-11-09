@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * Admin tests for Reference module.
+ */
+
+require_once(__DIR__ . '/reference.test');
+
+ /**
+  * Test for Reference admin UI.
+  */
+class ReferenceFieldAutocompleteTest extends ReferenceFieldTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Reference autocomplete',
+      'description' => 'Tests for the autocomplete callback.',
+      'group' => 'Reference',
+    );
+  }
+
+  public function setUp() {
+    parent::setUp();
+  }
+
+  /**
+   * Test the autocomplete responses.
+   */
+  public function testReferenceAutocomplete() {
+    // Make sure that the autocomplete returns access denied when a field instance doesn't exist.
+    $this->backdropGet('reference_autocomplete/not-valid-instance/');
+    $this->assertResponse(403, 'Access is denied when trying to access an invalid field instance.');
+
+    // Test that a reference field created without setting the target entity type doesn't return errors.
+    $this->createField('node', 'post');
+    $this->backdropGet('reference_autocomplete/' . $this->field_name . '-node-post/');
+    $this->assertResponse(200, "No error when creating a field without explicitly setting a target entity.");
+
+    // Test refererencing an entity that doesn't have bundles.
+    $this->createField('node', 'post', array('target_type' => 'user', 'target_bundles' => array('user')));
+    $this->backdropGet('reference_autocomplete/' . $this->field_name . '-node-post/');
+    $this->assertResponse(200, "No error when querying a entity type that doesn't have bundles.");
+
+  }
+}

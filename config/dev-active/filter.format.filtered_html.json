@@ -1,7 +1,7 @@
 {
     "_config_name": "filter.format.filtered_html",
     "format": "filtered_html",
-    "name": "Filtered HTML",
+    "name": "Basic",
     "cache": true,
     "status": "1",
     "weight": "0",
@@ -111,11 +111,16 @@
                 {
                     "name": "Tools",
                     "items": [
-                        "RemoveFormat",
                         "Source",
-                        "Maximize",
+                        "Maximize"
+                    ]
+                },
+                {
+                    "name": "Styles",
+                    "items": [
                         "Format",
-                        "Styles"
+                        "Styles",
+                        "RemoveFormat"
                     ]
                 }
             ]
