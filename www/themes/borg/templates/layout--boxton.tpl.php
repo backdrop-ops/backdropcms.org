@@ -39,7 +39,9 @@
 
   <?php if (!empty($content['top'])): ?>
     <div class="l-top">
-      <?php print $content['top']; ?>
+      <div class="l-top-inner container container-fluid">
+        <?php print $content['top']; ?>
+      </div>
     </div>
   <?php endif; ?>
 
