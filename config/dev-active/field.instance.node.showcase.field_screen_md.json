@@ -11,7 +11,7 @@
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "thumbnail"
+            "preview_image_style": "showcase_preview_512x512"
         }
     },
     "description": "Images should be exactly 768px wide by 576px tall.",
@@ -23,12 +23,12 @@
         "file_directory": "images/showcase/screen/md",
         "file_extensions": "png gif jpg jpeg",
         "max_filesize": "",
+        "max_dimensions": "768x576",
+        "min_dimensions": "768x576",
         "alt_field": 1,
         "title_field": 0,
         "default_image": "",
-        "user_register_form": false,
-        "max_dimensions": "768x576",
-        "min_dimensions": "768x576"
+        "user_register_form": false
     },
     "display": {
         "default": {
