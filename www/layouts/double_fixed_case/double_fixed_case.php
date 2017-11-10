@@ -90,7 +90,7 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
           if (isset($node->field_screen_sm[$lang][$delta])) {
             $phone = theme('image_style', array('style_name' => 'phone', 'uri' => $node->field_screen_sm[$lang][$delta]['uri']));
             $output  = '';
-            if ($delta/2) {
+            if (is_int($delta/2)) {
               $output .= '<div class="col-sm-4">';
               $output .= '<div class="screen">';
               $output .= '  <div class="phone-ui">';
@@ -110,7 +110,7 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
             $output .= '  </div>';
             $output .= '</div>';
             $output .= '</div>';
-            if (!$delta/2) {
+            if (!is_int($delta/2)) {
               $output .= '<div class="col-sm-4">';
               $output .= '<div class="screen">';
               $output .= '  <div class="phone-ui">';
