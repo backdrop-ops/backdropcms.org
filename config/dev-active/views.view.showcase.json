@@ -301,11 +301,18 @@
                     }
                 },
                 "sorts": {
-                    "created": {
-                        "id": "created",
-                        "table": "node",
-                        "field": "created",
-                        "order": "DESC"
+                    "field_launch_date_value": {
+                        "id": "field_launch_date_value",
+                        "table": "field_data_field_launch_date",
+                        "field": "field_launch_date_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
                     }
                 },
                 "title": "Sites built with Backdrop",
