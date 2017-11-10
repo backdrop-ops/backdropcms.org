@@ -54,14 +54,14 @@
         </div>
       <?php endif; ?>
 
+      <?php if ($title): ?>
       <div class="l-page-title">
         <a id="main-content"></a>
         <?php print render($title_prefix); ?>
-        <?php if ($title): ?>
           <h1 class="page-title"><?php print $title; ?></h1>
-        <?php endif; ?>
         <?php print render($title_suffix); ?>
       </div>
+      <?php endif; ?>
 
       <?php if ($tabs): ?>
         <nav class="tabs" role="tablist" aria-label="<?php print t('Admin content navigation tabs.'); ?>">

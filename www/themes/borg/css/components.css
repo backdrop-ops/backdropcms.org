@@ -2163,6 +2163,113 @@ input[type=image] {
   box-shadow: none;
 }
 
+
+/*******************************************************************************
+ * Showcase page
+ ******************************************************************************/
+.showcase .l-top {
+  border-bottom: 2px solid #D4D6D6;
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
+.showcase .l-wrapper {
+  background-color: #F7F7F7;
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .showcase .l-top,
+  .showcase .l-wrapper  {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .showcase .l-top,
+  .showcase .l-wrapper  {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .showcase .l-top,
+  .showcase .l-wrapper  {
+    padding-top: 100px;
+    padding-bottom: 75px;
+  }
+}
+.showcase .l-top h2 {
+  font-weight: 300; /* Light */
+  color: #5A5D5E;
+}
+
+/*******************************************************************************
+ * Showcase view
+ ******************************************************************************/
+.view-showcase .col {
+  padding-bottom: 15px;
+}
+.view-showcase .col-inner {
+  background-color: #ffffff;
+  border: 2px solid #EDEFF0;
+  padding-bottom: 15px;
+}
+.view-showcase .views-field {
+  font-size: 14px;
+  padding-bottom: 10px;
+  padding-right: .9375rem;
+  padding-left: .9375rem;
+}
+.view-showcase .views-field-field-screen-lg {
+  padding-right: 0;
+  padding-left: 0;
+}
+.view-showcase .views-field-field-screen-lg img {
+  width: 100%;
+  height: auto;
+}
+.view-showcase .views-field-title {
+  font-size: 20px;
+}
+.view-showcase .views-field-field-audience {
+  color: #B1B2B3;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .view-showcase .col {
+    padding-bottom: 30px;
+  }
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .view-showcase .row {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  .view-showcase .col {
+    padding-bottom: 0px;
+  }
+  .view-showcase .col:first-child {
+    padding-left: 0;
+  }
+  .view-showcase .col:last-child {
+    padding-right: 0;
+  }
+}
+
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .view-showcase .row {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+  .view-showcase .col:first-child .col-inner {
+    margin-right: .9375rem;
+  }
+  .view-showcase .col:last-child .col-inner {
+    margin-left: .9375rem;
+  }
+}
+
 /*******************************************************************************
  * borg_project_metrics homepage block
  ******************************************************************************/

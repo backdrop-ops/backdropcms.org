@@ -106,6 +106,9 @@ $(window).load(function() {
     $path = backdrop_get_path('theme', 'borg');
     backdrop_add_css($path . '/css/project-search.css');
   }
+  elseif (arg(0) == 'showcase') {
+    $variables['classes'][] = 'showcase';
+  }
 
   if (module_exists('admin_bar') && user_access('admin_bar')) {
     $variables['classes'][] = 'admin-bar';
@@ -236,7 +239,7 @@ function borg_preprocess_views_view_grid(&$variables) {
   $rows     = $variables['rows'];
 
   // These views have the columns stay wider at smaller screensizes.
-  $sm_grid_views = array('showcase');
+  $sm_grid_views = array('todo');
 
   if (in_array($view->name, $sm_grid_views)) {
     $column_classes = array(
