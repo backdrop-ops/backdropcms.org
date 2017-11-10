@@ -1990,6 +1990,11 @@ div.addressfield-container-inline::after {
   }
 }
 
+.node-type-showcase .field-name-field-url,
+.node-type-showcase .field-name-field-audience {
+  margin-bottom: 1.15em;
+}
+
 
 /*******************************************************************************
  * Screenshot styles - Browser.
