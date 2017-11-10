@@ -19,7 +19,11 @@
             "7644abf7-1b15-49e5-b305-5afeb39d23c2",
             "81f6346a-fb64-4a5d-8605-5ded96d0202e"
         ],
-        "top": [],
+        "top": [
+            "b64db2d9-cf4a-4d7d-8a00-bb4b4c933471",
+            "b4a543af-a6d0-43b8-a700-b6609a864251",
+            "da25183b-3733-4e10-9502-2f38e825936a"
+        ],
         "content": [
             "1370551a-8ba1-435e-ab15-21f558c45013",
             "b0f361db-2ba6-437c-8906-061b8e351f10"
@@ -69,6 +73,80 @@
                     "contexts": []
                 },
                 "uuid": "81f6346a-fb64-4a5d-8605-5ded96d0202e",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "b64db2d9-cf4a-4d7d-8a00-bb4b4c933471": {
+            "plugin": "system:page_components:title",
+            "data": {
+                "module": "system",
+                "delta": "page_components",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title_tag": "h1",
+                    "title_classes": "page-title",
+                    "tab_type": "both"
+                },
+                "uuid": "b64db2d9-cf4a-4d7d-8a00-bb4b4c933471",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "b4a543af-a6d0-43b8-a700-b6609a864251": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<h2>Themes are skins for your site that allow you to change the look, feel, and general appearance.</h2>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "b4a543af-a6d0-43b8-a700-b6609a864251",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "da25183b-3733-4e10-9502-2f38e825936a": {
+            "plugin": "views:-exp-modules-themes",
+            "data": {
+                "module": "views",
+                "delta": "-exp-modules-themes",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "da25183b-3733-4e10-9502-2f38e825936a",
                 "style": {
                     "plugin": "default",
                     "data": {

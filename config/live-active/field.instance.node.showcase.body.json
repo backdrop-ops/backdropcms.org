@@ -3,7 +3,7 @@
     "field_name": "body",
     "entity_type": "node",
     "bundle": "showcase",
-    "label": "Describe the project",
+    "label": "Describe the project in more detail",
     "widget": {
         "weight": "5",
         "type": "text_textarea_with_summary",
@@ -29,12 +29,9 @@
         },
         "teaser": {
             "label": "hidden",
-            "type": "text_summary_or_trimmed",
-            "settings": {
-                "trim_length": 600
-            },
-            "module": "text",
-            "weight": 0
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
         }
     },
     "description": "What were its goals?, What were its requirements? What was the outcome?",

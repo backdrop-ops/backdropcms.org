@@ -5,7 +5,7 @@
     "bundle": "showcase",
     "label": "Screenshot (desktop)",
     "widget": {
-        "weight": "7",
+        "weight": "8",
         "type": "image_image",
         "module": "image",
         "active": 1,
@@ -34,8 +34,19 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "5",
+            "weight": "6",
             "settings": []
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "0",
+            "settings": {
+                "image_style": "showcase_preview_512x512",
+                "image_link": "content",
+                "image_float": ""
+            },
+            "module": "image"
         }
     }
 }

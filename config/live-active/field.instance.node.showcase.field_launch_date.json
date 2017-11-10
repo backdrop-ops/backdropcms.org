@@ -45,6 +45,12 @@
                 "show_remaining_days": false
             },
             "module": "date"
+        },
+        "teaser": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "11",
+            "settings": []
         }
     }
 }

@@ -5,7 +5,7 @@
     "bundle": "showcase",
     "label": "Why was Backdrop chosen for this project?",
     "widget": {
-        "weight": "11",
+        "weight": "6",
         "type": "text_textarea",
         "module": "text",
         "active": 1,
@@ -29,6 +29,12 @@
             "weight": "3",
             "settings": [],
             "module": "text"
+        },
+        "teaser": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "7",
+            "settings": []
         }
     }
 }

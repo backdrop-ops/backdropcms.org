@@ -19,7 +19,11 @@
             "dcc08931-fe27-45e8-8a09-9ea6d72e5fa2",
             "1b3a6d21-38e2-4794-9300-b8f01bbe34fb"
         ],
-        "top": [],
+        "top": [
+            "131e7417-e734-453f-8b40-64958bca5322",
+            "9dcc8868-bf92-4135-ad3b-5980b9236be7",
+            "c7062b5b-7169-4a29-8a00-00fd14eb9554"
+        ],
         "content": [
             "7dd5f366-d6f5-4333-bc00-0cf61eb8b873",
             "5f724926-7372-4f1e-a241-65f975859b0e"
@@ -69,6 +73,80 @@
                     "contexts": []
                 },
                 "uuid": "1b3a6d21-38e2-4794-9300-b8f01bbe34fb",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "131e7417-e734-453f-8b40-64958bca5322": {
+            "plugin": "system:page_components:title",
+            "data": {
+                "module": "system",
+                "delta": "page_components",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title_tag": "h1",
+                    "title_classes": "page-title",
+                    "tab_type": "both"
+                },
+                "uuid": "131e7417-e734-453f-8b40-64958bca5322",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "9dcc8868-bf92-4135-ad3b-5980b9236be7": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<h2>Modules can add new features to your Backdrop site, or improve the way your existing features currently work.</h2>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "9dcc8868-bf92-4135-ad3b-5980b9236be7",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "c7062b5b-7169-4a29-8a00-00fd14eb9554": {
+            "plugin": "views:-exp-modules-modules",
+            "data": {
+                "module": "views",
+                "delta": "-exp-modules-modules",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "c7062b5b-7169-4a29-8a00-00fd14eb9554",
                 "style": {
                     "plugin": "default",
                     "data": {

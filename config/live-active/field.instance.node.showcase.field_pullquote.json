@@ -5,7 +5,7 @@
     "bundle": "showcase",
     "label": "Quotes",
     "widget": {
-        "weight": "10",
+        "weight": "11",
         "type": "text_textarea",
         "module": "text",
         "active": 1,
@@ -26,7 +26,13 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "4",
+            "weight": "5",
+            "settings": []
+        },
+        "teaser": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "8",
             "settings": []
         }
     }

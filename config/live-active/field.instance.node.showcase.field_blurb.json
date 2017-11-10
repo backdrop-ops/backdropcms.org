@@ -3,7 +3,7 @@
     "field_name": "field_blurb",
     "entity_type": "node",
     "bundle": "showcase",
-    "label": "Blurb",
+    "label": "Short Description",
     "widget": {
         "weight": "4",
         "type": "text_textfield",
@@ -26,8 +26,15 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "9",
+            "weight": "10",
             "settings": []
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "1",
+            "settings": [],
+            "module": "text"
         }
     }
 }

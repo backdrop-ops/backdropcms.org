@@ -5,7 +5,7 @@
     "bundle": "showcase",
     "label": "Screenshot (tablet)",
     "widget": {
-        "weight": "8",
+        "weight": "9",
         "type": "image_image",
         "module": "image",
         "active": 1,
@@ -34,7 +34,13 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "6",
+            "weight": "7",
+            "settings": []
+        },
+        "teaser": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "4",
             "settings": []
         }
     }
