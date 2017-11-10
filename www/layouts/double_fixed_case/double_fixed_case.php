@@ -15,6 +15,10 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
   $variables['row_fourth'] = FALSE;
   $variables['row_fifth'] = FALSE;
   $variables['row_sixth'] = FALSE;
+  $variables['row_seventh'] = FALSE;
+  $variables['row_eighth'] = FALSE;
+  $variables['row_ninth'] = FALSE;
+  $variables['row_tenth'] = FALSE;
 
   if ($variables['content']['sidebar'] && $variables['content']['drawer']) {
     $variables['classes'][] = 'layout-both-sidebars';
@@ -144,6 +148,10 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
         'row_fourth',
         'row_fifth',
         'row_sixth',
+        'row_seventh',
+        'row_eighth',
+        'row_ninth',
+        'row_tenth',
       );
 
       $last = 'none';

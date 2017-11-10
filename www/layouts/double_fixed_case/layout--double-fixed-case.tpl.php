@@ -114,6 +114,26 @@
           <?php print $row_sixth; ?>
         </div>
       <?php endif; ?>
+      <?php if ($row_seventh): ?>
+        <div class="row">
+          <?php print $row_seventh; ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($row_eighth): ?>
+        <div class="row">
+          <?php print $row_eighth; ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($row_ninth): ?>
+        <div class="row">
+          <?php print $row_ninth; ?>
+        </div>
+      <?php endif; ?>
+      <?php if ($row_tenth): ?>
+        <div class="row">
+          <?php print $row_tenth; ?>
+        </div>
+      <?php endif; ?>
 
     </div><!-- /.l-wrapper-inner -->
   </div><!-- /.l-wrapper -->
