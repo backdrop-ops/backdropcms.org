@@ -1,0 +1,45 @@
+.l-wrapper .container {
+  padding-top: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  max-width: 100%;
+}
+article.node.view-mode-full .content {
+  max-width: unset !important;
+}
+a.button.try-out {
+  text-decoration: none;
+}
+.l-page-title {
+  padding-top: 0 !important;
+  padding-left: 22px;
+}
+.try-out-backdropcms-content {
+  width: 100%;
+  font-size: 1.2em;
+}
+.try-out-backdropcms-pantheon-header,
+.try-out-backdropcms-lando-header {
+  padding-top: 12px;
+  padding-right: 32px;
+  padding-bottom: 12px;
+  padding-left: 32px;
+  background-color: #dcdcdc;
+}
+.try-out-backdropcms-pantheon-header-text,
+.try-out-backdropcms-lando-header-text {
+  font-size: 2em;
+  vertical-align: middle;
+}
+.try-out-backdropcms-lando-header-img {
+  width: 200px;
+}
+.try-out-backdrop-cms-pantheon-content,
+.try-out-backdrop-cms-lando-content {
+  padding-top: 12px;
+  padding-right: 32px;
+  padding-bottom: 12px;
+  padding-left: 32px;
+  margin: 18px;
+}
