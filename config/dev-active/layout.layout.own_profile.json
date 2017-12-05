@@ -17,7 +17,8 @@
     "positions": {
         "header": [
             "2e7c22e0-ef79-4feb-8409-09475f751431",
-            "3da2a49d-f19d-40dd-ae00-be8185a303d8"
+            "3da2a49d-f19d-40dd-ae00-be8185a303d8",
+            "0b24fe8c-2a97-46e1-8155-85d601eee27b"
         ],
         "top": [],
         "content": [
@@ -81,6 +82,29 @@
                 }
             }
         },
+        "0b24fe8c-2a97-46e1-8155-85d601eee27b": {
+            "plugin": "borg_blocks:borg-social",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "borg-social",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "0b24fe8c-2a97-46e1-8155-85d601eee27b",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "7d8f0340-07cc-445e-9a00-a818892e0141": {
             "plugin": "system:main",
             "data": {
@@ -115,11 +139,21 @@
                 "module": "views",
                 "delta": "profile_sidebar-block",
                 "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "1",
+                    "offset": 0,
+                    "path": null,
+                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
                 },
                 "uuid": "8fd23fe4-2b40-482c-8100-e2296b8d90f2",
                 "style": {

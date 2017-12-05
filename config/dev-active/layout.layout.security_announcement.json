@@ -17,7 +17,8 @@
     "positions": {
         "header": [
             "5322189b-2dbc-49d7-b731-498dde5cae54",
-            "a9858040-63d5-4120-9a00-c0bef4bcd6a5"
+            "a9858040-63d5-4120-9a00-c0bef4bcd6a5",
+            "39131bd2-f2de-4bf6-b700-b087f984cd4f"
         ],
         "top": [],
         "content": [
@@ -74,6 +75,29 @@
                     "contexts": []
                 },
                 "uuid": "a9858040-63d5-4120-9a00-c0bef4bcd6a5",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "39131bd2-f2de-4bf6-b700-b087f984cd4f": {
+            "plugin": "borg_blocks:borg-social",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "borg-social",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "39131bd2-f2de-4bf6-b700-b087f984cd4f",
                 "style": {
                     "plugin": "default",
                     "data": {
