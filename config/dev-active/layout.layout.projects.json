@@ -17,7 +17,8 @@
     "positions": {
         "header": [
             "7b375897-7e90-4c26-b159-89cfcaa8ba35",
-            "fb73fad0-2b82-4e46-8500-fe0527414abd"
+            "fb73fad0-2b82-4e46-8500-fe0527414abd",
+            "05550ffb-ebf3-4378-8500-de2397a08a79"
         ],
         "top": [],
         "content": [
@@ -84,6 +85,29 @@
                 }
             }
         },
+        "05550ffb-ebf3-4378-8500-de2397a08a79": {
+            "plugin": "borg_blocks:borg-social",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "borg-social",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "05550ffb-ebf3-4378-8500-de2397a08a79",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "cf46b35a-9f1b-4f5d-bc00-bda51d35fe3b": {
             "plugin": "system:main",
             "data": {
@@ -118,11 +142,21 @@
                 "module": "views",
                 "delta": "project_release_download_table-block_1",
                 "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": true,
+                    "pager_id": 0,
+                    "items_per_page": 10,
+                    "offset": 0,
+                    "path": null,
+                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
                 },
                 "uuid": "cf8c10df-fd63-4cb1-8c00-d94702f6000c",
                 "style": {

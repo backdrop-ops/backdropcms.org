@@ -20,6 +20,10 @@ function borg_blocks_block_info() {
     'info' => t('Project RSS feed'),
     'description' => t('RSS feed for Backdrop CMS modules, themes, and layouts.'),
   );
+  $blocks['borg-social'] = array(
+    'info' => t('Social Links Header - GitHub, Twitter, YouTube'),
+    'description' => t('Site header links to social network Backdrop CMS accounts.'),
+  );
 
   return $blocks;
 }
@@ -43,6 +47,25 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
       $block['subject'] = NULL;
       $block['content'] = $output;
       break;
+
+      case 'borg-social':
+        $content = '
+          <div class="borg-social">
+            <a href="https://github.com/backdrop/backdrop-issues">
+              <i class="fa fa-github" aria-hidden="true"></i>
+            </a>
+            <a href="https://twitter.com/backdropcms">
+              <i class="fa fa-twitter" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.youtube.com/user/backdropcms">
+              <i class="fa fa-youtube" aria-hidden="true"></i>
+            </a>
+          </div>
+        ';
+
+        $block['subject'] = NULL;
+        $block['content'] = $content;
+        break;
 
     case 'handbook':
       $tree = menu_tree('menu-handbook');

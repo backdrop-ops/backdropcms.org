@@ -16,6 +16,19 @@ a.site-name {
   float: left;
 }
 
+.block-system-main-menu ul li.first.leaf.menu-mlid-320 {
+  margin-left: 0px;
+}
+.borg-social {
+  float: left;
+  margin-left: 8px;
+}
+
+.borg-social a i.fa {
+  font-size: 36px;
+  margin: 3px;
+}
+
 .logo {
   display: block;
   float: left;
@@ -132,7 +145,7 @@ ul.secondary a.active {
  /* Main menu at full width */
  @media all and (min-width: 48em) {
    .block-system-main-menu {
-     float: right;
+     float: left;
    }
    .block-system-main-menu ul {
      list-style-type: none;
@@ -2332,4 +2345,3 @@ input[type=image] {
     font-size: 28px;
   }
 }
-
