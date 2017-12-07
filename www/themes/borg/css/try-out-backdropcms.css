@@ -1,0 +1,50 @@
+.l-wrapper .container {
+  padding-top: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  max-width: 100%;
+}
+article.node.view-mode-full .content {
+  max-width: unset !important;
+}
+a.button.try-out {
+  text-decoration: none;
+}
+.l-page-title {
+  padding-top: 0 !important;
+  padding-bottom: 7px;
+  padding-left: 122px;
+}
+.try-out-backdropcms-content {
+  width: 100%;
+  font-size: 1.2em;
+}
+.try-out-backdropcms-pantheon-header,
+.try-out-backdropcms-lando-header,
+.try-out-backdropcms-more-ways-header {
+  padding-top: 12px;
+  padding-right: 32px;
+  padding-bottom: 12px;
+  padding-left: 132px;
+  background-color: #dcdcdc;
+  min-height: 100px;
+}
+.try-out-backdropcms-pantheon-header-text,
+.try-out-backdropcms-lando-header-text,
+.try-out-backdropcms-more-ways-header-text {
+  font-size: 2em;
+  vertical-align: middle;
+}
+.try-out-backdropcms-lando-header-img {
+  width: 200px;
+}
+.try-out-backdropcms-pantheon-content,
+.try-out-backdropcms-lando-content,
+.try-out-backdropcms-more-ways-content {
+  padding-top: 12px;
+  padding-right: 32px;
+  padding-bottom: 12px;
+  padding-left: 132px;
+  margin: 18px;
+}

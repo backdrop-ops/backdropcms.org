@@ -138,6 +138,13 @@ $(window).load(function() {
       }
     }
   }
+
+  // Add CSS for the try-out-backdrop-cms page.
+  if (request_path() == 'try-out-backdrop-cms') {
+    backdrop_add_css(
+      backdrop_get_path('theme', 'borg') . '/css/try-out-backdropcms.css'
+    );
+  }
 }
 
 /**
