@@ -95,8 +95,10 @@ ol > li {
 }
 
 blockquote {
-  font-style: italic;
+  padding: 25px 50px;
   margin: 0;
+  background: transparent url(../images/quote-left.png) top left no-repeat;
+  min-height: 50px;
 }
 blockquote p {
   margin: .5em 0;
@@ -112,8 +114,7 @@ figcaption {
 small {
   font-size: 90%;
 }
-
-div.codeblock pre {
+pre {
   padding: 6px 12px;
 }
 div.codeblock code {
