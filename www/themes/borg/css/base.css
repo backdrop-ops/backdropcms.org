@@ -129,6 +129,7 @@ div.indent {
  ******************************************************************************/
 label {
   margin: 0 0 0.5em;
+  font-size: 1.125em;
 }
 input,
 textarea {
@@ -140,22 +141,37 @@ textarea {
   background-color: #fff;
   max-width: 100%;
   box-sizing: border-box;
+  line-height: 2.25em;
+  height: 2.25em;
+  font-size: 1.125em;
 }
 input[type="submit"] {
-  border: 2px solid #ccc;
-  background: rgba(216, 216, 216, 0.11);
-  border-radius: 10px;
+  border: 2px solid #007CBA;
+  background-color: white;
+  color: #007CBA;
+  font-size: 1.125em;
+  border-radius: 20px;
   width: auto;
+  height: 2.25em;
+  margin: 10px 0;
+  line-height: 2.25em;
+  padding: 0 20px;
+  white-space: nowrap;
 
-  -webkit-transition: background-color .5s;
-  -moz-transition: background-color .5s;
-  -ms-transition: background-color .5s;
-  -o-transition: background-color .5s;
-  transition: background-color .5s;
+  -webkit-transition: background-color .33s;
+  -webkit-transition: color .33s;
+  -moz-transition: background-color .33s;
+  -moz-transition: color .33s;
+  -ms-transition: background-color .33s;
+  -ms-transition: olor .33s;
+  -o-transition: background-color .33s;
+  -o-transition: color .33s;
+  transition: background-color .33s;
+  transition: color .33s;
 }
 input[type="submit"]:hover {
-  background-color: #ebebeb;
-  border-color: #adadad;
+  background-color: #007CBA;
+  color: white;
 }
 
 .field-type-text-long,

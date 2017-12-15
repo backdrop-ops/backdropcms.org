@@ -852,7 +852,6 @@ a.feed-icon {
  * Mailchimp Signup Block
  ******************************************************************************/
 .block-block-3 {
-  font-size: 1.25em;
   margin-bottom: 5px;
 }
 .block-block-3 #mce-EMAIL {
@@ -938,7 +937,7 @@ body.user-form .page-title {
 
 @media (min-width: 34em) { /* 544px */
   #user-login {
-    max-width: 500px;
+    max-width: 560px;
     margin: 0 auto 10em auto;
     text-align: left;
   }
@@ -949,15 +948,15 @@ body.user-form .page-title {
 
   #user-login .form-item label {
     text-align: right;
-    width: 200px;
-    padding-right: 5px;
+    width: 215px;
+    padding-right: 15px;
     display: inline-block;
-    font-size: 16px;
-    line-height: 28px;
+    line-height: 2em;
     margin-bottom: 0;
+    white-space: nowrap;
   }
   #user-login .form-item input {
-    width: 360px;
+    width: 390px;
   }
 
   #user-login small {
@@ -2332,4 +2331,3 @@ input[type=image] {
     font-size: 28px;
   }
 }
-
