@@ -345,6 +345,13 @@ article.node.view-mode-full .content {
   max-width: 700px;
 }
 
+article.node .content .field {
+  margin: .5em 0;
+}
+article.node-event .content .field-name-body {
+  font-size: 1.25em;
+}
+
 /*******************************************************************************
  * Blog - teaser
  ******************************************************************************/
@@ -1796,6 +1803,16 @@ label.github-clone-label {
     text-align: left;
     margin-left: 0;
   }
+}
+
+/*******************************************************************************
+ * Project nodes
+ ******************************************************************************/
+
+.node-type-project-module .view-project-release-download-table .recommended-version,
+.node-type-project-module .view-project-release-download-table .released,
+.node-type-project-module .view-project-release-download-table .all-versions {
+  margin: .25em 0;
 }
 
 /*******************************************************************************
