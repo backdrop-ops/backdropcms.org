@@ -313,7 +313,7 @@
                     }
                 },
                 "title": "We support Backdrop CMS",
-                "css_class": "container container-fluid",
+                "css_class": "",
                 "header": []
             }
         },
@@ -762,7 +762,8 @@
                     "fields": false,
                     "header": false,
                     "pager": false,
-                    "pager_options": false
+                    "pager_options": false,
+                    "title": false
                 },
                 "header": {
                     "area": {
@@ -785,7 +786,8 @@
                         "offset": "0"
                     }
                 },
-                "pager_options": null
+                "pager_options": null,
+                "title": "We all lovingly support Backdrop CMS"
             }
         }
     }
