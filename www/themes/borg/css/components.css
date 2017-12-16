@@ -41,7 +41,7 @@ a.site-name {
  ******************************************************************************/
 ul.primary {
   height: auto;
-  border-bottom: 2px solid #d7d7d7;
+  border-bottom: 2px solid #E8E6E5;
   border-collapse: collapse;
   line-height: normal;
   list-style: none;
@@ -59,7 +59,7 @@ ul.primary li {
 ul.primary li a {
   display: inline-block;
   background-color: #f7f7f7;
-  border-color: #d7d7d7;
+  border-color: #E8E6E5;
   border-style: solid solid none solid;
   border-width: 2px;
   height: auto;
@@ -74,7 +74,7 @@ ul.primary li a {
 }
 ul.primary li.active a {
   background-color: #fff;
-  border: 2px solid #d7d7d7;
+  border: 2px solid #E8E6E5;
   border-bottom: none;
   padding-bottom: 7px;
 }
@@ -84,7 +84,7 @@ ul.primary li a:hover {
   border-bottom-color: #eee;
 }
 ul.secondary {
-  border-bottom: 2px solid #d7d7d7;
+  border-bottom: 2px solid #E8E6E5;
   padding: 0.5em 1em;
   margin: 5px;
 }
@@ -242,11 +242,10 @@ body.front .l-content {
   overflow: visible;
 }
 
-body.front .l-top,
-body.front .l-bottom {
+body.front .l-top {
   background-color: #f7f7f7;
-  border-bottom: 2px solid #d7d7d7;
-  border-top: 2px solid #d7d7d7;
+  border-bottom: 2px solid #E8E6E5;
+  border-top: 2px solid #E8E6E5;
   padding: 0 0 25px 0;
 }
 body.front .l-top {
@@ -274,6 +273,14 @@ body.front .node-page ul {
   margin: 0;
   padding: 0;
 }
+body.front .l-bottom {
+  background-color: #f7f7f7;
+  border-top: 2px solid #E8E6E5;
+  padding: 0 0 25px 0;
+}
+body.front .l-footer {
+  margin-top: 0;
+}
 
 /*******************************************************************************
  * Front page
@@ -284,8 +291,8 @@ div.full-width {
   width: 100vw;
 
   background-color: #F7F7F7;
-  border-top: 2px solid #d7d7d7;
-  border-bottom: 2px solid #d7d7d7;
+  border-top: 2px solid #E8E6E5;
+  border-bottom: 2px solid #E8E6E5;
   margin-top: 50px;
   margin-bottom: 100px;
 }
@@ -354,7 +361,7 @@ article.node .content .field {
  ******************************************************************************/
 article.node-post.view-mode-teaser {
   background-color: #f7f7f7;
-  border: 1px solid #d7d7d7;
+  border: 1px solid #E8E6E5;
   border-radius: 10px;
   padding: 10px 15px;
   margin-bottom: 50px;
@@ -391,7 +398,7 @@ body.node-type-post .block-system-main article {
 
 article.node-post.view-mode-full footer {
   background-color: #f7f7f7;
-  border: 1px solid #d7d7d7;
+  border: 1px solid #E8E6E5;
   border-radius: 10px;
   padding: 10px 15px;
   margin-bottom: 55px;
@@ -426,7 +433,7 @@ article.node-post.view-mode-full footer .arrow-down {
   height: 0;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
-  border-top: 20px solid #d7d7d7;
+  border-top: 20px solid #E8E6E5;
   position: absolute;
   bottom: -20px;
   left: 33.5px;
@@ -448,7 +455,7 @@ article.node-post.view-mode-full footer .arrow-down:after {
   left: -20px;
 }
 article.node-post.view-mode-full .content {
-  border-bottom: 2px solid #d7d7d7;
+  border-bottom: 2px solid #E8E6E5;
   margin-bottom: 30px;
   position: relative;
 }
@@ -482,7 +489,7 @@ article.node-post .field-name-body {
   margin-left: 20px;
   margin-right: 20px;
   padding: 0 8px 0 12px;
-  background: #d7d7d7;
+  background: #E8E6E5;
   color: #000000;
   text-decoration: none;
   -moz-border-radius-bottomright: 4px;
@@ -500,7 +507,7 @@ article.node-post .field-name-body {
   left: -15px;
   width: 0;
   height: 0;
-  border-color: transparent #d7d7d7 transparent transparent;
+  border-color: transparent #E8E6E5 transparent transparent;
   border-style: solid;
   border-width: 15px 15px 15px 0;
 }
@@ -534,8 +541,8 @@ article.node-post .field-name-body {
   margin-left: -500px;
   margin-right: -500px;
   padding: 50px 500px;
-  border-top: 2px solid #d7d7d7;
-  border-bottom: 2px solid #d7d7d7;
+  border-top: 2px solid #E8E6E5;
+  border-bottom: 2px solid #E8E6E5;
 }
 .view-quotes img {
   float: left;
@@ -1615,7 +1622,7 @@ a.tabledrag-handle .handle {
 }
 .block-views-news-block .view-footer {
   font-size: .9em;
-  border-top: 2px solid #d7d7d7;
+  border-top: 2px solid #E8E6E5;
   padding-top: 50px;
   max-width: 300px;
   margin: 0 auto;
@@ -1633,7 +1640,7 @@ a.tabledrag-handle .handle {
 @media (min-width: 48em) { /* 768px */
   .block-views-news-block .view-content-wrapper {
     vertical-align: middle;
-    border-right: 2px solid #d7d7d7;
+    border-right: 2px solid #E8E6E5;
   }
   .block-views-news-block .view-content {
     padding-bottom: 0;
@@ -2296,7 +2303,7 @@ input[type=image] {
  ******************************************************************************/
 .block-borg-project-metrics-backdrop-project-metrics {
   margin-top: 15px;
-  border-top: 2px solid #d7d7d7;
+  border-top: 2px solid #E8E6E5;
   padding-top: 30px;
 }
 .block-borg-project-metrics-backdrop-project-metrics .project-metrics div {
