@@ -30,9 +30,10 @@
         ],
         "bottom": [],
         "footer": [
-            "c8dcf840-64d3-48f9-a007-7aaca560f9d3",
+            "83e69ae1-f9d7-42d4-a459-89fc470ab994",
             "47d4f23d-79a4-4271-b100-0b50cbeeaf53",
-            "2ad0172c-3184-484e-af5d-935381f16c20"
+            "c8dcf840-64d3-48f9-a007-7aaca560f9d3",
+            "9bba931a-0237-469d-9525-37350cfd0747"
         ],
         "title": []
     },
@@ -120,7 +121,7 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<h2>Modules can add new features to your Backdrop site, or improve the way your existing features currently work.</h2>\r\n",
+                    "content": "<h2>Modules can add new features to your Backdrop site, or extend and improve already existing functionality.</h2>\r\n",
                     "format": "filtered_html"
                 },
                 "uuid": "9dcc8868-bf92-4135-ad3b-5980b9236be7",
@@ -203,11 +204,11 @@
                 }
             }
         },
-        "c8dcf840-64d3-48f9-a007-7aaca560f9d3": {
-            "plugin": "block:3",
+        "83e69ae1-f9d7-42d4-a459-89fc470ab994": {
+            "plugin": "system:powered-by",
             "data": {
-                "module": "block",
-                "delta": "3",
+                "module": "system",
+                "delta": "powered-by",
                 "settings": {
                     "title_display": "default",
                     "title": "",
@@ -215,7 +216,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "c8dcf840-64d3-48f9-a007-7aaca560f9d3",
+                "uuid": "83e69ae1-f9d7-42d4-a459-89fc470ab994",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -232,13 +233,14 @@
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
-                    "title_display": "default",
-                    "title": "",
+                    "title_display": "custom",
+                    "title": "Stay connected",
                     "style": "default",
                     "block_settings": {
                         "services": {
                             "display": "auto",
                             "enabled": {
+                                "rss": "rss",
                                 "youtube": "youtube",
                                 "google": "google",
                                 "facebook": "facebook",
@@ -253,25 +255,57 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
+                            "classes": "col-sm-6"
                         }
                     }
                 }
             }
         },
-        "2ad0172c-3184-484e-af5d-935381f16c20": {
-            "plugin": "block:5",
+        "c8dcf840-64d3-48f9-a007-7aaca560f9d3": {
+            "plugin": "block:3",
             "data": {
                 "module": "block",
-                "delta": "5",
+                "delta": "3",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "delta": "3",
+                        "reusable": true
+                    },
                     "contexts": []
                 },
-                "uuid": "2ad0172c-3184-484e-af5d-935381f16c20",
+                "uuid": "c8dcf840-64d3-48f9-a007-7aaca560f9d3",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "col-sm-6"
+                        }
+                    }
+                }
+            }
+        },
+        "9bba931a-0237-469d-9525-37350cfd0747": {
+            "plugin": "menu:menu-footer-menu",
+            "data": {
+                "module": "menu",
+                "delta": "menu-footer-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "menu-footer-menu",
+                        "style": "top_only",
+                        "level": "1",
+                        "depth": "0",
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "9bba931a-0237-469d-9525-37350cfd0747",
                 "style": {
                     "plugin": "default",
                     "data": {

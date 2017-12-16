@@ -54,7 +54,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
                             "alter_text": 0,
                             "text": "",
@@ -121,7 +121,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
                             "alter_text": 0,
                             "text": "",
@@ -172,7 +172,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
                             "alter_text": 0,
                             "text": "",
@@ -216,7 +216,7 @@
                         "click_sort_column": "value",
                         "type": "text_summary_or_trimmed",
                         "settings": {
-                            "trim_length": "300"
+                            "trim_length": "400"
                         },
                         "group_column": "value",
                         "group_columns": [],
@@ -229,18 +229,18 @@
                         "separator": ", ",
                         "field_api_classes": 0
                     },
-                    "field_location": {
-                        "id": "field_location",
-                        "table": "field_data_field_location",
-                        "field": "field_location",
+                    "nothing": {
+                        "id": "nothing",
+                        "table": "views",
+                        "field": "nothing",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
                         "exclude": 0,
                         "alter": {
-                            "alter_text": 0,
-                            "text": "",
+                            "alter_text": true,
+                            "text": "<div class=\"col-md-3\">\r\n[field_logo] \r\n</div>\r\n<div class=\"col-md-9\">\r\n<h4>[title]</h4>\r\n[body] \r\n</div>",
                             "make_link": 0,
                             "path": "",
                             "absolute": 0,
@@ -277,25 +277,7 @@
                         "empty": "",
                         "hide_empty": 0,
                         "empty_zero": 0,
-                        "hide_alter_empty": 1,
-                        "click_sort_column": "country",
-                        "type": "addressfield_default",
-                        "settings": {
-                            "use_widget_handlers": 1,
-                            "format_handlers": {
-                                "address": "address"
-                            }
-                        },
-                        "group_column": "",
-                        "group_columns": [],
-                        "group_rows": true,
-                        "delta_limit": "all",
-                        "delta_offset": 0,
-                        "delta_reversed": false,
-                        "delta_first_last": false,
-                        "multi_type": "separator",
-                        "separator": ", ",
-                        "field_api_classes": 0
+                        "hide_alter_empty": 0
                     }
                 },
                 "filters": {
@@ -379,7 +361,7 @@
                 "title": "Professional Services",
                 "style_options": {
                     "grouping": [],
-                    "row_class": "clearfix",
+                    "row_class": "row",
                     "default_row_class": 1,
                     "row_class_special": 0
                 },
@@ -403,7 +385,14 @@
                     "groups": {
                         "1": "AND"
                     }
-                }
+                },
+                "row_options": {
+                    "default_field_elements": 0,
+                    "inline": [],
+                    "separator": "",
+                    "hide_empty": 0
+                },
+                "css_class": ""
             }
         },
         "page": {
@@ -590,7 +579,7 @@
                         "exposed": true,
                         "expose": {
                             "operator_id": "field_services_tid_op",
-                            "label": "Areas of Expertise (field_services)",
+                            "label": "Areas of Expertise",
                             "description": "",
                             "use_operator": 0,
                             "operator": "field_services_tid_op",

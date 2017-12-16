@@ -32,9 +32,10 @@
             "eb9135d6-652f-45c3-9a00-c8de2519591d"
         ],
         "footer": [
-            "d6581d63-76d2-4da6-820e-1445176ab358",
+            "b91d2e82-5e00-4ea6-a81a-26ef2bb5f78a",
             "23c3eb78-a138-4cd1-a411-179dc4717218",
-            "d7055483-47cd-4413-9e2a-426d4915b907"
+            "d6581d63-76d2-4da6-820e-1445176ab358",
+            "e8ddbc67-6dbd-4031-b345-693eb3bbc11f"
         ],
         "title": []
     },
@@ -261,11 +262,11 @@
                 }
             }
         },
-        "d6581d63-76d2-4da6-820e-1445176ab358": {
-            "plugin": "block:3",
+        "b91d2e82-5e00-4ea6-a81a-26ef2bb5f78a": {
+            "plugin": "system:powered-by",
             "data": {
-                "module": "block",
-                "delta": "3",
+                "module": "system",
+                "delta": "powered-by",
                 "settings": {
                     "title_display": "default",
                     "title": "",
@@ -273,7 +274,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "d6581d63-76d2-4da6-820e-1445176ab358",
+                "uuid": "b91d2e82-5e00-4ea6-a81a-26ef2bb5f78a",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -290,13 +291,14 @@
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
-                    "title_display": "default",
-                    "title": "",
+                    "title_display": "custom",
+                    "title": "Stay connected",
                     "style": "default",
                     "block_settings": {
                         "services": {
                             "display": "auto",
                             "enabled": {
+                                "rss": "rss",
                                 "youtube": "youtube",
                                 "google": "google",
                                 "facebook": "facebook",
@@ -311,25 +313,57 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
+                            "classes": "col-sm-6"
                         }
                     }
                 }
             }
         },
-        "d7055483-47cd-4413-9e2a-426d4915b907": {
-            "plugin": "block:5",
+        "d6581d63-76d2-4da6-820e-1445176ab358": {
+            "plugin": "block:3",
             "data": {
                 "module": "block",
-                "delta": "5",
+                "delta": "3",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "delta": "3",
+                        "reusable": true
+                    },
                     "contexts": []
                 },
-                "uuid": "d7055483-47cd-4413-9e2a-426d4915b907",
+                "uuid": "d6581d63-76d2-4da6-820e-1445176ab358",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "col-sm-6"
+                        }
+                    }
+                }
+            }
+        },
+        "e8ddbc67-6dbd-4031-b345-693eb3bbc11f": {
+            "plugin": "menu:menu-footer-menu",
+            "data": {
+                "module": "menu",
+                "delta": "menu-footer-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "menu-footer-menu",
+                        "style": "top_only",
+                        "level": "1",
+                        "depth": "0",
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "e8ddbc67-6dbd-4031-b345-693eb3bbc11f",
                 "style": {
                     "plugin": "default",
                     "data": {

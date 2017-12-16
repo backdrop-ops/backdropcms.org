@@ -6,16 +6,17 @@
     "module": "list",
     "active": 1,
     "locked": 0,
-    "cardinality": "-1",
+    "cardinality": "1",
     "deleted": 0,
     "entity_types": [],
     "settings": {
         "allowed_values": {
-            "per": "Personal",
-            "sb": "Small Business",
             "mb": "Medium Business",
+            "sb": "Small Business",
             "np": "Non-Profit",
-            "ed": "Educational"
+            "ed": "Educational",
+            "per": "Personal",
+            "other": "Other"
         },
         "allowed_values_function": ""
     },
