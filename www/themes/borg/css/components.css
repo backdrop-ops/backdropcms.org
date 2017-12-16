@@ -345,13 +345,6 @@ article.node.view-mode-full .content {
   max-width: 700px;
 }
 
-article.node .content .field {
-  margin: .5em 0;
-}
-article.node-event .content .field-name-body {
-  font-size: 1.25em;
-}
-
 /*******************************************************************************
  * Blog - teaser
  ******************************************************************************/
@@ -816,10 +809,13 @@ a.feed-icon {
   font-size: 35px;
   line-height: 35px;
   margin: 0 5px;
-  color: rgb(151, 151, 151);
+  color: #007CBA;
+}
+.block-on-the-web-social-links a i:first-child {
+  margin-left: 0;
 }
 .block-on-the-web-social-links a:hover i {
-  color: #007CBA;
+  color: #000;
 }
 
 /*******************************************************************************
@@ -861,20 +857,59 @@ a.feed-icon {
 .block-block-3 {
   margin-bottom: 5px;
 }
-.block-block-3 #mce-EMAIL {
+.block #mce-EMAIL {
   margin-right: 5px;
+  width: 100%;
+}
+
+/*******************************************************************************
+ * Footer Menu
+ ******************************************************************************/
+.l-footer .block-menu,
+.l-footer .block-menu-menu-footer-menu {
+  position: absolute;
+  bottom: -62px;
+  right: 0;
+  width: 50%;
+}
+.l-footer .block-menu ul,
+.l-footer .block-menu-menu-footer-menu ul {
+  margin: 0;
+  padding: 0;
+}
+.l-footer .block-menu li,
+.l-footer .block-menu-menu-footer-menu li {
+  display: inline-block;
+  list-style-type: none;
+  margin: 0;
+  padding: .5em 1em;
 }
 
 /*******************************************************************************
  * Powered by Backdrop block.
  ******************************************************************************/
 .block-system-powered-by {
-  font-size: 14px;
-  color: #979797;
+  position: absolute;
+  bottom: -62px;
+  left: 2.9375rem;
+}
+.block-system-powered-by span {
+  display: block;
+  padding: .5em 0;
 }
 .block-system-powered-by a {
-   color: #007cba;
+   color: #000;
 }
+.drop-lounging {
+  box-sizing: content-box;
+  content: '';
+  width: 175px;
+  height: 107px;
+  margin: 0;
+  background: transparent url(../images/drop-lounging.png) top left no-repeat;
+  background-size: 100%;
+}
+
 
 /*******************************************************************************
  * Site contact form.
@@ -1803,16 +1838,6 @@ label.github-clone-label {
     text-align: left;
     margin-left: 0;
   }
-}
-
-/*******************************************************************************
- * Project nodes
- ******************************************************************************/
-
-.node-type-project-module .view-project-release-download-table .recommended-version,
-.node-type-project-module .view-project-release-download-table .released,
-.node-type-project-module .view-project-release-download-table .all-versions {
-  margin: .25em 0;
 }
 
 /*******************************************************************************

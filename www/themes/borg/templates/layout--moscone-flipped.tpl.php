@@ -93,7 +93,9 @@
   <?php if ($content['footer']): ?>
     <footer class="l-footer"  role="footer">
       <div class="l-footer-inner container container-fluid">
-        <?php print $content['footer']; ?>
+        <div class="row">
+          <?php print $content['footer']; ?>
+        </div>
       </div>
     </footer>
   <?php endif; ?>
