@@ -143,9 +143,12 @@
     border-top: 0;
   }
   .js .menu-dropdown ul {
-    padding: 5px 0;
-    background-color: #696969;
+    padding: 0;
     padding-left: 0;
+    background-color: #696969;
+  }
+  .js .menu-dropdown ul li {
+    float: none;
   }
   .menu-dropdown ul a,
   .menu-dropdown ul a:hover,
@@ -161,7 +164,7 @@
   .menu-dropdown ul a:focus,
   .menu-dropdown ul a:active,
   .menu-dropdown ul a.highlighted {
-    background: #eeeeee;
+    background-color: #808080;
   }
   .menu-dropdown ul a.disabled {
     background: white;
