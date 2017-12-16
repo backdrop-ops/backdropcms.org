@@ -6,6 +6,12 @@
   display: none;
 }
 
+.view-project-release-download-table .recommended-version,
+.view-project-release-download-table .released,
+.view-project-release-download-table .all-versions {
+  padding: 5px 0;
+}
+
 .node-project-release .content h2 {
   display: block;
 }
