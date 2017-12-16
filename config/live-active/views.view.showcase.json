@@ -94,7 +94,7 @@
                         "group_column": "",
                         "group_columns": [],
                         "group_rows": 1,
-                        "delta_limit": "all",
+                        "delta_limit": "1",
                         "delta_offset": "0",
                         "delta_reversed": 0,
                         "delta_first_last": 0,
@@ -301,11 +301,31 @@
                     }
                 },
                 "sorts": {
-                    "created": {
-                        "id": "created",
+                    "promote": {
+                        "id": "promote",
                         "table": "node",
-                        "field": "created",
-                        "order": "DESC"
+                        "field": "promote",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    },
+                    "field_launch_date_value": {
+                        "id": "field_launch_date_value",
+                        "table": "field_data_field_launch_date",
+                        "field": "field_launch_date_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
                     }
                 },
                 "title": "Sites built with Backdrop",
