@@ -100,14 +100,20 @@ $(window).load(function() {
     backdrop_add_js($script, array('type' => 'inline'));
   }
 
+  $path = backdrop_get_path('theme', 'borg');
   if (arg(0) == 'modules' || arg(0) == 'themes' || arg(0) == 'layouts') {
     $variables['classes'][] = 'project-search';
-
-    $path = backdrop_get_path('theme', 'borg');
     backdrop_add_css($path . '/css/project-search.css');
   }
   elseif (arg(0) == 'showcase') {
     $variables['classes'][] = 'showcase';
+  }
+  elseif (arg(0) == 'support') {
+    $variables['classes'][] = 'support';
+    if (arg(1) == 'services') {
+      $variables['classes'][] = 'services';
+      backdrop_add_css($path . '/css/services.css');
+    }
   }
 
   if (module_exists('admin_bar') && user_access('admin_bar')) {

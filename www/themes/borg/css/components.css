@@ -1692,51 +1692,18 @@ iframe.twitter-tweet-rendered {
 }
 
 /*******************************************************************************
- * Service providers listing - page
- ******************************************************************************/
-.block-views-providers-block-1 .view-content {
-  border-top: 1px solid #d4d4d6;
-  background-color: transparent;
-}
-.block-views-providers-block-1 .views-row {
-  padding-bottom: 15px;
-  border-bottom: 1px solid #d4d4d6;
-}
-.view-providers .views-field-field-logo {
-  padding-top: 15px;
-}
-.view-providers .iews-field-title h3 {
-  margin: 0;
-}
-
-@media (min-width: 500px) {
-  .view-providers h3 {
-    margin: 1.5em 0 1em;
-  }
-  .view-providers .views-field {
-    margin-left: 175px;
-  }
-  .view-providers .views-field-field-logo {
-    float: left;
-    padding-top: 0;
-    margin-bottom: 15px;
-    margin-right: 15px;
-    margin-left: 0px;
-  }
-}
-
-/*******************************************************************************
  * Service providers listing - logos
  ******************************************************************************/
 
 .view-providers {
   margin-bottom: 100px;
+  border: 2px solid #E8E6E5;
 }
 .view-providers .view-header h3 {
   text-align: center;
+  margin-bottom: 2.25em;
 }
 .view-providers .view-content {
-  background-color:  #f7f7f7;
   padding-top: 15px;
 }
 .view-providers table {
@@ -1762,6 +1729,7 @@ iframe.twitter-tweet-rendered {
 .view-providers .view-footer {
   background-color:  #f7f7f7;
   padding: 15px;
+  margin-top: 30px;
 }
 .view-providers .view-footer p {
   margin: 0;
