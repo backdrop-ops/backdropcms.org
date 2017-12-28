@@ -22,8 +22,8 @@
         "top": [],
         "content": [
             "4543880d-1a0a-413e-8300-0045a93106df",
-            "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
+            "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
             "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
             "e21a9e69-e89f-4b7a-b809-9e961daa1208"
         ],
@@ -73,7 +73,13 @@
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "2",
+                        "toggle": 1
+                    },
                     "contexts": []
                 },
                 "uuid": "8c924952-e403-4fa8-a203-3e915942230c",
@@ -112,31 +118,6 @@
                 }
             }
         },
-        "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "Developer Documentation",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>If you're digging into the code and looking for some help, check out the&nbsp;API documentation and helpful developer tools available at&nbsp;https://api.backdropcms.org.</p>\r\n",
-                    "format": "filtered_html"
-                },
-                "uuid": "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "1bf26084-5e1f-49da-9e4a-74d812df73ba": {
             "plugin": "layout:custom_block",
             "data": {
@@ -152,6 +133,31 @@
                     "format": "filtered_html"
                 },
                 "uuid": "1bf26084-5e1f-49da-9e4a-74d812df73ba",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Developer Documentation",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>If you're digging into the code and looking for some help, check out the&nbsp;API documentation and helpful developer tools available at&nbsp;https://api.backdropcms.org.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -229,18 +235,15 @@
             }
         },
         "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6": {
-            "plugin": "layout:custom_block",
+            "plugin": "block:resources",
             "data": {
-                "module": "layout",
-                "delta": "custom_block",
+                "module": "block",
+                "delta": "resources",
                 "settings": {
                     "title_display": "default",
-                    "title": "Online Resources",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>The Backdrop CMS community uses a handful of tools for communication.</p>\n\n<ul>\n  <li><a href=\"https://gitter.im/backdrop/backdrop-issues\"><i class=\"fa fa-comments-o\"></i> Live Chat: GitterIM</a></li>\n  <li><a href=\"http://github.com/backdrop/backdrop-issues/issues\"><i class=\"fa fa-github\"></i> Issue Queue: Github</a></li>\n  <li><a href=\"http://api.backdropcms.org/\"><i class=\"fa fa-puzzle-piece\"></i> Developer Documentation (API)</a></li>\n  <li><a href=\"https://plus.google.com/+BackdropcmsOrg\"><i class=\"fa fa-google-plus\"></i> Weekly Meetings: Google hangouts</a></li>\n  <li><a href=\"https://www.youtube.com/user/backdropcms\"><i class=\"fa fa-youtube\"></i> Video archives: YouTube</a></li>\n  <li><a href=\"https://www.linkedin.com/groups/6930143\"><i class=\"fa fa-linkedin\"></i> LinkedIn group</a></li>\n  <li><a href=\"http://www.facebook.com/backdropcms\"><i class=\"fa fa-facebook\"></i> Facebook group</a></li>\n  <li><a href=\"http://twitter.com/backdropcms\"><i class=\"fa fa-twitter\"></i> Twitter (use #BackdropCMS)</a></li>\n</ul>",
-                    "format": "full_html"
+                    "contexts": []
                 },
                 "uuid": "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
                 "style": {

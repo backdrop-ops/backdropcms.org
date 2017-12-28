@@ -70,7 +70,13 @@
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "2",
+                        "toggle": 1
+                    },
                     "contexts": []
                 },
                 "uuid": "368374cf-5253-424c-b35e-94ffe3889f54",
