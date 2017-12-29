@@ -14,13 +14,14 @@
  * @see on_the_web_get_services().
  */
 function hook_on_the_web_get_services_alter(&$services) {
-  // Pull out facebook.
+  // Pull out facebook and put it back at the beginning.
   $face = $services['facebook'];
-  // Remove facebook.
   unset($services['facebook']);
-  // Put facebook at the begining.
   $services = array('facebook' => $face)+$services;
 
   // Add an additional service.
-  $services['soundcloud'] = array('name' => 'SoundCloud');
+  $services['viemo'] = array(
+    'name' => 'Viemo'
+    'fa-icon' => 'fa-vimeo-square',
+  );
 }

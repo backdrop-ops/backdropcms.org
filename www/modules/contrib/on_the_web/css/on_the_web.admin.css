@@ -7,7 +7,8 @@
   clear: both;
 }
 
-#on-the-web-settings-form .form-radios .form-type-radio {
+#on-the-web-settings-form .form-item-type .form-type-radio,
+#on-the-web-settings-form .form-item-size .form-type-radio {
   float: left;
   margin-right: 15px;
 }

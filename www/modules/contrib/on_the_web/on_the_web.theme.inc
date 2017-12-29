@@ -20,8 +20,10 @@
 function theme_on_the_web_item($variables) {
   $service = $variables['service'];
   $link = $variables['link'];
+  $icon = $variables['icon'];
+  $size = $variables['size'];
   $title = $variables['title'];
-  $classes = $variables['classes'];
+  $link_classes = $variables['classes'];
 
   $config = config('on_the_web.settings');
   $type = $config->get('type');
@@ -29,58 +31,26 @@ function theme_on_the_web_item($variables) {
 
   // Determine attributes for the link
   $attributes  = array(
-    'class' => $classes,
+    'class' => $link_classes,
     'title' => $title,
     'rel' => 'nofollow',
   );
   if ($target == TRUE) {
     $attributes['target'] = '_blank';
   }
-  $options = array('attributes' => $attributes);
+  $options = array('attributes' => $attributes, 'html' => TRUE);
 
-  if ($type == 'image') {
-    $inner = theme('on_the_web_image', array('service' => $service, 'title' => $title));
-    $options['html'] = TRUE;
+  $icon_classes = array('fa', $icon, 'fa-fw');
+  if ($size == 'lg') {
+    $icon_classes[] = 'fa-3x';
   }
   else {
-    $inner = $title;
+    $icon_classes[] = 'fa-2x';
   }
 
-  // Link the image and wrap it in a span.
-  $linked_image = l($inner, $link, $options);
+  $text = '<i class="' . implode(' ', $icon_classes) . '"></i>';
 
-  return $linked_image;
-}
-
-/**
- * Theme function
- *
- * @param $service
- *    Icon for appropriate service.
- * @param $title
- *    Title attribute for the link tag.
- *
- * @return 
- *    Icon image of appropriate size.
- */
-function theme_on_the_web_image($variables) {
-  $service = $variables['service'];
-  $title = $variables['title'];
-
-  // Get the size.
-  $size = config_get('on_the_web.settings', 'size');
-
-  // Assemble necessary variables for building the image.
-  $variables = array(
-    'uri' => backdrop_get_path('module', 'on_the_web') . '/images/' . $size . '/' . $service . '.png', 
-    'alt' => $title,
-    'title' => $title,
-  );
-
-  // Build the img tag.
-  $image = theme('image', $variables);
-
-  return $image;
+  return l($text, $link, $options);
 }
 
 /**

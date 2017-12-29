@@ -15,6 +15,7 @@ function on_the_web_settings_form($form, &$form_state) {
     '#type' => 'radios',
     '#title' => t('Icon type'),
     '#options' => array(
+      'font' => t('FontAwesome icon font'),
       'anchor' => t('Background image on anchor'),
       'image' => t('Image tags in anchor'),
     ),
@@ -24,22 +25,27 @@ function on_the_web_settings_form($form, &$form_state) {
     '#type' => 'radios',
     '#title' => t('Icon size'),
     '#options' => array(
-      'sm' => t('Small: 32px square'),
-      'lg' => t('Large: 64px square'),
+      'sm' => t('Small: ~32px square'),
+      'lg' => t('Large: ~64px square'),
     ),
     '#default_value' => $config->get('size'),
+  );
+  $form['sitename'] = array(
+    '#type' => 'radios',
+    '#title' => 'Hover text selection',
+    '#default_value' => (int)$config->get('sitename'),
+    '#description' => t('This setting will update the title attribute for each social media link.'),
+    '#options' => array(
+      1 => t('Use the <strong><a href="!url">Site name</a></strong>, for example: <em>Find !us on Facebook</em>', array('!us' => config_get('system.core', 'site_name'), '!url' => url('admin/config/system/site-information'))),
+      0 => t('Use <strong>us</strong>, for example: <em>Find us on Facebook</em>'),
+      2 => t('Use <strong>me</strong>, for example: <em>Find me on Facebook</em>'),
+    ),
   );
   $form['target'] = array(
     '#type' => 'checkbox',
     '#title' => t('Open links in new windows'),
     '#default_value' => $config->get('target'),
     '#description' => t('Unchecking this box his will remove the target="_blank" attribute from each link.'),
-  );
-  $form['sitename'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Use <a href="!url">Site name</a> in title attributes, for example: <em>Find !us on Facebook</em>', array('!us' => config_get('system.core', 'site_name'), '!url' => url('admin/config/system/site-information'))),
-    '#default_value' => $config->get('sitename'),
-    '#description' => t('Unchecking this box will update the title attributes for each link to use "us", for example: <em>Find us on Facebook</em>.'),
   );
 
   // Get all the services.
