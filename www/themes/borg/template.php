@@ -282,6 +282,20 @@ function borg_preprocess_views_view_grid(&$variables) {
 }
 
 /**
+ * Prepare variables for node template
+ */
+function borg_preprocess_header(&$variables){
+  $variables['greeting'] = '';
+  global $user;
+  if ($user->uid) {
+    $variables['greeting'] = t('Hi !name!', array('!name'  => theme('username', array('account' => $user))));
+  }
+  $uri = backdrop_get_path('theme', 'borg') . '/images/logo.png';
+  $variables['logo'] = theme('image', array('uri' => $uri, 'alt' => t('Backdrop CMS Logo')));
+  $variables['site_name'] = t('backdrop');
+}
+
+/**
  * Processes variables for book-navigation.tpl.php.
  *
  * @param $variables
