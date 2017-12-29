@@ -2,10 +2,10 @@
     "_config_name": "views.view.backdrop_on_the_web",
     "name": "backdrop_on_the_web",
     "description": "",
-    "tag": "default",
+    "tag": "",
     "disabled": false,
     "base_table": "node",
-    "human_name": "Backdrop on the web",
+    "human_name": "Mentions",
     "core": "1.6.3",
     "display": {
         "default": {
@@ -386,7 +386,7 @@
                     "type": "views_query",
                     "options": []
                 },
-                "path": "news/on-the-web"
+                "path": "news/mentions"
             }
         },
         "block_1": {
