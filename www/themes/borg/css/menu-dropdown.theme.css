@@ -111,7 +111,16 @@
   .menu-dropdown a:active,
   .menu-dropdown a.highlighted {
     color: #fff;
+    padding: .5em 1em;
     padding-right: 1em;
+    border-bottom: 2px solid #000;
+  }
+  .menu-dropdown a.active,
+  .menu-dropdown a:hover,
+  .menu-dropdown a:focus,
+  .menu-dropdown a:active,
+  .menu-dropdown a.highlighted {
+    border-bottom: 2px solid #fff;
   }
   .menu-dropdown a.disabled {
     color: #bbbbbb;
