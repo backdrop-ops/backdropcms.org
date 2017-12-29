@@ -2351,3 +2351,21 @@ input[type=image] {
     font-size: 28px;
   }
 }
+
+/*******************************************************************************
+ * Mentions sidebar block
+ ******************************************************************************/
+.block-views-backdrop-on-the-web-block-1 li {
+  margin-bottom: .75em;
+}
+
+/*******************************************************************************
+ * Events sidebar block
+ ******************************************************************************/
+
+.block-views-events-block-1 h4 {
+  margin-bottom: .25em;
+}
+.block-views-events-block-1 .more-link {
+  margin-top: 1.5em;
+}
