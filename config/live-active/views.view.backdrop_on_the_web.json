@@ -350,7 +350,7 @@
                         }
                     }
                 },
-                "title": "Backdrop on the web",
+                "title": "Backdrop Mentions",
                 "style_options": {
                     "grouping": [],
                     "row_class": "",
@@ -390,7 +390,7 @@
             }
         },
         "block_1": {
-            "display_title": "Latest 5 mentions",
+            "display_title": "Block",
             "display_plugin": "block",
             "display_options": {
                 "query": {
@@ -415,7 +415,8 @@
                     "style_plugin": false,
                     "style_options": false,
                     "row_plugin": false,
-                    "row_options": false
+                    "row_options": false,
+                    "title": false
                 },
                 "pager_options": null,
                 "fields": {
@@ -569,7 +570,8 @@
                     "separator": "",
                     "hide_empty": 0
                 },
-                "block_description": "Backdrop On The Web"
+                "block_description": "Backdrop On The Web",
+                "title": "Mentions"
             }
         }
     }
