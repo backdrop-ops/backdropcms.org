@@ -12,6 +12,10 @@ function borg_blocks_block_info() {
     'info' => t('Branding'),
     'description' => t('Backdrop CMS logomark and wordmark.'),
   );
+  $blocks['greeting'] = array(
+    'info' => t('Greeting'),
+    'description' => t('Backdrop CMS greeting block.'),
+  );
   $blocks['handbook'] = array(
     'info' => t('Handbook Menu'),
     'description' => t('Backdrop CMS Handbook menu, with section titles.'),
@@ -42,6 +46,15 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
 
       $block['subject'] = NULL;
       $block['content'] = $output;
+      break;
+
+    case 'greeting':
+      global $user;
+
+      $block['subject'] = NULL;
+      if ($user->uid) {
+        $block['content'] = t('Hi !name!', array('!name'  => theme('username', array('account' => $user))));
+      }
       break;
 
     case 'handbook':
