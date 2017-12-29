@@ -1826,11 +1826,18 @@ label.github-clone-label {
   font-size: 28px;
   margin-top: 57px;
 }
-.view-contractors .views-row {
-  margin-bottom: 25px;
+.contractor {
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 .view-contractors .views-field-field-name {
   font-size: 20px;
+}
+.view-contractors .views-field-field-photo {
+  min-height: 100px;
+}
+.view-contractors .attachment .views-field-field-photo {
+  min-height: 0;
 }
 
 /*******************************************************************************
