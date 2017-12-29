@@ -250,6 +250,11 @@
                             "default_group_multiple": [],
                             "group_items": []
                         }
+                    },
+                    "status_extra": {
+                        "id": "status_extra",
+                        "table": "node",
+                        "field": "status_extra"
                     }
                 },
                 "sorts": {
@@ -290,7 +295,9 @@
                     "row_plugin": false,
                     "row_options": false,
                     "header": true,
-                    "footer": false
+                    "footer": false,
+                    "filters": false,
+                    "filter_groups": false
                 },
                 "style_options": [],
                 "row_plugin": "fields",
@@ -313,6 +320,61 @@
                         "content": "<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\"><img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" /></a><br/>\n“<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a>” by Todd Tomlinson, author of “Pro Drupal 7 Development”, is available now from <a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Amazon</a>.",
                         "format": "full_html",
                         "tokenize": 0
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "post": "post"
+                        }
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": "1",
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
                     }
                 }
             }
@@ -355,23 +417,32 @@
                     "pager": false,
                     "pager_options": false,
                     "title": false,
-                    "header": false
+                    "header": false,
+                    "filters": false,
+                    "filter_groups": false
                 },
                 "pager_options": null,
                 "title": "News & Announcements",
-                "header": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "empty": 0,
-                        "content": "<h2>The Backdrop Blog</h2>\r\n",
-                        "format": "filtered_html",
-                        "tokenize": 0
+                "header": [],
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "post": "post"
+                        }
+                    },
+                    "status_extra": {
+                        "id": "status_extra",
+                        "table": "node",
+                        "field": "status_extra"
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
                     }
                 }
             }

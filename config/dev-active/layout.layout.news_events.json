@@ -1,8 +1,8 @@
 {
-    "_config_name": "layout.layout.news",
-    "path": "news",
-    "name": "news",
-    "title": "News",
+    "_config_name": "layout.layout.news_events",
+    "path": "news/events",
+    "name": "news_events",
+    "title": "News / Events",
     "description": null,
     "module": null,
     "weight": 0,
@@ -16,32 +16,31 @@
     },
     "positions": {
         "header": [
-            "74914ed2-7655-40ad-9900-b106a5b7d481",
-            "703d4639-db2d-4934-8300-eae9f40fb582"
+            "7e03d641-4b4e-4c97-8e3b-59436714a769",
+            "8092846a-4ca4-444b-9e02-2a140f279902"
         ],
         "top": [],
         "content": [
-            "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309"
+            "9779cdfd-c592-4b4f-8440-6467767ad350"
         ],
         "sidebar": [
-            "1c732b6a-9279-45af-b242-666a63fa2848",
-            "835608c8-c0c4-41e2-9732-50d75dd85de2",
-            "1cb8ed0f-b783-4901-9a00-f445fd6db153",
-            "e161c1f5-be5c-47c4-a723-352567c8870c",
-            "11f77fa6-ce86-4619-9338-56b87d16920f",
-            "0765a3fa-4353-454d-9301-1c346e550eae"
+            "3bb93f50-80cb-4c01-a20c-12ea7cb4c1d4",
+            "0e975a41-7438-4327-bd16-22a34674ced0",
+            "70c30070-20d8-46b5-a700-c190ab36b44a",
+            "7ee10e9e-634f-4940-845c-92edf2ccd95c",
+            "5f9efb67-2c36-4b25-9b00-cdb7ea319e1a"
         ],
         "bottom": [],
         "footer": [
-            "91be13c7-fc28-4904-ad00-bb7ea3f36b68",
-            "43e431c8-4e4c-4b0a-9740-64ee320ef7e2",
-            "dca8ec3b-4d56-44da-b100-0020d8c86e3c",
-            "9a1ad266-2c94-4b75-9c08-8cb4ac7972fa"
+            "fc9fa856-985f-4331-af07-7f722323d873",
+            "601ea147-042a-41d2-8b00-0fb6f09efa75",
+            "eb13eba6-894b-4429-aa00-a23157e7ff24",
+            "adbfd2de-2e24-4231-9a3b-59f08178a53e"
         ],
         "title": []
     },
     "content": {
-        "74914ed2-7655-40ad-9900-b106a5b7d481": {
+        "7e03d641-4b4e-4c97-8e3b-59436714a769": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "module": "borg_blocks",
@@ -53,7 +52,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "74914ed2-7655-40ad-9900-b106a5b7d481",
+                "uuid": "7e03d641-4b4e-4c97-8e3b-59436714a769",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -64,7 +63,7 @@
                 }
             }
         },
-        "703d4639-db2d-4934-8300-eae9f40fb582": {
+        "8092846a-4ca4-444b-9e02-2a140f279902": {
             "plugin": "system:main-menu",
             "data": {
                 "module": "system",
@@ -82,7 +81,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "703d4639-db2d-4934-8300-eae9f40fb582",
+                "uuid": "8092846a-4ca4-444b-9e02-2a140f279902",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -93,7 +92,7 @@
                 }
             }
         },
-        "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309": {
+        "9779cdfd-c592-4b4f-8440-6467767ad350": {
             "plugin": "system:main",
             "data": {
                 "module": "system",
@@ -101,27 +100,22 @@
                 "settings": {
                     "title_display": "default",
                     "title": "",
-                    "style": "dynamic",
+                    "style": "default",
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309",
+                "uuid": "9779cdfd-c592-4b4f-8440-6467767ad350",
                 "style": {
-                    "plugin": "dynamic",
+                    "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "l-content-wrapper",
-                            "wrapper_tag": "div",
-                            "title_tag": "h2",
-                            "title_classes": "block-title",
-                            "content_tag": "div",
-                            "content_classes": ""
+                            "classes": ""
                         }
                     }
                 }
             }
         },
-        "1c732b6a-9279-45af-b242-666a63fa2848": {
+        "3bb93f50-80cb-4c01-a20c-12ea7cb4c1d4": {
             "plugin": "block:7",
             "data": {
                 "module": "block",
@@ -136,7 +130,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "1c732b6a-9279-45af-b242-666a63fa2848",
+                "uuid": "3bb93f50-80cb-4c01-a20c-12ea7cb4c1d4",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -147,45 +141,22 @@
                 }
             }
         },
-        "835608c8-c0c4-41e2-9732-50d75dd85de2": {
-            "plugin": "block:8",
-            "data": {
-                "module": "block",
-                "delta": "8",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "8",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "835608c8-c0c4-41e2-9732-50d75dd85de2",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "1cb8ed0f-b783-4901-9a00-f445fd6db153": {
+        "0e975a41-7438-4327-bd16-22a34674ced0": {
             "plugin": "block:meeting_schedule",
             "data": {
                 "module": "block",
                 "delta": "meeting_schedule",
                 "settings": {
                     "title_display": "default",
+                    "title": "",
                     "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "title": ""
+                    "block_settings": {
+                        "delta": "meeting_schedule",
+                        "reusable": true
+                    },
+                    "contexts": []
                 },
-                "uuid": "1cb8ed0f-b783-4901-9a00-f445fd6db153",
+                "uuid": "0e975a41-7438-4327-bd16-22a34674ced0",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -196,17 +167,51 @@
                 }
             }
         },
-        "e161c1f5-be5c-47c4-a723-352567c8870c": {
+        "70c30070-20d8-46b5-a700-c190ab36b44a": {
+            "plugin": "views:backdrop_on_the_web-block_1",
+            "data": {
+                "module": "views",
+                "delta": "backdrop_on_the_web-block_1",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": 1,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "5",
+                    "offset": 0,
+                    "path": "news/on-the-web",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
+                },
+                "uuid": "70c30070-20d8-46b5-a700-c190ab36b44a",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "7ee10e9e-634f-4940-845c-92edf2ccd95c": {
             "plugin": "views:events-block_1",
             "data": {
                 "module": "views",
                 "delta": "events-block_1",
                 "settings": {
-                    "link_to_view": null,
+                    "link_to_view": 0,
                     "more_link": 1,
                     "use_pager": false,
                     "pager_id": 0,
-                    "items_per_page": "100",
+                    "items_per_page": "3",
                     "offset": 0,
                     "path": "news/events",
                     "fields_override": null,
@@ -216,9 +221,10 @@
                     "block_settings": [],
                     "contexts": [],
                     "allowed": [],
-                    "path_override": false
+                    "path_override": false,
+                    "exposed": []
                 },
-                "uuid": "e161c1f5-be5c-47c4-a723-352567c8870c",
+                "uuid": "7ee10e9e-634f-4940-845c-92edf2ccd95c",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -229,7 +235,7 @@
                 }
             }
         },
-        "11f77fa6-ce86-4619-9338-56b87d16920f": {
+        "5f9efb67-2c36-4b25-9b00-cdb7ea319e1a": {
             "plugin": "block:9",
             "data": {
                 "module": "block",
@@ -244,7 +250,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "11f77fa6-ce86-4619-9338-56b87d16920f",
+                "uuid": "5f9efb67-2c36-4b25-9b00-cdb7ea319e1a",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -255,40 +261,7 @@
                 }
             }
         },
-        "0765a3fa-4353-454d-9301-1c346e550eae": {
-            "plugin": "views:backdrop_on_the_web-block_1",
-            "data": {
-                "module": "views",
-                "delta": "backdrop_on_the_web-block_1",
-                "settings": {
-                    "link_to_view": null,
-                    "more_link": false,
-                    "use_pager": true,
-                    "pager_id": "0",
-                    "items_per_page": "25",
-                    "offset": 0,
-                    "path": "news/on-the-web",
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false
-                },
-                "uuid": "0765a3fa-4353-454d-9301-1c346e550eae",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "91be13c7-fc28-4904-ad00-bb7ea3f36b68": {
+        "fc9fa856-985f-4331-af07-7f722323d873": {
             "plugin": "system:powered-by",
             "data": {
                 "module": "system",
@@ -300,7 +273,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "91be13c7-fc28-4904-ad00-bb7ea3f36b68",
+                "uuid": "fc9fa856-985f-4331-af07-7f722323d873",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -311,7 +284,7 @@
                 }
             }
         },
-        "43e431c8-4e4c-4b0a-9740-64ee320ef7e2": {
+        "601ea147-042a-41d2-8b00-0fb6f09efa75": {
             "plugin": "on_the_web:social_links",
             "data": {
                 "module": "on_the_web",
@@ -334,7 +307,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "43e431c8-4e4c-4b0a-9740-64ee320ef7e2",
+                "uuid": "601ea147-042a-41d2-8b00-0fb6f09efa75",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -345,7 +318,7 @@
                 }
             }
         },
-        "dca8ec3b-4d56-44da-b100-0020d8c86e3c": {
+        "eb13eba6-894b-4429-aa00-a23157e7ff24": {
             "plugin": "block:3",
             "data": {
                 "module": "block",
@@ -360,7 +333,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "dca8ec3b-4d56-44da-b100-0020d8c86e3c",
+                "uuid": "eb13eba6-894b-4429-aa00-a23157e7ff24",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -368,10 +341,22 @@
                             "classes": "col-sm-6"
                         }
                     }
-                }
+                },
+                "conditions": [
+                    {
+                        "plugin": "path",
+                        "data": {
+                            "settings": {
+                                "visibility_setting": "0",
+                                "paths": "security",
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
             }
         },
-        "9a1ad266-2c94-4b75-9c08-8cb4ac7972fa": {
+        "adbfd2de-2e24-4231-9a3b-59f08178a53e": {
             "plugin": "menu:menu-footer-menu",
             "data": {
                 "module": "menu",
@@ -389,7 +374,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "9a1ad266-2c94-4b75-9c08-8cb4ac7972fa",
+                "uuid": "adbfd2de-2e24-4231-9a3b-59f08178a53e",
                 "style": {
                     "plugin": "default",
                     "data": {
