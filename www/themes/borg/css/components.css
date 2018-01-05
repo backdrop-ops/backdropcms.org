@@ -10,7 +10,7 @@
 
 a.site-name {
   display: block;
-  font-size: 34px;
+  font-size: 2.125rem;/* 34px */
   font-weight: 200;
   letter-spacing: -.04em;
   float: left;
@@ -183,7 +183,7 @@ ul.secondary a.active {
   padding: 30px 0 10px 0;
 }
 .block-borg-blocks-handbook ul.menu li.expanded span.nolink {
-  font-size: 150%;
+  font-size: 1.5rem; /* 24px */
   letter-spacing: -.05em;
 }
 
@@ -304,10 +304,10 @@ body.front .block-block-4 {
   text-align: center;
 }
 body.front .block-block-4 h1 {
-  font-size: 44px;
+  font-size: 2.75rem; /* 44px */
 }
 body.front .block-block-4 h2 {
-  font-size: 26px;
+  font-size: 1.625rem; /* 26px */
   line-height: 1.2;
   color: #3F4142;
   font-weight: 300;
@@ -315,7 +315,7 @@ body.front .block-block-4 h2 {
 }
 body.front .block-block-4 a.button {
   margin: 10px auto;
-  font-size: 20px;
+  font-size: 1.25rem; /* 20px */
 }
 
 @media (min-width: 34em) {
@@ -323,16 +323,16 @@ body.front .block-block-4 a.button {
     text-align: left;
   }
   body.front .block-block-4 h2 {
-    font-size: 34px;
+    font-size: 2.125rem; /* 34px */
     margin: .5em 0;
   }
   body.front .block-block-4 h1 {
-    font-size: 60px;
+    font-size: 3.75rem; /* 60px */
     font-weight: normal;
   }
   body.front .block-block-4 a.button {
     margin: 10px 30px 10px 0;
-    font-size: 25px;
+    font-size: 1.5625rem; /* 25px */
   }
 }
 
@@ -371,7 +371,7 @@ article.node-post.view-mode-teaser h2 {
   margin: 0 0 15px 0;
 }
 article.node-post.view-mode-teaser footer {
-  font-size: 14px;
+  font-size: 0.875rem; /* 14px */
 }
 article.node-post.view-mode-teaser ul.links.inline {
   margin-bottom: 1em;
@@ -550,7 +550,7 @@ article.node-post .field-name-body {
 }
 .view-quotes blockquote {
   margin-left: 125px;
-  font-size: 125%;
+  font-size: 1.25rem; /* 20px */
 }
 .view-quotes .views-field-title {
   clear: left;
@@ -601,7 +601,7 @@ ol.flex-control-paging > li:before {
   width: 50px;
   margin: 0 15px;
   min-height: 150px;
-  font-size: 12px;
+  font-size: 0.75rem; /* 12px */
 }
 @media all and (min-width: 600px) {
   .view-supporters .views-row {
@@ -643,26 +643,21 @@ ol.flex-control-paging > li:before {
 }
 .block-formblock-supporter label {
   color: #999999;
-  line-height: 2.5;
 }
 .block-formblock-supporter .form-text {
-  border-color: #979797;
-  font-size: 32px;
+  font-size: 2rem; /* 32px */
   width: 100%;
 }
 
 /* File upload widget gets pretty complicated. */
 .block-formblock-supporter .form-managed-file {
-  border: 2px solid #979797;
+  border: 2px solid #ccc;
   background: white;
-  padding: 12px;
+  padding: 8px 4px;
   height: 24px;
   white-space: nowrap;
   overflow: hidden;
 }
-/*#edit-field-logo #edit-field-logo-und-0-ajax-wrapper .form-type-managed-file div.image-widget {
-  height: 24px;
-}*/
 .block-formblock-supporter .image-widget-data {
   float: none;
   position: relative;
@@ -691,7 +686,8 @@ ol.flex-control-paging > li:before {
   height: auto;
 }
 .block-formblock-supporter .form-file {
-  padding: 15px 14px 14px;
+  font-size: 1rem; /* 16px */
+  color: #999999;
   border: none;
   vertical-align: middle;
   width: 100%;
@@ -705,7 +701,7 @@ ol.flex-control-paging > li:before {
   margin: -12px; /* Negative .image-preview padding. */
   padding: 17px 30px;
   float: right;
-  font-size: 16px;
+  font-size: 1rem; /* 16px */
   border: none;
   border-left: 2px solid #979797;
   vertical-align: middle;
@@ -725,17 +721,8 @@ ol.flex-control-paging > li:before {
   text-align: right;
 }
 .block-formblock-supporter .form-actions .form-submit {
-  background-color: white;
-  border-color: #979797;
-  font-size: 16px;
-  padding: 12px 20px;
-  border-radius: 24px;
-  text-transform: uppercase;
+  font-size: 1rem; /* 16px */
   margin: 1em 0;
-}
-.block-formblock-supporter .form-actions .form-submit:hover {
-  background-color: #EBEBEB;
-  border-color: #ADADAD;
 }
 .block-formblock-supporter .form-actions a {
   display: none;
@@ -745,7 +732,7 @@ ol.flex-control-paging > li:before {
  * Feed icon
  ******************************************************************************/
 a.feed-icon {
-  font-size: 20px;
+  font-size: 1.25rem; /* 20px */
 }
 
 /*******************************************************************************
@@ -921,6 +908,10 @@ a.feed-icon {
 /*******************************************************************************
  * Site contact form.
  ******************************************************************************/
+.contact-site-form {
+  max-width: 730px;
+  margin: 0 auto;
+}
 .contact-site-form .form-item {
   margin: 12px 0;
 }
@@ -932,23 +923,22 @@ a.feed-icon {
   margin-right: -300px;
   margin-bottom: 4px;
 }
-.contact-site-form input.form-text,
-.contact-site-form input.form-email {
-  width: 20em;
-  max-width: 100%;
-  box-sizing: border-box;
-  font-size: 100%;
-}
 .contact-site-form select {
-  width: 15em;
-  max-width: 100%;
+  width: 20em;
 }
 .contact-site-form textarea {
   height: 16em;
-  font-size: 100%;
+}
+.contact-site-form .form-item-copy {
+  text-align: right;
+}
+.contact-site-form .form-item-copy label {
+  width: auto;
+  padding-right: 0;
+  margin-right: 0;
 }
 .contact-site-form input.form-submit {
-  font-size: 100%;
+  margin-right: 0;
 }
 
 /*******************************************************************************
@@ -1223,7 +1213,7 @@ article.profile .field-name-field-contributions li {
 }
 
 .view-profile-sidebar .views-field-field-websites a {
-  font-size: 14px;
+  font-size: 0.875rem; /* 14px */
 }
 
 .view-profile-sidebar .views-field-created {
@@ -1380,7 +1370,7 @@ a.tabledrag-handle .handle {
  * Release Cycle (/releases)
  ******************************************************************************/
 .version-number {
-  font-size: 2em;
+  font-size: 2rem; /* 32px */
   margin: 0 auto;
   text-align: center;
 }
@@ -1420,7 +1410,7 @@ a.tabledrag-handle .handle {
   padding: 2px;
   line-height: 2em;
   font-weight: normal;
-  font-size: 1.3em;
+  font-size: 1.25rem; /* 20px */
 }
 
 .item-list .pager li a {
@@ -1580,7 +1570,7 @@ a.tabledrag-handle .handle {
  ******************************************************************************/
 .view-project-releases-by-project .view-empty {
   margin: 1em 0;
-  font-size: 1.2em;
+  font-size: 1.25em; /* 20px */
 }
 
 .view-project-releases-by-project .views-row {
@@ -1617,7 +1607,7 @@ a.tabledrag-handle .handle {
   text-align: center;
 }
 .block-views-news-block .view-footer {
-  font-size: .9em;
+  font-size: .85rem; /* 14px */
   border-top: 2px solid #E8E6E5;
   padding-top: 50px;
   max-width: 300px;
@@ -1659,7 +1649,7 @@ a.tabledrag-handle .handle {
  * News page sidebar
  ******************************************************************************/
 .layout--double-fixed-inner-rev .l-sidebar-inner h2 {
-  font-size: 38px;
+  font-size: 2.375rem; /* 38px */
   margin: 0 0 .5em 0;
 }
 @media (min-width: 850px) {
@@ -1781,7 +1771,7 @@ label.github-clone-label {
   color: #979797;
 }
 .github-clone input {
-  font-size: 90%;
+  font-size: .85rem; /* 14px */
   width: 100%;
 }
 
@@ -1823,7 +1813,7 @@ label.github-clone-label {
   margin-bottom: 50px;
 }
 .block-views-contractors-block h2.block-title {
-  font-size: 28px;
+  font-size: 1.75rem; /* 28px */
   margin-top: 57px;
 }
 .contractor {
@@ -1831,7 +1821,7 @@ label.github-clone-label {
   padding-bottom: 15px;
 }
 .view-contractors .views-field-field-name {
-  font-size: 20px;
+  font-size: 1.25rem; /*20px */
 }
 .view-contractors .views-field-field-photo {
   min-height: 100px;
@@ -1959,22 +1949,22 @@ div.addressfield-container-inline::after {
   color: #451649;
   padding: 10px 25px;
   font-style: normal;
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.5rem; /* 24px */
   text-align: left;
 }
 @media all and (min-width: 34em) { /* 544px */
   .node-type-showcase blockquote {
     border: 15px solid #F7F7F7;
     padding: 20px 35px;
-    font-size: 22px;
+    font-size: 1.375rem; /* 22px */
     line-height: 28px;
   }
 }
 @media (min-width: 48em) { /*768px */
   .node-type-showcase blockquote {
     padding: 30px 55px;
-    font-size: 24px;
+    font-size: 1.5rem; /* 24px */
     line-height: 31px;
   }
 }
@@ -2246,7 +2236,7 @@ input[type=image] {
   padding-bottom: 15px;
 }
 .view-showcase .views-field {
-  font-size: 14px;
+  font-size: 8.875rem; /* 14px */
   padding-bottom: 10px;
   padding-right: .9375rem;
   padding-left: .9375rem;
@@ -2260,7 +2250,7 @@ input[type=image] {
   height: auto;
 }
 .view-showcase .views-field-title {
-  font-size: 20px;
+  font-size: 1.25rem; /* 20px */
 }
 .view-showcase .views-field-field-audience {
   color: #B1B2B3;
@@ -2317,7 +2307,7 @@ input[type=image] {
   max-width: 100px;
 }
 .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
-  font-size: 26px;
+  font-size: 1.625rem; /* 26px */
 }
 .block-borg-project-metrics-backdrop-project-metrics .join-the-fun {
   text-align: center;
@@ -2328,6 +2318,7 @@ input[type=image] {
 .block-borg-project-metrics-backdrop-project-metrics .github-img {
   max-width: 16px;
 }
+
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .block-borg-project-metrics-backdrop-project-metrics {
     padding-top: 45px;
@@ -2336,7 +2327,7 @@ input[type=image] {
     max-width: 66px;
   }
   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
-    font-size: 20px;
+    font-size: 1.25rem; /* 20px */
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
@@ -2347,7 +2338,7 @@ input[type=image] {
     max-width: 100px;
   }
   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
-    font-size: 24px;
+    font-size: 1.5rem; /* 24px */
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
@@ -2355,7 +2346,7 @@ input[type=image] {
     max-width: 120px;
   }
   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
-    font-size: 28px;
+    font-size: 1.75rem; /* 28px */
   }
 }
 
