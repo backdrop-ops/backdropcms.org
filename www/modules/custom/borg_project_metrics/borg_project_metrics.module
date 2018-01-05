@@ -160,7 +160,7 @@ function borg_project_metrics_get_metrics($type, $date_time = '2017-07-08 00:00:
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
     $datum = curl_exec($ch);
-    $res_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    $res_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     $json = json_decode($datum);
 
@@ -387,7 +387,7 @@ function borg_project_metrics_get_contrib_comments($project, $date) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
     $datum = curl_exec($ch);
-    $res_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    $res_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
     $json = json_decode($datum);
     // Only save the metric if it is not empty.
