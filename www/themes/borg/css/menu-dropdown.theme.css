@@ -41,7 +41,7 @@
   color: #d23600;
 }
 .menu-dropdown a.disabled {
-  color: #bbbbbb;
+  color: #999;
 }
 .menu-dropdown a span.sub-arrow {
   position: absolute;
@@ -124,7 +124,7 @@
     border-bottom: 2px solid #fff;
   }
   .menu-dropdown a.disabled {
-    color: #bbbbbb;
+    color: #999;
   }
   .js .menu-dropdown li.has-children > a:hover,
   .js .menu-dropdown li.has-children > a {
