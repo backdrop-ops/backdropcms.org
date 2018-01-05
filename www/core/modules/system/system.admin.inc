@@ -10,11 +10,16 @@
 function system_admin_config_page() {
   $blocks = array();
   if ($admin = db_query("SELECT menu_name, mlid FROM {menu_links} WHERE link_path = 'admin/config' AND module = 'system'")->fetchAssoc()) {
+    $admin[':type'] = MENU_NORMAL_ITEM;
     $result = db_query("
       SELECT m.*, ml.*
       FROM {menu_links} ml
       INNER JOIN {menu_router} m ON ml.router_path = m.path
-      WHERE menu_name = :menu_name AND ml.plid = :mlid AND hidden = 0", $admin, array('fetch' => PDO::FETCH_ASSOC));
+      WHERE menu_name = :menu_name
+        AND ml.plid = :mlid
+        AND m.type = :type
+        AND hidden = 0
+      ORDER BY ml.link_title ASC", $admin, array('fetch' => PDO::FETCH_ASSOC));
     foreach ($result as $item) {
       _menu_link_translate($item);
       if (!$item['access']) {
@@ -39,7 +44,6 @@ function system_admin_config_page() {
     }
   }
   if ($blocks) {
-    ksort($blocks);
     return theme('admin_page', array('blocks' => $blocks));
   }
   else {
@@ -508,6 +512,7 @@ function system_modules($form, $form_state = array()) {
       'autocomplete' => 'off',
       'title' => t('Enter a part of the module name or description to filter.'),
     ),
+    '#default_value' => (isset($_GET['search'])) ? $_GET['search'] : '',
   );
 
   // Get current list of modules.
@@ -729,8 +734,8 @@ function _system_modules_build_row($info, $extra) {
   // Check the core compatibility.
   elseif (!isset($info['backdrop']) || $info['backdrop'] != BACKDROP_CORE_COMPATIBILITY) {
     $compatible = FALSE;
-    $status_short .= t('Incompatible with this version of Backdrop CMS.') . ' ';
-    $status_long .= t('This version is not compatible with Backdrop CMS !core_version and should be replaced.', array('!core_version' => BACKDROP_CORE_COMPATIBILITY)) . ' ';
+    $status_short .= t('Incompatible with Backdrop CMS !core_version.') . ' ';
+    $status_long .= t('This version is not compatible with Backdrop CMS !core_version.', array('!core_version' => BACKDROP_CORE_COMPATIBILITY)) . ' ';
   }
 
   // Ensure this module is compatible with the currently installed version of PHP.
@@ -758,7 +763,7 @@ function _system_modules_build_row($info, $extra) {
   }
   else {
     $form['enable'] = array(
-      '#markup' =>  theme('image', array('uri' => 'core/misc/watchdog-error.png', 'alt' => t('Unable to enable'), 'title' => trim($status_short))),
+      '#markup' =>  theme('image', array('path' => 'core/misc/watchdog-error.png', 'alt' => t('Unable to enable'), 'title' => trim($status_short))),
     );
     $form['description']['#markup'] .= theme('system_modules_incompatible', array('message' => trim($status_long)));
   }
@@ -963,7 +968,17 @@ function system_modules_submit($form, &$form_state) {
     backdrop_set_message(t('The configuration options have been saved.'));
   }
 
-  $form_state['redirect'] = 'admin/modules';
+  // Check if a previous search is present and preserve it on redirect.
+  if (!empty($form_state['values']['search'])) {
+    $parameter = $form_state['values']['search'];
+    $form_state['redirect'] = array(
+      'admin/modules',
+      array('query' => array('search' => $parameter))
+    );
+  }
+  else {
+    $form_state['redirect'] = 'admin/modules';
+  }
 }
 
 /**
@@ -2010,7 +2025,7 @@ function system_site_maintenance_mode_submit($form, &$form_state) {
   config_set('system.core', 'maintenance_mode_message', $form_state['values']['maintenance_mode_message']);
 
   // Give specific messages on the primary action for this form.
-  if ($form_state['values']['maintenance_mode']) {
+  if ($form_state['values']['maintenance_mode'] && current_path() == 'admin/config/development/maintenance') {
     backdrop_set_message(t('The site is now in maintenance mode. Only users with the "Access site in maintenance mode" permission will be able to access the site.'), 'warning');
   }
   elseif ($form['maintenance_mode']['#default_value'] != $form_state['values']['maintenance_mode']) {

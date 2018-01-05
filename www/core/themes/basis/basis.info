@@ -23,9 +23,14 @@ stylesheets[all][] = css/component/pager.css
 stylesheets[all][] = css/component/hero.css
 stylesheets[all][] = css/component/teasers.css
 stylesheets[all][] = css/component/comment.css
+stylesheets[all][] = css/component/caption.css
 stylesheets[all][] = css/skin.css
 
 stylesheets[print][] = css/print.css
+
+; Include a style sheet in the rich-text editor.
+ckeditor_stylesheets[] = css/base.css
+ckeditor_stylesheets[] = css/component/caption.css
 
 ; Remove unwanted core CSS
 stylesheets[all][] = system.theme.css
@@ -33,7 +38,7 @@ stylesheets[all][] = menu-dropdown.theme.css
 
 scripts[] = js/script.js
 
-; Added by Backdrop CMS packaging script on 2017-08-16
+; Added by Backdrop CMS packaging script on 2018-01-01
 project = backdrop
-version = 1.7.2
-timestamp = 1502928560
+version = 1.8.1
+timestamp = 1514878228

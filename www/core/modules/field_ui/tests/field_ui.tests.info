@@ -5,8 +5,8 @@ group = Field UI
 file = field_ui.test
 
 [FieldUIManageDisplayTestCase]
-name = Manage display
-description = Test the Field UI "Manage display" screens.
+name = Manage displays
+description = Test the Field UI "Manage displays" screens.
 group = Field UI
 file = field_ui.test
 
@@ -17,12 +17,12 @@ group = Field UI
 file = field_ui.test
 
 [FieldUIViewModeFunctionalTest]
-name = View modes
+name = Display modes
 description = Tests view mode functionality.
 group = Field UI
 file = field_ui.test
 
-; Added by Backdrop CMS packaging script on 2017-08-16
+; Added by Backdrop CMS packaging script on 2018-01-01
 project = backdrop
-version = 1.7.2
-timestamp = 1502928560
+version = 1.8.1
+timestamp = 1514878228

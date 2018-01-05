@@ -2065,9 +2065,15 @@ function format_rss_item($title, $link, $description, $args = array()) {
  *     - 'key': element name
  *     - 'value': element contents
  *     - 'attributes': associative array of element attributes
+ *     - 'encoded': TRUE if 'value' is already encoded
  *
- *   In both cases, 'value' can be a simple string, or it can be another array
- *   with the same format as $array itself for nesting.
+ * In both cases, 'value' can be a simple string, or it can be another array
+ * with the same format as $array itself for nesting.
+ *
+ * If 'encoded' is TRUE it is up to the caller to ensure that 'value' is either
+ * entity-encoded or CDATA-escaped. Using this option is not recommended when
+ * working with untrusted user input, since failing to escape the data
+ * correctly has security implications.
  *
  * @return string
  *  A string of XML representing the elements passed in.
@@ -2083,7 +2089,7 @@ function format_xml_elements($array) {
         }
 
         if (isset($value['value']) && $value['value'] != '') {
-          $output .= '>' . (is_array($value['value']) ? format_xml_elements($value['value']) : check_plain($value['value'])) . '</' . $value['key'] . ">\n";
+          $output .= '>' . (is_array($value['value']) ? format_xml_elements($value['value']) : (!empty($value['encoded']) ? $value['value'] : check_plain($value['value']))) . '</' . $value['key'] . ">\n";
         }
         else {
           $output .= " />\n";
@@ -4173,7 +4179,11 @@ function backdrop_html_id($id) {
   // be merged with content already on the base page. The HTML IDs must be
   // unique for the fully merged content. Therefore, initialize $seen_ids to
   // take into account IDs that are already in use on the base page.
-  $seen_ids_init = &backdrop_static(__FUNCTION__ . ':init');
+  static $backdrop_static_fast;
+  if (!isset($backdrop_static_fast['seen_ids_init'])) {
+    $backdrop_static_fast['seen_ids_init'] = &backdrop_static(__FUNCTION__ . ':init');
+  }
+  $seen_ids_init = &$backdrop_static_fast['seen_ids_init'];
   if (!isset($seen_ids_init)) {
     // Ideally, Backdrop would provide an API to persist state information about
     // prior page requests in the database, and we'd be able to add this
@@ -4218,7 +4228,10 @@ function backdrop_html_id($id) {
       }
     }
   }
-  $seen_ids = &backdrop_static(__FUNCTION__, $seen_ids_init);
+  if (!isset($backdrop_static_fast['seen_ids'])) {
+    $backdrop_static_fast['seen_ids'] = &backdrop_static(__FUNCTION__, $seen_ids_init);
+  }
+  $seen_ids = &$backdrop_static_fast['seen_ids'];
 
   $id = strtr(backdrop_strtolower($id), array(' ' => '-', '_' => '-', '[' => '-', ']' => ''));
 
@@ -4403,7 +4416,12 @@ function backdrop_region_class($region) {
  *       happened later in the page request gets added to the page after one for
  *       which backdrop_add_js() happened earlier in the page request.
  *   - defer: If set to TRUE, the defer attribute is set on the <script>
- *     tag. Defaults to FALSE.
+ *     tag. Defaults to FALSE. Note that setting this to TRUE will disable
+ *     preprocessing as though the 'preprocess' option was set to FALSE.
+ *   - attributes: An associative array of attributes for the <script> tag.
+ *     This may be used to add 'async' or custom attributes. Note that
+ *     setting any attributes will disable preprocessing as though the
+ *     'preprocess' option was set to FALSE.
  *   - cache: If set to FALSE, the JavaScript file is loaded anew on every page
  *     call; in other words, it is not cached. Used only when 'type' references
  *     a JavaScript file. Defaults to TRUE.
@@ -4434,8 +4452,9 @@ function backdrop_add_js($data = NULL, $options = NULL) {
   }
   $options += backdrop_js_defaults($data);
 
-  // Preprocess can only be set if caching is enabled.
-  $options['preprocess'] = $options['cache'] ? $options['preprocess'] : FALSE;
+  // Preprocess can only be set if caching is enabled and no attributes
+  // nor defer tag are set.
+  $options['preprocess'] = $options['cache'] && empty($options['attributes']) && empty($options['defer']) ? $options['preprocess'] : FALSE;
 
   // Tweak the weight so that files of the same weight are included in the
   // order of the calls to backdrop_add_js().
@@ -4476,6 +4495,7 @@ function backdrop_add_js($data = NULL, $options = NULL) {
           'preprocess' => TRUE,
           'cache' => TRUE,
           'defer' => FALSE,
+          'attributes' => array(),
           'browsers' => array(),
           'version' => BACKDROP_VERSION,
         ),
@@ -4545,6 +4565,7 @@ function backdrop_js_defaults($data = NULL) {
     'preprocess' => TRUE,
     'version' => NULL,
     'data' => $data,
+    'attributes' => array(),
     'browsers' => array(),
   );
 }
@@ -4720,6 +4741,11 @@ function backdrop_pre_render_scripts($elements) {
           case 'external':
             $element['#attributes']['src'] = $item['data'];
             break;
+        }
+
+        // Attributes may only be set if this script is output independently.
+        if (!empty($element['#attributes']['src']) && !empty($item['attributes'])) {
+          $element['#attributes'] += $item['attributes'];
         }
 
         $elements[] = $element;
@@ -7531,6 +7557,11 @@ function backdrop_common_theme() {
       'variables' => array('children' => NULL),
     ),
     'image' => array(
+      // Both a "path" and "uri" are supported for specifying image paths.
+      // Path should be used for images relative to Backdrop installation root.
+      // URIs should be used for images within the public or private files
+      // directories (e.g. public://example.png).
+      //
       // HTML 4 and XHTML 1.0 always require an alt attribute. The HTML 5 draft
       // allows the alt attribute to be omitted in some cases. Therefore,
       // default the alt attribute to an empty string, but allow code calling
@@ -7543,7 +7574,7 @@ function backdrop_common_theme() {
       // - http://dev.w3.org/html5/spec/Overview.html#alt
       // The title attribute is optional in all cases, so it is omitted by
       // default.
-      'variables' => array('uri' => NULL, 'width' => NULL, 'height' => NULL, 'alt' => '', 'title' => NULL, 'attributes' => array()),
+      'variables' => array('uri' => NULL, 'path' => NULL, 'width' => NULL, 'height' => NULL, 'alt' => '', 'title' => NULL, 'attributes' => array()),
     ),
     'breadcrumb' => array(
       'variables' => array('breadcrumb' => NULL),

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Contains the page display plugin.
@@ -216,11 +215,13 @@ class views_plugin_display_page extends views_plugin_display {
     // display, and arguments should be set on the view.
     $this->view->build();
     if (!empty($this->view->build_info['fail'])) {
-      return backdrop_not_found();
+      backdrop_not_found();
+      exit();
     }
 
     if (!empty($this->view->build_info['denied'])) {
-      return backdrop_access_denied();
+      backdrop_access_denied();
+      exit();
     }
 
     $this->view->get_breadcrumb(TRUE);

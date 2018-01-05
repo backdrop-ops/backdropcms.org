@@ -7,7 +7,7 @@
 /**
  * The current system version.
  */
-define('BACKDROP_VERSION', '1.7.2');
+define('BACKDROP_VERSION', '1.8.1');
 
 /**
  * Core API compatibility.
@@ -774,15 +774,25 @@ function backdrop_settings_initialize() {
   // Convert simplified database settings into the full databases array.
   if (!empty($database) && $database !== 'mysql://user:pass@localhost/database_name') {
     $database_parts = parse_url($database);
+    if (!$database_parts) {
+      trigger_error('The database setting could not be parsed. Please check the $database setting in settings.php.', E_USER_ERROR);
+    }
     $databases['default']['default'] = array(
       'driver' => $database_parts['scheme'],
-      'database' => substr($database_parts['path'], 1), // Remove leading slash.
-      'username' => isset($database_parts['user']) ? $database_parts['user'] : '',
-      'password' => isset($database_parts['pass']) ? $database_parts['pass'] : '',
+      'database' => rawurldecode(substr($database_parts['path'], 1)), // Remove leading slash.
+      'username' => isset($database_parts['user']) ? rawurldecode($database_parts['user']) : '',
+      'password' => isset($database_parts['pass']) ? rawurldecode($database_parts['pass']) : '',
       'host' => $database_parts['host'],
       'port' => isset($database_parts['port']) ? $database_parts['port'] : NULL,
       'prefix' => !empty($database_prefix) ? $database_prefix : '',
     );
+    $required_parts = array('driver', 'database', 'username', 'host');
+    foreach ($required_parts as $key) {
+      if (!$databases['default']['default'][$key]) {
+        $missing_field = ($key == 'database') ? 'name' : $key;
+        trigger_error('Could not find a value for the database "' . $missing_field . '" setting. Please check the $database setting in settings.php.', E_USER_ERROR);
+      }
+    }
   }
 
   $is_https = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on';
@@ -2123,10 +2133,10 @@ function watchdog_exception($type, Exception $exception, $message = NULL, $varia
  */
 function watchdog_severity_enabled($severity = WATCHDOG_NOTICE) {
   try {
-    $enabled_severity_levels = config('system.core')->get('watchdog_enabled_severity_levels');
+    $enabled_severity_levels = function_exists('config') ? config('system.core')->get('watchdog_enabled_severity_levels') : array();
   }
   catch (Exception $e) {
-    $enabled_severity_levels = NULL;
+    $enabled_severity_levels = array();
   }
 
   // This may be called before system.core, such as when running update.php or
@@ -3309,11 +3319,11 @@ function language_multilingual() {
  *   (optional) Whether to return only enabled languages.
  * @param $option_list
  *   (optional) Whether to return a list of options instead of objects. This
- *   list is suitable for use in a select list #options array.
+ *   list is suitable for use in a select list #options array. This list is
+ *   ordered by weight and then language name.
  *
- * @return stdClass[]
- *   An associative array of languages, keyed by the language code, ordered by
- *   weight ascending and name ascending.
+ * @return (stdClass|string)[]
+ *   An associative array of languages, keyed by the language code.
  */
 function language_list($only_enabled = FALSE, $option_list = FALSE) {
   $languages = &backdrop_static(__FUNCTION__);
@@ -3369,6 +3379,10 @@ function language_list($only_enabled = FALSE, $option_list = FALSE) {
   if ($option_list) {
     $list = array();
     $this_list = $only_enabled ? $languages['enabled'] : $languages['all'];
+    // backdrop_sort() needed for ordering, but common.inc may not be loaded
+    // in very early bootstrap. Include only if returning an option list.
+    require_once __DIR__ . '/common.inc';
+    backdrop_sort($this_list, array('weight' => SORT_NUMERIC, 'name' => SORT_STRING));
     foreach ($this_list as $language) {
       $list[$language->langcode] = $language->name;
     }
