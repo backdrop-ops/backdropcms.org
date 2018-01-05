@@ -48,6 +48,13 @@
   width: 100%;
 }
 
+#views-exposed-form-modules-modules,
+#views-exposed-form-modules-themes,
+#views-exposed-form-modules-layouts {
+  border: 0;
+  padding: 0;
+}
+
 .views-exposed-form .views-widget-filter-combine,
 .views-exposed-form .views-widget-filter-title,
 .views-exposed-form .views-submit-button {

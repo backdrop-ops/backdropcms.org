@@ -7,7 +7,6 @@
 .block-borg-blocks-branding {
   float: left;
 }
-
 a.site-name {
   display: block;
   font-size: 2.125rem;/* 34px */
@@ -15,7 +14,6 @@ a.site-name {
   letter-spacing: -.04em;
   float: left;
 }
-
 .logo {
   display: block;
   float: left;
@@ -23,7 +21,6 @@ a.site-name {
   box-sizing: border-box;
   margin-left: 10px;
 }
-
 .field-name-body a {
   text-decoration: underline;
 }
@@ -109,6 +106,21 @@ ul.secondary a.active {
   border: 2px solid #E8E6E5;
   -moz-border-radius: 4px;
   border-radius: 4px;
+}
+
+/*******************************************************************************
+ * Code blocks
+ ******************************************************************************/
+div.codeblock pre {
+  border: 1px solid #E8E6E5;
+  background-color: #f7f7f7;
+}
+
+/*******************************************************************************
+ * Inline links
+ ******************************************************************************/
+ul.inline li:first-child {
+  padding-left: 0;
 }
 
 /*******************************************************************************
@@ -345,7 +357,6 @@ body.front .block-block-4 a.button {
 article.node footer .arrow-down {
   display: none;
 }
-
 article.node.view-mode-full {
   text-align: center;
 }
@@ -353,9 +364,19 @@ article.node.view-mode-full footer,
 article.node.view-mode-full .content {
   text-align: left;
   max-width: 700px;
+  padding-bottom: 15px; /* for proper tags placement */
 }
 
-article.node .content .field {
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  article.node.view-mode-full .content {
+    padding-bottom: 30px; /* for proper tags placement */
+  }
+}
+
+/*******************************************************************************
+ * All fields
+ ******************************************************************************/
+article .content .field {
   padding: 5px 0;
 }
 
@@ -363,10 +384,7 @@ article.node .content .field {
  * Blog - teaser
  ******************************************************************************/
 article.node-post.view-mode-teaser {
-  background-color: #f7f7f7;
-  border: 1px solid #E8E6E5;
-  border-radius: 10px;
-  padding: 10px 15px;
+  border-bottom: 2px solid #E8E6E5;
   margin-bottom: 50px;
   position: relative;
 }
@@ -376,13 +394,16 @@ article.node-post.view-mode-teaser h2 {
 article.node-post.view-mode-teaser footer {
   font-size: 0.875rem; /* 14px */
 }
+article.node-post.view-mode-teaser footer p {
+  margin-bottom: 0;
+}
 article.node-post.view-mode-teaser ul.links.inline {
   margin-bottom: 1em;
 }
 
 @media (min-width: 34em) {
   article.node-post.view-mode-teaser {
-    padding: 15px 20px 20px 20px;
+    padding: 15px 0 20px 0;
   }
 }
 
@@ -470,6 +491,10 @@ article.node-post .field-name-body {
 /*******************************************************************************
  * Tags field
  ******************************************************************************/
+article .content .field-name-field-tags {
+  padding: 0;
+}
+
 .field-name-field-tags {
   text-align: right;
   margin: 0;
@@ -1692,13 +1717,9 @@ iframe.twitter-tweet-rendered {
 }
 
 /*******************************************************************************
- * Service providers listing - logos
+ * Service providers listings
  ******************************************************************************/
 
-.view-providers {
-  margin-bottom: 100px;
-  border: 2px solid #E8E6E5;
-}
 .view-providers .view-header h3 {
   text-align: center;
   margin-bottom: 2.25em;
@@ -1706,16 +1727,19 @@ iframe.twitter-tweet-rendered {
 .view-providers .view-content {
   padding-top: 15px;
 }
+.view-providers .views-row {
+  padding-bottom: 15px;
+  border-bottom: 2px solid #E8E6E5;
+  margin-bottom: 15px;
+}
+.view-providers .views-row:last-child {
+  border-bottom: 0;
+}
 .view-providers table {
   width: 100%;
 }
 .view-providers table td {
   padding: 5px 0;
-}
-@media (min-width: 500px) {
-  .view-providers table td {
-    padding: 15px 0;
-  }
 }
 .view-providers table .views-field {
   margin-left: auto;
@@ -1726,10 +1750,15 @@ iframe.twitter-tweet-rendered {
   margin-right: 0;
   margin-left: 0;
 }
+.view-providers h4 {
+  margin: 0;
+}
 .view-providers .view-footer {
   background-color:  #f7f7f7;
   padding: 15px;
-  margin-top: 30px;
+  margin-top: 15px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
 }
 .view-providers .view-footer p {
   margin: 0;
@@ -1737,6 +1766,26 @@ iframe.twitter-tweet-rendered {
   color: #979797;
 }
 
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .view-providers table td {
+    padding: 15px 0;
+  }
+  .view-providers h4 {
+    margin-top: 1em;
+  }
+  .view-providers .view-footer {
+    margin-top: 30px;
+  }
+}
+
+/*******************************************************************************
+ * Service providers listing - blocks
+ ******************************************************************************/
+.block-views-providers-block-2 .view-providers,
+.block-views-providers-block-3 .view-providers {
+  margin-bottom: 100px;
+  border: 2px solid #E8E6E5;
+}
 
 /*******************************************************************************
  * Project nodes
@@ -2381,4 +2430,32 @@ input[type=image] {
 }
 .block-views-events-block-1 .more-link {
   margin-top: 1.5em;
+}
+
+/*******************************************************************************
+ * Views exposed forms
+ ******************************************************************************/
+.views-exposed-form {
+  background-color: #F7F7F7;
+  padding: 15px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+.views-exposed-form .views-exposed-widget,
+.views-exposed-form .views-exposed-widgets {
+  margin: 0;
+  padding: 0;
+}
+.views-exposed-form label {
+  font-weight: normal;
+}
+.views-exposed-form input[type="submit"],
+.views-exposed-form .form-submit {
+  font-size: 1rem;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .views-exposed-form {
+    margin-bottom: 30px;
+  }
 }

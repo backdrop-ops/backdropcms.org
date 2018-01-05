@@ -40,39 +40,3 @@ body.services h1.page-title {
   margin-top: 0;
 }
 
-/*******************************************************************************
- * Service providers listing - page
- ******************************************************************************/
-
-.block-views-providers-block-1 .view-providers {
-  border: 0;
-}
-.block-views-providers-block-1 .views-row {
-  padding-bottom: 15px;
-  border-bottom: 2px solid #d4d4d6;
-  margin-bottom: 15px;
-}
-
-.views-exposed-form {
-  background-color: #F7F7F7;
-  padding: 15px 10px;
-}
-.views-exposed-form .views-exposed-widget {
-  padding: 0;
-}
-.views-exposed-form input[type="submit"],
-.views-exposed-form .form-submit {
-  font-size: 1em;
-}
-select {
-  height: 40px;
-}
-
-.view-providers h4 {
-  margin: 0;
-}
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  .view-providers h4 {
-    margin-top: 1em;
-  }
-}
