@@ -80,7 +80,7 @@ ul.primary li.active a {
 }
 ul.primary li a:hover {
   background-color: #eee;
-  border-color: #ccc;
+  border-color: #E8E6E5;
   border-bottom-color: #eee;
 }
 ul.secondary {
@@ -89,7 +89,7 @@ ul.secondary {
   margin: 5px;
 }
 ul.secondary li {
-  border-right: 2px solid #ccc; /* LTR */
+  border-right: 2px solid #E8E6E5; /* LTR */
   display: inline;
   padding: 0 1em;
 }
@@ -106,6 +106,9 @@ ul.secondary a.active {
  ******************************************************************************/
 .vertical-tabs {
   background: white;
+  border: 2px solid #E8E6E5;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
 }
 
 /*******************************************************************************
@@ -414,7 +417,7 @@ article.node-post.view-mode-full footer img {
   max-width: 75px;
   max-height: 75px;
   border-radius: 50%;
-  background: #ffffff;
+  background: #fff;
 }
 @media (min-width: 34em) { /* 544px */
   article.node-post.view-mode-full footer img {
@@ -490,7 +493,7 @@ article.node-post .field-name-body {
   margin-right: 20px;
   padding: 0 8px 0 12px;
   background: #E8E6E5;
-  color: #000000;
+  color: #000;
   text-decoration: none;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
@@ -651,7 +654,7 @@ ol.flex-control-paging > li:before {
 
 /* File upload widget gets pretty complicated. */
 .block-formblock-supporter .form-managed-file {
-  border: 2px solid #ccc;
+  border: 2px solid #E8E6E5;
   background: white;
   padding: 8px 4px;
   height: 24px;
@@ -739,8 +742,8 @@ a.feed-icon {
  * Socialfield icons
  ******************************************************************************/
 .socialfield .icon {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: #fff;
+  color: #000;
   padding-left: 0;
 }
 .socialfield-reddit .icon {
@@ -1089,7 +1092,7 @@ body.user-form .page-title {
   width: 100px;
   overflow: hidden;
   border-radius: 50%;
-  background: #ffffff;
+  background: #fff;
 }
 @media (min-width: 62em) { /* 992px */
   ul.pmc li {
@@ -1133,7 +1136,7 @@ body.user-form .page-title {
 }
 
 .l-wrapper.has-background .l-wrapper-inner {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 
 
@@ -1158,7 +1161,7 @@ article.profile {
 }
 article.profile .field-name-field-contributions {
   margin-top: 40px;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #E8E6E5;
   padding-top: 10px;
 }
 article.profile .field-name-field-contributions .field-label {
@@ -1203,7 +1206,7 @@ article.profile .field-name-field-contributions li {
 }
 .view-profile-sidebar .views-field-field-photo img {
   border-radius: 50%;
-  background: #ffffff;
+  background: #fff;
   margin: 0 auto;
 }
 
@@ -1240,7 +1243,7 @@ article.profile .field-name-field-contributions li {
   }
   .view-profile-sidebar .views-field-field-name:before {
     height: 2px;
-    background: #000000;
+    background: #000;
     width: 25px;
     display: block;
     content: "";
@@ -1249,7 +1252,7 @@ article.profile .field-name-field-contributions li {
   }
   .view-profile-sidebar .views-field-created:before {
     height: 2px;
-    background: #000000;
+    background: #000;
     width: 25px;
     display: block;
     content: "";
@@ -1258,7 +1261,7 @@ article.profile .field-name-field-contributions li {
   }
   .view-profile-sidebar .views-field-created:after {
     height: 2px;
-    background: #000000;
+    background: #000;
     width: 25px;
     display: block;
     content: "";
@@ -1300,7 +1303,7 @@ article.profile .field-name-field-contributions li {
   border: 0;
 }
 .user-profile-form table tbody {
-  border-top: 1px solid #ccc; /* matches row bottom border */
+  border-top: 1px solid #E8E6E5; /* matches row bottom border */
 }
 .user-profile-form table.tabledrag-processed tbody {
   border-top: 1px solid #eee; /* matches row bottom border */
@@ -1346,7 +1349,7 @@ article.profile .field-name-field-contributions li {
 }
 .field-name-field-photo .image-preview img {
   border-radius: 50%;
-  background: #ffffff;
+  background: #fff;
 }
 div.image-widget-data {
   float: none;
@@ -1926,7 +1929,7 @@ div.addressfield-container-inline::after {
 
 .node-type-showcase .has-background .page-title,
 .node-type-showcase .has-background h3.field-name-field-blurb {
-  color: #ffffff;
+  color: #fff;
   display: block;
   margin: 0;
   padding: 15px 0;
@@ -2015,8 +2018,9 @@ div.addressfield-container-inline::after {
 
 .browser-ui {
   padding: 30px 0 0;
-  border-radius: 5px;
-  border-bottom: 1px solid #ccc;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border-bottom: 1px solid #E8E6E5;
   background: #ddd;
   display: inline-block;
   position: relative;
@@ -2036,8 +2040,9 @@ div.addressfield-container-inline::after {
 .browser-ui span {
   height: 11px;
   width: 11px;
+  -moz-border-radius: 11px;
   border-radius: 11px;
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #dadada;
   float: left;
   margin: 0 0 0 6px;
@@ -2057,6 +2062,7 @@ div.addressfield-container-inline::after {
  ******************************************************************************/
 
 .tablet-ui {
+  -moz-border-radius: 20px;
   border-radius: 20px;
   background-color: #0D0D0D;
   padding: 22px 35px;
@@ -2069,8 +2075,9 @@ div.addressfield-container-inline::after {
   margin-top: -10px;
   width: 20px;
   height: 20px;
+  -moz-border-radius: 20px;
   border-radius: 20px;
-  border: 1px solid #ffffff;
+  border: 1px solid #fff;
   position: absolute;
   left: 8px;
 }
@@ -2079,9 +2086,10 @@ div.addressfield-container-inline::after {
   margin-top: 1px;
   width: 2px;
   height: 3px;
+  -moz-border-radius: 2px;
   border-radius: 2px;
-  border: 1px solid #ffffff;
-  background-color: #cccccc;
+  border: 1px solid #fff;
+  background-color: #E8E6E5;
   position: absolute;
   right: 15px;
 }
@@ -2090,12 +2098,14 @@ div.addressfield-container-inline::after {
     padding: 10px 25px;
   }
   .tablet-ui img {
+    -moz-border-radius: 1px;
     border-radius: 1px;
   }
   .tablet-ui .dot {
     margin-top: -6px;
     width: 12px;
     height: 12px;
+    -moz-border-radius: 12px;
     border-radius: 12px;
   }
 }
@@ -2105,6 +2115,7 @@ div.addressfield-container-inline::after {
  ******************************************************************************/
 
 .phone-ui {
+  -moz-border-radius: 25px;
   border-radius: 25px;
   background-color: #0D0D0D;
   padding: 32px 6px;
@@ -2117,9 +2128,10 @@ div.addressfield-container-inline::after {
   margin-left: -25px;
   width: 50px;
   height: 3px;
+  -moz-border-radius: 3px;
   border-radius: 3px;
-  border: 1px solid #ffffff;
-  background-color: #cccccc;
+  border: 1px solid #fff;
+  background-color: #E8E6E5;
   position: absolute;
   top: 10px;
 }
@@ -2128,8 +2140,9 @@ div.addressfield-container-inline::after {
   margin-left: -10px;
   width: 20px;
   height: 20px;
+  -moz-border-radius: 20px;
   border-radius: 20px;
-  border: 1px solid #ffffff;
+  border: 1px solid #fff;
   position: absolute;
   bottom: 10px;
 }
@@ -2141,12 +2154,14 @@ div.addressfield-container-inline::after {
     width: 30px;
     margin-left: -15px;
     height: 1px;
+    -moz-border-radius: 2px;
     border-radius: 2px;
   }
   .phone-ui .dot {
     width: 12px;
     margin-left: -6px;
     height: 12px;
+    -moz-border-radius: 12px;
     border-radius: 12px;
     bottom: 8px;
   }
@@ -2231,7 +2246,7 @@ input[type=image] {
   padding-bottom: 15px;
 }
 .view-showcase .col-inner {
-  background-color: #ffffff;
+  background-color: #fff;
   border: 2px solid #EDEFF0;
   padding-bottom: 15px;
 }
