@@ -403,7 +403,7 @@
                     "type": "views_query",
                     "options": []
                 },
-                "path": "service-providers",
+                "path": "support/services/agencies",
                 "field": {
                     "title": {
                         "link_to_node": 0
@@ -583,7 +583,7 @@
                             "description": "",
                             "use_operator": 0,
                             "operator": "field_services_tid_op",
-                            "identifier": "field_services_tid",
+                            "identifier": "expertise",
                             "required": 0,
                             "remember": 0,
                             "multiple": 0,
@@ -663,14 +663,17 @@
                 },
                 "defaults": {
                     "filters": false,
-                    "filter_groups": false
+                    "filter_groups": false,
+                    "use_ajax": false
                 },
                 "filter_groups": {
                     "operator": "AND",
                     "groups": {
                         "1": "AND"
                     }
-                }
+                },
+                "use_ajax": true,
+                "inherit_path": "1"
             }
         },
         "block_2": {
