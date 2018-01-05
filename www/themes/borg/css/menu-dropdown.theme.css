@@ -115,6 +115,7 @@
     padding-right: 1em;
     border-bottom: 2px solid #000;
   }
+  .menu-dropdown a.active-trail,
   .menu-dropdown a.active,
   .menu-dropdown a:hover,
   .menu-dropdown a:focus,
@@ -169,6 +170,8 @@
     color: #fff;
     background-color: #696969;
   }
+  .menu-dropdown ul a.active,
+  .menu-dropdown ul a.active-trail,
   .menu-dropdown ul a:hover,
   .menu-dropdown ul a:focus,
   .menu-dropdown ul a:active,
