@@ -203,27 +203,26 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * @see node.tpl.php
  */
 function borg_preprocess_node(&$variables){
-  // Change the submitted by language for all nodes.
-  $variables['submitted'] = t('Posted by !username on !datetime', array('!username' => $variables['name'], '!datetime' => $variables['date']));
-
-  // For news posts, change the username to a real name.
-  if ($variables['node']->type == 'post') {
-    // Change the submitted by language.
-    $author = user_load($variables['node']->uid);
+  // For blog posts.
+  if ($variables['type'] == 'post') {
+    // Load the author.
+    $author = user_load($variables['uid']);
     $lang = $author->langcode;
+    // Change the username to a real name.
     if (!empty($author->field_name[$lang])) {
       $variables['name'] = l($author->field_name[$lang][0]['safe_value'], 'user/' . $author->uid);
     }
-  }
-
-  // For blog posts, add a picture.
-  if ($variables['type'] == 'post' && $variables['view_mode'] == 'full') {
     // Get the profile photo.
-    $author = user_load($variables['uid']);
-    $langcode = $author->langcode;
-    $variables['user_picture'] = theme('image_style', array('style_name' => 'headshot_small', 'uri' => $author->field_photo[$langcode][0]['uri']));
+    $uri = $author->field_photo[$lang][0]['uri'];
+    $variables['user_picture'] = theme('image_style', array(
+      'style_name' => 'headshot_small', 'uri' => $uri));
   }
 
+  // Change the submitted by language for all nodes.
+  $variables['submitted'] = t('Posted by !username on !datetime', array(
+    '!username' => $variables['name'], '!datetime' => $variables['date']));
+
+  // Get the theme location.
   $path = backdrop_get_path('theme', 'borg');
 
   // For project nodes include a special stylesheet.
