@@ -189,6 +189,44 @@ div.full-width {
 }
 
 /*******************************************************************************
+ * Books block
+ ******************************************************************************/
+.block-block-books a {
+  display: block;
+}
+.block-block-books figure {
+  max-width: 220px;
+}
+main.col-md-8 .block-block-books figure {
+  display: inline-block;
+}
+.l-sidebar .block-block-books figure {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/*******************************************************************************
+ * Resrouces block
+ ******************************************************************************/
+.block-block-resources ul {
+  padding: 0;
+}
+.block-block-resources li {
+  list-style: none;
+  position: relative;
+  padding-left: 38px;
+}
+.block-block-resources a {
+  display: block;
+  line-height: 1.5em;
+}
+.block-block-resources i.fa {
+  font-size: 1.5em; /* relative size */
+  position: absolute;
+  left: 0;
+}
+
+/*******************************************************************************
  * Body links should be underlined
  ******************************************************************************/
 .field-name-body a {

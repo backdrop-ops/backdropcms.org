@@ -89,6 +89,7 @@ function borg_preprocess_page(&$variables) {
   // Add FontAwesome.
   backdrop_add_js('https://use.fontawesome.com/baf3c35582.js', array('type' => 'external'));
 
+  // Add a body class based on the admin bar.
   if (module_exists('admin_bar') && user_access('admin_bar')) {
     $variables['classes'][] = 'admin-bar';
   }
@@ -99,13 +100,8 @@ function borg_preprocess_page(&$variables) {
   if (backdrop_is_front_page()) {
     backdrop_add_css($path . '/css/page-front.css');
   }
-  elseif (arg(0) == 'showcase') {
-    $variables['classes'][] = 'showcase';
-  }
   elseif (arg(0) == 'support') {
-    $variables['classes'][] = 'support';
     if (arg(1) == 'services') {
-      $variables['classes'][] = 'services';
       backdrop_add_css($path . '/css/page-services.css');
     }
   }
@@ -135,6 +131,22 @@ function borg_preprocess_page(&$variables) {
       if ($user->uid == 0 && !arg(1)) {
         $variables['classes'][] = 'user-form';
         $variables['classes'][] = 'user-login';
+      }
+    }
+  }
+
+  // Add a node class based on the node ID...
+  if (arg(0) == 'node' && is_numeric(arg(1)) && !arg(2)) {
+    $variables['classes'][] = 'node-' . arg(1);
+  }
+
+  // ...or add body classes based on args.
+  elseif (arg(0)) {
+    $variables['classes'][] = arg(0);
+    if (arg(1)) {
+      $variables['classes'][] = arg(0) . '-' . arg(1);
+      if (arg(2)) {
+        $variables['classes'][] = arg(0) . '-' . arg(1) . '-' . arg(2);
       }
     }
   }
@@ -589,6 +601,13 @@ function borg_menu_link(array $variables) {
         $element['#attributes']['class'][] = 'active';
       }
     }
+  }
+
+  if ($menu_name === 'main-menu' && ($element['#href'] == 'https://forum.backdropcms.org' ||
+      $element['#href'] == 'https://api.backdropcms.org')) {
+    $title = check_plain($element['#title']);
+    $element['#title'] = $title . ' <i class="fa fa-external-link" aria-hidden="true"></i>';
+    $element['#localized_options']['html'] = TRUE;
   }
 
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
