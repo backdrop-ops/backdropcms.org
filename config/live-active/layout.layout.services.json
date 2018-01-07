@@ -7,7 +7,7 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout_template": "burr_flipped",
+    "layout_template": "moscone_flipped",
     "disabled": false,
     "settings": {
         "title": "Services for Backdrop CMS",
@@ -17,6 +17,7 @@
     "positions": {
         "header": [
             "40fdcf69-7813-404d-af09-9a6798c50500",
+            "79d39010-664b-4dcd-a002-02266d21672f",
             "fa3d50bf-12ba-4276-8f00-db34f9abc799"
         ],
         "top": [
@@ -53,6 +54,36 @@
                     "contexts": []
                 },
                 "uuid": "40fdcf69-7813-404d-af09-9a6798c50500",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "79d39010-664b-4dcd-a002-02266d21672f": {
+            "plugin": "system:user-menu",
+            "data": {
+                "module": "system",
+                "delta": "user-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "user-menu",
+                        "style": "tree",
+                        "level": "1",
+                        "depth": "1",
+                        "expand_all": 0,
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "79d39010-664b-4dcd-a002-02266d21672f",
                 "style": {
                     "plugin": "default",
                     "data": {

@@ -17,6 +17,7 @@
     "positions": {
         "header": [
             "c2aa251f-a884-4ab0-bb4c-765adfae3828",
+            "8bfdd592-5b89-4005-b900-eba9d99197ba",
             "8c924952-e403-4fa8-a203-3e915942230c"
         ],
         "top": [],
@@ -54,6 +55,36 @@
                     "contexts": []
                 },
                 "uuid": "c2aa251f-a884-4ab0-bb4c-765adfae3828",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "8bfdd592-5b89-4005-b900-eba9d99197ba": {
+            "plugin": "system:user-menu",
+            "data": {
+                "module": "system",
+                "delta": "user-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "user-menu",
+                        "style": "tree",
+                        "level": "1",
+                        "depth": "1",
+                        "expand_all": 0,
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "8bfdd592-5b89-4005-b900-eba9d99197ba",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -243,7 +274,8 @@
                     "title_display": "default",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "title": ""
                 },
                 "uuid": "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
                 "style": {
@@ -257,18 +289,15 @@
             }
         },
         "aa20864f-9388-46a1-a608-8eb21c6b7b63": {
-            "plugin": "layout:custom_block",
+            "plugin": "block:books",
             "data": {
-                "module": "layout",
-                "delta": "custom_block",
+                "module": "block",
+                "delta": "books",
                 "settings": {
                     "title_display": "default",
-                    "title": "Books",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>Two new books by Todd Tomlinson, author of “Pro Drupal 7 Development”:</p>\n\n<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\"><img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" /></a><br/>\n“<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a>”\n\n<a href=\"http://www.amazon.com/Migrating-Drupal-Backdrop-Todd-Tomlinson/dp/1484217594\"><img src=\"https://backdropcms.org/files/inline-images/book.jpg\" /></a><br/>\n“<a href=\"http://www.amazon.com/Migrating-Drupal-Backdrop-Todd-Tomlinson/dp/1484217594\">Migrating from Drupal to Backdrop</a>”",
-                    "format": "full_html"
+                    "contexts": []
                 },
                 "uuid": "aa20864f-9388-46a1-a608-8eb21c6b7b63",
                 "style": {
