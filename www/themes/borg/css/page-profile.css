@@ -1,0 +1,157 @@
+/*******************************************************************************
+ * page-front.css
+ *
+ * Contains styles only needed for the front page of the site.
+ *
+ * These elements were separated from the compontents.css file because there is
+ * a lot of code in here that's not needed for most of the site, so it didn't
+ * need to be loaded all the time.
+ ******************************************************************************/
+
+ /*******************************************************************************
+  * Profile / Account page
+  ******************************************************************************/
+
+ main.profile-page #page-title {
+   padding-top: 40px;
+ }
+ @media all and (min-width: 851px) {
+   main.profile-page #page-title {
+     padding-top: 80px;
+   }
+ }
+
+ article.profile {
+   clear: none;
+   margin-top: 0;
+   text-align: left;
+ }
+ article.profile .field-name-field-contributions {
+   margin-top: 40px;
+   border-top: 1px solid #E8E6E5;
+   padding-top: 10px;
+ }
+ article.profile .field-name-field-contributions .field-label {
+   font-weight: normal;
+   margin: 25px 0 10px 0;
+ }
+ article.profile .field-name-field-contributions ul {
+   margin-top: 0.25em;
+ }
+ article.profile .field-name-field-contributions li {
+   margin: 0.25em 0;
+ }
+
+ /*******************************************************************************
+  * User Profile Sidebar
+  ******************************************************************************/
+
+ .view-profile-sidebar {
+   padding-top: 20px;
+   text-align: center;
+ }
+
+ .view-profile-sidebar .views-field {
+   margin-bottom: 15px;
+ }
+ .view-profile-sidebar .views-label {
+   font-weight: bold;
+ }
+ .view-profile-sidebar .item-list ul {
+   text-align: left;
+ }
+ .view-profile-sidebar .item-list li {
+   list-style-type: none;
+   margin: 0;
+ }
+
+ .view-profile-sidebar .views-field-field-photo {
+   margin: 0 10px 15px 10px;
+ }
+ .view-profile-sidebar .views-field-field-photo .field-content {
+   text-align: center;
+ }
+ .view-profile-sidebar .views-field-field-photo img {
+   border-radius: 50%;
+   background: #fff;
+   margin: 0 auto;
+ }
+
+ .view-profile-sidebar .views-field-field-name {
+   margin-top: 20px;
+   padding-top: 20px;
+ }
+ .view-profile-sidebar .views-field-field-websites a {
+   font-size: 0.875rem; /* 14px */
+ }
+ .view-profile-sidebar .views-field-created {
+    margin: 20px 0;
+    padding: 20px 0;
+ }
+
+
+ @media (min-width: 34em) { /* 544px */
+   .view-profile-sidebar .views-field-field-photo img {
+     width: 330px;
+   }
+ }
+ @media (min-width: 48em) { /* 768px */
+   .view-profile-sidebar {
+     padding: 0 10px 0 0;
+     text-align: left;
+   }
+   .view-profile-sidebar .views-field-field-photo {
+     margin: 0 0 15px 0;
+   }
+   .view-profile-sidebar .views-field-field-photo img {
+     width: 100%;
+   }
+   .view-profile-sidebar .views-field-field-name:before {
+     height: 2px;
+     background: #000;
+     width: 25px;
+     display: block;
+     content: "";
+     position: relative;
+     top: -20px;
+   }
+   .view-profile-sidebar .views-field-created:before {
+     height: 2px;
+     background: #000;
+     width: 25px;
+     display: block;
+     content: "";
+     position: relative;
+     top: -20px;
+   }
+   .view-profile-sidebar .views-field-created:after {
+     height: 2px;
+     background: #000;
+     width: 25px;
+     display: block;
+     content: "";
+     position: relative;
+     top: 20px;
+   }
+ }
+ @media (min-width: 62em) { /* 992px */
+   .view-profile-sidebar {
+     padding: 0 10px;
+   }
+   .view-profile-sidebar .views-field-field-photo {
+     margin: 0 15px 15px 15px;
+   }
+ }
+ @media (min-width: 75em) {
+   .view-profile-sidebar {
+     padding: 0 15px;
+   }
+ }
+
+ /*******************************************************************************
+  * User Profile Header
+  ******************************************************************************/
+ .block-field-user-field-header-photo img {
+   width: 100%;
+   height: auto;
+ }

@@ -1,0 +1,83 @@
+/*******************************************************************************
+ * node-project.css
+ *
+ * Contains styles only needed for several Project node types.
+ *
+ * These elements were separated from the compontents.css file because there is
+ * a lot of code in here that's not needed for most of the site, so it didn't
+ * need to be loaded all the time.
+ ******************************************************************************/
+
+ .node-project-release h2,
+ .view-project-release-download-table .view-header,
+ .view-project-release-download-table th,
+ .node-project-release ul.links.inline {
+   display: none;
+ }
+
+ .view-project-release-download-table .recommended-version,
+ .view-project-release-download-table .released,
+ .view-project-release-download-table .all-versions {
+   padding: 5px 0;
+ }
+
+ .node-project-release .content h2 {
+   display: block;
+ }
+ /* End temp styles */
+
+ .node-project h2,
+ .node-project-theme h2,
+ .node-project-layout h2,
+ .node-project-release .form-item label{
+   font-size: 1em;
+   margin: 2em 0 1em;
+   padding: .8em 0 0;
+   border-top: 1px solid #d4d6d6;
+   text-transform: uppercase;
+   font-weight: 600;
+ }
+
+ .node-project .view-project-release-download-table .view-content {
+   font-size: 1.3em;
+ }
+
+ .node-project .view-project-release-download-table th {
+   font-weight: 400;
+   font-size: .8em;
+ }
+
+ .node-project .view-project-release-download-table th,
+ .node-project .view-project-release-download-table td {
+   padding: 0 .8em .0 0;
+   vertical-align: bottom;
+ }
+
+ .node-project .view-project-release-download-table .recommended td:first-child a {
+   display: inline-block;
+   font-size: 1.4em;
+   margin: 0 .2em 0 0;
+ }
+
+ .node-project .view-project-release-download-table .recommended td:first-child a:after {
+   content: "\f0ab";
+   font-family: 'FontAwesome';
+   display: inline-block;
+   padding: 0 0 0 .2em;
+ }
+
+ /* This should add a headline to docs that don't have one */
+ .field-name-body .field-item > p:first-child:before {
+   content: 'Documentation';
+   display: block;
+   font-size: 1em;
+   margin: 2em 0 1em;
+   padding: .8em 0 0;
+   border-top: 1px solid #d4d6d6;
+   text-transform: uppercase;
+   font-weight: 600;
+ }
+
+ .node-project-release .form-item {
+   font-size: 1.3em;
+ }

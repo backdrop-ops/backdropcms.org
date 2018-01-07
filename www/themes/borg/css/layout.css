@@ -18,12 +18,6 @@
     padding-top: 75px;
   }
 }
-body.front .page-title {
-  font-size: 400%;
-  padding-bottom: 18px;
-  border-bottom: 2px solid #969696;
-  margin-bottom: 30px;
-}
 
 .l-messages {
   text-align: left;
@@ -39,9 +33,75 @@ body.front .page-title {
   padding: 20px 0px;
   box-shadow: inset 0 -0.1875rem 0 0 #808080;
 }
-
+.l-header-inner {
+  position: relative;
+  box-sizing: border-box;
+}
 .l-header a {
   color: #fff;
+}
+
+.l-header .block-borg-blocks-branding,
+.l-header .block-borg-forum-branding {
+  display: block;
+  width: 55%;
+  padding-left: 15px;
+}
+.l-header .block-system-user-menu {
+  position: absolute;
+  display: none;
+}
+.l-header .block-system-main-menu {
+  text-align: right;
+  display: block;
+  width: 40%;
+}
+.l-header ul.menu-dropdown {
+  margin: 0 auto;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .l-header .block-borg-blocks-branding,
+  .l-header .block-borg-forum-branding {
+    width: 33%;
+  }
+  .l-header .block-system-user-menu {
+    display: block;
+    top: -5px;
+    right: 0;
+    width: 33%;
+  }
+  .l-header .block-system-main-menu {
+    text-align: left;
+    width: 34%;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-header .block-borg-blocks-branding,
+  .l-header .block-borg-forum-branding {
+    width: 49%;
+  }
+  .l-header .block-system-user-menu {
+    width: 49%;
+  }
+  .l-header .block-system-main-menu {
+    text-align: center;
+    width: 100%;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .l-header .block-borg-blocks-branding,
+  .l-header .block-borg-forum-branding {
+    padding-left: 0;
+    width: 18%;
+  }
+  .l-header .block-system-user-menu {
+    width: 17%;
+  }
+  .l-header .block-system-main-menu {
+    text-align: center;
+    width: 65%;
+  }
 }
 
 /*******************************************************************************
@@ -51,9 +111,6 @@ main {
   position: relative;
 }
 
-/*******************************************************************************
- * Main content
- ******************************************************************************/
 .l-content {
   /* Hide overflow to allow blocks to stretch to 100% width, such as the
      homepage supporter form. */
@@ -69,8 +126,17 @@ main {
 /*******************************************************************************
  * Sidebar
  ******************************************************************************/
-.l-sidebar-first .block:first-child h2 {
-  margin-top: 0;
+.l-sidebar {
+  margin-top: 30px;
+  border-top: 2px solid #E8E6E5;
+  padding-top: 15px;
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-sidebar {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+  }
 }
 
 /*******************************************************************************
@@ -97,6 +163,7 @@ main {
   color: #007CBA;
 }
 
+
 /*******************************************************************************
  * XL containers get more breathing room.
  ******************************************************************************/
@@ -105,5 +172,99 @@ main {
     padding-right: 2.9375rem;
     padding-left: 2.9375rem;
   }
+}
+
+/*******************************************************************************
+ * All pages with header image on wrapper.
+ ******************************************************************************/
+.l-wrapper.has-background {
+  background-size: 100%;
+  background-position: top center;
+  background-repeat: no-repeat;
+  margin-left: -5px;
+  margin-right: -5px;
+  position: relative;
+  padding-top: 100px;
+}
+
+@media (min-width: 26em) {
+  .l-wrapper.has-background {
+    padding-top: 150px;
+  }
+}
+@media (min-width: 48em) {
+  .l-wrapper.has-background {
+    padding-top: 175px;
+  }
+}
+@media (min-width: 62em) {
+  .l-wrapper.has-background {
+    padding-top: 200px;
+  }
+}
+@media (min-width: 75em) {
+  .l-wrapper.has-background {
+    padding-top: 250px;
+  }
+}
+
+.l-wrapper.has-background .l-wrapper-inner {
+  background-color: #fff;
+}
+
+/*******************************************************************************
+ * News page overrides
+ ******************************************************************************/
+.layout--double-fixed-inner-rev .l-sidebar-inner h2 {
+  font-size: 2.375rem; /* 38px */
+  margin: 0 0 .5em 0;
+}
+@media (min-width: 850px) {
+  .layout--double-fixed-inner-rev .l-sidebar-inner .block {
+    margin-left: 25px;
+    margin-bottom: 25px;
+  }
+}
+
+/*******************************************************************************
+ * Showcase page overrides
+ ******************************************************************************/
+.showcase .l-top {
+  border-bottom: 2px solid #D4D6D6;
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
+.showcase .l-wrapper {
+  background-color: #F7F7F7;
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .showcase .l-top,
+  .showcase .l-wrapper  {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .showcase .l-top,
+  .showcase .l-wrapper  {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .showcase .l-top,
+  .showcase .l-wrapper  {
+    padding-top: 100px;
+    padding-bottom: 75px;
+  }
+}
+.showcase .l-top h2 {
+  font-weight: 300; /* Light */
+  color: #5A5D5E;
+}
+.showcase .l-footer {
+  margin-top: 0;
 }
 

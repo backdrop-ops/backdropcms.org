@@ -1,0 +1,163 @@
+/*******************************************************************************
+ * page-front.css
+ *
+ * Contains styles only needed for the front page of the site.
+ *
+ * These elements were separated from the compontents.css file because there is
+ * a lot of code in here that's not needed for most of the site, so it didn't
+ * need to be loaded all the time.
+ ******************************************************************************/
+
+ /*******************************************************************************
+  * Front page
+  ******************************************************************************/
+ body.front .l-content {
+   overflow: visible;
+ }
+
+ body.front .page-title {
+   font-size: 400%;
+   padding-bottom: 18px;
+   border-bottom: 2px solid #969696;
+   margin-bottom: 30px;
+ }
+
+ body.front .l-top {
+   background-color: #f7f7f7;
+   border-bottom: 2px solid #E8E6E5;
+   border-top: 2px solid #E8E6E5;
+   padding: 0 0 25px 0;
+ }
+ body.front .l-top {
+   margin-bottom: 50px;
+ }
+
+ body.front .node-page {
+   clear: both;
+   margin: 80px 0;
+   text-align: center;
+ }
+ body.front .node-page .content {
+   margin: 0 auto;
+ }
+ body.front .node-page h1,
+ body.front .node-page h2,
+ body.front .node-page h3 {
+   text-align: center;
+ }
+ body.front .node-page ul {
+   -webkit-column-count: 2;
+   -moz-column-count: 2;
+   column-count: 2;
+   list-style: none;
+   margin: 0;
+   padding: 0;
+ }
+ body.front .l-bottom {
+   background-color: #f7f7f7;
+   border-top: 2px solid #E8E6E5;
+   padding: 0 0 25px 0;
+ }
+ body.front .l-footer {
+   margin-top: 0;
+ }
+
+ /*******************************************************************************
+  * Front page tagline.
+  ******************************************************************************/
+ body.front .block-block-4 {
+   text-align: center;
+ }
+ body.front .block-block-4 h1 {
+   font-size: 2.75rem; /* 44px */
+ }
+ body.front .block-block-4 h2 {
+   font-size: 1.625rem; /* 26px */
+   line-height: 1.2;
+   color: #3F4142;
+   font-weight: 300;
+   margin: 0 0 1em 0;
+ }
+ body.front .block-block-4 a.button {
+   margin: 10px auto;
+   font-size: 1.25rem; /* 20px */
+ }
+
+ @media (min-width: 34em) {
+   body.front .block-block-4 {
+     text-align: left;
+   }
+   body.front .block-block-4 h2 {
+     font-size: 2.125rem; /* 34px */
+     margin: .5em 0;
+   }
+   body.front .block-block-4 h1 {
+     font-size: 3.75rem; /* 60px */
+     font-weight: normal;
+   }
+   body.front .block-block-4 a.button {
+     margin: 10px 30px 10px 0;
+     font-size: 1.5625rem; /* 25px */
+   }
+ }
+
+ /*******************************************************************************
+  * borg_project_metrics homepage block
+  ******************************************************************************/
+ .block-borg-project-metrics-backdrop-project-metrics {
+   margin-top: 15px;
+   border-top: 2px solid #E8E6E5;
+   padding-top: 30px;
+ }
+ .block-borg-project-metrics-backdrop-project-metrics .project-metrics div {
+   min-height: 88px;
+   text-align: center;
+ }
+ .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+   max-width: 100px;
+ }
+ .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+   font-size: 1.625rem; /* 26px */
+ }
+ .block-borg-project-metrics-backdrop-project-metrics .join-the-fun {
+   text-align: center;
+ }
+ .block-borg-project-metrics-backdrop-project-metrics .join-the-fun p {
+   margin: 1em auto;
+ }
+ .block-borg-project-metrics-backdrop-project-metrics .github-img {
+   max-width: 16px;
+ }
+
+ @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+   .block-borg-project-metrics-backdrop-project-metrics {
+     padding-top: 45px;
+   }
+   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+     max-width: 66px;
+   }
+   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+     font-size: 1.25rem; /* 20px */
+   }
+ }
+ @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+   .block-borg-project-metrics-backdrop-project-metrics {
+     padding-top: 60px;
+   }
+   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+     max-width: 100px;
+   }
+   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+     font-size: 1.5rem; /* 24px */
+   }
+ }
+ @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+     max-width: 120px;
+   }
+   .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+     font-size: 1.75rem; /* 28px */
+   }
+ }
+
+

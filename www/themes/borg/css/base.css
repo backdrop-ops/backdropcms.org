@@ -62,7 +62,7 @@ h2 {
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   h2 {
-    font-size: 2.625rem; /* 42px */
+    font-size: 2.5rem; /* 40px */
   }
 }
 
@@ -79,8 +79,9 @@ ul {
   margin: .75em 0;
   padding-left: 2em;
 }
+
 li {
-  margin: .75em 0;
+  margin: .5em 0;
   line-height: 1.25em;
 }
 
@@ -101,6 +102,7 @@ blockquote {
 blockquote p {
   margin: .5em 0;
 }
+
 figure {
   margin: 0 25px;
 }
@@ -114,13 +116,6 @@ small {
 }
 pre {
   padding: 6px 12px;
-}
-div.codeblock code {
-  font-size: .8rem; /* relative size */
-  line-height: 1.6;
-}
-div.indent {
-  margin: 0 25px;
 }
 
 /*******************************************************************************
@@ -164,7 +159,6 @@ input[type="submit"] {
   margin: 10px 0;
   padding: 0 20px;
   white-space: nowrap;
-
   -webkit-transition: background-color .33s;
   -webkit-transition: color .33s;
   -moz-transition: background-color .33s;
@@ -189,7 +183,6 @@ input[type="submit"]:hover {
   margin-bottom: 0;
 }
 
-#social-field-wrapper .description,
 .form-item .description {
   padding: .25em 0 .25em 0;
   color: #7D7D7D;
@@ -202,11 +195,4 @@ input[type="submit"]:hover {
 .form-type-radios .description,
 .form-type-checkbox .description {
   margin-left: 1.6em;
-}
-
-.filter-wrapper {
-  padding: 0.5em;
-}
-.filter-wrapper label {
-  display: block;
 }

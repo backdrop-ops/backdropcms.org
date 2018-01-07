@@ -1,0 +1,151 @@
+/*******************************************************************************
+ * node-showcase.css
+ *
+ * Contains styles only needed for the showcase node type.
+ *
+ * These elements were separated from the compontents.css file because there is
+ * a lot of code in here that's not needed for most of the site, so it didn't
+ * need to be loaded all the time.
+ ******************************************************************************/
+
+ /*******************************************************************************
+  * Node: Showcases.
+  ******************************************************************************/
+ .node-type-showcase .page-title {
+   margin: 0;
+   margin-top: 0;
+   padding-top: 20px;
+   line-height: 1em;
+ }
+ .node-type-showcase h3.field-name-field-blurb {
+   margin: 20px 0;
+ }
+ .node-type-showcase .l-top {
+   text-align: left;
+   position: relative;
+ }
+ .node-type-showcase .l-top.has-background {
+   background-size: cover;
+   background-position: center;
+   background-repeat: no-repeat;#pa
+ }
+
+ @media (min-width: 34em) { /* 544px */
+   .node-type-showcase .l-top.has-background {
+     min-height: 350px;
+   }
+ }
+ @media (min-width: 62em) { /* 992px */
+   .node-type-showcase .l-top.has-background {
+     min-height: 400px;
+   }
+ }
+ .node-type-showcase .l-top.has-background .l-top-inner {
+   height: 100%;
+   background: rgba(0, 0, 0, 0.25) none repeat scroll 0 0;
+ }
+ @media (min-width: 34em) { /* 544px */
+   .node-type-showcase .l-top.has-background .l-top-inner {
+     height: auto;
+     position: absolute;
+     bottom: 0;
+     left: 25px;
+     right: 25px;
+   }
+ }
+ @media (min-width: 48em) { /* 768px */
+   .node-type-showcase .l-top.has-background .l-top-inner {
+     left: 50px;
+     right: 50px;
+   }
+ }
+ @media (min-width: 62em) { /* 992px */
+   .node-type-showcase .l-top.has-background .l-top-inner {
+     left: 110px;
+     right: 110px;
+   }
+ }
+
+ .node-type-showcase .has-background .page-title,
+ .node-type-showcase .has-background h3.field-name-field-blurb {
+   color: #fff;
+   display: block;
+   margin: 0;
+   padding: 15px 0;
+ }
+ .node-type-showcase .has-background .page-title {
+   padding-bottom: 0;
+ }
+ .node-type-showcase .has-background h3.field-name-field-blurb {
+   padding-top: 0;
+ }
+
+ .node-type-showcase blockquote {
+   border: 10px solid #F7F7F7;
+   background-color: #F7F7F7;
+   background-image: url(../images/quote-open.png), url(../images/quote-close.png);
+   background-position: top left, bottom right;
+   background-repeat: no-repeat;
+   background-size: 140px;
+   margin: 20px 0;
+   color: #451649;
+   padding: 10px 25px;
+   font-style: normal;
+   font-size: 1.25rem; /* 20px */
+   line-height: 1.5rem; /* 24px */
+   text-align: left;
+ }
+ @media all and (min-width: 34em) { /* 544px */
+   .node-type-showcase blockquote {
+     border: 15px solid #F7F7F7;
+     padding: 20px 35px;
+     font-size: 1.375rem; /* 22px */
+     line-height: 28px;
+   }
+ }
+ @media (min-width: 48em) { /*768px */
+   .node-type-showcase blockquote {
+     padding: 30px 55px;
+     font-size: 1.5rem; /* 24px */
+     line-height: 31px;
+   }
+ }
+
+ .node-type-showcase .screen {
+   text-align: center;
+   padding: 20px;
+ }
+ @media (min-width: 34em) { /* 544px */
+   .node-type-showcase .screen {
+     background-color: #F7F7F7;
+   }
+   .node-type-showcase .col-sm-8 .screen {
+     padding: 29px 20px;
+   }
+ }
+ @media (min-width: 48em) { /*768px */
+   .node-type-showcase .col-sm-8 .screen {
+     padding: 36px 20px;
+   }
+ }
+ @media (min-width: 62em) { /* 992px */
+   .node-type-showcase .screen {
+     margin: 0 15px;
+   }
+   .node-type-showcase .col-sm-8 .screen {
+     padding: 29px 20px;
+   }
+ }
+ @media (min-width: 75em) { /* 1200px */
+   .node-type-showcase .col-sm-8 .screen {
+     padding: 20px 20px;
+   }
+   .node-type-showcase .col-sm-4 .screen {
+     padding: 60px 20px;
+   }
+ }
+
+ .node-type-showcase .field-name-field-url,
+ .node-type-showcase .field-name-field-audience {
+   margin-bottom: 1.15em;
+ }
