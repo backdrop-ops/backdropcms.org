@@ -23,12 +23,11 @@
         "top": [],
         "content": [
             "2b25a428-72d4-4957-8100-00e8ac1f78ac",
-            "251c224f-bc1e-4a59-a600-a7d55f1342ae",
-            "59b7d39c-12b0-486f-8012-18ea57e6d7de"
+            "9a65a35d-23c6-4800-af00-fc16ed0825b8"
         ],
         "sidebar": [
             "f0a1a87f-75fe-4d79-a261-97875c307a34",
-            "9a65a35d-23c6-4800-af00-fc16ed0825b8"
+            "c13974ed-6702-4c2e-8400-e4143e9a30e9"
         ],
         "bottom": [
             "f26b380e-29b5-4d29-bb03-3aaf7e795248"
@@ -152,19 +151,22 @@
                 }
             }
         },
-        "251c224f-bc1e-4a59-a600-a7d55f1342ae": {
-            "plugin": "borg_blocks:rss",
+        "9a65a35d-23c6-4800-af00-fc16ed0825b8": {
+            "plugin": "block:books",
             "data": {
-                "module": "borg_blocks",
-                "delta": "rss",
+                "module": "block",
+                "delta": "books",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "delta": "books",
+                        "reusable": true
+                    },
                     "contexts": []
                 },
-                "uuid": "251c224f-bc1e-4a59-a600-a7d55f1342ae",
+                "uuid": "9a65a35d-23c6-4800-af00-fc16ed0825b8",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -173,44 +175,6 @@
                         }
                     }
                 }
-            }
-        },
-        "59b7d39c-12b0-486f-8012-18ea57e6d7de": {
-            "plugin": "block:security_mailing_list",
-            "data": {
-                "module": "block",
-                "delta": "security_mailing_list",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "security_mailing_list",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "59b7d39c-12b0-486f-8012-18ea57e6d7de",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                },
-                "conditions": [
-                    {
-                        "plugin": "path",
-                        "data": {
-                            "settings": {
-                                "visibility_setting": "1",
-                                "paths": "securitys",
-                                "load_condition_nojs": "Load condition"
-                            }
-                        }
-                    }
-                ]
             }
         },
         "f0a1a87f-75fe-4d79-a261-97875c307a34": {
@@ -239,22 +203,30 @@
                 }
             }
         },
-        "9a65a35d-23c6-4800-af00-fc16ed0825b8": {
-            "plugin": "block:books",
+        "c13974ed-6702-4c2e-8400-e4143e9a30e9": {
+            "plugin": "views:contractors-block",
             "data": {
-                "module": "block",
-                "delta": "books",
+                "module": "views",
+                "delta": "contractors-block",
                 "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "50",
+                    "offset": 0,
+                    "path": "support/services/contractors",
+                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": {
-                        "delta": "books",
-                        "reusable": true
-                    },
-                    "contexts": []
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
                 },
-                "uuid": "9a65a35d-23c6-4800-af00-fc16ed0825b8",
+                "uuid": "c13974ed-6702-4c2e-8400-e4143e9a30e9",
                 "style": {
                     "plugin": "default",
                     "data": {
