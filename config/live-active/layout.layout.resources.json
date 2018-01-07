@@ -17,6 +17,7 @@
     "positions": {
         "header": [
             "5740f4b1-23ef-4ec8-bb0f-158468cc36a1",
+            "82d7ad59-29e9-4541-8e04-4bd29ac6c22d",
             "d6fd2fb7-112e-42a1-8b06-6a53da3b0f56"
         ],
         "top": [],
@@ -26,9 +27,12 @@
             "59b7d39c-12b0-486f-8012-18ea57e6d7de"
         ],
         "sidebar": [
-            "f0a1a87f-75fe-4d79-a261-97875c307a34"
+            "f0a1a87f-75fe-4d79-a261-97875c307a34",
+            "9a65a35d-23c6-4800-af00-fc16ed0825b8"
         ],
-        "bottom": [],
+        "bottom": [
+            "f26b380e-29b5-4d29-bb03-3aaf7e795248"
+        ],
         "footer": [
             "076ef9ed-4e50-48ef-8801-1bb026ac0479",
             "99c1abeb-0d1a-4204-8e0e-14053f721ce8",
@@ -51,6 +55,36 @@
                     "contexts": []
                 },
                 "uuid": "5740f4b1-23ef-4ec8-bb0f-158468cc36a1",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "82d7ad59-29e9-4541-8e04-4bd29ac6c22d": {
+            "plugin": "system:user-menu",
+            "data": {
+                "module": "system",
+                "delta": "user-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "user-menu",
+                        "style": "tree",
+                        "level": "1",
+                        "depth": "1",
+                        "expand_all": 0,
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "82d7ad59-29e9-4541-8e04-4bd29ac6c22d",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -195,6 +229,66 @@
                     "contexts": []
                 },
                 "uuid": "f0a1a87f-75fe-4d79-a261-97875c307a34",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "9a65a35d-23c6-4800-af00-fc16ed0825b8": {
+            "plugin": "block:books",
+            "data": {
+                "module": "block",
+                "delta": "books",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "books",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "9a65a35d-23c6-4800-af00-fc16ed0825b8",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "f26b380e-29b5-4d29-bb03-3aaf7e795248": {
+            "plugin": "views:supporters-block",
+            "data": {
+                "module": "views",
+                "delta": "supporters-block",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "33",
+                    "offset": 0,
+                    "path": "support/supporters",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
+                },
+                "uuid": "f26b380e-29b5-4d29-bb03-3aaf7e795248",
                 "style": {
                     "plugin": "default",
                     "data": {
