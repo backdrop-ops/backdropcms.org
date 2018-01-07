@@ -48,6 +48,7 @@
  .block-views-supporters-block h2,
  #block-formblock-supporter h2 {
    text-align: center;
+   margin-bottom: 2em;
  }
  .view-supporters {
    text-align: center;
@@ -133,11 +134,14 @@
    text-align: center;
  }
  .block-views-news-block .view-footer {
-   font-size: .85rem; /* 14px */
    border-top: 2px solid #E8E6E5;
    padding-top: 50px;
    max-width: 300px;
    margin: 0 auto;
+ }
+ .block-views-news-block .view-footer p {
+   font-size: 1rem; /* 16px */
+   color: #444b53;
  }
  .block-views-news-block .view-footer a img {
    max-width: 150px;
@@ -219,6 +223,7 @@
    margin: 0;
    text-align: center;
    color: #444b53;
+   font-size: 1rem; /* 16px */
  }
 
  @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
@@ -240,6 +245,7 @@
  .block-views-providers-block-3 .view-providers {
    margin-bottom: 100px;
    border: 2px solid #E8E6E5;
+   border-radius: 4px;
  }
 
  /*******************************************************************************
@@ -253,6 +259,10 @@
    font-size: 1.75rem; /* 28px */
    margin-top: 57px;
  }
+ .block-views-contractors-block .view-contractors {
+   padding-left: 0;
+   padding-right: 0;
+ }
  .contractor {
    padding-top: 15px;
    padding-bottom: 15px;
@@ -262,6 +272,9 @@
  }
  .view-contractors .views-field-field-photo {
    min-height: 100px;
+ }
+ .view-contractors .views-field-field-photo img {
+  border-radius: 50%;
  }
  .view-contractors .attachment .views-field-field-photo {
    min-height: 0;

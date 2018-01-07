@@ -4,24 +4,6 @@
  * Contains styles relating to layout. Any adjustment of margins/padding/widths,
  * etc. should be in the layouts/double_fixed/double-fixed.css file!
  ******************************************************************************/
-.page-title {
-  font-size: 45px;
-  letter-spacing: -.04em;
-}
-@media (min-width: 34em) { /* 544px */
-  .page-title {
-    font-size: 64px;
-  }
-}
-@media (min-width: 62em) { /* 992px */
-  .l-page-title {
-    padding-top: 75px;
-  }
-}
-
-.l-messages {
-  text-align: left;
-}
 
 /*******************************************************************************
  * Header.
@@ -102,6 +84,31 @@
     text-align: center;
     width: 65%;
   }
+}
+
+/*******************************************************************************
+ * Page title.
+ ******************************************************************************/
+.page-title {
+  font-size: 45px;
+  letter-spacing: -.04em;
+}
+@media (min-width: 34em) { /* 544px */
+  .page-title {
+    font-size: 64px;
+  }
+}
+@media (min-width: 62em) { /* 992px */
+  .l-page-title {
+    padding-top: 75px;
+  }
+}
+
+/*******************************************************************************
+ * Messages.
+ ******************************************************************************/
+.l-messages {
+  text-align: left;
 }
 
 /*******************************************************************************
@@ -266,5 +273,41 @@ main {
 }
 .showcase .l-footer {
   margin-top: 0;
+}
+
+/*******************************************************************************
+ * Page title centered
+ * - Supporters page
+ * - Contact page
+ ******************************************************************************/
+body.contact .page-title,
+body.support-supporters .page-title,
+body.support-services-contractors .page-title {
+  text-align: center;
+}
+
+/*******************************************************************************
+ * Bottom region dark gray.
+ * - Home page
+ * - Resources page
+ * - Support page
+ ******************************************************************************/
+body.front .l-bottom,
+body.support .l-bottom,
+body.support-services .l-bottom,
+body.node-1621 .l-bottom {
+  margin-top: 100px;
+  border-top: 3px solid #E8E6E5;
+  background-color: #F7F7F7;
+  padding-bottom: 5px;
+}
+body.front .l-footer,
+body.support-services .l-footer,
+body.node-1621 .l-footer {
+  margin-top: 0;
+}
+
+body.support-services-contractors .l-footer {
+  margin-top: 100px;
 }
 

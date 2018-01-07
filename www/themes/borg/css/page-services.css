@@ -1,42 +1,33 @@
-body.services .l-bottom {
-  margin-top: 100px;
-  border-top: 3px solid #E8E6E5;
-  background-color: #F7F7F7;
-  padding-bottom: 5px;
-}
-body.services .l-footer {
-  margin-top: 0;
-}
-body.services .l-top {
+body.support-services .l-top {
   background-color: #F7F7F7;
   border-bottom: 2px solid #D4D6D6;
   padding-top: 25px;
   padding-bottom: 15px;
 }
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  body.services .l-top {
+  body.support-services .l-top {
     padding-top: 40px;
     padding-bottom: 40px;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  body.services .l-top {
+  body.support-services .l-top {
     padding-top: 60px;
     padding-bottom: 60px;
   }
 }
 @media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
-  body.services .l-top {
+  body.support-services .l-top {
     padding-top: 100px;
     padding-bottom: 75px;
   }
 }
-body.services .l-top h2 {
+body.support-services .l-top h2 {
   font-weight: 300; /* Light */
   color: #5A5D5E;
 }
 
-body.services h1.page-title {
+body.support-services h1.page-title {
   margin-top: 0;
 }
 
