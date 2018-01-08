@@ -9,9 +9,12 @@ stylesheets[all][] = css/system.theme.css
 ; Custom stylesheets to be added:
 stylesheets[screen][] = css/base.css
 stylesheets[screen][] = css/layout.css
+stylesheets[screen][] = css/layout-pages.css
 stylesheets[screen][] = css/components.css
+stylesheets[screen][] = css/components-nodes.css
 stylesheets[screen][] = css/components-menus.css
 stylesheets[screen][] = css/components-views.css
+stylesheets[screen][] = css/components-blocks.css
 stylesheets[screen][] = css/ckeditor-iframe.css
 stylesheets[screen][] = css/menu-dropdown.theme.css
 stylesheets[screen][] = css/menu-toggle.theme.css
@@ -23,7 +26,7 @@ ckeditor_stylesheets[] = css/editor.css
 ; Custom javascript to be added:
 scripts[] = js/borg.js
 
-; Added by Backdrop CMS packaging script on 2018-01-06
+; Added by Backdrop CMS packaging script on 2018-01-07
 project = borg
-version = 1.x-1.0.6
-timestamp = 1515305627
+version = 1.x-1.0.8
+timestamp = 1515375765

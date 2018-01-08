@@ -1,0 +1,281 @@
+/*******************************************************************************
+ * components-blocks.scss
+ *
+ * Contains styles for blocks components.
+ ******************************************************************************/
+
+/*******************************************************************************
+ * PMC list
+ ******************************************************************************/
+ ul.committers,
+ ul.pmc {
+  padding-left: 0;
+ }
+ ul.committers li,
+ ul.pmc li {
+  display: block;
+  line-height: 100px;
+ }
+ ul.committers img,
+ ul.pmc img {
+  float: left;
+  margin-right: 15px;
+  width: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #fff;
+}
+@media (min-width: 62em) { /* 992px */
+  ul.pmc li {
+    display: inline-block;
+    width: 49%;
+  }
+}
+
+/*******************************************************************************
+ * Paypal buttons
+ ******************************************************************************/
+input[type=image] {
+  border: 0;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+/*******************************************************************************
+ * Release Cycle (/releases)
+ ******************************************************************************/
+.version-number {
+  font-size: 2rem; /* 32px */
+  margin: 0 auto;
+  text-align: center;
+}
+.version-number span {
+  display: inline-block;
+  width: 28%;
+}
+.version-explaination {
+  margin: 0 auto;
+  text-align: center;
+}
+.version-explaination span {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  width: 29%;
+}
+
+/*******************************************************************************
+ * Backdrop books
+ ******************************************************************************/
+.backdrop-books {
+  margin-top: 50px;
+  text-align: center;
+}
+.backdrop-books .block-title {
+  text-align: left;
+}
+.backdrop-books a {
+  display: block;
+}
+.backdrop-books figure {
+  max-width: 220px;
+}
+.backdrop-books img {
+  margin: 10px auto 0 auto;
+}
+
+main.col-md-8 .backdrop-books figure {
+  display: inline-block;
+}
+.l-sidebar .backdrop-books figure {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
+/*******************************************************************************
+ * Resrouces block
+ ******************************************************************************/
+.block-block-resources ul {
+  padding: 0;
+}
+.block-block-resources li {
+  list-style: none;
+  position: relative;
+  padding-left: 38px;
+}
+.block-block-resources a {
+  display: block;
+  line-height: 1.5em;
+}
+.block-block-resources i.fa {
+  font-size: 1.5em; /* relative size */
+  position: absolute;
+  left: 0;
+}
+
+/*******************************************************************************
+ * Download Backdrop Block
+ ******************************************************************************/
+.block-block-2 {
+  margin-bottom: 20px;
+  font-weight: 300;
+  letter-spacing: .03em;
+  text-align: center;
+}
+@media (min-width: 48em) { /*768px */
+  .block-block-2 {
+    float: left;
+    margin-right: 25px;
+    text-align: left;
+  }
+}
+
+/*******************************************************************************
+ * Try Backdrop Block
+ ******************************************************************************/
+.block-block-1 {
+  margin-bottom: 20px;
+  font-weight: 300;
+  letter-spacing: .03em;
+  text-align: center;
+}
+@media (min-width: 48em) { /*768px */
+  .block-block-1 {
+    float: left;
+    margin-right: 25px;
+  }
+}
+
+/*******************************************************************************
+ * Newsletter block.
+ ******************************************************************************/
+.block-block-newsletter,
+.block-block-3 {
+  padding-bottom: 40px;
+}
+.block-block-newsletter #mce-EMAIL,
+.block-block-3 #mce-EMAIL {
+  margin-right: 5px;
+  width: 100%;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .block-block-newsletter,
+  .block-block-3 {
+    padding-bottom: 0;
+  }
+}
+
+/*******************************************************************************
+ * Custom RSS feed icon.
+ ******************************************************************************/
+.block-borg-blocks-rss {
+  text-align: center;
+}
+.block-borg-blocks-rss a:hover {
+  color: #000;
+}
+
+/*******************************************************************************
+ * Show your support form block.
+ ******************************************************************************/
+.block-formblock-supporter {
+  clear: left;
+  padding: 34px 0 50px;
+  text-align: center;
+}
+.block-formblock-supporter form {
+  max-width: 670px;
+  text-align: left;
+  margin: 0 auto;
+}
+.block-formblock-supporter label {
+  font-weight: normal;
+  color: #444b53;
+}
+.block-formblock-supporter .form-text {
+  font-size: 2rem; /* 32px */
+  width: 100%;
+}
+
+/* File upload widget gets pretty complicated. */
+.block-formblock-supporter .form-managed-file {
+  border: 2px solid #E8E6E5;
+  background: white;
+  padding: 8px 4px;
+  height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.block-formblock-supporter .image-widget-data {
+  float: none;
+  position: relative;
+}
+.block-formblock-supporter .image-widget-data span {
+  display: none;
+}
+.block-formblock-supporter .image-widget-data:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.block-formblock-supporter .image-preview {
+  max-height: 30px;
+  max-width: 30px;
+  overflow: hidden;
+  padding: 0 12px 0 0;
+}
+.block-formblock-supporter .image-preview img {
+  width: 100%;
+  height: auto;
+}
+.block-formblock-supporter .form-file {
+  font-size: 1rem; /* 16px */
+  color: #7D7D7D;
+  border: none;
+  vertical-align: middle;
+  width: 100%;
+  position: absolute;
+  margin: -12px; /* Negative .image-preview padding. */
+}
+.block-formblock-supporter .form-managed-file .form-submit {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  margin: -12px; /* Negative .image-preview padding. */
+  padding: 17px 30px;
+  float: right;
+  font-size: 1rem; /* 16px */
+  border: none;
+  border-left: 2px solid #444b53;
+  vertical-align: middle;
+  position: relative;
+  text-transform: uppercase;
+  z-index: 2;
+}
+/* End file upload widget. */
+
+.block-formblock-supporter .description {
+  display: none;
+}
+.block-formblock-supporter .form-item .form-item {
+  margin: 0;
+}
+.block-formblock-supporter .form-actions {
+  text-align: right;
+}
+.block-formblock-supporter .form-actions .form-submit {
+  font-size: 1rem; /* 16px */
+  margin: 1em 0;
+}
+.block-formblock-supporter .form-actions a {
+  display: none;
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-formblock-supporter .image-widget-data span {
+    display: inline;
+  }
+}

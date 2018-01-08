@@ -1,0 +1,138 @@
+/*******************************************************************************
+ * components-nodes.scss
+ *
+ * Contains styles for specific content types.
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Node: Blog - full view mode
+ ******************************************************************************/
+
+/* center-align blog posts on page */
+body.node-type-post  h1.page-title,
+body.node-type-post .block-system-main {
+  text-align: center;
+}
+body.node-type-post nav.tabs {
+  margin: 0 auto;
+  max-width: 700px;
+}
+body.node-type-post .block-system-main article.node-post {
+  margin: 0 auto;
+}
+
+/* add the bottom border for tags to sit on */
+article.node-post.view-mode-full .content {
+  border-bottom: 2px solid #E8E6E5;
+  margin-bottom: 30px;
+  position: relative;
+}
+article.node-post.view-mode-full .field-name-body {
+  padding-bottom: 30px;
+}
+
+/*******************************************************************************
+ * Node: Blog - teaser view mode
+ ******************************************************************************/
+article.node-post.view-mode-teaser {
+  position: relative;
+}
+
+/*******************************************************************************
+ * Node: Project
+ ******************************************************************************/
+.project-usage .usage-total {
+  font-weight: bold;
+}
+.project-usage .usage-label {
+  color: #444b53;
+}
+
+.block-field-node-field-download-count,
+.block-project-usage-project-usage {
+  margin-top: 20px;
+}
+
+.field-name-field-download-count .field-item {
+  font-weight: bold;
+}
+.field-name-field-download-count .field-label {
+  color: #444b53;
+  font-weight: normal;
+}
+
+.block-project-github-project-github h3 {
+  margin-bottom: 0.25em;
+}
+.block-project-github-project-github li {
+  list-style-type: none;
+  margin-left: 0;
+}
+
+label.github-clone-label {
+  color: #444b53;
+}
+.github-clone input {
+  font-size: .85rem; /* 14px */
+  width: 100%;
+}
+
+.node-project .view-project-release-download-table .views-row {
+  clear: left;
+  border-bottom: 1px solid #d4d4d6;
+  padding: 28px 0;
+}
+.node-project .view-project-release-download-table h3 {
+  margin: .5em 0 0;
+}
+.node-project .view-project-release-download-table p {
+  margin: .5em 0;
+}
+.node-project .view-project-release-download-table .views-field-field-logo a {
+  display: inline-block;
+  text-align: center;
+}
+.node-project .view-project-release-download-table .views-field-field-logo img {
+  margin: 0 auto;
+}
+@media all and (min-width: 600px) {
+  .node-project .view-project-release-download-table .views-field {
+    margin-left: 180px;
+  }
+  .node-project .view-project-release-download-table .views-field-field-logo {
+    width: 180px;
+    float: left;
+    text-align: left;
+    margin-left: 0;
+  }
+}
+
+/*******************************************************************************
+ * Node: Organization profile
+ ******************************************************************************/
+.node-organization .field-name-field-logo {
+  float: left;
+}
+.node-organization .field-name-field-location,
+.node-organization .field-name-field-org-website {
+  margin-left: 180px;
+  display: block;
+}
+.node-organization .field-name-field-org-website.clearfix::after {
+  clear: none;
+}
+.node-organization .field-name-body {
+  clear: both;
+}
+
+/*******************************************************************************
+ * Node: Documentation - status/level fields
+ ******************************************************************************/
+.field-name-field-docs-level {
+  padding: 15px 15px 5px 15px;
+  background-color: #f7f7f7;
+}
+.field-name-field-docs-status {
+  padding: 5px 15px 15px 15px;
+  background-color: #f7f7f7;
+}
