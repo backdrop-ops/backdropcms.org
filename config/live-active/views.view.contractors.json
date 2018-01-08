@@ -579,7 +579,7 @@
                 "title": "Contractors for Hire",
                 "style_options": {
                     "grouping": [],
-                    "row_class": "col-xs-6 col-sm-4 col-md-3 col-lg-6 contractor",
+                    "row_class": "col-xs-6 col-sm-4 col-md-3 contractor",
                     "default_row_class": 0,
                     "row_class_special": 0
                 },
@@ -596,25 +596,16 @@
                 },
                 "path": "support/services/contractors",
                 "exposed_block": false,
-                "style_plugin": "default",
                 "defaults": {
-                    "style_plugin": false,
-                    "style_options": false,
-                    "row_plugin": false,
-                    "row_options": false,
+                    "style_plugin": true,
+                    "style_options": true,
+                    "row_plugin": true,
+                    "row_options": true,
                     "pager": false,
                     "pager_options": false,
                     "access": false,
                     "access_options": false
                 },
-                "style_options": {
-                    "grouping": [],
-                    "row_class": "col-xs-6 col-sm-4 col-md-3 contractor",
-                    "default_row_class": 0,
-                    "row_class_special": 0
-                },
-                "row_plugin": "fields",
-                "row_options": [],
                 "pager": {
                     "type": "some",
                     "options": {
@@ -632,22 +623,6 @@
                 "access_options": null
             }
         },
-        "block": {
-            "display_title": "Block",
-            "display_plugin": "block",
-            "display_options": {
-                "query": {
-                    "type": "views_query",
-                    "options": []
-                },
-                "inherit_path": "0",
-                "exposed_block": true,
-                "use_ajax": true,
-                "defaults": {
-                    "use_ajax": false
-                }
-            }
-        },
         "attachment_1": {
             "display_title": "Attachment",
             "display_plugin": "attachment",
@@ -657,9 +632,9 @@
                     "options": []
                 },
                 "displays": {
-                    "block": "block",
                     "page_1": "page_1",
-                    "default": 0
+                    "default": 0,
+                    "block": 0
                 },
                 "attachment_position": "after",
                 "inherit_exposed_filters": 1,
@@ -1042,6 +1017,48 @@
                     }
                 },
                 "css_class": ""
+            }
+        },
+        "block": {
+            "display_title": "Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "inherit_path": "0",
+                "exposed_block": true,
+                "use_ajax": true,
+                "defaults": {
+                    "use_ajax": false,
+                    "pager": false,
+                    "pager_options": false,
+                    "footer": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "block_description": "Contractors",
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "12",
+                        "offset": "0"
+                    }
+                },
+                "pager_options": null,
+                "footer": [],
+                "style_plugin": "default",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "col-xs-6 col-sm-4 col-md-3 col-lg-6 col-xl-4 contractor",
+                    "default_row_class": 0,
+                    "row_class_special": 0
+                },
+                "row_plugin": "fields",
+                "row_options": []
             }
         }
     }

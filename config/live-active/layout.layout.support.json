@@ -26,13 +26,16 @@
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
             "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
             "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
-            "e21a9e69-e89f-4b7a-b809-9e961daa1208"
+            "e21a9e69-e89f-4b7a-b809-9e961daa1208",
+            "aa20864f-9388-46a1-a608-8eb21c6b7b63"
         ],
         "sidebar": [
             "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
-            "aa20864f-9388-46a1-a608-8eb21c6b7b63"
+            "d9c1cdda-6733-4683-ac00-bde06aabf0f7"
         ],
-        "bottom": [],
+        "bottom": [
+            "c4a24465-963d-4fc1-a809-9c9ca6ef0833"
+        ],
         "footer": [
             "e2dae38b-2711-419d-a200-f2e32ce8ed33",
             "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
@@ -265,6 +268,29 @@
                 }
             }
         },
+        "aa20864f-9388-46a1-a608-8eb21c6b7b63": {
+            "plugin": "block:books",
+            "data": {
+                "module": "block",
+                "delta": "books",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title": ""
+                },
+                "uuid": "aa20864f-9388-46a1-a608-8eb21c6b7b63",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "backdrop-books"
+                        }
+                    }
+                }
+            }
+        },
         "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6": {
             "plugin": "block:resources",
             "data": {
@@ -288,23 +314,69 @@
                 }
             }
         },
-        "aa20864f-9388-46a1-a608-8eb21c6b7b63": {
-            "plugin": "block:books",
+        "d9c1cdda-6733-4683-ac00-bde06aabf0f7": {
+            "plugin": "views:contractors-block",
             "data": {
-                "module": "block",
-                "delta": "books",
+                "module": "views",
+                "delta": "contractors-block",
                 "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "12",
+                    "offset": 0,
+                    "path": "support/services/contractors",
+                    "fields_override": null,
                     "title_display": "default",
+                    "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
                 },
-                "uuid": "aa20864f-9388-46a1-a608-8eb21c6b7b63",
+                "uuid": "d9c1cdda-6733-4683-ac00-bde06aabf0f7",
                 "style": {
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "backdrop-books"
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "c4a24465-963d-4fc1-a809-9c9ca6ef0833": {
+            "plugin": "views:supporters-block",
+            "data": {
+                "module": "views",
+                "delta": "supporters-block",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "33",
+                    "offset": 0,
+                    "path": "support/supporters",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
+                },
+                "uuid": "c4a24465-963d-4fc1-a809-9c9ca6ef0833",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
                         }
                     }
                 }
