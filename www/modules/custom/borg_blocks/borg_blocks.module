@@ -97,10 +97,7 @@ function borg_blocks_tagline($settings) {
   $output .= $download_link;
   $output .= $demo_link;
 
-  /*
   $version = $settings['version'];
-  $version = 'v1.8.1';
-
   $requirements = l(t('requirements'), 'requirements');
   $installing = l(t('installing'), 'installation');
   $upgrading = l(t('upgrading'), 'upgrade');
@@ -109,7 +106,6 @@ function borg_blocks_tagline($settings) {
   $output .= '  <span>' . $version . '</span> / ';
   $output .=    $requirements . ' / ' . $installing . ' / ' . $upgrading;
   $output .= '</p>';
-  */
 
   return $output;
 }
@@ -122,13 +118,19 @@ function borg_blocks_block_configure($delta = '', $settings = array()) {
 
   if ($delta == 'tagline') {
     $settings += array(
+      'version' => 'v1.8.1',
       'download_url' => 'https://github.com/backdrop/backdrop/releases/download/1.8.1/backdrop.zip',
       'demo_url' => 'http://www.getpantheon.com/backdrop',
     );
 
+    $form['version'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Current Version Number'),
+      '#default_value' => $settings['version'],
+    );
     $form['download_url'] = array(
       '#type' => 'url',
-      '#title' => t('Latest Version - Download URL'),
+      '#title' => t('Download Backdrop URL'),
       '#default_value' => $settings['download_url'],
     );
     $form['demo_url'] = array(
@@ -136,6 +138,7 @@ function borg_blocks_block_configure($delta = '', $settings = array()) {
       '#title' => t('Try Backdrop - Demo URL'),
       '#default_value' => $settings['demo_url'],
     );
+
   }
 
   return $form;
