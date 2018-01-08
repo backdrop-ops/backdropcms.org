@@ -10,9 +10,9 @@
     "layout_template": "moscone_flipped",
     "disabled": false,
     "settings": {
-        "title": "Services for Backdrop CMS",
+        "title": "Backdrop Services",
         "title_display": "custom",
-        "title_block": null
+        "title_block": "40fdcf69-7813-404d-af09-9a6798c50500"
     },
     "positions": {
         "header": [
@@ -21,6 +21,7 @@
             "fa3d50bf-12ba-4276-8f00-db34f9abc799"
         ],
         "top": [
+            "bb3796b7-2305-443f-8138-56333e2d775c",
             "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c"
         ],
         "content": [
@@ -38,7 +39,8 @@
             "0f1df073-3119-486f-8c00-ab1442e3a986",
             "1059b15c-21f3-4934-8800-b28ce7c4e37f",
             "056702e2-0976-407f-9547-71b9b5b83654"
-        ]
+        ],
+        "title": []
     },
     "content": {
         "40fdcf69-7813-404d-af09-9a6798c50500": {
@@ -123,6 +125,32 @@
                 }
             }
         },
+        "bb3796b7-2305-443f-8138-56333e2d775c": {
+            "plugin": "system:page_components:title",
+            "data": {
+                "module": "system",
+                "delta": "page_components",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title_tag": "h1",
+                    "title_classes": "page-title",
+                    "tab_type": "both"
+                },
+                "uuid": "bb3796b7-2305-443f-8138-56333e2d775c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c": {
             "plugin": "layout:custom_block",
             "data": {
@@ -134,7 +162,7 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<h3>There are many wonderful companies and individuals that provide support and services for Backdrop CMS. If you are looking for assistance with design, development, hosting, or maintenance,&nbsp;please browse the&nbsp;list below.</h3>\n",
+                    "content": "<h2>If you are looking for assistance with design, development, hosting, or maintenance,&nbsp;please browse the&nbsp;lists below.</h2>\r\n",
                     "format": "filtered_html"
                 },
                 "uuid": "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c",
