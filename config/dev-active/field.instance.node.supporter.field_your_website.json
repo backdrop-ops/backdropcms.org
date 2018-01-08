@@ -6,7 +6,7 @@
     "deleted": "0",
     "label": "Your website",
     "widget": {
-        "weight": "2",
+        "weight": "1",
         "type": "link_field",
         "module": "link",
         "active": 0,
@@ -30,7 +30,8 @@
         },
         "rel_remove": "default",
         "enable_tokens": 1,
-        "user_register_form": false
+        "user_register_form": false,
+        "title_label_use_field_label": false
     },
     "display": {
         "default": {
@@ -43,5 +44,6 @@
     },
     "required": 1,
     "description": "",
-    "default_value": null
+    "default_value": null,
+    "default_value_function": null
 }

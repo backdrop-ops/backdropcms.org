@@ -4,158 +4,178 @@
  * Contains styles for menu components.
  ******************************************************************************/
 
- /*******************************************************************************
-  * Main menu at mobile width
-  ******************************************************************************/
- @media all and (max-width: 48em) { /* 768px @ 16px font size  -- MD */
-   .block-system-main-menu ul.menu {
-     position: absolute;
-     right: 0;
-     top: 50px;
-     width: 250px;
-   }
- }
- @media all and (max-width: 34em) { /* 544px @ 16px font size -- SM */
-   .block-system-main-menu ul.menu {
-     position: absolute;
-     right: 0;
-     top: 50px;
-     width: 100vw;
-   }
- }
+/*******************************************************************************
+ * Main menu at mobile width
+ ******************************************************************************/
+@media all and (max-width: 48em) { /* 768px @ 16px font size  -- MD */
+  .block-system-main-menu ul.menu {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 250px;
+  }
+}
+@media all and (max-width: 34em) { /* 544px @ 16px font size -- SM */
+  .block-system-main-menu ul.menu {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 100vw;
+  }
+}
 
- /*******************************************************************************
-  * Account Menu
-  ******************************************************************************/
- .borg-greeting {
-   text-align: right;
-   padding-right: 15px;
- }
- .borg-greeting ul.borg-user-menu {
-   list-style: none;
-   margin: 0;
-   padding: 0;
-   font-size: 14px;
- }
- .borg-greeting li {
-   margin: 0;
-   padding: 0;
- }
- .borg-greeting li.top {
-   position: relative;
- }
- .borg-greeting li.top a.greeting {
-   font-weight: bold;
-   display: inline-block;
-   padding: 0 5px 5px 23px;
-   background: transparent url(../images/cog.png) 0 2px no-repeat;
-   background-size: 14px;
- }
- .borg-greeting li.top a.greeting:hover {
-   text-decoration: underline;
- }
- .borg-greeting ul.menu-tree {
-   padding: 0;
-   margin: 0;
-   position: absolute;
-   right: 0;
-   z-index: 999;
-   background-color: #696969;
- }
- .borg-greeting ul.menu-tree.closed {
-   display: none;
- }
- .borg-greeting ul.menu-tree li {
-   list-style: none;
- }
- .borg-greeting ul.menu-tree a {
-   display: block;
-   padding: 3px 10px;
-   border-bottom: 1px solid #000;
- }
- .borg-greeting ul.menu-tree a:hover {
-   background-color: #808080;
- }
- .borg-greeting a.icon {
-   display: inline-block;
-   margin: 0 0 0 10px;
-   padding: 5px;
-   color: rgba(255,255,255,.45);
- }
- .borg-greeting a.icon:last-child {
-   padding-right: 0;
- }
- .borg-greeting a.icon:hover {
-   color: #fff;
- }
+/*******************************************************************************
+ * Account Menu
+ ******************************************************************************/
+.borg-greeting {
+  text-align: right;
+  padding-right: 15px;
+}
+.borg-greeting ul.borg-user-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+.borg-greeting li {
+  margin: 0;
+  padding: 0;
+}
+.borg-greeting li.top {
+  position: relative;
+}
+.borg-greeting li.top a.greeting {
+  font-weight: bold;
+  display: inline-block;
+  padding: 0 5px 5px 23px;
+  background: transparent url(../images/cog.png) 0 2px no-repeat;
+  background-size: 14px;
+}
+.borg-greeting li.top a.greeting:hover {
+  text-decoration: underline;
+}
+.borg-greeting ul.menu-tree {
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  right: 0;
+  z-index: 999;
+  background-color: #696969;
+}
+.borg-greeting ul.menu-tree.closed {
+  display: none;
+}
+.borg-greeting ul.menu-tree li {
+  list-style: none;
+}
+.borg-greeting ul.menu-tree a {
+  display: block;
+  padding: 3px 10px;
+  border-bottom: 1px solid #000;
+}
+.borg-greeting ul.menu-tree a:hover {
+  background-color: #808080;
+}
+.borg-greeting a.icon {
+  display: inline-block;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  color: rgba(255,255,255,.45);
+}
+.borg-greeting a.icon:last-child {
+  padding-right: 0;
+}
+.borg-greeting a.icon:hover {
+  color: #fff;
+}
 
- @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-   .borg-greeting a.icon {
-     display: none;
-   }
- }
- @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-   .borg-greeting a.icon {
-     display: inline-block;
-   }
- }
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .borg-greeting a.icon {
+    display: none;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .borg-greeting a.icon {
+    display: inline-block;
+  }
+}
 
- /*******************************************************************************
-  * Handbook menu block
-  ******************************************************************************/
- .block-borg-blocks-handbook ul.menu {
-   background-color: #F7F7F7;
-   border: 1px solid #444b53;
-   padding: 20px;
- }
- .block-borg-blocks-handbook ul.menu li {
-   list-style: none;
-   padding: 0px;
- }
- .block-borg-blocks-handbook ul.menu li.expanded {
-   border-top: solid 1px #444b53;
-   margin-top: 20px;
-   padding-top: 15px;
- }
- .block-borg-blocks-handbook ul.menu li.first.expanded {
-   border-top: 0;
-   margin-top: 0px;
-   padding-top: 0px;
- }
- .block-borg-blocks-handbook ul.menu li.expanded span {
-   padding: 30px 0 10px 0;
- }
- .block-borg-blocks-handbook ul.menu li.expanded span.nolink {
-   font-size: 1.5rem; /* 24px */
-   letter-spacing: -.05em;
- }
- .block-borg-blocks-handbook ul.menu li.first.expanded span {
-   padding: 0px 0 10px 0;
- }
- .block-borg-blocks-handbook ul.menu ul {
-   margin: 0;
-   padding: 0;
- }
+/*******************************************************************************
+ * Handbook menu block
+ ******************************************************************************/
+.block-borg-blocks-handbook ul.menu {
+  background-color: #F7F7F7;
+  border: 1px solid #444b53;
+  padding: 20px;
+}
+.block-borg-blocks-handbook ul.menu li {
+  list-style: none;
+  padding: 0px;
+}
+.block-borg-blocks-handbook ul.menu li.expanded {
+  border-top: solid 1px #444b53;
+  margin-top: 20px;
+  padding-top: 15px;
+}
+.block-borg-blocks-handbook ul.menu li.first.expanded {
+  border-top: 0;
+  margin-top: 0px;
+  padding-top: 0px;
+}
+.block-borg-blocks-handbook ul.menu li.expanded span {
+  padding: 30px 0 10px 0;
+}
+.block-borg-blocks-handbook ul.menu li.expanded span.nolink {
+  font-size: 1.5rem; /* 24px */
+  letter-spacing: -.05em;
+}
+.block-borg-blocks-handbook ul.menu li.first.expanded span {
+  padding: 0px 0 10px 0;
+}
+.block-borg-blocks-handbook ul.menu ul {
+  margin: 0;
+  padding: 0;
+}
 
- /*******************************************************************************
-  * Footer Menu
-  ******************************************************************************/
- .l-footer .block-menu,
- .l-footer .block-menu-menu-footer-menu {
-   position: absolute;
-   bottom: -62px;
-   right: 0;
-   width: 50%;
- }
- .l-footer .block-menu ul,
- .l-footer .block-menu-menu-footer-menu ul {
-   margin: 0;
-   padding: 0;
- }
- .l-footer .block-menu li,
- .l-footer .block-menu-menu-footer-menu li {
-   display: inline-block;
-   list-style-type: none;
-   margin: 0;
-   padding: .5em 1em;
- }
+/*******************************************************************************
+ * Footer Menu
+ ******************************************************************************/
+.l-footer .block-menu,
+.l-footer .block-menu-menu-footer-menu {
+  width: 100%;
+  padding-bottom: 30px;
+}
+.l-footer .block-menu ul,
+.l-footer .block-menu-menu-footer-menu ul {
+  margin: 0;
+  padding: 0;
+}
+.l-footer .block-menu li,
+.l-footer .block-menu-menu-footer-menu li {
+  list-style-type: none;
+  margin: 0;
+  padding: .5em 1em;
+  text-align: center;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .l-footer .block-menu,
+  .l-footer .block-menu-menu-footer-menu {
+    position: absolute;
+    bottom: -62px;
+    right: 0;
+    width: 50%;
+    padding-bottom: 0;
+  }
+  .l-footer .block-menu li,
+  .l-footer .block-menu-menu-footer-menu li {
+    display: inline-block;
+    padding: .5em .2em;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-footer .block-menu li,
+  .l-footer .block-menu-menu-footer-menu li {
+    padding: .5em 1em;
+  }
+}

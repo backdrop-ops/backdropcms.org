@@ -69,31 +69,41 @@ input[type=image] {
 /*******************************************************************************
  * Backdrop books
  ******************************************************************************/
-.backdrop-books {
+.backdrop-books,
+.block-block-books {
   margin-top: 50px;
-  text-align: center;
 }
+.block-block-books .block-title,
 .backdrop-books .block-title {
   text-align: left;
 }
+.block-block-books a,
 .backdrop-books a {
   display: block;
 }
+.block-block-books figure,
 .backdrop-books figure {
-  max-width: 220px;
+  max-width: 200px;
+  vertical-align: top;
 }
+.block-block-books .block-content p,
+.backdrop-books .block-content p {
+  display: none;
+}
+.block-block-books img,
 .backdrop-books img {
   margin: 10px auto 0 auto;
 }
 
+main.col-md-8 .block-block-books figure,
 main.col-md-8 .backdrop-books figure {
   display: inline-block;
 }
+.l-sidebar .block-block-books figure,
 .l-sidebar .backdrop-books figure {
   margin-left: 0;
   margin-right: 0;
 }
-
 
 /*******************************************************************************
  * Resrouces block
@@ -142,7 +152,7 @@ main.col-md-8 .backdrop-books figure {
   letter-spacing: .03em;
   text-align: center;
 }
-@media (min-width: 48em) { /*768px */
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .block-block-1 {
     float: left;
     margin-right: 25px;
@@ -154,7 +164,7 @@ main.col-md-8 .backdrop-books figure {
  ******************************************************************************/
 .block-block-newsletter,
 .block-block-3 {
-  padding-bottom: 40px;
+  padding-bottom: 30px;
 }
 .block-block-newsletter #mce-EMAIL,
 .block-block-3 #mce-EMAIL {
@@ -169,6 +179,66 @@ main.col-md-8 .backdrop-books figure {
 }
 
 /*******************************************************************************
+ * borg_project_metrics block
+ ******************************************************************************/
+div.block-borg-project-metrics-backdrop-project-metrics {
+  padding: 30px 0;
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div {
+  min-height: 88px;
+  text-align: center;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+  max-width: 80px;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+  font-size: 1rem; /* 26px */
+}
+.block-borg-project-metrics-backdrop-project-metrics .join-the-fun {
+  text-align: center;
+}
+.block-borg-project-metrics-backdrop-project-metrics .join-the-fun p {
+  margin: .5em auto 1em auto;
+}
+.block-borg-project-metrics-backdrop-project-metrics .github-img {
+  max-width: 16px;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  div.block-borg-project-metrics-backdrop-project-metrics {
+    padding: 45px 0;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+    max-width: 66px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+    font-size: 1.25rem; /* 20px */
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  div.block-borg-project-metrics-backdrop-project-metrics {
+    padding: 60px 0;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+    max-width: 100px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+    font-size: 1.5rem; /* 24px */
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+    max-width: 120px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+    font-size: 1.75rem; /* 28px */
+  }
+}
+
+
+/*******************************************************************************
  * Custom RSS feed icon.
  ******************************************************************************/
 .block-borg-blocks-rss {
@@ -179,13 +249,62 @@ main.col-md-8 .backdrop-books figure {
 }
 
 /*******************************************************************************
- * Show your support form block.
+ * Custom tagline block.
  ******************************************************************************/
-.block-formblock-supporter {
-  clear: left;
-  padding: 34px 0 50px;
+.block-borg-blocks-tagline {
   text-align: center;
 }
+.block-borg-blocks-tagline .subtext {
+  margin-top: 0;
+}
+.block-borg-blocks-tagline .subtext a {
+  font-weight: 300;
+  color: #fff;
+  text-decoration: underline;
+}
+.block-borg-blocks-tagline .subtext a:hover {
+  text-decoration: none;
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-borg-blocks-tagline {
+    padding-bottom: 15px;
+  }
+  .block-borg-blocks-tagline .block-content {
+    background: transparent url('../images/screens.png') bottom center no-repeat;
+    background-size: 720px;
+    padding-bottom: 300px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .block-borg-blocks-tagline {
+    padding-bottom: 30px;
+  }
+  .block-borg-blocks-tagline .block-content {
+    background-size: 920px;
+    padding-bottom: 400px;
+  }
+}
+
+/*******************************************************************************
+ * Showcase block
+ ******************************************************************************/
+div.block-views-showcase-block-1 {
+  margin-top: 30px;
+  margin-bottom: 0px;
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-views-showcase-block-1 h2 {
+    margin-bottom: 0;
+  }
+  .block-views-showcase-block-1 .view-showcase .row {
+    padding-bottom: 40px;
+  }
+}
+
+/*******************************************************************************
+ * Show your support form block.
+ ******************************************************************************/
 .block-formblock-supporter form {
   max-width: 670px;
   text-align: left;
@@ -275,7 +394,15 @@ main.col-md-8 .backdrop-books figure {
 }
 
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-formblock-supporter {
+    padding-left: 15px;
+  }
   .block-formblock-supporter .image-widget-data span {
     display: inline;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .block-formblock-supporter {
+    padding-left: 30px;
   }
 }

@@ -12,6 +12,10 @@ function borg_blocks_block_info() {
     'info' => t('Branding'),
     'description' => t('Backdrop CMS logomark and wordmark.'),
   );
+  $blocks['tagline'] = array(
+    'info' => t('Tagline & Download'),
+    'description' => t('Tagline and download'),
+  );
   $blocks['greeting'] = array(
     'info' => t('Greeting'),
     'description' => t('Backdrop CMS greeting block.'),
@@ -48,6 +52,11 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
       $block['content'] = $output;
       break;
 
+    case 'tagline':
+      $block['subject'] = NULL;
+      $block['content'] = borg_blocks_tagline($settings);
+      break;
+
     case 'greeting':
       global $user;
 
@@ -73,6 +82,68 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
   return $block;
 }
 
+function borg_blocks_tagline($settings) {
+  $dl_url = $settings['download_url'];
+  $dl_attributes = array('class' => array('button', 'download'));
+  $download_link = l(t('Download Backdrop'), $dl_url, array('attributes' => $dl_attributes));
+
+  $demo_url = $settings['demo_url'];
+  $demo_attributes = array('class' => array('button', 'demo'));
+  $demo_link = l(t('Try a demo'), $demo_url, array('attributes' => $demo_attributes));
+
+  //$output  = '<h1 class="page-title">Backdrop CMS</h1>';
+  $output  = '<h2><span>A free and Open Source CMS</span> ';
+  $output .= '<span>for small to medium sized businesses and non-profits.</span></h2>';
+  $output .= $download_link;
+  $output .= $demo_link;
+
+  $version = $settings['version'];
+  $requirements = l(t('requirements'), 'requirements');
+  $installing = l(t('installing'), 'installation');
+  $upgrading = l(t('upgrading'), 'upgrade');
+
+  $output .= '<p class="subtext">';
+  $output .= '  <span>' . $version . '</span> / ';
+  $output .=    $requirements . ' / ' . $installing . ' / ' . $upgrading;
+  $output .= '</p>';
+
+  return $output;
+}
+
+/**
+ * Implements function hook_block_configure().
+ */
+function borg_blocks_block_configure($delta = '', $settings = array()) {
+  $form = array();
+
+  if ($delta == 'tagline') {
+    $settings += array(
+      'version' => 'v1.8.1',
+      'download_url' => 'https://github.com/backdrop/backdrop/releases/download/1.8.1/backdrop.zip',
+      'demo_url' => 'http://www.getpantheon.com/backdrop',
+    );
+
+    $form['version'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Current Version Number'),
+      '#default_value' => $settings['version'],
+    );
+    $form['download_url'] = array(
+      '#type' => 'url',
+      '#title' => t('Download Backdrop URL'),
+      '#default_value' => $settings['download_url'],
+    );
+    $form['demo_url'] = array(
+      '#type' => 'url',
+      '#title' => t('Try Backdrop - Demo URL'),
+      '#default_value' => $settings['demo_url'],
+    );
+
+  }
+
+  return $form;
+}
+
 /**
  * Implements hook_form_FORM_ID_alter().
  *
@@ -86,5 +157,6 @@ function borg_blocks_form_supporter_node_form_alter(&$form, &$form_state, $form_
   // Only unset for homepage.
   if (current_path() == 'node/19') {
     unset($form['title']['#attributes']['autofocus']);
+    $form['actions']['submit']['#value'] = t('Submit');
   }
 }
