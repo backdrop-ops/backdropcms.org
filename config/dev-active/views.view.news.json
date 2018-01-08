@@ -307,21 +307,7 @@
                     "separator": "",
                     "hide_empty": 0
                 },
-                "footer": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "empty": 0,
-                        "content": "<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\"><img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" /></a><br/>\n“<a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Beginning Backdrop CMS</a>” by Todd Tomlinson, author of “Pro Drupal 7 Development”, is available now from <a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">Amazon</a>.",
-                        "format": "full_html",
-                        "tokenize": 0
-                    }
-                },
+                "footer": [],
                 "filters": {
                     "type": {
                         "id": "type",
@@ -376,7 +362,8 @@
                     "groups": {
                         "1": "AND"
                     }
-                }
+                },
+                "block_description": "Latest News"
             }
         },
         "page_1": {

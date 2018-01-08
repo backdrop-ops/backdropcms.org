@@ -6,7 +6,7 @@
     "deleted": "0",
     "label": "Your Logo",
     "widget": {
-        "weight": "1",
+        "weight": "2",
         "type": "image_image",
         "module": "image",
         "active": 1,
@@ -33,11 +33,14 @@
             "weight": "0",
             "settings": {
                 "image_style": "thumbnail",
-                "image_link": ""
+                "image_link": "",
+                "image_float": ""
             },
             "module": "image"
         }
     },
     "required": 0,
-    "description": ""
+    "description": "",
+    "default_value": null,
+    "default_value_function": null
 }
