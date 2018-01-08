@@ -7,7 +7,7 @@
     "description": "Are you a supporter of Backdrop CMS? Let us know, so we can tell the world.",
     "help": "",
     "has_title": true,
-    "title_label": "Company / Organization / Name",
+    "title_label": "Your Company / Organization / Name",
     "modified": true,
     "disabled": false,
     "orig_type": "supporter",
@@ -27,10 +27,10 @@
         "formblock_show_help": 0,
         "menu_options": {
             "devel": 0,
+            "menu-footer-menu": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
-            "navigation": 0,
             "menu-user-guide": 0,
             "user-menu": 0
         },
