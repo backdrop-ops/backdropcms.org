@@ -270,21 +270,21 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
   // Block content.
   $metrics_content = <<<HTML
     <div class="row project-metrics">
-      <div class="col-sm-4 comments-metric">
+      <div class="col-xs-4 comments-metric">
         <img class="comments-img" src="$images_path/images/fa-comments.png" />
         <p>
           <span class="comments-number"> $comments </span>
           <span class="comments-label"> comments </span>
         </p>
       </div>
-      <div class="col-sm-4 commits-metric">
+      <div class="col-xs-4 commits-metric">
         <img class="commits-img" src="$images_path/images/fa-code-fork.png" />
         <p>
           <span class="commits-number"> $commits </span>
           <span class="commits-label"> commits </span>
         </p>
       </div>
-      <div class="col-sm-4 users-metric">
+      <div class="col-xs-4 users-metric">
         <img class="users-img" src="$images_path/images/fa-user.png" />
         <p>
           <span class="users-number"> $users </span>
