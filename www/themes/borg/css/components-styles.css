@@ -1,0 +1,32 @@
+/*******************************************************************************
+ * components-styles.scss
+ *
+ * Contains styles for menu components.
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Full Width blocks
+ ******************************************************************************/
+div.full-width {
+  margin-left: calc(50% - 50vw);
+  width: 100vw;
+
+  background-color: #F7F7F7;
+  border-top: 3px solid #E8E6E5;
+  border-bottom: 3px solid #E8E6E5;
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+/*******************************************************************************
+ * Dark blocks
+ ******************************************************************************/
+div.dark {
+  color: #fff;
+  background-color: #000;
+  border-top: .01px solid transparent;
+  border-bottom: .01px solid transparent;
+}
+div.dark h2 {
+  font-weight: 300; /* light */
+}

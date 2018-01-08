@@ -1,5 +1,11 @@
 /** FOR DEBUGGING ONLY */
 
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .l-header .container {
+    background-color: pink;
+  }
+}
+
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .l-header .container {
     background-color: red;

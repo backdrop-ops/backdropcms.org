@@ -1,8 +1,8 @@
 /*******************************************************************************
- * layout.scss
+ * layout-pages.scss
  *
- * Contains styles relating to layout. Any adjustment of margins/padding/widths,
- * etc. should be in the layouts/double_fixed/double-fixed.css file!
+ * Contains page specific overrides of the styles relating to layout. All
+ * element classes used as base identifiers in this file should start with .l-
  ******************************************************************************/
 
 /*******************************************************************************
@@ -80,7 +80,6 @@ body.support-services-contractors .page-title {
  * - Support page(s)
  *   - Put back Contractors page
  ******************************************************************************/
-body.front .l-bottom,
 body.support .l-bottom,
 body.support-services .l-bottom,
 body.node-1621 .l-bottom {

@@ -20,6 +20,7 @@ We do not recommend that these files be overridden in a sub-theme:
 * layout.css - contains general overrides to core layouts.
 * components.css - contains general styles for blocks and page elements.
 * components-menus.css - contains genreal menu styles.
+* components-styles.css - contains classes that can be applied to blocks.
 * menu-dropdown.theme.css - contans color and behavior for drop-down menu.
 * menu-toggle.theme.css - contains color and placement for hamburger menu.
 
@@ -38,7 +39,12 @@ We do recommend that these files are overridden in a sub-theme:
 Block Styles
 ===============================================================================
 
-@todo
+full-width - Add the class "full-width" to have a block break out of the content
+             area and span the full width of the page. This class also adds a
+             light gray background and medium gray borders.
+
+dark - Add the class "dark" to any block to make the block's blackground black,
+       and the text white.
 
 
 Color List
