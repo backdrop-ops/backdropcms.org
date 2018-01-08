@@ -7,7 +7,7 @@
     "module": null,
     "weight": 0,
     "storage": 1,
-    "layout_template": "boxton",
+    "layout_template": "borg_sutro",
     "disabled": false,
     "settings": {
         "title": "",
@@ -21,16 +21,27 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
-            "07136c38-dd48-48b6-922f-47e22754307a"
+            "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d",
+            "65611a78-5d6e-4d50-8705-058169d6120c"
         ],
-        "content": [
-            "712c691e-6273-4634-8000-d97d82d86e88",
-            "1bcb4583-cc63-43dc-8908-08af956e6975",
+        "content": [],
+        "half1": [
+            "712c691e-6273-4634-8000-d97d82d86e88"
+        ],
+        "half2": [
             "67447c68-4227-4401-ad00-f50c7b1a6690",
-            "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51"
+            "f763943b-8712-44ff-ba00-e45044734b4b",
+            "78355c13-bb46-4609-a607-7fa6192a1afd"
+        ],
+        "below": [],
+        "below1": [
+            "a9d84586-db47-4e43-a75d-93e603166bfb"
+        ],
+        "below2": [
+            "4fb984d4-6d20-4703-a05a-9024ac4575f3"
         ],
         "bottom": [
-            "eb9135d6-652f-45c3-9a00-c8de2519591d"
+            "1bcb4583-cc63-43dc-8908-08af956e6975"
         ],
         "footer": [
             "b91d2e82-5e00-4ea6-a81a-26ef2bb5f78a",
@@ -124,27 +135,62 @@
                 }
             }
         },
-        "07136c38-dd48-48b6-922f-47e22754307a": {
-            "plugin": "block:4",
+        "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d": {
+            "plugin": "borg_blocks:tagline",
             "data": {
-                "module": "block",
-                "delta": "4",
+                "module": "borg_blocks",
+                "delta": "tagline",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "delta": "4",
-                        "reusable": true
+                        "version": "v1.8.1",
+                        "download_url": "https://github.com/backdrop/backdrop/releases/download/1.8.1/backdrop.zip",
+                        "demo_url": "http://www.getpantheon.com/backdrop"
                     },
                     "contexts": []
                 },
-                "uuid": "07136c38-dd48-48b6-922f-47e22754307a",
+                "uuid": "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d",
                 "style": {
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "container"
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "65611a78-5d6e-4d50-8705-058169d6120c": {
+            "plugin": "views:showcase-block_1",
+            "data": {
+                "module": "views",
+                "delta": "showcase-block_1",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "3",
+                    "offset": 0,
+                    "path": "showcase",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
+                },
+                "uuid": "65611a78-5d6e-4d50-8705-058169d6120c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "full-width dark"
                         }
                     }
                 }
@@ -178,6 +224,149 @@
                 }
             }
         },
+        "67447c68-4227-4401-ad00-f50c7b1a6690": {
+            "plugin": "views:news-block",
+            "data": {
+                "module": "views",
+                "delta": "news-block",
+                "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "1",
+                    "offset": 0,
+                    "path": "news",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
+                },
+                "uuid": "67447c68-4227-4401-ad00-f50c7b1a6690",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "f763943b-8712-44ff-ba00-e45044734b4b": {
+            "plugin": "block:resources",
+            "data": {
+                "module": "block",
+                "delta": "resources",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "resources",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "f763943b-8712-44ff-ba00-e45044734b4b",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "78355c13-bb46-4609-a607-7fa6192a1afd": {
+            "plugin": "block:books",
+            "data": {
+                "module": "block",
+                "delta": "books",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "books",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "78355c13-bb46-4609-a607-7fa6192a1afd",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "a9d84586-db47-4e43-a75d-93e603166bfb": {
+            "plugin": "views:supporters_home-block_2",
+            "data": {
+                "module": "views",
+                "delta": "supporters_home-block_2",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "16",
+                    "offset": 0,
+                    "path": null,
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
+                },
+                "uuid": "a9d84586-db47-4e43-a75d-93e603166bfb",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "4fb984d4-6d20-4703-a05a-9024ac4575f3": {
+            "plugin": "formblock:supporter",
+            "data": {
+                "module": "formblock",
+                "delta": "supporter",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "Show Your Support",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "4fb984d4-6d20-4703-a05a-9024ac4575f3",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "1bcb4583-cc63-43dc-8908-08af956e6975": {
             "plugin": "borg_project_metrics:backdrop_project_metrics",
             "data": {
@@ -195,101 +384,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "67447c68-4227-4401-ad00-f50c7b1a6690": {
-            "plugin": "views:news-block",
-            "data": {
-                "module": "views",
-                "delta": "news-block",
-                "settings": {
-                    "link_to_view": null,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "1",
-                    "offset": 0,
-                    "path": "news",
-                    "fields_override": null,
-                    "title_display": "none",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false
-                },
-                "uuid": "67447c68-4227-4401-ad00-f50c7b1a6690",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
                             "classes": "full-width"
-                        }
-                    }
-                }
-            }
-        },
-        "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51": {
-            "plugin": "views:supporters-block",
-            "data": {
-                "module": "views",
-                "delta": "supporters-block",
-                "settings": {
-                    "link_to_view": null,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "22",
-                    "offset": 0,
-                    "path": null,
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false
-                },
-                "uuid": "0e7a7dd8-31db-4ad2-8b00-bd5e32e2ae51",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": "l-content-wrapper"
-                        }
-                    }
-                }
-            }
-        },
-        "eb9135d6-652f-45c3-9a00-c8de2519591d": {
-            "plugin": "formblock:supporter",
-            "data": {
-                "module": "formblock",
-                "delta": "supporter",
-                "settings": {
-                    "title_display": "custom",
-                    "title": "Show your support for Backdrop CMS",
-                    "style": "dynamic",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "eb9135d6-652f-45c3-9a00-c8de2519591d",
-                "style": {
-                    "plugin": "dynamic",
-                    "data": {
-                        "settings": {
-                            "classes": "",
-                            "wrapper_tag": "div",
-                            "title_tag": "h2",
-                            "title_classes": "block-title container",
-                            "content_tag": "div",
-                            "content_classes": "l-content-wrapper"
                         }
                     }
                 }
