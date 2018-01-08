@@ -26,7 +26,19 @@ div.dark {
   background-color: #000;
   border-top: .01px solid transparent;
   border-bottom: .01px solid transparent;
+  padding: 15px 0;
 }
 div.dark h2 {
   font-weight: 300; /* light */
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  div.dark {
+    padding: 30px 0;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  div.dark {
+    padding: 40px 0;
+  }
 }

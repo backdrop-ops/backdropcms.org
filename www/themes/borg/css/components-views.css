@@ -335,7 +335,11 @@
 /*******************************************************************************
  * Showcase - block
  ******************************************************************************/
+.block-views-showcase-block-1 {
+  padding: 30px;
+}
 .block-views-showcase-block-1 h2 {
+  margin-top: 0;
   margin-bottom: 0;
 }
 .block-views-showcase-block-1 .view-showcase .view-header {
@@ -359,13 +363,17 @@
   color: #fff;
 }
 
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+@media (min-width: 25em) { /* 400px @ 16px font size */
   .block-views-showcase-block-1 h2 {
     padding-left: 30px;
   }
   .block-views-showcase-block-1 .view-showcase .view-header {
-    font-size: 1.5rem; /* 24px */
     padding-right: 15px;
+  }
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .block-views-showcase-block-1 .view-showcase .view-header {
+    font-size: 1.5rem; /* 24px */
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
