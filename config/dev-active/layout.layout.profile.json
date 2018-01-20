@@ -25,7 +25,7 @@
             "74c7a5c2-bf2d-4691-9a02-2a2e8d95fc40"
         ],
         "sidebar": [
-            "278b32b4-0850-4580-b243-67f0568a9110"
+            "97bb4110-eb79-469c-8f00-e4a1b1dcc054"
         ],
         "bottom": [],
         "footer": [
@@ -147,13 +147,13 @@
                 }
             }
         },
-        "278b32b4-0850-4580-b243-67f0568a9110": {
+        "97bb4110-eb79-469c-8f00-e4a1b1dcc054": {
             "plugin": "views:profile_sidebar-block",
             "data": {
                 "module": "views",
                 "delta": "profile_sidebar-block",
                 "settings": {
-                    "link_to_view": null,
+                    "link_to_view": 0,
                     "more_link": false,
                     "use_pager": false,
                     "pager_id": 0,
@@ -167,9 +167,10 @@
                     "block_settings": [],
                     "contexts": [],
                     "allowed": [],
-                    "path_override": false
+                    "path_override": false,
+                    "exposed": []
                 },
-                "uuid": "278b32b4-0850-4580-b243-67f0568a9110",
+                "uuid": "97bb4110-eb79-469c-8f00-e4a1b1dcc054",
                 "style": {
                     "plugin": "default",
                     "data": {

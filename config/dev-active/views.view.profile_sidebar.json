@@ -936,6 +936,62 @@
                 },
                 "block_description": "Profile Sidebar"
             }
+        },
+        "block_1": {
+            "display_title": "Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "block_description": "My Profile Sidebar",
+                "arguments": {
+                    "uid": {
+                        "id": "uid",
+                        "table": "users",
+                        "field": "uid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "default",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 0,
+                            "title": "All"
+                        },
+                        "title_enable": 0,
+                        "title": "",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "current_user",
+                        "default_argument_options": "",
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 0,
+                        "validate": {
+                            "type": "none",
+                            "fail": "not found"
+                        },
+                        "validate_options": [],
+                        "break_phrase": 0,
+                        "not": 0
+                    }
+                },
+                "defaults": {
+                    "arguments": false
+                }
+            }
         }
     }
 }
