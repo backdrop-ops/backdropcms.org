@@ -40,7 +40,6 @@ h1 {
   font-weight: 300; /* Light */
   font-size: 3.75rem; /* 60px */
   letter-spacing: 0.01em;
-  padding: 0.666em 0 .1em 0;
 }
 
 h2, h3, h4, h5, h6 {
@@ -93,6 +92,28 @@ ol > li {
   padding: 0 0 0 .4em;
 }
 
+table {
+  width: 100%;
+  margin: 1em 0;
+}
+table th {
+  font-size: 1.25em;
+  font-weight: 400; /* Normal */
+  border-bottom: 2px solid #E8E6E5;
+}
+tr.even,
+tr.odd {
+  background-color: #f7f7f7;
+}
+table td {
+  padding: 1em .5em;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  table td {
+    padding: 1em;
+  }
+}
+
 blockquote {
   padding: 25px 50px;
   margin: 0;
@@ -111,6 +132,7 @@ figcaption {
   color: #444b53;
   font-size: .85em; /* relative size */
 }
+
 small {
   font-size: .95em; /* relative size */
 }

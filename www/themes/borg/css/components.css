@@ -1176,6 +1176,35 @@ div.addressfield-container-inline::after {
 }
 
 /*******************************************************************************
+ * All Sidebar Links
+ ******************************************************************************/
+.l-sidebar a:hover {
+   text-decoration: underline;
+}
+.l-sidebar h2 a:hover,
+.l-sidebar h3 a:hover,
+.l-sidebar h4 a:hover,
+.l-sidebar h5 a:hover,
+.l-sidebar h6 a:hover {
+   text-decoration: none;
+   color: #000;
+}
+
+/*******************************************************************************
+ * All Sidebar Blocks Headings
+ ******************************************************************************/
+.l-sidebar .block:first-child h2.block-title {
+    margin-top: 0;
+}
+
+/*******************************************************************************
+ * All Sidebar Views Headings
+ ******************************************************************************/
+.l-sidebar .view h4 {
+   margin-bottom: .25em;
+}
+
+/*******************************************************************************
  * All Views exposed forms
  ******************************************************************************/
 .views-exposed-form {

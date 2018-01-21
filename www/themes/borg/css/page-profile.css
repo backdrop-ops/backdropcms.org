@@ -12,14 +12,10 @@
   * Profile / Account page
   ******************************************************************************/
 
- main.profile-page #page-title {
-   padding-top: 40px;
+ .profile-page .l-page-title {
+   padding-top: 10px;
  }
- @media all and (min-width: 851px) {
-   main.profile-page #page-title {
-     padding-top: 80px;
-   }
- }
+
 
  article.profile {
    clear: none;

@@ -3,25 +3,11 @@
  * @file
  * Template for the Boxton layout.
  *
- * *** CHANGES: moved top region to above title, inside .l-wraopper
- *
- * Variables:
- * - $title: The page title, for use in the actual HTML content.
- * - $messages: Status and error messages. Should be displayed prominently.
- * - $tabs: Tabs linking to any sub-pages beneath the current page
- *   (e.g., the view and edit tabs when displaying a node.)
- * - $action_links: Array of actions local to the page, such as 'Add menu' on
- *   the menu administration interface.
- * - $classes: Array of CSS classes to be added to the layout wrapper.
- * - $attributes: Array of additional HTML attributes to be added to the layout
- *     wrapper. Flatten using backdrop_attributes().
- * - $content: An array of content, each item in the array is keyed to one
- *   region of the layout. This layout supports the following sections:
- *   - $content['header']
- *   - $content['top']
- *   - $content['content']
- *   - $content['bottom']
- *   - $content['footer']
+ * *** CHANGES: ***
+ * - Moved messages just below page title.
+ * - Moved top region to above title, outside .l-wrapper.
+ * - Moved bottom region to above footer, outside .l-wrapper.
+ * - Added a div with the "row" class to both header and footer.
  */
 ?>
 <div class="layout--boxton <?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
@@ -50,12 +36,6 @@
   <div <?php print backdrop_attributes($wrap_attributes); ?>> <!-- .l-wrapper !-->
     <div class="l-wrapper-inner container container-fluid">
 
-      <?php if ($messages): ?>
-        <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
-          <?php print $messages; ?>
-        </div>
-      <?php endif; ?>
-
       <?php if ($title): ?>
       <div class="l-page-title">
         <a id="main-content"></a>
@@ -63,6 +43,12 @@
           <h1 class="page-title"><?php print $title; ?></h1>
         <?php print render($title_suffix); ?>
       </div>
+      <?php endif; ?>
+
+      <?php if ($messages): ?>
+        <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
+          <?php print $messages; ?>
+        </div>
       <?php endif; ?>
 
       <?php if ($tabs): ?>
@@ -82,7 +68,11 @@
 
   <?php if (!empty($content['bottom'])): ?>
     <div class="l-bottom">
-      <?php print $content['bottom']; ?>
+        <div class="l-bottom-inner">
+          <div class="row">
+            <?php print $content['bottom']; ?>
+          </div>
+        </div>
     </div>
   <?php endif; ?>
 

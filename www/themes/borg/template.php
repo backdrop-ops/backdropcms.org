@@ -122,15 +122,15 @@ function borg_preprocess_page(&$variables) {
       $variables['classes'][] = 'user-form';
       $variables['classes'][] = 'user-password';
     }
-    elseif (is_numeric(arg(1)) && ! arg(2)) {
-      $variables['classes'][] = 'profile-page';
-      backdrop_add_css($path . '/css/page-profile.css');
-    }
     else {
       global $user;
       if ($user->uid == 0 && !arg(1)) {
         $variables['classes'][] = 'user-form';
         $variables['classes'][] = 'user-login';
+      }
+      elseif (is_numeric(arg(1)) && !arg(2) || ($user->uid)) {
+        $variables['classes'][] = 'profile-page';
+        backdrop_add_css($path . '/css/page-profile.css');
       }
     }
   }
