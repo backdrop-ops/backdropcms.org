@@ -3,31 +3,11 @@
  * @file
  * Template for the Sutro layout.
  *
- * Variables:
- * - $title: The page title, for use in the actual HTML content.
- * - $messages: Status and error messages. Should be displayed prominently.
- * - $tabs: Tabs linking to any sub-pages beneath the current page
- *   (e.g., the view and edit tabs when displaying a node.)
- * - $action_links: Array of actions local to the page, such as 'Add menu' on
- *   the menu administration interface.
- * - $classes: Array of CSS classes to be added to the layout wrapper.
- * - $attributes: Array of additional HTML attributes to be added to the layout
- *     wrapper. Flatten using backdrop_attributes().
- * - $content: An array of content, each item in the array is keyed to one
- *   region of the layout. This layout supports the following sections:
- *   - $content['header']
- *   - $content['top']
- *   - $content['content']
- *   - $content['half1']
- *   - $content['half2']
- *
- *   - $content['below']
- *   - $content['below1']
- *   - $content['below2']
- *
- *   - $content['bottom']
- *   - $content['footer']
- *
+ * *** CHANGES: ***
+ * - Moved messages just below page title.
+ * - Moved top region to above title, outside .l-wrapper.
+ * - Moved bottom region to above footer, outside .l-wrapper.
+ * - Added a div with the "row" class to both header and footer.
  */
 ?>
 <div class="layout--borg-sutro <?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
@@ -109,14 +89,18 @@
         </div>
       </div><!-- /.l-middle -->
 
-      <?php if (!empty($content['bottom'])): ?>
-        <div class="l-bottom">
-          <?php print $content['bottom']; ?>
-        </div>
-      <?php endif; ?>
-
     </div><!-- /.l-wrapper-inner -->
   </div><!-- /.l-wrapper -->
+
+  <?php if (!empty($content['bottom'])): ?>
+    <div class="l-bottom">
+        <div class="l-bottom-inner">
+          <div class="row">
+            <?php print $content['bottom']; ?>
+          </div>
+        </div>
+    </div>
+  <?php endif; ?>
 
   <?php if ($content['footer']): ?>
     <footer class="l-footer"  role="footer">
