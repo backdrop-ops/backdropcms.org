@@ -14,7 +14,11 @@
     "description": "",
     "required": 0,
     "deleted": 0,
-    "default_value": null,
+    "default_value": [
+        {
+            "value": "np"
+        }
+    ],
     "default_value_function": null,
     "settings": {
         "user_register_form": false
