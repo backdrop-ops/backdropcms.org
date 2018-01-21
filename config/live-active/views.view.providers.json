@@ -1048,7 +1048,8 @@
                     "header": false,
                     "filters": false,
                     "filter_groups": false,
-                    "title": false
+                    "title": false,
+                    "css_class": false
                 },
                 "style_plugin": "grid",
                 "style_options": {
@@ -1235,7 +1236,8 @@
                         "tokenize": 0
                     }
                 },
-                "title": ""
+                "title": "",
+                "css_class": ""
             }
         }
     }
