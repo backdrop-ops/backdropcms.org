@@ -285,14 +285,15 @@
                     "block_settings": [],
                     "contexts": [],
                     "allowed": [],
-                    "path_override": false
+                    "path_override": false,
+                    "exposed": []
                 },
                 "uuid": "9401402d-1468-486b-b407-7ffcea4f39d4",
                 "style": {
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
+                            "classes": "col-xs-12"
                         }
                     }
                 }
