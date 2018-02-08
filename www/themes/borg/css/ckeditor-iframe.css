@@ -1,0 +1,111 @@
+/*******************************************************************************
+ * editor.css
+ *
+ * Contains styles that will be applied within the rich-text editor.
+ *
+ * This should be a sub-set of styles that only need to affect the area within
+ * the body (or a textarea) with the addition of any styles that may have
+ * been added in via the editor configuration.
+ ******************************************************************************/
+
+span.navigation {
+  display: inline-block;
+  background-color: #202020;
+  color: #eee;
+  font: 11px/1 "Lucida Grande",Verdana,sans-serif;
+  letter-spacing: 0.4px;
+  padding: 9px 12px;
+}
+span.link {
+  display: inline-block;
+  color: #0074bd;
+}
+span.button {
+  display: inline-block;
+  background-color: #1766ae;
+  border-color: #1766ae;
+  border-radius: 5px;
+  color: white;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+}
+span.button-secondary {
+  display: inline-block;
+  background-color: white;
+  box-shadow: 0 0 0 2px #97979e inset;
+  border-color: #1766ae;
+  border-radius: 5px;
+  color: #828188;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+}
+span.local-tab {
+  display: inline-block;
+  background-color: #dbdbd9;
+  color: #757575;
+  text-transform: uppercase;
+  border-radius: 4px 4px 0 0;
+  padding: 6px 10px;
+}
+span.dropbutton {
+  display: inline-block;
+  color: #0074bd;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border: 1px solid #e9e8e8;
+  border-radius: 5px;
+  padding: 3px 5px;
+}
+span.vartical-tab {
+  display: inline-block;
+  background-color: #fff;
+  border-left: 4px solid #0074bd;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+  padding: 6px 10px;
+}
+span.table-header {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+span.select-option {
+  background: #fff none repeat scroll 0 0;
+  border: 2px solid #d0d0d0;
+  border-radius: 4px;
+  color: #444b53;
+  font-weight: 400;
+  padding: 5px 10px;
+}
+span.callout {
+
+}
+span.example {
+
+}
+span.monospace {
+  font-family: Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+  font-size: 85%;
+  padding-right: 1px;
+}
+
+/*******************************************************************************
+ * Codeblocks
+ ******************************************************************************/
+div.codeblock pre {
+  border: 1px solid #E8E6E5;
+  background-color: #f7f7f7;
+}
+div.codeblock code {
+  font-size: .8rem; /* relative size */
+  line-height: 1.6;
+}
+
+/*******************************************************************************
+ * Other things
+ ******************************************************************************/
+div.indent {
+  margin: 0 25px;
+}
