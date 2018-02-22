@@ -22,14 +22,15 @@
         ],
         "top": [],
         "content": [
+            "70afa89b-8469-4c6b-8801-01932c27a8a3",
             "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309"
         ],
         "sidebar": [
             "1c732b6a-9279-45af-b242-666a63fa2848",
             "1cb8ed0f-b783-4901-9a00-f445fd6db153",
+            "0765a3fa-4353-454d-9301-1c346e550eae",
             "e161c1f5-be5c-47c4-a723-352567c8870c",
-            "11f77fa6-ce86-4619-9338-56b87d16920f",
-            "0765a3fa-4353-454d-9301-1c346e550eae"
+            "11f77fa6-ce86-4619-9338-56b87d16920f"
         ],
         "bottom": [],
         "footer": [
@@ -123,6 +124,31 @@
                 }
             }
         },
+        "70afa89b-8469-4c6b-8801-01932c27a8a3": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<h2>Here you'll find posts&nbsp;about both the software&nbsp;and the Backdrop community.</h2>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "70afa89b-8469-4c6b-8801-01932c27a8a3",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309": {
             "plugin": "system:main",
             "data": {
@@ -200,6 +226,39 @@
                 }
             }
         },
+        "0765a3fa-4353-454d-9301-1c346e550eae": {
+            "plugin": "views:backdrop_on_the_web-block_1",
+            "data": {
+                "module": "views",
+                "delta": "backdrop_on_the_web-block_1",
+                "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": true,
+                    "pager_id": "0",
+                    "items_per_page": "25",
+                    "offset": 0,
+                    "path": "news/on-the-web",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
+                },
+                "uuid": "0765a3fa-4353-454d-9301-1c346e550eae",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "e161c1f5-be5c-47c4-a723-352567c8870c": {
             "plugin": "views:events-block_1",
             "data": {
@@ -249,39 +308,6 @@
                     "contexts": []
                 },
                 "uuid": "11f77fa6-ce86-4619-9338-56b87d16920f",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "0765a3fa-4353-454d-9301-1c346e550eae": {
-            "plugin": "views:backdrop_on_the_web-block_1",
-            "data": {
-                "module": "views",
-                "delta": "backdrop_on_the_web-block_1",
-                "settings": {
-                    "link_to_view": null,
-                    "more_link": false,
-                    "use_pager": true,
-                    "pager_id": "0",
-                    "items_per_page": "25",
-                    "offset": 0,
-                    "path": "news/on-the-web",
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false
-                },
-                "uuid": "0765a3fa-4353-454d-9301-1c346e550eae",
                 "style": {
                     "plugin": "default",
                     "data": {

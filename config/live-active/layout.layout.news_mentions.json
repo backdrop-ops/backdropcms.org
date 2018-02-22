@@ -22,6 +22,7 @@
         ],
         "top": [],
         "content": [
+            "cf391d08-3cac-4242-8100-d11a3cc5f9c2",
             "e81c9e8e-de17-4a54-881e-308b15e28e75"
         ],
         "sidebar": [
@@ -113,6 +114,31 @@
                     "contexts": []
                 },
                 "uuid": "8cb1257b-8c83-48c9-8c00-d631dbad0ac7",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "cf391d08-3cac-4242-8100-d11a3cc5f9c2": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<h2>Here are some articles on Backdrop CMS we found sprinkled around the web.</h2>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "cf391d08-3cac-4242-8100-d11a3cc5f9c2",
                 "style": {
                     "plugin": "default",
                     "data": {

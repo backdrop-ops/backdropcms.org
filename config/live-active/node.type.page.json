@@ -13,9 +13,9 @@
     "orig_type": "page",
     "settings": {
         "status_default": "1",
-        "sticky_enabled": 1,
+        "sticky_enabled": 0,
         "sticky_default": 0,
-        "promote_enabled": 1,
+        "promote_enabled": 0,
         "promote_default": 0,
         "revision_enabled": 1,
         "revision_default": 0,
@@ -28,9 +28,9 @@
         "menu_options": {
             "main-menu": "main-menu",
             "devel": 0,
+            "menu-footer-menu": 0,
             "menu-handbook": 0,
             "management": 0,
-            "navigation": 0,
             "menu-user-guide": 0,
             "user-menu": 0
         },
