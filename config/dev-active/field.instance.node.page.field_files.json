@@ -6,7 +6,7 @@
     "deleted": "0",
     "label": "Files",
     "widget": {
-        "weight": "2",
+        "weight": "3",
         "type": "file_generic",
         "module": "file",
         "active": 1,
@@ -25,7 +25,7 @@
         "default": {
             "label": "hidden",
             "type": "file_default",
-            "weight": "1",
+            "weight": "2",
             "settings": [],
             "module": "file"
         }
