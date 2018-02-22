@@ -93,5 +93,6 @@
     ],
     "user_login_method": "username_or_email",
     "user_email_match": 0,
-    "path_pattern": "account/[user:name]"
+    "path_pattern": "account/[user:name]",
+    "x_frame_options": "SAMEORIGIN"
 }
