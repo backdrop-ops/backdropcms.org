@@ -12,21 +12,35 @@
     "disabled": false,
     "orig_type": "sa",
     "settings": {
-        "status_default": false,
-        "sticky_enabled": true,
-        "sticky_default": false,
-        "promote_enabled": true,
-        "promote_default": false,
-        "revision_enabled": true,
-        "revision_default": false,
+        "status_default": "0",
+        "sticky_enabled": 1,
+        "sticky_default": 0,
+        "promote_enabled": 1,
+        "promote_default": 0,
+        "revision_enabled": 1,
+        "revision_default": 0,
         "node_preview": "0",
         "node_submitted": 0,
         "node_user_picture": true,
         "language": null,
-        "formblock_expose": false,
-        "formblock_show_help": false,
-        "menu_options": [],
+        "formblock_expose": 0,
+        "formblock_show_help": 0,
+        "menu_options": {
+            "devel": 0,
+            "menu-footer-menu": 0,
+            "menu-handbook": 0,
+            "management": 0,
+            "main-menu": 0,
+            "menu-user-guide": 0,
+            "user-menu": 0
+        },
         "menu_parent": "main-menu:0",
-        "node_permissions": true
+        "node_permissions": true,
+        "project_behavior": "none",
+        "project_release_version_format": "!api#major%minor%patch#extra",
+        "project_release_api_versions": [
+            ""
+        ],
+        "project_release_type": ""
     }
 }

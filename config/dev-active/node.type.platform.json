@@ -1,11 +1,11 @@
 {
-    "_config_name": "node.type.organization",
-    "type": "organization",
-    "name": "Organization profile",
+    "_config_name": "node.type.platform",
+    "type": "platform",
+    "name": "Platform",
     "base": "node_content",
     "module": "node",
-    "description": "A <em>company</em> or <em>organization</em> may appear in the Service Provider listings, or in attribution in the Backdrop CMS Showcase.",
-    "help": "",
+    "description": "a <em>Platform</em> is a local development tool, or host that offers an easy way to get Backdrop CMS up and running.",
+    "help": "Platforms will appear on the try-backdrop page.",
     "modified": true,
     "disabled": false,
     "has_title": true,
@@ -23,8 +23,8 @@
             "user-menu": 0
         },
         "menu_parent": "main-menu:0",
-        "status_default": "0",
-        "promote_enabled": 0,
+        "status_default": "1",
+        "promote_enabled": 1,
         "promote_default": 0,
         "sticky_enabled": 0,
         "sticky_default": 0,
@@ -41,5 +41,5 @@
         ],
         "project_release_type": ""
     },
-    "orig_type": "organization"
+    "orig_type": "platform"
 }

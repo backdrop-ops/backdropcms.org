@@ -22,6 +22,7 @@
         ],
         "top": [],
         "content": [
+            "7de92a06-18f5-43bd-be05-059f004ebcb9",
             "9779cdfd-c592-4b4f-8440-6467767ad350"
         ],
         "sidebar": [
@@ -113,6 +114,31 @@
                     "contexts": []
                 },
                 "uuid": "8092846a-4ca4-444b-9e02-2a140f279902",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "7de92a06-18f5-43bd-be05-059f004ebcb9": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<h2>Here is a list of events where you can talk to your&nbsp;peers about Backdrop CMS.&nbsp;</h2>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "7de92a06-18f5-43bd-be05-059f004ebcb9",
                 "style": {
                     "plugin": "default",
                     "data": {

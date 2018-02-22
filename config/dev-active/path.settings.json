@@ -57,12 +57,12 @@
     "node_post_pattern": "news/[node:title]",
     "node_docs_pattern": "user-guide/[node:title]",
     "node_event_pattern": "news/events/[node:title]",
-    "node_quote_pattern": "",
     "taxonomy_term_services_pattern": "services/[term:name]",
     "node_organization_pattern": "organization/[node:title]",
     "node_showcase_pattern": "showcase/[node:title]",
     "node_feature_pattern": "features/[node:title]",
     "taxonomy_term_feature_type_pattern": "features/[term:name]",
     "node_project_dummy_pattern": "project/[node:title]",
-    "node_external_mention_pattern": "mention/[node:title]"
+    "node_external_mention_pattern": "mention/[node:title]",
+    "node_platform_pattern": "platform/[node:title]"
 }
