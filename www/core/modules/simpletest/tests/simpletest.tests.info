@@ -239,7 +239,7 @@ group = Common
 file = common.test
 
 [CommonURLUnitTestCase]
-name = URL checking tests
+name = URL checking unit tests
 description = Confirm URL parsing functions work correctly with various input.
 group = Common
 file = common.test
@@ -379,6 +379,12 @@ file = common.test
 [CommonBackdropAddFeedTestCase]
 name = backdrop_add_feed() tests
 description = Make sure that backdrop_add_feed() works correctly with various constructs.
+group = Common
+file = common.test
+
+[CommonBackdropSortUnitTest]
+name = backdrop_sort() tests
+description = Test that backdrop_sort() works correctly.
 group = Common
 file = common.test
 
@@ -1330,7 +1336,7 @@ description = Test the file tokens.
 group = Token
 file = token.test
 
-; Added by Backdrop CMS packaging script on 2018-01-01
+; Added by Backdrop CMS packaging script on 2018-02-21
 project = backdrop
-version = 1.8.1
-timestamp = 1514878228
+version = 1.9.2
+timestamp = 1519258048

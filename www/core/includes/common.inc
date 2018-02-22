@@ -619,7 +619,7 @@ function backdrop_http_build_query(array $query, $parent = '') {
   $params = array();
 
   foreach ($query as $key => $value) {
-    $key = ($parent ? $parent . '[' . rawurlencode($key) . ']' : rawurlencode($key));
+    $key = $parent ? $parent . rawurlencode('[' . $key . ']') : rawurlencode($key);
 
     // For better readability of paths in query strings, we decode slashes.
     $key = str_replace('%2F', '/', $key);
@@ -2489,8 +2489,11 @@ function url($path = NULL, array $options = array()) {
     'prefix' => ''
   );
 
+  // Determine whether this is an external link, but ensure that the current
+  // path is always treated as internal by default (to prevent external link
+  // injection vulnerabilities).
   if (!isset($options['external'])) {
-    $options['external'] = url_is_external($path);
+    $options['external'] = ($path === $_GET['q']) ? FALSE : url_is_external($path);
   }
 
   // Preserve the original path before altering or aliasing.
@@ -2915,6 +2918,15 @@ function backdrop_deliver_html_page($page_callback_result) {
   // Send appropriate HTTP-Header for browsers and search engines.
   global $language;
   backdrop_add_http_header('Content-Language', $language->langcode);
+
+  // By default, do not allow the site to be rendered in an iframe on another
+  // domain, but provide a variable to override this. If the code running for
+  // this page request already set the X-Frame-Options header earlier, don't
+  // overwrite it here.
+  $frame_options = config_get('system.core', 'x_frame_options');
+  if ($frame_options && is_null(backdrop_get_http_header('X-Frame-Options'))) {
+    backdrop_add_http_header('X-Frame-Options', $frame_options);
+  }
 
   // Menu status constants are integers; page content is a string or array.
   if (is_int($page_callback_result)) {
@@ -7001,20 +7013,24 @@ function element_info_property($type, $property_name, $default = NULL) {
  *   An array of keys to sort by. Values must be PHP sorting type flags,
  *   either SORT_NUMERIC or SORT_STRING, and default to SORT_NUMERIC if an
  *   unindexed array is passed in.
+ * @param string $dir
+ *   The sort direction. Values must be either SORT_ASC or SORT_DESC.
  *
  * Example usage:
  * @code
  * // Sort by a single numeric key:
  * backdrop_sort($my_array, array('weight' => SORT_NUMERIC));
  *
- * // Short-hand sort by a numeric key:
+ * // Shorthand sort by a numeric key:
  * backdrop_sort($my_array, array('weight'));
  *
  * // Sort by numeric and string keys.
  * backdrop_sort($my_array, array('weight' => SORT_NUMERIC, 'title' => SORT_STRING));
  * @endcode
+ *
+ * @since 1.9.0 The $dir parameter was added.
  */
-function backdrop_sort(array &$array, array $keys = array('weight')) {
+function backdrop_sort(array &$array, array $keys = array('weight'), $dir = SORT_ASC) {
   // Ensure all keys have a sort value.
   $new_keys = array();
   foreach ($keys as $index => $sort) {
@@ -7042,7 +7058,7 @@ function backdrop_sort(array &$array, array $keys = array('weight')) {
     $key_sort = reset($keys);
 
     if ($key_sort === SORT_STRING) {
-      uasort($array, function($a, $b) use ($key) {
+      uasort($array, function($a, $b) use ($key, $dir) {
         if (!is_array($a) || !is_array($b)) {
           return 0;
         }
@@ -7052,11 +7068,12 @@ function backdrop_sort(array &$array, array $keys = array('weight')) {
         if (!isset($b[$key])) {
           $b[$key] = '';
         }
-        return strnatcasecmp($a[$key], $b[$key]);
+        $cmp = strnatcasecmp($a[$key], $b[$key]);
+        return ($dir == SORT_DESC) ? -$cmp : $cmp;
       });
     }
     else {
-      uasort($array, function($a, $b) use ($key) {
+      uasort($array, function($a, $b) use ($key, $dir) {
         if (!is_array($a) || !is_array($b)) {
           return 0;
         }
@@ -7067,7 +7084,8 @@ function backdrop_sort(array &$array, array $keys = array('weight')) {
           $b[$key] = 0;
         }
         if ($a[$key] != $b[$key]) {
-          return $a[$key] < $b[$key] ? -1 : 1;
+          $cmp = $a[$key] < $b[$key] ? -1 : 1;
+          return ($dir == SORT_DESC) ? -$cmp : $cmp;
         }
         // Equal values, return 0.
         return 0;
@@ -7077,7 +7095,7 @@ function backdrop_sort(array &$array, array $keys = array('weight')) {
   // If doing a multiple-key comparison, use a recursive callback.
   else {
     $keys_map = array_keys($keys);
-    $recursive_callback = function ($a, $b, $key_index = 0) use ($keys, $keys_map, &$recursive_callback) {
+    $recursive_callback = function ($a, $b, $key_index = 0) use ($keys, $keys_map, $dir, &$recursive_callback) {
       $key = $keys_map[$key_index];
       if (!is_array($a) || !is_array($b)) {
         return 0;
@@ -7095,12 +7113,14 @@ function backdrop_sort(array &$array, array $keys = array('weight')) {
         }
       }
       else {
+        $cmp = 0;
         if ($keys[$key] === SORT_STRING) {
-          return strnatcasecmp($a[$key], $b[$key]);
+          $cmp = strnatcasecmp($a[$key], $b[$key]);
         }
         else {
-          return ($a[$key] < $b[$key]) ? -1 : 1;
+          $cmp = ($a[$key] < $b[$key]) ? -1 : 1;
         }
+        return ($dir == SORT_DESC) ? -$cmp : $cmp;
       }
       return 0;
     };

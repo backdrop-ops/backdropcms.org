@@ -44,7 +44,7 @@ function system_requirements($phase) {
   $software = $_SERVER['SERVER_SOFTWARE'];
   $requirements['webserver'] = array(
     'title' => $t('Web server'),
-    'value' => $software,
+    'value' => check_plain($software),
     'severity' => REQUIREMENT_INFO,
   );
 
@@ -234,7 +234,7 @@ function system_requirements($phase) {
   }
 
   // Test the contents of the .htaccess files.
-  if ($phase == 'runtime') {
+  if ($phase == 'runtime' && backdrop_is_apache()) {
     // Try to write the .htaccess files first, to prevent false alarms in case
     // (for example) the /tmp directory was wiped.
     file_ensure_htaccess();
@@ -2954,6 +2954,16 @@ function system_update_1062() {
   $config->clear('user_timezone_configurable');
   $config->clear('user_timezone_default');
   $config->clear('user_timezone_warn');
+  $config->save();
+}
+
+/**
+ * Set a default value for the X-Frame-Options header. This will not allow the
+ * site to be rendered in an iframe on another domain unless specified.
+ */
+function system_update_1063() {
+  $config = config('system.core');
+  $config->set('x_frame_options', 'SAMEORIGIN');
   $config->save();
 }
 
