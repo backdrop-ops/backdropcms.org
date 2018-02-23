@@ -137,7 +137,18 @@ small {
   font-size: .95em; /* relative size */
 }
 pre {
-  padding: 6px 12px;
+  background-color: #F7F7F7;
+  padding: 15px;
+  margin: 10px 0;
+}
+code {
+  font-family: Menlo, Consolas, "Andale Mono", "Lucida Console", "Nimbus Mono L", "DejaVu Sans Mono", monospace, "Courier New";
+  font-size: 0.857em;
+}
+
+dt,
+dd {
+  padding: 0 0 5px 0;
 }
 
 /*******************************************************************************

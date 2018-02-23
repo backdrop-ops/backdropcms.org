@@ -386,6 +386,31 @@
 }
 
 /*******************************************************************************
+ * Platforms view
+ ******************************************************************************/
+.view-platforms .views-row {
+  padding-bottom: 30px;
+}
+.view-platforms .row {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.view-platforms .col-md-5 {
+  text-align: center;
+}
+.view-platforms .top-bar {
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+.view-platforms h3 {
+  margin: 1.5em 0; /* 24px */
+}
+.view-platforms .view-header h2 {
+  font-weight: 300; /* Light */
+  color: #5A5D5E;
+}
+
+/*******************************************************************************
  * Mentions sidebar block
  ******************************************************************************/
 .block-views-backdrop-on-the-web-block-1 li {

@@ -100,7 +100,7 @@
 }
 @media (min-width: 62em) { /* 992px */
   .l-page-title {
-    padding-top: 75px;
+    padding-top: 30px;
   }
 }
 
@@ -130,11 +130,6 @@ main {
   position: relative;
 }
 
-.l-content {
-  /* Hide overflow to allow blocks to stretch to 100% width, such as the
-     homepage supporter form. */
-  overflow: hidden;
-}
 @media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
   .l-content p,
   .l-content li {

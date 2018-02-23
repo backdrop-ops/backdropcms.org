@@ -177,6 +177,15 @@ function borg_preprocess_layout(&$variables) {
 }
 
 /**
+ * Preprocess header templates.
+ * @see header.tpl.php
+ */
+function borg_preprocess_header(&$variables) {
+  $path = backdrop_get_path('theme', 'borg');
+  $variables['inverse_logo'] = theme('image', array('uri' => $path . '/logo-inverse.png'));
+}
+
+/**
  * Preprocess views exposed form templates.
  * @see views-exposed-form.tpl.php
  */
