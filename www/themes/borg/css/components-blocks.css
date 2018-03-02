@@ -182,8 +182,9 @@ main.col-md-8 .backdrop-books figure {
  * borg_project_metrics block
  ******************************************************************************/
 div.block-borg-project-metrics-backdrop-project-metrics {
+  background-color: #F7F7F7;
   padding: 30px 0;
-  border-bottom: 0;
+  border-top: 3px solid #E8E6E5;
   margin-bottom: 0;
 }
 .block-borg-project-metrics-backdrop-project-metrics .project-metrics div {
