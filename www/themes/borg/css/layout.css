@@ -17,7 +17,6 @@
 }
 .l-header-inner {
   position: relative;
-  box-sizing: border-box;
 }
 .l-header a {
   color: #fff;
@@ -75,7 +74,7 @@
   .l-header .block-borg-blocks-branding,
   .l-header .block-borg-forum-branding {
     padding-left: 0;
-    width: 18%;
+    width: 19%;
   }
   .l-header .block-system-user-menu {
     width: 15%;
@@ -203,9 +202,14 @@ main {
  * XL containers get more breathing room.
  ******************************************************************************/
 @media (min-width: 75em) {
-  .container {
+  .container-fluid {
     padding-right: 2.9375rem;
     padding-left: 2.9375rem;
+  }
+  /* But not the header. */
+  .l-header-inner {
+    padding-right: .9375rem;
+    padding-left: .9375rem;
   }
 }
 
