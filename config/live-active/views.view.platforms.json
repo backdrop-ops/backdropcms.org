@@ -240,19 +240,19 @@
                         "alter": {
                             "alter_text": 0,
                             "text": "",
-                            "make_link": 0,
-                            "path": "",
+                            "make_link": 1,
+                            "path": "[field_cta-url]",
                             "absolute": 0,
                             "external": 0,
                             "replace_spaces": 0,
                             "path_case": "none",
                             "trim_whitespace": 0,
-                            "alt": "",
+                            "alt": "[field_cta-title]",
                             "rel": "",
-                            "link_class": "",
+                            "link_class": "button",
                             "prefix": "",
                             "suffix": "",
-                            "target": "",
+                            "target": "_blank",
                             "nl2br": 0,
                             "max_length": "",
                             "word_boundary": 1,
@@ -278,7 +278,7 @@
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
                         "click_sort_column": "url",
-                        "type": "link_default",
+                        "type": "link_title_plain",
                         "settings": [],
                         "group_column": "",
                         "group_columns": [],
@@ -369,7 +369,7 @@
                         "exclude": 0,
                         "alter": {
                             "alter_text": true,
-                            "text": "<div class=\"row\">\r\n  <div class=\"col-md-7\">\r\n    <h3>[field_callout]</h3>\r\n  </div>\r\n  <div class=\"col-md-5\">\r\n    [field_logo] \r\n  </div>\r\n</div>\r\n<div class=\"row\">\r\n  <div class=\"col-md-7\">\r\n    [body]\r\n    [field_cta]\r\n  </div> \r\n  <div class=\"col-md-5\">\r\n    [field_screen_lg]\r\n  </div>\r\n</div>",
+                            "text": "<div class=\"top-bar full-width\">\r\n    <div class=\"container\"><div class=\"row\">\r\n    <div class=\"col-md-7\">\r\n      <h3>[field_callout]</h3>\r\n    </div>\r\n    <div class=\"col-md-5\">\r\n      [field_logo] \r\n    </div>\r\n  </div></div>\r\n</div>\r\n<div class=\"row bottom-bar\">\r\n  <div class=\"col-md-7\">\r\n    [body]\r\n    [field_cta]\r\n  </div> \r\n  <div class=\"col-md-5\">\r\n    [field_screen_lg]\r\n  </div>\r\n</div>",
                             "make_link": 0,
                             "path": "",
                             "absolute": 0,
@@ -434,15 +434,39 @@
                         "id": "created",
                         "table": "node",
                         "field": "created",
-                        "order": "DESC"
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "ASC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        },
+                        "granularity": "second"
                     }
                 },
-                "title": "Try Out Backdrop",
+                "title": "Try Backdrop CMS",
                 "row_options": {
                     "default_field_elements": 0,
                     "inline": [],
                     "separator": "",
                     "hide_empty": 0
+                },
+                "css_class": "",
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 0,
+                        "content": "<h2>There are lots of ways you can try Backdrop CMS. Check the list below to find one that matches your needs.</h2>\r\n",
+                        "format": "filtered_html",
+                        "tokenize": 0
+                    }
                 }
             }
         },
