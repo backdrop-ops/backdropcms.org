@@ -94,11 +94,9 @@
 
   <?php if (!empty($content['bottom'])): ?>
     <div class="l-bottom">
-        <div class="l-bottom-inner">
-          <div class="row">
-            <?php print $content['bottom']; ?>
-          </div>
-        </div>
+      <div class="l-bottom-inner">
+        <?php print $content['bottom']; ?>
+      </div>
     </div>
   <?php endif; ?>
 
