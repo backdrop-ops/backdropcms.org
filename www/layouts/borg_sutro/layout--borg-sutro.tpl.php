@@ -27,7 +27,7 @@
 
   <?php if (!empty($content['top'])): ?>
     <div class="l-top">
-      <div class="l-top-inner container container-fluid">
+      <div class="l-top-inner">
         <?php print $content['top']; ?>
       </div>
     </div>
