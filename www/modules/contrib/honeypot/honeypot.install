@@ -58,8 +58,18 @@ function honeypot_install() {
  * Implements hook_uninstall().
  */
 function honeypot_uninstall() {
-  // Delete 'honeypot' directory from public file directory.
-  file_unmanaged_delete_recursive('public://honeypot');
+  db_delete('variable')
+    ->condition('name', db_like('honeypot_') . '%', 'LIKE')
+    ->execute();
+  $cache_tables = array('variables', 'cache_bootstrap');
+  foreach ($cache_tables as $table) {
+    if (db_table_exists($table)) {
+      cache_clear_all($table, 'cache');
+    }
+  }
+
+  // Delete 'honeypot' directory from files directory.
+  file_unmanaged_delete_recursive(file_default_scheme() . '://honeypot');
 }
 
 /**
@@ -173,6 +183,16 @@ function honeypot_update_1004() {
     'views_exposed_form',
     'honeypot_admin_form'
   ));
+  $config->save();
+}
+
+/**
+ * Add option to use Javascript to support time limit on cached pages.
+ */
+
+function honeypot_update_1005() {
+  $config = config('honeypot.settings');
+  $config->set('use_js_for_cached_pages', FALSE);
   $config->save();
 }
 

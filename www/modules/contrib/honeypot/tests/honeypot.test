@@ -368,4 +368,25 @@ class HoneypotCssTestCase extends BackdropWebTestCase {
     // Revert the honeypot element name back to the original.
     config_set('honeypot.settings','element_name', $original_element_name);
   }
+
+  /**
+   * Test CSS works when default file scheme is not public://
+   */
+  public function testHoneypotCssNonpublicFileSystem() {
+    config_set('system.core', 'file_default_scheme', 'private');
+
+    $honeypot_css = honeypot_get_css_file_path();
+
+    // Delete the Honeypot CSS file (if it exists).
+    file_unmanaged_delete($honeypot_css);
+
+    // Make sure the Honeypot CSS file doesn't exist.
+    $this->assertFalse(file_exists($honeypot_css));
+
+    // Run cron.
+    honeypot_cron();
+
+    // Make sure the Honeypot CSS file exists.
+    $this->assertTrue(file_exists($honeypot_css));
+  }
 }
