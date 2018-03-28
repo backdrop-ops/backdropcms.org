@@ -37,7 +37,8 @@
     "description": "",
     "default_value": [
         {
-            "value": "Upgrade your site to the latest version of Backdrop CMS.\r\n\r\nDownload available at <a href=\"https://github.com/backdrop/backdrop/releases/tag/v1.X.X\">Backdrop CMS 1.X.X release page</a>. Update instructions are available at https://backdropcms.org/upgrade#from-previous-versions.\r\n"
+            "value": "<p>Upgrade your site to the most recent version of Backdrop core. &nbsp;Download available on the&nbsp;<a href=\"https://github.com/backdrop/backdrop/releases/tag/1.x.x\">Backdrop CMS 1.x.x release page</a>.&nbsp; See the <a href=\"https://backdropcms.org/upgrade#from-previous-versions\">update instructions</a>, if needed.</p>\r\n",
+            "format": "filtered_html"
         }
     ],
     "default_value_function": null
