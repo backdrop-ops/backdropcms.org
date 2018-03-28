@@ -285,7 +285,8 @@ function youtube_field_formatter_settings_form($field, $instance, $view_mode, $f
       '#default_value' => $settings['youtube_width'],
       '#states' => array(
         'visible' => array(
-          ':input[name="fields[' . $field['field_name'] . '][settings_edit_form][settings][youtube_size]"]' => array('value' => 'custom'),
+          ':input[name="fields[' . $field['field_name'] . '][settings_edit_form][settings][youtube_size]"],
+          :input[name="options[settings][youtube_size]"]' => array('value' => 'custom'),
         ),
       ),
     );
@@ -296,7 +297,8 @@ function youtube_field_formatter_settings_form($field, $instance, $view_mode, $f
       '#default_value' => $settings['youtube_height'],
       '#states' => array(
         'visible' => array(
-          ':input[name="fields[' . $field['field_name'] . '][settings_edit_form][settings][youtube_size]"]' => array('value' => 'custom'),
+          ':input[name="fields[' . $field['field_name'] . '][settings_edit_form][settings][youtube_size]"],
+          :input[name="options[settings][youtube_size]"]' => array('value' => 'custom'),
         ),
       ),
     );
@@ -524,9 +526,7 @@ function youtube_field_widget_form(&$form, &$form_state, $field, $instance, $lan
 
   // Add our own description if one is not provided by the UI.
   if ($element['#description'] == '') {
-    $element['input']['#description'] = t('Enter the YouTube URL. Valid URL
-      formats include: http://www.youtube.com/watch?v=1SqBdS0XkV4 and
-      http://youtu.be/1SqBdS0XkV4');
+    $element['input']['#description'] = t('Valid URL formats include: http://www.youtube.com/watch?v=1SqBdS0XkV4 and http://youtu.be/1SqBdS0XkV4');
   }
 
   if (isset($items[$delta]['video_id'])) {

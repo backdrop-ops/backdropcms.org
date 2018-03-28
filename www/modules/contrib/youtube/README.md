@@ -69,6 +69,7 @@ Current Maintainers
 
 - Paul Davis (https://github.com/hellomrcat)
 - Jen Lampton (https://github.com/jenlampton)
+- Daniel Rose (https://github.com/danielrose28)
 
 
 Credits

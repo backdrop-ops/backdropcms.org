@@ -122,7 +122,7 @@ function theme_youtube_thumbnail($variables) {
     if (!youtube_get_remote_image($id)) {
       // Use the remote source if local copy fails.
       $src = youtube_build_remote_image_path($id);
-      return theme('image', array('path' => $src));
+      return theme('image', array('uri' => $src));
     }
   }
 
@@ -137,13 +137,13 @@ function theme_youtube_thumbnail($variables) {
     $uri = 'public://' . $youtube . '/' . $id . '.png';
     $image = theme('image_style', array(
       'style_name' => $style,
-      'path' => $uri,
+      'uri' => $uri,
       'alt' => $alt,
     ));
   }
   else {
-    $path = $files . '/' . $youtube . '/' . $id . '.png';
-    $image = theme('image', array('path' => $path, 'alt' => $alt));
+    $uri = $files . '/' . $youtube . '/' . $id . '.png';
+    $image = theme('image', array('uri' => $uri, 'alt' => $alt));
   }
 
   // Check if an url path is provided
