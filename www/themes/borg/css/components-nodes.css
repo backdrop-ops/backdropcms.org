@@ -128,11 +128,9 @@ label.github-clone-label {
 /*******************************************************************************
  * Node: Documentation - status/level fields
  ******************************************************************************/
-.field-name-field-docs-level {
+.field-name-field-docs-level,
+.field-name-field-docs-status,
+.field-name-field-docs-source {
   padding: 15px 15px 5px 15px;
-  background-color: #f7f7f7;
-}
-.field-name-field-docs-status {
-  padding: 5px 15px 15px 15px;
   background-color: #f7f7f7;
 }
