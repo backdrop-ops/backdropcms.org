@@ -123,14 +123,14 @@ function borg_pbs_project_browser_server_query($filters) {
         // Sort by usage now.
         $query->orderBy('usage_query', $sort_direction);
         break;
-        
+
       case 'score':
         // @todo: Integrate into the above search query and use the relevance
         // score from that query.
       break;
 
       // This is wrong of course: its not really filtering by name but by UID,
-      // but would need a join of the 'user' table, and since project author 
+      // but would need a join of the 'user' table, and since project author
       // names not yet implemented on BacdropCMS.org, will leave for now.
       case 'name':
         $query->orderBy('n.uid', $sort_direction);
@@ -153,17 +153,19 @@ function borg_pbs_project_browser_server_query($filters) {
   if (count($load)) {
     $nodes = node_load_multiple($load);
   }
-  
+
   $projects = array();
   foreach ($nodes as $node) {
     // Build the description field
     $descr = field_get_items('node', $node, 'body');
     $descr_field = reset($descr);
     $descr_value = $descr_field['value'];
-    
+
     // Build the image uri
     $img_field = field_get_items('node', $node, 'field_image');
     $image_url = !empty($img_field) ? file_create_url($img_field[0]['uri']) : '';
+    // Switch out the domain so images will display.
+    $image_url = str_replace('https://projects.backdropcms.org','https://backdropcms.org', $image_url);
 
     $projects[$node->project['name']] = array(
       'type' => $filters['type'],
