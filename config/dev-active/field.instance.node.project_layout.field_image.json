@@ -1,8 +1,8 @@
 {
-    "_config_name": "field.instance.node.project_theme.field_image",
+    "_config_name": "field.instance.node.project_layout.field_image",
     "field_name": "field_image",
     "entity_type": "node",
-    "bundle": "project_theme",
+    "bundle": "project_layout",
     "label": "Screenshot",
     "widget": {
         "weight": "7",
@@ -20,7 +20,7 @@
     "default_value": null,
     "default_value_function": null,
     "settings": {
-        "file_directory": "theme-screenshots",
+        "file_directory": "layout-screenshots",
         "file_extensions": "png",
         "max_filesize": "10MB",
         "max_dimensions": "2048x1536",

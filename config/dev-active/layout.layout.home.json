@@ -5,7 +5,7 @@
     "title": "Home",
     "description": null,
     "module": null,
-    "weight": 0,
+    "weight": -1,
     "storage": 1,
     "layout_template": "borg_sutro",
     "disabled": false,
@@ -145,8 +145,8 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "v1.9.2",
-                        "download_url": "https://github.com/backdrop/backdrop/releases/download/1.9.2/backdrop.zip",
+                        "version": "v1.9.4",
+                        "download_url": "https://github.com/backdrop/backdrop/releases/download/1.9.4/backdrop.zip",
                         "demo_url": "https://dashboard.pantheon.io/sites/create?upstream_id=bf703821-4c18-45a1-88b8-3d9ec302273d"
                     },
                     "contexts": []
@@ -156,7 +156,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
+                            "classes": "container"
                         }
                     }
                 }
@@ -190,7 +190,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "full-width dark"
+                            "classes": "dark"
                         }
                     }
                 }
@@ -384,7 +384,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "full-width"
+                            "classes": ""
                         }
                     }
                 }
