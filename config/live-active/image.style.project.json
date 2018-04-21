@@ -1,0 +1,15 @@
+{
+    "_config_name": "image.style.project",
+    "label": "Project (292x219)",
+    "name": "project",
+    "effects": [
+        {
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": "292",
+                "height": "219"
+            },
+            "weight": 1
+        }
+    ]
+}
