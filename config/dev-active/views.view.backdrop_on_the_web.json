@@ -355,7 +355,7 @@
                     "grouping": [],
                     "row_class": "",
                     "default_row_class": 1,
-                    "row_class_special": 0,
+                    "row_class_special": 1,
                     "type": "ul",
                     "wrapper_class": "item-list",
                     "class": ""
@@ -386,7 +386,31 @@
                     "type": "views_query",
                     "options": []
                 },
-                "path": "news/mentions"
+                "path": "news/mentions",
+                "style_plugin": "default",
+                "defaults": {
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 0,
+                    "row_class_special": 0
+                },
+                "row_plugin": "fields",
+                "row_options": {
+                    "default_field_elements": 1,
+                    "inline": {
+                        "field_mention_author_link": "field_mention_author_link",
+                        "field_mention_date": "field_mention_date",
+                        "field_mention_language": "field_mention_language"
+                    },
+                    "separator": "",
+                    "hide_empty": 0
+                }
             }
         },
         "block_1": {
@@ -412,10 +436,10 @@
                     "use_more": false,
                     "use_more_always": false,
                     "use_more_text": false,
-                    "style_plugin": false,
-                    "style_options": false,
-                    "row_plugin": false,
-                    "row_options": false,
+                    "style_plugin": true,
+                    "style_options": true,
+                    "row_plugin": true,
+                    "row_options": true,
                     "title": false
                 },
                 "pager_options": null,
@@ -550,26 +574,6 @@
                 "use_more": 1,
                 "use_more_always": false,
                 "use_more_text": "more mentions",
-                "style_plugin": "list",
-                "style_options": {
-                    "grouping": [],
-                    "row_class": "",
-                    "default_row_class": 1,
-                    "row_class_special": 0,
-                    "type": "ul",
-                    "wrapper_class": "item-list",
-                    "class": ""
-                },
-                "row_plugin": "fields",
-                "row_options": {
-                    "default_field_elements": 1,
-                    "inline": {
-                        "field_mention_link": "field_mention_link",
-                        "field_mention_author_link": "field_mention_author_link"
-                    },
-                    "separator": "",
-                    "hide_empty": 0
-                },
                 "block_description": "Backdrop On The Web",
                 "title": "Mentions"
             }
