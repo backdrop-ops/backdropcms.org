@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Receive BackdropCMS.org security announcements for core and contrib projects",
     "widget": {
-        "weight": "18",
+        "weight": "16",
         "type": "options_onoff",
         "module": "options",
         "active": 1,
@@ -23,7 +23,7 @@
     ],
     "default_value_function": null,
     "settings": {
-        "user_register_form": 0
+        "user_register_form": 1
     },
     "display": {
         "default": {

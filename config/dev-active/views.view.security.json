@@ -3,6 +3,7 @@
     "name": "security",
     "description": "",
     "tag": "default",
+    "disabled": false,
     "base_table": "node",
     "human_name": "Security",
     "core": "7",
@@ -103,7 +104,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 1,
-                        "content": "If you have discovered a security issue with Backdrop CMS, please contact the Backdrop Security Team directly at <a href=\"mailto:security@backdropcms.org\">security@backdropcms.org</a>. We manage security issues separately in a private repository until the issue has been resolved. Even if you're not sure if it's a security problem, please contact the security team before filing an issue, blogging, or tweeting about it.",
+                        "content": "<p>If you believe you may have discovered a security issue with Backdrop CMS, please contact the Backdrop Security Team directly at <a href=\"mailto:security@backdropcms.org\">security@backdropcms.org</a>. In order to keep everyone safe, we manage security issues separately in a private repository. So please refrain from publicly blogging, or tweeting about it until the issue has been resolved.</p>\r\n",
                         "format": "filtered_html",
                         "tokenize": 0
                     }
