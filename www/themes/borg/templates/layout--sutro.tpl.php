@@ -28,7 +28,9 @@
   <?php if (!empty($content['top'])): ?>
     <div class="l-top">
       <div class="l-top-inner container container-fluid">
-        <?php print $content['top']; ?>
+        <div class="row">
+          <?php print $content['top']; ?>
+        </div>
       </div>
     </div>
   <?php endif; ?>

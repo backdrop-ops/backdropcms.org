@@ -117,18 +117,25 @@ ul.secondary a.active {
   border-bottom: 4px solid #7D7D7D;
 }
 
+
 /******************************************************************************
  * Breadcrumb
  ******************************************************************************/
-.block-system-breadcrumb li {
+nav.breadcrumb {
+  margin-bottom: 15px;
+}
+nav.breadcrumb li {
   margin-right: .33em;
 }
-.block-system-breadcrumb li a {
+nav.breadcrumb li a {
   margin-right: .33em;
 }
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  .block-system-breadcrumb li span {
-    white-space: nowrap;
+  nav.breadcrumb {
+    margin-bottom: 0;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 
@@ -146,15 +153,35 @@ ul.secondary a.active {
  * Search block
  ******************************************************************************/
 .search-block-form {
-  margin: 1em 0;
+  position: relative;
+  margin: 0;
+}
+.search-block-form .form-item {
+  margin: 0 22px 0 0;
 }
 .search-block-form input.form-search {
   width: 100%;
   box-sizing: border-box;
 }
 .search-block-form .form-actions {
-  margin: 10px;
-  text-align: center;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 44px;
+  margin: 0;
+}
+.search-block-form input[type="submit"] {
+  margin: 0;
+  text-indent: -9999px;
+  background: #fff url(../images/search.png) center center no-repeat;
+  background-size: 50%;
+  border: 2px solid #E8E6E5;
+}
+.search-block-form input[type="submit"]:hover {
+  background-color: #007CBA;
+  background-image: url(../images/search-hover.png);
+  color: #fff;
+  border: 2px solid #007CBA;
 }
 
 /*******************************************************************************
@@ -746,25 +773,22 @@ body.user-form .page-title {
  * Registration form
  ******************************************************************************/
 #user-register-form {
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
 }
 #user-register-form .form-item {
   padding: 15px 0;
-  display: flex;
 }
 #user-register-form fieldset .form-item {
   padding: 5px 0;
   margin-bottom: .5em;
 }
 #user-register-form .form-item label {
-  width: 180px;
   padding-right: 15px;
-  display: inline-block;
 }
-#user-register-form .form-item input {
+#user-register-form .form-item input[type="text"],
+#user-register-form .form-item input[type="email"] {
   width: 100%;
-  flex: 1;
 }
 #user-register-form .form-item div.description {
   display: none;
