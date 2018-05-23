@@ -5,12 +5,14 @@
     "bundle": "user",
     "label": "Location",
     "widget": {
-        "weight": "7",
+        "weight": "6",
         "type": "addressfield_standard",
         "module": "addressfield",
         "active": 1,
         "settings": {
-            "available_countries": [],
+            "available_countries": {
+                "US": "US"
+            },
             "default_country": "site_default",
             "format_handlers": {
                 "address": "address",
@@ -28,12 +30,12 @@
         }
     },
     "description": "",
-    "required": 1,
+    "required": 0,
     "deleted": 0,
     "default_value": null,
     "default_value_function": null,
     "settings": {
-        "user_register_form": 1
+        "user_register_form": 0
     },
     "display": {
         "default": {
