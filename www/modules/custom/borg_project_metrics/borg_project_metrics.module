@@ -58,8 +58,8 @@ function borg_project_metrics_get_downloads($project = '') {
   $json = json_decode($content);
   $total = 0;
   if (!empty($json)) {
-    foreach($json as $j) {
-      $total += $j->assets[0]->download_count;
+    foreach ($json as $j) {
+      $total += isset($j->assets[0]->download_count) ? $j->assets[0]->download_count : 0;
     }
   }
   return $total;
