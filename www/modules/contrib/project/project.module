@@ -606,7 +606,7 @@ function project_validate_project_shortname(Node $node, array &$errors) {
 
   // Make sure machine name isn't already in use, or reserved.  Includes all
   // X from project/issues/X paths used in project_issues module
-  $reserved_names = array('user', 'issues', 'releases', 'rss', 'subscribe-mail', 'search', 'add', 'update_project', 'statistics', 'comments', 'autocomplete', 'cvs', 'developers', 'usage');
+  $reserved_names = array('user', 'issues', 'releases', 'rss', 'subscribe-mail', 'search', 'add', 'update_project', 'comments', 'autocomplete', 'cvs', 'developers', 'usage');
   if (in_array(strtolower($name), $reserved_names)) {
     $errors['reserved'] = t('This project name is reserved.');
   }

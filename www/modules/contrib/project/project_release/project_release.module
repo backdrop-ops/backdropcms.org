@@ -1231,6 +1231,10 @@ function project_release_query_releases($project_nid, $version_api = NULL, $vers
   $query->orderBy('pr.version_major', 'DESC');
   $query->orderBy('pr.version_minor', 'DESC');
   $query->orderBy('pr.version_patch', 'DESC');
+
+  // Order by final releases (no extra rc/beta/alpha) first.
+  $query->addExpression('pr.version_extra = :empty', 'no_extra', array(':empty' => ''));
+  $query->orderBy('no_extra', 'DESC');
   $query->orderBy('pr.version_extra', 'DESC');
 
   $nids = $query->execute()->fetchCol();
