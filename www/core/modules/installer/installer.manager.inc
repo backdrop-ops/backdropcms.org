@@ -779,6 +779,11 @@ function installer_manager_install_form_submit($form, &$form_state) {
  * @param string $is_installer
  *   Whether the project is being installed via the Project Installer UI.
  *
+ * @param array $release_info
+ *   Information about the release, as provided by the project release history.
+ *   If installed via a direct upload or URL without a history, this value will
+ *   be NULL. Including the release info adds MD5 and signature validation.
+ *
  * @return array
  *   An associative array with keys:
  *   - 'success': whether the update was successful
@@ -789,7 +794,7 @@ function installer_manager_install_form_submit($form, &$form_state) {
  * @see system_authorized_init()
  * @see system_authorized_get_url()
  */
-function installer_manager_download_project($url, $is_installer = FALSE) {
+function installer_manager_download_project($url, $is_installer = FALSE, $release = NULL) {
   if ($url) {
     $local_cache = installer_manager_file_get($url);
     if (!$local_cache) {
@@ -814,6 +819,33 @@ function installer_manager_download_project($url, $is_installer = FALSE) {
   }
   else {
     $local_cache = NULL;
+  }
+
+  // Validate MD5 and Signature if present.
+  if ($release) {
+    $md5 = $release['download_md5'];
+    if ($md5 !== md5_file($local_cache)) {
+      return array(
+        'success' => FALSE,
+        'message' => t('The contents of the downloaded project do not match (MD5 mismatch).'),
+      );
+    }
+
+    // @todo: This could be a lot fancier. Such as scanning the entire directory
+    // for more keys, searching alternative key locations, etc.
+    $signature = base64_decode($release['download_signature']);
+    $primary_public_key = file_get_contents(BACKDROP_ROOT . '/core/misc/public_keys/backdropcmsorg_primary.key');
+    if (!sodium_crypto_sign_verify_detached($signature, $md5, $primary_public_key)) {
+      // Try the backup key in the event the primary key has been revoked and
+      // the signature used the backup key instead.
+      $secondary_public_key = file_get_contents(BACKDROP_ROOT . '/core/misc/public_keys/backdropcmsorg_secondary.key');
+      if (!sodium_crypto_sign_verify_detached($signature, $md5, $secondary_public_key)) {
+        return array(
+          'success' => FALSE,
+          'message' => t('The package signature could not be validated.'),
+        );
+      }
+    }
   }
 
   // Try to extract it.

@@ -130,15 +130,14 @@ function project_release_history_generate_project_xml(Node $project_node, $versi
         $release_link = !empty($release_node->project_release['release_link']) ? $release_node->project_release['release_link'] : url('node/' . $release_node->nid, array('absolute' => TRUE));
         $output .= '  <release_link>' . check_plain($release_link) . "</release_link>\n";
         $output .= '  <download_link>' . check_plain($release_node->project_release['download_link']) . "</download_link>\n";
+        $output .= '  <download_md5>' . check_plain($release_node->project_release['download_md5']) . "</download_md5>\n";
+        $output .= '  <download_signature>' . check_plain($release_node->project_release['download_signature']) . "</download_signature>\n";
       }
       else {
         $output .= "  <status>unpublished</status>\n";
       }
       // We want to include the rest of these regardless of the status.
       $output .= '  <date>' . check_plain($release_node->created) . "</date>\n";
-      // We no longer provide an MD5 hash like Drupal 7 did. Update module
-      // never used this value though, so restoring it provides little value.
-      //$output .= '  <mdhash>'  . check_plain($release->download_md5) . "</mdhash>\n";
       $output .= '  <filesize>' . check_plain($release_node->project_release['download_size']) . "</filesize>\n";
 
       $security_update = $release_node->project_release['security_update'];

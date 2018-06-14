@@ -116,3 +116,21 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
     }
   }
 }
+
+/**
+ * Implements hook_github_project_validate_release().
+ */
+function borg_github_github_project_validate_release(Node $release_node, array &$errors, array $payload) {
+  // Add a digital signature to the package on saving.
+  if ($release_node->project_release['download_link'] && empty($release_node->project_release['download_signature'])) {
+    $md5 = project_release_get_download_md5($release_node->project_release['download_link']);
+
+    // @todo: Replace with actual method for creating signature.
+    $secret_key = file_get_contents('/secret/key/directory/secret.key');
+    $signature = sodium_crypto_sign_detached($md5, $secret_key);
+
+    // Save the signature into the release so it will be included in the project
+    // release history feed.
+    $release_node->project_release['download_signature'] = base64_encode($signature);
+  }
+}

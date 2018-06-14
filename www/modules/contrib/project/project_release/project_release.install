@@ -90,6 +90,16 @@ function project_release_schema() {
         'description' => 'URL to the release download archive.',
         'type' => 'text',
       ),
+      'download_md5' => array(
+        'description' => 'MD5 value of the download archive file.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'download_signature' => array(
+        'description' => 'Base64 encoded signature for the download archive.',
+        'type' => 'text',
+      ),
       'download_size' => array(
         'description' => 'The size of the download archive, in bytes.',
         'type' => 'int',
@@ -264,4 +274,27 @@ function project_release_uninstall() {
  */
 function project_release_update_last_removed() {
   return 7015;
+}
+
+/**
+ * Adds a column for Download Archive MD5 value.
+ */
+function project_release_update_1100() {
+  if (!db_field_exists('project_release', 'download_md5')) {
+    $download_md5_spec = array(
+      'description' => 'MD5 value of the download archive file.',
+      'type' => 'varchar',
+      'length' => 32,
+      'not null' => FALSE,
+    );
+    db_add_field('project_release', 'download_md5', $download_md5_spec);
+  }
+
+  if (!db_field_exists('project_release', 'download_signature')) {
+    $download_signature_spec = array(
+      'description' => 'Base64 encoded signature for the download archive.',
+      'type' => 'text',
+    );
+    db_add_field('project_release', 'download_signature', $download_signature_spec);
+  }
 }

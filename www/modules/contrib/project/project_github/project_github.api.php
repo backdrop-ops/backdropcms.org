@@ -62,7 +62,7 @@ function hook_github_project_validate(Node $project_node, array &$errors, array 
  *   No return value.
  */
 function hook_github_project_validate_release(Node $release_node, array &$errors, array $payload) {
-  $project_node = node_load($release_node->project['release_nid']);
+  $project_node = node_load($release_node->project_release['release_nid']);
   if ($project_node->type === 'project_module') {
     $release_node->type = 'module_release';
   }

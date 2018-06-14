@@ -483,10 +483,24 @@ function project_release_form_node_form_alter(&$form, &$form_state) {
     );
     $form['project_release']['download_link'] = array(
       '#type' => 'url',
-      '#title' => t('Download link'),
+      '#title' => t('Download link URL'),
       '#default_value' => $node->project_release['download_link'],
       '#description' => t('The URL to an archive containing this release.'),
       '#required' => TRUE,
+    );
+    $form['project_release']['download_md5'] = array(
+      '#type' => 'item',
+      '#title' => t('Download MD5'),
+      '#markup' => $node->project_release['download_md5'],
+      '#description' => t('MD5 value of the release archive.'),
+      '#access' => !empty($node->project_release['download_md5']),
+    );
+    $form['project_release']['download_signature'] = array(
+      '#type' => 'item',
+      '#title' => t('Download signature'),
+      '#markup' => $node->project_release['download_signature'],
+      '#description' => t('The base64 encoded signature for the release archive. Must be created by the packaging script.'),
+      '#access' => !empty($node->project_release['download_signature']),
     );
     $form['project_release']['release_link'] = array(
       '#type' => 'url',
@@ -667,15 +681,17 @@ function _project_release_node_save(Node $node) {
   if (project_release_node_is_release($node)) {
     // Determine the download file size if not provided.
     $is_new = empty($node->original);
-    $update_download_size = FALSE;
-    if (is_null($node->project_release['download_size']) || $node->project_release['download_size'] === '') {
-      $update_download_size = TRUE;
+    $update_download_info = FALSE;
+    if ((is_null($node->project_release['download_size']) || $node->project_release['download_size'] === '') ||
+        (is_null($node->project_release['download_md5']) || $node->project_release['download_md5'] === '')) {
+      $update_download_info = TRUE;
     }
     if (!$is_new && $node->original->project_release['download_link'] !== $node->project_release['download_link']) {
-      $update_download_size = TRUE;
+      $update_download_info = TRUE;
     }
-    if ($update_download_size) {
+    if ($update_download_info) {
       $node->project_release['download_size'] = project_release_get_download_size($node->project_release['download_link']);
+      $node->project_release['download_md5'] = project_release_get_download_md5($node->project_release['download_link']);
     }
 
     // Write the project release record to the database.
@@ -840,6 +856,21 @@ function project_release_get_download_size($download_link) {
     return (int) $result->headers['content-length'];
   }
   return 0;
+}
+
+/**
+ * Perform an HTTP request to get a file from a URL and return its MD5 hash.
+ *
+ * @return string
+ *   The MD5 hash of the file archive at the provided URL.
+ */
+function project_release_get_download_md5($download_link) {
+  $md5_list = &backdrop_static(__FUNCTION__, array());
+  if (!isset($md5_list[$download_link])) {
+    $result = backdrop_http_request($download_link);
+    $md5_list[$download_link] = isset($result->data) ? md5($result->data) : FALSE;
+  }
+  return $md5_list[$download_link];
 }
 
 /**

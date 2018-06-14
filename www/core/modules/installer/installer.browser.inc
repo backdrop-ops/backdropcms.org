@@ -308,7 +308,7 @@ function _installer_browser_batch_install_release($release_name, $project, &$con
 
   module_load_include('inc', 'installer', 'installer.manager');
   $url = file_create_url($release['download_link']);
-  $result = installer_manager_download_project($url, TRUE);
+  $result = installer_manager_download_project($url, TRUE, $release);
 
   if ($result['success']) {
     $context['results']['successes'][] = t('Successfully installed %project.', array('%project' => $project['title']));
