@@ -1,0 +1,11 @@
+type = module
+name = Antibot
+description = Prevent forms from being submitted without JavaScript enabled
+backdrop = 1.x
+package = Spam control
+configure = admin/config/system/antibot
+
+; Added by Backdrop CMS packaging script on 2018-07-17
+project = antibot
+version = 1.x-1.2.0
+timestamp = 1531855774
