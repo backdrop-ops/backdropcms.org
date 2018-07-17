@@ -104,7 +104,6 @@ function _project_github_create_package(array &$errors, array &$payload) {
   else {
     watchdog('project_github', 'Error creating release for @project @tag.', array('@project' => $project_name, '@tag' => $tag_name), WATCHDOG_INFO);
   }
-
   return $new_asset_data;
 }
 

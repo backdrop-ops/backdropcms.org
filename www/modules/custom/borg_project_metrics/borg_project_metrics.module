@@ -55,11 +55,11 @@ function borg_project_metrics_get_downloads($project = '') {
   curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
   $content = curl_exec($ch);
   curl_close($ch);
-  $json = json_decode($content);
+  $json = json_decode($content, TRUE);
   $total = 0;
   if (!empty($json)) {
-    foreach($json as $j) {
-      $total += $j->assets[0]->download_count;
+    foreach ($json as $j) {
+      $total += isset($j['assets'][0]['download_count']) ? $j['assets'][0]['download_count'] : 0;
     }
   }
   return $total;

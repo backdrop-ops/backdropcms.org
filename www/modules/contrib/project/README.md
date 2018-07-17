@@ -37,7 +37,7 @@ directory for complete text.
 Current Maintainers
 -------------------
 
-- Nate Haug (https://github.com/quicksketch/)
+- Nate Lampton (https://backdropcms.org/account/quicksketch)
 
 Credits
 -------

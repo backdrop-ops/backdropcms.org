@@ -75,7 +75,7 @@ function project_schema() {
 }
 
 /**
- * Implements hook_update_dependencies().
+ * Implements hook_update_last_removed().
  */
 function project_update_last_removed() {
   return 7007;
