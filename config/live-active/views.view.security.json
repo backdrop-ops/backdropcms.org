@@ -454,7 +454,8 @@
                     "row_plugin": false,
                     "row_options": false,
                     "pager": false,
-                    "pager_options": false
+                    "pager_options": false,
+                    "title": false
                 },
                 "style_options": {
                     "row_class": "",
@@ -477,7 +478,8 @@
                     }
                 },
                 "pager_options": null,
-                "link_url": "security/advisories"
+                "link_url": "security/advisories",
+                "title": "Security Advisories"
             }
         }
     }
