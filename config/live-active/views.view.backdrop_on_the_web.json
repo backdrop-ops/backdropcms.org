@@ -577,6 +577,22 @@
                 "block_description": "Backdrop On The Web",
                 "title": "Mentions"
             }
+        },
+        "feed_1": {
+            "display_title": "Feed",
+            "display_plugin": "feed",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "news/mentions/rss.xml",
+                "displays": {
+                    "page": "page",
+                    "default": 0,
+                    "block_1": 0
+                }
+            }
         }
     }
 }
