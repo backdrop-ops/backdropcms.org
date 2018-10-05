@@ -5,7 +5,7 @@
     "tag": "default",
     "disabled": false,
     "base_table": "node",
-    "human_name": "events",
+    "human_name": "Events",
     "core": "1.3.2",
     "display": {
         "default": {
@@ -517,7 +517,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": 0,
-                        "content": "<p><small>Have an event you'd like to see here? Please <a href=\"https://backdropcms.org/user/login\">log in</a> to <a href=\"/node/add/event\">post an event</a>.</small><br/>\n<small>Subscribe to the <a href=\"https://www.google.com/calendar/ical/backdropcms%40gmail.com/public/basic.ics\">ical feed</a></small></p>",
+                        "content": "<p><small>Have an event you'd like to see here? Any <a href=\"/user/login\">logged in</a> user may <a href=\"/node/add/event\">post an event</a>.</small><br/>\r\n<small>Subscribe to the <a href=\"https://www.google.com/calendar/ical/backdropcms%40gmail.com/public/basic.ics\">ical feed</a></small></p>",
                         "format": "full_html",
                         "tokenize": 0
                     }

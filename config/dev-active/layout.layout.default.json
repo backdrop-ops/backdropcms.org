@@ -23,8 +23,7 @@
         "top": [],
         "content": [
             "default",
-            "62b827f3-5a2e-463d-ac3f-63fd43e95bdc",
-            "98d68aba-5c3a-4f32-b900-a490c259747b"
+            "62b827f3-5a2e-463d-ac3f-63fd43e95bdc"
         ],
         "bottom": [],
         "footer": [
@@ -167,44 +166,6 @@
                         }
                     }
                 }
-            }
-        },
-        "98d68aba-5c3a-4f32-b900-a490c259747b": {
-            "plugin": "block:security_mailing_list",
-            "data": {
-                "module": "block",
-                "delta": "security_mailing_list",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "security_mailing_list",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "98d68aba-5c3a-4f32-b900-a490c259747b",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                },
-                "conditions": [
-                    {
-                        "plugin": "path",
-                        "data": {
-                            "settings": {
-                                "visibility_setting": "1",
-                                "paths": "securitys",
-                                "load_condition_nojs": "Load condition"
-                            }
-                        }
-                    }
-                ]
             }
         },
         "71336ea1-c14b-4464-9040-64b1ee6b4fcc": {
