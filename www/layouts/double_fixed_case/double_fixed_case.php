@@ -20,13 +20,13 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
   $variables['row_ninth'] = FALSE;
   $variables['row_tenth'] = FALSE;
 
-  if ($variables['content']['sidebar'] && $variables['content']['drawer']) {
+  if (isset($variables['content']['sidebar']) && isset($variables['content']['drawer'])) {
     $variables['classes'][] = 'layout-both-sidebars';
   }
-  elseif ($variables['content']['sidebar'] || $variables['content']['drawer']) {
+  elseif (isset($variables['content']['sidebar']) || isset($variables['content']['drawer'])) {
     $variables['classes'][] = 'layout-one-sidebar';
 
-    if ($variables['content']['sidebar']) {
+    if (isset($variables['content']['sidebar'])) {
       $variables['classes'][] = 'layout-has-sidebar';
     }
     else {
