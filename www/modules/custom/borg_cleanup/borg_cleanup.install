@@ -1,0 +1,19 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the Borg Cleanup module.
+ */
+
+/**
+ * Copy of honeypot_update_1002().
+ * Adds the 'hostname' column to the {honeypot_user} table.
+ */
+function borg_cleanup_update_1001() {
+  if (!db_field_exists('honeypot_user', 'hostname')) {
+    module_load_include('install', 'honeypot', 'honeypot');
+    $schema = honeypot_schema();
+    $spec = $schema['honeypot_user']['fields']['hostname'];
+    $spec['initial'] = '';
+    db_add_field('honeypot_user', 'hostname', $spec);
+  }
+}
