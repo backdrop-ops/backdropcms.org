@@ -12,7 +12,7 @@
     "disabled": false,
     "orig_type": "quote",
     "settings": {
-        "status_default": "0",
+        "status_default": 0,
         "sticky_enabled": 0,
         "sticky_default": 0,
         "promote_enabled": 0,
@@ -41,6 +41,7 @@
         "project_release_api_versions": [
             ""
         ],
-        "project_release_type": ""
+        "project_release_type": "",
+        "hidden_path": "0"
     }
 }

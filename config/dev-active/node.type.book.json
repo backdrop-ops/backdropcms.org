@@ -12,7 +12,7 @@
     "disabled": false,
     "orig_type": "book",
     "settings": {
-        "status_default": "1",
+        "status_default": 1,
         "sticky_enabled": 1,
         "sticky_default": 0,
         "promote_enabled": 1,
@@ -41,6 +41,7 @@
         "project_release_api_versions": [
             ""
         ],
-        "project_release_type": ""
+        "project_release_type": "",
+        "hidden_path": "0"
     }
 }
