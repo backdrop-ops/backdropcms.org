@@ -596,8 +596,8 @@ function install_tasks($install_state) {
   if (!empty($install_state['parameters']['profile'])) {
     // Load the profile install file, because it is not always loaded when
     // hook_install_tasks() is invoked (e.g. batch processing).
-    $profile_install_file = BACKDROP_ROOT . '/profiles/' . $install_state['parameters']['profile'] . '/' . $install_state['parameters']['profile'] . '.install';
-    if (file_exists($profile_install_file)) {
+    $profile_install_file = _install_find_profile_file($install_state['parameters']['profile'], 'install');
+    if ($profile_install_file) {
       include_once $profile_install_file;
     }
     $function = $install_state['parameters']['profile'] . '_install_tasks';
@@ -623,8 +623,8 @@ function install_tasks($install_state) {
 
   // Allow the installation profile to modify the full list of tasks.
   if (!empty($install_state['parameters']['profile'])) {
-    $profile_file = BACKDROP_ROOT . '/profiles/' . $install_state['parameters']['profile'] . '/' . $install_state['parameters']['profile'] . '.profile';
-    if (file_exists($profile_file)) {
+    $profile_file = _install_find_profile_file($install_state['parameters']['profile']);
+    if ($profile_file) {
       include_once $profile_file;
       $function = $install_state['parameters']['profile'] . '_install_tasks_alter';
       if (function_exists($function)) {
@@ -982,17 +982,16 @@ function install_settings_form($form, &$form_state, &$install_state) {
 
   // Add driver specific configuration options.
   $form['driver']['#options']['mysql'] = $driver->name();
-
   $form['settings']['mysql'] = $driver->getFormOptions($database);
   $form['settings']['mysql']['#prefix'] = '<h2 class="js-hide">' . st('@driver_name settings', array('@driver_name' => $driver->name())) . '</h2>';
   $form['settings']['mysql']['#type'] = 'container';
   $form['settings']['mysql']['#tree'] = TRUE;
   $form['settings']['mysql']['advanced_options']['#parents'] = array('mysql');
-  $form['settings']['mysql']['#states'] = array(
-    'visible' => array(
-      ':input[name=driver]' => array('value' => 'mysql'),
-    )
-  );
+  // For this exceptional situation, maintain the database password even on
+  // form validation errors.
+  if (isset($form_state['input']['mysql']['password'])) {
+    $form['settings']['mysql']['password']['#attributes']['value'] = $form_state['input']['mysql']['password'];
+  }
 
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['save'] = array(
@@ -1079,7 +1078,7 @@ function install_settings_form_submit($form, &$form_state) {
     'required' => TRUE,
   );
   $settings['database_prefix'] = array(
-    'value' => $db_settings['db_prefix'],
+    'value' => $db_settings['prefix'],
   );
   backdrop_rewrite_settings($settings);
 
@@ -1104,7 +1103,9 @@ function install_settings_form_submit($form, &$form_state) {
  * Finds all .profile files.
  */
 function install_find_profiles() {
-  return file_scan_directory('./profiles', '/\.profile$/', array('key' => 'name'));
+  $core_profiles = file_scan_directory('./core/profiles', '/\.profile$/', array('key' => 'name'));
+  $root_profiles = file_scan_directory('./profiles', '/\.profile$/', array('key' => 'name'));
+  return array_merge($core_profiles, $root_profiles);
 }
 
 /**
@@ -1491,8 +1492,8 @@ function install_already_done_error() {
  * @throws Exception
  */
 function install_load_profile(&$install_state) {
-  $profile_file = BACKDROP_ROOT . '/profiles/' . $install_state['parameters']['profile'] . '/' . $install_state['parameters']['profile'] . '.profile';
-  if (file_exists($profile_file)) {
+  $profile_file = _install_find_profile_file($install_state['parameters']['profile']);
+  if ($profile_file) {
     include_once $profile_file;
     $install_state['profile_info'] = install_profile_info($install_state['parameters']['profile'], $install_state['parameters']['langcode']);
   }
@@ -1857,9 +1858,12 @@ function _install_configure_form($form, &$form_state, &$install_state) {
     '#weight' => -5,
   );
   $form['admin_account']['account']['pass'] = array(
-    '#type' => 'password_confirm',
+    '#title' => st('Password'),
+    '#type' => 'password',
     '#required' => TRUE,
     '#weight' => 0,
+    '#password_toggle' => TRUE,
+    '#password_strength' => TRUE,
   );
 
   $form['server_settings'] = array(

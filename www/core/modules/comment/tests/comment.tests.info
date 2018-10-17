@@ -82,6 +82,12 @@ description = Tests that comments behave correctly when the node is changed.
 group = Comment
 file = comment.test
 
+[CommentNodeAutoCloserTestCase]
+name = Comment with auto closer
+description = Tests that comments behave correctly when the auto closer is enabled.
+group = Comment
+file = comment.test
+
 [CommentViewsHandlerArgumentUserUidTest]
 name = Tests handler argument_comment_user_uid
 description = Tests the user posted or commented argument Views handler.
@@ -94,7 +100,7 @@ description = Tests the user posted or commented filter Views handler.
 group = Comment
 file = comment_views_handler_filter_user_uid.test
 
-; Added by Backdrop CMS packaging script on 2018-04-25
+; Added by Backdrop CMS packaging script on 2018-10-10
 project = backdrop
-version = 1.9.5
-timestamp = 1524677768
+version = 1.11.1
+timestamp = 1539215020

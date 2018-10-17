@@ -77,6 +77,13 @@ class Node extends Entity {
   public $changed;
 
   /**
+   * The timestamp at which this content should be automatically published.
+   *
+   * @var integer
+   */
+  public $scheduled;
+
+  /**
    * The node comment status indicator.
    *
    * COMMENT_NODE_HIDDEN => no comments
@@ -139,6 +146,15 @@ class Node extends Entity {
    * @var integer
    */
   public $revision_uid;
+
+  /**
+   * The node preview status.
+   *
+   * @var boolean
+   *
+   * @since 1.11.0
+   */
+  public $in_preview;
 
   /**
    * Create a new Node instance.

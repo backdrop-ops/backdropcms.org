@@ -577,10 +577,11 @@ function system_modules($form, $form_state = array()) {
         $requires_name = $files[$requires]->info['name'];
 
         // Disable this module if it is incompatible with the dependency's version.
-        if ($incompatible_version = backdrop_check_incompatibility($v, str_replace(BACKDROP_CORE_COMPATIBILITY . '-', '', $files[$requires]->info['version']))) {
+        $version_string = preg_replace('/^' . preg_quote(BACKDROP_CORE_COMPATIBILITY, '/') . '-/', '', $files[$requires]->info['version']);
+        if ($incompatible_version = backdrop_check_incompatibility($v, $version_string)) {
           $extra['requires'][$requires] = t('@module (<span class="admin-missing">incompatible with</span> version @version)', array(
-            '@module' => $requires_name . $incompatible_version,
-            '@version' => $files[$requires]->info['version'],
+            '@module' => $requires_name . ' ' . $incompatible_version,
+            '@version' => $version_string,
           ));
           $extra['disabled'] = TRUE;
         }
@@ -1081,16 +1082,16 @@ function system_modules_uninstall_confirm_form($storage) {
     );
   }
 
-  // Display a confirm form if modules have been selected.
+  // Display a confirmation form if modules have been selected.
   if (isset($uninstall)) {
+    backdrop_set_message(t('Uninstalling modules causes all data from these modules to be lost!'), 'warning');
     $form['#confirmed'] = TRUE;
     $form['uninstall']['#tree'] = TRUE;
-    $form['modules'] = array('#markup' => '<p>' . t('The following modules will be completely uninstalled from your site, and <em>all data from these modules will be lost</em>!') . '</p>' . theme('item_list', array('items' => $uninstall)));
     $form = confirm_form(
       $form,
       t('Confirm uninstall'),
       'admin/modules/uninstall',
-      t('Would you like to continue with uninstalling the above?'),
+      t('Are you sure you want to continue with uninstalling the modules listed below?') . theme('item_list', array('items' => $uninstall)),
       t('Uninstall'),
       t('Cancel'));
     return $form;
@@ -1311,7 +1312,7 @@ function system_site_information_settings($form, &$form_state) {
  */
 function system_site_information_settings_validate($form, &$form_state) {
   // Handle file uploads.
-  $validators = array('file_validate_is_image' => array());
+  $validators = array('file_validate_extensions' => array('ico png gif jpg jpeg apng svg'));
 
   // Check for a new uploaded logo.
   $file = file_save_upload('site_logo_upload', $validators);
@@ -1326,8 +1327,6 @@ function system_site_information_settings_validate($form, &$form_state) {
       form_set_error('site_logo_upload', t('The logo could not be uploaded.'));
     }
   }
-
-  $validators = array('file_validate_extensions' => array('ico png gif jpg jpeg apng svg'));
 
   // Check for a new uploaded favicon.
   $file = file_save_upload('site_favicon_upload', $validators);
@@ -1516,7 +1515,7 @@ function system_cron_settings($form, &$form_state) {
     '#title' => t('Run cron every'),
     '#description' => t('More information about setting up scheduled tasks can be found by <a href="@url">reading the cron tutorial on drupal.org</a>.', array('@url' => url('http://drupal.org/cron'))),
     '#default_value' => config('system.core')->get('cron_safe_threshold'),
-    '#options' => array(0 => t('Never')) + backdrop_map_assoc(array(3600, 10800, 21600, 43200, 86400, 604800), 'format_interval'),
+    '#options' => array(0 => t('Never')) + backdrop_map_assoc(array(600, 1800, 3600, 10800, 21600, 43200, 86400, 604800), 'format_interval'),
   );
 
   return system_settings_form($form);
@@ -2006,7 +2005,9 @@ function system_site_maintenance_mode($form, &$form_state) {
   $form['maintenance_mode_message'] = array(
     '#type' => 'textarea',
     '#title' => t('Message to display when in maintenance mode'),
-    '#default_value' => t($config->get('maintenance_mode_message'), array('@site' => config_get('system.core', 'site_name'))),
+    '#default_value' => $config->get('maintenance_mode_message'),
+    '#description' => theme('token_tree_link'),
+    '#element_validate' => array('token_element_validate'),
   );
 
   $form['actions']['#type'] = 'actions';

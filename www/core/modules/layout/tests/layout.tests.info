@@ -40,7 +40,13 @@ description = Tests the layout_get_block_usage() function.
 group = Layout
 file = layout.test
 
-; Added by Backdrop CMS packaging script on 2018-04-25
+[LayoutRendererTest]
+name = Layout Renderer Test
+description = Tests that the correct renderer is used.
+group = Layout
+file = layout.test
+
+; Added by Backdrop CMS packaging script on 2018-10-10
 project = backdrop
-version = 1.9.5
-timestamp = 1524677768
+version = 1.11.1
+timestamp = 1539215020
