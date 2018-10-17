@@ -281,7 +281,8 @@ function googleanalytics_admin_settings_form($form_state) {
   $form['tracking']['privacy']['googleanalytics_privacy_donottrack'] = array(
     '#type' => 'checkbox',
     '#title' => t('Universal web tracking opt-out'),
-    '#description' => t('If enabled and your server receives the <a href="@donottrack">Do-Not-Track</a> header from the client browser, the Google Analytics module will not embed any tracking code into your site. Compliance with Do Not Track could be purely voluntary, enforced by industry self-regulation, or mandated by state or federal law. Please accept your visitors privacy. If they have opt-out from tracking and advertising, you should accept their personal decision. This feature is currently limited to logged in users and disabled page caching.', array('@donottrack' => 'http://donottrack.us/')),
+    '#description' => t('WARNING: Enabling this option will prevent the tracking code from appearing in Goole Chome.<br><br>
+      If enabled and your server receives the <a href="@donottrack">Do-Not-Track</a> header from the client browser, the Google Analytics module will not embed any tracking code into your site. Compliance with Do Not Track could be purely voluntary, enforced by industry self-regulation, or mandated by state or federal law. Please accept your visitors privacy. If they have opt-out from tracking and advertising, you should accept their personal decision. This feature is currently limited to logged in users and disabled page caching.', array('@donottrack' => 'http://donottrack.us/')),
     '#default_value' => $config->get('privacy_donottrack'),
   );
 
@@ -570,6 +571,8 @@ function googleanalytics_admin_settings_form_submit($form, &$form_state) {
   }
 
   $config->save();
+
+  backdrop_set_message(t('The configuration options have been saved.'));
 }
 
 /**

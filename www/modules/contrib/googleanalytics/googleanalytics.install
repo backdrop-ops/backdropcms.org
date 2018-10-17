@@ -113,3 +113,10 @@ function googleanalytics_update_1001() {
   update_variable_del('googleanalytics_codesnippet_after');
   update_variable_del('googleanalytics_debug');
 }
+
+/**
+ * Disable the problematic 'Universal web tracking opt-out' setting.
+ */
+function googleanalytics_update_1002() {
+  config_set('googleanalytics.settings', 'privacy_donottrack', FALSE);
+}

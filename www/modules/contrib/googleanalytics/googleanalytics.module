@@ -25,7 +25,7 @@ function googleanalytics_api() {
 function googleanalytics_config_info() {
   $prefixes['googleanalytics.settings'] = array(
     'label' => t('Google Analytics Settings'),
-    'group' => t('Google Analytics'),
+    'group' => t('Configuration'),
   );
 
   return $prefixes;
