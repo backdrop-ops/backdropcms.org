@@ -1,22 +1,22 @@
 [HoneypotFormTestCase]
-name = Test Honeypot forms as admin and other users
+name = Honeypot form protections
 description = Tests the functionality of Honeypot module for an admin user, tests adding comments, nodes as basic authenticated user, and tests registering for account.
 group = Honeypot
 file = honeypot.test
 
 [HoneypotAdminFormTestCase]
-name = Test the Honeypot form for admin user
+name = Honeypot admin form
 description = Tests the functionality of the Honeypot module for an admin user.
 group = Honeypot
 file = honeypot.test
 
 [HoneypotCssTestCase]
-name = Test Honeypot's CSS generation routines.
+name = Honeypot CSS generation
 description = Test Honeypot's CSS regeneration both directly and via cron.
 group = Honeypot
 file = honeypot.test
 
-; Added by Backdrop CMS packaging script on 2018-03-01
+; Added by Backdrop CMS packaging script on 2018-09-11
 project = honeypot
-version = 1.x-1.24.0
-timestamp = 1519955694
+version = 1.x-1.25.0
+timestamp = 1536723465

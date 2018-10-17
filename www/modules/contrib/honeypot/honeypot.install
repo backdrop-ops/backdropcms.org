@@ -13,7 +13,7 @@ function honeypot_schema() {
     'description' => 'Table that stores failed attempts to submit a form.',
     'fields' => array(
       'uid' => array(
-        'description' => 'Foreign key to {users}.uid; uniquely identifies a Drupal user to whom this ACL data applies.',
+        'description' => 'Foreign key to {users}.uid; uniquely identifies a Backdrop user to whom this ACL data applies.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
@@ -69,7 +69,7 @@ function honeypot_uninstall() {
   }
 
   // Delete 'honeypot' directory from files directory.
-  file_unmanaged_delete_recursive(file_default_scheme() . '://honeypot');
+  file_unmanaged_delete_recursive('public://honeypot');
 }
 
 /**

@@ -13,14 +13,6 @@ class HoneypotFormTestCase extends BackdropWebTestCase {
   protected $webUser;
   protected $node;
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Honeypot form protections',
-      'description' => 'Ensure that Honeypot protects site forms properly.',
-      'group' => 'Form API',
-    );
-  }
-
   public function setUp() {
     // Enable modules required for this test.
     parent::setUp(array('honeypot', 'comment', 'honeypot_test'));
@@ -202,14 +194,6 @@ class HoneypotFormTestCase extends BackdropWebTestCase {
 class HoneypotAdminFormTestCase extends BackdropWebTestCase {
   protected $adminUser;
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Honeypot admin form',
-      'description' => 'Ensure the Honeypot admin form functions properly.',
-      'group' => 'Form API',
-    );
-  }
-
   public function setUp() {
     // Enable modules required for this test.
     parent::setUp(array('honeypot'));
@@ -285,13 +269,6 @@ class HoneypotAdminFormTestCase extends BackdropWebTestCase {
  * Test Honeypot's CSS generation routines.
  */
 class HoneypotCssTestCase extends BackdropWebTestCase {
-  public static function getInfo() {
-    return array(
-      'name' => 'Honeypot CSS tests',
-      'description' => 'Ensure that Honeypot rebuilds its CSS file correctly.',
-      'group' => 'Form API',
-    );
-  }
 
   public function setUp() {
     // Enable modules required for this test.
@@ -344,7 +321,7 @@ class HoneypotCssTestCase extends BackdropWebTestCase {
    */
   public function testHoneypotCssUpdateOnCron() {
     $honeypot_css = honeypot_get_css_file_path();
-    $original_element_name = config_get('honeypot.settings','element_name', 'url');
+    $original_element_name = config_get('honeypot.settings', 'element_name');
 
     // Update the honeypot element name.
     config_set('honeypot.settings', 'element_name', 'test');
@@ -389,4 +366,17 @@ class HoneypotCssTestCase extends BackdropWebTestCase {
     // Make sure the Honeypot CSS file exists.
     $this->assertTrue(file_exists($honeypot_css));
   }
+
+  /**
+   * Test CSS file availability.
+   */
+  public function testHoneypotCssAvailability() {
+    // Public CSS file can be consumed.
+    if ($wrapper = file_stream_wrapper_get_instance_by_uri(honeypot_get_css_file_path())) {
+      $url = $wrapper->getExternalUrl();
+    }
+    $this->backdropGet($url);
+    $this->assertResponse(200);
+  }
+
 }
