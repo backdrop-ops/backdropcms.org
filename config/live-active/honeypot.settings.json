@@ -4,7 +4,7 @@
     "expire": 300,
     "log": 1,
     "element_name": "url",
-    "time_limit": "0",
+    "time_limit": "5",
     "unprotected_forms": [
         "user_login_form",
         "search_form",
@@ -37,6 +37,8 @@
         "honeypot_form_organization_node_form": 1,
         "honeypot_form_showcase_node_form": 1,
         "honeypot_form_external_mention_node_form": 1,
-        "honeypot_form_project_dummy_node_form": 0
-    }
+        "honeypot_form_project_dummy_node_form": 0,
+        "honeypot_form_platform_node_form": 0
+    },
+    "use_js_for_cached_pages": 1
 }

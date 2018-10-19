@@ -4,7 +4,7 @@
     "name": "Project release",
     "description": "Add a tagged release of a project.",
     "settings": {
-        "status_default": "1",
+        "status_default": 1,
         "promote_enabled": 0,
         "promote_default": 0,
         "sticky_enabled": 0,
@@ -31,7 +31,8 @@
         "node_user_picture": true,
         "language": 0,
         "node_permissions": true,
-        "project_release_type": ""
+        "project_release_type": "",
+        "hidden_path": "0"
     },
     "base": "node_content",
     "module": "project_release",

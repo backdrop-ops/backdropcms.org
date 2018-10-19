@@ -23,7 +23,7 @@
             "user-menu": 0
         },
         "menu_parent": "main-menu:0",
-        "status_default": "1",
+        "status_default": 1,
         "promote_enabled": 1,
         "promote_default": 0,
         "sticky_enabled": 0,
@@ -39,7 +39,8 @@
         "project_release_api_versions": [
             ""
         ],
-        "project_release_type": ""
+        "project_release_type": "",
+        "hidden_path": "0"
     },
     "orig_type": "feature"
 }

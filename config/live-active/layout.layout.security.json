@@ -26,7 +26,6 @@
             "86d0cc7a-e4c5-4965-9f47-71f57d732ca1"
         ],
         "sidebar": [
-            "58f50a37-ef50-484f-8005-5da10737cbd9",
             "40b01f71-f22e-4cff-b500-ffd2f131c057"
         ],
         "bottom": [],
@@ -162,31 +161,6 @@
                     "contexts": []
                 },
                 "uuid": "86d0cc7a-e4c5-4965-9f47-71f57d732ca1",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "58f50a37-ef50-484f-8005-5da10737cbd9": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "How to report a security issue",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>If you believe you may have discovered a security issue with Backdrop CMS, please contact the Backdrop Security Team directly at <a href=\"mailto:security@backdropcms.org\">security@backdropcms.org</a>.</p>\r\n\r\n<p>In order to keep everyone safe, we manage security issues in a private repository. Please refrain from publicly blogging&nbsp;or tweeting about any potential security issue&nbsp;until it&nbsp;has been resolved.</p>\r\n",
-                    "format": "filtered_html"
-                },
-                "uuid": "58f50a37-ef50-484f-8005-5da10737cbd9",
                 "style": {
                     "plugin": "default",
                     "data": {
