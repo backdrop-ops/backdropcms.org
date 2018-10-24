@@ -92,8 +92,8 @@ function borg_blocks_tagline($settings) {
   $demo_link = l(t('Try a demo'), $demo_url, array('attributes' => $demo_attributes));
 
   //$output  = '<h1 class="page-title">Backdrop CMS</h1>';
-  $output  = '<h2><span>A free and Open Source CMS</span> ';
-  $output .= '<span>for small to medium sized businesses and non-profits.</span></h2>';
+  $output  = '<h2>The free and Open Source CMS<br/>';
+  $output .= '<span>that helps you build websites for businesses and non-profits.</span></h2>';
   $output .= $download_link;
   $output .= $demo_link;
 
