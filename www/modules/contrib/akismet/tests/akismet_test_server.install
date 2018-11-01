@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Installation functionality for Akismet testing module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function akismet_test_server_uninstall() {
+  db_delete('variable')
+    ->condition('name', db_like('akismet_test_server') . '%', 'LIKE')
+    ->execute();
+}
+

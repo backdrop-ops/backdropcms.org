@@ -1,0 +1,2361 @@
+<?php
+
+/**
+ * @file
+ * Tests for the Akismet module.
+ */
+
+/**
+ * Common base test class for Akismet tests.
+ */
+class AkismetWebTestCase extends BackdropWebTestCase {
+  protected $profile = 'testing';
+
+  /**
+   * A user with permission to bypass node access and administer nodes.
+   *
+   * @var object
+   */
+  protected $admin_user;
+
+  protected $useProductionKey = FALSE;
+
+  /**
+   * The text the user should see when they are blocked from submitting a form
+   * because the Akismet servers are unreachable.
+   */
+  protected $fallback_message = 'The spam filter installed on this site is currently unavailable. Per site policy, we are unable to accept new submissions until that problem is resolved. Please try resubmitting the form in a couple of minutes.';
+
+  /**
+   * The text the user should see if there submission was determinted to be spam.
+   */
+  protected $spam_message = 'Your submission has triggered the spam filter and will not be accepted.';
+
+  /**
+   * The API key used during testing.
+   */
+  protected $key = 'valid-key';
+
+  /**
+   * The Akismet client class implementation to use.
+   *
+   * By default, we use AkismetBackdropTestLocal and test against the local
+   * testing server. Assign AkismetBackdropTest to test against the production
+   * Akismet instance, using the production API key.
+   *
+   * @see akismet.backdrop.inc
+   *
+   * @var string
+   */
+  protected $akismetClass = 'AkismetBackdropTestLocal';
+
+  function __construct($test_id = NULL) {
+    parent::__construct($test_id);
+    // Hide this base class in assertions.
+    $this->skipClasses[__CLASS__] = TRUE;
+  }
+
+  /**
+   * Set up an administrative user account and testing keys.
+   */
+  function setUp() {
+    // Re-initialize stored session_id and watchdog messages.
+    $this->resetResponseID();
+    $this->messages = array();
+
+    $modules = func_get_args();
+    $modules = (isset($modules[0]) ? $modules[0] : array());
+
+    // Automatically enable local testing server implementation.
+    if (strstr($this->akismetClass, 'Local') && !in_array('akismet_test_server', $modules)) {
+      $modules[] = 'akismet_test_server';
+    }
+
+    // If not explicitly disabled by a test, setup with Akismet.
+    if (empty($this->disableDefaultSetup)) {
+      $modules[] = 'akismet';
+    }
+    // Database logging is unconditionally required to assert watchdog messages.
+    $modules[] = 'dblog';
+    parent::setUp($modules);
+
+    $config = config('akismet.settings');
+
+    // Use the real API key, if the test requires it.
+    if ($this->useProductionKey) {
+      $key = $config->get('akismet_api_key');
+      $this->key = $key;
+    }
+
+    // Save the Akismet client implementation to use for running the tests.
+    $config->set('akismet_class', $this->akismetClass);
+
+    // Save the API key for use during testing.
+    $config->set('akismet_api_key', $this->key);
+
+    // Disable testing mode warnings.
+    // backdrop_set_message() starts a session, which disables page caching, and
+    // in turn, page/form cache related tests would not behave correctly.
+    $config->set('akismet_testing_mode_omit_warning', TRUE);
+
+    // Log all messages.
+    $config->set('akismet_log_minimum_severity', WATCHDOG_DEBUG);
+    $config->save();
+
+    // D7's new default theme Bartik is bogus in various locations, which leads
+    // to failing tests.
+    // @todo Remove this override.
+    config_set('system.core', 'theme_default', 'basis');
+
+    // If not explicitly disabled by a test, setup and validate testing keys,
+    // and create a default admin user.
+    if (empty($this->disableDefaultSetup)) {
+      $permissions = array(
+        'access administration pages',
+        'administer akismet',
+        'administer nodes',
+        'access content overview',
+        'administer content types',
+        'administer permissions',
+        'administer users',
+        'bypass node access',
+      );
+      if (module_exists('comment')) {
+        $permissions[] = 'access comments';
+        $permissions[] = 'post comments';
+        $permissions[] = 'skip comment approval';
+        $permissions[] = 'administer comments';
+      }
+      $this->admin_user = $this->backdropCreateUser($permissions);
+    }
+
+  }
+
+  public function tearDown() {
+    // Capture any (remaining) watchdog messages.
+    $this->assertAkismetWatchdogMessages();
+    parent::tearDown();
+  }
+
+  /**
+   * Assert any watchdog messages based on their severity.
+   *
+   * This function can be (repeatedly) invoked to assert new watchdog messages.
+   * All watchdog messages with a higher severity than WATCHDOG_NOTICE are
+   * considered as "severe".
+   *
+   * @param $max_severity
+   *   (optional) A maximum watchdog severity level message constant that log
+   *   messages must have to pass the assertion. All messages with a higher
+   *   severity will fail. Defaults to WATCHDOG_NOTICE. If a severity level
+   *   higher than WATCHDOG_NOTICE is passed, then at least one severe message
+   *   is expected.
+   */
+  protected function assertAkismetWatchdogMessages($max_severity = WATCHDOG_NOTICE) {
+    // Ensure that all messages have been written before attempting to verify
+    // them. Actions executed within the test class may lead to log messages,
+    // but those get only logged when hook_exit() is triggered.
+    // akismet.module may not be installed by a test and thus not loaded yet.
+
+    backdrop_load('module', 'akismet');
+    akismet_log_write();
+
+    module_load_include('inc', 'dblog', 'dblog.admin');
+
+    $this->messages = array();
+    $query = db_select('watchdog', 'w')
+      ->fields('w')
+      ->orderBy('w.timestamp', 'ASC');
+
+    // The comparison logic applied in this function is a bit confusing, since
+    // the values of watchdog severity level constants defined by RFC 3164 are
+    // negated to their actual "severity level" meaning:
+    // WATCHDOG_EMERGENCY is 0, WATCHDOG_NOTICE is 5, WATCHDOG_DEBUG is 7.
+
+    $fail_expected = ($max_severity < WATCHDOG_NOTICE);
+    $had_severe_message = FALSE;
+    foreach ($query->execute() as $row) {
+      $this->messages[$row->wid] = $row;
+      // Only messages with a maximum severity of $max_severity or less severe
+      // messages must pass. More severe messages need to fail. See note about
+      // severity level constant values above.
+      $output = dblog_format_message($row, FALSE);
+      if ($row->severity >= $max_severity) {
+        // Visually separate debug log messages from other messages.
+        if ($row->severity == WATCHDOG_DEBUG) {
+          $this->error($output, 'User notice');
+        }
+        else {
+          $this->pass(check_plain($row->type) . ': ' . $output, t('Watchdog'));
+        }
+      }
+      else {
+        $this->error(check_plain($row->type) . ': ' . $output, t('Watchdog'));
+      }
+      // In case a severe message is expected, non-severe messages always pass,
+      // since we would trigger a false positive test failure otherwise.
+      // However, in order to actually assert the expectation, there must have
+      // been at least one severe log message.
+      $had_severe_message = ($had_severe_message || $row->severity < WATCHDOG_NOTICE);
+    }
+    // Assert that there was a severe message, in case we expected one.
+    if ($fail_expected && !$had_severe_message) {
+      $this->fail(t('Severe log message was found.'), t('Watchdog'));
+    }
+    // Delete processed watchdog messages.
+    if (!empty($this->messages)) {
+      $seen_ids = array_keys($this->messages);
+      db_delete('watchdog')->condition('wid', $seen_ids)->execute();
+    }
+  }
+
+  /**
+   * Assert that the Akismet session id remains the same.
+   *
+   * The Akismet session id is only known to one server. If we are communicating
+   * with a different Akismet server (due to a refreshed server list or being
+   * redirected), then we will get a new session_id.
+   *
+   * @param $type
+   *   The type of ID to assert; e.g., 'content_id', 'captcha_id'.
+   * @param $id
+   *   The ID of $type in the last request, as returned from Akismet.
+   * @param $new_expected
+   *   (optional) Boolean indicating whether a new ID is expected; e.g., after
+   *   incorrectly solving a CAPTCHA.
+   */
+  protected function assertResponseID($type, $id, $new_expected = FALSE) {
+    if (!isset($this->responseIds[$type]) || $new_expected) {
+      // Use assertTrue() instead of pass(), to test !empty().
+      $this->assertTrue($id, t('New %type: %id', array(
+        '%type' => $type,
+        '%id' => $id,
+      )));
+      $this->responseIds[$type] = $id;
+    }
+    else {
+      $this->assertSame($type, $id, $this->responseIds[$type]);
+    }
+    return $this->responseIds[$type];
+  }
+
+  /**
+   * Reset the statically cached Akismet session id.
+   *
+   * @param $type
+   *   The type of ID to reset; e.g., 'content_id', 'captcha_id'.
+   */
+  protected function resetResponseID($type = NULL) {
+    if (isset($type)) {
+      unset($this->responseIds[$type]);
+    }
+    else {
+      unset($this->responseIds);
+    }
+  }
+
+  /**
+   * Assert a Akismet session id in a form.
+   *
+   * This is a wrapper around assertResponseID() allows to assert that a proper
+   * Akismet session id is found in the form contained in the internal browser
+   * output. The usual flow is:
+   * - backdropGet() or backdropPost() requests or submits a form.
+   * - backdropGet() and backdropPost() invoke assertAkismetWatchdogMessages()
+   *   internally, which records all new watchdog messages.
+   * - This function, assertResponseIDInForm(), is invoked to assert that there
+   *   is a Akismet session id and, depending on the recorded watchdog messages,
+   *   that it either equals the last known session id or the new session id is
+   *   used for future comparisons in case of a server redirect.
+   * - The return value of this function is used to invoke assertAkismetData(),
+   *   to verify that the proper session id was stored in the database.
+   *
+   * @param $type
+   *   The type of ID to assert; e.g., 'content_id', 'captcha_id'.
+   * @param $new_expected
+   *   (optional) Boolean indicating whether a new ID is expected; e.g., after
+   *   incorrectly solving a CAPTCHA.
+   */
+  protected function assertResponseIDInForm($type, $new_expected = FALSE) {
+    $id = $this->getFieldValueByName('akismet[' . $type . ']');
+    return $this->assertResponseID($type, $id, $new_expected);
+  }
+
+  /**
+   * Instantiate a Akismet client and make it available on $this->akismet;
+   *
+   * @param $force
+   *   (Optional) If true, then a new class is always instantiated.
+   */
+  protected function getClient($force = FALSE) {
+    if ($force || !isset($this->akismet)) {
+      // akismet.module may not be enabled in the parent site executing the test.
+      backdrop_load('module', 'akismet');
+      $this->akismet = akismet($this->akismetClass, $force);
+    }
+    return $this->akismet;
+  }
+
+  /**
+   * Calls _akismet_status() directly to verify that current API keys are valid.
+   */
+  protected function assertValidKey() {
+    $status = _akismet_status(TRUE);
+    $this->assertAkismetWatchdogMessages();
+    $this->assertIdentical($status['isVerified'], TRUE, t('Akismet server can be contacted and API key is valid.'));
+  }
+
+  /**
+   * Saves an akismet_form entity to protect a given form with Akismet.
+   *
+   * @param string $form_id
+   *   The form id to protect.
+   * @param int $mode
+   *   The protection mode. Defaults to AKISMET_MODE_ANALYSIS.
+   * @param array $values
+   *   (optional) An associative array of properties to additionally set on the
+   *   akismet_form entity.
+   *
+   * @return int
+   *   The save status, as returned by akismet_form_save().
+   */
+  protected function setProtection($form_id, $mode = AKISMET_MODE_ANALYSIS, $values = array()) {
+    if (!$akismet_form = akismet_form_load($form_id)) {
+      $akismet_form = akismet_form_new($form_id);
+    }
+    $akismet_form['mode'] = $mode;
+    if ($values) {
+      foreach ($values as $property => $value) {
+        $akismet_form[$property] = $value;
+      }
+    }
+    $status = akismet_form_save($akismet_form);
+    return $status;
+  }
+
+  /**
+   * Configure Akismet protection for a given form.
+   *
+   * @param $form_id
+   *   The form id to configure.
+   * @param $mode
+   *   The Akismet protection mode for the form.
+   * @param $fields
+   *   (optional) A list of form elements to enable for text analysis. If
+   *   omitted and the form registers individual elements, all fields are
+   *   enabled by default.
+   * @param $edit
+   *   (optional) An array of POST data to pass through to backdropPost() when
+   *   configuring the form's protection.
+   */
+  protected function setProtectionUI($form_id, $fields = NULL, $edit = array()) {
+    // Always start from overview page, also to make debugging easier.
+    $this->backdropGet('admin/config/content/akismet');
+    // Determine whether the form is already protected.
+    $exists = db_query_range('SELECT 1 FROM {akismet_form} WHERE form_id = :form_id', 0, 1, array(':form_id' => $form_id))->fetchField();
+    // Add a new form.
+    if (!$exists) {
+      $this->clickLink(t('Add form'));
+      $add_form_edit = array(
+        'akismet[form_id]' => $form_id,
+      );
+      $this->backdropPost(NULL, $add_form_edit, t('Next'));
+    }
+    // Edit an existing form.
+    else {
+      $this->assertLinkByHref('admin/config/content/akismet/manage/' . $form_id);
+      $this->backdropGet('admin/config/content/akismet/manage/' . $form_id);
+    }
+
+    // Process the enabled fields.
+    $form_list = akismet_form_list();
+    $form_info = akismet_form_info($form_id, $form_list[$form_id]['module']);
+    foreach (array_keys($form_info['elements']) as $field) {
+      if (!isset($fields) || in_array($field, $fields)) {
+        // If the user specified all fields by default or to include this
+        // field, set its checkbox value to TRUE.
+        $edit['akismet[enabled_fields][' . rawurlencode($field) . ']'] = TRUE;
+      }
+      else {
+        // Otherwise set the field's checkbox value to FALSE.
+        $edit['akismet[enabled_fields][' . rawurlencode($field) . ']'] = FALSE;
+      }
+    }
+    $this->backdropPost(NULL, $edit, t('Save'));
+    if (!$exists) {
+      $this->assertText(t('The form protection has been added.'));
+    }
+    else {
+      $this->assertText(t('The form protection has been updated.'));
+    }
+  }
+
+  /**
+   * Remove Akismet protection for a given form.
+   *
+   * @param $form_id
+   *   The form id to configure.
+   */
+  protected function delProtection($form_id) {
+    // Determine whether the form is protected.
+    $exists = db_query_range('SELECT 1 FROM {akismet_form} WHERE form_id = :form_id', 0, 1, array(':form_id' => $form_id));
+    if ($exists) {
+      $this->backdropGet('admin/config/content/akismet/unprotect/' . $form_id);
+      $this->assertText(t('Akismet will no longer protect this form from spam.'), t('Unprotect confirmation form found.'));
+      $this->backdropPost(NULL, array(), t('Confirm'));
+    }
+  }
+
+  /**
+   * Assert that Akismet session data was stored for a submission.
+   *
+   * @param $entity
+   *   The entity type to search for in {akismet}.
+   * @param $id
+   *   The entity id to search for in {akismet}.
+   * @param $response_type
+   *   (optional) The type of ID to assert; e.g., 'content_id', 'captcha_id'.
+   * @param $response_id
+   *   (optional) The ID of $type to assert additionally.
+   */
+  protected function assertAkismetData($entity, $id, $response_type = '', $response_id = NULL) {
+    $data = akismet_data_load($entity, $id);
+    $this->assertTrue($data->id, t('Akismet session data for %entity @id exists: <pre>@data</pre>', array(
+      '%entity' => $entity,
+      '@id' => $id,
+      '@data' => var_export($data, TRUE),
+    )));
+    if (isset($response_id)) {
+      $this->assertSame(t('Stored @type ID', array('@type' => $response_type)), $data->$response_type, $response_id);
+    }
+    return $data;
+  }
+
+  /**
+   * Assert that no Akismet session data exists for a certain entity.
+   */
+  protected function assertNoAkismetData($entity, $id) {
+    $data = akismet_data_load($entity, $id);
+    $this->assertFalse($data, t('No Akismet session data exists for %entity @id.', array('%entity' => $entity, '@id' => $id)));
+  }
+
+  /**
+   * Assert that the privacy policy link is found on the current page.
+   */
+  protected function assertPrivacyLink() {
+    $elements = $this->xpath('//div[contains(@class, "akismet-privacy")]');
+    $this->assertTrue($elements, t('Privacy policy container found.'));
+  }
+
+  /**
+   * Assert that the privacy policy link is not found on the current page.
+   */
+  protected function assertNoPrivacyLink() {
+    $elements = $this->xpath('//div[contains(@class, "akismet-privacy")]');
+    $this->assertFalse($elements, t('Privacy policy container not found.'));
+  }
+
+  /**
+   * Test submitting a form with 'spam' values.
+   *
+   * @param $url
+   *   The URL of the form, or NULL to use the current page.
+   * @param $spam_fields
+   *   An array of form field names to inject spam content into.
+   * @param $edit
+   *   An array of non-spam form values used in backdropPost().
+   * @param $button
+   *   The text of the form button to click in backdropPost().
+   * @param $success_message
+   *   An optional message to test does not appear after submission.
+   */
+  protected function assertSpamSubmit($url, array $spam_fields, array $edit = array(), $button, $success_message = '') {
+    // NOTE: This will not work with the live API.
+    $edit += array_fill_keys($spam_fields, 'spam');
+    $this->backdropPost($url, $edit, $button);
+    $this->assertText($this->spam_message);
+    if ($success_message) {
+      $this->assertNoText($success_message);
+    }
+  }
+
+  /**
+   * Test submitting a form with 'ham' values.
+   *
+   * @param $url
+   *   The URL of the form, or NULL to use the current page.
+   * @param $ham_fields
+   *   An array of form field names to inject ham content into.
+   * @param $edit
+   *   An array of non-spam form values used in backdropPost().
+   * @param $button
+   *   The text of the form button to click in backdropPost().
+   * @param $success_message
+   *   An optional message to test does appear after submission.
+   */
+  protected function assertHamSubmit($url, array $ham_fields, array $edit = array(), $button, $success_message = '') {
+    // Note: There is no way to force a ham response from the live API, but
+    // it will usually return a ham response for content that looks like
+    // it's just a test comment.
+    $edit += array_fill_keys($ham_fields, 'ham');
+    $this->backdropPost($url, $edit, $button);
+    $this->assertNoText($this->spam_message);
+    if ($success_message) {
+      $this->assertText($success_message);
+    }
+  }
+
+  /**
+   * Test submitting a form with unsure values and resulting CAPTCHA submissions.
+   *
+   * @param $url
+   *   The URL of the form, or NULL to use the current page.
+   * @param $unsure_fields
+   *   An array of form field names to inject unsure content into.
+   * @param $edit
+   *   An array of non-spam form values used in backdropPost().
+   * @param $button
+   *   The text of the form button to click in backdropPost().
+   * @param $success_message
+   *   An optional message to test does appear after successful form and CAPTCHA
+   *   submission.
+   */
+  protected function assertUnsureSubmit($url, array $unsure_fields, array $edit = array(), $button, $success_message = '') {
+    $edit += array_fill_keys($unsure_fields, 'viagra-test-123');
+    $this->backdropPost($url, $edit, $button);
+    return;
+    // TODO: Figure out what should be showing up based on the configuration.
+    $this->assertText($this->unsure_message);
+    if ($success_message) {
+      $this->assertNoText($success_message);
+    }
+  }
+
+  /**
+   * Asserts that the most recently sent mail contains a "Report to Akismet" link.
+   *
+   * Contrary to BackdropWebTestCase::assertMail(), this function removes the last
+   * sent mail from the internally recorded stack.
+   *
+   * @param string $entity_type
+   *   (optional) The expected entity type contained in the report link.
+   *   Defaults to 'akismet_content'.
+   *
+   * @return array|false
+   *   FALSE if the link was not found, or an associative array containing:
+   *   - url: The full report link URL.
+   *   - entity: The entity type contained in the report link URL.
+   *   - id: The entity ID contained in the report link URL.
+   *   - mail: The full mail message array, as recorded by TestingMailSystem.
+   *   - external: TRUE.
+   *   The array can be passed directly as $options to backdropGet().
+   */
+  protected function assertMailAkismetReportLink($entity_type = 'akismet_content') {
+    // Grab the last sent mail.
+    // @see BackdropWebTestCase::assertMail()
+    $captured_emails = state_get('test_email_collector', array());
+    $message = array_pop($captured_emails);
+    state_set('test_email_collector', $captured_emails);
+
+    $found = FALSE;
+    // Determine the report URI pattern for the passed entity type.
+    $path = FALSE;
+    foreach (akismet_form_list() as $form_id => $info) {
+      if (isset($info['entity']) && $info['entity'] == $entity_type && isset($info['report path'])) {
+        $path = $info['report path'];
+        break;
+      }
+    }
+    if ($path) {
+      $path = strtr($path, array('%id' => '([^\s]+)'));
+      if (preg_match('@http.+?' . $path . '@', $message['body'], $matches)) {
+        $found = array(
+          'url' => $matches[0],
+          'entity' => $entity_type,
+          'id' => $matches[1],
+          'mail' => $message,
+          'external' => TRUE,
+        );
+      }
+    }
+    elseif (preg_match('@http.+?akismet/report/([^/]+)/([^\s]+)@', $message['body'], $matches)) {
+      $found = array(
+        'url' => $matches[0],
+        'entity' => $matches[1],
+        'id' => $matches[2],
+        'mail' => $message,
+        'external' => TRUE,
+      );
+    }
+    $this->assertTrue($found, t('Report to Akismet link found in e-mail: %url', array('%url' => $found['url'])));
+    $this->assertSame('Report link entity type', $found['entity'], $entity_type);
+    $this->assertAkismetData($found['entity'], $found['id']);
+    return $found;
+  }
+
+  /**
+   * Asserts that the most recently sent mail does NOT contain a "Report to Akismet" link.
+   *
+   * Contrary to BackdropWebTestCase::assertMail(), this function removes the last
+   * sent mail from the internally recorded stack.
+   *
+   * @return bool
+   *   TRUE if no link was found, FALSE otherwise.
+   */
+  protected function assertNoMailAkismetReportLink() {
+    // Grab the last sent mail.
+    // @see BackdropWebTestCase::assertMail()
+    $captured_emails = state_get('test_email_collector', array());
+    $message = array_pop($captured_emails);
+    if (empty($message)) {
+      $this->fail('No mail to assert.');
+      return;
+    }
+    state_set('test_email_collector', $captured_emails);
+
+    $found = preg_match('@http.+?akismet/report/([^/]+)/([^\s]+)@', $message['body'], $matches);
+    $this->assertFalse($found, 'Report to Akismet link not found in e-mail.');
+    if ($found) {
+      debug($message);
+    }
+  }
+
+  /**
+   * Retrieve a field value by ID.
+   */
+  protected function getFieldValueByID($id) {
+    $fields = $this->xpath($this->constructFieldXpath('id', $id));
+    return (string) $fields[0]['value'];
+  }
+
+  /**
+   * Retrieve a field value by name.
+   */
+  protected function getFieldValueByName($name) {
+    $fields = $this->xpath($this->constructFieldXpath('name', $name));
+    return (string) $fields[0]['value'];
+  }
+
+  /**
+   * Retrieve sent request parameter values from testing server implementation.
+   *
+   * @param $resource
+   *   (optional) The resource name to retrieve submitted values from. Defaults
+   *   to 'content'.
+   * @param $retain
+   *   (optional) Whether to retain the (last) record being read. Defaults to
+   *   FALSE; i.e., the record being read is removed.
+   *
+   * @see AkismetWebTestCase::resetServerRecords()
+   */
+  protected function getServerRecord($resource = 'content', $retain = FALSE) {
+    $function = 'akismet_test_server_' . $resource;
+
+    // Ensure that we do not read obsolete/outdated data from config_get()'s
+    // static cache while variables might have been updated in the child site.
+    $this->refreshVariables();
+
+    // Retrieve last recorded values.
+    $config = config('akismet.settings');
+    $storage = $config->get($function);
+    $return = ($retain ? end($storage) : array_shift($storage));
+    $config->set($function, $storage);
+    $config->save();
+
+    return $return;
+  }
+
+  /**
+   * Resets recorded XML-RPC values.
+   *
+   * @param $resource
+   *   (optional) The resource name to reset records of. Defaults to 'content'.
+   *
+   * @see AkismetWebTestCase::getServerRecord()
+   */
+  protected function resetServerRecords($resource = 'content') {
+    $function = 'akismet_test_server_' . $resource;
+
+    // Delete the variable.
+    $config = config('akismet.settings');
+    $config->clear($function);
+    $config->save();
+  }
+
+  /**
+   * Wraps backdropGet() for additional watchdog message assertion.
+   *
+   * @param $options
+   *   In addition to regular $options that are passed to url():
+   *   - watchdog: (optional) Boolean whether to assert that only non-severe
+   *     watchdog messages have been logged. Defaults to TRUE. Use FALSE to
+   *     negate the watchdog message severity assertion.
+   *
+   * @see BackdropWebTestCase->backdropGet()
+   * @see AkismetWebTestCase->assertAkismetWatchdogMessages()
+   * @see AkismetWebTestCase->assertResponseID()
+   */
+  protected function backdropGet($path, array $options = array(), array $headers = array()) {
+    $output = parent::backdropGet($path, $options, $headers);
+    $options += array('watchdog' => WATCHDOG_NOTICE);
+    $this->assertAkismetWatchdogMessages($options['watchdog']);
+    return $output;
+  }
+
+  /**
+   * Wraps backdropPost() for additional watchdog message assertion.
+   *
+   * @param $options
+   *   In addition to regular $options that are passed to url():
+   *   - watchdog: (optional) Boolean whether to assert that only non-severe
+   *     watchdog messages have been logged. Defaults to TRUE. Use FALSE to
+   *     negate the watchdog message severity assertion.
+   *
+   * @see AkismetWebTestCase->assertAkismetWatchdogMessages()
+   * @see AkismetWebTestCase->assertResponseID()
+   * @see BackdropWebTestCase->backdropPost()
+   */
+  protected function backdropPost($path, $edit, $submit, array $options = array(), array $headers = array(), $form_html_id = NULL, $extra_post = NULL) {
+    $output = parent::backdropPost($path, $edit, $submit, $options, $headers, $form_html_id, $extra_post);
+    $options += array('watchdog' => WATCHDOG_NOTICE);
+    if ($options['watchdog'] === -1) {
+      return $output;
+    }
+    $this->assertAkismetWatchdogMessages($options['watchdog']);
+    return $output;
+  }
+
+  /**
+   * Asserts that two values belonging to the same variable are equal.
+   *
+   * Checks to see whether two values, which belong to the same variable name or
+   * identifier, are equal and logs a readable assertion message.
+   *
+   * @param $name
+   *   A name or identifier to use in the assertion message.
+   * @param $first
+   *   The first value to check.
+   * @param $second
+   *   The second value to check.
+   *
+   * @return
+   *   TRUE if the assertion succeeded, FALSE otherwise.
+   *
+   * @see AkismetWebTestCase::assertNotSame()
+   *
+   * @todo D8: Move into core. This improved assertEqual() did not get into D7,
+   *   since the function signature differs and it's plenty of work to manually
+   *   update all assertEqual() invocations throughout all tests.
+   */
+  protected function assertSame($name, $first, $second) {
+    $message = t("@name: @first is equal to @second.", array(
+      '@name' => $name,
+      '@first' => var_export($first, TRUE),
+      '@second' => var_export($second, TRUE),
+    ));
+    $this->assertEqual($first, $second, $message);
+  }
+
+  /**
+   * Asserts that two values belonging to the same variable are not equal.
+   *
+   * Checks to see whether two values, which belong to the same variable name or
+   * identifier, are not equal and logs a readable assertion message.
+   *
+   * @param $name
+   *   A name or identifier to use in the assertion message.
+   * @param $first
+   *   The first value to check.
+   * @param $second
+   *   The second value to check.
+   *
+   * @return
+   *   TRUE if the assertion succeeded, FALSE otherwise.
+   *
+   * @see AkismetWebTestCase::assertSame()
+   */
+  protected function assertNotSame($name, $first, $second) {
+    $message = t("@name: '@first' is not equal to '@second'.", array(
+      '@name' => $name,
+      '@first' => var_export($first, TRUE),
+      '@second' => var_export($second, TRUE),
+    ));
+    $this->assertNotEqual($first, $second, $message);
+  }
+
+  /**
+   * Enables aggressive page caching options to resemble reverse-proxies.
+   */
+  protected function enablePageCache() {
+    config_set('system.core', 'cache', 1);
+    config_set('system.core', 'page_cache_maximum_age', 180);
+    // A minimum cache lifetime causes cache_clear_all() to start a session.
+    //variable_set('cache_lifetime', 60);
+  }
+
+  /**
+   * Asserts a successful akismet_test_form submission.
+   *
+   * @param $old_mid
+   *   (optional) The existing test record id to assert.
+   */
+  protected function assertTestSubmitData($old_mid = NULL) {
+    $this->assertText('Successful form submission.');
+    $mid = $this->getFieldValueByName('mid');
+    if (isset($old_mid)) {
+      $this->assertSame('Test record id', $mid, $old_mid);
+    }
+    else {
+      $this->assertTrue($mid > 0, t('Test record id @id found.', array('@id' => $mid)));
+    }
+    return $mid;
+  }
+
+  /**
+   * Get the URL for a link by link text.
+   * Will return the first link found with this link text by default, or a later
+   * one if an index is given. Match is case sensitive with normalized space.
+   * The label is translated label.
+   *
+   * @param $label
+   *   Text between the anchor tags.
+   * @param $index
+   *   Link position counting from zero.
+   * @return
+   *   Url on success, or FALSE if not found.
+   */
+  protected function getLink($label, $index = 0) {
+    $urls = $this->xpath('//a[normalize-space(text())=:label]', array(':label' => $label));
+
+    if (isset($urls[$index])) {
+      return $this->getAbsoluteUrl($urls[$index]['href']);
+    }
+    return FALSE;
+  }
+}
+
+/**
+ * Tests testing mode functionality.
+ */
+class AkismetTestingModeTestCase extends AkismetWebTestCase {
+  /**
+   * Overrides AkismetWebTestCase::$akismetClass.
+   *
+   * In order to test toggling of the testing mode, ensure the regular class for
+   * production usage is used.
+   */
+  protected $akismetClass = 'AkismetBackdrop';
+
+  function setUp() {
+    $this->useProductionKey = TRUE;
+    parent::setUp(array('akismet', 'akismet_test'));
+
+    // Enable testing mode warnings.
+    $config = config('akismet.settings');
+    $config->clear('akismet.settings', 'akismet_testing_mode_omit_warning');
+    $config->save();
+
+    $this->admin_user = $this->backdropCreateUser(array(
+      'access administration pages',
+      'administer akismet',
+    ));
+  }
+
+  /**
+   * Tests enabling and disabling of testing mode.
+   */
+  public function testTestingMode() {
+    $this->backdropLogin($this->admin_user);
+
+    // Protect akismet_test_form.
+    $this->setProtectionUI('akismet_test_form');
+    config_set('akismet.settings', 'akismet_fallback', AKISMET_FALLBACK_ACCEPT);
+
+    // Set up an invalid production API key. It must be retained throughout the
+    // test.
+    $apiKey = 'invalid-key';
+    $edit = array(
+      'akismet_api_key' => $apiKey,
+    );
+    $this->backdropGet('admin/config/content/akismet/settings');
+    $this->assertText('The Akismet API key is not configured yet.');
+    $this->backdropPost(NULL, $edit, t('Save configuration'), array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertNoText('The Akismet API key is not configured yet.');
+    $this->assertText(t('The configuration options have been saved.'));
+    $this->assertText('The API key could not be verified.');
+
+    $this->backdropLogout();
+
+    // Verify that spam can be posted, since testing mode is disabled and API
+    // keys are invalid.
+    $edit = array(
+      'title' => $this->randomString(),
+      'body' => 'spam',
+    );
+    $this->backdropGet('akismet-test/form');
+    $this->backdropPost(NULL, $edit, 'Submit');
+    $this->assertText('Successful form submission.');
+
+    // Enable testing mode.
+    $this->backdropLogin($this->admin_user);
+    $edit = array(
+      'akismet_testing_mode' => TRUE,
+    );
+    $this->backdropGet('admin/config/content/akismet/settings', array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText('API key could not be verified.');
+    $this->backdropPost(NULL, $edit, t('Save configuration'), array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertNoText('The Akismet API key is not configured yet.');
+    $this->assertText(t('Akismet testing mode is still enabled. !admin-message', array('!admin-message' => '')));
+
+    $this->backdropLogout();
+
+    // Verify presence of testing mode warning.
+    $this->backdropGet('akismet-test/form');
+    $this->assertText('Akismet testing mode is still enabled.');
+
+    // Disable testing mode.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('admin/config/content/akismet/settings', array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText('Akismet testing mode is still enabled.');
+    $edit = array(
+      'akismet_testing_mode' => FALSE,
+    );
+    $this->backdropPost(NULL, $edit, t('Save configuration'), array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText(t('The configuration options have been saved.'));
+    $this->assertText('API key could not be verified.');
+    $this->assertNoText('Akismet testing mode is still enabled.');
+
+    // Verify that the production API key still exists.
+    $this->assertFieldByName('akismet_api_key', $apiKey);
+  }
+}
+
+/**
+ * Tests module installation and global status handling.
+ */
+class AkismetInstallationTestCase extends AkismetWebTestCase {
+  protected $akismetClass = 'AkismetBackdropTestLocal';
+  protected $disableDefaultSetup = TRUE;
+
+  function setUp() {
+    // Start with no key, as would be the case before installing the module.
+    $this->key = '';
+    parent::setUp(array('akismet_test'));
+
+    $this->admin_user = $this->backdropCreateUser(array(
+      'access administration pages',
+      'administer site configuration',
+      'administer modules',
+      'administer permissions',
+      'access site reports',
+    ));
+    $this->web_user = $this->backdropCreateUser(array());
+  }
+
+  /**
+   * Tests status handling after installation.
+   *
+   * We walk through a regular installation of the Akismet module instead of using
+   * setUp() to ensure that everything works as expected.
+   *
+   * Note: Partial error messages tested here; hence, no t().
+   */
+  public function testInstallationProcess() {
+    $message_invalid = t('API key could not be verified.');
+    $message_valid = t('The service is operating correctly.');
+    $message_missing = t('The Akismet API key is not configured yet.');
+    $message_saved = t('The configuration options have been saved.');
+
+    $admin_message = t('Visit the <a href="@settings-url">Akismet settings page</a> to add your API key.', array(
+      '@settings-url' => url('admin/config/content/akismet/settings'),
+    ));
+    $this->backdropLogin($this->admin_user);
+
+    // Ensure there is no requirements error by default.
+    $this->backdropGet('admin/reports/status');
+    $this->clickLink('Run cron manually');
+
+    // Install the Akismet module.
+    $this->backdropPost('admin/modules', array('modules[Other][akismet][enable]' => TRUE), t('Save configuration'));
+    $this->assertRaw($message_missing . ' ' . $admin_message, t('Post installation warning found.'));
+
+    // Verify that forms can be submitted without valid Akismet module configuration.
+    $this->backdropLogin($this->web_user);
+    $edit = array(
+      'title' => 'spam',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+    $this->assertText('Successful form submission.');
+
+    // Assign the 'administer akismet' permission and log in a user.
+    $this->backdropLogin($this->admin_user);
+    $edit = array(
+      BACKDROP_AUTHENTICATED_ROLE . '[administer akismet]' => TRUE,
+    );
+    $this->backdropPost('admin/config/people/permissions', $edit, t('Save permissions'));
+
+    // Verify presence of 'empty keys' error message.
+    $this->backdropGet('admin/config/content/akismet');
+    $this->assertText($message_missing);
+    $this->assertNoText($message_invalid);
+
+    // Verify requirements error about missing API keys.
+    $this->backdropGet('admin/reports/status');
+    $this->assertRaw($message_missing . ' ' . $admin_message, t('Requirements error found.'));
+
+    // Configure an invalid key.
+    $edit = array(
+      'akismet_api_key' => 'invalid-key',
+      'akismet_connection_timeout' => 3
+    );
+    $this->backdropGet('admin/config/content/akismet/settings');
+    $this->backdropPost(NULL, $edit, t('Save configuration'), array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText($message_saved);
+    $this->assertNoText($this->fallback_message, t('Fallback message not found.'));
+
+    // Verify presence of 'incorrect keys' error message.
+    $this->assertText($message_invalid);
+    $this->assertNoText($message_missing);
+
+    // Verify requirements error about invalid API key.
+    $this->backdropGet('admin/reports/status', array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText($message_invalid);
+
+    // Ensure unreachable servers.
+    config_set('akismet.settings', 'akismet_class', 'AkismetBackdropTestInvalid');
+
+    // Verify presence of 'network error' message.
+    $this->backdropGet('admin/config/content/akismet/settings', array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText($message_invalid);
+    $this->assertNoText($message_missing);
+
+    // Verify requirements error about network error.
+    $this->backdropGet('admin/reports/status', array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText($message_invalid);
+    $this->assertNoText($this->fallback_message, t('Fallback message not found.'));
+
+    config_set('akismet.settings', 'akismet_class', $this->akismetClass);
+
+    // Verify that a valid key works.
+    $this->backdropGet('admin/config/content/akismet/settings', array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertFieldByName('akismet_api_key', 'invalid-key');
+
+    $edit = array(
+      'akismet_api_key' => 'valid-key',
+    );
+    // backdropPost calls backdropGet. There is a watchdog message after the get,
+    // but not after the post. Pass -1 as the watchdog option to skip the
+    // watchdog check.
+    $this->backdropPost('admin/config/content/akismet/settings', $edit, t('Save configuration'), array('watchdog' => -1));
+
+    $this->assertText($message_saved);
+    $this->assertText($message_valid);
+    $this->assertNoText($message_missing);
+    $this->assertNoText($message_invalid);
+
+    // Verify that deleting keys throws the correct error message again.
+    $this->backdropGet('admin/config/content/akismet/settings');
+    $this->assertText($message_valid);
+    $edit = array(
+      'akismet_api_key' => '',
+    );
+    $this->backdropPost(NULL, $edit, t('Save configuration'));
+    $this->assertText($message_saved);
+    $this->assertNoText($message_valid);
+    $this->assertText($message_missing);
+    $this->assertNoText($message_invalid);
+  }
+}
+
+/**
+ * Tests low-level communication with local fake Akismet server.
+ */
+class AkismetResponseLocalTestCase extends AkismetWebTestCase {
+  // Re-route Akismet communication to this testing site.
+  protected $akismetClass = 'AkismetBackdropTestLocal';
+
+  protected $disableDefaultSetup = TRUE;
+
+  function setUp() {
+    parent::setUp(array('akismet', 'akismet_test'));
+    $this->admin_user = $this->backdropCreateUser();
+  }
+
+  /**
+   * Tests /comment-check.
+   */
+  public function testCommentCheck() {
+    $akismet = akismet();
+    $data = array(
+      'comment_content' => 'ham',
+      'comment_author' => $this->admin_user->name,
+      'comment_author_email' => $this->admin_user->mail,
+      'author_id' => $this->admin_user->uid,
+      'user_ip' => ip_address(),
+    );
+
+    // Ensure proper response for 'ham' submissions.
+    $data['user_role'] = 'administrator';
+    $result = $akismet->checkContent($data);
+    $this->assertAkismetWatchdogMessages();
+    $this->assertSame('classification', $result['classification'], 'ham');
+
+    // Ensure proper response for 'spam' submissions, re-using session_id.
+    // Note that the API doesn't have any way to guarantee what we are calling
+    // 'spam' in this module (i.e. a 'true' response, with the X-akismet-pro-tip
+    // header, so this test will fail when using the real API.
+    $data['comment_author_email'] = 'akismet-guaranteed-spam@example.com';
+    $result = $akismet->checkContent($data);
+    $this->assertAkismetWatchdogMessages();
+    if (!is_a($this, 'AkismetResponseTestCase')) {
+      $this->assertSame('classification', $result['classification'], 'spam');
+    }
+    else {
+      $this->assertSame('classification', $result['classification'], 'unsure');
+    }
+
+    // Ensure proper response for 'unsure' submissions.
+    $data['comment_author'] = 'viagra-test-123';
+    $result = $akismet->checkContent($data);
+    $this->assertAkismetWatchdogMessages();
+    $this->assertSame('classification', $result['classification'], 'unsure');
+  }
+}
+
+/**
+ * Tests low-level REST communication with Akismet servers.
+ */
+class AkismetResponseTestCase extends AkismetResponseLocalTestCase {
+  // Re-route Akismet communication to the live site.
+  protected $akismetClass = 'AkismetBackdropTest';
+
+  function setUp() {
+    $this->useProductionKey = TRUE;
+    parent::setUp();
+  }
+}
+
+
+class AkismetAccessTestCase extends AkismetWebTestCase {
+  protected $akismetClass = 'AkismetBackdropTestLocal';
+
+  /**
+   * Configure an invalid API key and ensure error message.
+   */
+  public function testAPIKey() {
+    // No error message or watchdog messages should be thrown with default
+    // testing keys.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('admin/config/content/akismet/settings');
+
+    // Set up an invalid test key and check that an error message is shown.
+    $edit = array(
+      'akismet_api_key' => 'foo',
+    );
+    $this->backdropPost(NULL, $edit, t('Save configuration'), array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText(t('The configuration options have been saved.'));
+    $this->assertText('The API key could not be verified.');
+  }
+
+  /**
+   * Make sure that the Akismet settings page works for users with the
+   * 'administer akismet' permission but not those without
+   * it.
+   */
+  public function testAdminAccessRights() {
+    // Check access for a user that only has access to the 'administer
+    // site configuration' permission. This user should have access to
+    // the Akismet settings page.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('admin/config/content/akismet');
+    $this->assertResponse(200);
+
+    // Check access for a user that has everything except the 'administer
+    // akismet' permission. This user should not have access to the Akismet
+    // settings page.
+    $this->web_user = $this->backdropCreateUser(array_diff(module_invoke_all('perm'), array('administer akismet')));
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('admin/config/content/akismet', array('watchdog' => WATCHDOG_WARNING));
+    $this->assertResponse(403);
+  }
+}
+
+class AkismetBypassAccessTestCase extends AkismetWebTestCase {
+  // Re-route Akismet communication to this testing site.
+  protected $akismetClass = 'AkismetBackdropTestLocal';
+
+  // Requires entity-level access permissions.
+  protected $profile = 'standard';
+
+  /**
+   * Tests 'bypass access' property of registered forms.
+   */
+  public function testBypassAccess() {
+    // Allow comment title
+    config_set('node.type.post', 'settings.comment_subject_field', TRUE);
+
+    $this->backdropLogin($this->admin_user);
+    $this->setProtectionUI('comment_node_post_form');
+    $this->backdropLogout();
+
+    $node = $this->backdropCreateNode(array('body' => array(LANGUAGE_NONE => array(array('value' => 'node body'))), 'type' => 'post'));
+
+    // Create a regular user and post a comment.
+    $this->web_user = $this->backdropCreateUser(array('edit own comments'));
+    $this->backdropLogin($this->web_user);
+    $edit = array(
+      'subject' => 'ham',
+      'comment_body[und][0][value]' => 'ham',
+    );
+    $this->backdropPost('node/' . $node->nid, $edit, t('Preview'));
+
+    $this->backdropPost(NULL, array(), t('Save'));
+    $this->assertText('node body');
+    $this->assertText($edit['comment_body[und][0][value]']);
+
+    // Ensure a user having one of the permissions to bypass access can post
+    // spam without triggering the spam protection.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('node/' . $node->nid);
+    $this->clickLink('edit');
+
+    $edit = array(
+      'subject' => 'spam',
+      'comment_body[und][0][value]' => 'spam',
+    );
+    $this->backdropPost(NULL, $edit, t('Preview'));
+    $this->assertNoText($this->spam_message);
+
+    $this->backdropPost(NULL, array(), t('Save'));
+    $this->assertNoText($this->spam_message);
+    $this->assertText('node body');
+    $this->assertText($edit['comment_body[und][0][value]']);
+
+    // Log in back the regular user and try to edit the comment containing spam.
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/' . $node->nid);
+    $this->clickLink('edit');
+
+    $this->backdropPost(NULL, array(), t('Preview'));
+    $this->assertText($this->spam_message);
+
+    $this->backdropPost(NULL, array(), t('Save'));
+    $this->assertText($this->spam_message);
+    $this->assertNoText('node body');
+  }
+}
+
+class AkismetFallbackModeTestCase extends AkismetWebTestCase {
+
+  function setUp() {
+    parent::setUp(array('node', 'comment'));
+
+    $this->backdropCreateContentType(array('type' => 'post', 'name' => 'Post'));
+  }
+
+  /**
+   * Tests that form submissions are blocked when Akismet servers are unreachable.
+   */
+  public function testBlock() {
+    $this->setProtection('comment_node_post_form');
+    $node = $this->backdropCreateNode(array('type' => 'post'));
+
+    // Set the fallback strategy to 'blocking mode'.
+    config_set('akismet.settings', 'akismet_fallback', AKISMET_FALLBACK_BLOCK);
+
+    // Make all requests to Akismet fail.
+    config_set('akismet.settings', 'akismet_class', 'AkismetBackdropTestInvalid');
+
+    // Check the text analysis protected form.
+    $this->web_user = $this->backdropCreateUser(array('access content', 'access comments', 'post comments', 'skip comment approval'));
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/' . $node->nid, array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertNoText($this->fallback_message);
+    $this->assertText('privacy policy');
+
+    // Verify that the form cannot be submitted.
+    $edit = array(
+      'comment_body[und][0][value]' => 'ham',
+    );
+    $this->backdropPost(NULL, $edit, t('Preview'), array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertText($this->fallback_message);
+  }
+
+  /**
+   * Tests that form submissions are accepted when Akismet servers are unreachable.
+   */
+  public function testAccept() {
+    $this->setProtection('comment_node_post_form');
+    $node = $this->backdropCreateNode(array('type' => 'post'));
+
+    // Set the fallback strategy to 'accept mode'.
+    config_set('akismet.settings', 'akismet_fallback', AKISMET_FALLBACK_ACCEPT);
+
+    // Make all requests to Akismet fail.
+    config_set('akismet.settings', 'akismet_class', 'AkismetBackdropTestInvalid');
+
+    // Check the text analysis protected form.
+    $this->web_user = $this->backdropCreateUser(array('access content', 'access comments', 'post comments', 'skip comment approval'));
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/' . $node->nid, array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertNoText($this->fallback_message);
+    $this->assertText('privacy policy');
+
+    // Verify that the form can be submitted.
+    $edit = array(
+      'comment_body[und][0][value]' => 'ham',
+    );
+    $this->backdropPost(NULL, $edit, t('Preview'), array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertNoText($this->fallback_message);
+    $this->backdropPost(NULL, array(), t('Save'), array('watchdog' => WATCHDOG_EMERGENCY));
+    $this->assertNoText($this->fallback_message);
+  }
+
+  /**
+   * Tests that form submissions are accepted when only last request attempt to Akismet servers succeeds.
+   */
+  public function testFailover() {
+    $node = $this->backdropCreateNode(array('type' => 'post'));
+    $this->setProtection('comment_node_post_form');
+
+    // Set the fallback strategy to 'blocking mode', so that if the failover
+    // mechanism does not work, we would expect to get a warning.
+    config_set('akismet.settings', 'akismet_fallback', AKISMET_FALLBACK_BLOCK);
+
+    // Make all requests to Akismet fail.
+    config_set('akismet.settings', 'akismet_class', 'AkismetBackdropTestInvalid');
+    // Enable pseudo server fail-over.
+    // @see AkismetBackdropTestInvalid::handleRequest()
+    config_set('akismet.settings', 'akismet_testing_server_failover', TRUE);
+
+    // Validate that the form loads correctly.
+    $this->web_user = $this->backdropCreateUser(array('access content', 'access comments', 'post comments', 'skip comment approval'));
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/' . $node->nid);
+    $this->assertNoText($this->fallback_message);
+    $this->assertText('privacy policy');
+
+    // Verify that the form can be submitted.
+    $edit = array(
+      'comment_body[und][0][value]' => 'ham',
+    );
+    $this->backdropPost(NULL, $edit, t('Preview'));
+    $this->assertNoText($this->fallback_message);
+    $this->backdropPost(NULL, array(), t('Save'));
+    $this->assertNoText($this->fallback_message);
+  }
+}
+
+/**
+ * Tests Akismet form configuration functionality.
+ */
+class AkismetFormConfigurationTestCase extends AkismetWebTestCase {
+  // Re-route Akismet communication to this testing site.
+  protected $akismetClass = 'AkismetBackdropTestLocal';
+
+  function setUp() {
+    parent::setUp(array('akismet_test'));
+
+    $this->backdropLogin($this->admin_user);
+  }
+
+  /**
+   * Tests configuration of form fields for textual analysis.
+   */
+  public function testFormFieldsConfiguration() {
+    $form_info = akismet_form_info('akismet_test_form', 'akismet_test');
+
+    // Protect Akismet test form.
+    $this->backdropGet('admin/config/content/akismet/add');
+    $edit = array(
+      'akismet[form_id]' => 'akismet_test_form',
+    );
+    $this->backdropPost(NULL, $edit, t('Next'));
+    $this->assertText('Akismet test form');
+
+    $edit = array(
+      'akismet[enabled_fields][title]' => TRUE,
+      'akismet[enabled_fields][body]' => TRUE,
+      'akismet[enabled_fields][exclude]' => FALSE,
+      'akismet[enabled_fields][' . rawurlencode('parent][child') . ']' => TRUE,
+      'akismet[enabled_fields][field]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Save'));
+
+    // Verify that akismet_test_form form was protected.
+    $this->assertText(t('The form protection has been added.'));
+    $this->assertText('Akismet test form');
+    $akismet_form = akismet_form_load('akismet_test_form');
+    $this->assertTrue($akismet_form, t('Form configuration exists.'));
+
+    // Verify that field configuration was properly stored.
+    $this->backdropGet('admin/config/content/akismet/manage/akismet_test_form');
+    foreach ($edit as $name => $value) {
+      // Skip any inputs that are not the fields for analysis checkboxes.
+      if (strpos($name, '[enabled_fields]') === FALSE) {
+        continue;
+      }
+      // assertFieldByName() does not work for checkboxes.
+      // @see assertFieldChecked()
+      $elements = $this->xpath('//input[@name=:name]', array(':name' => $name));
+      if (isset($elements[0])) {
+        if ($value) {
+          $this->assertTrue(!empty($elements[0]['checked']), t('Field @name is checked', array('@name' => $name)));
+        }
+        else {
+          $this->assertTrue(empty($elements[0]['checked']), t('Field @name is not checked', array('@name' => $name)));
+        }
+      }
+      else {
+        $this->fail(t('Field @name not found.', array('@name' => $name)));
+      }
+    }
+
+    // Remove the title field from those that were enabled.
+    $akismet_form['enabled_fields'] = array('body', 'exclude', 'parent][child', 'field');
+    akismet_form_save($akismet_form);
+
+    // Try a submit of the form.
+    $this->backdropLogout();
+    $edit = array(
+      'title' => 'spam',
+      'body' => 'unsure',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+
+    // Add the title back.
+    $this->backdropLogin($this->admin_user);
+    $akismet_form['enabled_fields'][] = 'title';
+    // Add a field to the stored configuration that existed previously.
+    $akismet_form['enabled_fields'][] = 'orphan_field';
+    akismet_form_save($akismet_form);
+
+    // Verify that field configuration contains only available elements.
+    $this->backdropGet('admin/config/content/akismet/manage/akismet_test_form');
+    $fields = $this->xpath('//input[starts-with(@name, "akismet[enabled_fields]")]');
+    $elements = array();
+    foreach ($fields as $field) {
+      // Chop 'akismet[enabled_fields][body]' down to 'body'
+      $elements[] = substr(substr(rawurldecode($field['name']), 0, -1), 24);
+    }
+    $this->assertEqual($elements, array_keys($form_info['elements']), t('Field list only contains available form elements.'));
+
+    // Try a simple submit of the form.
+    $this->backdropLogout();
+    $edit = array(
+      'title' => 'spam',
+      'body' => 'spam',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+    $this->assertNoText('Successful form submission.');
+    $this->assertText($this->spam_message);
+
+    // Try to submit values for top-level fields.
+    $edit = array(
+      'title' => 'spam',
+      'body' => 'spam',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+    $this->assertNoText('Successful form submission.');
+    $this->assertText($this->spam_message);
+
+    // Try to submit values for nested field.
+    $edit = array(
+      'title' => $this->randomString(),
+      'parent[child]' => 'spam',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+    $this->assertNoText('Successful form submission.');
+    $this->assertText($this->spam_message);
+
+    // Try to submit values for nested field and multiple value field.
+    // Start with ham values for simple, nested, and first multiple field.
+    $edit = array(
+      'title' => 'ham',
+      'parent[child]' => 'ham',
+      'field[new]' => 'ham',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Add');
+
+    // Verify that the form was rebuilt.
+    $this->assertNoText('Successful form submission.');
+    $this->assertNoText($this->spam_message);
+
+    // Add another value for multiple field.
+    $edit = array(
+      'field[new]' => 'ham',
+    );
+    $this->backdropPost(NULL, $edit, 'Add');
+
+    // Verify that the form was rebuilt.
+    $this->assertNoText('Successful form submission.');
+    $this->assertNoText($this->spam_message);
+
+    // Now replace all ham values with random values, add a spam value to the
+    // multiple field and submit the form.
+    $edit = array(
+      'title' => $this->randomString(),
+      'parent[child]' => $this->randomString(),
+      'field[0]' => $this->randomString(),
+      'field[1]' => $this->randomString(),
+      'field[new]' => 'spam',
+    );
+    $this->backdropPost(NULL, $edit, 'Submit');
+
+    // Verify that the form was not submitted and cannot be submitted.
+    $this->assertNoText('Successful form submission.');
+    $this->assertText($this->spam_message);
+
+    // Verify that we can remove the form protection.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('admin/config/content/akismet');
+    $this->assertText('Akismet test form');
+
+    $this->backdropPost('admin/config/content/akismet/unprotect/akismet_test_form', array(), t('Confirm'));
+    $this->assertNoText('Akismet test form');
+    $this->assertText(t('The form protection has been removed.'));
+    $akismet_form = akismet_form_load('akismet_test_form');
+    $this->assertFalse($akismet_form, t('Form protection not found.'));
+
+    // Verify that the form is no longer protected.
+    $this->backdropLogout();
+    $edit = array(
+      'title' => 'spam',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+    $this->assertText('Successful form submission.');
+  }
+
+  /**
+   * Tests default configuration, protecting, and unprotecting forms.
+   */
+  public function testFormAdministration() {
+    $form_info = akismet_form_list();
+    foreach ($form_info as $form_id => $info) {
+      $form_info[$form_id] += akismet_form_info($form_id, $info['module']);
+    }
+
+    // Verify that user registration form is not protected.
+    $this->backdropGet('admin/config/content/akismet');
+    $this->assertNoText($form_info['user_register_form']['title']);
+    $this->assertFalse(akismet_form_load('user_register_form'), t('Form configuration does not exist.'));
+
+    // Re-protect user registration form.
+    $this->backdropGet('admin/config/content/akismet/add');
+    $this->assertNoText(t('All available forms are protected already.'));
+    $edit = array(
+      'akismet[form_id]' => 'user_register_form',
+    );
+    $this->backdropPost(NULL, $edit, t('Next'));
+    $this->assertText($form_info['user_register_form']['title']);
+    $this->assertNoText(t('Text fields to analyze'));
+    $this->backdropPost(NULL, array(), t('Save'));
+
+    // Verify that user registration form was protected.
+    $this->assertText(t('The form protection has been added.'));
+    $this->assertText($form_info['user_register_form']['title']);
+    $this->assertTrue(akismet_form_load('user_register_form'), t('Form configuration exists.'));
+
+    // Retrieve a list of all permissions to verify them below.
+    $all_permissions = array();
+    foreach (module_implements('permission') as $module) {
+      if ($module_permissions = module_invoke($module, 'permission')) {
+        foreach ($module_permissions as &$info) {
+          $info += array('module' => $module);
+        }
+        $all_permissions += $module_permissions;
+      }
+    }
+
+    // Iterate over all unconfigured forms and protect them.
+    foreach ($form_info as $form_id => $info) {
+      if (!akismet_form_load($form_id)) {
+        $edit = array(
+          'akismet[form_id]' => $form_id,
+        );
+        $this->backdropPost('admin/config/content/akismet/add', $edit, t('Next'));
+        $this->assertText($info['title']);
+        // Verify that forms specifying elements have all possible elements
+        // preselected for textual analysis.
+        $edit = array();
+        if (!empty($info['elements'])) {
+          foreach ($info['elements'] as $field => $label) {
+            $field = rawurlencode($field);
+            $this->assertFieldByName("akismet[enabled_fields][$field]", TRUE);
+          }
+        }
+        // Verify that forms not specifying elements contain no configurable
+        // fields.
+        else {
+          $this->assertNoText(t('Text fields to analyze'));
+        }
+        // Verify that bypass permissions are output.
+        $this->assertRaw($all_permissions['bypass akismet protection']['title']);
+        foreach ($info['bypass access'] as $permission) {
+          $this->assertRaw($all_permissions[$permission]['title']);
+        }
+        $this->backdropPost(NULL, $edit, t('Save'));
+        $this->assertText(t('The form protection has been added.'));
+      }
+    }
+
+    // Verify that trying to add a form redirects to the overview.
+    $this->backdropGet('admin/config/content/akismet/add');
+    $this->assertText(t('All available forms are protected already.'));
+    $this->assertText(t('Operations'));
+  }
+
+  /**
+   * Tests invalid (stale) form configurations.
+   *
+   * This test shows that Akismet works as designed, but it also triggers
+   * a warning that the 'nonexisting' module is missing from the file system.
+   * Commented out for now.
+   */
+  public function _testInvalidForms() {
+    $forms = array(
+      'nonexisting' => 'nonexisting_form',
+      'user' => 'user_nonexisting_form',
+      'node' => 'nonexisting_node_form',
+      'comment' => 'comment_node_nonexisting_form',
+    );
+    $mode = 0;
+    foreach ($forms as $module => $form_id) {
+      $akismet_form = akismet_form_info($form_id, $module, array());
+      $akismet_form['mode'] = $mode++;
+      akismet_form_save($akismet_form);
+    }
+
+    // Just visiting the form administration page is sufficient; it will throw
+    // fatal errors, warnings, and notices.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('admin/config/content/akismet');
+
+    // Ensure that unprotecting the forms does not throw any notices either.
+    foreach ($forms as $form_id) {
+      $this->assertNoLinkByHref('admin/config/content/akismet/manage/' . $form_id);
+      $this->assertLinkByHref('admin/config/content/akismet/unprotect/' . $form_id);
+      $this->backdropPost('admin/config/content/akismet/unprotect/' . $form_id, array(), t('Confirm'));
+      $this->assertNoLinkByHref('admin/config/content/akismet/unprotect/' . $form_id);
+    }
+    // Confirm deletion.
+    $count = db_query('SELECT 1 FROM {akismet_form}')->fetchField();
+    $this->assertFalse($count, 'No forms found.');
+  }
+}
+
+/**
+ * Tests Node module integration.
+ */
+class AkismetNodeFormTestCase extends AkismetWebTestCase {
+  protected $profile = 'standard';
+
+  private $node;
+
+  function setUp() {
+    parent::setUp();
+
+    // @todo 'view own unpublished content' permission required to prevent a
+    //   bogus access denied watchdog caused by a bug in Backdrop core.
+    // @see http://drupal.org/node/1429442
+    $this->web_user = $this->backdropCreateUser(array('edit own post content', 'create post content', 'view own unpublished content'));
+  }
+
+  /**
+   * Tests saving of Akismet data for protected node forms.
+   *
+   * node_form() uses a button-level form submit handler, which invokes
+   * form-level submit handlers before a new node entity has been stored.
+   * Therefore, the submitted form values do not contain a 'nid' yet, so Akismet
+   * session data cannot be stored for the new node.
+   */
+  public function testData() {
+    // Enable Akismet CAPTCHA protection for Post nodes.
+    $this->backdropLogin($this->admin_user);
+    $this->setProtectionUI('post_node_form');
+
+    // Login and submit a node.
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/add/post');
+    $edit = array(
+      'title' => 'spam',
+    );
+    $this->backdropPost(NULL, $edit, t('Save'));
+    $this->node = $this->backdropGetNodeByTitle($edit['title']);
+    $this->assertUrl('node/' . $this->node->nid);
+    $this->assertAkismetData('node', $this->node->nid);
+  }
+
+  /**
+   * Tests appearance of feedback options on node delete forms.
+   */
+  public function testFeedback() {
+    // Create a second node type, which is not protected.
+    $this->backdropCreateContentType(array('type' => 'unprotected', 'name' => 'Unprotected'));
+    user_role_grant_permissions(BACKDROP_AUTHENTICATED_ROLE, array(
+      'create unprotected content',
+      'delete own unprotected content',
+      'delete own post content',
+    ));
+
+    // Protect the post node type.
+    $this->backdropLogin($this->admin_user);
+    $this->setProtectionUI('post_node_form');
+
+    // Login and submit a protected post node.
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/add/post');
+    $edit = array(
+      'title' => 'protected ham',
+      'body[und][0][value]' => 'ham',
+    );
+    $this->backdropPost(NULL, $edit, t('Save'));
+    $this->node = $this->backdropGetNodeByTitle($edit['title']);
+    $this->assertUrl('node/' . $this->node->nid);
+    $this->assertAkismetData('node', $this->node->nid);
+
+    // Verify that no feedback options appear on the delete confirmation form
+    // for the node author.
+    $this->backdropGet('node/' . $this->node->nid . '/delete');
+    $this->assertResponse(200);
+    $this->assertNoText(t('Report as…'));
+
+    // Verify that feedback options appear for the admin user.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('node/' . $this->node->nid . '/delete');
+    $this->assertResponse(200);
+    $this->assertText(t('Report as…'));
+
+    // Login and submit an unprotected node.
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/add/unprotected');
+    $edit = array(
+      'title' => 'unprotected spam',
+      'body[und][0][value]' => 'spam',
+    );
+    $this->backdropPost(NULL, $edit, t('Save'));
+    $this->node = $this->backdropGetNodeByTitle($edit['title']);
+    $this->assertUrl('node/' . $this->node->nid);
+    $this->assertNoAkismetData('node', $this->node->nid);
+
+    // Verify that no feedback options appear on the delete confirmation form
+    // for the node author.
+    $this->backdropGet('node/' . $this->node->nid . '/delete');
+    $this->assertResponse(200);
+    $this->assertNoText(t('Report as…'));
+
+    // Verify that no feedback options appear for the admin user.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('node/' . $this->node->nid . '/delete');
+    $this->assertResponse(200);
+    $this->assertNoText(t('Report as…'));
+  }
+}
+
+class AkismetCommentFormTestCase extends AkismetWebTestCase {
+
+  function setUp() {
+    parent::setUp(array('comment'));
+
+    $this->backdropCreateContentType(array('type' => 'post', 'name' => 'Post'));
+
+    $this->web_user = $this->backdropCreateUser(array('access content', 'create post content', 'access comments', 'post comments', 'skip comment approval'));
+    $this->node = $this->backdropCreateNode(array('type' => 'post', 'uid' => $this->web_user->uid));
+    config_set('node.type.post', 'settings.comment_preview', BACKDROP_OPTIONAL);
+  }
+
+  /**
+   * Make sure that the comment submission form can be unprotected.
+   */
+  public function testUnprotectedCommentForm() {
+    // Request the comment reply form.
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/' . $this->node->nid);
+    $this->assertNoPrivacyLink();
+
+    // Preview a comment that is 'spam' and make sure there is still no protection.
+    $this->backdropPost(NULL, array('comment_body[und][0][value]' => 'spam'), t('Preview'));
+    $this->assertNoPrivacyLink();
+
+    // Save the comment and make sure it appears.
+    $this->backdropPost(NULL, array(), t('Save'));
+    $this->assertRaw('<p>spam</p>', t('A comment that is known to be spam appears on the screen after it is submitted.'));
+  }
+
+  /**
+   * Make sure that the comment submission form can be fully protected.
+   */
+  public function testTextAnalysisProtectedCommentForm() {
+    // Enable Akismet text-classification for comments.
+    $this->backdropLogin($this->admin_user);
+    $this->setProtectionUI('comment_node_post_form');
+    $this->backdropLogout();
+
+    // Request the comment reply form.
+    $this->backdropLogin($this->web_user);
+    $this->backdropGet('node/'. $this->node->nid);
+    $this->assertPrivacyLink();
+
+    // Try to save a new 'spam' comment; it should be discarded.
+    $this->resetResponseID();
+    $this->backdropGet('node/' . $this->node->nid);
+    $this->assertPrivacyLink();
+    $original_number_of_comments = $this->getCommentCount($this->node->nid);
+    $this->assertSpamSubmit(NULL, array('comment_body[und][0][value]'), array(), t('Save'));
+    $this->assertPrivacyLink();
+
+    // Try to save again; it should be discarded.
+    $this->assertSpamSubmit(NULL, array('comment_body[und][0][value]'), array(), t('Save'));
+    $this->assertCommentCount($this->node->nid, $original_number_of_comments);
+    $this->assertPrivacyLink();
+
+    // Save a new 'ham' comment.
+    $this->resetResponseID();
+    $this->backdropGet('node/' . $this->node->nid);
+    $this->assertPrivacyLink();
+    $original_number_of_comments = $this->getCommentCount($this->node->nid);
+    $this->assertHamSubmit(NULL, array('comment_body[und][0][value]'), array(), t('Save'));
+    $this->assertRaw('<p>ham</p>', t('A comment that is known to be ham appears on the screen after it is submitted.'));
+    $this->assertCommentCount($this->node->nid, $original_number_of_comments + 1);
+    $cid = db_query('SELECT cid FROM {comment} WHERE subject = :subject ORDER BY created DESC', array(':subject' => 'ham'))->fetchField();
+    $this->assertAkismetData('comment', $cid);
+  }
+
+  /**
+   * Return the number of comments for a node of the given node ID.  We
+   * can't use comment_num_all() here, because that is statically cached
+   * and therefore will not work correctly with the SimpleTest browser.
+   */
+  private function getCommentCount($nid) {
+    return db_query('SELECT comment_count FROM {node_comment_statistics} WHERE nid = :nid', array(':nid' => $nid))->fetchField();
+  }
+
+  /**
+   * Test that the number of comments for a node matches an expected value.
+   *
+   * @param $nid
+   *   A node ID
+   * @param $expected
+   *   An integer with the expected number of comments for the node.
+   * @param $message
+   *   An optional string with the message to be used in the assertion.
+   */
+  protected function assertCommentCount($nid, $expected, $message = '') {
+    $actual = $this->getCommentCount($nid);
+    if (!$message) {
+      $message = t('Node @nid has @actual comment(s), expected @expected.', array('@nid' => $nid, '@actual' => $actual, '@expected' => $expected));
+    }
+    $this->assertEqual($actual, $expected, $message);
+  }
+}
+
+/**
+ * Tests Akismet actions.
+ */
+class AkismetActionsTestCase extends AkismetWebTestCase {
+  protected $profile = 'standard';
+
+  // Keep track of nodes and comments for actions.
+  protected $nodes = array();
+  protected $comments = array();
+  // Re-route Akismet communication to this testing site.
+  protected $akismetClass = 'AkismetBackdropTestLocal';
+
+  function setUp() {
+    parent::setUp(array('comment'));
+    $this->web_user = $this->backdropCreateUser(array('create post content', 'access comments', 'post comments', 'skip comment approval'));
+
+    $this->backdropLogin($this->admin_user);
+    $this->setProtectionUI('post_node_form');
+    $this->setProtectionUI('comment_node_post_form');
+    $this->backdropLogout();
+
+    // Login and submit a node.
+    $this->nodes = array();
+    $this->comments = array();
+    $this->backdropLogin($this->web_user);
+    for ($i = 0; $i < 2; $i++) {
+      // Create a test node.
+      $edit = array(
+        'title' => 'ham node ' . $i,
+      );
+      $this->backdropPost('node/add/post', $edit, t('Save'));
+      $node = $this->backdropGetNodeByTitle($edit['title']);
+
+      $this->backdropGet('node/' . $node->nid);
+      $edit = array(
+        'comment_body[und][0][value]' => 'ham',
+      );
+      $this->backdropPost(NULL, $edit, t('Save'));
+      $this->comments[] = db_query('SELECT * FROM {comment} WHERE subject = :comment AND nid = :nid', array(':comment' => $edit['comment_body[und][0][value]'], ':nid' => $node->nid))->fetchObject();
+      $this->nodes[] = $node;
+    }
+  }
+
+  /**
+   * Test that calling the akismet action function triggers the unpublish of
+   * comments and marking as spam.
+   */
+  public function testCommentActions() {
+    // Load the comment entity objects.
+    $cids = array();
+    $guids = array();
+    foreach($this->comments as $comment) {
+      $cids[] = $comment->cid;
+      $data = akismet_data_load('comment', $comment->cid);
+      $guids[] = $data->guid;
+    }
+    $comment_entities = entity_load('comment', $cids);
+
+    // Verify that all comments are currently published.
+    $published = db_query('SELECT * FROM {comment} WHERE cid IN (:cids) AND status = 1', array(':cids' => $cids))->fetchAll();
+    $this->assertEqual(count($published), count($comment_entities));
+
+    // Call the unpublish action.
+    // Login and unpublish the comments.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('admin/content/comment');
+    $edit = array(
+        'action' => 'akismet_comment_unpublish_action',
+        'comments[0]' => TRUE,
+        'comments[1]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Update'));
+    //$this->backdropPost(NULL, array(), t('Delete'));
+
+    // Verify that all comments are now unpublished.
+    $published = db_query('SELECT * FROM {comment} WHERE cid IN (:cids) AND status = 1', array(':cids' => $cids))->fetchAll();
+    $this->assertEqual(count($published), 0);
+
+    // Verify that all comments have been marked as spam.
+    foreach ($cids as $cid) {
+      $server = $this->getServerRecord('spam');
+      $this->assertTrue(in_array($server['guid'], $guids));
+    }
+  }
+
+  /**
+   * Test that calling the akismet action function triggers the unpublish of
+   * nodes and marking as spam.
+   */
+  public function testNodeActions() {
+    // Load the comment entity objects.
+    $nids = array();
+    $guids = array();
+    foreach($this->nodes as $node) {
+      $nids[] = $node->nid;
+      $data = akismet_data_load('node', $node->nid);
+      $guids[] = $data->guid;
+    }
+    $node_entities = entity_load('node', $nids);
+
+    // Verify that all nodes are currently published.
+    $published = db_query('SELECT * FROM {node} WHERE nid IN (:nids) AND status = 1', array(':nids' => $nids))->fetchAll();
+    $this->assertEqual(count($published), count($node_entities));
+
+    // Call the unpublish action.
+    // Login and unpublish the comments.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('admin/content');
+    $edit = array(
+        'action' => 'akismet_node_unpublish_action',
+        'bulk_form[0]' => TRUE,
+        'bulk_form[1]' => TRUE,
+    );
+    $this->backdropPost(NULL, $edit, t('Execute'));
+
+    // Verify that all nodes are now unpublished.
+    $published = db_query('SELECT * FROM {node} WHERE nid IN (:nids) AND status = 1', array(':nids' => $nids))->fetchAll();
+    $this->assertEqual(count($published), 0);
+
+    // Verify that all nodes have been marked as spam.
+    foreach ($nids as $nid) {
+      $server = $this->getServerRecord('spam');
+      $this->assertTrue(in_array($server['guid'], $guids));
+    }
+  }
+}
+
+/**
+ * Verify that Akismet data can be created, read, updated, and deleted.
+ */
+class AkismetDataCRUDTestCase extends AkismetWebTestCase {
+
+  protected $akismetClass = 'AkismetBackdropTestLocal';
+
+  /**
+   * Verify that Akismet data can be updated.
+   *
+   * Also verifies that the combined primary/unique database schema index is
+   * properly accounted for; i.e., two entities having the same ID but different
+   * types must not considered the same.
+   */
+  public function testUpdate() {
+    // Create a first data record.
+    $data1 = (object) array(
+      'entity' => 'type1',
+      'id' => 123,
+      'form_id' => 'type1_form',
+      'guid' => 1,
+    );
+    akismet_data_save($data1);
+    $this->assertAkismetData($data1->entity, $data1->id, 'guid', $data1->guid);
+
+    // Create a second data record; same ID, different entity type.
+    $data2 = (object) array(
+      'entity' => 'type2',
+      'id' => 123,
+      'form_id' => 'type2_form',
+      'guid' => 2,
+    );
+    akismet_data_save($data2);
+    $this->assertAkismetData($data2->entity, $data2->id, 'guid', $data2->guid);
+
+    // Update the first data record.
+    $data1->content_id = 3;
+    akismet_data_save($data1);
+
+    // Verify that both records are correct.
+    $this->assertAkismetData($data1->entity, $data1->id, 'guid', $data1->guid);
+    $this->assertAkismetData($data2->entity, $data2->id, 'guid', $data2->guid);
+  }
+
+  /**
+   * Verify that Akismet data can be deleted.
+   */
+  public function testDelete() {
+    // Create a data record.
+    $data1 = (object) array(
+      'entity' => 'type1',
+      'id' => 123,
+      'form_id' => 'type1_form',
+      'guid' => 1,
+    );
+    akismet_data_save($data1);
+
+    // Create a second data record; same ID, different entity type.
+    $data2 = (object) array(
+      'entity' => 'type2',
+      'id' => 123,
+      'form_id' => 'type2_form',
+      'guid' => 2,
+    );
+    akismet_data_save($data2);
+
+    // Verify that both records exist.
+    $this->assertAkismetData($data1->entity, $data1->id, 'guid', $data1->guid);
+    $this->assertAkismetData($data2->entity, $data2->id, 'guid', $data2->guid);
+
+    // Delete the first data record.
+    akismet_data_delete($data1->entity, $data1->id);
+
+    // Verify that only the second record remained and was not changed.
+    $this->assertNoAkismetData($data1->entity, $data1->id);
+    $this->assertAkismetData($data2->entity, $data2->id, 'guid', $data2->guid);
+  }
+}
+
+/**
+ * Tests text analysis functionality.
+ */
+class AkismetAnalysisOptionsTestCase extends AkismetWebTestCase {
+  protected $disableDefaultSetup = TRUE;
+
+  function setUp() {
+    parent::setUp(array('akismet', 'akismet_test'));
+
+    $this->admin_user = $this->backdropCreateUser(array(
+      'access administration pages',
+      'administer akismet',
+    ));
+  }
+
+  /**
+   * Tests retaining unsure posts and moderating them.
+   */
+  public function testRetainUnsure() {
+    $this->backdropLogin($this->admin_user);
+    // Verify that akismet_basic_elements_test_form cannot be configured to put
+    // posts into moderation queue.
+    $this->setProtectionUI('akismet_basic_elements_test_form');
+    $this->backdropGet('admin/config/content/akismet/manage/akismet_basic_elements_test_form');
+    $this->assertNoFieldByName('akismet[unsure]');
+
+    // Configure akismet_test_form to retain unsure posts.
+    $this->setProtectionUI('akismet_test_form', NULL, array(
+      'akismet[unsure]' => 'moderate',
+    ));
+    $this->backdropLogout();
+
+    // Verify that an unsure post gets unpublished.
+    $edit = array(
+      'title' => $this->randomString(),
+      'body' => 'unsure',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+    $mid = $this->assertTestSubmitData();
+    $data = $this->assertAkismetData('akismet_test', $mid);
+    $record = akismet_test_load($mid);
+    $this->assertEqual($record->status, 0, t('Unpublished test post found.'));
+    $this->assertSame('classification', $data->classification, 'unsure');
+    $this->assertSame('moderate', $data->moderate, 1);
+
+    // Verify that editing the post changes neither the session data, nor
+    // the publishing status.
+    $edit = array(
+      'title' => $this->randomString(),
+      'body' => 'unsure unsure',
+    );
+    $this->backdropPost(NULL, $edit, 'Submit');
+    $mid = $this->assertTestSubmitData($mid);
+    $data = $this->assertAkismetData('akismet_test', $mid);
+    $record = akismet_test_load($mid);
+    $this->assertEqual($record->status, 0, t('Unpublished test post found.'));
+    $this->assertSame('classification', $data->classification, 'unsure');
+    $this->assertSame('moderate', $data->moderate, 1);
+
+    // Verify that publishing the post changes the session data accordingly.
+    $this->backdropLogin($this->admin_user);
+    $edit = array(
+      'status' => TRUE,
+    );
+    $this->backdropPost('akismet-test/form/' . $mid, $edit, 'Submit');
+    $mid = $this->assertTestSubmitData($mid);
+    $data = $this->assertAkismetData('akismet_test', $mid);
+    $record = akismet_test_load($mid);
+    $this->assertEqual($record->status, 1, t('Published test post found.'));
+    $this->assertSame('classification', $data->classification, 'unsure');
+    $this->assertSame('moderate', $data->moderate, 0);
+  }
+
+  /**
+   * Tests retaining spam posts and moderating them.
+   */
+  public function testRetainSpam() {
+    $this->backdropLogin($this->admin_user);
+    // Verify that akismet_basic_test_form cannot be configured to put posts into
+    // moderation queue.
+    $this->setProtectionUI('akismet_basic_elements_test_form');
+    $this->backdropGet('admin/config/content/akismet/manage/akismet_basic_elements_test_form');
+    $this->assertNoFieldByName('akismet[discard]');
+
+    // Configure akismet_test_form to accept bad posts.
+    $this->setProtectionUI('akismet_test_form', NULL, array(
+      'akismet[discard]' => 0,
+    ));
+    $this->backdropLogout();
+
+    // Verify that we are able to post spam and the post is unpublished.
+    $edit = array(
+      'title' => $this->randomString(),
+      'body' => 'spam',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+    $mid = $this->assertTestSubmitData();
+    $data = $this->assertAkismetData('akismet_test', $mid);
+    $record = akismet_test_load($mid);
+    $this->assertEqual($record->status, 0, t('Unpublished test post found.'));
+    $this->assertSame('classification', $data->classification, 'spam');
+    $this->assertSame('moderate', $data->moderate, 1);
+
+    // Verify that editing the post changes neither the session data, nor
+    // the publishing status.
+    $edit = array(
+      'title' => $this->randomString(),
+      'body' => 'spam spam',
+    );
+    $this->backdropPost(NULL, $edit, 'Submit');
+    $mid = $this->assertTestSubmitData($mid);
+    $data = $this->assertAkismetData('akismet_test', $mid);
+    $record = akismet_test_load($mid);
+    $this->assertEqual($record->status, 0, t('Unpublished test post found.'));
+    $this->assertSame('classification', $data->classification, 'spam');
+    $this->assertSame('moderate', $data->moderate, 1);
+
+    // Verify that publishing the post changes the session data accordingly.
+    $this->backdropLogin($this->admin_user);
+    $edit = array(
+      'status' => TRUE,
+    );
+    $this->backdropPost('akismet-test/form/' . $mid, $edit, 'Submit');
+    $mid = $this->assertTestSubmitData($mid);
+    $data = $this->assertAkismetData('akismet_test', $mid);
+    $record = akismet_test_load($mid);
+    $this->assertEqual($record->status, 1, t('Published test post found.'));
+    $this->assertSame('classification', $data->classification, 'spam');
+    $this->assertSame('moderate', $data->moderate, 0);
+
+    // Verify that ham posts are not marked for moderation.
+    $this->backdropLogout();
+    $edit = array(
+      'title' => $this->randomString(),
+      'body' => 'ham',
+    );
+    $this->backdropPost('akismet-test/form', $edit, 'Submit');
+    $mid = $this->assertTestSubmitData();
+    $data = $this->assertAkismetData('akismet_test', $mid);
+    $record = akismet_test_load($mid);
+    $this->assertEqual($record->status, 1, t('Published test post %body found.', array('%body' => 'ham')));
+    $this->assertSame('classification', $data->classification, 'ham');
+    $this->assertSame('moderate', $data->moderate, 0);
+  }
+
+}
+
+/**
+ * Tests basic text analysis functionality with enabled caching.
+ */
+class AkismetAnalysisPageCachingTestCase extends AkismetWebTestCase {
+
+  protected $disableDefaultSetup = TRUE;
+
+  function setUp() {
+    parent::setUp(array('akismet', 'akismet_test'));
+    $this->enablePageCache();
+  }
+
+  /**
+   * Tests text analysis.
+   */
+  public function testAnalysis() {
+    $this->setProtection('akismet_test_form');
+    // Prime the form + page cache.
+    $this->backdropGet('akismet-test/form');
+    $this->assertText('Views: 1');
+    $this->backdropGet('akismet-test/form');
+    $this->assertText('Views: 1');
+    $this->assertUnsureSubmit(NULL, array('title'), array(), 'Submit');
+
+    $this->backdropGet('akismet-test/form');
+    $this->assertText('Views: 1');
+    $this->assertUnsureSubmit(NULL, array('title'), array(), 'Submit');
+
+    $this->backdropGet('akismet-test/form');
+    $this->assertText('Views: 1');
+    $this->assertSpamSubmit(NULL, array('title'), array(), 'Submit');
+
+    $this->backdropGet('akismet-test/form');
+    $this->assertText('Views: 1');
+    $this->assertHamSubmit(NULL, array('title'), array(), 'Submit');
+  }
+
+  /**
+   * Tests text analysis with additionally enabled Form API cache.
+   */
+  public function testAnalysisFormCache() {
+    state_set('akismet_test.form.cache', TRUE);
+    $this->testAnalysis();
+  }
+
+}
+
+/**
+ * Tests report to Akismet functionality.
+ */
+class AkismetReportTestCase extends AkismetWebTestCase {
+
+  protected $profile = 'standard';
+
+  function setUp() {
+    parent::setUp(array('comment'));
+
+    config_set('node.type.post', 'settings.comment_preview', BACKDROP_OPTIONAL);
+    // Allow comment title
+    config_set('node.type.post', 'settings.comment_subject_field', TRUE);
+
+    $this->web_user = $this->backdropCreateUser(array('edit own post content', 'create post content', 'access comments', 'post comments', 'skip comment approval'));
+  }
+
+  /**
+   * Tests reporting comments.
+   */
+  public function testReportComment() {
+    $this->backdropLogin($this->admin_user);
+    $this->setProtectionUI('comment_node_post_form');
+    $this->backdropLogout();
+
+    $this->node = $this->backdropCreateNode(array('type' => 'post'));
+
+    // Post a comment.
+    $this->backdropLogin($this->web_user);
+    $edit = array(
+      'comment_body[und][0][value]' => 'ham',
+    );
+    $this->backdropPost('node/' . $this->node->nid, $edit, t('Save'));
+    $this->comment = db_query('SELECT * FROM {comment} WHERE subject = :comment AND nid = :nid', array(':comment' => $edit['comment_body[und][0][value]'], ':nid' => $this->node->nid))->fetchObject();
+    $this->assertTrue($this->comment, t('Comment was found in the database.'));
+    $this->assertAkismetData('comment', $this->comment->cid);
+
+    // Log in comment administrator and verify that we can report to Akismet.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('node/' . $this->node->nid);
+    $this->assertText($edit['comment_body[und][0][value]'], t('Comment found.'));
+    $this->clickLink('delete');
+    $edit = array(
+      'akismet[feedback]' => 'spam',
+    );
+    $this->backdropPost(NULL, $edit, t('Delete'));
+    $this->assertText(t('The comment and all its replies have been deleted.'));
+    $this->assertText(t('The content was successfully reported as inappropriate.'));
+
+    // Verify that the comment and Akismet session data has been deleted.
+    $this->assertFalse(comment_load($this->comment->cid), t('Comment was deleted.'));
+    $this->assertNoAkismetData('comment', $this->comment->cid);
+  }
+
+  /**
+   * Tests mass-reporting comments.
+   */
+  public function testMassReportComments() {
+    $this->backdropLogin($this->admin_user);
+    $this->setProtectionUI('comment_node_post_form');
+    $this->backdropLogout();
+
+    $this->node = $this->backdropCreateNode(array('type' => 'post'));
+    config_set('node.type.post', 'settings.comment_preview', BACKDROP_OPTIONAL);
+    // Allow comment title
+    config_set('node.type.post', 'settings.comment_subject_field', TRUE);
+
+    // Post 3 comments.
+    $this->backdropLogin($this->web_user);
+    $this->comments = array();
+    foreach (range(1, 3) as $num) {
+      $edit = array(
+        'subject' => $this->randomName(),
+        'comment_body[und][0][value]' => 'ham',
+      );
+      $this->backdropPost('node/' . $this->node->nid, $edit, t('Save'));
+      $this->comments[$num] = db_query('SELECT * FROM {comment} WHERE subject = :subject AND nid = :nid', array(':subject' => $edit['subject'], ':nid' => $this->node->nid))->fetchObject();
+      $this->assertTrue($this->comments[$num], t('Comment was found in the database.'));
+      $this->assertAkismetData('comment', $this->comments[$num]->cid);
+    }
+
+    // Log in comment administrator and verify that we can mass-report all
+    // comments to Akismet.
+    $this->backdropLogin($this->admin_user);
+    $this->backdropGet('admin/content/comment');
+    $edit = array(
+      'operation' => 'delete',
+    );
+    foreach ($this->comments as $comment) {
+      $this->assertText($comment->subject, t('Comment found.'));
+      $edit["comments[{$comment->cid}]"] = TRUE;
+    }
+    $this->backdropPost(NULL, $edit, t('Update'));
+    foreach ($this->comments as $comment) {
+      $this->assertText($comment->subject, t('Comment found.'));
+    }
+    $edit = array(
+      'akismet[feedback]' => 'spam',
+    );
+    $this->backdropPost(NULL, $edit, t('Delete comments'));
+    $this->assertText(t('Deleted @count comments.', array('@count' => count($this->comments))));
+    $this->assertText(t('The posts were successfully reported as inappropriate.'));
+
+    // Verify that the comments and Akismet session data has been deleted.
+    foreach ($this->comments as $comment) {
+      $this->assertFalse(comment_load($comment->cid), t('Comment was deleted.'));
+      $this->assertNoAkismetData('comment', $comment->cid);
+    }
+  }
+}

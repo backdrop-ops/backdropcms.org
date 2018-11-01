@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Installation functionality for Akismet testing module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function akismet_test_schema() {
+  $schema['akismet_test'] = array(
+    'description' => 'Stores testing data for Akismet test form.',
+    'fields' => array(
+      'mid' => array(
+        'description' => 'Primary key: Unique akismet_test entity ID.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'Title of the post.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'body' => array(
+        'description' => 'Body of the post.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'Publishing status.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+    ),
+    'primary key' => array('mid'),
+  );
+  return $schema;
+}

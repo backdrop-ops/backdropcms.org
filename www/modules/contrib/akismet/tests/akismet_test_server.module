@@ -1,0 +1,287 @@
+<?php
+
+/**
+ * @file
+ * Fake Akismet REST Testing server implementation.
+ *
+ * This is a simplified re-implementation of Akismet's REST Testing API, which
+ * is used by functional Backdrop module tests only.
+ *
+ * While the duplication means additional engineering work, the fake server
+ * provides unique testing facilities that are not possible to achieve with
+ * Akismet's official REST Testing API server:
+ *
+ * - All requests and request parameters are stored, which enables tests to
+ *   retrieve previously sent request information and assert that the client
+ *   sent the expected parameters and values (and no unexpected parameters).
+ *   This is important since most of the business logic for request parameters
+ *   depends on external user input and lives in form processing code; i.e.,
+ *   the Akismet module's primary functionality is not unit-testable.
+ * - Special test server variables allow tests to trigger special and unexpected
+ *   service conditions in between requests, such as 404s or service downtimes,
+ *   without having to manipulate the regular request parameters (and thus,
+ *   without having to add testing related code and logic to the regular runtime
+ *   code).
+ * - The module's behavior and communication can be tested against this fake
+ *   server implementation without having the Testing mode enabled; i.e., this
+ *   fake server can also act as production server.
+ *
+ * @see AkismetWebTestCase::getServerRecord()
+ *
+ * In addition, this fake server implementation allows to double-check whether
+ * Akismet's API follows the expectations of Akismet client developers, and it
+ * successfully helped to discover inconsistencies as well as unexpected API
+ * behaviors in the past.
+ *
+ * The module communicates with this fake server when the 'akismet_class'
+ * variable is set to 'AkismetBackdropTestLocal'. The fake test server module is
+ * automatically enabled for tests when needed.
+ *
+ * @see AkismetWebTestCase::setUp()
+ * @see AkismetBackdropTestLocal
+ *
+ * The fake server architecture is kept as simple as possible:
+ *
+ * - Menu router definitions are registering a controller/handler for each main
+ *   API endpoint.
+ * - The controller callback validates OAuth parameters (when applicable) and
+ *   optionally calls into dedicated functions to handle the request-specific
+ *   logic (e.g., Content API) or performs the logic directly (e.g., Site API).
+ * - The callback result, i.e. response parameters (or error code), is processed
+ *   by the delivery callback and transformed into an HTTP response following
+ *   the Akismet API format.
+ *
+ * @see akismet_test_server_menu()
+ * @see akismet_test_server_rest_deliver()
+ *
+ * Clean URLs must be enabled.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function akismet_test_server_menu() {
+  $items['akismet-test/%/1.1/%'] = array(
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'delivery callback' => 'akismet_test_server_rest_deliver',
+    'page callback' => 'akismet_test_server_rest_authenticated',
+    'page arguments' => array(1, 3),
+  );
+  $items['akismet-test/unauthenticated/1.1/%'] = array(
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'delivery callback' => 'akismet_test_server_rest_deliver',
+    'page callback' => 'akismet_test_server_rest_unauthenticated',
+    'page arguments' => array(3),
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback; routes authenticated REST requests to the correct handler.
+ *
+ * @param $key
+ * @param $endpoint
+ *
+ * @return int|string
+ */
+function akismet_test_server_rest_authenticated($key, $endpoint) {
+  if ($key !== 'valid-key') {
+    return 'invalid';
+  }
+  switch ($endpoint) {
+    case 'comment-check':
+      return akismet_test_server_endpoint_comment_check($_POST);
+      break;
+    case 'submit-spam':
+      return akismet_test_server_endpoint_submit_feedback('spam', $_POST);
+      break;
+    case 'submit-ham':
+      return akismet_test_server_endpoint_submit_feedback('ham', $_POST);
+      break;
+  }
+
+  return MENU_NOT_FOUND;
+}
+
+/**
+ * Page callback; routes unauthenticated REST requests to the correct handler.
+ *
+ * @param string $endpoint
+ *   The API endpoint. Currently the only unauthenticated endpoint is
+ *   'verify-key'.
+ *
+ * @return int|string
+ */
+function akismet_test_server_rest_unauthenticated($endpoint) {
+  if ($endpoint !== 'verify-key') {
+    return MENU_NOT_FOUND;
+  }
+  return akismet_test_server_endpoint_verify_key();
+}
+
+/**
+ * Endpoint handler for /verify-key.
+ *
+ * @return string
+ */
+function akismet_test_server_endpoint_verify_key() {
+  $key = (empty($_POST['key']) ? NULL : $_POST['key']);
+  $blog = (empty($_POST['blog']) ? NULL : $_POST['blog']);
+
+  // Currently the Akismet API seems to accept any non-null value for 'blog'.
+  if ($key == 'valid-key' && !empty($blog)) {
+    return 'valid';
+  }
+  else {
+    if (empty($key)) {
+      backdrop_add_http_header('X-akismet-debug-help', 'Empty "key" value');
+    }
+    elseif (empty($blog)) {
+      backdrop_add_http_header('X-akismet-debug-help', 'Empty "blog" value');
+    }
+    return 'invalid';
+  }
+}
+
+/**
+ * Endpoint handler for /comment-check.
+ *
+ * @param $params
+ *   The $_POST data from the request.
+ *
+ * @return string
+ *   The body of the response.
+ */
+function akismet_test_server_endpoint_comment_check($params) {
+  $required = array('blog', 'user_ip');
+  foreach ($required as $key) {
+    if (empty($params[$key])) {
+      backdrop_add_http_header('X-akismet-debug-help', 'Empty "' . $key . '" value');
+      return "Missing required field: $key.";
+    }
+  }
+
+  if (isset($params['guid'])) {
+    backdrop_add_http_header('X-akismet-guid', $params['guid']);
+  }
+  else {
+    // This is obviously not a real GUID. That's okay.
+    backdrop_add_http_header('X-akismet-guid', uniqid('guid-'));
+  }
+
+  // From the Akismet API docs: 'If you are having trouble triggering a spam
+  // response, you can send “viagra-test-123” as the author or
+  // “akismet-guaranteed-spam@example.com” as the author email.'
+  if (isset($params['comment_author']) && $params['comment_author'] === 'viagra-test-123') {
+    return 'true';
+  }
+  if (isset($params['comment_author_email']) && $params['comment_author_email'] === 'akismet-guaranteed-spam@example.com') {
+    // Note that the Akismet API doesn't actually add the X-akismet-pro-tip
+    // header under any specifiable test circumstances. :( Here, we make the
+    // 'akismet-guaranteed-spam@example.com' email into a guaranteed 'yes this
+    // is egregious spam' response, but the API doesn't.
+    backdrop_add_http_header('X-akismet-pro-tip', 'discard');
+    return 'true';
+  }
+
+  if (isset($params['user_role']) && $params['user_role'] === 'administrator') {
+    return 'false';
+  }
+
+  // For easier testing, return 'spam', 'ham', or 'unsure' if any of those
+  // strings is found in the content being tested.
+  // Note that the live API doesn't do this, even in test mode.
+  if (isset($params['comment_content'])) {
+    $text = $params['comment_content'];
+    if (strpos($text, 'spam') !== FALSE) {
+      backdrop_add_http_header('X-akismet-pro-tip', 'discard');
+      return 'true';
+    }
+    if (strpos($text, 'unsure') !== FALSE) {
+      return 'true';
+    }
+    if (strpos($text, 'ham') !== FALSE) {
+      return 'false';
+    }
+  }
+
+  // If we reach this point, none of the testing parameters was sent.
+  // Call it ham.
+  return 'false';
+}
+
+/**
+ * Endpoint handler for /submit-spam and /submit-ham.
+ *
+ * @param string $type
+ *   The type of feedback. Either 'spam' or 'ham'.
+ * @param $params
+ *   The $_POST data from the request.
+ *
+ * @return string
+ *   The body of the response.
+ */
+function akismet_test_server_endpoint_submit_feedback($type, $params) {
+  assert($type === 'spam' || $type === 'ham', 'akismet_test_server_endpoint_submit_feedback() only accepts "spam" and "ham" as feedback types.');
+
+  $required = array('blog', 'user_ip');
+  foreach ($required as $key) {
+    if (empty($params[$key])) {
+      backdrop_add_http_header('X-akismet-debug-help', 'Empty "' . $key . '" value');
+      return "Missing required field: $key.";
+    }
+  }
+
+  if (isset($params['guid'])) {
+    $guid = $params['guid'];
+    backdrop_add_http_header('X-akismet-guid', $params['guid']);
+  }
+  else {
+    // This is obviously not a real GUID. Luckily we don't need one.
+    $guid = uniqid('guid-feedback-');
+    $params['guid'] = $guid;
+    backdrop_add_http_header('X-akismet-guid', $guid);
+  }
+
+  $storage = state_get('akismet_test_server_' . $type, array());
+  $storage[$guid] = $params;
+  state_set('akismet_test_server_' . $type, $storage);
+
+  return 'Thanks for making the web a better place.';
+}
+
+/**
+ * Delivery callback for REST API endpoints.
+ */
+function akismet_test_server_rest_deliver($page_callback_result) {
+  // All fake-server responses are not cached.
+  backdrop_page_is_cacheable(FALSE);
+
+  backdrop_add_http_header('Content-Type', 'text/plain; charset=utf-8');
+
+  if (is_int($page_callback_result)) {
+    switch ($page_callback_result) {
+      case MENU_NOT_FOUND:
+        backdrop_add_http_header('Status', '404 Not Found');
+        $message = '<html><head><title>404 Not Found</title></head><body bgcolor="white"><center><h1>404 Not Found</h1></center><hr><center>nginx</center></body></html>';
+        break;
+
+      // As far as I can tell the Akismet API only ever issues 404s or 200s.
+      default:
+        backdrop_add_http_header('Status', '400 Bad Request');
+        $message = 'Bad request';
+        break;
+    }
+  }
+  else {
+    $message = $page_callback_result;
+  }
+
+  print $message;
+
+  // Perform end-of-request tasks.
+  backdrop_page_footer();
+}

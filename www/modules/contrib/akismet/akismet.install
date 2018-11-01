@@ -1,0 +1,280 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall functions as well as schema definition for the Akismet module.
+ */
+
+/**
+ * Implements hook_requirements().
+ *
+ * @param $check
+ *   (optional) Boolean whether to re-check the module's installation and
+ *   configuration status. Defaults to TRUE, as this argument is not passed for
+ *   hook_requirements() by default. Passing FALSE allows other run-time code
+ *   to re-generate requirements error messages to be displayed on other pages
+ *   than the site's system status report page.
+ *
+ * @see akismet_init()
+ * @see akismet_admin_settings()
+ * @see _akismet_status()
+ */
+function akismet_requirements($phase = 'runtime', $check = TRUE) {
+  $requirements = array();
+  if ($phase == 'runtime') {
+    $status = _akismet_status($check);
+    $requirements['akismet'] = array(
+      'title' => t('Akismet API key'),
+      'value' => t('Valid'),
+    );
+    // Immediately return if everything is in order.
+    if ($status['isVerified']) {
+      return $requirements;
+    }
+    // If not, something is wrong; prepare the requirements entry and set
+    // defaults for any yet unknown edge-cases.
+    $requirements['akismet']['severity'] = REQUIREMENT_ERROR;
+    // Append a link to the settings page to the error message on all pages,
+    // except on the settings page itself. These error messages also need to be
+    // shown on the settings page, since Akismet API keys can be entered later.
+    $admin_message = '';
+    if ($_GET['q'] != 'admin/config/content/akismet/settings') {
+      $admin_message = t('Visit the <a href="@settings-url">Akismet settings page</a> to add your API key.', array(
+        '@settings-url' => url('admin/config/content/akismet/settings'),
+      ));
+    }
+    // Missing API keys.
+    if (!$status['isConfigured']) {
+      $requirements['akismet']['value'] = t('Not configured');
+      $requirements['akismet']['description'] = t('The Akismet API key is not configured yet. !admin-message', array(
+        '!admin-message' => $admin_message,
+      ));
+    }
+    // Invalid API keys.
+    elseif ($status['response'] === Akismet::AUTH_ERROR) {
+      $requirements['akismet']['value'] = t('Invalid');
+      $requirements['akismet']['description'] = t('The configured Akismet API key is invalid. !admin-message', array(
+        '!admin-message' => $admin_message,
+      ));
+    }
+    // Communication error.
+    elseif ($status['response'] === Akismet::NETWORK_ERROR) {
+      $requirements['akismet']['value'] = t('Network error');
+      $requirements['akismet']['description'] = t('The Akismet server could not be contacted. Please make sure that your web server can make outgoing HTTP requests.');
+    }
+    // 404, etc.
+    else {
+      $requirements['akismet']['value'] = t('Unknown error');
+      $requirements['akismet']['description'] = t('The API key could not be verified.');
+    }
+  }
+  return $requirements;
+}
+
+/**
+ * Implements hook_schema().
+ */
+function akismet_schema() {
+  $schema['akismet'] = array(
+    'description' => 'Stores Akismet request and response data.',
+    'fields' => array(
+      'entity' => array(
+        'description' => 'Entity type of the content.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'id' => array(
+        'description' => 'Unique entity ID of the content.',
+        'type' => 'varchar',
+        'length' => 36,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'form_id' => array(
+        'description' => 'The form_id of the form being protected.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'guid' => array(
+        'description' => 'The GUID returned by Akismet',
+        'type' => 'varchar',
+        'length' => 36,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'changed' => array(
+        'description' => 'Unix timestamp when the data was changed.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'moderate' => array(
+        'description' => 'Whether the content needs to be moderated.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'classification' => array(
+        'description' => 'Result of text analysis: "ham", "spam" or "unsure".',
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => FALSE,
+      ),
+      'request' => array(
+        'description' => 'The original data sent to Akismet for analysis.',
+        'type' => 'blob',
+        'serialize' => TRUE,
+       ),
+    ),
+    'indexes' => array(
+      'guid' => array('guid'),
+    ),
+    'primary key' => array('entity', 'id'),
+    'foreign keys' => array(
+      'akismet_form_id' => array(
+        'table' => 'akismet_form',
+        'columns' => array(
+          'form_id' => 'form_id',
+        ),
+      ),
+    ),
+  );
+
+  $schema['akismet_form'] = array(
+    'description' => 'Stores configuration of forms protected by Akismet.',
+    'fields' => array(
+      'form_id' => array(
+        'description' => 'The protected form ID.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      // Optional entity type and bundle columns are required for protected
+      // entity forms, in order to determine whether report options should
+      // appear on a delete confirmation form. Column lengths are copied from
+      // {field_config_instance}.
+      // @see field_schema()
+      'entity' => array(
+        'description' => 'Optional: Entity type of the form.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+      ),
+      'bundle' => array(
+        'description' => 'Optional: Entity bundle of the form.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+      ),
+      'mode' => array(
+        'description' => 'Protection mode for the form.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'unsure' => array(
+        'description' => 'Action to perform when text analysis is unsure.',
+        'type' => 'varchar',
+        'length' => 24,
+        'not null' => TRUE,
+        'default' => 'captcha',
+      ),
+      'discard' => array(
+        'description' => 'Whether to discard (1) or retain (0) bad posts.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+      'enabled_fields' => array(
+        'description' => 'Form elements to analyze.',
+        'type' => 'text',
+        'not null' => FALSE,
+        'serialize' => TRUE,
+      ),
+      'module' => array(
+        'description' => 'Module name owning the form.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('form_id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function akismet_install() {
+  // Migrate Mollom form settings, if any.
+  if (db_table_exists('mollom_form')) {
+    $query = db_select('mollom_form')
+      ->fields('mollom_form', array(
+        'form_id', 'entity', 'bundle', 'mode', 'unsure', 'discard', 'enabled_fields', 'module'
+      ));
+    db_insert('akismet_form')
+      ->from($query)
+      ->execute();
+
+    akismet_form_cache(TRUE);
+  }
+
+  // Point the user to Akismet's settings page after installation.
+  $requirements = akismet_requirements('runtime', FALSE);
+  if (isset($requirements['akismet']['description'])) {
+    backdrop_set_message($requirements['akismet']['description'], 'warning');
+  }
+}
+
+/**
+ * @defgroup updates-7.x-to-1.x Updates from 7.x to 1.x
+ * @{
+ * Update functions from Drupal 7.x to Backdrop CMS 1.x.
+ */
+
+/**
+ * Move Akismet settings from variables to config.
+ */
+
+function akismet_update_1000() {
+  // Migrate variables to config.
+  $config = config('akismet.settings');
+  $config->set('akismet_api_key', update_variable_get('akismet_api_key', ''));
+  $config->set('akismet_privacy_link', update_variable_get('akismet_privacy_link', 1));
+  $config->set('akismet_testing_mode', update_variable_get('akismet_testing_mode', 0));
+  $config->set('akismet_testing_mode_omit_warning', update_variable_get('akismet_testing_mode_omit_warning', NULL));
+  $config->set('akismet_fallback', update_variable_get('akismet_fallback', AKISMET_FALLBACK_BLOCK));
+  $config->set('akismet_class', update_variable_get('akismet_class', 'AkismetBackdrop'));
+  $config->set('akismet_log_minimum_severity', update_variable_get('akismet_log_minimum_severity', WATCHDOG_WARNING));
+  $config->set('akismet_privacy_link', update_variable_get('akismet_privacy_link', 1));
+  $config->set('akismet_connection_timeout', update_variable_get('akismet_connection_timeout', 3));
+
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('akismet_api_key');
+  update_variable_del('akismet_privacy_link');
+  update_variable_del('akismet_testing_mode');
+  update_variable_del('akismet_testing_mode_omit_warning');
+  update_variable_del('akismet_fallback');
+  update_variable_del('akismet_class');
+  update_variable_del('akismet_log_minimum_severity');
+  update_variable_del('akismet_privacy_link');
+  update_variable_del('akismet_connection_timeout');
+}
+
+/*
+ * @} End of "defgroup updates-7.x-to-1.x"
+ * The next series of updates should start at 2000.
+ */

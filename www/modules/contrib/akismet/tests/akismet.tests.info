@@ -1,0 +1,94 @@
+[AkismetTestingModeTestCase]
+name = Testing mode
+description = Tests toggling of testing mode.
+group = Akismet
+file = akismet.test
+
+[AkismetInstallationTestCase]
+name = Installation and key handling
+description = Tests module installation and key error handling.
+group = Akismet
+file = akismet.test
+
+[AkismetResponseLocalTestCase]
+name = Server responses (local)
+description = Tests that local fake Akismet server responses match expectations.
+group = Akismet
+file = akismet.test
+
+[AkismetResponseTestCase]
+name = Server responses
+description = Tests that Akismet server responses match expectations.
+group = Akismet
+file = akismet.test
+
+[AkismetAccessTestCase]
+name = Access checking
+description = Confirm that there is a working API key and that this status is correctly indicated on the module settings page for appropriate users.
+group = Akismet
+file = akismet.test
+
+[AkismetBypassAccessTestCase]
+name = Bypass access
+description = Tests that users having higher privileges can bypass Akismet protection.
+group = Akismet
+file = akismet.test
+
+[AkismetFallbackModeTestCase]
+name = Fallback mode
+description = Tests expected fallback behavior when Akismet servers are not available.
+group = Akismet
+file = akismet.test
+
+[AkismetFormConfigurationTestCase]
+name = Form administration
+description = Verify that forms can be properly protected and unprotected.
+group = Akismet
+file = akismet.test
+
+[AkismetNodeFormTestCase]
+name = Node integration
+description = Tests node form protection.
+group = Akismet
+file = akismet.test
+
+[AkismetCommentFormTestCase]
+name = Comment integration
+description = Check that the comment submission form can be protected.
+group = Akismet
+file = akismet.test
+
+[AkismetActionsTestCase]
+name = Actions integration
+description = Tests actions provided for comments and nodes.
+group = Akismet
+file = akismet.test
+
+[AkismetDataCRUDTestCase]
+name = Data CRUD
+description = Verify that Akismet data can be created, read, updated, and deleted.
+group = Akismet
+file = akismet.test
+
+[AkismetAnalysisOptionsTestCase]
+name = Text analysis options
+description = Tests text analysis when retaining unsure/spam.
+group = Akismet
+file = akismet.test
+
+[AkismetAnalysisPageCachingTestCase]
+name = Text analysis with caching
+description = Tests basic text analysis functionality with enabled caching.
+group = Akismet
+file = akismet.test
+
+[AkismetReportTestCase]
+name = Reporting functionality
+description = Verify that session data is properly stored and content can be reported to Akismet.
+group = Akismet
+file = akismet.test
+
+; Added by Backdrop CMS packaging script on 2018-06-28
+project = akismet
+version = 1.x-2.0.0
+timestamp = 1530223424
