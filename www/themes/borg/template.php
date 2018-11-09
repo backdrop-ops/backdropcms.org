@@ -193,19 +193,13 @@ function borg_preprocess_views_exposed_form(&$variables) {
   if (substr($variables['form']['#id'], 0, 26) == 'views-exposed-form-modules'){
     // Update search field
     $search_field_key = '';
-    $search_type = '';
-    if (!empty($variables['form']['title'])){
-      $search_field_key = 'title';
-      if($variables['form']['#id'] == 'views-exposed-form-modules-page-2') {
-        $search_type = 'themes';
-      }
-      elseif ($variables['form']['#id'] == 'views-exposed-form-modules-page-3') {
-        $search_type = 'layouts';
-      }
-    }
-    elseif (!empty($variables['form']['keys'])){
+    $search_type = arg(0);
+
+    if (!empty($variables['form']['keys'])){
       $search_field_key = 'keys';
-      $search_type = 'modules';
+    }
+    elseif (!empty($variables['form']['title'])){
+      $search_field_key = 'title';
     }
 
     if (!empty($search_field_key)){
@@ -224,6 +218,93 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * @see node.tpl.php
  */
 function borg_preprocess_node(&$variables){
+  // Add missing node type suggestion.
+  array_unshift($variables['theme_hook_suggestions'], 'node__' . $variables['node']->type);
+
+  // Add theme hook suggestions for view mode.
+  if ($variables['view_mode'] != 'full') {
+    array_unshift($variables['theme_hook_suggestions'], 'node__' . $variables['view_mode']);
+  }
+
+  if ($variables['view_mode'] == 'project_search') {
+    $node = $variables['node']; // Nice shorthand.
+
+    // Move a few project fields into the sidebar.
+    $sidebar = array();
+    if (isset($variables['content']['field_download_count'])) {
+      $sidebar['field_download_count'] = $variables['content']['field_download_count'];
+      unset($variables['content']['field_download_count']);
+    }
+    if (isset($variables['content']['project_usage'])) {
+      $sidebar['project_usage'] = $variables['content']['project_usage'];
+      $sidebar['project_usage']['#weight'] = 10;
+      unset($variables['content']['project_usage']);
+    }
+    $variables['content']['sidebar'] = $sidebar;
+
+    // Build a footer of useful info.
+    $footer = array(
+      'info' => array(
+        '#type' => 'link',
+        '#title' => t('More Info'),
+        '#href' => url('node/' . $node->nid, array('absolute' => TRUE)),
+        '#attributes' => array('class' => array('read-more')),
+      ),
+    );
+
+    // Get the recomended release info.
+    $release = FALSE;
+    $result = views_get_view_result('project_release_download_table', 'recommended', $node->nid);
+    if (count($result) == 1) {
+      $release = reset($result);
+    }
+
+    if ($release) {
+      // Release date.
+      $date = format_date($release->node_created, 'short');
+      // Build a footer of useful info.
+      $footer += array(
+        'version' => array(
+          '#type' => 'markup',
+          '#markup' => '<span>' . t('v @version', array('@version' => $release->project_release_node_version)) . '</span>',
+        ),
+        'latest' => array(
+          '#type' => 'markup',
+          '#markup' => '<span class="release-date">' . t('latest release @date', array('@date' => $date)) . '</span>',
+        ),
+        'download' => array(
+          '#type' => 'link',
+          '#title' => t('Download'),
+          '#href' => $release->project_release_node_download_link,
+          '#attributes' => array('class' => array('button', 'button-small')),
+        ),
+        'size' => array(
+          '#type' => 'markup',
+          '#markup' => '<span class="download-size"><span>' . format_size($release->project_release_node_download_size) . '</span></span>',
+        ),
+      );
+    }
+
+    $items = array();
+    foreach ($footer as $item) {
+      $items[] = backdrop_render($item);
+    }
+
+    // Add some new info to the footer.
+    $variables['footer'] = theme('item_list', array('items' => $items));
+  }
+
+  if ($variables['type'] == 'project_module' || $variables['type'] == 'project_theme' || $variables['type'] == 'project_layout') {
+
+    if ($variables['view_mode'] == 'teaser') {
+      if (isset($variables['content']['links'])) {
+        $old_title = $variables['content']['links']['node']['#links']['node-readmore']['title'];
+        $new_title = str_replace('Read more', 'More Info', $old_title);
+        unset($variables['content']['links']);
+      }
+    }
+  }
+
   // For blog posts.
   if ($variables['type'] == 'post') {
     // Load the author.
@@ -254,9 +335,14 @@ function borg_preprocess_node(&$variables){
 
   // For project nodes include a special stylesheet.
   if (($variables['type'] == 'core') || substr($variables['type'], 0, 8) == 'project_'){
-    unset($variables['content']['project_release_downloads']['#prefix']);
-    $variables['classes'][] = 'node-project';
-    backdrop_add_css($path . '/css/node-project.css');
+    if ($variables['type'] == 'project_release') {
+
+    }
+    else {
+      unset($variables['content']['project_release_downloads']['#prefix']);
+      $variables['classes'][] = 'node-project';
+      backdrop_add_css($path . '/css/node-project.css');
+    }
   }
 
   // For showcase nodes include a special stylesheet.

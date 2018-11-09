@@ -4,80 +4,239 @@
  * Contains styles only needed for several Project node types.
  *
  * These elements were separated from the compontents.css file because there is
- * a lot of code in here that's not needed for most of the site, so it didn't
- * need to be loaded all the time.
+ * a lot of code in here that's not needed for most of the site.
  ******************************************************************************/
 
- .node-project-release h2,
- .view-project-release-download-table .view-header,
- .view-project-release-download-table th,
+/**
+ * Projects.
+ */
+article.node-project h2 {
+  padding: .4em 0;
+}
+article.node-project .content {
+  padding: 0;
+}
+article.node-project .content h2 {
+  display: block;
+  font-size: 1.15em;
+  margin: 2em 0 1em;
+  padding: .8em 0 0;
+  border-top: 1px solid #d4d6d6;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+article.node-project .content p:last-child {
+  margin-bottom: 0;
+}
+
+/* This should add a headline to docs that don't have one */
+.node-project.view-mode-full .field-name-body .field-item > p:first-child:before {
+  content: 'Documentation';
+  display: block;
+  font-size: 1em;
+  margin: 2em 0 1em;
+  padding: .8em 0 0;
+  border-top: 2px solid #d4d6d6;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/**
+ * Projects -- teasers.
+ */
+article.node-project.view-mode-teaser {
+  padding: 0;
+}
+article.node-project.view-mode-teaser .content h2 {
+  display: none;
+}
+
+/**
+ * Project releases.
+ */
  .node-project-release ul.links.inline {
    display: none;
  }
-
- .view-project-release-download-table .recommended-version,
- .view-project-release-download-table .released,
- .view-project-release-download-table .all-versions {
-   padding: 5px 0;
- }
-
  .node-project-release .content h2 {
    display: block;
  }
- /* End temp styles */
-
- .node-project h2,
- .node-project-theme h2,
- .node-project-layout h2,
- .node-project-release .form-item label{
-   font-size: 1em;
-   margin: 2em 0 1em;
-   padding: .8em 0 0;
-   border-top: 1px solid #d4d6d6;
-   text-transform: uppercase;
-   font-weight: 600;
- }
-
- .node-project .view-project-release-download-table .view-content {
-   font-size: 1.3em;
- }
-
- .node-project .view-project-release-download-table th {
-   font-weight: 400;
-   font-size: .8em;
- }
-
- .node-project .view-project-release-download-table th,
- .node-project .view-project-release-download-table td {
-   padding: 0 .8em .0 0;
-   vertical-align: bottom;
- }
-
- .node-project .view-project-release-download-table .recommended td:first-child a {
-   display: inline-block;
-   font-size: 1.4em;
-   margin: 0 .2em 0 0;
- }
-
- .node-project .view-project-release-download-table .recommended td:first-child a:after {
-   content: "\f0ab";
-   font-family: 'FontAwesome';
-   display: inline-block;
-   padding: 0 0 0 .2em;
- }
-
- /* This should add a headline to docs that don't have one */
- .field-name-body .field-item > p:first-child:before {
-   content: 'Documentation';
-   display: block;
-   font-size: 1em;
-   margin: 2em 0 1em;
-   padding: .8em 0 0;
-   border-top: 1px solid #d4d6d6;
-   text-transform: uppercase;
-   font-weight: 600;
- }
-
  .node-project-release .form-item {
    font-size: 1.3em;
  }
+ .node-project-release .form-item label {
+   font-size: 1em;
+   margin: 2em 0 1em;
+   padding: .8em 0 0;
+   border-top: 1px solid #d4d6d6;
+   text-transform: uppercase;
+   font-weight: 600;
+ }
+
+/**
+ * View-modes used only on the modues / themes / layouts search pages.
+ */
+.project-sidebar .field,
+.project-sidebar .project-usage {
+  font-size: 1rem;
+  margin: 30px 0;
+  text-align: center;
+}
+.project-sidebar .field-item,
+.project-sidebar .usage-total {
+  font-size: 1.25rem;
+}
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .project-sidebar .field,
+  .project-sidebar .project-usage {
+    float: left;
+    width: 50%;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .project-sidebar .field,
+  .project-sidebar .project-usage {
+    text-align: left;
+    float: none;
+    width: auto;
+  }
+}
+
+
+.project-foot {
+  margin-top: 15px;
+}
+.project-foot .item-list ul {
+  list-style-type: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+.project-foot .item-list li {
+  display: inline-block;
+  padding: 10px 5px 5px 5px;
+  margin: 0;
+}
+.project-foot .item-list li:first-child,
+.project-foot .item-list li:last-child,
+.project-foot .item-list li:nth-last-child(2) {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 15px 5px 15px;
+}
+.project-foot .item-list li:last-child {
+  padding: 0;
+}
+.project-foot a {
+  font-size: 16px;
+  height: 30px;
+  line-height: 27px;
+  margin: 0;
+  padding: 0 20px 0 15px;
+  background-color: white;
+  border: 2px solid #007cba;
+  display: inline-block;
+  position: relative;
+  text-transform: uppercase;
+  transition: color 0.33s ease 0s;
+  white-space: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+}
+.project-foot a:hover {
+  background-color: #007CBA;
+  color: white;
+}
+.project-foot a.button {
+  margin: 0;
+  line-height: 27px;
+  width: 100%;
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .project-foot .item-list ul {
+    text-align: left;
+  }
+  .project-foot .item-list li {
+    padding: 5px;
+  }
+  .project-foot .item-list li:first-child,
+  .project-foot .item-list li:last-child,
+  .project-foot .item-list li:nth-last-child(2) {
+    display: inline-block;
+    padding: 5px;
+  }
+  .project-foot .item-list li:last-child {
+    padding: 5px 0;
+  }
+  .project-foot a,
+  .project-foot a.button {
+    width: auto;
+  }
+}
+
+/**
+ * Project releases -- teasers.
+ */
+article.node-project-release.view-mode-project-search {
+
+}
+article.node-project-release.view-mode-project-search .node h2 {
+  margin-bottom: 0;
+}
+article.node-project-release.view-mode-project-search .node ul.links {
+  text-align: left;
+}
+article.node-project-release.view-mode-project-search article.view-mode-teaser {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+
+/**
+ * Download table (view).
+ */
+.node-project .view-project-release-download-table .view-content {
+  line-height: 1.3em;
+}
+.node-project .view-project-release-download-table th {
+  font-weight: 400;
+  font-size: .8em;
+}
+.node-project .view-project-release-download-table th,
+.node-project .view-project-release-download-table td {
+  padding: 5px .8em .0 0;
+  vertical-align: bottom;
+}
+.node-project .view-project-release-download-table .recommended td:first-child a {
+  display: inline-block;
+  margin: 0 .2em 0 0;
+}
+.node-project .view-project-release-download-table .recommended td:first-child a:after {
+  content: "\f0ab";
+  font-family: 'FontAwesome';
+  display: inline-block;
+  padding: 0 0 0 .2em;
+}
+.view-project-release-download-table .recommended-version,
+.view-project-release-download-table .released,
+.view-project-release-download-table .all-versions {
+  padding: 5px 0;
+}
+
+.block-views-project-release-download-table-block-1 {
+  padding-top: 15px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .node-project .view-project-release-download-table .view-content {
+    font-size: 1.3em;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-views-project-release-download-table-block-1 {
+    padding-top: 30px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .node-project .view-project-release-download-table .recommended td:first-child a {
+    font-size: 1.4em;
+  }
+}
