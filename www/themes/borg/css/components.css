@@ -263,6 +263,10 @@ article .content .field {
 article .field-name-body a {
   text-decoration: underline;
 }
+article .field-name-field-image {
+  text-align: center;
+  margin-bottom: 15px;
+}
 
 /*******************************************************************************
  * All inline links
