@@ -192,9 +192,10 @@ input[type="submit"] {
   font-size: 1.125rem; /* 18px */
   border-radius: 20px;
   width: auto;
-  margin: 10px 0;
+  margin: 10px 20px 10px 0;
   padding: 0 20px;
   white-space: nowrap;
+
   -webkit-transition: background-color .33s;
   -webkit-transition: color .33s;
   -moz-transition: background-color .33s;
