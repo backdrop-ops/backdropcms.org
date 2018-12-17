@@ -15,7 +15,8 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
   // directory listing, finding the first non-test .info file, and reading
   // the "type" property from it.
 
-  $info = _borg_github_get_info_file_data($errors, $payload);
+  $access_token = settings_get('project_github_access_token');
+  $info = _borg_github_get_info_file_data($errors, $payload, $access_token);
   if (empty($info)) {
     return;
   }
@@ -71,11 +72,12 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
  * Implements hook_github_project_release_validate().
  */
 function borg_github_github_project_release_validate(Node $release_node, array &$errors, array $payload) {
-  $info = _borg_github_get_info_file_data($errors, $payload);
+  $access_token = settings_get('project_github_access_token');
+  $info = _borg_github_get_info_file_data($errors, $payload, $access_token);
   if (empty($info)) {
     return;
   }
- 
+
   $project_node = node_load($release_node->project_release['project_nid']);
 
   if ($project_node->type === 'project_theme') {
@@ -163,7 +165,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
       if (empty($term)) {
         $term = entity_create('taxonomy_term', array(
           'name' => $tag,
-          'vocabulary' => 'tags',
+          'vocabulary' => 'project_tags',
           'langcode' => LANGUAGE_NONE,
         ));
         taxonomy_term_save($term);
@@ -188,9 +190,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
 /**
  * Get the info file data from a project().
  */
-function _borg_github_get_info_file_data(array &$errors, array $payload) {
-  $access_token = settings_get('project_github_access_token');
-
+function _borg_github_get_info_file_data(array &$errors, array $payload, $access_token) {
   // Get the contents of the release.
   // See https://developer.github.com/v3/git/trees/#get-a-tree-recursively
   $tag = $payload['release']['tag_name'];
