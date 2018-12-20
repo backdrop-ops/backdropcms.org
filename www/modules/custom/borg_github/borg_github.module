@@ -81,14 +81,14 @@ function borg_github_github_project_release_validate(Node $release_node, array &
   $project_node = node_load($release_node->project_release['project_nid']);
 
   if ($project_node->type === 'project_theme') {
-    // Check for colors settings
+    // Check for colors settings.
     if (isset($info['colors']) && is_array($info['colors'])) {
       $field_project_colors = field_info_field('field_project_colors');
       $allowed_colors = list_allowed_values($field_project_colors);
 
       $project_colors = array();
 
-      // Save each into field_project_colors
+      // Save each into field_project_colors.
       foreach ($info['colors'] as $color) {
         $uc_color = ucfirst($color);
         // Check color is allowed.
@@ -102,13 +102,13 @@ function borg_github_github_project_release_validate(Node $release_node, array &
     }
   }
 
-  // Check for screenshot settings
+  // Check for screenshot settings.
   if (isset($info['screenshots']) && is_array($info['screenshots'])) {
     // Record existing screenshots to delete later.
     $old_screenshots = !empty($project_node->field_project_screenshots[LANGUAGE_NONE]) ? $project_node->field_project_screenshots[LANGUAGE_NONE] : NULL;
     $project_screenshots = array();
 
-    // If settings exist, follow each path to ensure the file exists
+    // If settings exist, follow each path to ensure the file exists.
     foreach ($info['screenshots'] as $screenshot) {
       $screenshot_url = str_replace('{+path}', $screenshot, $payload['repository']['contents_url']);
       $contents_result = backdrop_http_request($screenshot_url, array(
@@ -120,8 +120,8 @@ function borg_github_github_project_release_validate(Node $release_node, array &
       if ($contents_result->code == 200) {
         $parts = pathinfo($screenshot_url);
         $filename = file_munge_filename($parts['basename'], 'png jpg');
-        $uri = 'public://theme-screenshots/' . $payload['repository']['name'] . '/' . $parts['basename'];
-        $dir = 'public://theme-screenshots/' . $payload['repository']['name'];
+        $dir = 'public://project-screenshots/' . $payload['repository']['name'];
+        $uri = $dir . '/' . $parts['basename'];
         file_prepare_directory($dir, FILE_CREATE_DIRECTORY);
 
         $file = file_save_data($contents_result->data, $uri);
@@ -145,10 +145,10 @@ function borg_github_github_project_release_validate(Node $release_node, array &
     }
   }
 
-  // Check for maintainers settings
+  // Check for maintainers settings.
   if (isset($info['maintainers']) && is_array($info['maintainers'])) {
     $project_maintainers_github = array();
-    // Save each into field_project_maintainers_github 
+    // Save each into field_project_maintainers_github.
     foreach ($info['maintainers'] as $maintainer) {
       $project_maintainers_github[] = array('value' => $maintainer);
     }
@@ -156,13 +156,13 @@ function borg_github_github_project_release_validate(Node $release_node, array &
     $project_node->field_project_maintainers_github[LANGUAGE_NONE] = $project_maintainers_github;
   }
 
-  // Check for tags settings
+  // Check for tags settings.
   if (isset($info['tags']) && is_array($info['tags'])) {
     $project_tags = array();
-    // Save each into field_project_tags 
+    // Save each into field_project_tags.
     foreach ($info['tags'] as $tag) {
-      $term = taxonomy_term_load_multiple_by_name($tag);
-      if (empty($term)) {
+      $existing_terms = taxonomy_term_load_multiple_by_name($tag, 'project_tags');
+      if (empty($existing_terms)) {
         $term = entity_create('taxonomy_term', array(
           'name' => $tag,
           'vocabulary' => 'project_tags',
@@ -171,7 +171,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
         taxonomy_term_save($term);
       }
       else {
-        $term = reset($term);
+        $term = reset($existing_terms);
       }
 
       $project_tags[] = array('tid' => $term->tid);
@@ -182,7 +182,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
 
   }
 
-  // Save project node
+  // Save project node.
   $project_node->save();
 
 }
@@ -192,7 +192,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
  */
 function _borg_github_get_info_file_data(array &$errors, array $payload, $access_token) {
   // Get the contents of the release.
-  // See https://developer.github.com/v3/git/trees/#get-a-tree-recursively
+  // See https://developer.github.com/v3/git/trees/#get-a-tree-recursively.
   $tag = $payload['release']['tag_name'];
   $trees_url = str_replace('{/sha}', '/' . $tag, $payload['repository']['trees_url']) . '?recursive=1';
 
