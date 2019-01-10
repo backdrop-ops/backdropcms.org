@@ -1,0 +1,96 @@
+<?php
+/**
+ * @file
+ * Integration between BackdropCMS.org and Tugboat (our demo sandbox provider).
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function borg_tugboat_menu() {
+  $items['admin/config/system/tugboat'] = array(
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('borg_tugboat_admin_settings'),
+    'access arguments' => array('administer tugboat settings'),
+    'title' => 'Tugboat settings',
+    'file' => 'borg_tugboat.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function borg_tugboat_permission() {
+  $items['administer tugboat settings'] = array(
+    'title' => t('Administer Tugboat settings'),
+    'description' => t('Configure the lifetime and repository settings for Tugboat (used for demo sites).'),
+  );
+}
+
+/**
+ * Execute a Tugboat CLI command.
+ *
+ * @param $command_string
+ *   The tugboat command string with any options. The --api-token and --json
+ *   options are passed automatically. Tugboat command portion is included,
+ *   such as "find <id>" or "stop <id>".
+ * @param array $return_data
+ *   Returned data as an array if the command was successful.
+ * @param $return_error_string
+ *   A single error string if tugboat returned an error or if it is not possible
+ *   to reach tugboat.
+ * @param string $executable_path
+ *   Optional. The path to the executable on the server. If not provided, the
+ *   executable path provided in the config file will be used.
+ *
+ * @return bool
+ */
+function _borg_tugboat_execute($command_string, array &$return_data, &$return_error_string, $executable_path = NULL) {
+  $api_token = settings_get('borg_tugboat_token');
+  if (empty($executable_path)) {
+    $executable_path = config_get('borg_tugboat.settings');
+  }
+
+  // Ensure binary is executable.
+  if (!is_file($executable_path)) {
+    $return_error_string = t('No tugboat executable file found at the provided path.');
+    return FALSE;
+  }
+  elseif (!is_executable($executable_path)) {
+    $return_error_string = t('The Tugboat CLI binary was found, but it is not executable.');
+    return FALSE;
+  }
+
+  // Fire off the command via the binrary file.
+  $pipe_spec = array(
+    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+    2 => array("pipe", "w")
+  );
+  $pipes = array();
+
+  $command = "$executable_path --api-token='$api_token' $command_string --json";
+  $process = proc_open($command, $pipe_spec, $pipes);
+  fclose($pipes[0]);
+  $std_output = stream_get_contents($pipes[1]);
+  $error_output = stream_get_contents($pipes[2]);
+  fclose($pipes[1]);
+  fclose($pipes[2]);
+  proc_close($process);
+
+  if ($error_output) {
+    $return_error_string = trim($error_output);
+  }
+  if ($std_output) {
+    $decoded_json = json_decode($std_output, TRUE);
+    if ($decoded_json === NULL) {
+      $return_error_string = 'Unparseable JSON returned.';
+    }
+    else {
+      $return_data = $decoded_json;
+    }
+  }
+
+  return empty($return_error_string);
+}
