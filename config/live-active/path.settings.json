@@ -64,5 +64,6 @@
     "taxonomy_term_feature_type_pattern": "features/[term:name]",
     "node_project_dummy_pattern": "project/[node:title]",
     "node_external_mention_pattern": "mention/[node:title]",
-    "node_platform_pattern": "platform/[node:title]"
+    "node_platform_pattern": "platform/[node:title]",
+    "taxonomy_term_project_tags_pattern": "projects/tags/[term:name]"
 }
