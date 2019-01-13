@@ -31,11 +31,11 @@ function borg_metadata_preprocess_page(&$variables) {
         'async' => 'async',
       ),
     );
-    dpm('hai');
     backdrop_add_js('https://www.googletagmanager.com/gtag/js?id=AW-859540611', $google_ads_options);
     $google_ads_inline = "
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
+  gtag('set', 'allow_ad_personalization_signals', false);
   gtag('js', new Date());
   gtag('config', 'AW-859540611');";
     backdrop_add_js($google_ads_inline, 'inline');
