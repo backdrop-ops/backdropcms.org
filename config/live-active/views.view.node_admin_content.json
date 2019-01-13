@@ -521,48 +521,6 @@
                             }
                         },
                         "is_grouped": false
-                    },
-                    "releases_enabled": {
-                        "id": "releases_enabled",
-                        "table": "project",
-                        "field": "releases_enabled",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "=",
-                        "value": "All",
-                        "group": 1,
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "",
-                            "label": "Releases",
-                            "description": "",
-                            "use_operator": false,
-                            "operator": "releases_enabled_op",
-                            "identifier": "releases_enabled",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
                     }
                 },
                 "sorts": {
@@ -870,7 +828,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "operator": "=",
-                        "value": "All",
+                        "value": "0",
                         "group": "1",
                         "exposed": true,
                         "expose": {

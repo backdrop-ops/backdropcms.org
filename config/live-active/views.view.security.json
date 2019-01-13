@@ -369,21 +369,7 @@
                     "row_class_special": 0,
                     "uses_fields": 0
                 },
-                "header": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "empty": 0,
-                        "content": "<p>Advisories listed here include the latest for both Backdrop core and any project in the contributed repository. See the <a href=\"/security/advisories\">entire list of all advisories</a>.</p>\r\n",
-                        "format": "filtered_html",
-                        "tokenize": 0
-                    }
-                },
+                "header": [],
                 "empty": {
                     "area": {
                         "id": "area",
@@ -434,7 +420,25 @@
                     "type": "views_query",
                     "options": []
                 },
-                "path": "security/rss.xml"
+                "path": "security/rss.xml",
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 0,
+                        "content": "<p>Advisories listed here include the latest for both Backdrop core and any project in the contributed repository. See the <a href=\"/security/advisories\">entire list of all advisories</a>.</p>\r\n",
+                        "format": "filtered_html",
+                        "tokenize": 0
+                    }
+                },
+                "defaults": {
+                    "header": false
+                }
             }
         },
         "block_1": {
@@ -455,7 +459,8 @@
                     "row_options": false,
                     "pager": false,
                     "pager_options": false,
-                    "title": false
+                    "title": false,
+                    "header": false
                 },
                 "style_options": {
                     "row_class": "",
@@ -479,7 +484,22 @@
                 },
                 "pager_options": null,
                 "link_url": "security/advisories",
-                "title": "Security Advisories"
+                "title": "Security Advisories",
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 0,
+                        "content": "<p>Advisories listed here include the latest for both Backdrop core and any project in the contributed repository. See the <a href=\"/security/advisories\">entire list of all advisories</a>.</p>\r\n",
+                        "format": "filtered_html",
+                        "tokenize": 0
+                    }
+                }
             }
         }
     }
