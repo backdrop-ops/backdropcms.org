@@ -82,7 +82,7 @@ function borg_tugboat_admin_settings_validate($form, &$form_state) {
   }
 
   $repo = $form_state['values']['repository_id'];
-  $branch = $form_state['values']['repository_base'];
+  //$branch = $form_state['values']['repository_base'];
 
   $data = array();
   $error_string = '';
