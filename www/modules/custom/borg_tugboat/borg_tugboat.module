@@ -15,6 +15,20 @@ function borg_tugboat_menu() {
     'title' => 'Tugboat settings',
     'file' => 'borg_tugboat.admin.inc',
   );
+  $items['demo/create'] = array(
+    'page callback' => 'borg_tugboat_demo_create_page',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+    'title' => 'Try a Backdrop CMS Demo Sandbox',
+    'file' => 'borg_tugboat.pages.inc',
+  );
+  $items['demo/created'] = array(
+    'page callback' => 'borg_tugboat_demo_done_page',
+    'page arguments' => array(),
+    'access callback' => TRUE,
+    'title' => 'Your Backdrop CMS Demo is Ready!',
+    'file' => 'borg_tugboat.pages.inc',
+  );
   return $items;
 }
 
@@ -26,6 +40,21 @@ function borg_tugboat_permission() {
     'title' => t('Administer Tugboat settings'),
     'description' => t('Configure the lifetime and repository settings for Tugboat (used for demo sites).'),
   );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function borg_tugboat_theme() {
+  $items['borg_tugboat_demo_create_page'] = array(
+    'variables' => array('form' => NULL),
+    'template' => 'templates/borg-tugboat-demo-create-page',
+  );
+  $items['borg_tugboat_demo_done_page'] = array(
+    'variables' => array('url' => NULL),
+    'template' => 'templates/borg-tugboat-demo-done-page',
+  );
+  return $items;
 }
 
 /**
@@ -49,7 +78,7 @@ function borg_tugboat_permission() {
 function _borg_tugboat_execute($command_string, array &$return_data, &$return_error_string, $executable_path = NULL) {
   $api_token = settings_get('borg_tugboat_token');
   if (empty($executable_path)) {
-    $executable_path = config_get('borg_tugboat.settings');
+    $executable_path = config_get('borg_tugboat.settings', 'executable_path');
   }
 
   // Ensure binary is executable.
@@ -62,11 +91,18 @@ function _borg_tugboat_execute($command_string, array &$return_data, &$return_er
     return FALSE;
   }
 
-  // Fire off the command via the binrary file.
+  // Ensure input string is safe from any dangerous characters.
+  // Characters allowed: 0-9, a-z, ., =, +, -, and a blank space.
+  if (!preg_match('/^[0-9a-z=+\- ]+$/', $command_string)) {
+    $return_error_string = t('Invalid character for Tugboat command. String given: @string', array('@string' => $command_string));
+    return FALSE;
+  }
+
+  // Fire off the command via the binary file.
   $pipe_spec = array(
-    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-    2 => array("pipe", "w")
+    0 => array("pipe", "r"),  // stdin pipe to send input.
+    1 => array("pipe", "w"),  // stdout pipe to receive output.
+    2 => array("pipe", "w")   // errors pipe to receive output.
   );
   $pipes = array();
 
@@ -77,6 +113,8 @@ function _borg_tugboat_execute($command_string, array &$return_data, &$return_er
   $error_output = stream_get_contents($pipes[2]);
   fclose($pipes[1]);
   fclose($pipes[2]);
+  $process_status = proc_get_status($process);
+  $process_exit_code = $process_status['exitcode'];
   proc_close($process);
 
   if ($error_output) {
@@ -85,6 +123,16 @@ function _borg_tugboat_execute($command_string, array &$return_data, &$return_er
   if ($std_output) {
     $decoded_json = json_decode($std_output, TRUE);
     if ($decoded_json === NULL) {
+      // Work-around https://github.com/Lullabot/tugboat/issues/2999.
+      // Use the last line of JSON output and ignore any progress information.
+      if ($process_exit_code === 0) {
+        $lines = explode("\n", $std_output);
+        $last_line = end($lines);
+        if ($decoded_json = json_decode($last_line, TRUE)) {
+          $return_data = $decoded_json;
+        }
+      }
+
       $return_error_string = 'Unparseable JSON returned.';
     }
     else {
@@ -92,5 +140,43 @@ function _borg_tugboat_execute($command_string, array &$return_data, &$return_er
     }
   }
 
-  return empty($return_error_string);
+  return $process_exit_code === 0;
+}
+
+/**
+ * Provide a form that creates a new sandbox.
+ */
+function borg_tugboat_single_button_form($form, &$form_state) {
+  $form['repo'] = array(
+    '#type' => 'value',
+    '#value' => config_get('borg_tugboat.settings', 'repository_id'),
+  );
+  $form['ref'] = array(
+    '#type' => 'value',
+    '#value' => config_get('borg_tugboat.settings', 'repository_base'),
+  );
+  $form['create_sandbox'] = array(
+    '#type' => 'submit',
+    '#value' => t('Try a Demo'),
+    '#submit' => array('borg_tugboat_single_button_form_submit'),
+    '#attributes' => array('class' => array('button', 'demo')),
+  );
+
+  return $form;
+}
+
+
+/**
+ * Submit handler for borg_tugboat_single_button_form().
+ */
+function borg_tugboat_single_button_form_submit($form, &$form_state) {
+  $ref = $form_state['values']['ref'];
+  $repo = $form_state['values']['repo'];
+  $arguments = array(
+    'ref' => $ref,
+    'repo' => $repo,
+    'time' => REQUEST_TIME,
+    'token' => backdrop_get_token($ref . $repo . REQUEST_TIME),
+  );
+  $form_state['redirect'] = array('demo/create', array('arguments' => $arguments));
 }
