@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.project_layout.field_project_tags",
+    "field_name": "field_project_tags",
+    "entity_type": "node",
+    "bundle": "project_layout",
+    "label": "Project Tags",
+    "widget": {
+        "weight": "11",
+        "type": "taxonomy_autocomplete",
+        "module": "taxonomy",
+        "active": 0,
+        "settings": {
+            "size": 60,
+            "autocomplete_path": "taxonomy/autocomplete"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "8",
+            "settings": []
+        }
+    }
+}

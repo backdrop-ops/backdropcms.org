@@ -4,9 +4,7 @@
     "domain": ".backdropcms.org",
     "is_master": 1,
     "master": "https://backdropcms.org/",
-    "slaves": [
-        "https://localize.backdropcms.org/"
-    ],
+    "slaves": [],
     "supported_fields": {
         "name": "name",
         "mail": "mail",

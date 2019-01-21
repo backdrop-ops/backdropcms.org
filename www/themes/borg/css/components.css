@@ -1,5 +1,5 @@
 /*******************************************************************************
- * components.scss
+ * components.css
  *
  * Styles for individual HTML components so they can be placed onto any page.
  ******************************************************************************/
@@ -262,6 +262,10 @@ article .content .field {
 }
 article .field-name-body a {
   text-decoration: underline;
+}
+article .field-name-field-image {
+  text-align: center;
+  margin-bottom: 15px;
 }
 
 /*******************************************************************************
@@ -773,22 +777,25 @@ body.user-form .page-title {
  * Registration form
  ******************************************************************************/
 #user-register-form {
-  max-width: 640px;
+  max-width: 600px;
   margin: 0 auto;
 }
 #user-register-form .form-item {
   padding: 15px 0;
+  display: flex;
 }
 #user-register-form fieldset .form-item {
   padding: 5px 0;
   margin-bottom: .5em;
 }
 #user-register-form .form-item label {
+  width: 180px;
   padding-right: 15px;
+  display: inline-block;
 }
-#user-register-form .form-item input[type="text"],
-#user-register-form .form-item input[type="email"] {
+#user-register-form .form-item input {
   width: 100%;
+  flex: 1;
 }
 #user-register-form .form-item div.description {
   display: none;
@@ -1301,18 +1308,19 @@ h4 i.fa-2x {
  ******************************************************************************/
 a.button {
   display: inline-block;
-  background-color: white;
   border: 2px solid #007CBA;
-  border-radius: 30px;
-  height: 50px;
-  margin: 10px 0;
-  text-transform: uppercase;
-  font-size: 25px;
-  line-height: 50px;
+  background-color: white;
+  color: #007CBA;
+  font-size: 1.125rem; /* 18px */
+  border-radius: 20px;
+  width: auto;
+  margin: 10px 20px 10px 0;
   padding: 0 20px;
-  position: relative;
   white-space: nowrap;
-  margin-right: 20px;
+
+  height: 36px;
+  line-height: 36px;
+  position: relative;
 
   -webkit-transition: background-color .33s;
   -webkit-transition: color .33s;
@@ -1349,6 +1357,16 @@ a.button-small {
   line-height: 30px;
   padding: 0 15px;
   margin-right: 0;
+}
+
+a.button-secondary,
+input.button-secondary {
+  border: 2px solid #E8E6E5;
+}
+a.button-secondary:hover,
+input.button-secondary:hover {
+  background-color: #f7f7f7;
+  color: #007CBA;
 }
 
 /*******************************************************************************
