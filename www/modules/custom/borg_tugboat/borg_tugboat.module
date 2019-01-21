@@ -58,12 +58,53 @@ function borg_tugboat_theme() {
 }
 
 /**
+ * Implements hook_cron().
+ */
+function borg_tugboat_cron() {
+  $config = config('borg_tugboat.settings');
+  // Run on an interval that matches the length of the current lifetime.
+  $lifetime_timestamp = 10; //$config->get('sandbox_lifetime');
+  if (REQUEST_TIME - state_get('borg_tugboat_cron', 0) > $lifetime_timestamp) {
+    //state_set('borg_tugboat_cron', REQUEST_TIME);
+
+    $delete_older_than_timestamp = REQUEST_TIME - $lifetime_timestamp;
+
+    $repo = $config->get('repository_id');
+    $return_data = array();
+    $error_string = '';
+    $success = _borg_tugboat_execute("ls previews repo=$repo", $return_data, $error_string);
+    if (!$success) {
+      watchdog('borg_tugboat', 'Unable to select sandboxes during cron run. Error from tugboat: @error', array('@error' => $error_string), WATCHDOG_ERROR);
+    }
+
+    $delete_count = 0;
+    foreach ($return_data as $sandbox) {
+      // Delete if not a base (anchor) preview and it's past the expire date.
+      if (!$sandbox['anchor'] && strtotime($sandbox['createdAt']) < $delete_older_than_timestamp) {
+        $sandbox_id = $sandbox['id'];
+        $success = _borg_tugboat_execute("delete $sandbox_id", $return_data, $error_string);
+        if (!$success) {
+          watchdog('borg_tugboat', 'Unable to delete individual sandbox during cron run. Error from tugboat: @error', array('@error' => $error_string), WATCHDOG_ERROR);
+        }
+        else {
+          $delete_count++;
+        }
+      }
+    }
+
+    if ($delete_count) {
+      watchdog('borg_tugboat', 'Deleted @count demo sandboxes older than @date.', array('@count' => $delete_count, '@date' => format_date($delete_older_than_timestamp)));
+    }
+  }
+}
+
+/**
  * Execute a Tugboat CLI command.
  *
  * @param $command_string
  *   The tugboat command string with any options. The --api-token and --json
- *   options are passed automatically. Tugboat command portion is included,
- *   such as "find <id>" or "stop <id>".
+ *   options are passed automatically. Tugboat command portion should be
+ *   specified in this string, such as "find <id>" or "stop <id>".
  * @param array $return_data
  *   Returned data as an array if the command was successful.
  * @param $return_error_string
