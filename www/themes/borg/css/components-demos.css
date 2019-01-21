@@ -1,0 +1,18 @@
+/*******************************************************************************
+ * components-demos.css
+ *
+ * Contains styles for demo sandbox site functionality (i.e. /demo/create).
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Node: Blog - full view mode
+ ******************************************************************************/
+.borg-demo-create-intro {
+  text-align: center;
+}
+.borg-tugboat-create-demo-form {
+  text-align: center;
+}
+.borg-tugboat-create-demo-form .button {
+  font-size: 140%;
+}
