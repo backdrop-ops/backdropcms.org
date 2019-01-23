@@ -72,6 +72,14 @@ function borg_project_metrics_get_downloads($project = '') {
  * @see borg_project_metrics_get_downloads()
  */
 function borg_project_metrics_cron() {
+  // Only run once per hour at maximum.
+  $cron_last = state_get('borg_project_metrics_cron', 0);
+  $one_hour_passed = REQUEST_TIME - $cron_last > 3600;
+  if (!$one_hour_passed) {
+    return;
+  }
+  state_set('borg_project_metrics_cron', REQUEST_TIME);
+
   // Run at ~2AM EST.
   if (date('G') == 22) {
     $project_nodes = borg_project_metrics_get_project_nodes();
