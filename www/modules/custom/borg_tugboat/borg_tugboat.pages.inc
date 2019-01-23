@@ -48,7 +48,7 @@ function borg_tugboat_create_demo_form($form, &$form_state) {
     '#value' => t('Create Demo'),
     '#validate' => array('borg_tugboat_create_demo_form_validate'),
     '#submit' => array('borg_tugboat_create_demo_form_submit'),
-    '#attributes' => array('class' => array('button', 'demo')),
+    '#attributes' => array('class' => array('button', 'button-large', 'demo')),
     '#ajax' => array(
       'progress' => array(
         'type' => 'throbber',
@@ -149,6 +149,7 @@ function borg_tugboat_create_demo_form_ajax($form, $form_state) {
     $commands[] = ajax_command_redirect($url);
   }
   else {
+    $commands[] = ajax_command_remove('.borg-demo-create-page .messages');
     $commands[] = ajax_command_prepend('.borg-demo-create-page', theme('status_messages'));
   }
 
