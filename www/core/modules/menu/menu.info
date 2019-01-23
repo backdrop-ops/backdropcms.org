@@ -1,12 +1,16 @@
 name = Menu
 description = Allows administrators to customize the site navigation menu.
 package = System
+tags[] = Menus
+tags[] = Site Navigation
+tags[] = Structure
 version = BACKDROP_VERSION
 type = module
 backdrop = 1.x
+
 configure = admin/structure/menu
 
-; Added by Backdrop CMS packaging script on 2018-10-18
+; Added by Backdrop CMS packaging script on 2019-01-16
 project = backdrop
-version = 1.11.2
-timestamp = 1539904908
+version = 1.12.1
+timestamp = 1547680785

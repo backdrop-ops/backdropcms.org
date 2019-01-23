@@ -1,11 +1,13 @@
+type = module
 name = Contextual Links
 description = Provides contextual links to perform actions related to elements on a page.
-package = Administration
+package = User Interface
+tags[] = Administration
+tags[] = Site Navigation
 version = BACKDROP_VERSION
-type = module
 backdrop = 1.x
 
-; Added by Backdrop CMS packaging script on 2018-10-18
+; Added by Backdrop CMS packaging script on 2019-01-16
 project = backdrop
-version = 1.11.2
-timestamp = 1539904908
+version = 1.12.1
+timestamp = 1547680785

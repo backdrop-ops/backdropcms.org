@@ -1,12 +1,16 @@
+type = module
 name = Administration bar
 description = "Provides a dropdown menu to most administrative tasks and other common destinations."
 package = Administration
-backdrop = 1.x
-configure = admin/config/administration/admin-bar
+tags[] = Menus
+tags[] = Site Navigation
+tags[] = User Interface
 version = BACKDROP_VERSION
-type = module
+backdrop = 1.x
 
-; Added by Backdrop CMS packaging script on 2018-10-18
+configure = admin/config/administration/admin-bar
+
+; Added by Backdrop CMS packaging script on 2019-01-16
 project = backdrop
-version = 1.11.2
-timestamp = 1539904908
+version = 1.12.1
+timestamp = 1547680785

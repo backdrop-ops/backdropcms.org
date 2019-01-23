@@ -88,6 +88,12 @@ description = Verifies that taxonomy_term_access tags are added to queries.
 group = Taxonomy
 file = taxonomy.test
 
+[TaxonomyLanguageFunctionalTest]
+name = Taxonomy multilingual support
+description = Verifies that vocabularies and terms can have languages set.
+group = Taxonomy
+file = taxonomy.test
+
 [TaxonomyViewsHandlerRelationshipNodeTermDataTest]
 name = Views taxonomy relationship
 description = Tests the taxonomy term on node relationship handler for Views.
@@ -95,7 +101,7 @@ group = Taxonomy
 file = taxonomy_views_handler_relationship_node_term_data.test
 
 
-; Added by Backdrop CMS packaging script on 2018-10-18
+; Added by Backdrop CMS packaging script on 2019-01-16
 project = backdrop
-version = 1.11.2
-timestamp = 1539904908
+version = 1.12.1
+timestamp = 1547680785

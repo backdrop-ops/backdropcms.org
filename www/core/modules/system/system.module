@@ -98,7 +98,7 @@ function system_theme() {
     'page_components' => array(
       'variables' => array('settings' => NULL, 'child_delta' => NULL),
       'template' => 'templates/page-components',
-    ),
+    ) + $base,
     'system_admin_index' => array(
       'variables' => array('menu_items' => NULL),
     ) + $base,
@@ -2410,7 +2410,7 @@ function system_block_info() {
   );
   $blocks['breadcrumb'] = array(
     'info' => t('Breadcrumb'),
-    'description' => t('The current page breadcrumb trail.'),
+    'description' => t('A trail of links from the homepage to the current page.'),
     'render last' => TRUE,
   );
   $blocks['powered-by'] = array(
@@ -3594,7 +3594,7 @@ function system_cron() {
     ->execute();
 
   // Reset expired items in the default queue implementation table. If that's
-  // not used, this will simply be a no-op.
+  // not used, this will be a no-op.
   db_update('queue')
     ->fields(array(
       'expire' => 0,
