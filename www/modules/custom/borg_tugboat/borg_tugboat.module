@@ -136,8 +136,8 @@ function _borg_tugboat_execute($command_string, array &$return_data, &$return_er
   }
 
   // Ensure input string is safe from any dangerous characters.
-  // Characters allowed: 0-9, a-z, ., =, +, -, and a blank space.
-  if (!preg_match('/^[0-9a-z=+\- ]+$/', $command_string)) {
+  // Characters allowed: 0-9, a-z, ., =, +, -, ', and a blank space.
+  if (!preg_match('/^[0-9a-z=+\-\' ]+$/', $command_string)) {
     $return_error_string = t('Invalid character for Tugboat command. String given: @string', array('@string' => $command_string));
     return FALSE;
   }
