@@ -1350,12 +1350,23 @@ a.button span {
   border-radius: 10px;
 }
 
-a.button-small {
+a.button-small,
+input.button-small {
   border-radius: 15px;
   font-size: 16px;
   height: 30px;
   line-height: 30px;
   padding: 0 15px;
+  margin-right: 0;
+}
+
+a.button-large,
+input.button-large {
+  border-radius: 30px;
+  font-size: 24px;
+  height: 60px;
+  line-height: 60px;
+  padding: 0 30px;
   margin-right: 0;
 }
 

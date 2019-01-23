@@ -87,10 +87,10 @@ function borg_blocks_tagline($settings) {
   $dl_attributes = array('class' => array('button', 'download'));
   $download_link = l(t('Download Backdrop'), $dl_url, array('attributes' => $dl_attributes));
 
-  $demo_url = $settings['demo_url'] = 'demo/create';
+  $demo_url = $settings['demo_url'];
   $demo_attributes = array('class' => array('button', 'demo'));
-  $demo_link = l(t('Try a demo'), $demo_url, array('attributes' => $demo_attributes));
-  //$demo_link = l(t('Install on Pantheon'), $demo_url, array('attributes' => $demo_attributes));
+  //$demo_link = l(t('Try a demo'), $demo_url, array('attributes' => $demo_attributes));
+  $demo_link = l(t('Install on Pantheon'), $demo_url, array('attributes' => $demo_attributes));
 
   //$output  = '<h1 class="page-title">Backdrop CMS</h1>';
   $output  = '<h2>The free and Open Source CMS<br/>';

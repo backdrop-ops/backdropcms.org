@@ -5,14 +5,50 @@
  ******************************************************************************/
 
 /*******************************************************************************
- * Node: Blog - full view mode
+ * Create demo page.
  ******************************************************************************/
-.borg-demo-create-intro {
+.borg-demo-create-page {
   text-align: center;
 }
-.borg-tugboat-create-demo-form {
+.borg-demo-create-page .messages {
+  text-align: left;
+}
+.borg-demo-create-page p {
+  margin-left: auto;
+  margin-right: auto;
+}
+.borg-demo-create-page .borg-tugboat-create-demo-form {
   text-align: center;
 }
-.borg-tugboat-create-demo-form .button {
-  font-size: 140%;
+.borg-demo-create-page .ajax-progress-throbber {
+  display: block;
+}
+
+/*******************************************************************************
+ * Demo fully created (done) page.
+ ******************************************************************************/
+.borg-demo-done-page {
+  text-align: center;
+}
+.borg-demo-done-page p {
+  margin-left: auto;
+  margin-right: auto;
+}
+.borg-demo-done-page .borg-demo-email-notice {
+  text-align: left;
+}
+.borg-demo-done-page .borg-demo-time-notice {
+  text-align: left;
+}
+.borg-demo-done-page .borg-demo-tugboat-information {
+  max-width: 400px;
+  border: 1px solid #7D7D7D;
+  padding: 24px;
+  margin: 2em auto;
+}
+.borg-demo-done-page .tugboat-logo {
+  max-width: 300px;
+}
+.borg-demo-done-page .borg-demo-contribute {
+  text-align: left;
 }
