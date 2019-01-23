@@ -166,8 +166,8 @@ function views_update_1005() {
       if (!isset($display_details['display_options']['style_plugin']) || $display_details['display_options']['style_plugin'] != 'grid') {
         continue;
       }
-      $value = $config->get('display.' . $display . '.display_options.style_options.deprecated_table'));
-      if (!empty($value) {
+      $value = $config->get('display.' . $display . '.display_options.style_options.deprecated_table');
+      if (!empty($value)) {
         continue;
       }
       $config->set('display.' . $display . '.display_options.style_options.deprecated_table', '1');
