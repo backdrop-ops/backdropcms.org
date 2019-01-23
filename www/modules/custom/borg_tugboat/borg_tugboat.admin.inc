@@ -48,7 +48,7 @@ function borg_tugboat_admin_settings($form, &$form_state) {
   $form['sandbox_lifetime'] = array(
     '#type' => 'select',
     '#title' => t('Sandbox lifetime'),
-    '#default_value' => $config->get('repository_id'),
+    '#default_value' => $config->get('sandbox_lifetime'),
     '#description' => t('The amount of time the Tugboat preview will be available. Previews older than this will automatically be torn down on cron jobs.'),
     '#options' => backdrop_map_assoc(array(
       7200,    // 2 hours.
