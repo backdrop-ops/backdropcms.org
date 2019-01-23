@@ -1,7 +1,9 @@
 Patches to Backdrop Core:
 =========================
 
-  none
+Search: Hack to make exposed search box work?
+  https://github.com/backdrop/backdrop-issues/issues/1390
+  https://github.com/backdrop/backdrop/pull/1293.patch
 
 
 Patches to Backdrop Contrib:
