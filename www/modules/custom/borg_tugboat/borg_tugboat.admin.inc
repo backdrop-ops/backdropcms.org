@@ -12,12 +12,15 @@ function borg_tugboat_admin_settings($form, &$form_state) {
   $config = config('borg_tugboat.settings');
 
   $tugboat_token = settings_get('borg_tugboat_token');
-  $masked_token =  substr($tugboat_token, 0, 4) . str_repeat("*", strlen($tugboat_token) - 8) . substr($tugboat_token, -4);
+  $masked_token = '';
+  if ($tugboat_token) {
+    $masked_token =  substr($tugboat_token, 0, 4) . str_repeat("*", strlen($tugboat_token) - 8) . substr($tugboat_token, -4);
+  }
 
   $form['token'] = array(
     '#type' => 'item',
     '#title' => t('Tugboat Secret Token'),
-    '#markup' => (settings_get('borg_tugboat_token') ? $masked_token : t('Not found! Must be set in settings.php!')),
+    '#markup' => ($tugboat_token ? $masked_token : t('Not found! Must be set in settings.php!')),
     '#description' => t('Provides API access to tugboat.qa. This setting must be stored in settings.php as <code>$settings[\'borg_tugboat_token\']</code>'),
   );
 
