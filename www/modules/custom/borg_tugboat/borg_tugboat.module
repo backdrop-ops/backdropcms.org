@@ -40,6 +40,7 @@ function borg_tugboat_permission() {
     'title' => t('Administer Tugboat settings'),
     'description' => t('Configure the lifetime and repository settings for Tugboat (used for demo sites).'),
   );
+  return $items;
 }
 
 /**
