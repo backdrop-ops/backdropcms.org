@@ -4,6 +4,7 @@
     "name": "showcase",
     "title": "Showcase",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": -3,
     "storage": 1,
@@ -22,6 +23,7 @@
         ],
         "top": [
             "994874fe-b705-48a4-b908-8e894b944977",
+            "ad68381e-f71a-4b25-a300-f3aa4b607718",
             "550622bf-f009-4afa-8e06-0616795a9d63",
             "07fccfb5-3417-45d6-b107-7e64ffb54ae3"
         ],
@@ -137,6 +139,29 @@
                     "tab_type": "both"
                 },
                 "uuid": "994874fe-b705-48a4-b908-8e894b944977",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "ad68381e-f71a-4b25-a300-f3aa4b607718": {
+            "plugin": "borg_project_metrics:backdrop_usage_count",
+            "data": {
+                "module": "borg_project_metrics",
+                "delta": "backdrop_usage_count",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "ad68381e-f71a-4b25-a300-f3aa4b607718",
                 "style": {
                     "plugin": "default",
                     "data": {

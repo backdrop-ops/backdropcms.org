@@ -250,6 +250,10 @@ function borg_project_metrics_block_info() {
     'info' => t('Backdrop Project Metrics'),
     'description' => t('The number of users, commits, and comments to Backdrop since the project started.'),
   );
+  $blocks['backdrop_usage_count'] = array(
+    'info' => t('Backdrop Project Usage'),
+    'description' => t('Current count of sites using Backdrop CMS in production.'),
+  );
 
   return $blocks;
 }
@@ -260,6 +264,43 @@ function borg_project_metrics_block_info() {
 function borg_project_metrics_block_view($delta = '', $settings = array()) {
   $block = array();
 
+  switch ($delta) {
+    case 'backdrop_project_metrics':
+      $block['subject'] = NULL;
+      $block['content'] = borg_project_metrics_get_html();
+      return $block;
+    case 'backdrop_usage_count':
+      $block['subject'] = NULL;
+      $block['content'] = borg_project_metrics_backdrop_usage_get_html();
+      return $block;
+  }
+}
+
+/**
+ * Helper function to retrieve metric form DB for backdrop_project_metrics block.
+ *
+ * @param string $type
+ * The type of metric to retrieve: {commits, comments, users}.
+ *
+ * @return array $metric
+ * An array of the db fields of the most recent $type metric.
+ */
+function borg_project_metrics_get_display_metric_from_db($type) {
+  $metric = db_select('borg_project_metrics', 'b')
+    ->fields('b', array('total_to_date', 'date'))
+    ->condition('type', $type)
+    ->orderBy('date', 'desc')
+    ->range(0, 1)
+    ->execute()
+    ->fetchAssoc();
+
+    return $metric;
+}
+
+/**
+ * Get the HTML for the conent of the borg_project_metrics block.
+ */
+function borg_project_metrics_get_html() {
   // Get the metrics.
   $commit_data = borg_project_metrics_get_display_metric_from_db('commits');
   $commits = number_format($commit_data['total_to_date']);
@@ -267,8 +308,6 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
   $comment_data = borg_project_metrics_get_display_metric_from_db('comments');
   $comments = number_format($comment_data['total_to_date']);
 
-  //$user_data = borg_project_metrics_get_display_metric_from_db('users');
-  //$users = number_format($user_data['total_to_date']);
   $user_count = db_query("SELECT COUNT(uid) FROM {users} WHERE status = 1")->fetchField();
   $users = number_format($user_count);
 
@@ -310,33 +349,8 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
       </p>
     </div>
 HTML;
-  switch ($delta) {
-    case 'backdrop_project_metrics':
-      $block['subject'] = NULL;
-      $block['content'] = $metrics_content;
-      return $block;
-  }
-}
 
-/**
- * Helper function to retrieve metric form DB for backdrop_project_metrics block.
- *
- * @param string $type
- * The type of metric to retrieve: {commits, comments, users}.
- *
- * @return array $metric
- * An array of the db fields of the most recent $type metric.
- */
-function borg_project_metrics_get_display_metric_from_db($type) {
-  $metric = db_select('borg_project_metrics', 'b')
-    ->fields('b', array('total_to_date', 'date'))
-    ->condition('type', $type)
-    ->orderBy('date', 'desc')
-    ->range(0, 1)
-    ->execute()
-    ->fetchAssoc();
-
-    return $metric;
+  return $metrics_content;
 }
 
 /**
@@ -406,4 +420,22 @@ function borg_project_metrics_get_contrib_comments($project, $date) {
   } while ($res_code == 200 && !empty($json));
 
   return $project_comment_metrics;
+}
+
+/**
+ * Get the backdrop_usage_count block content.
+ */
+function borg_project_metrics_backdrop_usage_get_html() {
+  $count = db_select('project_usage_week_project', 'p')
+    ->fields('p', array('count'))
+    ->condition('nid', 179)
+    ->orderBy('timestamp', 'DESC')
+    ->execute()
+    ->fetchAssoc();
+  $count = $count['count'];
+  $html = "<div class=\"backdrop-usage\">
+      $count sites are currently using Backdrop CMS
+    </div>";
+
+  return $html;
 }
