@@ -28,7 +28,8 @@
         "alt_field": 1,
         "title_field": 0,
         "default_image": "",
-        "user_register_form": false
+        "user_register_form": false,
+        "orientate": 0
     },
     "display": {
         "default": {
@@ -39,6 +40,17 @@
                 "image_style": "project",
                 "image_link": "",
                 "image_float": ""
+            },
+            "module": "image"
+        },
+        "project_search": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "1",
+            "settings": {
+                "image_style": "project",
+                "image_link": "",
+                "image_float": "right"
             },
             "module": "image"
         }

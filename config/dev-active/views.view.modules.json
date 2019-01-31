@@ -40,7 +40,7 @@
                 "pager": {
                     "type": "full",
                     "options": {
-                        "items_per_page": "25",
+                        "items_per_page": "15",
                         "offset": "0",
                         "id": "0",
                         "total_pages": "",
@@ -63,7 +63,7 @@
                     }
                 },
                 "style_plugin": "list",
-                "row_plugin": "fields",
+                "row_plugin": "node",
                 "fields": {
                     "title": {
                         "id": "title",
@@ -545,52 +545,6 @@
                             "group_items": []
                         }
                     },
-                    "combine": {
-                        "id": "combine",
-                        "table": "views",
-                        "field": "combine",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "contains",
-                        "value": "",
-                        "group": 1,
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "combine_op",
-                            "label": "",
-                            "description": "",
-                            "use_operator": 0,
-                            "operator": "combine_op",
-                            "identifier": "s",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        },
-                        "fields": {
-                            "title": "title",
-                            "body": "body"
-                        }
-                    },
                     "recommended": {
                         "id": "recommended",
                         "table": "project_release_supported_versions",
@@ -668,22 +622,64 @@
                             "default_group_multiple": [],
                             "group_items": []
                         }
+                    },
+                    "keys": {
+                        "id": "keys",
+                        "table": "search_index",
+                        "field": "keys",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "optional",
+                        "value": "",
+                        "group": 1,
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "keys_op",
+                            "label": "Search",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "keys_op",
+                            "identifier": "keys",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "remove_score": 0
                     }
                 },
                 "sorts": {
-                    "created": {
-                        "id": "created",
-                        "table": "node",
-                        "field": "created",
-                        "relationship": "latest_release",
+                    "score": {
+                        "id": "score",
+                        "table": "search_index",
+                        "field": "score",
+                        "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
                         "order": "DESC",
                         "exposed": false,
                         "expose": {
                             "label": ""
-                        },
-                        "granularity": "second"
+                        }
                     }
                 },
                 "title": "Modules for Backdrop CMS",
@@ -730,10 +726,10 @@
                     }
                 },
                 "row_options": {
-                    "default_field_elements": 0,
-                    "inline": [],
-                    "separator": " ",
-                    "hide_empty": 0
+                    "relationship": "none",
+                    "view_mode": "teaser",
+                    "links": 0,
+                    "comments": 0
                 },
                 "use_ajax": false,
                 "header": [],
@@ -780,7 +776,30 @@
                 },
                 "path": "modules",
                 "display_description": "",
-                "exposed_block": true
+                "exposed_block": true,
+                "style_plugin": "list",
+                "defaults": {
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "result",
+                    "default_row_class": 0,
+                    "row_class_special": 1,
+                    "type": "ol",
+                    "wrapper_class": "project-search__results-wrapper l-content-wrapper",
+                    "class": "project-search__results"
+                },
+                "row_plugin": "node",
+                "row_options": {
+                    "relationship": "latest_release",
+                    "view_mode": "project_search",
+                    "links": 0,
+                    "comments": 0
+                }
             }
         },
         "themes": {
