@@ -115,4 +115,12 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
       $project_node->field_image[LANGUAGE_NONE][0]['fid'] = $file->fid;
     }
   }
+
+/* @todo
+  if ($project_node->type === 'project_layout') {
+    // Find the first screenshot in the project.
+    // Copy & Save the file to the filesystem. See above.
+    // Update the field_image field with the file ID. See above.
+  }
+*/
 }
