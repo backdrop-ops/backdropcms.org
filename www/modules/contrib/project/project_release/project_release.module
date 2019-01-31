@@ -750,27 +750,28 @@ function project_release_node_view($node, $view_mode, $langcode) {
 
     if ($project) {
       $node->content['project_link'] = array(
-        '#type' => 'markup',
-        '#title' => t('Project'),
-        '#markup' => l($project->title, 'node/' . $project->nid),
-        '#theme_wrappers' => array('form_element'),
+        '#type' => 'link',
+        '#title' => $project->title,
+        '#href' => url('node/' . $project->nid, array('absolute' => TRUE)),
+        '#theme_wrappers' => array('container'),
       );
     }
 
     $node->content['project_download_link'] = array(
-      '#type' => 'markup',
-      '#title' => t('Download'),
-      '#markup' => l($node->project_release['version'], $node->project_release['download_link']) . $extra,
-      '#theme_wrappers' => array('form_element'),
+      '#type' => 'link',
+      '#title' => $node->project_release['version'],
+      '#href' => url($url, array('absolute' => TRUE)),
       '#access' => !empty($url),
+      '#suffix' => $extra,
+      '#theme_wrappers' => array('container'),
     );
 
     $node->content['project_release_link'] = array(
-      '#type' => 'markup',
-      '#title' => t('Release notes'),
-      '#markup' => l($node->project_release['release_link'], $node->project_release['release_link']),
-      '#theme_wrappers' => array('form_element'),
+      '#type' => 'link',
+      '#title' => $node->project_release['release_link'],
+      '#href' => url($node->project_release['release_link']),
       '#access' => !empty($node->project_release['release_link']),
+      '#theme_wrappers' => array('container'),
     );
   }
 }
