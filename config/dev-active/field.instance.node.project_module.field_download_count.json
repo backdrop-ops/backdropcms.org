@@ -41,6 +41,18 @@
                 "prefix_suffix": true
             },
             "module": "number"
+        },
+        "project_search": {
+            "label": "above",
+            "type": "number_integer",
+            "weight": "4",
+            "settings": {
+                "thousand_separator": "",
+                "decimal_separator": ".",
+                "scale": 0,
+                "prefix_suffix": true
+            },
+            "module": "number"
         }
     }
 }

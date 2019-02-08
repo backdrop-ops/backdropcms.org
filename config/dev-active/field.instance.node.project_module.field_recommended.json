@@ -31,6 +31,13 @@
             "type": "hidden",
             "weight": "3",
             "settings": []
+        },
+        "project_search": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "3",
+            "settings": [],
+            "module": "list"
         }
     }
 }
