@@ -1,0 +1,61 @@
+<?php
+/**
+ * @file
+ * Tests that each of the Metatag GooglePlus tags work correctly.
+ */
+
+class MetatagGooglePlusTagsTest extends MetatagTagsTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Metatag tags: GooglePlus',
+      'description' => 'Test the Google Plus meta tags.',
+      'group' => 'Metatag',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public $tags = array(
+    'itemtype',
+    'itemprop:name',
+    'itemprop:description',
+    'itemprop:image',
+    'author',
+    'publisher',
+  );
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'metatag_google_plus';
+    parent::setUp($modules);
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_key() for 'itemtype'.
+   */
+  public function itemtype_test_key() {
+    return 'metatags[und][itemtype][value]';
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_value() for 'itemtype'.
+   */
+  public function itemtype_test_value() {
+    return 'Article';
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_xpath() for 'itemtype'.
+   */
+  public function itemtype_test_xpath() {
+    return "//select[@name='metatags[und][itemtype][value]']";
+  }
+
+}

@@ -1,0 +1,56 @@
+type = module
+name = Metatag
+description = Adds support and an API to implement meta tags.
+package = SEO
+backdrop = 1.x
+
+configure = admin/config/metadata/metatags
+
+; The custom Bulk Revert functionality.
+files[] = tests/metatag.bulk_revert.test
+
+; String handling.
+files[] = tests/metatag.string_handling.test
+files[] = tests/metatag.string_handling_with_i18n.test
+
+; XSS testing.
+files[] = tests/metatag.xss.test
+
+; Images need specia attention.
+files[] = tests/metatag.image.test
+
+; Internationalization & translation.
+files[] = tests/metatag.locale.test
+files[] = tests/metatag.node.with_i18n.test
+files[] = tests/metatag.term.with_i18n.test
+files[] = tests/metatag.with_i18n_output.test
+files[] = tests/metatag.with_i18n_disabled.test
+files[] = tests/metatag.with_i18n_config.test
+
+; Basic integration with Me.
+files[] = tests/metatag.with_me.test
+
+; Basic integration with Media.
+files[] = tests/metatag.with_media.test
+
+; Basic integration with Panels.
+files[] = tests/metatag.with_panels.test
+
+; Basic integration with Profile2.
+files[] = tests/metatag.with_profile2.test
+
+; Basic integration with Search API.
+test_dependencies[] = search_api
+files[] = tests/metatag.with_search_api.test
+
+; Basic integration with Views.
+test_dependencies[] = views
+files[] = tests/metatag.with_views.test
+
+; Search API integration.
+files[] = metatag.search_api.inc
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

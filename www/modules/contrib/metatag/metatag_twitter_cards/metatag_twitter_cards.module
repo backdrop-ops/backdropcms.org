@@ -1,0 +1,66 @@
+<?php
+/**
+ * @file
+ * Primary hook implementations for Metatag: Twitter Cards.
+ */
+
+/**
+ * Implements hook_metatag_bundled_config_alter().
+ */
+function metatag_twitter_cards_metatag_bundled_config_alter(array &$configs) {
+  foreach ($configs as &$config) {
+    if (isset($config['instance'])) {
+      switch ($config['instance']) {
+        case 'global':
+          $config['config'] += array(
+            'twitter:card' => array('value' => 'summary'),
+            'twitter:title' => array('value' => '[current-page:title]'),
+            'twitter:url' => array('value' => '[current-page:url:absolute]'),
+          );
+          break;
+
+        case 'global:frontpage':
+          $config['config'] += array(
+            'twitter:description' => array('value' => '[site:slogan]'),
+            'twitter:title' => array('value' => '[site:name]'),
+            'twitter:url' => array('value' => '[site:url]'),
+          );
+          break;
+
+        // On error pages point everything to the homepage.
+        case 'global:403':
+        case 'global:404':
+          $config['config'] += array(
+            'twitter:title' => array('value' => '[site:name]'),
+            'twitter:url' => array('value' => '[site:url]'),
+          );
+          break;
+
+        case 'node':
+          $config['config'] += array(
+            'twitter:description' => array('value' => '[node:summary]'),
+            'twitter:title' => array('value' => '[node:title]'),
+          );
+          break;
+
+        case 'taxonomy_term':
+          $config['config'] += array(
+            'twitter:description' => array('value' => '[term:description]'),
+            'twitter:title' => array('value' => '[term:name]'),
+          );
+          break;
+
+        case 'user':
+          $config['config'] += array(
+            'twitter:title' => array('value' => '[user:name]'),
+          );
+          if (config_get('system.core', 'user_pictures')) {
+            $config['config'] += array(
+              'twitter:image' => array('value' => '[user:picture:url]'),
+            );
+          }
+          break;
+      }
+    }
+  }
+}

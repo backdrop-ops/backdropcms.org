@@ -1,0 +1,17 @@
+[MetatagVerificationTest]
+name = Metatag Verification tests
+description = Test the Metatag:Verification module.
+group = Metatag
+file = metatag_verification.test
+
+[MetatagVerificationTagsTest]
+name = Metatag tags: Verification
+description = Test the Verification metatags.
+group = Metatag
+file = metatag_verification.tags.test
+
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

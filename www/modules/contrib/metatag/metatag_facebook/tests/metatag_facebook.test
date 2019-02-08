@@ -1,0 +1,32 @@
+<?php
+/**
+ * @file
+ * Tests for the Metatag Facebook module.
+ */
+class MetatagFacebookTest extends MetatagTestHelper {
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'metatag_facebook';
+
+    parent::setUp($modules);
+
+    // Create an admin user and log them in.
+    $this->adminUser = $this->createAdminUser();
+    $this->backdropLogin($this->adminUser);
+  }
+
+  /**
+   * Confirm that it's possible to load the main admin page.
+   */
+  public function testAdminPage() {
+    $this->backdropGet('admin/config/metadata/metatags');
+    $this->assertResponse(200);
+
+    // Confirm the page is correct.
+    $this->assertText('Add default meta tags');
+  }
+
+}

@@ -1,0 +1,27 @@
+type = module
+name = Metatag: Twitter Cards
+description = Provides metatags for Twitter's Cards.
+package = SEO
+backdrop = 1.x
+
+dependencies[] = metatag
+
+* [ ] metatag_app_links
+* [ ] metatag_dc
+* [ ] metatag_dc_advanced
+* [ ] metatag_devel
+* [ ] metatag_facebook
+* [ ] metatag_favicons
+* [ ] metatag_google_cse
+* [ ] metatag_google_plus
+* [ ] metatag_hreflang
+* [ ] metatag_importer
+* [ ] metatag_mobile
+* [ ] metatag_opengraph
+* [ ] metatag_opengraph_products
+* [ ] metatag_twitter_cards
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

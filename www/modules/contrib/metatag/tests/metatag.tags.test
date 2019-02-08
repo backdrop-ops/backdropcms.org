@@ -1,0 +1,225 @@
+<?php
+/**
+ * @file
+ * Tests that each of the Metatag base tags work correctly.
+ */
+
+abstract class MetatagTagsTestBase extends MetatagTestHelper {
+
+  /**
+   * All of the meta tags defined by this module which will be tested.
+   */
+  public $tags = array();
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    parent::setUp($modules);
+
+    // Create an admin user that can manage meta tags.
+    $account = $this->createAdminUser();
+    $this->backdropLogin($account);
+  }
+
+  /**
+   * Tests that this module's tags are available.
+   */
+  function testTagsArePresent() {
+    // Load the global config.
+    $this->backdropGet('admin/config/metadata/metatags/config/global');
+    $this->assertResponse(200);
+
+    // Confirm the various meta tags are available.
+    foreach ($this->tags as $tag) {
+      // Convert tag names to something more suitable for a function name.
+      $tagname = str_replace(array('.', '-', ':'), '_', $tag);
+
+      // Look for a custom method named "{$tagname}_test_xpath", if found use
+      // that method to get the xpath definition for this meta tag, otherwise it
+      // defaults to just looking for a text input field.
+      $method = "{$tagname}_test_xpath";
+      if (method_exists($this, $method)) {
+        $xpath = $this->$method();
+      }
+      else {
+        $xpath = "//input[@name='metatags[und][{$tag}][value]' and @type='text']";
+      }
+      $this->assertFieldByXPath($xpath, NULL, format_string('The "%tag" tag field was found.', array('%tag' => $tag)));
+    }
+  }
+
+  /**
+   * Confirm that the meta tags can be saved.
+   */
+  function testTagsAreSaveable() {
+    // Load the global config.
+    $this->backdropGet('admin/config/metadata/metatags/config/global');
+    $this->assertResponse(200);
+
+    // Update the Global defaults and test them.
+    $values = array();
+    foreach ($this->tags as $tag) {
+      // Convert tag names to something more suitable for a function name.
+      $tagname = str_replace(array('.', '-', ':', ' '), '_', $tag);
+
+      // Look for a custom method named "{$tagname}_test_key", if found use
+      // that method to get the test string for this meta tag, otherwise it
+      // defaults to the meta tag's name.
+      $method = "{$tagname}_test_key";
+      if (method_exists($this, $method)) {
+        $test_key = $this->$method();
+      }
+      else {
+        $test_key = "metatags[und][{$tag}][value]";
+      }
+
+      // Look for a custom method named "{$tagname}_test_value", if found use
+      // that method to get the test string for this meta tag, otherwise it
+      // defaults to just generating a random string.
+      $method = "{$tagname}_test_value";
+      if (method_exists($this, $method)) {
+        $test_value = $this->$method();
+      }
+      else {
+        $test_value = $this->randomString();
+      }
+
+      $values[$test_key] = $test_value;
+    }
+    $this->backdropPost(NULL, $values, 'Save');
+    $this->assertText(strip_tags(t('The meta tag defaults for @label have been saved.', array('@label' => 'Global'))));
+  }
+
+}
+
+/**
+ *
+ */
+class MetatagTagsTest extends MetatagTagsTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public $tags = array(
+    'abstract',
+    'cache-control',
+    'canonical',
+    'content-language',
+    'description',
+    'expires',
+    'generator',
+    'geo.placename',
+    'geo.position',
+    'geo.region',
+    'icbm',
+    'image_src',
+    'keywords',
+    'news_keywords',
+    'next',
+    'original-source',
+    'pragma',
+    'prev',
+    'rating',
+    'referrer',
+    'refresh',
+    'revisit-after',
+    'rights',
+    'robots',
+    'shortlink',
+    'standout',
+    'title',
+  );
+
+  /**
+   * Implements {meta_tag_name}_test_xpath() for 'abstract'.
+   */
+  public function abstract_test_xpath() {
+    return "//textarea[@name='metatags[und][abstract][value]']";
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_xpath() for 'description'.
+   */
+  public function description_test_xpath() {
+    return "//textarea[@name='metatags[und][description][value]']";
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_key() for 'rating'.
+   */
+  public function rating_test_key() {
+    return 'metatags[und][rating][value]';
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_value() for 'general'.
+   */
+  public function rating_test_value() {
+    return 'general';
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_xpath() for 'rating'.
+   */
+  public function rating_test_xpath() {
+    return "//select[@name='metatags[und][rating][value]']";
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_key() for 'referrer'.
+   */
+  public function referrer_test_key() {
+    return 'metatags[und][referrer][value]';
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_value() for 'referrer'.
+   */
+  public function referrer_test_value() {
+    return 'origin';
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_xpath() for 'referrer'.
+   */
+  public function referrer_test_xpath() {
+    return "//select[@name='metatags[und][referrer][value]']";
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_value() for 'robots'.
+   */
+  public function robots_test_key() {
+    return 'metatags[und][robots][value][index]';
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_value() for 'robots'.
+   */
+  public function robots_test_value() {
+    return TRUE;
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_xpath() for 'robots'.
+   */
+  public function robots_test_xpath() {
+    return "//input[@name='metatags[und][robots][value][index]' and @type='checkbox']";
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_value() for 'revisit-after'.
+   */
+  public function revisit_after_test_value() {
+    return 2;
+  }
+
+  /**
+   * Implements {meta_tag_name}_test_xpath() for 'revisit-after'.
+   */
+  public function revisit_after_test_xpath() {
+    return "//input[@name='metatags[und][revisit-after][value]' and @type='number']";
+  }
+
+}

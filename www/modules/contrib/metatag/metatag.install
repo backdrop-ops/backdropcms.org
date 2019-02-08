@@ -1,348 +1,528 @@
 <?php
-
 /**
  * @file
- * Install, update and uninstall functions for the metatag module.
+ * Install, update, and uninstall functions for the metatag module.
  */
+
+/**
+ * Implements hook_requirements().
+ */
+function metatag_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    // Complete data dump of all installed modules, used later.
+    $module_data = system_rebuild_module_data();
+
+    // Add a note if Page Title is also installed.
+    if (module_exists('page_title')) {
+      $requirements['metatag_page_title'] = array(
+        'severity' => REQUIREMENT_WARNING,
+        'title' => 'Metatag',
+        'value' => $t('Page Title module should be removed'),
+        'description' => $t('The Metatag module is able to customize page titles. Running the Page Title module simultaneously can lead to complications.'),
+      );
+    }
+
+    // Check that Entity_Translation is current.
+    if (module_exists('entity_translation')
+      && !empty($module_data['entity_translation'])
+      && !empty($module_data['entity_translation']->schema_version)
+      && $module_data['entity_translation']->schema_version < 7004) {
+      $requirements['metatag_et_version'] = array(
+        'severity' => REQUIREMENT_ERROR,
+        'title' => 'Metatag',
+        'value' => $t('<a href="@url">Entity_Translation</a> is out of date and requires updating', array('@url' => 'https://www.backdrop.org/project/entity_translation')),
+        'description' => $t('The Entity_Translation module is out of date and needs to be updated in order to be compatible with Metatag.'),
+      );
+    }
+
+    // It's recommended to install the Imagecache Token module to make image
+    // tokens easier to do.
+    if (!module_exists('imagecache_token')) {
+      $requirements['metatag_imagecache_token'] = array(
+        'severity' => REQUIREMENT_INFO,
+        'title' => 'Metatag',
+        'value' => $t('The Imagecache Token module is recommended.'),
+        'description' => $t("It is recommended to install the <a href=\"@url\">Imagecache Token module</a> to make it easier to control image meta tags, e.g. og:image. See the Metatag module's README.txt for details.", array('@url' => 'https://backdrop.org/project/imagecache_token')),
+      );
+    }
+
+    // The Admin Language module can cause problems.
+    if (module_exists('admin_language') && variable_get('admin_language_force_neutral', 0)) {
+      $requirements['metatag_admin_language'] = array(
+        'severity' => REQUIREMENT_WARNING,
+        'title' => 'Metatag',
+        'value' => $t('Conflict with Admin Language module.'),
+        'description' => $t("Using the \"@option\" with Metatag can lead to data loss, so it is recommended to <a href=\"@url\">disable that option</a>.", array('@option' => t('Force language neutral aliases'), '@url' => url('admin/config/regional/language/admin_language'))),
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_schema().
+ */
+function metatag_schema() {
+  $schema['metatag'] = array(
+    'fields' => array(
+      'entity_type' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The entity type this data is attached to.',
+      ),
+      'entity_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The entity id this data is attached to.',
+      ),
+      'revision_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The revision_id for the entity object this data is attached to.',
+      ),
+      'language' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language of the tag.',
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'type_revision' => array(
+        'entity_type',
+        'revision_id',
+      ),
+    ),
+    'primary key' => array(
+      'entity_type',
+      'entity_id',
+      'revision_id',
+      'language',
+    ),
+  );
+
+  $schema['cache_metatag'] = backdrop_get_schema_unprocessed('system', 'cache');
+  $schema['cache_metatag']['description'] = 'Cache table for the generated meta tag output.';
+
+  return $schema;
+}
 
 /**
  * Implements hook_install().
  */
 function metatag_install() {
-  // Don't display the message during site installation, it looks funny.
-  if (!drupal_installation_attempted()) {
-    drupal_set_message(t("To adjust global defaults, go to admin/config/search/metatag. If you need to set metatags for a specific entity, edit its bundle and add the Metatag field."));
-  }
-}
+  $config = config('metatag.settings');
 
-/**
- * Remove tags in field storage that match default or are empty.
- */
-function metatag_update_8101() {
-  // Get all of the field storage entities of type metatag.
-  $field_storage_configs = \Drupal::entityTypeManager()
-    ->getStorage('field_storage_config')
-    ->loadByProperties(['type' => 'metatag']);
+  // Loop over all entity types.
+  foreach (entity_get_info() as $entity_type => $entity_info) {
 
-  foreach ($field_storage_configs as $key => $field_storage) {
-    $field_name = $field_storage->getName();
+    // Always enable the node, taxonomy term and user entities.
+    if (in_array($entity_type, array('node', 'taxonomy_term', 'user'))) {
+      // Enable the main entity type.
+      $config->set('metatag_enable_' . $entity_type, TRUE);
 
-    // Get the individual fields (field instances) associated with bundles.
-    $fields = \Drupal::entityTypeManager()
-      ->getStorage('field_config')
-      ->loadByProperties(['field_name' => $field_name]);
-
-    // For each of the fields, delete all records that match the defaults.
-    foreach ($fields as $field) {
-      // Get the bundle this field is attached to.
-      $bundle = $field->getTargetBundle();
-
-      // Get the default value for this field on this bundle.
-      $field_default_tags_value = $field->getDefaultValueLiteral();
-      $field_default_tags_value = $field_default_tags_value[0]['value'];
-      $field_default_tags = unserialize($field_default_tags_value);
-
-      // Determine the table and "value" field names.
-      $field_table = "node__$field_name";
-      $field_value_field = "$field_name" . "_value";
-
-      // Delete all records where the field value and default are identical.
-      db_delete($field_table)
-        ->condition('bundle', $bundle, '=')
-        ->condition($field_value_field, $field_default_tags_value, '=')
-        ->execute();
-    }
-  }
-
-  return t('Removed all default meta tag records so they can be automatically inherited when the page is loaded.');
-}
-
-/**
- * Remove tags in field storage that match default or are empty.
- */
-function metatag_update_8102(&$sandbox) {
-  // This whole top section only needs to be done the first time.
-  if (!isset($sandbox['records_processed'])) {
-    $sandbox['records_processed'] = 0;
-    $sandbox['total_records'] = 0;
-    $sandbox['current_field'] = 0;
-    $sandbox['current_record'] = 0;
-
-    // Counter to enumerate the fields so we can access them in the array
-    // by number rather than name.
-    $field_counter = 0;
-
-    // Get all of the field storage entities of type metatag.
-    $field_storage_configs = \Drupal::entityTypeManager()
-      ->getStorage('field_storage_config')
-      ->loadByProperties(['type' => 'metatag']);
-
-    foreach ($field_storage_configs as $key => $field_storage) {
-      $field_name = $field_storage->getName();
-
-      // Get the individual fields (field instances) associated with bundles.
-      $fields = \Drupal::entityTypeManager()
-        ->getStorage('field_config')
-        ->loadByProperties(['field_name' => $field_name]);
-
-      // For each of the fields, do the mass delete of exact matches but
-      // store the overridden records in the sandbox to be batch processed.
-      foreach ($fields as $field) {
-        // Get the bundle this field is attached to.
-        $bundle = $field->getTargetBundle();
-
-        // Get the default value for this field on this bundle.
-        $field_default_tags_value = $field->getDefaultValueLiteral();
-        $field_default_tags_value = $field_default_tags_value[0]['value'];
-        $field_default_tags = unserialize($field_default_tags_value);
-
-        // Determine the table and "value" field names.
-        $field_table = "node__$field_name";
-        $field_value_field = "$field_name" . "_value";
-
-        // Get all records where the field data does not match the default.
-        $query = db_select($field_table);
-        $query->addField($field_table, 'entity_id');
-        $query->addField($field_table, 'revision_id');
-        $query->addField($field_table, 'langcode');
-        $query->addField($field_table, $field_value_field);
-        $query->condition('bundle', $bundle, '=');
-        $result = $query->execute();
-        $records = $result->fetchAll();
-
-        // Fill in all the sandbox information so we can batch the individual
-        // record comparing and updating.
-        $sandbox['fields'][$field_counter]['field_table'] = $field_table;
-        $sandbox['fields'][$field_counter]['field_value_field'] = $field_value_field;
-        $sandbox['fields'][$field_counter]['field_default_tags'] = $field_default_tags;
-        $sandbox['fields'][$field_counter]['records'] = $records;
-
-        $sandbox['total_records'] += count($sandbox['fields'][$field_counter]['records'] = $records);
-        $field_counter++;
-      }
-    }
-  }
-
-  if ($sandbox['total_records'] == 0) {
-    // No partially overridden fields so we can skip the whole batch process.
-    $sandbox['#finished'] = 1;
-  }
-  else {
-    // Begin the batch processing of individual field records.
-    $max_per_batch = 10;
-    $counter = 1;
-
-    $current_field = $sandbox['current_field'];
-    $current_field_records = $sandbox['fields'][$current_field]['records'];
-    $current_record = $sandbox['current_record'];
-
-    $field_table = $sandbox['fields'][$current_field]['field_table'];
-    $field_value_field = $sandbox['fields'][$current_field]['field_value_field'];
-    $field_default_tags = $sandbox['fields'][$current_field]['field_default_tags'];
-
-    // Loop through the field(s) and remove any field data that matches the
-    // field default for that bundle. Because the ability to override a default
-    // with "nothing" didn't exist prior to this and because any tag that had
-    // a default of "nothing" would have that also in the field data, we are
-    // removing those as well.
-    while ($counter <= $max_per_batch && $record = $current_field_records[$current_record]) {
-      // Strip any empty tags or ones matching the field's defaults and leave
-      // only the overridden tags in $new_tags.
-      $current_tags = unserialize($record->$field_value_field);
-      $new_tags = [];
-      foreach ($current_tags as $key => $tag) {
-        if (!empty($tag) && $field_default_tags[$key] != $tag) {
-          $new_tags[$key] = $tag;
+      // Enable each entity bundle too.
+      $entity_info = entity_get_info($entity_type);
+      if (!empty($entity_info['bundles'])) {
+        foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
+          $config->set('metatag_enable_' . $entity_type . '__' . $bundle_name, TRUE);
         }
       }
-
-      if (empty($new_tags)) {
-        // All tags were either empty or matched the default so the record can
-        // be deleted.
-        db_delete($field_table)
-          ->condition('entity_id', $record->entity_id)
-          ->condition('revision_id', $record->revision_id)
-          ->condition('langcode', $record->langcode)
-          ->execute();
-      }
-      else {
-        // There are some overridden tags so update the record with just those.
-        $tags_string = serialize($new_tags);
-        db_update($field_table)
-          ->fields([
-            $field_value_field => $tags_string,
-          ])
-          ->condition('entity_id', $record->entity_id)
-          ->condition('revision_id', $record->revision_id)
-          ->condition('langcode', $record->langcode)
-          ->execute();
-      }
-
-      $counter++;
-      $current_record++;
-    }
-
-    if (!isset($current_field_records[$current_record])) {
-      // We ran out of records for the field so start the next batch out with
-      // the next field.
-      $current_field++;
-      $current_record = 0;
-    }
-
-    if (!isset($sandbox['fields'][$current_field])) {
-      // We have finished all the fields. All done.
-      $sandbox['records_processed'] += $counter-1;
-      $sandbox['#finished'] = 1;
     }
     else {
-      // Update the sandbox values to prepare for the next round.
-      $sandbox['current_field'] = $current_field;
-      $sandbox['current_record'] = $current_record;
-      $sandbox['records_processed'] += $counter-1;
-      $sandbox['#finished'] = $sandbox['records_processed'] / $sandbox['total_records'];
+      // Configuration entities are skipped.
+      if (isset($entity_info['configuration']) && $entity_info['configuration'] == TRUE) {
+        continue;
+      }
+      // Entities must have bundles.
+      if (empty($entity_info['bundles'])) {
+        continue;
+      }
+      // Entities must be fieldable.
+      elseif (empty($entity_info['fieldable'])) {
+        continue;
+      }
+
+      // Ignore some view modes that are automatically added by certain modules.
+      unset($entity_info['view modes']['ical']);
+      unset($entity_info['view modes']['diff_standard']);
+      unset($entity_info['view modes']['token']);
+
+      // Entities without view modes are skipped.
+      if (empty($entity_info['view modes'])) {
+        continue;
+      }
+
+      // At this point, disable the entity by default.
+      $entity_enabled = FALSE;
+      // Anything that was specifically enabled via hook_entity_info() from older
+      // versions will be enabled if not configured already.
+      if (!empty($entity_info['metatag']) || !empty($entity_info['metatags'])) {
+        $entity_enabled = $config->get('metatag_enable_' . $entity_type);
+        if ($entity_enabled != FALSE) {
+          $entity_enabled = TRUE;
+        }
+      }
+      $config->set('metatag_enable_' . $entity_type, $entity_enabled);
+
+      // Loop through the bundles, but only if the entity is enabled.
+      if ($entity_enabled) {
+        foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
+          // If it wasn't specifically disabled before, enable it.
+          $bundle_enabled = $config->get('metatag_enable_' . $entity_type . '__' . $bundle_name);
+          if ($bundle_enabled != FALSE) {
+            $config->set('metatag_enable_' . $entity_type . '__' . $bundle_name, TRUE);
+          }
+        }
+      }
     }
   }
 
-  if ($sandbox['total_records'] > 0) {
-    return (string) t('Processed @processed of @total overridden Metatag records.', [
-      '@processed' => $sandbox['records_processed'],
-      '@total' => $sandbox['total_records']
-    ]);
+  backdrop_set_message(t('Please visit the <a href="@url">Metatag settings page</a> to determine which types of content should allow meta tags.', array('@url' => url('admin/config/search/metatags/settings'))));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function metatag_uninstall() {
+  variable_del('metatag_schema_installed');
+  variable_del('metatag_cache_error_pages');
+  variable_del('metatag_tag_admin_pages');
+  variable_del('metatag_skip_update_7017');
+  variable_del('metatag_has_revision_id');
+  variable_del('metatag_entity_no_lang_default');
+  variable_del('metatag_load_defaults');
+  variable_del('metatag_cache_output');
+  variable_del('metatag_pager_string');
+  variable_del('metatag_i18n_translate_output');
+  variable_del('metatag_i18n_enable_watchdog');
+  variable_del('metatag_i18n_disabled');
+  variable_del('metatag_leave_core_tags');
+  variable_del('metatag_extended_permissions');
+  variable_del('metatag_load_all_pages');
+  variable_del('metatag_token_sanitize');
+
+  // Remove all possible 'enable' variables.
+  foreach (entity_get_info() as $entity_type => $entity_info) {
+    variable_del('metatag_enable_' . $entity_type);
+    if (!empty($entity_info['bundles'])) {
+      foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
+        variable_del('metatag_enable_' . $entity_type . '__' . $bundle_name);
+      }
+    }
+  }
+}
+
+/**
+ * Replace one meta tag with another in the entity records.
+ *
+ * @param array $sandbox
+ *   A Batch API sandbox, passed by reference.
+ * @param string $old_tag
+ *   The meta tag that is to be replaced.
+ * @param string $new_tag
+ *   The meta tag that replaces the old one.
+ */
+function metatag_update_replace_meta_tag(&$sandbox, $old_tag, $new_tag) {
+  if (!isset($sandbox['progress'])) {
+    // Count of all {metatag} records that contained an entry for the old meta
+    // tag.
+    $records_count = db_select('metatag', 'm')
+      ->condition('m.data', '%' . db_like('"" . $old_tag . ""') . '%', 'LIKE')
+      ->countQuery()
+      ->execute()
+      ->fetchField();
+
+    if (empty($records_count)) {
+      return t('No Metatag entity records needed to have the "@tag" meta tag renamed.', array('@tag' => $old_tag));
+    }
+
+    $sandbox['max'] = $records_count;
+    $sandbox['progress'] = 0;
+  }
+
+  // Count of rows that will be processed per iteration.
+  $limit = 100;
+
+  // Fetches a part of records.
+  $records = db_select('metatag', 'm')
+    ->fields('m', array())
+    ->condition('m.data', '%' . db_like('"' . $old_tag . '"') . '%', 'LIKE')
+    ->range(0, $limit)
+    ->execute();
+
+  $count = 0;
+  $keys = array('entity_type', 'entity_id', 'revision_id', 'language');
+
+  // Loop over the values and correct them.
+  foreach ($records as $record) {
+    $record->data = unserialize($record->data);
+
+    if (isset($record->data[$old_tag])) {
+      $record->data[$new_tag] = $record->data[$old_tag];
+      unset($record->data[$old_tag]);
+      backdrop_write_record('metatag', $record, $keys);
+
+      // Clear the cache for the entity this belongs to.
+      entity_get_controller($record->entity_type)->resetCache(array($record->entity_id));
+    }
+
+    $count++;
+  }
+
+  if (!empty($count)) {
+    $sandbox['progress'] += $count;
+    $sandbox['#finished'] = min(0.99, $sandbox['progress'] / $sandbox['max']);
   }
   else {
-    return (string) t("There were no overridden Metatag records.");
+    $sandbox['#finished'] = 1;
+    return t('Converted the "@old_tag" meta tag for @count entity records to "@new_tag" meta tag.', array('@old_tag' => $old_tag, '@new_tag' => $new_tag, '@count' => $sandbox['progress']));
   }
 }
 
 /**
- * Move field defaults to Metatag Defaults.
+ * Replace one meta tag with another in the configs.
+ *
+ * @param string $old_tag
+ *   The meta tag that is to be replaced.
+ * @param string $new_tag
+ *   The meta tag that replaces the old one.
+ *
+ * @todo this has been rewritten for Backdrop, but still needs to be tested.
  */
-function metatag_update_8103() {
-  $config_installer = \Drupal::service('config.installer');
-  $entity_manager = \Drupal::entityTypeManager();
-
-  /**
-   * 1. Install cofiguration.
-   */
-  $sync_status = $config_installer->isSyncing();
-  if ($sync_status) {
-    $source_storage = $config_installer->getSourceStorage();
-  }
-
-  // Clear plugin manager caches.
-  \Drupal::getContainer()->get('plugin.cache_clearer')->clearCachedDefinitions();
-  // Install default configuration of the module.
-  if ($sync_status) {
-    $config_installer
-      ->setSyncing(TRUE)
-      ->setSourceStorage($source_storage);
-  }
-
-  // Install new configuration for Metatag.
-  $config_installer->installDefaultConfig('module', 'metatag');
-
-  // Apply all entity definition changes.
-  \Drupal::entityDefinitionUpdateManager()->applyUpdates();
-
-  /**
-   * 2. Extract Metatag field defaults.
-   */
-  $entity_info = $entity_manager->getDefinitions();
-  $tags = [];
-
-  // Get all of the field storage entities of type metatag.
-  $field_storage_configs = $entity_manager
-    ->getStorage('field_storage_config')
-    ->loadByProperties(['type' => 'metatag']);
-
-  foreach ($field_storage_configs as $key => $field_storage) {
-    $field_name = $field_storage->getName();
-
-    // Get the individual fields (field instances) associated with bundles.
-    $fields = $entity_manager->getStorage('field_config')
-                             ->loadByProperties(['field_name' => $field_name]);
-    foreach ($fields as $field) {
-      // Adjust the config id depending on whether these are entity defaults
-      // or bundle defaults.
-      $entity_type = $field->getTargetEntityTypeId();
-      $bundle = $field->getTargetBundle();
-      $metatag_defaults_id = $entity_type;
-      if ($entity_type != $bundle) {
-        // This is a bundle override.
-        $metatag_defaults_id = $entity_type . '__' . $bundle;
-      }
-      // Extract field default values.
-      $field_default_tags_value = $field->getDefaultValueLiteral();
-      $field_default_tags_value = unserialize($field_default_tags_value[0]['value']);
-      $field_default_tags_value = array_filter($field_default_tags_value);
-      // Don't bother copying empty values.
-      if (!empty($field_default_tags_value)) {
-        $tags[$metatag_defaults_id] = $field_default_tags_value;
-      }
+function metatag_update_replace_config($old_tag, $new_tag) {
+  // Find all instance records that contained an entry for the old meta tag.
+  $configs = config_get_names_with_prefix('metatag.instance');
+  foreach ($configs as $instance => $record) {
+    if (!array_key_exists($old_tag, $record->config)) {
+      unset($configs[$instance]);
     }
   }
-
-  /**
-   * 3. Create Config entities with field default values.
-   */
-  if (!empty($tags)) {
-    $bundleInfoManager = \Drupal::service('entity_type.bundle.info');
-    foreach ($tags as $metatag_defaults_id => $values) {
-      list($entity_type, $entity_bundle) = explode('__', $metatag_defaults_id);
-      $entity_label = (string) $entity_info[$entity_type]->get('label');
-      $bundle_info = $bundleInfoManager->getBundleInfo($entity_type);
-      $bundle_label = $bundle_info[$entity_bundle]['label'];
-      $label = $entity_label . ': ' . $bundle_label;
-
-      $metatags_global_manager = $entity_manager->getStorage('metatag_defaults');
-
-      $entity = $metatags_global_manager->load($metatag_defaults_id);
-      if ($entity) {
-        // These are defaults for an existing config entity, such as User.
-        $entity->set('tags', $values);
-      }
-      else {
-        // These are bundle overrides.
-        $entity = $metatags_global_manager->create([
-          'id' => $metatag_defaults_id,
-          'label' => $label,
-          'tags' => $values,
-        ]);
-      }
-      $entity->save();
-    }
-    return (string) t("@count Metatag field defaults have been converted to using global entity defaults.", ['@count' => count($tags)]);
+  if (empty($configs)) {
+    // This message will be returned if nothing needed to be updated.
+    $none_message = t('No Metatag configuration records needed to have the "@tag" meta tag fixed. That said, there may be other configurations elsewhere that do need updating.', array('@tag' => $old_tag));
+    backdrop_set_message($none_message);
   }
   else {
-    return (string) t("There were Metatag field configurations that needed to be converted.");
+    $counter = 0;
+    foreach ($configs as $record) {
+      $record->config[$new_tag] = $record->config[$old_tag];
+      unset($record->config[$old_tag]);
+      $record->save();
+      $counter++;
+    }
+    backdrop_set_message(t('Converted the "@old_tag" meta tag for @count configurations to the new "@new_tag" meta tag.', array('@old_tag' => $old_tag, '@new_tag' => $new_tag, '@count' => $counter)));
   }
+
+  // Clear all Metatag caches.
+  cache_clear_all('*', 'cache_metatag', TRUE);
+  backdrop_static_reset('metatag_config_load_with_defaults');
+  backdrop_static_reset('metatag_entity_supports_metatags');
+  backdrop_static_reset('metatag_config_instance_info');
+  backdrop_static_reset('metatag_get_info');
 }
 
 /**
- * Rebuild routes after moving Metatag admin from Structure to Config.
+ * Remove a specific meta tag from all configs.
+ *
+ * @param string $$tag_name
+ *   The meta tag that is to be removed.
+ *
+ * @todo this has been rewritten for Backdrop, but still needs to be tested.
  */
-function metatag_update_8104() {
-  \Drupal::service('router.builder')->setRebuildNeeded();
+function metatag_update_delete_config($tag_name) {
+  // Find all instance records that contained an entry for the meta tag.
+  $configs = config_get_names_with_prefix('metatag.instance');
+  foreach ($configs as $instance => $record) {
+    if (!array_key_exists($tag_name, $record->config)) {
+      unset($configs[$instance]);
+    }
+  }
+  if (empty($configs)) {
+    // This message will be returned if nothing needed to be updated.
+    $none_message = t('No Metatag configuration records needed to have the "@tag" meta tag removed.', array('@tag' => $tag_name));
+    backdrop_set_message($none_message);
+  }
+  else {
+    // Loop over the values and correct them.
+    $counter = 0;
+    foreach ($configs as $record) {
+      unset($record->config[$tag_name]);
+      $record->save();
+      $counter++;
+      backdrop_set_message(t('Removed the "@tag" meta tag for @count configurations.', array('@tag' => $tag_name, '@count' => $counter)));
+    }
+  }
+
+  // Clear all Metatag caches.
+  cache_clear_all('*', 'cache_metatag', TRUE);
+  backdrop_static_reset('metatag_config_load_with_defaults');
+  backdrop_static_reset('metatag_entity_supports_metatags');
+  backdrop_static_reset('metatag_config_instance_info');
+  backdrop_static_reset('metatag_get_info');
 }
 
 /**
- * Rebuild routes after renaming.
+ *  Implments hook_update_last_removed().
  */
-function metatag_update_8105() {
-  \Drupal::service('router.builder')->setRebuildNeeded();
+function metatag_update_last_removed() {
+  return '7110';
 }
 
 /**
- * Add the metatag_defaults config entity to the site.
+ * The Publisher meta tag is now part of the Google Plus submodule.
  */
-function metatag_update_8106() {
-  \Drupal::entityDefinitionUpdateManager()->applyUpdates();
+function metatag_update_1000() {
+  // Remove variables not needed for Backdrop.
+  update_variable_del('metatag_schema_installed');
+  update_variable_del('metatag_skip_update_7017');
+  update_variable_del('metatag_page_region');
+
+  // Move old variables into new config.
+  $settings = config('metatag.settings');
+  $settings->set('cache_error_pages', update_variable_get('metatag_cache_error_pages', FALSE));
+  $settings->set('tag_admin_pages', update_variable_get('metatag_tag_admin_pages', FALSE));
+  $settings->set('has_revision_id', update_variable_get('metatag_has_revision_id', FALSE));
+  $settings->set('entity_no_lang_default', update_variable_get('metatag_entity_no_lang_default', FALSE));
+  $settings->set('load_defaults', update_variable_get('metatag_load_defaults', TRUE));
+  $settings->set('cache_output', update_variable_get('metatag_cache_output', FALSE));
+  $settings->set('pager_string', update_variable_get('metatag_pager_string', 'Page PAGER | '));
+  $settings->set('i18n_translate_output', update_variable_get('metatag_i18n_translate_output', FALSE));
+  $settings->set('i18n_enable_watchdog', update_variable_get('metatag_i18n_enable_watchdog', FALSE));
+  $settings->set('i18n_disabled', update_variable_get('metatag_i18n_disabled', FALSE));
+  $settings->set('leave_core_tags', update_variable_get('metatag_leave_core_tags', FALSE));
+  $settings->set('extended_permissions', update_variable_get('metatag_extended_permissions', FALSE));
+  $settings->set('load_all_pages', update_variable_get('metatag_load_all_pages', TRUE));
+  $settings->set('token_sanitize', update_variable_get('metatag_token_sanitize', FALSE));
+
+  // Replace all possible 'enable' variables.
+  foreach (entity_get_info() as $entity_type => $entity_info) {
+    $settings->set('metatag_enable_' . $entity_type, update_variable_get('metatag_enable_' . $entity_type, TRUE));
+    update_variable_del('metatag_enable_' . $entity_type);
+    if (!empty($entity_info['bundles'])) {
+      foreach ($entity_info['bundles'] as $bundle_name => $bundle_info) {
+        $settings->set('metatag_enable_' . $entity_type . '__' . $bundle_name, update_variable_get('metatag_enable_' . $entity_type . '__' . $bundle_name, TRUE));
+        update_variable_del('metatag_enable_' . $entity_type . '__' . $bundle_name);
+      }
+    }
+  }
+
+  $settings->save();
+
+  // Copy all default config instances from the module.
+  $default_instances = array('global', 'global.403', 'global.404', 'global.frontpage', 'node', 'user', 'taxonomy_term');
+  foreach ($default_instances as $instance) {
+    $file = 'metatag.instance.' . $instance;
+    config_install_default_config('metatag', $file);
+    // Disable here, will be enabled below if in use.
+    config_set($file, 'disabled', TRUE);
+  }
+
+  // Move all config instances from the database into config.
+  $records = db_select('metatag_config', 'm')
+    ->fields('m', array('instance', 'config'))
+    ->execute();
+
+  foreach ($records as $record) {
+    $instance = str_replace(':', '.', $record->instance);
+    $record->config = unserialize($record->config);
+
+    $config = config('metatag.instance.' . $instance);
+
+    $config->set('module','metatag');
+    $config->set('api_version', '1');
+    $config->set('instance', $record->instance);
+    $config->set('disabled', FALSE);
+    $config->set('config', $record->config);
+    if ($config->get('storage') == 'default') {
+      $config->set('storage', 'overridden');
+    }
+    else {
+      $config->set('storage','custom');
+    }
+
+    $config->save();
+  }
+
+  // Remove the old variables.
+  update_variable_del('metatag_cache_error_pages');
+  update_variable_del('metatag_tag_admin_pages');
+  update_variable_del('metatag_has_revision_id');
+  update_variable_del('metatag_entity_no_lang_default');
+  update_variable_del('metatag_load_defaults');
+  update_variable_del('metatag_cache_output');
+  update_variable_del('metatag_pager_string');
+  update_variable_del('metatag_i18n_translate_output');
+  update_variable_del('metatag_i18n_enable_watchdog');
+  update_variable_del('metatag_i18n_disabled');
+  update_variable_del('metatag_leave_core_tags');
+  update_variable_del('metatag_extended_permissions');
+  update_variable_del('metatag_load_all_pages');
+  update_variable_del('metatag_token_sanitize');
+
+  // Clear all caches.
+  cache_clear_all('*', 'cache_metatag', TRUE);
+  backdrop_static_reset('metatag_config_load_with_defaults');
+  backdrop_static_reset('metatag_entity_supports_metatags');
+  backdrop_static_reset('metatag_config_instance_info');
+  backdrop_static_reset('metatag_get_info');
 }
 
 /**
- * Enable the new metatag_open_graph module.
+ * Disable output caching.
  */
-function metatag_update_8107() {
-  \Drupal::service('module_installer')->install(['metatag_open_graph']);
-  return (string) t("The new Metatag: Open Graph module has been enabled.");
+function metatag_update_1001() {
+  $settings = config('metatag.settings');
+  $settings->set('cache_output', false);
+  $settings->save();
+}
+
+/**
+ * Clear all metatag output caches, it will be rebuild if needed.
+ */
+function metatag_update_1002() {
+  cache_clear_all('output:', 'cache_metatag', TRUE);
+}
+
+/**
+ * Add a name and label attributes to all config instances.
+ */
+function metatag_update_1003() {
+  $labels = array(
+    'global' => 'Global',
+    'global.frontpage' => 'Global: Home page',
+    'global.403' => 'Global: 403 access denied',
+    'global.404' => 'Global: 404 page not found',
+    'node' => 'Content',
+    'user' => 'User account',
+    'taxonomy_term' => 'Taxonomy term',
+  );
+  $files = config_get_names_with_prefix('metatag.instance');
+  $configs = config_load_multiple($files);
+  foreach ($configs as $filename => $config) {
+    $instance = $config['instance'];
+    $name = str_replace(':', '.', $instance);
+    config_set($filename, 'name', $name);
+    if (isset($labels[$name])) {
+      config_set($filename, 'label', $labels[$name]);
+    }
+  }
 }

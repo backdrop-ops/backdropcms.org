@@ -1,0 +1,22 @@
+{
+    "_config_name": "metatag.instance.test.foo",
+    "module": "metatag_test",
+    "storage": "default",
+    "instance": "test:foo",
+    "api_version": 1,
+    "disabled": false,
+    "config": {
+        "title": {
+            "value": "Test title"
+        },
+        "abstract": {
+            "value": "Test foo abstract"
+        },
+        "description": {
+            "value": "Test foo description"
+        },
+        "test:foo": {
+            "value": "foobar"
+        }
+    }
+}

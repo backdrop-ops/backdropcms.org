@@ -1,0 +1,18 @@
+;marking as hidden until ported.
+hidden = true
+
+type = module
+name = Metatag: Dublin Core
+description = Provides the fifteen <a href="http://dublincore.org/documents/dces/">Dublin Core Metadata Element Set 1.1</a> meta tags from the <a href="http://dublincore.org/">Dublin Core Metadata Institute</a>.
+package = SEO
+core = 7.x
+dependencies[] = metatag
+
+; Tests.
+files[] = tests/metatag_dc.test
+files[] = tests/metatag_dc.tags.test
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

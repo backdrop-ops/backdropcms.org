@@ -1,0 +1,68 @@
+<?php
+/**
+ * @file
+ * Tests that each of the Metatag Mobile tags work correctly.
+ */
+
+class MetatagMobileTagsTest extends MetatagTagsTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Metatag tags: Mobile',
+      'description' => 'Test the mobile meta tags.',
+      'group' => 'Metatag',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public $tags = array(
+    'alternate_handheld',
+    'amphtml',
+    'android-app-link-alternative',
+    'android-manifest',
+    'apple-itunes-app',
+    'apple-mobile-web-app-capable',
+    'apple-mobile-web-app-status-bar-style',
+    'apple-mobile-web-app-title',
+    'application-name',
+    'cleartype',
+    'format-detection',
+    'HandheldFriendly',
+    'ios-app-link-alternative',
+    'MobileOptimized',
+    'msapplication-allowDomainApiCalls',
+    'msapplication-allowDomainMetaTags',
+    'msapplication-badge',
+    'msapplication-config',
+    'msapplication-navbutton-color',
+    'msapplication-notification',
+    'msapplication-square150x150logo',
+    'msapplication-square310x310logo',
+    'msapplication-square70x70logo',
+    'msapplication-starturl',
+    'msapplication-task',
+    'msapplication-task-separator',
+    'msapplication-tilecolor',
+    'msapplication-tileimage',
+    'msapplication-tooltip',
+    'msapplication-wide310x150logo',
+    'msapplication-window',
+    'theme-color',
+    'viewport',
+    'x-ua-compatible',
+  );
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'metatag_mobile';
+    parent::setUp($modules);
+  }
+
+}

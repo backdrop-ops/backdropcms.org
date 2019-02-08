@@ -1,0 +1,10 @@
+<?php
+/**
+ * @file
+ * Update scripts for the Metatag:Verification submodule.
+ */
+
+function metatag_verification_update_last_removed() {
+  // The last Drupal 7 update of the module that we can assume as been run.
+  return 7101;
+}

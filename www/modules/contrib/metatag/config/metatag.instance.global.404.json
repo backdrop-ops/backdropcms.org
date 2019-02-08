@@ -1,0 +1,21 @@
+{
+    "_config_name": "metatag.instance.global.404",
+    "module": "metatag",
+    "storage": "default",
+    "name": "global.404",
+    "instance": "global:404",
+    "label": "Global: 404 page not found",
+    "disabled": true,
+    "api_version": 1,
+    "config": {
+        "title": {
+            "value": "[current-page:title] | [current-page:pager][site:name]"
+        },
+        "canonical": {
+            "value": "[site:url]"
+        },
+        "shortlink": {
+            "value": "[site:url]"
+        }
+    }
+}

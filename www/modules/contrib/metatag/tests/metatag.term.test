@@ -1,0 +1,142 @@
+<?php
+/**
+ * @file
+ * Tests for the Metatag module and taxonomy term entities.
+ */
+
+class MetatagCoreTermTest extends MetatagTestHelper {
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    // Need the Path module to set a alias which can then be loaded.
+    $modules[] = 'path';
+    parent::setUp($modules);
+  }
+
+  /**
+   * Tests creation of a standard entity.
+   */
+  public function testEntityCreationWorkflow() {
+    $content_type = 'metatag_test';
+    $content_type_path = str_replace('_', '-', $content_type);
+    $content_type_label = 'Test';
+    $vocab_name = 'test_vocab';
+    $term_name = 'Who likes magic';
+    $term_path = 'term-test';
+
+    // Create a content type.
+    $this->createContentType($content_type, $content_type_label);
+
+    // Create a vocabulary.
+    $vocabulary = $this->createVocabulary($vocab_name, $content_type);
+
+    // Create an admin user and log them in.
+    $perms = array(
+      // Needed for the content type.
+      'create ' . $content_type . ' content',
+      'delete any ' . $content_type . ' content',
+      'edit any ' . $content_type . ' content',
+
+      // Needed for the vocabulary.
+      'administer taxonomy',
+      'edit terms in ' . $vocabulary->machine_name,
+      'delete terms in ' . $vocabulary->machine_name,
+
+      // Needed for the Path module.
+      'create url aliases',
+    );
+    $this->adminUser = $this->createAdminUser($perms);
+    $this->backdropLogin($this->adminUser);
+
+    // Assign default values for the new vocabulary.
+
+    // Load the "add default configuration" page.
+    $this->backdropGet('admin/config/metadata/metatags/config/add');
+    $this->assertResponse(200);
+
+    // Verify the page loaded correct.
+    $this->assertText(t('Select the type of default meta tags you would like to add.'));
+
+    // Submit the initial form to select an entity bundle.
+    $this->backdropPost(NULL, array(
+      'instance' => 'taxonomy_term:' . $vocabulary->name,
+    ), t('Add and configure'));
+    $this->assertResponse(200);
+    $this->assertText(strip_tags('Taxonomy term: ' . $vocabulary->name));
+
+    // Submit the form with some values.
+    $this->backdropPost(NULL, array(
+      'metatags[und][abstract][value]' => '[term:name]',
+    ), t('Save'));
+    $this->assertResponse(200);
+
+    // Verify the page loaded correct.
+    $this->assertRaw(format_string('The meta tag defaults for @label have been saved.', array('@label' => 'Taxonomy term: ' . $vocabulary->name)));
+
+    // Verify that the user was redirected to the settings page again.
+    $this->assertEqual($this->getUrl(), url('admin/config/metadata/metatags', array('absolute' => TRUE)));
+
+    // Create a test term.
+    $term = $this->createTerm($vocabulary, $term_name);
+
+    // Verify that it's possible to submit values to the term's edit form.
+    $this->backdropGet('taxonomy/term/'. $term->tid . '/edit');
+
+    $this->backdropPost(NULL, array(
+      'metatags[und][abstract][value]' => '[term:name] ponies',
+      'path[auto]' => FALSE,
+      'path[alias]' => $term_path,
+    ), t('Save'));
+    $this->assertResponse(200);
+
+    // Verify that the term saved correctly.
+    $this->assertRaw(format_string('Updated term %name.', array('%name' => $term_name)));
+
+    // Verify the term data saved correctly.
+    $this->backdropGet($term_path);
+    $this->assertResponse(200);
+
+    // Try to extract the 'edit' link.
+    $xpaths = $this->xpath("//ul/li/a");
+    $matches = array();
+    $tid = 0;
+    if (!empty($xpaths)) {
+      foreach ($xpaths as $xpath) {
+        $attributes = $xpath->attributes();
+        if (!empty($attributes['href'])) {
+          if (preg_match('@taxonomy/term/(\d+)/edit$@', $attributes['href'], $matches)) {
+            $tid = $matches[1];
+          }
+        }
+      }
+    }
+
+    // Presuing a term ID was found, load the term.
+    if (!empty($tid)) {
+      $term = taxonomy_term_load($tid);
+
+      // Only the non-default values are stored.
+      $expected = array(
+        'und' => array(
+          'abstract' => array(
+            'value' => '[term:name] ponies',
+          ),
+        ),
+      );
+      $this->assertEqual($expected, $term->metatags);
+    }
+
+    // This shouldn't happen, it indicates a problem.
+    else {
+      $this->fail(t('Could not determine the ID for created term.'));
+    }
+
+    // Verify the title is using the custom default for this vocabulary.
+    $xpath = $this->xpath("//meta[@name='abstract']");
+    $this->assertEqual(count($xpath), 1, 'Exactly one abstract meta tag found.');
+    $this->assertEqual($xpath[0]['content'], "Who likes magic ponies");
+
+  }
+}

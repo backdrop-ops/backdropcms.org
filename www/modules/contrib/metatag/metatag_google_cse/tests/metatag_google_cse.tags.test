@@ -1,0 +1,42 @@
+<?php
+/**
+ * @file
+ * Tests that each of the Metatag Mobile tags work correctly.
+ */
+
+/**
+ * MetatagMobileTagsTest for Google CSE.
+ */
+class MetatagMobileTagsTest extends MetatagTagsTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Metatag Google CSE tests',
+      'description' => 'Test the Metatag:Google CSE module.',
+      'group' => 'Metatag',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public $tags = array(
+    'thumbnail',
+    'department',
+    'audience',
+    'doc_status',
+    'google_rating',
+  );
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(array $modules = array()) {
+    $modules[] = 'metatag_google_cse';
+    parent::setUp($modules);
+  }
+
+}

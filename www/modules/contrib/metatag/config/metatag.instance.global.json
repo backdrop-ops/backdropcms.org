@@ -1,0 +1,21 @@
+{
+    "_config_name": "metatag.instance.global",
+    "module": "metatag",
+    "storage": "default",
+    "name": "global",
+    "instance": "global",
+    "label": "Global",
+    "disabled": false,
+    "api_version": 1,
+    "config": {
+        "title": {
+            "value": "[current-page:title] | [current-page:pager][site:name]"
+        },
+        "generator": {
+            "value": "Backdrop CMS (http://backdropcms.org)"
+        },
+        "canonical": {
+            "value": "[current-page:url:absolute]"
+        }
+    }
+}

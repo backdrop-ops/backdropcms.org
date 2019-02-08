@@ -1,0 +1,14 @@
+name = Metatag Search API test
+description = "Test module for the Metatag Search API integration."
+core = 7.x
+package = Metatag
+
+dependencies[] = metatag
+dependencies[] = search_api
+
+hidden = TRUE
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

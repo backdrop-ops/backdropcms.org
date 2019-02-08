@@ -1,0 +1,15 @@
+{
+    "_config_name": "metatag.instance.user",
+    "module": "metatag",
+    "storage": "default",
+    "name": "user",
+    "instance": "user",
+    "label": "User account",
+    "disabled": false,
+    "api_version": 1,
+    "config": {
+        "title": {
+            "value": "[user:name] | [site:name]"
+        }
+    }
+}

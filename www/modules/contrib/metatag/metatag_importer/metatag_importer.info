@@ -1,0 +1,19 @@
+;marking as hidden until ported.
+hidden = true
+
+type = module
+name = Metatag Importer
+description = Import data from other modules into Metatag.
+core = 7.x
+package = SEO
+
+; Need Metatag.
+dependencies[] = metatag
+
+; Tests.
+files[] = tests/metatag_importer.test
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

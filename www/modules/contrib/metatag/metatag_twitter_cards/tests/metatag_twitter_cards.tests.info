@@ -1,0 +1,16 @@
+[MetatagTwitterCardsTest]
+name = Metatag Twitter Cards tests
+description = Test the Metatag:Twitter Cards module
+group = Metatag
+file = metatag_twitter_cards.test
+
+[MetatagTwitterCardsTagsTest]
+name = Metatag tags: Twitter Cards
+description = Test the Twitter Cards meta tags
+group = Metatag
+file = metatag_twitter_cards.tags.test
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

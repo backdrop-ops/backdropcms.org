@@ -1,0 +1,33 @@
+<?php
+/**
+ * @file
+ * Tests for the Metatag Verification module.
+ */
+
+class MetatagVerificationTest extends MetatagTestHelper {
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'metatag_verification';
+
+    parent::setUp($modules);
+
+    // Create an admin user and log them in.
+    $this->adminUser = $this->createAdminUser();
+    $this->backdropLogin($this->adminUser);
+  }
+
+  /**
+   * Confirm that it's possible to load the main admin page.
+   */
+  public function testAdminPage() {
+    $this->backdropGet('admin/config/metadata/metatags');
+    $this->assertResponse(200);
+
+    // Confirm the page is correct.
+    $this->assertText('Items marked as "Unknown" will not be used.');
+  }
+
+}

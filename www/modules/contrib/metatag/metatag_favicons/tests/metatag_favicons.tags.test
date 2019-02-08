@@ -1,0 +1,45 @@
+<?php
+/**
+ * @file
+ * Tests that each of the Metatag Favicons tags work correctly.
+ */
+
+class MetatagFaviconsTagsTest extends MetatagTagsTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public $tags = array(
+    'apple-touch-icon',
+    'apple-touch-icon-precomposed',
+    'apple-touch-icon-precomposed_114x114',
+    'apple-touch-icon-precomposed_120x120',
+    'apple-touch-icon-precomposed_144x144',
+    'apple-touch-icon-precomposed_152x152',
+    'apple-touch-icon-precomposed_180x180',
+    'apple-touch-icon-precomposed_72x72',
+    'apple-touch-icon-precomposed_76x76',
+    'apple-touch-icon_114x114',
+    'apple-touch-icon_120x120',
+    'apple-touch-icon_144x144',
+    'apple-touch-icon_152x152',
+    'apple-touch-icon_180x180',
+    'apple-touch-icon_72x72',
+    'apple-touch-icon_76x76',
+    'icon_16x16',
+    'icon_192x192',
+    'icon_32x32',
+    'icon_96x96',
+    'mask-icon',
+    'shortcut icon',
+  );
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'metatag_favicons';
+    parent::setUp($modules);
+  }
+
+}

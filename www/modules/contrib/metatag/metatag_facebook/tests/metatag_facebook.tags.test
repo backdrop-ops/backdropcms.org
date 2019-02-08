@@ -1,0 +1,25 @@
+<?php
+/**
+ * @file
+ * Tests that each of the Metatag Facebook tags work correctly.
+ */
+class MetatagFacebookTagsTest extends MetatagTagsTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public $tags = array(
+    'fb:admins',
+    'fb:app_id',
+    'fb:pages',
+  );
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'metatag_facebook';
+    parent::setUp($modules);
+  }
+
+}

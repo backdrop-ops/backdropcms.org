@@ -1,0 +1,34 @@
+<?php
+/**
+ * @file
+ * Tests that each of the Metatag Hreflang tags work correctly.
+ */
+
+class MetatagHreflangTagsTest extends MetatagTagsTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Metatag tags: Hreflang',
+      'description' => 'Test the Hreflang meta tags.',
+      'group' => 'Metatag',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public $tags = array(
+  );
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    $modules[] = 'metatag_app_links';
+    parent::setUp($modules);
+  }
+
+}

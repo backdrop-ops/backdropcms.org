@@ -1,0 +1,16 @@
+[MetatagOpenGraphTest]
+name = Metatag OpenGraph tests
+description = Test the Metatag:OpenGraph module
+group = Metatag
+file = metatag_opengraph.test
+
+[MetatagOpenGraphTagsTest]
+name = Metatag tags: OpenGraph
+description = Test the OpenGraph meta tags
+group = Metatag
+file = metatag_opengraph.tags.test
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

@@ -1,0 +1,19 @@
+{
+    "_config_name": "metatag.instance.view",
+    "module": "metatag_views",
+    "storage": "default",
+    "instance": "view",
+    "api_version": 1,
+    "disabled": false,
+    "config": {
+        "title": {
+            "value": "[view:title] | [current-page:pager][site:name]"
+        },
+        "description": {
+            "value": "[view:description]"
+        },
+        "canonical": {
+            "value": "[view:url]"
+        }
+    }
+}

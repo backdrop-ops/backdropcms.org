@@ -1,0 +1,23 @@
+;marking as hidden until ported.
+hidden = true
+
+type = module
+name = Metatag: Views
+description = Provides Metatag integration within the Views interface.
+package = SEO
+core = 7.x
+
+dependencies[] = metatag
+dependencies[] = views
+
+files[] = metatag_views.inc
+files[] = metatag_views_plugin_display_extender_metatags.inc
+
+; Tests.
+files[] = tests/metatag_views.test
+files[] = tests/metatag_views.i18n.test
+
+; Added by Backdrop CMS packaging script on 2017-12-28
+project = metatag
+version = 1.x-1.21.5
+timestamp = 1514502363

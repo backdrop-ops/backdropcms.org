@@ -1,0 +1,21 @@
+{
+    "_config_name": "metatag.instance.taxonomy_term",
+    "module": "metatag",
+    "storage": "default",
+    "name": "taxonomy_term",
+    "instance": "taxonomy_term",
+    "label": "Taxonomy term",
+    "disabled": false,
+    "api_version": 1,
+    "config": {
+        "title": {
+            "value": "[term:name]"
+        },
+        "description": {
+            "value": "[term:description]"
+        },
+        "abstract": {
+            "value": "[term:description]"
+        }
+    }
+}
