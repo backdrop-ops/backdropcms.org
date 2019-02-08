@@ -1,0 +1,51 @@
+{
+    "_config_name": "field.instance.node.project_layout.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "project_layout",
+    "label": "Body",
+    "widget": {
+        "type": "text_textarea_with_summary",
+        "settings": {
+            "rows": 20,
+            "summary_rows": 5
+        },
+        "weight": "8",
+        "module": "text"
+    },
+    "settings": {
+        "display_summary": true,
+        "text_processing": 1,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "2",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "text_summary_or_trimmed",
+            "settings": {
+                "trim_length": 600
+            },
+            "module": "text",
+            "weight": 0
+        },
+        "full": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "1",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null
+}

@@ -1,0 +1,34 @@
+{
+    "_config_name": "field.field.field_org_hosting",
+    "field_name": "field_org_hosting",
+    "type": "list_text",
+    "translatable": false,
+    "module": "list",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "-1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "shared": "Shared",
+            "vps": "VPS",
+            "dedicated": "Dedicated",
+            "cloud": "Cloud",
+            "enterprise": "Enterprise",
+            "managed": "Managed",
+            "reseller": "Reseller",
+            "containers": "Container-based Virtualization",
+            "docker": "Docker",
+            "kubernetes": "Kubernetes",
+            "monitor": "Monitoring"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}

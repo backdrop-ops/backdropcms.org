@@ -1,0 +1,11 @@
+{
+    "_config_name": "block.custom.books",
+    "delta": "books",
+    "info": "Backdrop Books",
+    "title": "Books",
+    "body": {
+        "value": "<figure>\r\n  <a href=\"https://www.amazon.com/Beginning-Backdrop-CMS-Todd-Tomlinson/dp/1484219694\">\r\n    <img src=\"https://backdropcms.org/files/beginningbackdropcms_1.jpg\" />\r\n    <figcaption>“Beginning Backdrop CMS”<br/>\r\n    by Todd Tomlinson</figcaption>\r\n  </a>\r\n</figure>\r\n\r\n<figure>\r\n  <a href=\"http://www.amazon.com/Migrating-Drupal-Backdrop-Todd-Tomlinson/dp/1484217594\">\r\n    <img src=\"https://backdropcms.org/files/inline-images/book.jpg\" />\r\n    <figcaption>“Migrating from Drupal to Backdrop”<br/>\r\n    by Todd Tomlinson</figcaption>\r\n  </a>\r\n</figure>\r\n\r\n<p>Two great books by Todd Tomlinson, author of “Pro Drupal 7 Development”</p>",
+        "format": "full_html"
+    },
+    "description": "A reusable custom block."
+}

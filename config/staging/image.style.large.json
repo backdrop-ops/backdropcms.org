@@ -1,0 +1,18 @@
+{
+    "_config_name": "image.style.large",
+    "overridden": true,
+    "module": "image",
+    "label": "Showcase Desktop (1024x1024)",
+    "name": "large",
+    "effects": {
+        "2": {
+            "name": "image_scale",
+            "data": {
+                "width": "1024",
+                "height": "",
+                "upscale": 0
+            },
+            "weight": "2"
+        }
+    }
+}

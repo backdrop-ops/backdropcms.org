@@ -1,0 +1,36 @@
+{
+    "_config_name": "field.instance.user.user.field_security_mailing_list",
+    "field_name": "field_security_mailing_list",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Receive BackdropCMS.org security announcements for core and contrib projects",
+    "widget": {
+        "weight": "16",
+        "type": "options_onoff",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "display_label": 1
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": 0
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": 1
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "16",
+            "settings": []
+        }
+    }
+}

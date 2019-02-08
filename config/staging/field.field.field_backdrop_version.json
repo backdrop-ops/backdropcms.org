@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.field.field_backdrop_version",
+    "field_name": "field_backdrop_version",
+    "type": "list_text",
+    "translatable": false,
+    "module": "list",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "1.0": "1.0",
+            "1.1": "1.1",
+            "1.2": "1.2",
+            "1.3": "1.3",
+            "1.4": "1.4",
+            "1.5": "1.5",
+            "1.6": "1.6"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}

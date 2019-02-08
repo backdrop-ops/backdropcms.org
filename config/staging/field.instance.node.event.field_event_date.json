@@ -1,0 +1,68 @@
+{
+    "_config_name": "field.instance.node.event.field_event_date",
+    "field_name": "field_event_date",
+    "entity_type": "node",
+    "bundle": "event",
+    "label": "Event Date",
+    "widget": {
+        "weight": "1",
+        "type": "date_select",
+        "module": "date",
+        "active": 1,
+        "settings": {
+            "input_format": "M-j-Y",
+            "input_format_custom": "",
+            "year_range": "-0:+1",
+            "increment": "30",
+            "label_position": "above",
+            "text_parts": [
+                "hour",
+                "minute",
+                "second"
+            ],
+            "no_fieldset": 1
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "default_value": "now",
+        "default_value_code": "",
+        "default_value2": "blank",
+        "default_value_code2": "",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "date_default",
+            "weight": "0",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_number": "",
+                "multiple_from": "",
+                "multiple_to": "",
+                "show_remaining_days": 0
+            },
+            "module": "date"
+        },
+        "teaser": {
+            "label": "inline",
+            "type": "date_default",
+            "weight": "0",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_number": "",
+                "multiple_from": "",
+                "multiple_to": "",
+                "show_remaining_days": 0
+            },
+            "module": "date"
+        }
+    }
+}

@@ -1,0 +1,52 @@
+{
+    "_config_name": "field.instance.node.event.field_location",
+    "field_name": "field_location",
+    "entity_type": "node",
+    "bundle": "event",
+    "label": "Location",
+    "widget": {
+        "weight": "3",
+        "type": "addressfield_standard",
+        "module": "addressfield",
+        "active": 1,
+        "settings": {
+            "available_countries": [],
+            "default_country": "US",
+            "format_handlers": {
+                "address": "address",
+                "address_hide_street_two": "address_hide_street_two",
+                "address_optional": "address_optional",
+                "address_hide_country": 0,
+                "address_hide_postal_code": 0,
+                "address_hide_administrative_area": 0,
+                "address_hide_locality": 0,
+                "address_hide_street": 0,
+                "organisation": 0,
+                "name_oneline": 0,
+                "name_full": 0
+            }
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "addressfield_default",
+            "weight": "2",
+            "settings": {
+                "use_widget_handlers": 1,
+                "format_handlers": [
+                    "address"
+                ]
+            },
+            "module": "addressfield"
+        }
+    }
+}

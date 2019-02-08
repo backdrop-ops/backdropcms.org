@@ -1,0 +1,44 @@
+{
+    "_config_name": "field.instance.node.sa.field_sa_fixed_by",
+    "field_name": "field_sa_fixed_by",
+    "entity_type": "node",
+    "bundle": "sa",
+    "deleted": "0",
+    "label": "Fixed By",
+    "widget": {
+        "weight": "9",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "8",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "4",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "<ul>\r\n<li><a href=\"https://github.com/username\">Real Name</a> of the Backdrop CMS Security Team</li>\r\n<li><a href=\"https://github.com/username\">Real Name</a></li>\r\n</ul>\r\n"
+        }
+    ],
+    "default_value_function": null
+}

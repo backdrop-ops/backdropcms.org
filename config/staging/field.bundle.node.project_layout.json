@@ -1,0 +1,71 @@
+{
+    "_config_name": "field.bundle.node.project_layout",
+    "bundle": "project_layout",
+    "entity_type": "node",
+    "view_modes": {
+        "teaser": {
+            "custom_settings": true
+        },
+        "full": {
+            "custom_settings": true
+        },
+        "rss": {
+            "custom_settings": false
+        },
+        "search_index": {
+            "custom_settings": false
+        },
+        "search_result": {
+            "custom_settings": false
+        },
+        "print": {
+            "custom_settings": false
+        }
+    },
+    "extra_fields": {
+        "form": {
+            "title": {
+                "weight": "0"
+            },
+            "project_name": {
+                "weight": "3"
+            },
+            "project_sandbox": {
+                "weight": "5"
+            },
+            "project_github_path": {
+                "weight": "4"
+            },
+            "project_github_sync_readme": {
+                "weight": "6"
+            },
+            "project_releases_enabled": {
+                "weight": "2"
+            }
+        },
+        "display": {
+            "github_info": {
+                "default": {
+                    "weight": "6",
+                    "visible": false
+                },
+                "full": {
+                    "weight": "2",
+                    "visible": false
+                }
+            },
+            "project_release_downloads": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
+                }
+            },
+            "project_usage": {
+                "default": {
+                    "weight": "4",
+                    "visible": false
+                }
+            }
+        }
+    }
+}

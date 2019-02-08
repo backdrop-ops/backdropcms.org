@@ -1,0 +1,45 @@
+{
+    "_config_name": "field.instance.node.sa.field_sa_solution",
+    "field_name": "field_sa_solution",
+    "entity_type": "node",
+    "bundle": "sa",
+    "deleted": "0",
+    "label": "Solution",
+    "widget": {
+        "weight": "7",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "6",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "6",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "<p>Upgrade your site to the most recent version of Backdrop core. &nbsp;Download available on the&nbsp;<a href=\"https://github.com/backdrop/backdrop/releases/tag/1.x.x\">Backdrop CMS 1.x.x release page</a>.&nbsp; See the <a href=\"https://backdropcms.org/upgrade#from-previous-versions\">update instructions</a>, if needed.</p>\r\n",
+            "format": "filtered_html"
+        }
+    ],
+    "default_value_function": null
+}

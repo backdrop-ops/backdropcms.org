@@ -1,0 +1,31 @@
+{
+    "_config_name": "field.instance.user.user.field_contributions",
+    "field_name": "field_contributions",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Ways in which I contribute to Backdrop CMS",
+    "widget": {
+        "weight": "14",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": 0
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "1",
+            "settings": [],
+            "module": "list"
+        }
+    }
+}

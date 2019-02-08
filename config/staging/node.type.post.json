@@ -1,0 +1,47 @@
+{
+    "_config_name": "node.type.post",
+    "type": "post",
+    "name": "Blog/News Post",
+    "base": "node_content",
+    "module": "node",
+    "description": "Use <em>posts</em> for time-sensitive content like news, press releases or blog posts.",
+    "help": "Please review our <a href=\"https://backdropcms.org/blog-contribution-guidelines\">Contribution Guidelines</a> before submitting your Blog/News post. ",
+    "modified": true,
+    "disabled": false,
+    "has_title": true,
+    "title_label": "Title",
+    "settings": {
+        "formblock_expose": 0,
+        "formblock_show_help": 0,
+        "menu_options": {
+            "devel": 0,
+            "menu-footer-menu": 0,
+            "menu-handbook": 0,
+            "management": 0,
+            "main-menu": 0,
+            "menu-user-guide": 0,
+            "user-menu": 0
+        },
+        "menu_parent": "main-menu:0",
+        "status_default": 0,
+        "promote_enabled": 0,
+        "promote_default": 0,
+        "sticky_enabled": 0,
+        "sticky_default": 0,
+        "revision_enabled": 0,
+        "revision_default": 0,
+        "node_submitted": 1,
+        "node_user_picture": true,
+        "language": 0,
+        "node_permissions": true,
+        "project_behavior": "none",
+        "project_release_version_format": "!api#major%minor%patch#extra",
+        "project_release_api_versions": [
+            ""
+        ],
+        "project_release_type": "",
+        "hidden_path": "0",
+        "node_preview": "1"
+    },
+    "orig_type": "post"
+}
