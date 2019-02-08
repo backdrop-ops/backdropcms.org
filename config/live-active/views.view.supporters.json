@@ -335,7 +335,7 @@
                 "pager": {
                     "type": "some",
                     "options": {
-                        "items_per_page": "33",
+                        "items_per_page": "40",
                         "offset": "0"
                     }
                 },
@@ -780,9 +780,28 @@
                     }
                 },
                 "pager": {
-                    "type": "none",
+                    "type": "full",
                     "options": {
-                        "offset": "0"
+                        "items_per_page": "100",
+                        "offset": "0",
+                        "id": "0",
+                        "total_pages": "",
+                        "quantity": "9",
+                        "tags": {
+                            "first": "« first",
+                            "previous": "‹ previous",
+                            "next": "next ›",
+                            "last": "last »"
+                        },
+                        "expose": {
+                            "items_per_page": 0,
+                            "items_per_page_label": "Items per page",
+                            "items_per_page_options": "5, 10, 20, 40, 60",
+                            "items_per_page_options_all": 0,
+                            "items_per_page_options_all_label": "- All -",
+                            "offset": 0,
+                            "offset_label": "Offset"
+                        }
                     }
                 },
                 "pager_options": null
