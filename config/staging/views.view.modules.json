@@ -511,8 +511,7 @@
                         "ui_name": "",
                         "operator": "in",
                         "value": {
-                            "project_module": "project_module",
-                            "project_dummy": "project_dummy"
+                            "project_module": "project_module"
                         },
                         "group": 1,
                         "exposed": false,
@@ -813,7 +812,6 @@
                         "ui_name": "",
                         "operator": "in",
                         "value": {
-                            "project_dummy": "project_dummy",
                             "project_theme": "project_theme"
                         },
                         "group": "1",
@@ -976,8 +974,7 @@
                         "ui_name": "",
                         "operator": "in",
                         "value": {
-                            "project_layout": "project_layout",
-                            "project_dummy": "project_dummy"
+                            "project_layout": "project_layout"
                         },
                         "group": "1",
                         "exposed": false,
