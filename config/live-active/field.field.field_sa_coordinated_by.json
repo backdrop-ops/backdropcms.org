@@ -14,22 +14,6 @@
         "type": "field_sql_storage",
         "settings": [],
         "module": "field_sql_storage",
-        "active": 1,
-        "details": {
-            "sql": {
-                "FIELD_LOAD_CURRENT": {
-                    "field_data_field_sa_coordinated_by": {
-                        "value": "field_sa_coordinated_by_value",
-                        "format": "field_sa_coordinated_by_format"
-                    }
-                },
-                "FIELD_LOAD_REVISION": {
-                    "field_revision_field_sa_coordinated_by": {
-                        "value": "field_sa_coordinated_by_value",
-                        "format": "field_sa_coordinated_by_format"
-                    }
-                }
-            }
-        }
+        "active": 1
     }
 }

@@ -1,0 +1,34 @@
+{
+    "_config_name": "field.instance.node.project_dummy.field_maintenance_status",
+    "field_name": "field_maintenance_status",
+    "entity_type": "node",
+    "bundle": "project_dummy",
+    "label": "Maintenance status",
+    "widget": {
+        "weight": "2",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "tid": "78"
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "1",
+            "settings": []
+        }
+    }
+}

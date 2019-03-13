@@ -1,0 +1,26 @@
+{
+    "_config_name": "field.field.field_project_maintainers",
+    "field_name": "field_project_maintainers",
+    "type": "list_text",
+    "translatable": false,
+    "module": "list",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "Happy maintainer": "Happy maintainer",
+            "Seeking co-maintainer": "Seeking co-maintainer",
+            "Seeking new maintainer": "Seeking new maintainer"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}

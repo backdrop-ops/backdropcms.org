@@ -13,12 +13,13 @@
             "rows": "5"
         }
     },
-    "description": "",
+    "description": "If mirroring a drupal.org SA, copy all 'Coordinated By' names, then add those who helped with Backdrop.",
     "required": 0,
     "deleted": 0,
     "default_value": [
         {
-            "value": "<ul>\r\n<li><a href=\"https://github.com/username\">Real Name</a> of the Backdrop CMS Security Team</li>\r\n<li><a href=\"https://github.com/username\">Real Name</a></li>\r\n</ul>\r\n"
+            "value": "<ul>\r\n\t<li><a href=\"https://github.com/username\">Real Name</a> of the Backdrop CMS Security Team</li>\r\n\t<li><a href=\"https://github.com/username\">Real Name</a></li>\r\n</ul>\r\n",
+            "format": "filtered_html"
         }
     ],
     "default_value_function": null,
