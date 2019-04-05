@@ -229,14 +229,6 @@ div.block-borg-project-metrics-backdrop-project-metrics {
     font-size: 1.5rem; /* 24px */
   }
 }
-@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
-    max-width: 120px;
-  }
-  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
-    font-size: 1.75rem; /* 28px */
-  }
-}
 
 
 /*******************************************************************************
@@ -248,6 +240,18 @@ div.block-borg-project-metrics-backdrop-project-metrics {
 .block-borg-blocks-rss a:hover {
   color: #000;
 }
+
+/*******************************************************************************
+ * Upgrade from Drupal block
+ ******************************************************************************/
+.block-borg-blocks-upgrade h3 {
+  font-size: 3em;
+  text-align: center;
+}
+.block-borg-blocks-upgrade .column {
+
+}
+
 
 /*******************************************************************************
  * Custom tagline block.
