@@ -5,7 +5,7 @@
     "bundle": "project_module",
     "label": "GitHub Maintainers",
     "widget": {
-        "weight": "10",
+        "weight": "11",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -26,7 +26,7 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "6",
+            "weight": "8",
             "settings": []
         }
     }

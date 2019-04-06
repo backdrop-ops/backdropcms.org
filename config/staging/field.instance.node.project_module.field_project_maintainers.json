@@ -1,24 +1,22 @@
 {
-    "_config_name": "field.instance.node.project_theme.field_recommended",
-    "field_name": "field_recommended",
+    "_config_name": "field.instance.node.project_module.field_project_maintainers",
+    "field_name": "field_project_maintainers",
     "entity_type": "node",
-    "bundle": "project_theme",
-    "label": "Recommended",
+    "bundle": "project_module",
+    "label": "Maintainers",
     "widget": {
-        "weight": "1",
-        "type": "options_onoff",
+        "weight": "17",
+        "type": "options_select",
         "module": "options",
         "active": 1,
-        "settings": {
-            "display_label": 1
-        }
+        "settings": []
     },
     "description": "",
     "required": 0,
     "deleted": 0,
     "default_value": [
         {
-            "value": 0
+            "value": "Happy maintainer"
         }
     ],
     "default_value_function": null,
@@ -27,9 +25,9 @@
     },
     "display": {
         "default": {
-            "label": "above",
+            "label": "hidden",
             "type": "hidden",
-            "weight": "6",
+            "weight": "3",
             "settings": []
         }
     }

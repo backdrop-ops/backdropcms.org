@@ -11,7 +11,8 @@
         "active": 0,
         "settings": {
             "size": 60,
-            "autocomplete_path": "taxonomy/autocomplete"
+            "autocomplete_path": "taxonomy/autocomplete",
+            "follow_content_language": true
         }
     },
     "description": "",
@@ -26,7 +27,7 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "8",
+            "weight": "12",
             "settings": []
         }
     }

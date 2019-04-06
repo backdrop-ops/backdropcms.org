@@ -38,7 +38,8 @@
     "description": "",
     "default_value": [
         {
-            "value": "<ul>\r\n<li>Backdrop Core 1.x.x versions prior to 1.2.0</li>\r\n</ul>\r\n"
+            "value": "<ul>\r\n\t<li>Backdrop Core 1.12.x versions prior to 1.12.??</li>\r\n\t<li>Backdrop Core 1.11.x versions prior to 1.11.??</li>\r\n</ul>\r\n",
+            "format": "filtered_html"
         }
     ],
     "default_value_function": null

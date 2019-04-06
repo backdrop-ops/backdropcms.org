@@ -4,6 +4,7 @@
     "name": "resources",
     "title": "Resources",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": -7,
     "storage": 1,
@@ -187,6 +188,7 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
+                        "description": "",
                         "delta": "resources",
                         "reusable": true
                     },

@@ -1,24 +1,22 @@
 {
-    "_config_name": "field.instance.node.project_theme.field_recommended",
-    "field_name": "field_recommended",
+    "_config_name": "field.instance.node.project_theme.field_maintenance_status",
+    "field_name": "field_maintenance_status",
     "entity_type": "node",
     "bundle": "project_theme",
-    "label": "Recommended",
+    "label": "Maintenance status",
     "widget": {
-        "weight": "1",
-        "type": "options_onoff",
+        "weight": "14",
+        "type": "options_select",
         "module": "options",
         "active": 1,
-        "settings": {
-            "display_label": 1
-        }
+        "settings": []
     },
     "description": "",
     "required": 0,
     "deleted": 0,
     "default_value": [
         {
-            "value": 0
+            "tid": "74"
         }
     ],
     "default_value_function": null,
@@ -29,7 +27,7 @@
         "default": {
             "label": "above",
             "type": "hidden",
-            "weight": "6",
+            "weight": "5",
             "settings": []
         }
     }
