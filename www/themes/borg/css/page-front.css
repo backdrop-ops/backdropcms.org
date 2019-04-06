@@ -55,6 +55,11 @@ body.front .backdrop-books figure {
   }
 }
 
+body.front .l-middle-bottom {
+  margin-top: 0;
+  border-top: 0;
+}
+
 /*******************************************************************************
  * Front page
  ******************************************************************************/
@@ -65,8 +70,13 @@ body.front .l-top {
   color: #fff;
   border-bottom: 2px solid transparent;
   border-top: .01px solid #E8E6E5;
-  margin-bottom: 50px;
   background: linear-gradient(to top right, #00FFA6, #45BEB1, #F317CD);
+}
+
+body.front .l-bottom {
+  background: #000;
+  color: #FFF;
+  margin-bottom: 50px;
 }
 
 body.front .l-content {
@@ -98,6 +108,10 @@ body.front .node-page ul {
     text-align: center;
     padding-right: 15px;
   }
+}
+
+#why-use-backdrop-cms {
+  margin-top: 0;
 }
 
 /*******************************************************************************

@@ -33,6 +33,12 @@
     </div>
   <?php endif; ?>
 
+  <?php if (!empty($content['bottom'])): ?>
+    <div class="l-bottom">
+      <?php print $content['bottom']; ?>
+    </div>
+  <?php endif; ?>
+
   <div class="l-wrapper">
     <div class="l-wrapper-inner container container-fluid">
 
@@ -73,12 +79,17 @@
           <?php print $content['half2']; ?>
         </div>
       </div><!-- /.l-middle -->
+    </div><!-- /.l-wrapper-inner -->
+  </div><!-- /.l-wrapper -->
 
-      <?php if (!empty($content['below'])): ?>
-        <div class="l-below">
-          <?php print $content['below']; ?>
-        </div>
-      <?php endif; ?>
+  <?php if (!empty($content['below'])): ?>
+    <div class="l-below">
+      <?php print $content['below']; ?>
+    </div>
+  <?php endif; ?>
+
+  <div class="l-wrapper">
+    <div class="l-wrapper-inner container container-fluid">
 
       <div class="l-middle l-middle-bottom l-halves row">
         <div class="l-halves-region col-md-6">
@@ -91,14 +102,6 @@
 
     </div><!-- /.l-wrapper-inner -->
   </div><!-- /.l-wrapper -->
-
-  <?php if (!empty($content['bottom'])): ?>
-    <div class="l-bottom">
-      <div class="l-bottom-inner">
-        <?php print $content['bottom']; ?>
-      </div>
-    </div>
-  <?php endif; ?>
 
   <?php if ($content['footer']): ?>
     <footer class="l-footer"  role="footer">
