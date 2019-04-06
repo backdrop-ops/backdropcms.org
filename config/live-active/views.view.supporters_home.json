@@ -348,10 +348,28 @@
                     "row_plugin": false,
                     "row_options": false,
                     "css_class": false,
-                    "fields": false
+                    "fields": false,
+                    "use_more": true,
+                    "use_more_always": true,
+                    "use_more_text": true,
+                    "title": false
                 },
                 "pager_options": null,
-                "footer": [],
+                "footer": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 0,
+                        "content": "<p class=\"text-align-right\"><a href=\"/support/supporters\">more supporters</a></p>\r\n",
+                        "format": "full_html",
+                        "tokenize": 0
+                    }
+                },
                 "style_plugin": "default",
                 "style_options": {
                     "grouping": [],
@@ -435,7 +453,8 @@
                         "separator": ", ",
                         "field_api_classes": 0
                     }
-                }
+                },
+                "title": "Supporters"
             }
         }
     }
