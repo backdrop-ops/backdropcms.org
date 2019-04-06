@@ -122,20 +122,31 @@ function borg_blocks_tagline($settings) {
 }
 
 function borg_blocks_upgrade($settings) {
+  $path = backdrop_get_path('module', 'borg_blocks');
+  $button = l(t('Upgrade from Drupal'), 'https://backdropcms.org/upgrade-from-drupal', array('attributes' => array('class' => array('button'))));
+
   $output  = '<div class="container container-fluid">';
   $output .= '  <div class="row">';
-  $output .= '    <div class="col-sm-4 column">';
-  $output .= '    <h3>91 / 100</h3>';
-  $output .= '    <p>' . t('91 of the top 100 Drupal 7 modules are ready (or unnecessary) for Backdrop CMS.') . '</p>';
+  $output .= '    <div class="col-md-4 column">';
+  $output .= '      <img src="/' . $path . '/images/gift--white--256.png" class="icon" />';
+  $output .= '      <h3>60+ included modules</h3>';
+  $output .= '      <p>' . t('More than than 60 Drupal modules have been merged into Backdrop core.') . '</p>';
   $output .= '    </div>';
-  $output .= '    <div class="col-sm-4 column">';
-  $output .= '    <h3>60+</h3>';
-  $output .= '    <p>' . t('More than 60 Drupal 7 contributed modules have been included or replaced by what\'s in Backdrop core.') . '</p>';
+  $output .= '    <div class="col-md-4 column">';
+  $output .= '      <img src="/' . $path . '/images/check-circle--white--256.png" class="icon" />';
+  $output .= '      <h3>91% of top modules ready</h3>';
+  $output .= '      <p>' . t('Of the top 100 Drupal 7 modules, 91 of them are ready for Backdrop CMS.') . '</p>';
   $output .= '    </div>';
-  $output .= '    <div class="col-sm-4 column">';
-  $output .= '      ' . l(t('Upgrade'), 'https://backdropcms.org/upgrade-from-drupal', array('attributes' => array('class' => array('button'))));
-  $output .= '    <p>' . t('Find out what\'s involved in upgrading your site, today.') . '</p>';
+  $output .= '    <div class="col-md-4 column">';
+  $output .= '      <img src="/' . $path . '/images/puzzle-piece--white--256.png" class="icon" />';
+  $output .= '      <h3>500+ total add-ons</h3>';
+  $output .= '      <p>' . t('More than 500 modules, themes, and layouts are available for Backdrop CMS.') . '</p>';
   $output .= '    </div>';
+  $output .= '  </div>';
+  $output .= '</div>';
+  $output .= '<div class="upgrade-cta">';
+  $output .= '  <div class="container container-fluid">';
+  $output .= '    <p>' . t('Find out what\'s involved in upgrading your Drupal 7 site, today. &nbsp;') . $button . '</p>';
   $output .= '  </div>';
   $output .= '</div>';
 

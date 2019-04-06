@@ -38,4 +38,10 @@
     </div>
   <?php endif; ?>
 
+  <?php if ($footer): ?>
+    <div class="view-footer">
+      <?php print $footer; ?>
+    </div>
+  <?php endif; ?>
+
 </div><?php /* class view */ ?>

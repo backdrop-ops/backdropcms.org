@@ -55,6 +55,11 @@ body.front .backdrop-books figure {
   }
 }
 
+body.front .l-middle-bottom {
+  margin-top: 0;
+  border-top: 0;
+}
+
 /*******************************************************************************
  * Front page
  ******************************************************************************/
@@ -73,6 +78,7 @@ body.front .l-bottom {
   color: #FFF;
   margin-bottom: 50px;
 }
+
 body.front .l-bottom-inner {
   padding: 15px;
 }
@@ -116,6 +122,10 @@ body.front .node-page ul {
     text-align: center;
     padding-right: 15px;
   }
+}
+
+#why-use-backdrop-cms {
+  margin-top: 0;
 }
 
 /*******************************************************************************
