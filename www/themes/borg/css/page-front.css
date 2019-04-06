@@ -65,8 +65,26 @@ body.front .l-top {
   color: #fff;
   border-bottom: 2px solid transparent;
   border-top: .01px solid #E8E6E5;
-  margin-bottom: 50px;
   background: linear-gradient(to top right, #00FFA6, #45BEB1, #F317CD);
+}
+
+body.front .l-bottom {
+  background: #000;
+  color: #FFF;
+  margin-bottom: 50px;
+}
+body.front .l-bottom-inner {
+  padding: 15px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  body.front .l-bottom-inner {
+    padding: 30px;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  body.front .l-bottom-inner {
+    padding: 45px;
+  }
 }
 
 body.front .l-content {

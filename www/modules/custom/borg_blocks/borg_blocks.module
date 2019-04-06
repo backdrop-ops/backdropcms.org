@@ -20,6 +20,10 @@ function borg_blocks_block_info() {
     'info' => t('Greeting'),
     'description' => t('Backdrop CMS greeting block.'),
   );
+  $blocks['upgrade'] = array(
+    'info' => t('Upgrade info'),
+    'description' => t('Information on upgrades from D7.'),
+  );
   $blocks['handbook'] = array(
     'info' => t('Handbook Menu'),
     'description' => t('Backdrop CMS Handbook menu, with section titles.'),
@@ -66,6 +70,12 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
       }
       break;
 
+    case 'upgrade':
+
+      $block['subject'] = t('Upgrade from Drupal 7');
+      $block['content'] = borg_blocks_upgrade($settings);
+      break;
+
     case 'handbook':
       $tree = menu_tree('menu-handbook');
 
@@ -107,6 +117,27 @@ function borg_blocks_tagline($settings) {
   $output .= '  <span>' . $version . '</span> / ';
   $output .=    $requirements . ' / ' . $installing . ' / ' . $upgrading;
   $output .= '</p>';
+
+  return $output;
+}
+
+function borg_blocks_upgrade($settings) {
+  $output  = '<div class="container container-fluid">';
+  $output .= '  <div class="row">';
+  $output .= '    <div class="col-sm-4 column">';
+  $output .= '    <h3>91 / 100</h3>';
+  $output .= '    <p>' . t('91 of the top 100 Drupal 7 modules are ready (or unnecessary) for Backdrop CMS.') . '</p>';
+  $output .= '    </div>';
+  $output .= '    <div class="col-sm-4 column">';
+  $output .= '    <h3>60+</h3>';
+  $output .= '    <p>' . t('More than 60 Drupal 7 contributed modules have been included or replaced by what\'s in Backdrop core.') . '</p>';
+  $output .= '    </div>';
+  $output .= '    <div class="col-sm-4 column">';
+  $output .= '      ' . l(t('Upgrade'), 'https://backdropcms.org/upgrade-from-drupal', array('attributes' => array('class' => array('button'))));
+  $output .= '    <p>' . t('Find out what\'s involved in upgrading your site, today.') . '</p>';
+  $output .= '    </div>';
+  $output .= '  </div>';
+  $output .= '</div>';
 
   return $output;
 }
