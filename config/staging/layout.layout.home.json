@@ -40,10 +40,10 @@
             "67447c68-4227-4401-ad00-f50c7b1a6690"
         ],
         "below2": [
-            "f5b0ee0d-1bf2-480d-9200-a52cc5521d58"
+            "a9d84586-db47-4e43-a75d-93e603166bfb"
         ],
         "bottom": [
-            "89760d14-7b6e-452f-8b1d-29b638afeb12"
+            "ab1a0052-0f34-4e5d-ba00-00f61a41f411"
         ],
         "footer": [
             "b91d2e82-5e00-4ea6-a81a-26ef2bb5f78a",
@@ -147,8 +147,8 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "v1.12.3",
-                        "download_url": "https://github.com/backdrop/backdrop/releases/download/1.12.3/backdrop.zip",
+                        "version": "v1.12.5",
+                        "download_url": "https://github.com/backdrop/backdrop/releases/download/1.12.5/backdrop.zip",
                         "demo_url": "https://dashboard.pantheon.io/sites/create?upstream_id=bf703821-4c18-45a1-88b8-3d9ec302273d"
                     },
                     "contexts": []
@@ -335,7 +335,7 @@
                 }
             }
         },
-        "f5b0ee0d-1bf2-480d-9200-a52cc5521d58": {
+        "a9d84586-db47-4e43-a75d-93e603166bfb": {
             "plugin": "views:supporters_home-block_2",
             "data": {
                 "module": "views",
@@ -345,7 +345,7 @@
                     "more_link": false,
                     "use_pager": false,
                     "pager_id": 0,
-                    "items_per_page": "12",
+                    "items_per_page": "16",
                     "offset": 0,
                     "path": null,
                     "fields_override": null,
@@ -358,7 +358,7 @@
                     "path_override": false,
                     "exposed": []
                 },
-                "uuid": "f5b0ee0d-1bf2-480d-9200-a52cc5521d58",
+                "uuid": "a9d84586-db47-4e43-a75d-93e603166bfb",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -369,7 +369,7 @@
                 }
             }
         },
-        "89760d14-7b6e-452f-8b1d-29b638afeb12": {
+        "ab1a0052-0f34-4e5d-ba00-00f61a41f411": {
             "plugin": "borg_blocks:upgrade",
             "data": {
                 "module": "borg_blocks",
@@ -381,7 +381,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "89760d14-7b6e-452f-8b1d-29b638afeb12",
+                "uuid": "ab1a0052-0f34-4e5d-ba00-00f61a41f411",
                 "style": {
                     "plugin": "default",
                     "data": {
