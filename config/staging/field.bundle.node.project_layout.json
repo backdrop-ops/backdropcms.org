@@ -7,7 +7,7 @@
             "custom_settings": true
         },
         "full": {
-            "custom_settings": true
+            "custom_settings": false
         },
         "rss": {
             "custom_settings": false
@@ -57,7 +57,11 @@
                     "visible": false
                 },
                 "project_search": {
-                    "weight": "9",
+                    "weight": "6",
+                    "visible": false
+                },
+                "teaser": {
+                    "weight": "4",
                     "visible": false
                 }
             },
@@ -67,7 +71,11 @@
                     "visible": true
                 },
                 "project_search": {
-                    "weight": "4",
+                    "weight": "0",
+                    "visible": true
+                },
+                "teaser": {
+                    "weight": "3",
                     "visible": false
                 }
             },
@@ -77,7 +85,11 @@
                     "visible": false
                 },
                 "project_search": {
-                    "weight": "3",
+                    "weight": "5",
+                    "visible": true
+                },
+                "teaser": {
+                    "weight": "1",
                     "visible": true
                 }
             }

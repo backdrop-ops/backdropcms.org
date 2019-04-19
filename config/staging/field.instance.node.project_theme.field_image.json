@@ -29,7 +29,8 @@
         "title_field": 0,
         "orientate": 0,
         "default_image": "",
-        "user_register_form": false
+        "user_register_form": false,
+        "orientate": 0
     },
     "display": {
         "default": {
@@ -43,14 +44,20 @@
             },
             "module": "image"
         },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
+        },
         "project_search": {
             "label": "hidden",
             "type": "image",
-            "weight": "0",
+            "weight": "1",
             "settings": {
                 "image_style": "project",
                 "image_link": "",
-                "image_float": ""
+                "image_float": "right"
             },
             "module": "image"
         }

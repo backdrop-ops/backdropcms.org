@@ -55,8 +55,12 @@
                     "weight": "10",
                     "visible": false
                 },
+                "teaser": {
+                    "weight": "3",
+                    "visible": false
+                },
                 "project_search": {
-                    "weight": "10",
+                    "weight": "6",
                     "visible": false
                 }
             },
@@ -65,9 +69,13 @@
                     "weight": "0",
                     "visible": true
                 },
-                "project_search": {
+                "teaser": {
                     "weight": "4",
                     "visible": false
+                },
+                "project_search": {
+                    "weight": "0",
+                    "visible": true
                 }
             },
             "project_usage": {
@@ -75,8 +83,12 @@
                     "weight": "7",
                     "visible": false
                 },
+                "teaser": {
+                    "weight": "1",
+                    "visible": true
+                },
                 "project_search": {
-                    "weight": "3",
+                    "weight": "5",
                     "visible": true
                 }
             }

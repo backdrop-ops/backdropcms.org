@@ -3,7 +3,7 @@
     "field_name": "field_download_count",
     "entity_type": "node",
     "bundle": "project_theme",
-    "label": "Download Count",
+    "label": "Downloads",
     "widget": {
         "weight": "13",
         "type": "number",
@@ -30,15 +30,27 @@
             "weight": "8",
             "settings": []
         },
-        "project_search": {
+        "teaser": {
             "label": "above",
             "type": "number_integer",
-            "weight": "2",
+            "weight": "0",
             "settings": {
                 "thousand_separator": "",
                 "decimal_separator": ".",
                 "scale": 0,
                 "prefix_suffix": true
+            },
+            "module": "number"
+        },
+        "project_search": {
+            "label": "above",
+            "type": "number_integer",
+            "weight": "4",
+            "settings": {
+                "thousand_separator": "",
+                "prefix_suffix": 1,
+                "decimal_separator": ".",
+                "scale": 0
             },
             "module": "number"
         }

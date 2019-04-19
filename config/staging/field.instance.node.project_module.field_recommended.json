@@ -34,8 +34,15 @@
         },
         "project_search": {
             "label": "above",
+            "type": "list_default",
+            "weight": "3",
+            "settings": [],
+            "module": "list"
+        },
+        "teaser": {
+            "label": "hidden",
             "type": "hidden",
-            "weight": "7",
+            "weight": "0",
             "settings": []
         }
     }
