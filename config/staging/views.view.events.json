@@ -486,7 +486,7 @@
                         }
                     }
                 },
-                "title": "Events",
+                "title": "Upcoming Events",
                 "row_options": {
                     "default_field_elements": 1,
                     "inline": [],
@@ -540,7 +540,7 @@
                 "pager": {
                     "type": "some",
                     "options": {
-                        "items_per_page": "3",
+                        "items_per_page": "5",
                         "offset": "0"
                     }
                 },
@@ -681,7 +681,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
                             "alter_text": 0,
                             "text": "",

@@ -1,7 +1,7 @@
 {
     "_config_name": "node.type.sa",
     "type": "sa",
-    "name": "Security Announcement",
+    "name": "Security Advisory",
     "base": "node_content",
     "module": "node",
     "description": "Post a security notification related to Backdrop CMS. This is aggregated by external sources, use care before publishing.",
@@ -29,8 +29,8 @@
             "devel": 0,
             "menu-footer-menu": 0,
             "menu-handbook": 0,
-            "management": 0,
             "main-menu": 0,
+            "management": 0,
             "menu-user-guide": 0,
             "user-menu": 0
         },
@@ -42,6 +42,8 @@
             ""
         ],
         "project_release_type": "",
-        "hidden_path": "0"
-    }
+        "hidden_path": 0,
+        "scheduling_enabled": 1
+    },
+    "node_preview": "0"
 }
