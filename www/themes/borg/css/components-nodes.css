@@ -117,6 +117,19 @@ label.github-clone-label {
 }
 
 /*******************************************************************************
+ * Project Placeholder
+ ******************************************************************************/
+.node-project-dummy .field-name-field-project-upgrade-info {
+  border-top: 1px solid #d4d6d6;
+  padding-top: 15px;
+}
+.node-project-dummy .field-name-field-project-upgrade-info .field-label {
+  text-transform: uppercase;
+  font-weight: 600; /* semi bold */
+  margin: 1em 0;
+}
+
+/*******************************************************************************
  * Node: Organization profile
  ******************************************************************************/
 .node-organization .field-name-field-logo {
