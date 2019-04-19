@@ -34,6 +34,15 @@
             },
             "module": "text",
             "weight": 0
+        },
+        "project_search": {
+            "label": "hidden",
+            "type": "text_summary_or_trimmed",
+            "weight": "1",
+            "settings": {
+                "trim_length": "400"
+            },
+            "module": "text"
         }
     },
     "description": "",

@@ -20,6 +20,9 @@
         },
         "print": {
             "custom_settings": false
+        },
+        "project_search": {
+            "custom_settings": true
         }
     },
     "extra_fields": {
@@ -55,16 +58,28 @@
                 "teaser": {
                     "weight": "4",
                     "visible": false
+                },
+                "project_search": {
+                    "weight": "9",
+                    "visible": false
                 }
             },
             "project_download_link": {
                 "default": {
                     "weight": "0",
                     "visible": true
+                },
+                "project_search": {
+                    "weight": "0",
+                    "visible": true
                 }
             },
             "project_release_link": {
                 "default": {
+                    "weight": "1",
+                    "visible": true
+                },
+                "project_search": {
                     "weight": "1",
                     "visible": true
                 }
@@ -77,6 +92,10 @@
                 "teaser": {
                     "weight": "3",
                     "visible": false
+                },
+                "project_search": {
+                    "weight": "4",
+                    "visible": false
                 }
             },
             "project_usage": {
@@ -86,6 +105,10 @@
                 },
                 "teaser": {
                     "weight": "1",
+                    "visible": true
+                },
+                "project_search": {
+                    "weight": "3",
                     "visible": true
                 }
             }
