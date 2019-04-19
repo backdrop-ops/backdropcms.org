@@ -1,32 +1,36 @@
 {
-    "_config_name": "field.instance.node.project_dummy.field_project_upgrade_info",
-    "field_name": "field_project_upgrade_info",
+    "_config_name": "field.instance.node.project_dummy.field_blurb",
+    "field_name": "field_blurb",
     "entity_type": "node",
     "bundle": "project_dummy",
-    "label": "Upgrade Instructions",
+    "label": "Short Description",
     "widget": {
-        "weight": "4",
-        "type": "text_textarea",
+        "weight": "1",
+        "type": "text_textfield",
         "module": "text",
         "active": 1,
         "settings": {
-            "rows": "5"
+            "size": "60"
         }
     },
     "description": "",
     "required": 0,
     "deleted": 0,
-    "default_value": null,
+    "default_value": [
+        {
+            "value": ""
+        }
+    ],
     "default_value_function": null,
     "settings": {
-        "text_processing": "1",
+        "text_processing": "0",
         "user_register_form": false
     },
     "display": {
         "default": {
-            "label": "above",
+            "label": "hidden",
             "type": "text_default",
-            "weight": "2",
+            "weight": "0",
             "settings": [],
             "module": "text"
         }
