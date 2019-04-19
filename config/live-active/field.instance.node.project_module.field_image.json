@@ -42,6 +42,17 @@
                 "image_float": ""
             },
             "module": "image"
+        },
+        "project_search": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "0",
+            "settings": {
+                "image_style": "project",
+                "image_link": "",
+                "image_float": ""
+            },
+            "module": "image"
         }
     }
 }

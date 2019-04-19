@@ -20,6 +20,9 @@
         },
         "print": {
             "custom_settings": false
+        },
+        "project_search": {
+            "custom_settings": true
         }
     },
     "extra_fields": {
@@ -51,18 +54,30 @@
                 "default": {
                     "weight": "10",
                     "visible": false
+                },
+                "project_search": {
+                    "weight": "10",
+                    "visible": false
                 }
             },
             "project_release_downloads": {
                 "default": {
                     "weight": "0",
                     "visible": true
+                },
+                "project_search": {
+                    "weight": "4",
+                    "visible": false
                 }
             },
             "project_usage": {
                 "default": {
                     "weight": "7",
                     "visible": false
+                },
+                "project_search": {
+                    "weight": "3",
+                    "visible": true
                 }
             }
         }
