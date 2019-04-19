@@ -20,10 +20,12 @@
         "formblock_expose": 0,
         "formblock_show_help": 0,
         "menu_options": {
+            "devel": 0,
+            "menu-footer-menu": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
-            "navigation": 0,
+            "menu-user-guide": 0,
             "user-menu": 0
         },
         "menu_parent": "main-menu:0",
@@ -32,8 +34,9 @@
         "language": 0,
         "node_permissions": true,
         "project_release_type": "",
-        "hidden_path": "0",
-        "node_preview": "1"
+        "hidden_path": 0,
+        "node_preview": "1",
+        "scheduling_enabled": 1
     },
     "base": "node_content",
     "module": "project_release",
@@ -42,5 +45,6 @@
     "disabled": false,
     "has_title": true,
     "title_label": "Title",
-    "orig_type": "project_release"
+    "orig_type": "project_release",
+    "node_preview": "1"
 }

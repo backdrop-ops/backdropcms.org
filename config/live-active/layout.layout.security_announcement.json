@@ -4,10 +4,11 @@
     "name": "security_announcement",
     "title": "Security Announcement",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
-    "weight": -6,
+    "weight": -8,
     "storage": 1,
-    "layout_template": "boxton",
+    "layout_template": "moscone_flipped",
     "disabled": false,
     "settings": {
         "title": "",
@@ -22,7 +23,12 @@
         ],
         "top": [],
         "content": [
-            "a1c5f667-f913-438a-8b00-d334dfb8dae1"
+            "a1c5f667-f913-438a-8b00-d334dfb8dae1",
+            "b8427bc4-e7df-4ac0-9900-b596da28bf59"
+        ],
+        "sidebar": [
+            "1fc6a52c-afe7-49a5-985f-959d35e18eae",
+            "c450fed4-eeab-41a8-8500-b94f7d16e48d"
         ],
         "bottom": [],
         "footer": [
@@ -139,6 +145,94 @@
                             "title_classes": "block-title",
                             "content_tag": "div",
                             "content_classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "b8427bc4-e7df-4ac0-9900-b596da28bf59": {
+            "plugin": "block:security_email_list",
+            "data": {
+                "module": "block",
+                "delta": "security_email_list",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "description": "Security email list",
+                        "delta": "security_email_list",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "b8427bc4-e7df-4ac0-9900-b596da28bf59",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1fc6a52c-afe7-49a5-985f-959d35e18eae": {
+            "plugin": "block:reporting_security_issues",
+            "data": {
+                "module": "block",
+                "delta": "reporting_security_issues",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "description": "Reporting Security Issues",
+                        "delta": "reporting_security_issues",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "1fc6a52c-afe7-49a5-985f-959d35e18eae",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "c450fed4-eeab-41a8-8500-b94f7d16e48d": {
+            "plugin": "views:security-block_2",
+            "data": {
+                "module": "views",
+                "delta": "security-block_2",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": 1,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "3",
+                    "offset": 0,
+                    "path": "security/advisories",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
+                },
+                "uuid": "c450fed4-eeab-41a8-8500-b94f7d16e48d",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
                         }
                     }
                 }

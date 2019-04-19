@@ -4,8 +4,9 @@
     "name": "security",
     "title": "Security",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
-    "weight": 0,
+    "weight": -2,
     "storage": 1,
     "layout_template": "moscone_flipped",
     "disabled": false,
@@ -23,7 +24,8 @@
         "top": [],
         "content": [
             "738ae993-a0d3-4873-b724-360d408ee4cd",
-            "86d0cc7a-e4c5-4965-9f47-71f57d732ca1"
+            "86d0cc7a-e4c5-4965-9f47-71f57d732ca1",
+            "3d0062a8-2b60-4f9b-b100-c4670df4251f"
         ],
         "sidebar": [
             "40b01f71-f22e-4cff-b500-ffd2f131c057"
@@ -161,6 +163,33 @@
                     "contexts": []
                 },
                 "uuid": "86d0cc7a-e4c5-4965-9f47-71f57d732ca1",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "3d0062a8-2b60-4f9b-b100-c4670df4251f": {
+            "plugin": "block:security_email_list",
+            "data": {
+                "module": "block",
+                "delta": "security_email_list",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "description": "Security email list",
+                        "delta": "security_email_list",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "3d0062a8-2b60-4f9b-b100-c4670df4251f",
                 "style": {
                     "plugin": "default",
                     "data": {

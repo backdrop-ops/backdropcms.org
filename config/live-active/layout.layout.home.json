@@ -29,8 +29,8 @@
             "712c691e-6273-4634-8000-d97d82d86e88"
         ],
         "half2": [
-            "f763943b-8712-44ff-ba00-e45044734b4b",
-            "78355c13-bb46-4609-a607-7fa6192a1afd"
+            "78355c13-bb46-4609-a607-7fa6192a1afd",
+            "f763943b-8712-44ff-ba00-e45044734b4b"
         ],
         "below": [
             "65611a78-5d6e-4d50-8705-058169d6120c",
@@ -147,8 +147,8 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "v1.12.5",
-                        "download_url": "https://github.com/backdrop/backdrop/releases/download/1.12.5/backdrop.zip",
+                        "version": "v1.12.6",
+                        "download_url": "https://github.com/backdrop/backdrop/releases/download/1.12.6/backdrop.zip",
                         "demo_url": "https://dashboard.pantheon.io/sites/create?upstream_id=bf703821-4c18-45a1-88b8-3d9ec302273d"
                     },
                     "contexts": []
@@ -192,32 +192,6 @@
                 }
             }
         },
-        "f763943b-8712-44ff-ba00-e45044734b4b": {
-            "plugin": "block:resources",
-            "data": {
-                "module": "block",
-                "delta": "resources",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "resources",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "f763943b-8712-44ff-ba00-e45044734b4b",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "78355c13-bb46-4609-a607-7fa6192a1afd": {
             "plugin": "block:books",
             "data": {
@@ -234,6 +208,32 @@
                     "contexts": []
                 },
                 "uuid": "78355c13-bb46-4609-a607-7fa6192a1afd",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "f763943b-8712-44ff-ba00-e45044734b4b": {
+            "plugin": "block:resources",
+            "data": {
+                "module": "block",
+                "delta": "resources",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "resources",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "f763943b-8712-44ff-ba00-e45044734b4b",
                 "style": {
                     "plugin": "default",
                     "data": {

@@ -1,0 +1,12 @@
+{
+    "_config_name": "block.custom.reporting_security_issues",
+    "delta": "reporting_security_issues",
+    "info": "Reporting Security Issues",
+    "title": "Reporting Security Issues",
+    "description": "Reporting Security Issues",
+    "body": {
+        "value": "<p><strong>If you have found a security issue, send an email to&nbsp;<a href=\"mailto:security@backdropcms.org\">security@backdropcms.org</a>.</strong>&nbsp; Do not file an issue on GitHub, or otherwise announce the issue publicly.</p>\r\n\r\n<p class=\"text-align-right\">See <a href=\"/security\">more about Backdrop security</a>.</p>\r\n",
+        "format": "filtered_html"
+    },
+    "default_langcode": "und"
+}
