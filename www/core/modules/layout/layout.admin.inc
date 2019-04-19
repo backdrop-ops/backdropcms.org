@@ -2055,6 +2055,10 @@ function layout_clone_form_submit($form, &$form_state) {
   $layout = $form_state['layout'];
   $layout->title = $form_state['values']['title'];
   $layout->name = $form_state['values']['name'];
+  if (!empty($layout->menu_item)) {
+    $layout->menu_item->menu['title'] = $form_state['values']['name'];
+    $layout->menu_item->name = $form_state['values']['name'];
+  }
   $layout->save();
 
   // Redirect to the full settings form.
@@ -2760,9 +2764,9 @@ function layout_configure_region_page($form, &$form_state, Layout $layout, $rend
     '#title' => t('CSS classes for inner wrapper'),
     '#type' => 'textfield',
     '#default_value' => isset($layout->settings[$region_name]['classes']) ? $layout->settings[$region_name]['classes'] : '',
-    '#description' => t('Separate multiple classes with spaces.'),
+    '#description' => t('Available only after selecting an HTML element. Separate multiple classes with spaces.'),
     '#states' => array(
-      'invisible' => array(
+      'disabled' => array(
         ':input[name="element"]' => array('value' => ''),
       ),
     ),

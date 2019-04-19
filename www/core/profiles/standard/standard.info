@@ -2,6 +2,8 @@ name = Standard
 description = Install with commonly used features pre-configured.
 version = BACKDROP_VERSION
 backdrop = 1.x
+type = profile
+
 dependencies[] = node
 dependencies[] = admin_bar
 dependencies[] = block
@@ -31,7 +33,7 @@ dependencies[] = update
 dependencies[] = views
 dependencies[] = views_ui
 
-; Added by Backdrop CMS packaging script on 2019-03-20
+; Added by Backdrop CMS packaging script on 2019-04-17
 project = backdrop
-version = 1.12.5
-timestamp = 1553113816
+version = 1.12.6
+timestamp = 1555538340
