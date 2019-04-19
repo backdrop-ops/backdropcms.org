@@ -1,9 +1,9 @@
 {
-    "_config_name": "field.instance.node.project_dummy.field_project_up_summary",
-    "field_name": "field_project_up_summary",
+    "_config_name": "field.instance.node.project_dummy.field_blurb",
+    "field_name": "field_blurb",
     "entity_type": "node",
     "bundle": "project_dummy",
-    "label": "Summary",
+    "label": "Short Description",
     "widget": {
         "weight": "1",
         "type": "text_textfield",

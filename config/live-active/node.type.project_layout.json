@@ -14,15 +14,17 @@
         "formblock_expose": 0,
         "formblock_show_help": 0,
         "menu_options": {
+            "devel": 0,
+            "menu-footer-menu": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
-            "navigation": 0,
+            "menu-user-guide": 0,
             "user-menu": 0
         },
         "menu_parent": "main-menu:0",
         "status_default": 1,
-        "promote_enabled": 0,
+        "promote_enabled": 1,
         "promote_default": 0,
         "sticky_enabled": 0,
         "sticky_default": 0,
@@ -38,8 +40,10 @@
             ""
         ],
         "project_release_type": "project_release",
-        "hidden_path": "0",
-        "node_preview": "1"
+        "hidden_path": 0,
+        "node_preview": "1",
+        "scheduling_enabled": 0
     },
-    "orig_type": "project_layout"
+    "orig_type": "project_layout",
+    "node_preview": "1"
 }
