@@ -249,13 +249,22 @@ div.block-borg-project-metrics-backdrop-project-metrics {
 .block-borg-blocks-upgrade h2.block-title {
   margin-bottom: 0;
 }
-.block-borg-blocks-upgrade img.icon {
+.block-borg-blocks-upgrade a.icon:hover {
+  color: #007CBA;
+}
+.block-borg-blocks-upgrade a.icon img {
   max-width: 50px;
   margin-top: 1.5em;
 }
 .block-borg-blocks-upgrade h3 {
   font-weight: normal;
   margin: 1em 0;
+}
+.block-borg-blocks-upgrade h3 a {
+  color: #fff;
+}
+.block-borg-blocks-upgrade h3 a:hover {
+  text-decoration: underline;
 }
 .block-borg-blocks-upgrade p {
   text-align: center;

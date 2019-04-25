@@ -126,16 +126,16 @@ function borg_blocks_upgrade($settings) {
   $button = l(t('Upgrade from Drupal'), 'https://backdropcms.org/upgrade-from-drupal', array('attributes' => array('class' => array('button'))));
 
   $included_modules = l(t('60+ included modules'), 'node/1683');
-  $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" class="icon" />';
-  $included_modules_icon_link = l($included_modules_icon, 'node/1683', array('html' => TRUE));
+  $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" />';
+  $included_modules_icon_link = l($included_modules_icon, 'node/1683', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
   $top_modules = l(t('91% of top modules ready'), 'node/2255');
-  $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" class="icon" />';
-  $top_modules_icon_link = l($top_modules_icon, 'node/2255', array('html' => TRUE));
+  $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" />';
+  $top_modules_icon_link = l($top_modules_icon, 'node/2255', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
   $total_addons = l(t('500+ total add-ons'), 'node/1686');
-  $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" class="icon" />';
-  $total_addons_icon_link = l($total_addons_icon, 'node/1686', array('html' => TRUE));
+  $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" />';
+  $total_addons_icon_link = l($total_addons_icon, 'node/1686', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
   $output  = '<div class="container container-fluid">';
   $output .= '  <div class="row">';
