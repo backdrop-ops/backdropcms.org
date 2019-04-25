@@ -125,21 +125,33 @@ function borg_blocks_upgrade($settings) {
   $path = backdrop_get_path('module', 'borg_blocks');
   $button = l(t('Upgrade from Drupal'), 'https://backdropcms.org/upgrade-from-drupal', array('attributes' => array('class' => array('button'))));
 
+  $included_modules = l(t('60+ included modules'), 'node/1683');
+  $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" class="icon" />';
+  $included_modules_icon_link = l($included_modules_icon, 'node/1683', array('html' => TRUE));
+
+  $top_modules = l(t('91% of top modules ready'), 'node/2255');
+  $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" class="icon" />';
+  $top_modules_icon_link = l($top_modules_icon, 'node/2255', array('html' => TRUE));
+
+  $total_addons = l(t('500+ total add-ons'), 'node/1686');
+  $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" class="icon" />';
+  $total_addons_icon_link = l($total_addons_icon, 'node/1686', array('html' => TRUE));
+
   $output  = '<div class="container container-fluid">';
   $output .= '  <div class="row">';
   $output .= '    <div class="col-md-4 column">';
-  $output .= '      <img src="/' . $path . '/images/gift--white--256.png" class="icon" />';
-  $output .= '      <h3>60+ included modules</h3>';
+  $output .=        $included_modules_icon_link;
+  $output .= '      <h3>' . $included_modules . '</h3>';
   $output .= '      <p>' . t('More than than 60 Drupal modules have been merged into Backdrop core.') . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
-  $output .= '      <img src="/' . $path . '/images/check-circle--white--256.png" class="icon" />';
-  $output .= '      <h3>91% of top modules ready</h3>';
+  $output .=        $top_modules_icon_link;
+  $output .= '      <h3>' . $top_modules . '</h3>';
   $output .= '      <p>' . t('Of the top 100 Drupal 7 modules, 91 of them are ready for Backdrop CMS.') . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
-  $output .= '      <img src="/' . $path . '/images/puzzle-piece--white--256.png" class="icon" />';
-  $output .= '      <h3>500+ total add-ons</h3>';
+  $output .=        $total_addons_icon_link;
+  $output .= '      <h3>' . $total_addons . '</h3>';
   $output .= '      <p>' . t('More than 500 modules, themes, and layouts are available for Backdrop CMS.') . '</p>';
   $output .= '    </div>';
   $output .= '  </div>';
