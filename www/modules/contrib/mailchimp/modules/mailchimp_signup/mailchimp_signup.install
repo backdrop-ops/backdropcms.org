@@ -1,0 +1,194 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the mailchimp_signup module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function mailchimp_signup_schema() {
+  $schema['mailchimp_signup'] = array(
+    'fields' => array(
+      'mcs_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique mailchimp_signup entity ID.',
+      ),
+      'name' => array(
+        'description' => 'The machine-readable name of this mailchimp_signup.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'mc_lists' => array(
+        'type' => 'blob',
+        'not null' => TRUE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized array of list IDs with list-specific configuration.',
+      ),
+      'mode' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'description' => 'Signifies the display mode for this signup form.',
+      ),
+      'title' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'description' => 'The {mailchimp_lists}.label of this mailchimp_list.',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'settings' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'A serialized object that stores the settings for the specific list.',
+      ),
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        // Set the default to ENTITY_CUSTOM without using the constant as it is
+        // not safe to use it at this point.
+        'default' => 0x01,
+        'size' => 'tiny',
+        'description' => 'The exportable status of the entity.',
+      ),
+      'module' => array(
+        'description' => 'The name of the providing module if the entity has been defined in code.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('mcs_id'),
+    'unique key' => array('name'),
+    'indexes' => array(
+      'name' => array('name'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Add default Confirmation Email setting to existing Signup Forms.
+ */
+function mailchimp_signup_update_7000(&$sandbox) {
+  $signups = entity_load('mailchimp_signup');
+  foreach ($signups as $signup) {
+    $signup->settings['send_welcome'] = TRUE;
+    $signup->save();
+  }
+}
+
+/**
+ * Migrate 7.x-3.x signup form data to 7.x-4.x format.
+ */
+function mailchimp_signup_update_7002(&$sandbox) {
+  // Replaces 7001 update, which inadvertently removed mergefield data.
+  if (!isset($sandbox['processed'])) {
+    $record_count = db_select('mailchimp_signup')
+      ->countQuery()
+      ->execute()
+      ->fetchField();
+
+    $sandbox['total'] = $record_count;
+    $sandbox['processed'] = 0;
+
+    if ($sandbox['total'] == 0) {
+      // No signup forms found; update not required.
+      $sandbox['#finished'] = 1;
+      return;
+    }
+  }
+
+  $limit = 10;
+
+  // Migrate settings column from mailchimp_signup table.
+  $result = db_select('mailchimp_signup', 'ms')
+    ->fields('ms', array('mcs_id', 'settings'))
+    ->range($sandbox['processed'], $limit)
+    ->execute();
+
+  foreach ($result as $record) {
+    $settings = unserialize($record->settings);
+
+    $mergefields = [];
+
+    foreach ($settings['mergefields'] as $field_tag => $field_data) {
+      if (!is_array($field_data)) {
+        // Skip update if already migrated by the user saving the signup form.
+        continue;
+      }
+
+      // Data is an array in 7.x-3.x; convert to object for 7.x-4.x.
+      // @see http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#read-get_lists_list_id_merge_fields
+      $mergefield = (object) [
+        'tag' => $field_tag,
+        'name' => $field_data['name'],
+        // 'field_type' is now 'type'.
+        'type' => $field_data['field_type'],
+        // 'req' is now 'required'.
+        'required' => $field_data['req'],
+        // 'default' is now 'default_value'.
+        'default_value' => $field_data['default'],
+        'public' => $field_data['public'],
+        // 'order' is now 'display_order'.
+        'display_order' => $field_data['order'],
+        // 'options' is new; populated per field type below.
+        'options' => NULL,
+      ];
+
+      switch ($field_data['field_type']) {
+        case 'dropdown':
+        case 'radio':
+          // Set choices.
+          $mergefield->options = (object) [
+            'choices' => (isset($field_data['choices'])) ? $field_data['choices'] : [],
+          ];
+          break;
+
+        default:
+          // Set size of field. Use default if not available.
+          $mergefield->options = (object) [
+            'size' => (isset($field_data['size'])) ? $field_data['size'] : 25,
+          ];
+          break;
+      }
+
+      $mergefields[$field_tag] = $mergefield;
+    }
+
+    $settings['mergefields'] = $mergefields;
+
+    // Update settings column in mailchimp_signup table.
+    db_update('mailchimp_signup')
+      ->fields([
+        'settings' => serialize($settings),
+      ])
+      ->condition('mcs_id', $record->mcs_id)
+      ->execute();
+
+    $sandbox['processed']++;
+  }
+
+  $sandbox['#finished'] = ($sandbox['processed'] / $sandbox['total']);
+}
+
+/**
+ * Add index for the field looked up by it's entity controller.
+ */
+function mailchimp_signup_update_7003(&$sandbox) {
+  if (db_index_exists('mailchimp_signup', 'name')) {
+    return t('Database index for name column of the mailchimp_signup table existed already.');
+  }
+  db_add_index('mailchimp_signup', 'name', array('name'));
+
+  return t('Database index added to the name column of the mailchimp_signup table.');
+}

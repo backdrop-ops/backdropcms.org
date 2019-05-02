@@ -1,0 +1,80 @@
+<?php
+/**
+ * @file
+ * Test class and methods for the Mailchimp Campaigns module.
+ */
+
+class MailchimpCampaignsTestCase extends BackdropWebTestCase {
+
+  /**
+   * Returns info displayed in the test interface.
+   *
+   * @return array
+   *   Formatted as specified by simpletest.
+   */
+  public static function getInfo() {
+    // Note: getInfo() strings are not translated with t().
+    return array(
+      'name' => 'MailChimp Campaigns',
+      'description' => 'Test Campaigns Logic.',
+      'group' => 'MailChimp',
+    );
+  }
+
+  /**
+   * Pre-test setup function.
+   *
+   * Enables dependencies.
+   * Sets the mailchimp_api_key to the test-mode key.
+   * Sets test mode to TRUE.
+   */
+  protected function setUp() {
+    // Use a profile that contains required modules:
+    $prof = backdrop_get_profile();
+    $this->profile = $prof;
+    // Enable modules required for the test.
+    $enabled_modules = array(
+      'libraries',
+      'mailchimp',
+      'entity',
+      'entity_token',
+      'mailchimp_campaign',
+    );
+    parent::setUp($enabled_modules);
+    $config = config('mailchimp.settings');
+    $config->set('api_key', 'MAILCHIMP_TEST_API_KEY');
+    $config->set('test_mode', TRUE);
+    $config->save();
+  }
+
+  /**
+   * Post-test function.
+   *
+   * Sets test mode to FALSE.
+   */
+  protected function tearDown() {
+    parent::tearDown();
+    $config = config('mailchimp.settings');
+    $config->clear('test_mode');
+    $config->save();
+  }
+
+  /**
+   * Tests retrieval of a specific campaign.
+   */
+  public function testGetCampaign() {
+    $campaign_id = '42694e9e57';
+
+    $campaign = mailchimp_get_campaign_data($campaign_id);
+
+    $this->assertTrue(is_object($campaign), 'Tested retrieval of campaign data.');
+
+    $this->assertEqual($campaign->id, $campaign_id);
+    $this->assertEqual($campaign->type, 'regular');
+    $this->assertEqual($campaign->recipients->list_id, '57afe96172');
+    $this->assertEqual($campaign->settings->subject_line, 'Test Campaign');
+    $this->assertTrue($campaign->tracking->html_clicks);
+    $this->assertFalse($campaign->tracking->text_clicks);
+  }
+
+}

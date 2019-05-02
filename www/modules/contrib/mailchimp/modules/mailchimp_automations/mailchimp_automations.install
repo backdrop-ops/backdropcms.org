@@ -1,0 +1,110 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the mailchimp_automations module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function mailchimp_automations_schema() {
+
+  $schema['mailchimp_automations_entity'] = array(
+    'description' => 'MailChimp automation enabled entities.',
+    'fields' => array(
+      'mailchimp_automations_entity_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique mailchimp_automations_entity entity ID.',
+      ),
+      'name' => array(
+        'description' => 'The machine-readable name of this mailchimp_automations_entity.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'label' => array(
+        'description' => 'The human-readable name of this mailchimp_automations_entity.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+      ),
+      'entity_type' => array(
+        'description' => 'The Backdrop entity type (e.g. "node", "user").',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'bundle' => array(
+        'description' => 'The Backdrop bundle (e.g. "page", "user")',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'email_property' => array(
+        'description' => 'The property that contains the email address to send to mailchimp.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'list_id' => array(
+        'description' => 'The MailChimp automation list id.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'workflow_id' => array(
+        'description' => 'The MailChimp automation workflow id.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'workflow_email_id' => array(
+        'description' => 'The MailChimp automation workflow email id.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      // The following fields are for supporting exportable status.
+      'locked' => array(
+        'description' => 'A boolean indicating whether the administrator may delete this mapping.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+      ),
+      'status' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        // Set the default to ENTITY_CUSTOM without using the constant as it is
+        // not safe to use it at this point.
+        'default' => 0x01,
+        'size' => 'tiny',
+        'description' => 'The exportable status of the entity.',
+      ),
+      'module' => array(
+        'description' => 'The name of the providing module if the entity has been defined in code.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('mailchimp_automations_entity_id'),
+    'unique keys' => array(
+      'name' => array('name'),
+      'entity_type_bundle' => array(
+        'entity_type',
+        'bundle',
+      ),
+    ),
+  );
+
+  return $schema;
+}

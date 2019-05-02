@@ -1,0 +1,16 @@
+{
+  "name": "backdrop/mailchimp",
+  "description": "Mailchimp integration for Backdrop.",
+  "version": "7.x-4.7",
+  "homepage": "https://www.drupal.org/project/mailchimp",
+  "license": "GNU-2.0+",
+  "keywords": [
+    "Mailchimp",
+    "mailchimp",
+    "email",
+    "php"
+  ],
+  "require": {
+    "thinkshout/mailchimp-api-php": ">=1.0.5"
+  }
+}

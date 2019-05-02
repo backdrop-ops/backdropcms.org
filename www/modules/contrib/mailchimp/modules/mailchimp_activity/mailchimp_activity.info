@@ -1,0 +1,13 @@
+name = MailChimp Activity
+description = View activity for an email address associated with any entity.
+package = MailChimp
+backdrop = 1.x
+type = module
+
+dependencies[] = mailchimp
+dependencies[] = entity_ui
+
+; Added by Backdrop CMS packaging script on 2018-12-27
+project = mailchimp
+version = 1.x-1.0.2-alpha
+timestamp = 1545972715

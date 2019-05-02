@@ -1,0 +1,19 @@
+name = Mailchimp translation
+description = Allows translating Mailchimp forms.
+dependencies[] = i18n_string
+package = Multilingual - Internationalization
+core = 7.x
+
+files[] = mailchimp_i18n.i18n.inc
+
+; Information added by Backdrop.org packaging script on 2016-11-08
+version = "7.x-4.7"
+core = "7.x"
+project = "mailchimp"
+datestamp = "1478578147"
+
+
+; Added by Backdrop CMS packaging script on 2018-12-27
+project = mailchimp
+version = 1.x-1.0.2-alpha
+timestamp = 1545972715

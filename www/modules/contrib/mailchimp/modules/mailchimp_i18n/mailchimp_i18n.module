@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @file
+ * Mailchimp i18n integration module via entity API i18n support.
+ *
+ * @see EntityDefaultI18nController
+ */
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function mailchimp_i18n_entity_info_alter(&$info) {
+  // Enable i18n support via the entity API.
+  $info['mailchimp_signup']['i18n controller class'] = 'MailchimpI18nStringController';
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ */
+function mailchimp_i18n_entity_property_info_alter(&$info) {
+  // Mark some properties as translatable, but also denote that translation
+  // works with i18n_string.
+  foreach (array('title') as $name) {
+    $info['mailchimp_signup']['properties'][$name]['translatable'] = TRUE;
+    $info['mailchimp_signup']['properties'][$name]['i18n string'] = TRUE;
+  }
+}
+
+/**
+ * Implements hook_mailchimp_signup_insert().
+ */
+function mailchimp_i18n_mailchimp_signup_insert($mailchimp_signup) {
+  i18n_string_object_update('mailchimp_signup', $mailchimp_signup);
+}
+
+/**
+ * Implements hook_mailchimp_signup_update().
+ */
+function mailchimp_i18n_mailchimp_signup_update($mailchimp_signup) {
+  // Account for machine name changes.
+  if ($mailchimp_signup->original->name != $mailchimp_signup->name) {
+    i18n_string_update_context("mailchimp_signup:mailchimp_signup:{$mailchimp_signup->original->name}:*", "mailchimp_signup:mailchimp_signup:{$mailchimp_signup->original->name->name}:*");
+  }
+  i18n_string_object_update('mailchimp_signup', $mailchimp_signup);
+}
+
+/**
+ * Implements hook_mailchimp_signup_delete().
+ */
+function mailchimp_i18n_mailchimp_type_delete($mailchimp_signup) {
+  i18n_string_object_remove('mailchimp_signup', $mailchimp_signup);
+}

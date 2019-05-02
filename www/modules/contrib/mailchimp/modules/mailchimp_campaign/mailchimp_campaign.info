@@ -1,0 +1,15 @@
+name = MailChimp Campaigns
+description = Create, send and import MailChimp campaigns.
+package = MailChimp
+backdrop = 1.x
+type = module
+
+configure = admin/config/services/mailchimp/campaigns
+
+dependencies[] = mailchimp_lists
+dependencies[] = entity_ui
+
+; Added by Backdrop CMS packaging script on 2018-12-27
+project = mailchimp
+version = 1.x-1.0.2-alpha
+timestamp = 1545972715

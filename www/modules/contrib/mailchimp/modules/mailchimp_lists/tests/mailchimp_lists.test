@@ -1,0 +1,301 @@
+<?php
+/**
+ * @file
+ * Test class and methods for the Mailchimp Lists module.
+ */
+
+class MailchimpListsTestCase extends BackdropWebTestCase {
+
+  /**
+   * Returns info displayed in the test interface.
+   *
+   * @return array
+   *   Formatted as specified by simpletest.
+   */
+  public static function getInfo() {
+    // Note: getInfo() strings are not translated with t().
+    return array(
+      'name' => 'MailChimp Lists',
+      'description' => 'Test Lists Logic.',
+      'group' => 'MailChimp',
+    );
+  }
+
+  /**
+   * Pre-test setup function.
+   *
+   * Enables dependencies.
+   * Sets the mailchimp_api_key to the test-mode key.
+   * Sets test mode to TRUE.
+   */
+  protected function setUp() {
+    // Use a profile that contains required modules:
+    $prof = backdrop_get_profile();
+    $this->profile = $prof;
+    // Enable modules required for the test.
+    $enabled_modules = array(
+      'libraries',
+      'mailchimp',
+      'entity',
+      'entity_token',
+      'mailchimp_lists',
+    );
+    parent::setUp($enabled_modules);
+    $config = config('mailchimp.settings');
+    $config->set('api_key', 'MAILCHIMP_TEST_API_KEY');
+    $config->set('test_mode', TRUE);
+    $config->save();
+  }
+
+  /**
+   * Post-test function.
+   *
+   * Sets test mode to FALSE.
+   */
+  protected function tearDown() {
+    parent::tearDown();
+    $config = config('mailchimp.settings');
+    $config->clear('test_mode');
+    $config->save();
+  }
+
+  /**
+   * Tests retrieval of a specific list.
+   */
+  public function testGetList() {
+    $list_id = '57afe96172';
+
+    $list = mailchimp_get_list($list_id);
+
+    $this->assertEqual($list->id, $list_id);
+    $this->assertEqual($list->name, 'Test List One');
+  }
+
+  /**
+   * Tests retrieval of a specific set of lists.
+   */
+  public function testMultiListRetrieval() {
+    $list_ids = array(
+      '57afe96172',
+      'f4b7b26b2e',
+    );
+
+    $lists = mailchimp_get_lists($list_ids);
+
+    $this->assertEqual(count($lists), 2, 'Tested correct list count on retrieval.');
+
+    $this->assertEqual($lists[$list_ids[0]]->id, $list_ids[0]);
+    $this->assertEqual($lists[$list_ids[0]]->name, 'Test List One');
+
+    $this->assertEqual($lists[$list_ids[1]]->id, $list_ids[1]);
+    $this->assertEqual($lists[$list_ids[1]]->name, 'Test List Two');
+  }
+
+  /**
+   * Tests retrieval of mergevars for a set of lists.
+   */
+  public function testGetMergevars() {
+    $list_ids = array(
+      '57afe96172',
+    );
+
+    $mergevars = mailchimp_get_mergevars($list_ids);
+
+    $this->assertEqual(count($mergevars[$list_ids[0]]), 3, 'Tested correct mergevar count on retrieval.');
+
+    $this->assertEqual($mergevars[$list_ids[0]][0]->tag, 'EMAIL');
+    $this->assertEqual($mergevars[$list_ids[0]][1]->tag, 'FNAME');
+    $this->assertEqual($mergevars[$list_ids[0]][2]->tag, 'LNAME');
+  }
+
+  /**
+   * Tests retrieval of member info for a list and email address.
+   */
+  public function testGetMemberInfo() {
+    $list_id = '57afe96172';
+    $email = 'test@example.org';
+
+    $member_info = mailchimp_get_memberinfo($list_id, $email);
+
+    $this->assertEqual($member_info->id, md5($email));
+    $this->assertEqual($member_info->email_address, $email);
+  }
+
+  /**
+   * Tests the status of a member's subscription to a list.
+   */
+  public function testIsSubscribed() {
+    $list_id = '57afe96172';
+    $email = 'test@example.org';
+
+    $subscribed = mailchimp_is_subscribed($list_id, $email);
+
+    $this->assertTrue($subscribed, 'Tested user is subscribed to list.');
+  }
+
+  /**
+   * Tests subscribing a member to a list.
+   */
+  public function testSubscribe() {
+    $list_id = '57afe96172';
+    $email = 'test@example.org';
+    $interest_category_id = 'a1e9f4b7f6';
+    $interest_ids = array(
+      '9143cf3bd1',
+      '3a2a927344',
+    );
+    $merge_vars = array(
+      'EMAIL' => $email,
+    );
+
+    $interests = array();
+    $interests[$interest_category_id] = array(
+      $interest_ids[0] => 1,
+      $interest_ids[1] => 0,
+    );
+
+    $member_info = mailchimp_subscribe($list_id, $email, $merge_vars, $interests);
+
+    $this->assertEqual($member_info->id, md5($email), 'Tested new user subscription.');
+
+    $this->assertEqual($member_info->merge_fields->EMAIL, $email);
+    $this->assertEqual($member_info->interests->{$interest_ids[0]}, TRUE);
+    $this->assertEqual($member_info->interests->{$interest_ids[1]}, FALSE);
+  }
+
+  /**
+   * Tests updating a list member.
+   */
+  public function testUpdateMember() {
+    $list_id = '57afe96172';
+    $email = 'test@example.org';
+
+    $updated = mailchimp_update_member($list_id, $email, NULL, NULL, 'text');
+
+    $this->assertTrue($updated, 'Tested user update.');
+  }
+
+  /**
+   * Tests unsubscribing a member from a list.
+   */
+  public function testUnsubscribe() {
+    $list_id = '57afe96172';
+    $email = 'test@example.org';
+
+    $unsubscribed = mailchimp_unsubscribe_member($list_id, $email);
+
+    $this->assertTrue($unsubscribed, 'Tested user unsubscription.');
+  }
+
+  /**
+   * Tests retrieval of list segments for a list.
+   */
+  public function testGetListSegments() {
+    $list_id = '57afe96172';
+
+    $segments = mailchimp_get_segments($list_id);
+
+    $this->assertEqual($segments[0]->id, 49377);
+    $this->assertEqual($segments[0]->name, 'Test Segment One');
+    $this->assertEqual($segments[0]->type, 'static');
+    $this->assertEqual($segments[0]->list_id, $list_id);
+
+    $this->assertEqual($segments[1]->id, 49378);
+    $this->assertEqual($segments[1]->name, 'Test Segment Two');
+    $this->assertEqual($segments[1]->type, 'static');
+    $this->assertEqual($segments[1]->list_id, $list_id);
+  }
+
+  /**
+   * Tests creation of a segment for a list.
+   */
+  public function testCreateSegment() {
+    $list_id = '57afe96172';
+    $name = 'New List Segment Test';
+    $type = 'static';
+
+    $segment_id = mailchimp_segment_create($list_id, $name, $type);
+
+    $this->assertFalse(empty($segment_id), 'Tested new list segment has valid ID.');
+  }
+
+  /**
+   * Tests adding a subscriber to a list segment.
+   */
+  public function testAddSegmentSubscriber() {
+    $list_id = '57afe96172';
+    $segment_id = 49377;
+    $email = 'test@example.org';
+
+    $subscribers_added = mailchimp_segment_add_subscriber($list_id, $segment_id, $email);
+
+    $this->assertEqual($subscribers_added, 1);
+  }
+
+  /**
+   * Tests adding batch subscribers to a list segment.
+   */
+  public function testAddSegmentBatchSubscribers() {
+    $list_id = '57afe96172';
+    $segment_id = 49377;
+    $batch = array(
+      'user1@example.org',
+      'user2@example.org',
+      'user3@example.org',
+    );
+
+    $batch_subscribers = mailchimp_segment_batch_add_subscribers($list_id, $segment_id, $batch);
+
+    $this->assertEqual($batch_subscribers, count($batch));
+  }
+
+  /**
+   * Tests retrieval of webhooks for a list.
+   */
+  public function testGetWebhook() {
+    $list_id = '57afe96172';
+
+    $webhooks = mailchimp_webhook_get($list_id);
+
+    $this->assertEqual($webhooks[0]->list_id, $list_id);
+    $this->assertEqual($webhooks[0]->id, '37b9c73a88');
+    $this->assertEqual($webhooks[0]->url, 'http://example.org');
+    $this->assertEqual($webhooks[0]->events->subscribe, TRUE);
+    $this->assertEqual($webhooks[0]->events->unsubscribe, FALSE);
+    $this->assertEqual($webhooks[0]->sources->user, TRUE);
+    $this->assertEqual($webhooks[0]->sources->api, FALSE);
+  }
+
+  /**
+   * Tests adding a webhook to a list.
+   */
+  public function testAddWebhook() {
+    $list_id = '57afe96172';
+    $url = 'http://example.org/web-hook-new';
+    $events = array(
+      'subscribe' => TRUE,
+    );
+    $sources = array(
+      'user' => TRUE,
+      'admin' => TRUE,
+      'api' => FALSE,
+    );
+
+    $webhook_id = mailchimp_webhook_add($list_id, $url, $events, $sources);
+
+    $this->assertEqual($webhook_id, 'ab24521a00');
+  }
+
+  /**
+   * Tests deletion of a webhook.
+   */
+  public function testDeleteWebhook() {
+    $list_id = '57afe96172';
+    $url = 'http://example.org';
+
+    $webhook_deleted = mailchimp_webhook_delete($list_id, $url);
+
+    $this->assertTrue($webhook_deleted, 'Tested webhook deletion.');
+  }
+
+}
