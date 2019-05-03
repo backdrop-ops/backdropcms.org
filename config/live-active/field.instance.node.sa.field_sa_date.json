@@ -5,14 +5,14 @@
     "bundle": "sa",
     "label": "Date",
     "widget": {
-        "weight": "2",
+        "weight": "3",
         "type": "date_select",
         "module": "date",
         "active": 1,
         "settings": {
             "input_format": "M jS, Y",
             "input_format_custom": "",
-            "year_range": "-1:+1",
+            "year_range": "-5:+1",
             "increment": "1",
             "label_position": "none",
             "text_parts": [],
@@ -35,7 +35,7 @@
         "default": {
             "label": "inline",
             "type": "date_default",
-            "weight": "1",
+            "weight": "0",
             "settings": {
                 "format_type": "long",
                 "multiple_number": "",
@@ -43,6 +43,20 @@
                 "multiple_to": "",
                 "fromto": "both",
                 "show_remaining_days": false
+            },
+            "module": "date"
+        },
+        "teaser": {
+            "label": "inline",
+            "type": "date_default",
+            "weight": "0",
+            "settings": {
+                "format_type": "short",
+                "fromto": "both",
+                "multiple_number": "",
+                "multiple_from": "",
+                "multiple_to": "",
+                "show_remaining_days": 0
             },
             "module": "date"
         }
