@@ -10,7 +10,7 @@
         "module": "text",
         "active": 1,
         "settings": {
-            "rows": "5"
+            "rows": "8"
         }
     },
     "description": "If mirroring a drupal.org SA, copy all 'Coordinated By' names, then add those who helped with Backdrop.",
@@ -31,9 +31,15 @@
         "default": {
             "label": "above",
             "type": "text_default",
-            "weight": "9",
+            "weight": "10",
             "settings": [],
             "module": "text"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "8",
+            "settings": []
         }
     }
 }
