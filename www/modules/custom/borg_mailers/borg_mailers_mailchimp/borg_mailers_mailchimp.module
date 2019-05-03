@@ -1,0 +1,127 @@
+<?php
+/**
+ * @file
+ *   borg_mailers_mailchimp.module
+ *   Conditionally Subscribe/Unsubscibe users to BackdropCMS.org mailing list on
+ *   saving their user profile.
+ */
+
+/**
+ * Implements hook_user_update().
+ *
+ * @see _bor_mailers_mailchimp_signup().
+ */
+function borg_mailers_mailchimp_user_update($account) {
+  if (
+    $account->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 1 &&
+    $account->original->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 0
+  ) {
+    _borg_mailers_mailchimp_set_status($account, 'subscribed');
+  }
+  elseif (
+    $account->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 0 &&
+    $account->original->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 1
+  ) {
+    _borg_mailers_mailchimp_set_status($account, 'unsubscribed');
+  }
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function borg_mailers_mailchimp_user_insert($account) {
+   borg_mailers_mailchimp_user_update($account);
+}
+
+/**
+ * Signup for BackdropCMS.org Mailing list.
+ *
+ * @param User $account
+ *   The user entity.
+ *
+ * @param string $status
+ *   Set the user to subscribed or unsubscribed.
+ *
+ * @see _borg_mailers_mailchimp_check_existing_user().
+ */
+function _borg_mailers_mailchimp_set_status($account, $status = 'subscribed') {
+  global $settings;
+  $data = "{\"email_address\": \"$account->mail\", \"status\": \"$status\"}";
+  $list = $settings['mailchimp_borg_list'];
+  $subHash = md5(strtolower($account->mail));
+  $exists = _borg_mailers_mailchimp_check_existing_user($subHash);
+
+  // Send curl POST reqeust to mailchimp to subscribe.
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+  if (isset($exists->id)) {
+    curl_setopt(
+      $ch,
+      CURLOPT_URL,
+      "https://us20.api.mailchimp.com/3.0/lists/$list/members/$subHash"
+    );
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+  }
+  elseif ($status == 'subscribed') {
+    curl_setopt(
+      $ch,
+      CURLOPT_URL,
+      "https://us20.api.mailchimp.com/3.0/lists/$list/members/"
+    );
+    curl_setopt($ch, CURLOPT_POST, 1);
+  }
+  curl_setopt(
+    $ch,
+    CURLOPT_USERPWD,
+    'devBorg' . ':' . $settings['mailchimp_key']
+  );
+  $headers = array();
+  $headers[] = 'Content-Type: application/json';
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+  $result = curl_exec($ch);
+  if (curl_errno($ch)) {
+      echo 'Error:' . curl_error($ch);
+  }
+  curl_close ($ch);
+}
+
+/**
+ * Helper function to check if the user exists in the MC list yet.
+ *
+ * @param string $subHash
+ *   The subscribers hash on MC.
+ *
+ * @return Object
+ *   The result of the MC GET request.
+ */
+function _borg_mailers_mailchimp_check_existing_user($subHash) {
+  global $settings;
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt(
+    $ch,
+    CURLOPT_URL,
+    "https://us20.api.mailchimp.com/3.0/lists/863d1bf27f/members/$subHash"
+  );
+  curl_setopt(
+    $ch,
+    CURLOPT_USERPWD,
+    'devBorg' . ':' . $settings['mailchimp_key']
+  );
+
+  $headers = array();
+  $headers[] = 'Content-Type: application/json';
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+  $result = curl_exec($ch);
+  if (curl_errno($ch)) {
+      echo 'Error:' . curl_error($ch);
+  }
+  curl_close ($ch);
+
+  $res = json_decode($result);
+
+  return $res;
+}
