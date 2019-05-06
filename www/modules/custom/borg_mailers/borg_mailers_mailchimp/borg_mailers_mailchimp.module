@@ -9,28 +9,35 @@
 /**
  * Implements hook_user_update().
  *
- * @see _bor_mailers_mailchimp_signup().
+ * @see _borg_mailers_mailchimp_user_update().
  */
 function borg_mailers_mailchimp_user_update($account) {
-  if (
-    $account->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 1 &&
-    $account->original->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 0
-  ) {
-    _borg_mailers_mailchimp_set_status($account, 'subscribed');
-  }
-  elseif (
-    $account->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 0 &&
-    $account->original->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 1
-  ) {
-    _borg_mailers_mailchimp_set_status($account, 'unsubscribed');
-  }
+  _borg_mailers_mailchimp_user_update($account);
 }
 
 /**
  * Implements hook_user_insert().
+ *
+ * @see _borg_mailers_mailchimp_user_update().
  */
 function borg_mailers_mailchimp_user_insert($account) {
-   borg_mailers_mailchimp_user_update($account);
+  _borg_mailers_mailchimp_user_update($account)
+}
+
+/**
+ * Updates the user account.
+ *
+ * @see _borg_mailers_mailchimp_set_status().
+ */
+function _borg_mailers_mailchimp_user_update($account) {
+  if ($account->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 1 &&
+    $account->original->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 0) {
+    _borg_mailers_mailchimp_set_status($account, 'subscribed');
+  }
+  elseif ($account->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 0 &&
+    $account->original->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 1) {
+    _borg_mailers_mailchimp_set_status($account, 'unsubscribed');
+  }
 }
 
 /**
@@ -49,6 +56,8 @@ function _borg_mailers_mailchimp_set_status($account, $status = 'subscribed') {
   $data = "{\"email_address\": \"$account->mail\", \"status\": \"$status\"}";
   $list = $settings['mailchimp_borg_list'];
   $subHash = md5(strtolower($account->mail));
+
+  // Do an early API call to see if they are on the list already.
   $exists = _borg_mailers_mailchimp_check_existing_user($subHash);
 
   // Send curl POST reqeust to mailchimp to subscribe.
@@ -71,6 +80,7 @@ function _borg_mailers_mailchimp_set_status($account, $status = 'subscribed') {
     );
     curl_setopt($ch, CURLOPT_POST, 1);
   }
+
   curl_setopt(
     $ch,
     CURLOPT_USERPWD,
@@ -82,9 +92,9 @@ function _borg_mailers_mailchimp_set_status($account, $status = 'subscribed') {
 
   $result = curl_exec($ch);
   if (curl_errno($ch)) {
-      echo 'Error:' . curl_error($ch);
+    echo 'Error:' . curl_error($ch);
   }
-  curl_close ($ch);
+  curl_close($ch);
 }
 
 /**
@@ -117,9 +127,9 @@ function _borg_mailers_mailchimp_check_existing_user($subHash) {
 
   $result = curl_exec($ch);
   if (curl_errno($ch)) {
-      echo 'Error:' . curl_error($ch);
+    echo 'Error:' . curl_error($ch);
   }
-  curl_close ($ch);
+  curl_close($ch);
 
   $res = json_decode($result);
 
