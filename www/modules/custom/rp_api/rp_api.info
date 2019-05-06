@@ -1,7 +1,8 @@
+type = module
 name = Robin Panel API
 description = This is API module. Provide ability to add/edit/delete users and websites attached to users.
 backdrop = 1.x
 version = 1.x-1.0
 package = BackdropCMS.org
 configure = admin/config/system/rp_api
-type = module
+

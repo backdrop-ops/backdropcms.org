@@ -1,7 +1,8 @@
+type = module
 name = Gitlc Webhook Integration
 description = Gitlc Webhook integration module.
 backdrop = 1.x
 version = 1.x-1.0
 package = BackdropCMS.org
 configure = admin/config/system/gitlc_webhook
-type = module
+
