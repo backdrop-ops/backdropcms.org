@@ -71,14 +71,17 @@
         </div>
       <?php endif; ?>
 
-      <div class="l-middle l-middle-top l-halves row">
-        <div class="l-halves-region col-md-8">
-          <?php print $content['half1']; ?>
-        </div>
-        <div class="l-sidebar l-sidebar-first col-md-4">
-          <?php print $content['half2']; ?>
-        </div>
-      </div><!-- /.l-middle -->
+      <?php if ($content['half1'] || $content['half2']): ?>
+        <div class="l-middle l-middle-top l-halves row">
+          <div class="l-halves-region col-md-8">
+            <?php print $content['half1']; ?>
+          </div>
+          <div class="l-sidebar l-sidebar-first col-md-4">
+            <?php print $content['half2']; ?>
+          </div>
+        </div><!-- /.l-middle -->
+      <?php endif; ?>
+
     </div><!-- /.l-wrapper-inner -->
   </div><!-- /.l-wrapper -->
 
@@ -88,20 +91,22 @@
     </div>
   <?php endif; ?>
 
-  <div class="l-wrapper">
-    <div class="l-wrapper-inner container container-fluid">
+  <?php if ($content['below1'] || $content['below2']): ?>
+    <div class="l-wrapper">
+      <div class="l-wrapper-inner container container-fluid">
 
-      <div class="l-middle l-middle-bottom l-halves row">
-        <div class="l-halves-region col-md-6">
-          <?php print $content['below1']; ?>
-        </div>
-        <div class="l-halves-region col-md-6">
-          <?php print $content['below2']; ?>
-        </div>
-      </div><!-- /.l-middle -->
+        <div class="l-middle l-middle-bottom l-halves row">
+          <div class="l-halves-region col-md-6">
+            <?php print $content['below1']; ?>
+          </div>
+          <div class="l-halves-region col-md-6">
+            <?php print $content['below2']; ?>
+          </div>
+        </div><!-- /.l-middle -->
 
-    </div><!-- /.l-wrapper-inner -->
-  </div><!-- /.l-wrapper -->
+      </div><!-- /.l-wrapper-inner -->
+    </div><!-- /.l-wrapper -->
+  <?php endif; ?>
 
   <?php if ($content['footer']): ?>
     <footer class="l-footer"  role="footer">
