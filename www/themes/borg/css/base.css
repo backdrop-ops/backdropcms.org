@@ -4,16 +4,13 @@
  * Contains base styles for HTML elements only.
  ******************************************************************************/
 
-body {
-  min-width: 300px;
-}
-
 html,
 body {
   font-family: 'Source Sans Pro', "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-size: 16px;
   margin: 0;
   padding: 0;
+  min-width: 300px;
 }
 
 p {

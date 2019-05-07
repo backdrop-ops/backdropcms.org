@@ -637,10 +637,12 @@ a.feed-icon {
 /*******************************************************************************
  * Powered by Backdrop block.
  ******************************************************************************/
-.block-system-powered-by {
+.l-footer .block-system-powered-by {
   position: absolute;
   bottom: -62px;
   left: 2.9375rem;
+  padding: 0;
+  padding-bottom: 0;
 }
 .block-system-powered-by span {
   display: block;
@@ -657,6 +659,17 @@ a.feed-icon {
   margin: 0;
   background: transparent url(../images/drop-lounging.png) top left no-repeat;
   background-size: 100%;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .l-footer .block-system-powered-by {
+    left: 1rem;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-footer .block-system-powered-by {
+    left: 1.5rem;
+  }
 }
 
 /*******************************************************************************

@@ -90,13 +90,30 @@
 }
 
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .borg-greeting a.icon {
-    display: none;
+  .borg-greeting ul.borg-user-menu {
+    vertical-align: top;
+    display: inline-block;
+    height: 3em;
+  }
+  .borg-greeting li.top {
+    height: 3em;
+  }
+  .borg-greeting li.top a.greeting {
+    line-height: 3em;
+    height: 2.75em;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .borg-greeting a.icon {
-    display: inline-block;
+  .borg-greeting ul.borg-user-menu {
+    display: block;
+    height: 1rem;
+  }
+  .borg-greeting li.top {
+    height: 1rem;
+  }
+  .borg-greeting li.top a.greeting {
+    height: 1rem;
+    line-height: 1.45; /* 23.2px */
   }
 }
 
@@ -161,28 +178,66 @@
 .l-footer .block-menu-menu-footer-menu li {
   list-style-type: none;
   margin: 0;
-  padding: .5em 1em;
   text-align: center;
+}
+.l-footer .block-menu li a,
+.l-footer .block-menu-menu-footer-menu li a {
+  font-size: 18px;
+  display: block;
+  padding: .5em 1em;
+}
+.l-footer .block-menu li a:hover,
+.l-footer .block-menu-menu-footer-menu li a:hover {
+  background-color: #F7F7F7;
 }
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .l-footer .block-menu,
   .l-footer .block-menu-menu-footer-menu {
     position: absolute;
-    bottom: -62px;
+    bottom: -70px;
     right: 0;
     width: 50%;
+    padding: 0;
     padding-bottom: 0;
+  }
+  .l-footer .block-menu ul,
+  .l-footer .block-menu-menu-footer-menu ul {
+    text-align: center;
   }
   .l-footer .block-menu li,
   .l-footer .block-menu-menu-footer-menu li {
     display: inline-block;
-    padding: .5em .2em;
+  }
+  .l-footer .block-menu li a,
+  .l-footer .block-menu-menu-footer-menu li a {
+    font-size: 18px;
+    display: inline-block;
+    padding: .25em .25em;
+  }
+  .l-footer .block-menu li a:hover,
+  .l-footer .block-menu-menu-footer-menu li a:hover {
+    background-color: #F7F7F7;
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .l-footer .block-menu li,
-  .l-footer .block-menu-menu-footer-menu li {
+  .l-footer .block-menu,
+  .l-footer .block-menu-menu-footer-menu {
+    bottom: -58px;
+    width: 75%;
+  }
+  .l-footer .block-menu ul,
+  .l-footer .block-menu-menu-footer-menu ul {
+    text-align: right;
+  }
+  .l-footer .block-menu li a,
+  .l-footer .block-menu-menu-footer-menu li a {
+    padding: .25em 1em;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .l-footer .block-menu li a,
+  .l-footer .block-menu-menu-footer-menu li a {
     padding: .5em 1em;
   }
 }
