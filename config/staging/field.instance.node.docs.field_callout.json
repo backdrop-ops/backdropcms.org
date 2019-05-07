@@ -10,13 +10,17 @@
         "module": "text",
         "active": 1,
         "settings": {
-            "size": "60"
+            "size": "120"
         }
     },
     "description": "",
     "required": 0,
     "deleted": 0,
-    "default_value": null,
+    "default_value": [
+        {
+            "value": ""
+        }
+    ],
     "default_value_function": null,
     "settings": {
         "text_processing": "0",

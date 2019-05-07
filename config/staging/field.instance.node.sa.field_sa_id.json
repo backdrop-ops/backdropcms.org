@@ -6,7 +6,7 @@
     "deleted": "0",
     "label": "Advisory ID",
     "widget": {
-        "weight": "1",
+        "weight": "4",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -22,20 +22,20 @@
         "default": {
             "label": "inline",
             "type": "text_default",
-            "weight": "0",
+            "weight": "2",
             "settings": [],
             "module": "text"
         },
         "teaser": {
             "label": "inline",
             "type": "text_default",
-            "weight": "0",
+            "weight": "4",
             "settings": [],
             "module": "text"
         }
     },
     "required": 0,
-    "description": "",
+    "description": "Either BACKDROP-SA-CORE-YYYY-XXX or BACKDROP-SA-CONTRIB-YYYY-XXX",
     "default_value": [
         {
             "value": "BACKDROP-SA-CORE-2018-0XX"

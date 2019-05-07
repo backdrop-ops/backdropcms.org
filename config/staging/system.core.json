@@ -95,5 +95,6 @@
     "user_email_match": 0,
     "path_pattern": "account/[user:name]",
     "x_frame_options": "SAMEORIGIN",
-    "form_cache_expiration": 21600
+    "form_cache_expiration": 21600,
+    "dblog_row_limit": "1000"
 }

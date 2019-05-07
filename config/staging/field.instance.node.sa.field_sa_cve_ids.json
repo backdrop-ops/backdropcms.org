@@ -3,33 +3,38 @@
     "field_name": "field_sa_cve_ids",
     "entity_type": "node",
     "bundle": "sa",
-    "label": "CVE IDs",
+    "label": "CVE ID",
     "widget": {
-        "weight": "6",
+        "weight": "12",
         "type": "link_field",
         "module": "link",
         "active": 0,
         "settings": []
     },
-    "description": "",
+    "description": "https://nvd.nist.gov/vuln/detail/CVE-YYYY-X",
     "required": 0,
     "deleted": 0,
-    "default_value": null,
+    "default_value": [
+        {
+            "title": "",
+            "url": ""
+        }
+    ],
     "default_value_function": null,
     "settings": {
         "validate_url": 1,
         "url": 0,
         "title": "optional",
         "title_value": "",
-        "title_label_use_field_label": 0,
+        "title_label_use_field_label": 1,
         "title_maxlength": "128",
         "enable_tokens": 0,
         "display": {
             "url_cutoff": "80"
         },
         "attributes": {
-            "target": "default",
-            "rel": "",
+            "target": "_blank",
+            "rel": "nofollow",
             "configurable_class": 0,
             "class": "",
             "configurable_title": 0,
@@ -40,9 +45,16 @@
     },
     "display": {
         "default": {
-            "label": "above",
+            "label": "inline",
             "type": "link_default",
-            "weight": "4",
+            "weight": "3",
+            "settings": [],
+            "module": "link"
+        },
+        "teaser": {
+            "label": "inline",
+            "type": "link_default",
+            "weight": "5",
             "settings": [],
             "module": "link"
         }

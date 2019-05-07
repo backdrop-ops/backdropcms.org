@@ -28,7 +28,26 @@
                 "pager": {
                     "type": "full",
                     "options": {
-                        "items_per_page": "20"
+                        "items_per_page": "10",
+                        "offset": "0",
+                        "id": "0",
+                        "total_pages": "",
+                        "quantity": "9",
+                        "tags": {
+                            "first": "« first",
+                            "previous": "‹ previous",
+                            "next": "next ›",
+                            "last": "last »"
+                        },
+                        "expose": {
+                            "items_per_page": 0,
+                            "items_per_page_label": "Items per page",
+                            "items_per_page_options": "5, 10, 20, 40, 60",
+                            "items_per_page_options_all": 0,
+                            "items_per_page_options_all_label": "- All -",
+                            "offset": 0,
+                            "offset_label": "Offset"
+                        }
                     }
                 },
                 "style_plugin": "default",
@@ -349,6 +368,19 @@
                     }
                 },
                 "sorts": {
+                    "field_sa_date_value": {
+                        "id": "field_sa_date_value",
+                        "table": "field_data_field_sa_date",
+                        "field": "field_sa_date_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    },
                     "created": {
                         "id": "created",
                         "table": "node",
@@ -360,7 +392,7 @@
                 "row_options": {
                     "relationship": "none",
                     "view_mode": "teaser",
-                    "links": 0,
+                    "links": 1,
                     "comments": 0
                 },
                 "style_options": {
@@ -369,7 +401,18 @@
                     "row_class_special": 0,
                     "uses_fields": 0
                 },
-                "header": [],
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area"
+                    },
+                    "area_1": {
+                        "id": "area_1",
+                        "table": "views",
+                        "field": "area"
+                    }
+                },
                 "empty": {
                     "area": {
                         "id": "area",
@@ -405,11 +448,43 @@
                     "title": false,
                     "use_more": false,
                     "use_more_always": false,
-                    "use_more_text": false
+                    "use_more_text": false,
+                    "header": false
                 },
                 "use_more": 0,
                 "use_more_always": false,
-                "use_more_text": "more"
+                "use_more_text": "more",
+                "menu": {
+                    "type": "default tab",
+                    "title": "All",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "0",
+                    "context": 0,
+                    "context_only_inline": 0
+                },
+                "tab_options": {
+                    "type": "normal",
+                    "title": "Security advisories",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "0"
+                },
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Apr 24 security advisory email correction",
+                        "empty": 0,
+                        "content": "<p><strong>Note:</strong> No new Backdrop core security updates have been released since <a href=\"/security/backdrop-sa-core-2019-009\">April 18, 2019</a>. The Backdrop core security advisory emails sent from backdropcms.org on Tue Apr 23 at 10:20pm PDT refer to issues resolved on February 21, 2018 and were sent accidentally while updating security advisory content on backdropcms.org.</p>\r\n",
+                        "format": "filtered_html",
+                        "tokenize": 0
+                    }
+                }
             }
         },
         "feed": {
@@ -479,7 +554,7 @@
                 "pager": {
                     "type": "some",
                     "options": {
-                        "items_per_page": "5",
+                        "items_per_page": "6",
                         "offset": "0"
                     }
                 },
@@ -605,6 +680,69 @@
                         "date_format": "short",
                         "custom_date_format": "",
                         "timezone": ""
+                    },
+                    "field_sa_risk": {
+                        "id": "field_sa_risk",
+                        "table": "field_data_field_sa_risk",
+                        "field": "field_sa_risk",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Security risk",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "span",
+                        "element_class": "",
+                        "element_label_type": "strong",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "list_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
                     },
                     "field_sa_id": {
                         "id": "field_sa_id",
@@ -964,6 +1102,69 @@
                         "custom_date_format": "",
                         "timezone": ""
                     },
+                    "field_sa_risk": {
+                        "id": "field_sa_risk",
+                        "table": "field_data_field_sa_risk",
+                        "field": "field_sa_risk",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Security risk",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "span",
+                        "element_class": "",
+                        "element_label_type": "strong",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "list_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
                     "field_sa_id": {
                         "id": "field_sa_id",
                         "table": "field_data_field_sa_id",
@@ -1201,6 +1402,136 @@
                         },
                         "break_phrase": 0,
                         "not": 1
+                    }
+                }
+            }
+        },
+        "page_1": {
+            "display_title": "Core",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "security/advisories/core",
+                "title": "Security Advisories",
+                "defaults": {
+                    "title": false,
+                    "use_more": false,
+                    "use_more_always": false,
+                    "use_more_text": false,
+                    "filters": false,
+                    "filter_groups": false,
+                    "header": false
+                },
+                "use_more": 0,
+                "use_more_always": false,
+                "use_more_text": "more",
+                "menu": {
+                    "type": "tab",
+                    "title": "Backdrop core",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "0",
+                    "context": 0,
+                    "context_only_inline": 0
+                },
+                "tab_options": {
+                    "type": "none",
+                    "title": "",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "0"
+                },
+                "display_description": "",
+                "filters": {
+                    "status": {
+                        "value": 1,
+                        "table": "node",
+                        "field": "status",
+                        "id": "status",
+                        "expose": {
+                            "operator": false
+                        },
+                        "group": 1
+                    },
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "sa": "sa"
+                        }
+                    },
+                    "field_sa_type_value": {
+                        "id": "field_sa_type_value",
+                        "table": "field_data_field_sa_type",
+                        "field": "field_sa_type_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "core": "core"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                },
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area"
+                    },
+                    "area_1": {
+                        "id": "area_1",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Apr 24 security advisory email correction",
+                        "empty": 0,
+                        "content": "<p><strong>Note:</strong> No new Backdrop core security updates have been released since <a href=\"/security/backdrop-sa-core-2019-009\">April 18, 2019</a>. The Backdrop core security advisory emails sent from backdropcms.org on Tue Apr 23 at 10:20pm PDT refer to issues resolved on February 21, 2018 and were sent accidentally while updating security advisory content on backdropcms.org.</p>\r\n",
+                        "format": "filtered_html",
+                        "tokenize": 0
                     }
                 }
             }

@@ -5,7 +5,7 @@
     "bundle": "sa",
     "label": "Type",
     "widget": {
-        "weight": "3",
+        "weight": "0",
         "type": "options_buttons",
         "module": "options",
         "active": 1,
@@ -27,7 +27,13 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "10",
+            "weight": "11",
+            "settings": []
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "7",
             "settings": []
         }
     }

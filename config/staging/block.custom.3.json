@@ -7,5 +7,6 @@
         "value": "<!-- Begin MailChimp Signup Form -->\r\n<div id=\"mc_embed_signup\">\r\n<form action=\"https://backdropcms.us7.list-manage.com/subscribe/post?u=8a016d204af55747c1fef5769&amp;id=fa14ca8376\" method=\"post\" id=\"mc-embedded-subscribe-form\" name=\"mc-embedded-subscribe-form\" class=\"validate\" target=\"_blank\" novalidate>\r\n<div class=\"mc-field-group\">\r\n<div>\r\n  <input type=\"email\" placeholder=\"name@example.com\" value=\"\" name=\"EMAIL\" class=\"required email\" id=\"mce-EMAIL\">\r\n</div>\r\n  <input type=\"submit\" value=\"Sign Up\" name=\"subscribe\" id=\"mc-embedded-subscribe\" class=\"button\">\r\n</div>\r\n  <div id=\"mce-responses\" class=\"clear\">\r\n    <div class=\"response\" id=\"mce-error-response\" style=\"display:none\"></div>\r\n    <div class=\"response\" id=\"mce-success-response\" style=\"display:none\"></div>\r\n  </div>\r\n</form>\r\n</div>\r\n<!--End mc_embed_signup-->",
         "format": "full_html"
     },
-    "description": "A reusable custom block."
+    "description": "",
+    "default_langcode": "und"
 }

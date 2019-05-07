@@ -6,7 +6,7 @@
     "deleted": "0",
     "label": "Versions affected",
     "widget": {
-        "weight": "4",
+        "weight": "6",
         "type": "text_textarea",
         "module": "text",
         "active": 1,
@@ -22,14 +22,14 @@
         "default": {
             "label": "above",
             "type": "text_default",
-            "weight": "3",
+            "weight": "5",
             "settings": [],
             "module": "text"
         },
         "teaser": {
             "label": "above",
             "type": "text_default",
-            "weight": "2",
+            "weight": "6",
             "settings": [],
             "module": "text"
         }

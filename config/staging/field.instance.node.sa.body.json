@@ -11,7 +11,7 @@
         "module": "text",
         "active": 1,
         "settings": {
-            "rows": "5",
+            "rows": "10",
             "summary_rows": 5
         }
     },
@@ -24,15 +24,16 @@
         "default": {
             "label": "hidden",
             "type": "text_default",
-            "weight": "5",
+            "weight": "6",
             "settings": [],
             "module": "text"
         },
         "teaser": {
             "label": "hidden",
-            "type": "hidden",
+            "type": "text_default",
             "weight": "3",
-            "settings": []
+            "settings": [],
+            "module": "text"
         }
     },
     "required": 0,
@@ -40,7 +41,7 @@
     "default_value": [
         {
             "summary": "",
-            "value": "Backdrop CMS doesn't sufficiently FOO under the scenario BAR.\r\n\r\nThis vulnerability is mitigated by the fact that an attacker must have a role with the permission \"administer FOO\".",
+            "value": "<p>Backdrop CMS doesn't sufficiently FOO under the scenario BAR. This vulnerability is mitigated by the fact that an attacker must have a role with the permission \"administer FOO\".</p>\r\n",
             "format": "filtered_html"
         }
     ],

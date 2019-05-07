@@ -1,47 +1,50 @@
 {
-    "_config_name": "layout.layout.security",
-    "path": "node/%",
-    "name": "security",
-    "title": "Security",
+    "_config_name": "layout.layout.newsletter",
+    "path": "newsletter",
+    "name": "newsletter",
+    "title": "Newsletter",
     "description": null,
     "renderer_name": "standard",
     "module": null,
-    "weight": -2,
+    "weight": 0,
     "storage": 1,
-    "layout_template": "moscone_flipped",
+    "layout_template": "borg_sutro",
     "disabled": false,
     "settings": {
-        "title": "",
-        "title_display": "default",
-        "title_block": null
+        "title": "Subscribe",
+        "title_display": "custom",
+        "title_block": "df41d07d-d134-41c7-8100-a6c546e8b011"
     },
     "positions": {
         "header": [
-            "b7e62930-439e-4df2-8500-0a4d5b5a681c",
-            "ab5d4a3a-ff1c-4f6c-ae06-6a807188533a",
-            "1c92f3f7-5bee-4326-9a03-3dc73ea7ef66"
+            "df41d07d-d134-41c7-8100-a6c546e8b011",
+            "f073450f-77af-46fe-9f00-e4d7f8811018",
+            "f8dcb481-1600-4815-b75f-955912953fb7"
         ],
         "top": [],
-        "content": [
-            "971576a0-611b-478a-9c01-1b91b772cb1c",
-            "738ae993-a0d3-4873-b724-360d408ee4cd",
-            "86d0cc7a-e4c5-4965-9f47-71f57d732ca1",
-            "3d0062a8-2b60-4f9b-b100-c4670df4251f"
+        "content": [],
+        "half1": [
+            "5f728f4d-39e1-4374-9100-c8cafcf972cb",
+            "1fb2f605-7570-4233-b500-fab72e1f92dd",
+            "fe4084b4-503a-4acf-8b47-71644f3dd63f"
         ],
-        "sidebar": [
-            "40b01f71-f22e-4cff-b500-ffd2f131c057"
+        "half2": [
+            "d7aeb93d-74af-4baa-8300-dc172dabc48f"
         ],
+        "below": [],
+        "below1": [],
+        "below2": [],
         "bottom": [],
         "footer": [
-            "92b01486-0db3-4967-9b00-d106b27099cf",
-            "601fd8c6-3a6e-4f6b-b701-1be0d326d11b",
-            "cd924445-f6d1-4d01-af01-1cc38031f72f",
-            "88ade636-d45e-4934-b056-86abe82eacd3"
+            "62373681-f984-4684-9900-cd988717ab5b",
+            "cca67b87-a46d-4fde-ba00-e8300baa4bb8",
+            "60aa7959-c169-4586-9502-2e25916a5718",
+            "dfe6b881-4538-4913-800d-132ee764eb60"
         ],
         "title": []
     },
     "content": {
-        "b7e62930-439e-4df2-8500-0a4d5b5a681c": {
+        "df41d07d-d134-41c7-8100-a6c546e8b011": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "module": "borg_blocks",
@@ -53,7 +56,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "b7e62930-439e-4df2-8500-0a4d5b5a681c",
+                "uuid": "df41d07d-d134-41c7-8100-a6c546e8b011",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -64,7 +67,7 @@
                 }
             }
         },
-        "ab5d4a3a-ff1c-4f6c-ae06-6a807188533a": {
+        "f073450f-77af-46fe-9f00-e4d7f8811018": {
             "plugin": "system:user-menu",
             "data": {
                 "module": "system",
@@ -83,7 +86,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "ab5d4a3a-ff1c-4f6c-ae06-6a807188533a",
+                "uuid": "f073450f-77af-46fe-9f00-e4d7f8811018",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -94,7 +97,7 @@
                 }
             }
         },
-        "1c92f3f7-5bee-4326-9a03-3dc73ea7ef66": {
+        "f8dcb481-1600-4815-b75f-955912953fb7": {
             "plugin": "system:main-menu",
             "data": {
                 "module": "system",
@@ -112,7 +115,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "1c92f3f7-5bee-4326-9a03-3dc73ea7ef66",
+                "uuid": "f8dcb481-1600-4815-b75f-955912953fb7",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -123,23 +126,23 @@
                 }
             }
         },
-        "971576a0-611b-478a-9c01-1b91b772cb1c": {
-            "plugin": "block:apr_24_security_advisory_correction",
+        "5f728f4d-39e1-4374-9100-c8cafcf972cb": {
+            "plugin": "block:3",
             "data": {
                 "module": "block",
-                "delta": "apr_24_security_advisory_correction",
+                "delta": "3",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "description": "Posted by Jack in collaboration with Jen after accidentally sending emails for old security updates",
-                        "delta": "apr_24_security_advisory_correction",
+                        "description": "",
+                        "delta": "3",
                         "reusable": true
                     },
                     "contexts": []
                 },
-                "uuid": "971576a0-611b-478a-9c01-1b91b772cb1c",
+                "uuid": "5f728f4d-39e1-4374-9100-c8cafcf972cb",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -150,108 +153,21 @@
                 }
             }
         },
-        "738ae993-a0d3-4873-b724-360d408ee4cd": {
-            "plugin": "system:main",
+        "1fb2f605-7570-4233-b500-fab72e1f92dd": {
+            "plugin": "layout:custom_block",
             "data": {
-                "module": "system",
-                "delta": "main",
+                "module": "layout",
+                "delta": "custom_block",
                 "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "dynamic",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "738ae993-a0d3-4873-b724-360d408ee4cd",
-                "style": {
-                    "plugin": "dynamic",
-                    "data": {
-                        "settings": {
-                            "classes": "l-content-wrapper",
-                            "wrapper_tag": "div",
-                            "title_tag": "h2",
-                            "title_classes": "block-title",
-                            "content_tag": "div",
-                            "content_classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "86d0cc7a-e4c5-4965-9f47-71f57d732ca1": {
-            "plugin": "borg_blocks:rss",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "rss",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "86d0cc7a-e4c5-4965-9f47-71f57d732ca1",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "3d0062a8-2b60-4f9b-b100-c4670df4251f": {
-            "plugin": "block:security_email_list",
-            "data": {
-                "module": "block",
-                "delta": "security_email_list",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "description": "Security email list",
-                        "delta": "security_email_list",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "3d0062a8-2b60-4f9b-b100-c4670df4251f",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "40b01f71-f22e-4cff-b500-ffd2f131c057": {
-            "plugin": "views:security-block_1",
-            "data": {
-                "module": "views",
-                "delta": "security-block_1",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": false,
-                    "use_pager": true,
-                    "pager_id": "0",
-                    "items_per_page": "10",
-                    "offset": 0,
-                    "path": "security-old",
-                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
+                    "content": "<p>The Backdrop newsletter will arrive in your inbox&nbsp;about once a month. It contains&nbsp;important news&nbsp;and updates about Backdrop CMS.&nbsp;</p>\r\n",
+                    "format": "filtered_html"
                 },
-                "uuid": "40b01f71-f22e-4cff-b500-ffd2f131c057",
+                "uuid": "1fb2f605-7570-4233-b500-fab72e1f92dd",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -262,7 +178,57 @@
                 }
             }
         },
-        "92b01486-0db3-4967-9b00-d106b27099cf": {
+        "fe4084b4-503a-4acf-8b47-71644f3dd63f": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>You can change your mind at any time by clicking the unsubscribe link in the footer of every&nbsp;newsletter.&nbsp;</p>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "fe4084b4-503a-4acf-8b47-71644f3dd63f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "d7aeb93d-74af-4baa-8300-dc172dabc48f": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>Backdrop CMS will never sell your email address. We will treat all your personal information with respect. For more information about our privacy practices please visit our <a href=\"https://backdropcms.org/privacy\">privacy page</a>.</p>\r\n\r\n<p><small>We use MailChimp as our marketing platform. By clicking below to subscribe, you acknowledge that your information will be transferred to Mailchimp for processing.&nbsp;<a href=\"https://mailchimp.com/legal/\" target=\"_blank\">Learn more about Mailchimp's privacy practices here.</a></small></p>\r\n",
+                    "format": "full_html"
+                },
+                "uuid": "d7aeb93d-74af-4baa-8300-dc172dabc48f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "62373681-f984-4684-9900-cd988717ab5b": {
             "plugin": "system:powered-by",
             "data": {
                 "module": "system",
@@ -274,7 +240,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "92b01486-0db3-4967-9b00-d106b27099cf",
+                "uuid": "62373681-f984-4684-9900-cd988717ab5b",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -285,7 +251,7 @@
                 }
             }
         },
-        "601fd8c6-3a6e-4f6b-b701-1be0d326d11b": {
+        "cca67b87-a46d-4fde-ba00-e8300baa4bb8": {
             "plugin": "on_the_web:social_links",
             "data": {
                 "module": "on_the_web",
@@ -308,7 +274,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "601fd8c6-3a6e-4f6b-b701-1be0d326d11b",
+                "uuid": "cca67b87-a46d-4fde-ba00-e8300baa4bb8",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -319,7 +285,7 @@
                 }
             }
         },
-        "cd924445-f6d1-4d01-af01-1cc38031f72f": {
+        "60aa7959-c169-4586-9502-2e25916a5718": {
             "plugin": "block:3",
             "data": {
                 "module": "block",
@@ -334,7 +300,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "cd924445-f6d1-4d01-af01-1cc38031f72f",
+                "uuid": "60aa7959-c169-4586-9502-2e25916a5718",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -357,7 +323,7 @@
                 ]
             }
         },
-        "88ade636-d45e-4934-b056-86abe82eacd3": {
+        "dfe6b881-4538-4913-800d-132ee764eb60": {
             "plugin": "menu:menu-footer-menu",
             "data": {
                 "module": "menu",
@@ -375,7 +341,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "88ade636-d45e-4934-b056-86abe82eacd3",
+                "uuid": "dfe6b881-4538-4913-800d-132ee764eb60",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -386,17 +352,5 @@
                 }
             }
         }
-    },
-    "conditions": [
-        {
-            "plugin": "node_nid",
-            "data": {
-                "settings": {
-                    "negate": false,
-                    "entity_id": "1812",
-                    "load_condition_nojs": "Load condition"
-                }
-            }
-        }
-    ]
+    }
 }
