@@ -47,6 +47,16 @@ function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
 function borg_cleanup_form_user_register_form_alter(&$form, &$form_state) {
   $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you request to receive a new password.');
   unset($form['account']['pass']['#description']);
+
+  $form['contact'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Email Notifications'),
+    '#weight' => 10,
+  );
+  $form['contact']['field_security_mailing_list'] = $form['field_security_mailing_list'];
+  unset($form['field_security_mailing_list']);
+  $form['contact']['mailchimp_signup'] = $form['mailchimp_signup'];
+  unset($form['mailchimp_signup']);
 }
 
 /**
@@ -62,8 +72,8 @@ function borg_cleanup_form_user_profile_form_alter(&$form, &$form_state) {
   $form['contact']['#title'] = t('Email Notifications');
   $form['contact']['field_security_mailing_list'] = $form['field_security_mailing_list'];
   unset($form['field_security_mailing_list']);
-  $form['contact']['field_mailchimp_signup'] = $form['field_mailchimp_signup'];
-  unset($form['field_mailchimp_signup']);
+  $form['contact']['mailchimp_signup'] = $form['mailchimp_signup'];
+  unset($form['mailchimp_signup']);
 }
 
 /**

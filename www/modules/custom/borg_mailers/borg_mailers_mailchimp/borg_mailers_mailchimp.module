@@ -1,10 +1,76 @@
 <?php
 /**
  * @file
- *   borg_mailers_mailchimp.module
- *   Conditionally Subscribe/Unsubscibe users to BackdropCMS.org mailing list on
- *   saving their user profile.
+ * Conditionally Subscribe/Unsubscibe to BackdropCMS.org mailing list on
+ * saving their account.
  */
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function borg_mailers_mailchimp_form_user_profile_form_alter(&$form, &$form_state) {
+  $uid = $form['#user']->uid;
+  $is_subcribed = db_query("SELECT mailchimp FROM {users} WHERE uid = :uid", array(':uid' => $uid))->fetchField();
+  $default = $is_subcribed ? TRUE : FALSE;
+  // Add a checkbox on the profile.
+  $form['mailchimp_signup'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Sign up for our monthly newsletter'),
+    '#default_value' => $default,
+  );
+  // Add a submit handler to save the data.
+  $form['#submit'][] = 'borg_mailers_mailchimp_form_user_form_submit';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Removes useless description text.
+ */
+function borg_mailers_mailchimp_form_user_register_form_alter(&$form, &$form_state) {
+  // Add a checkbox on the profile.
+  $form['mailchimp_signup'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Sign up for our monthly newsletter'),
+    '#default_value' => TRUE,
+  );
+  // Add a submit handler to save the data.
+  $form['#submit'][] = 'borg_mailers_mailchimp_form_user_form_submit';
+}
+
+/**
+ * Submit handler for user profile form.
+ * - Updates mailchimp value in DB
+ */
+function borg_mailers_mailchimp_form_user_form_submit(&$form, &$form_state) {
+  dpm($form_state['values']['mailchimp_signup']);
+  $uid = $form_state['user']->uid;
+  $is_subcribed = db_query("SELECT mailchimp FROM {users} WHERE uid = :uid", array(':uid' => $uid))->fetchField();
+  dvm($is_subcribed);
+  dvm($form_state['values']['mailchimp_signup']);
+  if ($is_subcribed != $form_state['values']['mailchimp_signup']) {
+    dpm('different');
+    if ($is_subcribed && $form_state['values']['mailchimp_signup'] === FALSE) {
+      // Unsubscribe.
+      db_query("UPDATE {users} SET mailchimp = 0 WHERE uid = :uid", array(':uid' => $uid));
+    }
+    elseif (!$is_subcribed && $form_state['values']['mailchimp_signup']) {
+      // Subscribe.
+      db_query("UPDATE {users} SET mailchimp = 1 WHERE uid = :uid", array(':uid' => $uid));
+    }
+  }
+}
+
+/**
+ * Implements hook_user_load().
+ * - Adds mailchimp_signup property to user object.
+ */
+function borg_mailers_mailchimp_user_load($users) {
+  $result = db_query('SELECT mailchimp FROM {users} WHERE uid IN (:uids)', array(':uids' => array_keys($users)));
+  foreach ($result as $record) {
+    $users[$record->uid]->mailchimp_signup = $result->mailchimp;
+  }
+}
 
 /**
  * Implements hook_user_update().
@@ -21,7 +87,7 @@ function borg_mailers_mailchimp_user_update($account) {
  * @see _borg_mailers_mailchimp_user_update().
  */
 function borg_mailers_mailchimp_user_insert($account) {
-  _borg_mailers_mailchimp_user_update($account)
+  _borg_mailers_mailchimp_user_update($account);
 }
 
 /**
@@ -30,12 +96,10 @@ function borg_mailers_mailchimp_user_insert($account) {
  * @see _borg_mailers_mailchimp_set_status().
  */
 function _borg_mailers_mailchimp_user_update($account) {
-  if ($account->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 1 &&
-    $account->original->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 0) {
+  if ($account->mailchimp_signup == 1 && $account->original->mailchimp_signup == 0) {
     _borg_mailers_mailchimp_set_status($account, 'subscribed');
   }
-  elseif ($account->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 0 &&
-    $account->original->field_mailchimp_signup[LANGUAGE_NONE][0]['value'] == 1) {
+  elseif ($account->mailchimp_signup == 0 && $account->original->mailchimp_signup['value'] == 1) {
     _borg_mailers_mailchimp_set_status($account, 'unsubscribed');
   }
 }
