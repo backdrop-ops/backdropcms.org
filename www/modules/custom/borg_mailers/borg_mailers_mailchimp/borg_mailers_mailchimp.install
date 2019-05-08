@@ -1,0 +1,27 @@
+<?php
+/**
+ * @file
+ * Install / Uninstall / Update functions.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function borg_mailers_mailchimp_install() {
+  // Add a column to the user table.
+  $spec = array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+    'size' => 'tiny',
+    'description' => 'Whether the email is subscribed(1) or not(0).',
+  );
+  db_add_field('users', 'mailchimp', $spec);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function borg_mailers_mailchimp_uninstall() {
+  db_drop_field('users', 'mailchimp');
+}
