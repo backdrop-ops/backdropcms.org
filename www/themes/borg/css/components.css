@@ -810,6 +810,20 @@ body.user-form .page-title {
   width: 100%;
   flex: 1;
 }
+#user-register-form #edit-contact {
+  margin: 30px 0;
+}
+#user-register-form #edit-contact .fieldset-wrapper {
+  padding-bottom: 0;
+}
+#user-register-form #edit-contact .form-item input {
+  display: inline-block;
+  width: auto;
+  flex: none;
+}
+#user-register-form #edit-contact .form-item label {
+  width: auto;
+}
 #user-register-form .form-item div.description {
   display: none;
 }
@@ -820,6 +834,10 @@ body.user-form .page-title {
 #user-register-form .form-item-pass .form-item {
   margin: 0;
   padding: 10px 0 15px 0;
+}
+
+#user-register-form .akismet-privacy {
+  color: #666;
 }
 
 @media (max-width: 580px) {
