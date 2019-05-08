@@ -68,7 +68,7 @@ function _borg_mailers_mailchimp_set_status($account, $status = 'subscribed') {
     curl_setopt(
       $ch,
       CURLOPT_URL,
-      "https://us20.api.mailchimp.com/3.0/lists/$list/members/$subHash"
+      "https://us7.api.mailchimp.com/3.0/lists/$list/members/$subHash"
     );
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
   }
@@ -76,7 +76,7 @@ function _borg_mailers_mailchimp_set_status($account, $status = 'subscribed') {
     curl_setopt(
       $ch,
       CURLOPT_URL,
-      "https://us20.api.mailchimp.com/3.0/lists/$list/members/"
+      "https://us7.api.mailchimp.com/3.0/lists/$list/members/"
     );
     curl_setopt($ch, CURLOPT_POST, 1);
   }
@@ -113,7 +113,7 @@ function _borg_mailers_mailchimp_check_existing_user($subHash) {
   curl_setopt(
     $ch,
     CURLOPT_URL,
-    "https://us20.api.mailchimp.com/3.0/lists/863d1bf27f/members/$subHash"
+    "https://us7.api.mailchimp.com/3.0/lists/863d1bf27f/members/$subHash"
   );
   curl_setopt(
     $ch,
