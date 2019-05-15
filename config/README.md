@@ -2,7 +2,7 @@ Config Workflow Instructions
 =============================
 
 
-## How to work with confifg for api.backdropcms.org
+## How to work with confifg for backdropcms.org
 
 
 Rule #1 never commit anything into the live-active directory.
