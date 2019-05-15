@@ -43,13 +43,9 @@ function borg_mailers_mailchimp_form_user_register_form_alter(&$form, &$form_sta
  * - Updates mailchimp value in DB
  */
 function borg_mailers_mailchimp_form_user_form_submit(&$form, &$form_state) {
-  dpm($form_state['values']['mailchimp_signup']);
   $uid = $form_state['user']->uid;
   $is_subcribed = db_query("SELECT mailchimp FROM {users} WHERE uid = :uid", array(':uid' => $uid))->fetchField();
-  dvm($is_subcribed);
-  dvm($form_state['values']['mailchimp_signup']);
   if ($is_subcribed != $form_state['values']['mailchimp_signup']) {
-    dpm('different');
     if ($is_subcribed && $form_state['values']['mailchimp_signup'] === FALSE) {
       // Unsubscribe.
       db_query("UPDATE {users} SET mailchimp = 0 WHERE uid = :uid", array(':uid' => $uid));
