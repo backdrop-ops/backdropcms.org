@@ -12,6 +12,12 @@ server. All changes that need to be made to configuration should be added and
 committed into the staging directory, so it can be safely deployed to any
 environment.
 
+Your local settings.php should have the following directories defined:
+```php
+$config_directories['active'] = '../config/dev-active';
+$config_directories['staging'] = '../config/staging';
+```
+
 
 ## Steps to commit config are as follows:
 
