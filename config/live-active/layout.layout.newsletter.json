@@ -189,7 +189,7 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>You can change your mind at any time by clicking the unsubscribe link in the footer of every&nbsp;newsletter.&nbsp;</p>\r\n",
+                    "content": "<p>You can change your mind at any time by clicking the \"unsubscribe\" link, included&nbsp;in the footer of every&nbsp;newsletter email.&nbsp;</p>\r\n",
                     "format": "filtered_html"
                 },
                 "uuid": "fe4084b4-503a-4acf-8b47-71644f3dd63f",
@@ -214,7 +214,7 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>Backdrop CMS will never sell your email address. We will treat all your personal information with respect. For more information about our privacy practices please visit our <a href=\"https://backdropcms.org/privacy\">privacy page</a>.</p>\r\n\r\n<p><small>We use MailChimp as our marketing platform. By clicking below to subscribe, you acknowledge that your information will be transferred to Mailchimp for processing.&nbsp;<a href=\"https://mailchimp.com/legal/\" target=\"_blank\">Learn more about Mailchimp's privacy practices here.</a></small></p>\r\n",
+                    "content": "<p>Backdrop CMS will never sell your email address. We will treat all your personal information with respect. For more information about our privacy practices please visit our <a href=\"https://backdropcms.org/privacy\">privacy page</a>.</p>\r\n\r\n<p><small>We use MailChimp as our marketing platform. By subscribing, you acknowledge that your information will be transferred to Mailchimp for processing. <a href=\"https://mailchimp.com/legal/\" target=\"_blank\">Learn more about Mailchimp's privacy practices here.</a></small></p>\r\n",
                     "format": "full_html"
                 },
                 "uuid": "d7aeb93d-74af-4baa-8300-dc172dabc48f",
@@ -295,6 +295,7 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
+                        "description": "",
                         "delta": "3",
                         "reusable": true
                     },
