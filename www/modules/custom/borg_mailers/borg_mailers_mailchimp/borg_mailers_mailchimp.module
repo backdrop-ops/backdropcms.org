@@ -21,7 +21,7 @@ function borg_mailers_mailchimp_user_update($account) {
  * @see _borg_mailers_mailchimp_user_update().
  */
 function borg_mailers_mailchimp_user_insert($account) {
-  _borg_mailers_mailchimp_user_update($account)
+  _borg_mailers_mailchimp_user_update($account);
 }
 
 /**
