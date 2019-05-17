@@ -618,12 +618,8 @@
                 },
                 "pager_options": null,
                 "access": {
-                    "type": "role",
-                    "role": {
-                        "authenticated": "authenticated",
-                        "4": "4",
-                        "3": "3"
-                    }
+                    "type": "perm",
+                    "perm": "access user profiles"
                 },
                 "access_options": null,
                 "filters": {
