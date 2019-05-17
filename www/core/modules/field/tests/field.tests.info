@@ -58,6 +58,12 @@ description = Tests the adding of field blocks and formatter settings.
 group = Field API
 file = field.test
 
+[FieldGetValueTestCase]
+name = Field get value tests
+description = Tests field_get_value().
+group = Field API
+file = field.test
+
 [FieldViewsDataTest]
 name = Views integration for Field API
 description = Tests the Field API Views data.
@@ -70,7 +76,7 @@ description = Tests the Views field of the Field API integration.
 group = Field API
 file = field_views.test
 
-; Added by Backdrop CMS packaging script on 2019-04-17
+; Added by Backdrop CMS packaging script on 2019-05-15
 project = backdrop
-version = 1.12.6
-timestamp = 1555538340
+version = 1.13.0
+timestamp = 1557969328

@@ -257,7 +257,7 @@ function system_element_info() {
     '#button_type' => 'submit',
     '#executes_submit_callback' => TRUE,
     '#limit_validation_errors' => FALSE,
-    '#process' => array('ajax_process_form'),
+    '#process' => array('ajax_process_form', 'form_process_button'),
     '#theme_wrappers' => array('button'),
   );
   $types['button'] = array(
@@ -266,7 +266,7 @@ function system_element_info() {
     '#button_type' => 'submit',
     '#executes_submit_callback' => FALSE,
     '#limit_validation_errors' => FALSE,
-    '#process' => array('ajax_process_form'),
+    '#process' => array('ajax_process_form', 'form_process_button'),
     '#theme_wrappers' => array('button'),
   );
   $types['image_button'] = array(
@@ -274,7 +274,7 @@ function system_element_info() {
     '#button_type' => 'submit',
     '#executes_submit_callback' => TRUE,
     '#limit_validation_errors' => FALSE,
-    '#process' => array('ajax_process_form'),
+    '#process' => array('ajax_process_form', 'form_process_button'),
     '#return_value' => TRUE,
     '#has_garbage_value' => TRUE,
     '#src' => NULL,
@@ -3201,8 +3201,8 @@ function system_header_block($settings) {
   $site_config = config('system.core');
   $variables['logo']        = $settings['logo'] ? backdrop_get_logo() : NULL;
   $variables['logo_attributes'] = $settings['logo'] ? array_diff_key(backdrop_get_logo_info(), array('path' => '')) : array();
-  $variables['site_name']   = $settings['site_name'] ? check_plain($site_config->get('site_name')) : '';
-  $variables['site_slogan'] = $settings['site_slogan'] ? filter_xss_admin($site_config->get('site_slogan')) : '';
+  $variables['site_name']   = $settings['site_name'] ? check_plain($site_config->getTranslated('site_name')) : '';
+  $variables['site_slogan'] = $settings['site_slogan'] ? filter_xss_admin($site_config->getTranslated('site_slogan')) : '';
   $variables['menu']        = $menu ? theme('links__header_menu', array('links' => $menu)) : NULL;
 
   return theme('header', $variables);
@@ -4214,4 +4214,14 @@ function system_admin_bar_cache_info() {
     );
   }
   return $caches;
+}
+
+/**
+ * Check if theme_debug is enabled, and throw a warning if so.
+ */
+function system_theme_debug_enabled_warning() {
+  $theme_debug_enabled = config_get('system.core', 'theme_debug');
+  if ($theme_debug_enabled) {
+    backdrop_set_message(t('Theme debugging is enabled. See the <a href="!url">Status report</a> page for more info.', array('!url' => url('admin/reports/status'))), 'warning', FALSE);
+  }
 }

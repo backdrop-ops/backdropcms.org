@@ -3393,6 +3393,25 @@ function form_process_actions($element, &$form_state) {
 }
 
 /**
+ * Processes a form button element.
+ *
+ * @param $element
+ *   An associative array containing the properties and children of the
+ *   form button.
+ * @param $form_state
+ *   The $form_state array for the form this element belongs to.
+ *
+ * @return
+ *   The processed element.
+ */
+function form_process_button($element, &$form_state) {
+  // We normally want to add backdrop.form so that the double submit protection
+  // can be added to the site.
+  $element['#attached']['library'][] = array('system', 'backdrop.form');
+  return $element;
+}
+
+/**
  * Processes a container element.
  *
  * @param $element
@@ -4828,7 +4847,7 @@ function _form_set_class(&$element, $class = array()) {
  *   are optional except as noted):
  *   - operations: (required) Array of operations to be performed, where each
  *     item is an array consisting of the name of an implementation of
- *     callback_batch_operation() and an array of parameter.
+ *     callback_batch_operation() and an array of parameters.
  *     Example:
  *     @code
  *     array(

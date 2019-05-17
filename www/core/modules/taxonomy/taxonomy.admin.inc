@@ -15,8 +15,10 @@ function taxonomy_overview_vocabularies($form) {
   $vocabularies = taxonomy_vocabulary_load_multiple(FALSE);
   $form['#tree'] = TRUE;
   foreach ($vocabularies as $vocabulary) {
+    $term_count = db_query("SELECT count(tid) FROM {taxonomy_term_data} WHERE vocabulary = :vocab", array(':vocab' => $vocabulary->machine_name))->fetchField();
     $form[$vocabulary->machine_name]['#vocabulary'] = $vocabulary;
     $form[$vocabulary->machine_name]['name'] = array('#markup' => check_plain($vocabulary->name));
+    $form[$vocabulary->machine_name]['items'] = array('#markup' => $term_count);
     $form[$vocabulary->machine_name]['weight'] = array(
       '#type' => 'weight',
       '#title' => t('Weight for @title', array('@title' => $vocabulary->name)),
@@ -157,6 +159,7 @@ function taxonomy_form_vocabulary($form, &$form_state, TaxonomyVocabulary $vocab
     '#attached' => array(
       'js' => array(backdrop_get_path('module', 'taxonomy') . '/js/taxonomy.vocabulary.js'),
     ),
+    '#weight' => 99,
   );
 
   // Vocabulary permissions.
@@ -802,6 +805,14 @@ function taxonomy_form_term($form, &$form_state, TaxonomyTerm $term = NULL, Taxo
     '#value' => isset($term->vocabulary) ? $term->vocabulary : $vocabulary->machine_name,
   );
 
+  $form['additional_settings'] = array(
+    '#type' => 'vertical_tabs',
+    '#attached' => array(
+      'js' => array(backdrop_get_path('module', 'taxonomy') . '/js/taxonomy.term.js'),
+    ),
+    '#weight' => 99,
+  );
+
   field_attach_form('taxonomy_term', $term, $form, $form_state);
 
   $form['relations'] = array(
@@ -809,7 +820,8 @@ function taxonomy_form_term($form, &$form_state, TaxonomyTerm $term = NULL, Taxo
     '#title' => t('Relations'),
     '#collapsible' => TRUE,
     '#collapsed' => ($vocabulary->hierarchy != TAXONOMY_HIERARCHY_MULTIPLE),
-    '#weight' => 10,
+    '#weight' => -10,
+    '#group' => 'additional_settings',
   );
 
   $parent = array_keys(taxonomy_term_load_parents($term->tid));
