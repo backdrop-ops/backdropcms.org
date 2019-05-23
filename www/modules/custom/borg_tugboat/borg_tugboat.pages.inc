@@ -114,6 +114,9 @@ function borg_tugboat_create_demo_form_submit($form, &$form_state) {
   $return_data = array();
   $error_string = '';
 
+  // Initiate a ping to get an open connection to Tugboat.
+  _borg_tugboat_execute('ping', $return_data, $error_string);
+
   // Use the ref_id set in the validate handler above to create a clone.
   // "clone" approach, nearly instantaneous but an exact copy.
   if (isset($form_state['values']['ref_id'])) {
