@@ -7,6 +7,9 @@
  * Menu callback; Create a demo given correct $_GET arguments.
  */
 function borg_tugboat_demo_create_page() {
+  // Disable caching on this page, needed for AJAX form submitting working with
+  // the page cache.
+  backdrop_page_is_cacheable(FALSE);
   return theme('borg_tugboat_demo_create_page', array(
     'form' => backdrop_get_form('borg_tugboat_create_demo_form'),
   ));
