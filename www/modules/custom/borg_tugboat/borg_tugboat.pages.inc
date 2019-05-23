@@ -114,20 +114,24 @@ function borg_tugboat_create_demo_form_submit($form, &$form_state) {
   $return_data = array();
   $error_string = '';
 
-  // Initiate a ping to get an open connection to Tugboat.
-  _borg_tugboat_execute('ping', $return_data, $error_string);
-
-  // Use the ref_id set in the validate handler above to create a clone.
-  // "clone" approach, nearly instantaneous but an exact copy.
-  if (isset($form_state['values']['ref_id'])) {
-    $ref_id = $form_state['values']['ref_id'];
-    $return_status = _borg_tugboat_execute("clone $ref_id label=one-click-demo--$date--$ref", $return_data, $error_string);
-  }
-  // "create preview" approach, slightly slower but more flexible. Note that
-  // because we set ref_id above in the validate function, this should never
-  // execute. It's left here for reference.
-  else {
-    $return_status = _borg_tugboat_execute("create preview label=one-click-demo--$date--$ref repo=$repo preview=$ref", $return_data, $error_string);
+  // For unknown reasons initial attempts to create a sandbox may fail. So try
+  // creating a sandbox twice if the first attempt does not work.
+  for ($attempt_number = 1; $attempt_number <= 2; $attempt_number++) {
+    // Use the ref_id set in the validate handler above to create a clone.
+    // "clone" approach, nearly instantaneous but an exact copy.
+    if (isset($form_state['values']['ref_id'])) {
+      $ref_id = $form_state['values']['ref_id'];
+      $return_status = _borg_tugboat_execute("clone $ref_id label=one-click-demo--$date--$ref", $return_data, $error_string);
+    }
+    // "create preview" approach, slightly slower but more flexible. Note that
+    // because we set ref_id above in the validate function, this should never
+    // execute. It's left here for reference.
+    else {
+      $return_status = _borg_tugboat_execute("create preview label=one-click-demo--$date--$ref repo=$repo preview=$ref", $return_data, $error_string);
+    }
+    if ($return_status) {
+      break;
+    }
   }
 
   if (!$return_status) {
