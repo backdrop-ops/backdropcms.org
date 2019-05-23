@@ -5,3 +5,5 @@ description = This website has been asymiliated. This is a sub-theme of Borg.
 ; This sub-theme keeps site-specific CSS out of the base theme.
 backdrop = 1.x
 base theme = borg
+
+stylesheets[screen][] = css/components-demos.css
