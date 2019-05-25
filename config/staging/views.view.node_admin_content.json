@@ -755,6 +755,7 @@
                         "value": {
                             "project_layout": "project_layout",
                             "project_module": "project_module",
+                            "project_dummy": "project_dummy",
                             "project_theme": "project_theme"
                         },
                         "group": "1",
@@ -847,6 +848,54 @@
                                 "4": 0,
                                 "3": 0
                             }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "type_1": {
+                        "id": "type_1",
+                        "table": "node",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": {
+                            "project_layout": "project_layout",
+                            "project_module": "project_module",
+                            "project_dummy": "project_dummy",
+                            "project_theme": "project_theme"
+                        },
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "type_1_op",
+                            "label": "Type",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "type_1_op",
+                            "identifier": "type_1",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            },
+                            "reduce": 1
                         },
                         "is_grouped": false,
                         "group_info": {
