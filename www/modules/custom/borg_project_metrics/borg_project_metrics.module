@@ -57,14 +57,13 @@ function borg_project_metrics_get_downloads($project = '') {
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
     curl_setopt($ch, CURLOPT_HEADER, 1);
     $content = curl_exec($ch);
-
-    // Then, after your curl_exec call:
     $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     $header = substr($content, 0, $header_size);
     $body = substr($content, $header_size);
     curl_close($ch);
     $myHeader = explode("\n", $header);
     if (
+      isset($myHeader[16] &&
       strpos($myHeader[16], "rel=\"next\"") == TRUE &&
       strpos($myHeader[16], "rel=\"prev\"") == FALSE
     ) {
@@ -75,6 +74,7 @@ function borg_project_metrics_get_downloads($project = '') {
       $nextUrl = rtrim($nextUrl, ">; ");
     }
     elseif (
+      isset($myHeader[16] &&
       strpos($myHeader[16], "rel=\"next\"") == TRUE &&
       strpos($myHeader[16], "rel=\"prev\"") == TRUE
     ) {
