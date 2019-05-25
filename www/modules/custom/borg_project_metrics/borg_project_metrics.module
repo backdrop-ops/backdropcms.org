@@ -42,26 +42,61 @@ function borg_project_metrics_get_project_nodes() {
  */
 function borg_project_metrics_get_downloads($project = '') {
   global $settings;
-  $url = "https://api.github.com/repos/$project/releases";
+  $nextUrl = "https://api.github.com/repos/$project/releases";
   $token = $settings['githubapi_token'];
   $authorization = "Authorization: token $token";
-
-  // Initiate a curl session.
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
-  curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
-  $content = curl_exec($ch);
-  curl_close($ch);
-  $json = json_decode($content, TRUE);
   $total = 0;
-  if (!empty($json)) {
-    foreach ($json as $j) {
-      $total += isset($j['assets'][0]['download_count']) ? $j['assets'][0]['download_count'] : 0;
+
+  do {
+    // Initiate a curl session.
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', $authorization));
+    curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+    curl_setopt($ch, CURLOPT_URL, $nextUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 1);
+    $content = curl_exec($ch);
+
+    // Then, after your curl_exec call:
+    $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+    $header = substr($content, 0, $header_size);
+    $body = substr($content, $header_size);
+    curl_close($ch);
+    $myHeader = explode("\n", $header);
+    if (
+      strpos($myHeader[16], "rel=\"next\"") == TRUE &&
+      strpos($myHeader[16], "rel=\"prev\"") == FALSE
+    ) {
+      $nextUrl = explode("rel=\"next\"", $myHeader[16]);
+      $nextUrl = $nextUrl[0];
+      $nextUrl = explode("<", $nextUrl);
+      $nextUrl = $nextUrl[1];
+      $nextUrl = rtrim($nextUrl, ">; ");
     }
-  }
+    elseif (
+      strpos($myHeader[16], "rel=\"next\"") == TRUE &&
+      strpos($myHeader[16], "rel=\"prev\"") == TRUE
+    ) {
+      $nextUrl = explode("rel=\"next\"", $myHeader[16]);
+      $nextUrl = $nextUrl[0];
+      $nextUrl = explode("rel=\"prev\"", $nextUrl);
+      $nextUrl = $nextUrl[1];
+      $nextUrl = explode("<", $nextUrl);
+      $nextUrl = $nextUrl[1];
+      $nextUrl = rtrim($nextUrl, ">; ");
+    }
+    else {
+      $nextUrl = NULL;
+    }
+    $json = json_decode($body, TRUE);
+    if (!empty($json)) {
+      foreach ($json as $j) {
+        $total += isset($j['assets'][0]['download_count']) ? $j['assets'][0]['download_count'] : 0;
+      }
+    }
+  } while($nextUrl);
+
   return $total;
 }
 
