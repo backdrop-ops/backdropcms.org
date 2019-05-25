@@ -118,7 +118,7 @@ function borg_project_metrics_cron() {
   // Run at ~2AM EST.
   if (date('G') == 22) {
     $project_nodes = borg_project_metrics_get_project_nodes();
-    foreach($project_nodes as $m) {
+    foreach ($project_nodes as $m) {
       $num = borg_project_metrics_get_downloads($m[0]);
       if ($num) {
         try {
@@ -142,7 +142,7 @@ function borg_project_metrics_cron() {
         $last_date = $commits['date'];
         borg_project_metrics_parse_metrics('commits', $last_date);
       }
-      catch(Exception $e) {
+      catch (Exception $e) {
         $message = $e->getMessage();
         watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
       }
@@ -153,7 +153,7 @@ function borg_project_metrics_cron() {
         $last_date = borg_project_metrics_get_display_metric_from_db('comments')['date'];
         borg_project_metrics_parse_metrics('comments', $last_date);
       }
-      catch(Exception $e) {
+      catch (Exception $e) {
         $message = $e->getMessage();
         watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
       }
@@ -180,7 +180,7 @@ function borg_project_metrics_cron() {
 function borg_project_metrics_get_metrics($type, $date_time = '2017-07-08 00:00:00') {
   global $settings;
   $token = $settings['githubapi_token'];
-  $authorization = "Authorization: token $token";
+  $authorization = 'Authorization: token ' . $token;
   $metrics = [];
   $i = 1;
   $date_time = str_replace(' ', 'T', $date_time) . 'Z';
@@ -212,7 +212,8 @@ function borg_project_metrics_get_metrics($type, $date_time = '2017-07-08 00:00:
       $metrics[$i] = $datum;
     }
     $i++;
-  } while ($res_code == 200 && !empty($json));
+  }
+  while ($res_code == 200 && !empty($json));
 
   // If the $type is comments then we also want to get the contrib comments.
   if ($type == 'comments') {
@@ -415,7 +416,7 @@ function borg_project_metrics_put_metrics_into_db($type, $date, $total_to_date) 
 function borg_project_metrics_get_contrib_comments($project, $date) {
   global $settings;
   $token = $settings['githubapi_token'];
-  $authorization = "Authorization: token $token";
+  $authorization = 'Authorization: token ' . $token;
   $date = str_replace(' ', 'T', $date) . 'Z';
   $project_comment_metrics = [];
   $i = 1;
