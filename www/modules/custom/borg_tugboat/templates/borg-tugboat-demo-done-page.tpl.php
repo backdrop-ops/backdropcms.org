@@ -16,21 +16,12 @@
     <?php print l(t('Visit your site'), $url, array('attributes' => array('class' => array('button button-large')))); ?>
   </p>
 
-  <p class="borg-demo-persist-notice">
-    Your demo site will persist for <strong><?php print $duration; ?></strong>.
-  </p>
-
   <p class="borg-demo-email-notice">
     This demo acts exactly as a new Backdrop installation as it would if you
     downloaded it, including running the installer. You'll set an administrator
     account as part of the setup. Note that sending email from a demo sandbox
     is not allowed, so <strong>password recovery will not work</strong>. Be sure
     to remember your password.
-  </p>
-
-  <p class="borg-demo-time-notice">
-    There is no export functionality in the demo sandbox. <strong>Any work you
-    do will be temporary</strong> and be deleted after <?php print $duration; ?>.
   </p>
 
   <figure class="borg-demo-tugboat-information">
