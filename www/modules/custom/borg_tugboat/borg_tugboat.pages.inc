@@ -144,8 +144,9 @@ function borg_tugboat_create_demo_form_submit($form, &$form_state) {
     }
   }
   else {
-    backdrop_set_message(t('New demo sandbox created successfully! Your demo site will persist for <strong>1 day</strong>.'));
-    backdrop_set_message(t('There is no export functionality in the demo sandbox. <strong>Any work you do will be temporary</strong> and be deleted after 1 day.'), 'warning');
+    $duration = format_interval(config_get('borg_tugboat.settings', 'sandbox_lifetime'));
+    backdrop_set_message(t('New demo sandbox created successfully! Your demo site will persist for <strong>@duration</strong>.', array('@duration' => $duration)));
+    backdrop_set_message(t('There is no export functionality in the demo sandbox. <strong>Any work you do will be temporary</strong> and be deleted after @duration.', array('@duration' => $duration)), 'warning');
     $form_state['redirect'] = array('demo/created', array('query' => array(
       'url' => $return_data['url'],
     )));
