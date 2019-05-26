@@ -135,7 +135,7 @@ function borg_tugboat_create_demo_form_submit($form, &$form_state) {
   }
 
   if (!$return_status) {
-    backdrop_set_message(t('A demo sandbox could not be created at this time! Please try again later.'));
+    backdrop_set_message(t('A demo sandbox could not be created at this time. Please try again later.'), 'warning');
     if ($error_string) {
       watchdog('borg_tugboat', 'Failed to create sandbox. Error from Tugboat: <pre>@error</pre>', array('@error' => $error_string));
     }
@@ -144,7 +144,8 @@ function borg_tugboat_create_demo_form_submit($form, &$form_state) {
     }
   }
   else {
-    backdrop_set_message(t('New sandbox creation successful.'));
+    backdrop_set_message(t('New demo sandbox created successfully! Your demo site will persist for 1 day.'));
+    backdrop_set_message(t('There is no export functionality in the demo sandbox. <strong>Any work you do will be temporary</strong> and be deleted after 1 day.'), 'warning');
     $form_state['redirect'] = array('demo/created', array('query' => array(
       'url' => $return_data['url'],
     )));
