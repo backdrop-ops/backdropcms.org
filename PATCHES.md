@@ -1,7 +1,9 @@
 Patches to Backdrop Core:
 =========================
 
-None
+Views - prevent PHP warning
+  https://github.com/backdrop/backdrop-issues/issues/3832
+  https://github.com/backdrop/backdrop/pull/2710.patch
 
 
 Patches to Backdrop Contrib:
