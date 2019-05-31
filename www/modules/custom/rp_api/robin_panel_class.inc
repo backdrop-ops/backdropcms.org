@@ -111,11 +111,19 @@ class RobinPanel {
       $error_message .= $data_line;
     }
 
-    $socket = fsockopen($this->host, $this->port, $errno, $errstr);
+    // The RobinPanel server uses a self-signed certificate, which is fine for
+    // us but requires we skip SSL validation.
+    $stream_context = stream_context_create(array(
+      'ssl' => array(
+        'verify_peer' => FALSE,
+        'verify_peer_name' => FALSE,
+      )
+    ));
+    $socket = stream_socket_client($this->host . ':' . $this->port, $error_number, $error_string, ini_get('default_socket_timeout'), STREAM_CLIENT_CONNECT, $stream_context);
 
     if (!$socket) {
       if ($this->debug) {
-        $error_message .= "Socket error: $errno - $errstr ";
+        $error_message .= "Socket error: $error_number - $error_string ";
         $error_message .= "\n---------------\n";
         fwrite($handle, $error_message);
         fclose($handle);
