@@ -47,17 +47,17 @@ function template_preprocess_views_view(&$variables) {
 
   $variables['rows']       = (!empty($view->result) || $view->style_plugin->even_empty()) ? $view->style_plugin->render($view->result) : '';
 
-  $variables['name']       = $view->name;
   $variables['css_name']   = backdrop_clean_css_identifier($view->name);
-  $variables['display_id'] = backdrop_clean_css_identifier($view->current_display);
+  $variables['name']       = $view->name;
+  $variables['display_id'] = $view->current_display;
 
   // Basic classes
   $variables['css_class'] = '';
 
   $variables['classes'] = array();
   $variables['classes'][] = 'view';
-  $variables['classes'][] = 'view-' . $variables['css_name'];
-  $variables['classes'][] = 'view-id-' . $variables['css_name'];
+  $variables['classes'][] = 'view-' . backdrop_clean_css_identifier($variables['name']);
+  $variables['classes'][] = 'view-id-' . $variables['name'];
   $variables['classes'][] = 'view-display-id-' . $variables['display_id'];
 
   $css_class = $view->display_handler->get_option('css_class');
@@ -930,18 +930,10 @@ function template_preprocess_views_view_list(&$variables) {
   $handler  = $variables['view']->style_plugin;
 
   $class = explode(' ', $handler->options['class']);
-  $class_filters = array();
-  foreach ($class as $individual) {
-    $class_filters[] = array();
-  }
-  $class = array_map('backdrop_clean_css_identifier', $class, $class_filters);
+  $class = array_map('backdrop_clean_css_identifier', $class, array(array()));
 
   $wrapper_class = explode(' ', $handler->options['wrapper_class']);
-  $wrapper_class_filters = array();
-  foreach ($wrapper_class as $individual) {
-    $wrapper_class_filters[] = array();
-  }
-  $wrapper_class = array_map('backdrop_clean_css_identifier', $wrapper_class, $wrapper_class_filters);
+  $wrapper_class = array_map('backdrop_clean_css_identifier', $wrapper_class, array(array()));
 
   $variables['class'] = implode(' ', $class);
   $variables['wrapper_class'] = implode(' ', $wrapper_class);
