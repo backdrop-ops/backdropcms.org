@@ -500,6 +500,9 @@ table {
   border-spacing: 0;
   border: 0;
 }
+tbody {
+  border-bottom: 1px solid #f7f7f7;
+}
 tr.even,
 tr.odd {
   border: 1px solid #f7f7f7;
@@ -1316,6 +1319,27 @@ div.filter-options select {
   background: #ffffff;
 }
 
+/* Layout conditions */
+.layout-access-list ul {
+  font-size: 0.923em;
+}
+.layout-access-list ul li {
+  background: #f7f7f7;
+  border: 1px solid #f7f7f7;
+  border-top: 0;
+  border-bottom: 0;
+}
+.layout-access-list ul li:nth-child(odd) {
+  background: #fff;
+}
+.layout-access-list ul li:hover {
+  background: #ffff99;
+}
+.layout-access-list .layout-condition {
+  min-height: 14px;
+  padding: 10px 20px;
+}
+
 /* Update options. */
 div.admin-options {
   background: #f8f8f8;
@@ -1363,7 +1387,7 @@ table.update {
   border-radius: 4px;
 }
 
-/* Maintenance theming */
+/* Maintenance page styles */
 body.maintenance-page {
   background: #E8E6E5;
   padding: 1em;
@@ -1528,7 +1552,7 @@ ol.task-list .done:before {
   display: none;
 }
 
-/* Shortcut theming */
+/* Shortcut styles */
 div.add-or-remove-shortcuts {
   float: left; /* LTR */
   padding-top: 6px;

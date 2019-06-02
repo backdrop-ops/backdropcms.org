@@ -1,11 +1,12 @@
 name = Update test subtheme
 description = Test theme which uses update_test_basetheme as the base theme.
 type = theme
+version = BACKDROP_VERSION
 backdrop = 1.x
 base theme = update_test_basetheme
 hidden = TRUE
 
-; Added by Backdrop CMS packaging script on 2019-05-15
+; Added by Backdrop CMS packaging script on 2019-05-31
 project = backdrop
-version = 1.13.0
-timestamp = 1557969328
+version = 1.13.2
+timestamp = 1559351624

@@ -1,9 +1,7 @@
 Patches to Backdrop Core:
 =========================
 
-Views - prevent PHP warnings on backdrop_clean_css_identifier
-  https://github.com/backdrop/backdrop-issues/issues/3832
-  https://github.com/backdrop/backdrop/pull/2710.patch
+none
 
 
 Patches to Backdrop Contrib:
