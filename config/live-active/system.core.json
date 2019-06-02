@@ -96,5 +96,7 @@
     "path_pattern": "account/[user:name]",
     "x_frame_options": "SAMEORIGIN",
     "form_cache_expiration": 21600,
-    "dblog_row_limit": "1000"
+    "dblog_row_limit": "1000",
+    "dblog_date_format": "M jS, Y g:ia",
+    "log_date_format": "M jS, Y g:ia"
 }
