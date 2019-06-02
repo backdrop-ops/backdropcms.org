@@ -31,7 +31,7 @@
     "site_slogan": "",
     "site_403": "",
     "site_404": "",
-    "maintenance_mode_message": "message",
+    "maintenance_mode_message": "",
     "rss_description": "",
     "rss_limit": "10",
     "rss_viewmode": "title",
@@ -96,5 +96,7 @@
     "path_pattern": "account/[user:name]",
     "x_frame_options": "SAMEORIGIN",
     "form_cache_expiration": 21600,
-    "dblog_row_limit": "1000"
+    "dblog_row_limit": "1000",
+    "dblog_date_format": "M jS, Y g:ia",
+    "log_date_format": "M jS, Y g:ia"
 }
