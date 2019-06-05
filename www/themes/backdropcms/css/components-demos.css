@@ -28,18 +28,16 @@
  * Demo fully created (done) page.
  ******************************************************************************/
 .borg-demo-done-page {
-  text-align: center;
+  text-align: left;
 }
 .borg-demo-done-page p {
   margin-left: auto;
   margin-right: auto;
 }
-.borg-demo-done-page .borg-demo-email-notice {
-  text-align: left;
+.borg-demo-done-page .borg-demo-done-center p {
+  text-align: center;
 }
-.borg-demo-done-page .borg-demo-time-notice {
-  text-align: left;
-}
+
 .borg-demo-done-page .borg-demo-tugboat-information {
   max-width: 400px;
   border: 1px solid #7D7D7D;
@@ -48,7 +46,4 @@
 }
 .borg-demo-done-page .tugboat-logo {
   max-width: 300px;
-}
-.borg-demo-done-page .borg-demo-contribute {
-  text-align: left;
 }
