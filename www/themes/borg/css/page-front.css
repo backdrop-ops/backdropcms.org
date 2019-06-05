@@ -139,22 +139,6 @@ body.front .l-top h2 {
   font-size: 1.625rem; /* 26px */
   line-height: 1.33em; /* */
 }
-body.front .l-top a.button {
-  margin: 10px auto;
-  font-size: 1.25rem; /* 20px */
-  background-color: rgba(255, 255, 255, .3);
-  text-transform: none;
-  border: 2px solid #000;
-  color: #000;
-}
-body.front .l-top a.button:hover {
-  background-color: rgba(255, 255, 255, .6);
-}
-@media (min-width: 24em) { /* 384px @ 16px font size */
-  body.front .l-top a.button {
-    margin: 10px 5px;
-  }
-}
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   body.front .l-top h1.page-title {
@@ -163,10 +147,6 @@ body.front .l-top a.button:hover {
   }
   body.front .l-top h2 {
     font-size: 2rem; /* 32px */
-  }
-  body.front .l-top a.button {
-    margin: 10px 30px 10px 0;
-    font-size: 1.5625rem; /* 25px */
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */

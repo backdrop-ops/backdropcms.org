@@ -1368,18 +1368,6 @@ a.button:hover {
   background-color: #007CBA;
   color: white;
 }
-a.button span {
-  display: block;
-  position: absolute;
-  top: -13px;
-  right: -13px;
-  font-size: 14px;
-  line-height: 24px;
-  padding: 0 12px;
-  color: #fff;
-  background-color: #979797;
-  border-radius: 10px;
-}
 
 a.button-small,
 input.button-small {

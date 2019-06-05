@@ -357,59 +357,6 @@ div.block-borg-project-metrics-backdrop-project-metrics {
   }
 }
 
-
-
-/*******************************************************************************
- * Custom tagline block.
- ******************************************************************************/
-.block-borg-blocks-tagline {
-  text-align: center;
-  padding-top: 30px;
-}
-.block-borg-blocks-tagline h2 {
-  font-weight: 300;
-  margin: 0 0 .5em 0;
-}
-.block-borg-blocks-tagline .subtext {
-  margin-top: 0;
-  font-size: 1rem; /* 16px */
-}
-.block-borg-blocks-tagline .subtext a {
-  font-weight: 300;
-  color: #fff;
-  text-decoration: underline;
-}
-.block-borg-blocks-tagline .subtext a:hover {
-  text-decoration: none;
-}
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .block-borg-blocks-tagline {
-    padding-top: 50px;
-    padding-bottom: 15px;
-  }
-  .block-borg-blocks-tagline h2 {
-    margin: 0 0 1em 0;
-  }
-  .block-borg-blocks-tagline .block-content {
-    background: transparent url('../images/screens.png') bottom center no-repeat;
-    background-size: 720px;
-    padding-bottom: 300px;
-  }
-  .block-borg-blocks-tagline .subtext {
-    margin-top: 0;
-    font-size: 1.125rem; /* 18px */
-  }
-}
-@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .block-borg-blocks-tagline {
-    padding-bottom: 30px;
-  }
-  .block-borg-blocks-tagline .block-content {
-    background-size: 920px;
-    padding-bottom: 400px;
-  }
-}
-
 /*******************************************************************************
  * Showcase block
  ******************************************************************************/
