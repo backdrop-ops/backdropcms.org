@@ -93,30 +93,46 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
 }
 
 function borg_blocks_tagline($settings) {
-  $dl_url = $settings['download_url'];
-  $dl_attributes = array('class' => array('button', 'download'));
-  $download_link = l(t('Download Backdrop'), $dl_url, array('attributes' => $dl_attributes));
+  $version = check_plain($settings['version']);
 
-  $demo_url = $settings['demo_url'];
   $demo_attributes = array('class' => array('button', 'demo'));
-  //$demo_link = l(t('Try a demo'), $demo_url, array('attributes' => $demo_attributes));
-  $demo_link = l(t('Install on Pantheon'), $demo_url, array('attributes' => $demo_attributes));
+  if (module_exists('borg_tugboat')) {
+    $demo_text = t('Demo Backdrop');
+    $demo_link = l($demo_text, 'demo/create', array('attributes' => $demo_attributes, 'html' => TRUE));
+  }
+  else {
+    $pantheon_url = 'https://dashboard.pantheon.io/sites/create?upstream_id=bf703821-4c18-45a1-88b8-3d9ec302273d';
+    $demo_text = t('Backdrop on Pantheon');
+    $demo_link = l($demo_text, $pantheon_url, array('attributes' => $demo_attributes, 'html' => TRUE));
+  }
+
+  $dl_url = 'https://github.com/backdrop/backdrop/releases/download/' . $version . '/backdrop.zip';
+  $dl_text = t('Download Backdrop');
+  $dl_attributes = array('class' => array('button', 'download'));
+  $download_link = l($dl_text, $dl_url, array('attributes' => $dl_attributes, 'html' => TRUE));
 
   //$output  = '<h1 class="page-title">Backdrop CMS</h1>';
   $output  = '<h2>The free and Open Source CMS<br/>';
   $output .= '<span>that helps you build websites for businesses and non-profits.</span></h2>';
-  $output .= $download_link;
-  $output .= $demo_link;
 
-  $version = $settings['version'];
+  $output .= '<div class="tagline-section section-demo">';
+  $output .=   $demo_link . '<span class="version">v' . $version . '</span>';
+  $output .= '  <p class="subtext">';
+  $output .=      l(t('other ways to try'), 'try-backdrop');
+  $output .= '  </p>';
+  $output .= '</div>';
+
+
   $requirements = l(t('requirements'), 'requirements');
   $installing = l(t('installing'), 'installation');
   $upgrading = l(t('upgrading'), 'upgrade');
 
-  $output .= '<p class="subtext">';
-  $output .= '  <span>' . $version . '</span> / ';
-  $output .=    $requirements . ' / ' . $installing . ' / ' . $upgrading;
-  $output .= '</p>';
+  $output .= '<div class="tagline-section section-download">';
+  $output .= $download_link  . '<span class="version">v' . $version . '</span>';
+  $output .= '  <p class="subtext">';
+  $output .=      $requirements . ' / ' . $installing . ' / ' . $upgrading;
+  $output .= '  </p>';
+  $output .= '</div>';
 
   return $output;
 }
@@ -173,25 +189,14 @@ function borg_blocks_block_configure($delta = '', $settings = array()) {
 
   if ($delta == 'tagline') {
     $settings += array(
-      'version' => 'v1.8.1',
-      'download_url' => 'https://github.com/backdrop/backdrop/releases/download/1.8.1/backdrop.zip',
-      'demo_url' => 'http://www.getpantheon.com/backdrop',
+      'version' => '1.13.0',
     );
 
     $form['version'] = array(
       '#type' => 'textfield',
+      '#size' => 10,
       '#title' => t('Current Version Number'),
       '#default_value' => $settings['version'],
-    );
-    $form['download_url'] = array(
-      '#type' => 'url',
-      '#title' => t('Download Backdrop URL'),
-      '#default_value' => $settings['download_url'],
-    );
-    $form['demo_url'] = array(
-      '#type' => 'url',
-      '#title' => t('Try Backdrop - Demo URL'),
-      '#default_value' => $settings['demo_url'],
     );
 
   }
