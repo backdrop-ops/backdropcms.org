@@ -116,7 +116,7 @@ function borg_blocks_tagline($settings) {
   $output .= '<span>that helps you build websites for businesses and non-profits.</span></h2>';
 
   $output .= '<div class="tagline-section section-demo">';
-  $output .=   $demo_link . '<span class="version">v' . $version . '</span>';
+  $output .=   $demo_link;
   $output .= '  <p class="subtext">';
   $output .=      l(t('more ways to try'), 'try-backdrop');
   $output .= '  </p>';
