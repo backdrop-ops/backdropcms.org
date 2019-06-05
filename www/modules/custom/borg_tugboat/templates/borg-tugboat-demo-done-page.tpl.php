@@ -9,7 +9,7 @@
   <div class="borg-demo-done-center">
 
     <p class="borg-demo-thank-you">
-      Thank you for creating a new demo sandbox! You can access your website at:
+      Thank you for creating a new demo sandbox. You can access your new Backdrop website at:
     </p>
 
     <p class="borg-demo-url">
