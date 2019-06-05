@@ -48,14 +48,14 @@ function borg_tugboat_create_demo_form($form, &$form_state) {
   );
   $form['create_sandbox'] = array(
     '#type' => 'submit',
-    '#value' => t('Create Demo'),
+    '#value' => t('Create demo sandbox'),
     '#validate' => array('borg_tugboat_create_demo_form_validate'),
     '#submit' => array('borg_tugboat_create_demo_form_submit'),
     '#attributes' => array('class' => array('button', 'button-large', 'demo')),
     '#ajax' => array(
       'progress' => array(
         'type' => 'throbber',
-        'message' => t('Creating sandbox...'),
+        'message' => t('Creating demo sandbox...'),
       ),
       'callback' => 'borg_tugboat_create_demo_form_ajax',
     ),
@@ -98,7 +98,7 @@ function borg_tugboat_create_demo_form_validate($form, &$form_state) {
   }
 
   if (!$base_found) {
-    form_set_error('branch', t('The tag or branch "@ref" could not be found for creating a sandbox.', array('@ref' => $ref)));
+    form_set_error('branch', t('The tag or branch "@ref" could not be found for creating a demo sandbox.', array('@ref' => $ref)));
     watchdog('borg_tugboat', 'A sandbox with the ref "@ref" failed to be created because no base preview with that name could be found', array('@ref' => $ref));
   }
 }
@@ -144,7 +144,7 @@ function borg_tugboat_create_demo_form_submit($form, &$form_state) {
     }
   }
   else {
-    backdrop_set_message(t('New sandbox creation successful.'));
+    backdrop_set_message(t('New demo sandbox creation successful.'));
     $form_state['redirect'] = array('demo/created', array('query' => array(
       'url' => $return_data['url'],
     )));

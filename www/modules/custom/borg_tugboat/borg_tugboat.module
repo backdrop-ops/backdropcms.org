@@ -19,14 +19,14 @@ function borg_tugboat_menu() {
     'page callback' => 'borg_tugboat_demo_create_page',
     'page arguments' => array(),
     'access callback' => TRUE,
-    'title' => 'Try a Backdrop CMS Demo Sandbox',
+    'title' => 'Try Backdrop CMS',
     'file' => 'borg_tugboat.pages.inc',
   );
   $items['demo/created'] = array(
     'page callback' => 'borg_tugboat_demo_done_page',
     'page arguments' => array(),
     'access callback' => TRUE,
-    'title' => 'Your Backdrop CMS Demo is Ready!',
+    'title' => 'Your Backdrop CMS demo sandbox is ready!',
     'file' => 'borg_tugboat.pages.inc',
   );
   return $items;
@@ -38,7 +38,7 @@ function borg_tugboat_menu() {
 function borg_tugboat_permission() {
   $items['administer tugboat settings'] = array(
     'title' => t('Administer Tugboat settings'),
-    'description' => t('Configure the lifetime and repository settings for Tugboat (used for demo sites).'),
+    'description' => t('Configure the lifetime and repository settings for Tugboat (used for demo sandboxs).'),
   );
   return $items;
 }
