@@ -32,7 +32,7 @@
 .block-borg-blocks-tagline a.button:hover {
   background-color: rgba(255, 255, 255, .6);
 }
-.block-borg-blocks-tagline span.version {
+.block-borg-blocks-tagline a.button span.version {
   font-size: 1rem; /* 16px */
 }
 .block-borg-blocks-tagline .subtext {
@@ -86,7 +86,7 @@
   .block-borg-blocks-tagline a.button {
     font-size: 1.5rem; /* 24px */
   }
-  .block-borg-blocks-tagline span.version,
+  .block-borg-blocks-tagline a.button span.version,
   .block-borg-blocks-tagline .subtext {
     font-size: 1.125rem; /* 18px */
   }

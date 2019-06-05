@@ -107,7 +107,7 @@ function borg_blocks_tagline($settings) {
   }
 
   $dl_url = 'https://github.com/backdrop/backdrop/releases/download/' . $version . '/backdrop.zip';
-  $dl_text = t('Download Backdrop');
+  $dl_text = t('Download Backdrop') . ' <span class="version">v ' . $version . '</span>';
   $dl_attributes = array('class' => array('button', 'download'));
   $download_link = l($dl_text, $dl_url, array('attributes' => $dl_attributes, 'html' => TRUE));
 
@@ -128,9 +128,9 @@ function borg_blocks_tagline($settings) {
   $upgrading = l(t('upgrading'), 'upgrade');
 
   $output .= '<div class="tagline-section section-download">';
-  $output .= $download_link  . '<span class="version">v' . $version . '</span>';
+  $output .= $download_link;
   $output .= '  <p class="subtext">';
-  $output .=      $requirements . ' / ' . $installing . ' / ' . $upgrading;
+  $output .=      $requirements . ' | ' . $installing . ' | ' . $upgrading;
   $output .= '  </p>';
   $output .= '</div>';
 
