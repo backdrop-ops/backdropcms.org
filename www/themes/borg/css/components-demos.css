@@ -34,9 +34,9 @@
   margin-left: auto;
   margin-right: auto;
 }
-.borg-demo-done-page .borg-demo-email-notice {
-  text-align: left;
-}
+.borg-demo-done-page .borg-demo-install-notice,
+.borg-demo-done-page .borg-demo-email-notice,
+.borg-demo-done-page .borg-demo-addon-notice,
 .borg-demo-done-page .borg-demo-time-notice {
   text-align: left;
 }

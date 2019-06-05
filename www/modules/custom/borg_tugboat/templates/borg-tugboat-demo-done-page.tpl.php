@@ -6,7 +6,7 @@
 
 <div class="borg-demo-done-page">
   <p class="borg-demo-thank-you">
-    Thank you for creating a new demo site! You can access your demo at:
+    Thank you for creating a new demo sandbox! You can access your website at:
   </p>
 
   <p class="borg-demo-url">
@@ -17,17 +17,25 @@
   </p>
 
   <p class="borg-demo-persist-notice">
-    Your demo site will persist for <strong><?php print $duration; ?></strong>.
+    This demo sandbox will persist for <strong><?php print $duration; ?></strong>.
   </p>
 
+  <p class="borg-demo-install-notice">
+    This demo sandbox will act exactly as a new Backdrop installation would.
+    You will need to run the installer and set an administrator account as part
+    of the setup.
+  </p>
   <p class="borg-demo-email-notice">
-    This demo acts exactly as a new Backdrop installation as it would if you
-    downloaded it, including running the installer. You'll set an administrator
-    account as part of the setup. Note that sending email from a demo sandbox
-    is not allowed, so <strong>password recovery will not work</strong>. Be sure
-    to remember your password.
+    Note that sending email from demo sandboxis not allowed, so
+    <strong>password recovery will not work</strong>. Be sure to remember your
+    password.
   </p>
-
+  <p class="borg-demo-addon-notice">
+    Demos sandboxes will show you the Standard install only. There are no
+    additional add-ons included, and no content beyond what comes with Backdrop.
+    Additionally, <strong>the Installer module will not work</strong> so no
+    additional add-ons can be added on.
+  </p>
   <p class="borg-demo-time-notice">
     There is no export functionality in the demo sandbox. <strong>Any work you
     do will be temporary</strong> and be deleted after <?php print $duration; ?>.
