@@ -1,13 +1,13 @@
 {
     "_config_name": "image.style.logo",
-    "label": "Logo (150x150)",
+    "label": "Logo (150x100)",
     "name": "logo",
     "effects": [
         {
             "name": "image_scale",
             "data": {
                 "width": "150",
-                "height": "150",
+                "height": "100",
                 "upscale": 0
             },
             "weight": "1"

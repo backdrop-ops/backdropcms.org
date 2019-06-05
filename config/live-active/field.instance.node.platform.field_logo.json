@@ -11,7 +11,7 @@
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "thumbnail"
+            "preview_image_style": "logo"
         }
     },
     "description": "",
@@ -21,12 +21,13 @@
     "default_value_function": null,
     "settings": {
         "file_directory": "logos",
-        "file_extensions": "png gif jpg jpeg",
+        "file_extensions": "png gif jpg jpeg svg",
         "max_filesize": "",
         "max_dimensions": "500x250",
         "min_dimensions": "",
         "alt_field": 1,
         "title_field": 0,
+        "orientate": 0,
         "default_image": "",
         "user_register_form": false
     },

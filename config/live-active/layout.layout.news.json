@@ -4,6 +4,7 @@
     "name": "news",
     "title": "News",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": 0,
     "storage": 1,
@@ -26,6 +27,7 @@
             "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309"
         ],
         "sidebar": [
+            "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909",
             "1c732b6a-9279-45af-b242-666a63fa2848",
             "1cb8ed0f-b783-4901-9a00-f445fd6db153",
             "0765a3fa-4353-454d-9301-1c346e550eae",
@@ -172,6 +174,33 @@
                             "title_classes": "block-title",
                             "content_tag": "div",
                             "content_classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909": {
+            "plugin": "block:newsletter_signup",
+            "data": {
+                "module": "block",
+                "delta": "newsletter_signup",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "Newsletter",
+                    "style": "default",
+                    "block_settings": {
+                        "description": "Text and a link to our newsletter signup page",
+                        "delta": "newsletter_signup",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
                         }
                     }
                 }
