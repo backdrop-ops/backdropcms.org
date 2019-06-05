@@ -26,9 +26,9 @@
   </div>
   <div class="borg-demo-done-left">
     <p>
-      This demo sandbox will act exactly as a new Backdrop installation would.
-      You will need to run the installer and set an administrator account as part
-      of the setup. Note that sending email from demo sandboxis not allowed, so
+      This demo sandbox will act as a new Backdrop installation would. You will
+      need to run the installer and set an administrator account as part of the
+      setup. Note that sending email from demo sandboxis not allowed, so
       <strong>password recovery will not work</strong>. Be sure to remember your
       password.
     </p>
