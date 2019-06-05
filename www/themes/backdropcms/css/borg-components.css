@@ -17,7 +17,9 @@
   margin: 0 0 .5em 0;
 }
 .block-borg-blocks-tagline .tagline-section {
-  margin: 15px 0;
+  text-align: left;
+  margin: 15px auto;
+  max-width: 315px;
 }
 .block-borg-blocks-tagline a.button {
   font-size: 1.25rem; /* 20px */
@@ -34,8 +36,9 @@
   font-size: 1rem; /* 16px */
 }
 .block-borg-blocks-tagline .subtext {
-  margin-top: 0;
   font-size: 1rem; /* 16px */
+  margin-top: 0;
+  margin-left: 25px;
 }
 .block-borg-blocks-tagline .subtext a {
   font-weight: 300;
@@ -47,11 +50,8 @@
 }
 
 @media (min-width: 25em) { /* 400px @ 16px font size */
-  .block-borg-blocks-tagline a.button {
-    margin: 10px 5px 10px 0;
-  }
   .block-borg-blocks-tagline .subtext {
-    text-align: center;
+    text-align: left;
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
@@ -71,12 +71,8 @@
     display: inline-block;
     padding: 0 15px;
   }
-  .block-borg-blocks-tagline a.button {
-    margin: 10px 5px 5px 0;
-  }
   .block-borg-blocks-tagline .subtext {
     margin-top: 0;
-    margin-left: 15px;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
