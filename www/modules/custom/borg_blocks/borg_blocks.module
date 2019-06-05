@@ -118,7 +118,7 @@ function borg_blocks_tagline($settings) {
   $output .= '<div class="tagline-section section-demo">';
   $output .=   $demo_link . '<span class="version">v' . $version . '</span>';
   $output .= '  <p class="subtext">';
-  $output .=      l(t('other ways to try'), 'try-backdrop');
+  $output .=      l(t('more ways to try'), 'try-backdrop');
   $output .= '  </p>';
   $output .= '</div>';
 
