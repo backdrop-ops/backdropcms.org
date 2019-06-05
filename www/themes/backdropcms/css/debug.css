@@ -1,0 +1,31 @@
+/** FOR DEBUGGING ONLY */
+
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .l-header .container {
+    background-color: pink;
+  }
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .l-header .container {
+    background-color: red;
+  }
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-header .container {
+    background-color: orange;
+  }
+}
+
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .l-header .container {
+    background-color: yellow;
+  }
+}
+
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .l-header .container {
+    background-color: green;
+  }
+}
