@@ -92,7 +92,7 @@ function drush_devel_fn_hook($hook) {
  */
 function drush_devel_fn_view($function_name) {
   // Get implementations in the .install files as well.
-  include_once './includes/install.inc';
+  include_once './core/includes/install.inc';
   backdrop_load_updates();
 
   if (strpos($function_name, '::') === FALSE) {

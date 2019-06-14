@@ -681,12 +681,12 @@ function devel_block_info() {
   $blocks['execute_php'] = array(
     'info' => t('Execute PHP'),
     'cache' => BACKDROP_NO_CACHE,
-    'description' => '<strong>' . t('Dangerous!') . '</strong> ' . t('Execute arbitrary PHP code from a block. Requires the <code>execute php code</code> permission.'),
+    'description' => '<strong>' . t('Dangerous!') . '</strong> ' . t('Execute arbitrary PHP code from a block. Requires the <em>Execute PHP code</em> permission.'),
   );
   $blocks['switch_user'] = array(
     'info' => t('Switch user'),
     'cache' => BACKDROP_NO_CACHE,
-    'description' => '<strong>' . t('Dangerous!') . '</strong> ' . t('Allows switching between any user account on the site. Requires the <code>switch users</code> permission.'),
+    'description' => '<strong>' . t('Dangerous!') . '</strong> ' . t('Allows switching between any user account on the site. Requires the <em>Switch users</em> permission.'),
   );
   return $blocks;
 }

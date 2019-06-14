@@ -15,6 +15,14 @@ function devel_enable() {
 }
 
 /**
+ * Implements hook_disable().
+ */
+function devel_disable() {
+  // Disable theme debug if enabled (restore default).
+  config_set('system.core', 'theme_debug', 0);
+}
+
+/**
  * Convert devel settings to config.
  */
 function devel_update_1000() {
