@@ -28,7 +28,8 @@
         "default_image": "",
         "user_register_form": false,
         "max_dimensions": "",
-        "min_dimensions": ""
+        "min_dimensions": "",
+        "orientate": 0
     },
     "display": {
         "default": {
@@ -47,9 +48,9 @@
             "type": "image",
             "weight": "0",
             "settings": {
-                "image_style": "medium",
+                "image_style": "logo",
                 "image_link": "",
-                "image_float": "left"
+                "image_float": ""
             },
             "module": "image"
         }
