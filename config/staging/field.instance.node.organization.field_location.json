@@ -47,6 +47,12 @@
                 }
             },
             "module": "addressfield"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
         }
     }
 }

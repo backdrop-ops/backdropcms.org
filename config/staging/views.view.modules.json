@@ -116,6 +116,56 @@
                         "hide_alter_empty": 1,
                         "link_to_node": 1
                     },
+                    "name": {
+                        "id": "name",
+                        "table": "project",
+                        "field": "name",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 1,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1
+                    },
                     "created_1": {
                         "id": "created_1",
                         "table": "node",
@@ -587,6 +637,7 @@
                         },
                         "fields": {
                             "title": "title",
+                            "name": "name",
                             "body": "body"
                         }
                     },
@@ -599,46 +650,7 @@
                         "ui_name": "",
                         "operator": "=",
                         "value": "1",
-                        "group": 2,
-                        "exposed": false,
-                        "expose": {
-                            "operator_id": false,
-                            "label": "",
-                            "description": "",
-                            "use_operator": false,
-                            "operator": "",
-                            "identifier": "",
-                            "required": false,
-                            "remember": false,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated"
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
-                    },
-                    "releases_enabled": {
-                        "id": "releases_enabled",
-                        "table": "project",
-                        "field": "releases_enabled",
-                        "relationship": "nid",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "=",
-                        "value": "0",
-                        "group": 2,
+                        "group": 1,
                         "exposed": false,
                         "expose": {
                             "operator_id": false,
@@ -748,8 +760,7 @@
                 "filter_groups": {
                     "operator": "AND",
                     "groups": {
-                        "1": "AND",
-                        "2": "OR"
+                        "1": "AND"
                     }
                 },
                 "empty": {
@@ -814,7 +825,7 @@
                         "value": {
                             "project_theme": "project_theme"
                         },
-                        "group": "1",
+                        "group": 1,
                         "exposed": false,
                         "expose": {
                             "operator_id": false,
@@ -845,32 +856,29 @@
                             "group_items": []
                         }
                     },
-                    "title": {
-                        "id": "title",
-                        "table": "node",
-                        "field": "title",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
                         "operator": "contains",
                         "value": "",
-                        "group": "1",
-                        "exposed": true,
+                        "group": 1,
+                        "exposed": false,
                         "expose": {
-                            "operator_id": "title_op",
+                            "operator_id": false,
                             "label": "",
                             "description": "",
-                            "use_operator": 0,
-                            "operator": "title_op",
-                            "identifier": "s",
-                            "required": 0,
-                            "remember": 0,
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
                             "multiple": false,
                             "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
+                                "authenticated": "authenticated"
                             }
                         },
                         "is_grouped": false,
@@ -885,6 +893,11 @@
                             "default_group": "All",
                             "default_group_multiple": [],
                             "group_items": []
+                        },
+                        "fields": {
+                            "title": "title",
+                            "name": "name",
+                            "body": "body"
                         }
                     },
                     "recommended": {
@@ -896,7 +909,7 @@
                         "ui_name": "",
                         "operator": "=",
                         "value": "1",
-                        "group": "1",
+                        "group": 1,
                         "exposed": false,
                         "expose": {
                             "operator_id": false,

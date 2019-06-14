@@ -5,7 +5,7 @@
     "bundle": "platform",
     "label": "Screenshot (desktop)",
     "widget": {
-        "weight": "6",
+        "weight": "5",
         "type": "image_image",
         "module": "image",
         "active": 1,
@@ -28,7 +28,8 @@
         "alt_field": 1,
         "title_field": 0,
         "default_image": "",
-        "user_register_form": false
+        "user_register_form": false,
+        "orientate": 0
     },
     "display": {
         "default": {

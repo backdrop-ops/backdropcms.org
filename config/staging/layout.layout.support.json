@@ -4,6 +4,7 @@
     "name": "support",
     "title": "Support",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": 0,
     "storage": 1,
@@ -25,6 +26,7 @@
             "4543880d-1a0a-413e-8300-0045a93106df",
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
             "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
+            "debc30fa-2afd-4390-9200-ca4456b6c081",
             "aa20864f-9388-46a1-a608-8eb21c6b7b63",
             "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
             "e21a9e69-e89f-4b7a-b809-9e961daa1208"
@@ -192,6 +194,28 @@
                     "format": "full_html"
                 },
                 "uuid": "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "debc30fa-2afd-4390-9200-ca4456b6c081": {
+            "plugin": "block:newsletter_signup",
+            "data": {
+                "module": "block",
+                "delta": "newsletter_signup",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "debc30fa-2afd-4390-9200-ca4456b6c081",
                 "style": {
                     "plugin": "default",
                     "data": {

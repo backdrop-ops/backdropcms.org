@@ -34,9 +34,11 @@
         },
         "teaser": {
             "label": "hidden",
-            "type": "text_default",
-            "weight": "2",
-            "settings": [],
+            "type": "text_trimmed",
+            "weight": "1",
+            "settings": {
+                "trim_length": "600"
+            },
             "module": "text"
         }
     }
