@@ -4,8 +4,8 @@
     "name": "Documentation",
     "base": "node_content",
     "module": "node",
-    "description": "Documentation pages are for the user-guide for Backdrop CMS, and should not involve code samples. All developer should live on the API site.",
-    "help": "",
+    "description": "Documentation pages are for the User Guide, and should not include code samples, or involve overly technical topics.",
+    "help": "Documentation pages are for the User Guide, and should not include code samples, or involve overly technical topics.  All developer documentation is on the API site.",
     "modified": true,
     "disabled": false,
     "has_title": true,
@@ -15,11 +15,12 @@
         "formblock_show_help": 0,
         "menu_options": {
             "menu-user-guide": "menu-user-guide",
+            "menu-more-developer-resources": 0,
             "devel": 0,
+            "menu-footer-menu": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
-            "navigation": 0,
             "user-menu": 0
         },
         "menu_parent": "menu-user-guide:0",
@@ -40,8 +41,10 @@
             ""
         ],
         "project_release_type": "",
-        "hidden_path": "0",
-        "node_preview": "1"
+        "hidden_path": 0,
+        "node_preview": "1",
+        "scheduling_enabled": 1
     },
-    "orig_type": "docs"
+    "orig_type": "docs",
+    "node_preview": "1"
 }

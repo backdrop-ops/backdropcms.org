@@ -4,7 +4,7 @@
     "name": "About page",
     "base": "node_content",
     "module": "node",
-    "description": "<em>Books</em> have a built-in hierarchical navigation. Use for handbooks or tutorials.",
+    "description": "An <em>About page</em> will appear in the Handbook navigation.",
     "help": "",
     "has_title": true,
     "title_label": "Title",
@@ -27,6 +27,7 @@
         "formblock_show_help": 0,
         "menu_options": {
             "menu-handbook": "menu-handbook",
+            "menu-more-developer-resources": 0,
             "devel": 0,
             "menu-footer-menu": 0,
             "main-menu": 0,
@@ -42,6 +43,8 @@
             ""
         ],
         "project_release_type": "",
-        "hidden_path": "0"
-    }
+        "hidden_path": 0,
+        "scheduling_enabled": 1
+    },
+    "node_preview": "1"
 }

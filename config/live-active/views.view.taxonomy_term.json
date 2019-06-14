@@ -1,0 +1,230 @@
+{
+    "_config_name": "views.view.taxonomy_term",
+    "name": "taxonomy_term",
+    "description": "A view to emulate Backdrop core's handling of taxonomy/term.",
+    "module": "taxonomy",
+    "storage": 2,
+    "tag": "default",
+    "disabled": false,
+    "base_table": "node",
+    "human_name": "Taxonomy term",
+    "core": 7,
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": {
+                        "query_comment": false
+                    }
+                },
+                "access": {
+                    "type": "perm",
+                    "perm": "access content"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full"
+                },
+                "style_plugin": "default",
+                "row_plugin": "node",
+                "sorts": {
+                    "sticky": {
+                        "id": "sticky",
+                        "table": "node",
+                        "field": "sticky",
+                        "order": "DESC"
+                    },
+                    "created": {
+                        "id": "created",
+                        "table": "node",
+                        "field": "created",
+                        "order": "DESC"
+                    }
+                },
+                "arguments": {
+                    "term_node_tid_depth": {
+                        "id": "term_node_tid_depth",
+                        "table": "node",
+                        "field": "term_node_tid_depth",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "not found",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 1,
+                            "title": "All"
+                        },
+                        "title_enable": 1,
+                        "title": "%1",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "fixed",
+                        "default_argument_options": {
+                            "argument": ""
+                        },
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 1,
+                        "validate": {
+                            "type": "taxonomy_term",
+                            "fail": "empty"
+                        },
+                        "validate_options": {
+                            "vocabularies": {
+                                "tags": "tags",
+                                "project_tags": "project_tags",
+                                "services": "services",
+                                "feature_type": "feature_type",
+                                "development_status": "development_status",
+                                "maintenance_status": "maintenance_status"
+                            },
+                            "type": "tid",
+                            "transform": 0
+                        },
+                        "depth": "0",
+                        "break_phrase": 1,
+                        "set_breadcrumb": 0,
+                        "use_taxonomy_term_path": 0
+                    },
+                    "term_node_tid_depth_modifier": {
+                        "id": "term_node_tid_depth_modifier",
+                        "table": "node",
+                        "field": "term_node_tid_depth_modifier",
+                        "exception": {
+                            "title_enable": 1
+                        },
+                        "default_argument_type": "fixed",
+                        "summary": {
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 1
+                    }
+                },
+                "filters": {
+                    "status_extra": {
+                        "id": "status_extra",
+                        "table": "node",
+                        "field": "status_extra",
+                        "group": 0,
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                },
+                "row_options": {
+                    "relationship": "none",
+                    "view_mode": "teaser",
+                    "links": 0,
+                    "comments": 0
+                },
+                "fields": {
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link_to_node": 1
+                    }
+                }
+            }
+        },
+        "page": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "taxonomy/term/%",
+                "display_description": ""
+            }
+        },
+        "feed": {
+            "display_title": "Feed",
+            "display_plugin": "feed",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": 15
+                    }
+                },
+                "style_plugin": "rss",
+                "row_plugin": "node_rss",
+                "path": "taxonomy/term/%/%/feed",
+                "displays": {
+                    "page": "page",
+                    "default": 0
+                }
+            }
+        }
+    }
+}
