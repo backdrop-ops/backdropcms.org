@@ -67,7 +67,7 @@ function borg_project_metrics_get_downloads($project = '') {
       && strpos($myHeader[16], 'rel="next"') == TRUE
       && strpos($myHeader[16], 'rel="prev"') == FALSE) {
 
-      $nextUrl = explode('rel=\"next\"', $myHeader[16]);
+      $nextUrl = explode('rel="next"', $myHeader[16]);
       $nextUrl = $nextUrl[0];
       $nextUrl = explode('<', $nextUrl);
       $nextUrl = $nextUrl[1];
