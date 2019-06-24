@@ -4,7 +4,7 @@ recipe: backdrop
 config:
   php: '7.2'
   webroot: www
-  backdrush: 0.1.0
+  backdrush: 0.2.1
   xdebug: true
 services:
   database:
