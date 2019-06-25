@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.node.backdrop_news.field_link",
+    "field_name": "field_link",
+    "entity_type": "node",
+    "bundle": "backdrop_news",
+    "label": "link",
+    "widget": {
+        "type": "text_textfield",
+        "weight": "-3",
+        "settings": {
+            "size": 60
+        },
+        "module": "text"
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "text_processing": 0,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "text_default",
+            "settings": [],
+            "module": "text",
+            "weight": 1
+        }
+    }
+}
