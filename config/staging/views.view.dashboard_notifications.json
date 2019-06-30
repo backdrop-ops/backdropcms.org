@@ -1,11 +1,11 @@
 {
-    "_config_name": "views.view.backdrop_news",
-    "name": "backdrop_news",
+    "_config_name": "views.view.dashboard_notifications",
+    "name": "dashboard_notifications",
     "description": "Provide json data feed for backdrop installations /dashboard block.",
     "tag": "default",
     "disabled": false,
     "base_table": "node",
-    "human_name": "Backdrop News",
+    "human_name": "Dashboard Notifications",
     "core": "1.13.2",
     "display": {
         "default": {
@@ -197,7 +197,7 @@
                         "table": "node",
                         "field": "type",
                         "value": {
-                            "backdrop_news": "backdrop_news"
+                            "notifications": "notifications"
                         }
                     }
                 },
@@ -209,7 +209,7 @@
                         "order": "DESC"
                     }
                 },
-                "title": "Backdrop News"
+                "title": "Dashboard Notifications"
             }
         },
         "page": {
@@ -220,7 +220,7 @@
                     "type": "views_query",
                     "options": []
                 },
-                "path": "api/backdrop-news"
+                "path": "feed/dashboard-notifications"
             }
         }
     }
