@@ -108,6 +108,10 @@ function borg_github_github_project_release_validate(Node $release_node, array &
     $old_screenshots = !empty($project_node->field_project_screenshots[LANGUAGE_NONE]) ? $project_node->field_project_screenshots[LANGUAGE_NONE] : NULL;
     $project_screenshots = array();
 
+    // Todo: We allow a $info['screenshots']['default'] which is the smaller
+    // version which will be used in Backdrop themes pages. Should we unset it
+    // here so it doesnt show up on BackdropCMS?
+    ksort($info['screenshots']);
     // If settings exist, follow each path to ensure the file exists.
     foreach ($info['screenshots'] as $screenshot) {
       $screenshot_url = str_replace('{+path}', $screenshot, $payload['repository']['contents_url']);
@@ -249,9 +253,12 @@ function _borg_github_get_info_file_data(array &$errors, array $payload, $access
 /**
  * Implements hook_project_github_create_package_alter().
  */
-function borg_github_project_github_create_package_alter($project_name, &$files) {
+function borg_github_project_github_create_package_alter(&$files, $project_name) {
+  // The parsed contents of the project's .info file.
   $info_contents = array();
+  // The path to the project directory.
   $directory_path = '';
+  // The path to the screenshots directory. Includes trailing slash.
   $screenshots_directory_path = '';
 
   foreach ($files as $path => $file) {
@@ -265,18 +272,28 @@ function borg_github_project_github_create_package_alter($project_name, &$files)
       if (is_dir($directory_path . 'screenshots')) {
         $screenshots_directory_path = $directory_path . 'screenshots/';
       }
+      break;
     }
   }
 
-  if (!file_exists($directory_path . 'screenshot.png') && !empty($screenshots_directory_path)) {
+  if (!empty($info_contents) && $info_contents['type'] == 'theme' && !empty($directory_path) && !file_exists($directory_path . 'screenshot.png') && !empty($screenshots_directory_path)) {
     // There's no screenshot.png, but we found a screenshots directory, and
     // the info file mentions it.
     if (!empty($info_contents['screenshots'])) {
-      // copy the first screenshot listed.
-      foreach ($info_contents['screenshots'] as $listed_screenshot) {
-        if (file_exists($screenshots_directory_path . $listed_screenshot)) {
-          $new_screenshot = $screenshots_directory_path . $listed_screenshot;
-          break;
+      // If a default is set, use that.
+      if (!empty($info_contents['screenshots']['default'])) {
+        $default_screenshot = $info_contents['screenshots']['default'];
+        if (file_exists($screenshots_directory_path . $default_screenshot)) {
+          $new_screenshot = $screenshots_directory_path . $default_screenshot;
+        }
+      }
+      else {
+        // copy the first screenshot listed.
+        foreach ($info_contents['screenshots'] as $listed_screenshot) {
+          if (file_exists($screenshots_directory_path . $listed_screenshot)) {
+            $new_screenshot = $screenshots_directory_path . $listed_screenshot;
+            break;
+          }
         }
       }
     }
@@ -296,20 +313,20 @@ function borg_github_project_github_create_package_alter($project_name, &$files)
         $i++;
       }        
     }
-  }
 
-  if (!empty($new_screenshot)) {
-    $extension = substr($new_screenshot, strrpos($new_screenshot, '.') + 1);
-    $screenshot = $directory_path . 'screenshot.' . $extension;
-    file_unmanaged_copy($new_screenshot, $screenshot, FILE_EXISTS_REPLACE);
-  }
+    if (!empty($new_screenshot)) {
+      $extension = substr($new_screenshot, strrpos($new_screenshot, '.') + 1);
+      $screenshot = $directory_path . 'screenshot.' . $extension;
+      file_unmanaged_copy($new_screenshot, $screenshot, FILE_EXISTS_REPLACE);
+    }
 
-  foreach ($files as $path => $file) {
-    // Remove references to the screenshots folder from the list of files so 
-    // they are not resent to GitHub. borg_github will take care of deleting the
-    // actual folder on disc.
-    if (strrpos($path, $screenshots_directory_path) === 0) {
-      unset($files[$path]);
+    foreach ($files as $path => $file) {
+      // Remove references to the screenshots folder from the list of files so 
+      // they are not resent to GitHub. borg_github will take care of deleting the
+      // actual folder on disc.
+      if (strrpos($path, $screenshots_directory_path) === 0) {
+        unset($files[$path]);
+      }
     }
   }
 }
