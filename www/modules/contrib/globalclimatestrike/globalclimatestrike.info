@@ -1,0 +1,11 @@
+type = module
+name = Global Climate Strike
+description = Adds the Global Climate Strike banner and blackout.
+backdrop = 1.x
+
+configure = admin/config/climatestrike
+
+; Added by Backdrop CMS packaging script on 2019-09-19
+project = globalclimatestrike
+version = 1.x-1.1.0
+timestamp = 1568959001
