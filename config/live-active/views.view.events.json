@@ -418,7 +418,8 @@
                         "field": "type",
                         "value": {
                             "event": "event"
-                        }
+                        },
+                        "group": 1
                     },
                     "field_event_date_value2": {
                         "id": "field_event_date_value2",
@@ -434,7 +435,7 @@
                             "value": null,
                             "type": "date"
                         },
-                        "group": "1",
+                        "group": 2,
                         "exposed": false,
                         "expose": {
                             "operator_id": false,
@@ -465,7 +466,57 @@
                         },
                         "granularity": "day",
                         "form_type": "date_select",
-                        "default_date": "now",
+                        "default_date": "now -1 day",
+                        "default_to_date": "",
+                        "year_range": "-3:+3",
+                        "add_delta": ""
+                    },
+                    "field_event_date_value": {
+                        "id": "field_event_date_value",
+                        "table": "field_data_field_event_date",
+                        "field": "field_event_date_value",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": ">=",
+                        "value": {
+                            "min": null,
+                            "max": null,
+                            "value": null,
+                            "type": "date"
+                        },
+                        "group": 2,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "granularity": "day",
+                        "form_type": "date_select",
+                        "default_date": "now -1 day",
                         "default_to_date": "",
                         "year_range": "-3:+3",
                         "add_delta": ""
@@ -495,7 +546,14 @@
                 },
                 "use_more": 1,
                 "use_more_always": false,
-                "use_more_text": "more events"
+                "use_more_text": "more events",
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND",
+                        "2": "OR"
+                    }
+                }
             }
         },
         "page": {
