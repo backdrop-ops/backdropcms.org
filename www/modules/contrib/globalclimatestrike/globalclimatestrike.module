@@ -1,0 +1,148 @@
+<?php
+/**
+ * Adds the Global Climate Strike banner and blackout.
+ */
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function globalclimatestrike_preprocess_page(&$variables) {
+  // Load config.
+  $config = config('globalclimatestrike.settings');
+
+  // Add settings.
+  $settings = array(
+    /**
+     * Specify view cookie expiration. After initial view, widget will not be
+     * displayed to a user again until after this cookie expires. Defaults to
+     * one day.
+     */
+    'cookieExpirationDays' => 1,
+
+    /**
+     * Set the language of the widget. We currently support:
+     * 'en': English
+     * 'de': German
+     * 'es': Spanish
+     * 'cs': Czech
+     * 'fr': French
+     * 'nl': Dutch
+     * 'tr': Turkish
+     * 'pt': Portuguese
+     * Defaults to null, which will obey the navigator.language setting of the
+     * viewer's browser.
+     */
+    'language' => NULL,
+
+    /**
+     * Allow you to override the iFrame hostname. Defaults to https://assets.digitalclimatestrike.net
+     */
+    'iframeHost' => 'https://assets.digitalclimatestrike.net',
+
+    /**
+     * Prevents the widget iframe from loading Google Analytics. Defaults to
+     * false. (Google Analytics will also be disabled if doNotTrack is set on
+     * the user's browser.)
+     */
+    'disableGoogleAnalytics' => FALSE, // @type {boolean}
+
+    /**
+     * Always show the widget, even when someone has closed the widget and set the cookie on their device.
+     * Useful for testing. Defaults to false.
+     */
+    'alwaysShowWidget' => FALSE, // @type {boolean}
+
+    /**
+     * Automatically makes the widget full page. Defaults to false.
+     */
+    'forceFullPageWidget' => FALSE, // @type {boolean}
+
+    /**
+     * For the full page widget, shows a close button "x" and hides the message about the site being
+     * available tomorrow. Defaults to false.
+     */
+    'showCloseButtonOnFullPageWidget' => $config->get('close_button'), // @type {boolean}
+
+    /**
+     * The date when the sticky footer widget should start showing on your web site.
+     * Note: the month is one integer less than the number of the month. E.g. 8 is September, not August.
+     * Defaults to new Date(2019, 7, 1) (August 1st, 2019).
+     */
+    //'footerDisplayStartDate' => date('D M d Y H:i:s O', strtotime('August 1st, 2019')), //@ type {Date object}
+
+    /**
+     * The date when the full page widget should showing on your web site for 24 hours.
+     * Note: the month is one integer less than the number of the month. E.g. 8 is September, not August.
+     * Defaults to new Date(2019, 8, 20) (September 20th, 2019)
+     */
+    //'fullPageDisplayStartDate' => date('D M d Y H:i:s O', strtotime('2019, 8, 20')), //@ type {Date object}
+  );
+
+  $data = 'var DIGITAL_CLIMATE_STRIKE_OPTIONS = ' . backdrop_json_encode($settings, TRUE);
+  backdrop_add_js($data, array('type' => 'inline'));
+
+  backdrop_add_js('https://assets.digitalclimatestrike.net/widget.js', 'external');
+}
+
+/**
+ * Implements hook_menu().
+ */
+function globalclimatestrike_menu() {
+  $items['admin/config/climatestrike'] = array(
+    'title' => 'Climate Strike settings',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('globalclimatestrike_settings_form'),
+    'access arguments' => array('administer globalclimatestrike'),
+    'type' => MENU_CALLBACK,
+    //'file' => 'globalclimatestrike.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function globalclimatestrike_permission() {
+  return array(
+    'administer globalclimatestrike' =>  array(
+      'title' => t('Adjust Climate Strike settings'),
+      'description' => t('Configure settings for the Climate Strike module'),
+    ),
+  );
+}
+
+/**
+ * Settings form.
+ */
+function globalclimatestrike_settings_form(&$form, &$form_state) {
+  $config = config('globalclimatestrike.settings');
+  $form = array('#config' => 'globalclimatestrike.settings');
+
+  /**
+   * For the full page widget, shows a close button "x" and hides the message about the site being
+   * available tomorrow. Defaults to false.
+   */
+  $form['close_button'] = array(
+    '#type' => 'radios',
+    '#title' => t('Show a close button "x" and hide the message about the site being available later on.'),
+    '#options' => array(
+      0 => 'No',
+      1 =>'Yes',
+    ),
+    '#default_value' => $config->get('close_button'),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function globalclimatestrike_config_info() {
+  $prefixes['globalclimatestrike.settings'] = array(
+    'label' => t('Global Climate Strike'),
+    'group' => t('Configuration'),
+  );
+}
+
