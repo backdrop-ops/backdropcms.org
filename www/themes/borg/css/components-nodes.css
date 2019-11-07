@@ -30,6 +30,25 @@ article.node-post.view-mode-full .content {
 article.node-post.view-mode-full .field-name-body {
   padding-bottom: 30px;
 }
+.flex-grid {
+  display: flex;
+}
+.col {
+  flex: 1;
+}
+.gh-avatar {
+  width: 88px;
+  border-radius: 50%;
+  display: block;
+}
+.bug-squad-header {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 1em;
+}
+.bug-sqyad-member {
+  display: inline-block;
+}
 
 /*******************************************************************************
  * Node: Blog - teaser view mode

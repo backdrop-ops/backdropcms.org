@@ -286,10 +286,6 @@ function borg_project_metrics_block_info() {
     'info' => t('Backdrop Project Metrics'),
     'description' => t('The number of users, commits, and comments to Backdrop since the project started.'),
   );
-  $blocks['bug-squad'] = array(
-    'info' => t('Members of the Backdorp Bug Squad'),
-    'description' => t('List the users of the Bug Squad'),
-  );
 
   return $blocks;
 }
@@ -350,22 +346,10 @@ function borg_project_metrics_block_view($delta = '', $settings = array()) {
       </p>
     </div>
 HTML;
-  $team = borg_project_metrics_teams('3489194');
-  $lis = '';
-  foreach ($team as $key => $member) {
-    $lis .= "<li>$member</li>";
-  }
-  $members = "<ul>$lis</ul>";
   switch ($delta) {
     case 'backdrop_project_metrics':
       $block['subject'] = NULL;
       $block['content'] = $metrics_content;
-      return $block;
-      break;
-
-    case 'bug-squad':
-      $block['subject'] = t('The Bug Squad');
-      $block['content'] = $members;
       return $block;
       break;
   }
@@ -495,7 +479,10 @@ function borg_project_metrics_teams($team_id = '3489194') {
   $members = array();
   foreach($data as $datum) {
     $name = borg_project_metrics_get_team_member_name($datum->login);
-    $members[$datum->login] = $name;
+    $members[$datum->login] = [
+      'name' => $name['name'],
+      'avatar_url' => $name['avatar_url'],
+    ];
   }
 
   return $members;
@@ -533,5 +520,8 @@ function borg_project_metrics_get_team_member_name($login) {
 
   $data = json_decode($body);
 
-  return $data->name;
+  return array(
+    'name' => $data->name,
+    'avatar_url' => $data->avatar_url,
+  );
 }

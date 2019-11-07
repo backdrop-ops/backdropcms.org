@@ -223,7 +223,7 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * Prepare variables for node templates.
  * @see node.tpl.php
  */
-function borg_preprocess_node(&$variables){
+function borg_preprocess_node(&$variables) {
   // For blog posts.
   if ($variables['type'] == 'post') {
     // Load the author.
@@ -257,6 +257,7 @@ function borg_preprocess_node(&$variables){
   if ($variables['type'] == 'showcase') {
     backdrop_add_css($path . '/css/node-showcase.css');
   }
+
 }
 
 /**
@@ -709,4 +710,35 @@ function borg_system_powered_by() {
   $output .= '</span>';
 
   return $output;
+}
+
+/**
+ * Overrides theme_field__body__docs().
+ */
+function borg_field__body__docs($variables) {
+  if ($variables['element']['#object']->nid == '2306') {
+    $output = backdrop_render($variables['element'][0]);
+    $bug_squad = borg_project_metrics_teams('3489194');
+    $divs = '
+      <div class="bug-squad-header">
+        <strong>Bug Squad Members</strong>
+      </div>';
+    $divs .= '<div class="flex-grid">';
+    foreach ($bug_squad as $key => $member) {
+      $divs .= "
+        <div class='bug-squad-member col'>
+          <img class='gh-avatar' src=\"{$member['avatar_url']}\" />
+          {$member['name']}
+        </div>";
+    }
+    $divs .= '</div>';
+    $members = $divs;
+    $variables['bug_squad'] = array(
+      '#type' => 'markup',
+      '#markup' => $members,
+    );
+    $output .= $divs;
+
+    return $output;
+  }
 }
