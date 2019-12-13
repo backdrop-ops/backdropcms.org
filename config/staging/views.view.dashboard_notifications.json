@@ -61,7 +61,7 @@
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "",
+                        "label": "summary",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -95,7 +95,7 @@
                         "element_class": "",
                         "element_label_type": "",
                         "element_label_class": "",
-                        "element_label_colon": false,
+                        "element_label_colon": 0,
                         "element_wrapper_type": "",
                         "element_wrapper_class": "",
                         "element_default_classes": 1,
@@ -124,7 +124,7 @@
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "",
+                        "label": "url",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -158,7 +158,7 @@
                         "element_class": "",
                         "element_label_type": "",
                         "element_label_class": "",
-                        "element_label_colon": false,
+                        "element_label_colon": 0,
                         "element_wrapper_type": "",
                         "element_wrapper_class": "",
                         "element_default_classes": 1,
@@ -209,7 +209,27 @@
                         "order": "DESC"
                     }
                 },
-                "title": "Dashboard Notifications"
+                "title": "Dashboard Notifications",
+                "style_options": {
+                    "grouping": [],
+                    "root_object": "notifications",
+                    "top_child_object": "notification",
+                    "field_output": "normal",
+                    "plaintext_output": 1,
+                    "remove_newlines": 0,
+                    "format": "simple",
+                    "jsonp_prefix": "",
+                    "content_type": "default",
+                    "using_views_api_mode": 0,
+                    "translate_labels": 0,
+                    "object_arrays": 0,
+                    "numeric_strings": 0,
+                    "bigint_string": 0,
+                    "pretty_print": 0,
+                    "unescaped_slashes": 0,
+                    "unescaped_unicode": 0,
+                    "char_encoding": []
+                }
             }
         },
         "page": {

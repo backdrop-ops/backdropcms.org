@@ -1,11 +1,11 @@
 {
-    "_config_name": "field.instance.node.notification.field_tagline",
-    "field_name": "field_tagline",
+    "_config_name": "field.instance.node.notification.field_notification_summary",
+    "field_name": "field_notification_summary",
     "entity_type": "node",
     "bundle": "notification",
-    "label": "tagline",
+    "label": "Summary",
     "widget": {
-        "weight": "-4",
+        "weight": "-2",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -13,7 +13,7 @@
             "size": "60"
         }
     },
-    "description": "A short tagline to describe the content being linked to.",
+    "description": "Short text to go with notification.",
     "required": 0,
     "deleted": 0,
     "default_value": [
@@ -32,7 +32,7 @@
             "type": "text_default",
             "settings": [],
             "module": "text",
-            "weight": 0
+            "weight": 2
         }
     }
 }
