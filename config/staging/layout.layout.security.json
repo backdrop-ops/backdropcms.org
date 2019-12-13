@@ -23,7 +23,6 @@
         ],
         "top": [],
         "content": [
-            "971576a0-611b-478a-9c01-1b91b772cb1c",
             "738ae993-a0d3-4873-b724-360d408ee4cd",
             "86d0cc7a-e4c5-4965-9f47-71f57d732ca1",
             "3d0062a8-2b60-4f9b-b100-c4670df4251f"
@@ -113,33 +112,6 @@
                     "contexts": []
                 },
                 "uuid": "1c92f3f7-5bee-4326-9a03-3dc73ea7ef66",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "971576a0-611b-478a-9c01-1b91b772cb1c": {
-            "plugin": "block:apr_24_security_advisory_correction",
-            "data": {
-                "module": "block",
-                "delta": "apr_24_security_advisory_correction",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "description": "Posted by Jack in collaboration with Jen after accidentally sending emails for old security updates",
-                        "delta": "apr_24_security_advisory_correction",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "971576a0-611b-478a-9c01-1b91b772cb1c",
                 "style": {
                     "plugin": "default",
                     "data": {

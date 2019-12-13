@@ -430,23 +430,10 @@
                     }
                 },
                 "sorts": {
-                    "promote": {
-                        "id": "promote",
-                        "table": "node",
-                        "field": "promote",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "order": "DESC",
-                        "exposed": false,
-                        "expose": {
-                            "label": ""
-                        }
-                    },
-                    "created": {
-                        "id": "created",
-                        "table": "node",
-                        "field": "created",
+                    "random": {
+                        "id": "random",
+                        "table": "views",
+                        "field": "random",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
@@ -454,8 +441,7 @@
                         "exposed": false,
                         "expose": {
                             "label": ""
-                        },
-                        "granularity": "second"
+                        }
                     }
                 },
                 "title": "Try Backdrop CMS",

@@ -1,0 +1,407 @@
+{
+    "_config_name": "views.view.website_admins",
+    "name": "website_admins",
+    "description": "",
+    "tag": "default",
+    "disabled": false,
+    "base_table": "users",
+    "human_name": "Website Admins",
+    "core": "1.13.3",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "access": {
+                    "type": "perm",
+                    "perm": "access user profiles"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "100"
+                    }
+                },
+                "style_plugin": "list",
+                "row_plugin": "fields",
+                "fields": {
+                    "field_name": {
+                        "id": "field_name",
+                        "table": "field_data_field_name",
+                        "field": "field_name",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 1,
+                        "alter": {
+                            "alter_text": 1,
+                            "text": "([field_name])",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "click_sort_column": "value",
+                        "type": "text_default",
+                        "settings": [],
+                        "group_column": "value",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
+                    },
+                    "name": {
+                        "id": "name",
+                        "table": "users",
+                        "field": "name",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 1,
+                            "text": "[name] [field_name]",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 0,
+                            "ellipsis": 0,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link_to_user": 1,
+                        "overwrite_anonymous": 0,
+                        "anonymous_text": "",
+                        "format_username": 1
+                    }
+                },
+                "filters": {
+                    "status": {
+                        "value": "1",
+                        "table": "users",
+                        "field": "status",
+                        "id": "status",
+                        "expose": {
+                            "operator": false
+                        },
+                        "group": 1
+                    },
+                    "role": {
+                        "id": "role",
+                        "table": "users_roles",
+                        "field": "role",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "3": "3"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    },
+                    "uid_raw": {
+                        "id": "uid_raw",
+                        "table": "users",
+                        "field": "uid_raw",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "!=",
+                        "value": {
+                            "min": "",
+                            "max": "",
+                            "value": "1"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                },
+                "sorts": {
+                    "created": {
+                        "id": "created",
+                        "table": "users",
+                        "field": "created",
+                        "order": "DESC"
+                    }
+                },
+                "title": "Website Admins",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "type": "ul",
+                    "wrapper_class": "item-list",
+                    "class": ""
+                }
+            }
+        },
+        "page": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "website-admins"
+            }
+        },
+        "page_1": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "website-editors",
+                "title": "Website Editors",
+                "defaults": {
+                    "title": false,
+                    "filters": false,
+                    "filter_groups": false
+                },
+                "filters": {
+                    "status": {
+                        "value": "1",
+                        "table": "users",
+                        "field": "status",
+                        "id": "status",
+                        "expose": {
+                            "operator": false
+                        },
+                        "group": 1
+                    },
+                    "role": {
+                        "id": "role",
+                        "table": "users_roles",
+                        "field": "role",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "or",
+                        "value": {
+                            "4": "4"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "reduce_duplicates": 0
+                    },
+                    "uid_raw": {
+                        "id": "uid_raw",
+                        "table": "users",
+                        "field": "uid_raw",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "!=",
+                        "value": {
+                            "min": "",
+                            "max": "",
+                            "value": "1"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
+            }
+        }
+    }
+}
