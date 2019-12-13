@@ -53,7 +53,17 @@ function _borg_mailers_mailchimp_user_update($account) {
  */
 function _borg_mailers_mailchimp_set_status($account, $status = 'subscribed') {
   global $settings;
-  $data = "{\"email_address\": \"$account->mail\", \"status\": \"$status\"}";
+  // marketing_permissions is the GDPR compliance checkbox.
+  // See https://mailchimp.com/developer/reference/lists/list-members/
+  $php_data = array(
+    'email_address' => $account->mail,
+    'status' => $status,
+    'marketing_permissions' => array(
+      'marketing_permission_id' => 3845,
+      'enabled' => TRUE,
+    ),
+  );
+  $data = backdrop_json_encode($php_data);
   $list = $settings['mailchimp_borg_list'];
   $subHash = md5(strtolower($account->mail));
 
