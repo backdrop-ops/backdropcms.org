@@ -1,0 +1,6 @@
+type = module
+name = Views JSON
+description = Views style plugin to render content as JSON.
+package = Views
+backdrop = 1.x
+dependencies[] = views
