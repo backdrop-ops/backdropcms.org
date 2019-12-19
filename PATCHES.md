@@ -1,7 +1,9 @@
 Patches to Backdrop Core:
 =========================
 
-none
+URL length
+  https://github.com/backdrop/backdrop-issues/issues/2843
+  https://github.com/backdrop/backdrop/pull/2940.patch
 
 
 Patches to Backdrop Contrib:
