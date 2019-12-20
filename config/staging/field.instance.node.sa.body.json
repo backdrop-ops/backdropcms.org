@@ -22,7 +22,7 @@
     },
     "display": {
         "default": {
-            "label": "hidden",
+            "label": "above",
             "type": "text_default",
             "weight": "6",
             "settings": [],
@@ -41,7 +41,7 @@
     "default_value": [
         {
             "summary": "",
-            "value": "<p>Backdrop CMS doesn't sufficiently FOO under the scenario BAR. This vulnerability is mitigated by the fact that an attacker must have a role with the permission \"administer FOO\".</p>\r\n",
+            "value": "<p>Backdrop CMS doesn't sufficiently FOO under the scenario BAR.</p>\r\n\r\n<p>This vulnerability is mitigated by the fact that an attacker must have a role with the permission \"administer FOO\".</p>\r\n",
             "format": "filtered_html"
         }
     ],
