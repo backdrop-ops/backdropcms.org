@@ -11,7 +11,7 @@
         "active": 0,
         "settings": []
     },
-    "description": "See <a href=\"https://github.com/backdrop/backdrop-issues/blob/master/procedures/security--request-cve.md\" target=\"_blank\">instructions on how to request a CVE</a>.",
+    "description": "See <a href=\"https://github.com/backdrop/backdrop-issues/blob/master/procedures/security--request-cve.md\" target=\"_blank\">instructions on how to request a CVE</a>. URL should be in the form https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-YYYY-XXXXX",
     "required": 0,
     "deleted": 0,
     "default_value": [
