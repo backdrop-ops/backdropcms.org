@@ -62,8 +62,11 @@ function borg_cleanup_form_user_profile_form_alter(&$form, &$form_state) {
   $form['contact']['#title'] = t('Email Notifications');
   $form['contact']['field_security_mailing_list'] = $form['field_security_mailing_list'];
   unset($form['field_security_mailing_list']);
-  $form['contact']['field_mailchimp_signup'] = $form['field_mailchimp_signup'];
-  unset($form['field_mailchimp_signup']);
+
+  if (isset($form['contact']['field_mailchimp_signup'])) {
+    $form['contact']['field_mailchimp_signup'] = $form['field_mailchimp_signup'];
+    unset($form['field_mailchimp_signup']);
+  }
 }
 
 /**
