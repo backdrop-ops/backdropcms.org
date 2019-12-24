@@ -5,19 +5,17 @@
  ******************************************************************************/
 
 /*******************************************************************************
- * PMC list
- ******************************************************************************/
- ul.committers,
- ul.pmc {
+* Leadership listings (pmc, committers, bug squad, etc)
+*******************************************************************************/
+ul.leadership {
   padding-left: 0;
- }
- ul.committers li,
- ul.pmc li {
+}
+ul.leadership li {
   display: block;
   line-height: 100px;
- }
- ul.committers img,
- ul.pmc img {
+  margin: .5em 0;
+}
+ul.leadership img {
   float: left;
   margin-right: 15px;
   width: 100px;
@@ -26,7 +24,8 @@
   background: #fff;
 }
 @media (min-width: 62em) { /* 992px */
-  ul.pmc li {
+  ul.pmc li,
+  ul.bug-squad li {
     display: inline-block;
     width: 49%;
   }

@@ -223,7 +223,7 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * Prepare variables for node templates.
  * @see node.tpl.php
  */
-function borg_preprocess_node(&$variables) {
+function borg_preprocess_node(&$variables){
   // For blog posts.
   if ($variables['type'] == 'post') {
     // Load the author.
@@ -233,10 +233,16 @@ function borg_preprocess_node(&$variables) {
     if (!empty($author->field_name[$lang])) {
       $variables['name'] = l($author->field_name[$lang][0]['safe_value'], 'user/' . $author->uid);
     }
-    // Get the profile photo.
-    $uri = $author->field_photo[$lang][0]['uri'];
-    $variables['user_picture'] = theme('image_style', array(
-      'style_name' => 'headshot_small', 'uri' => $uri));
+
+    // Get the profile photo if the field exists.
+    $variables['user_picture'] = '';
+    if (property_exists($author, 'field_photo')) {
+      if (!empty($author->field_photo)) {
+        $uri = $author->field_photo[$lang][0]['uri'];
+        $variables['user_picture'] = theme('image_style', array(
+          'style_name' => 'headshot_small', 'uri' => $uri));
+      }
+    }
   }
 
   // Change the submitted by language for all nodes.
@@ -257,7 +263,6 @@ function borg_preprocess_node(&$variables) {
   if ($variables['type'] == 'showcase') {
     backdrop_add_css($path . '/css/node-showcase.css');
   }
-
 }
 
 /**
@@ -412,6 +417,35 @@ function borg_book_next($book_link) {
 
   if ($key == $book_link['mlid']) {
     return current($flat);
+  }
+}
+
+/**
+ * Overrides theme_field__body__docs().
+ */
+function borg_field__body__docs($variables) {
+  // Only add bug squad members on the bug squad page.
+  if ($variables['element']['#object']->nid == '2306') {
+    // Safety check for the project metrics module.
+    if (module_exists('borg_project_metrics')) {
+      $bug_squad = borg_project_metrics_teams('3489194');
+      $members = array();
+      foreach ($bug_squad as $key => $member) {
+        $info  = '<img class="gh-avatar" src="' . $member['avatar_url'] . '" />';
+        $info .= '<strong>' . $member['name'] . '</strong>';
+        $members[] = $info;
+      }
+
+      $output  = backdrop_render($variables['element'][0]);
+      $output .= '<p class="bug-squad-header"><strong>Bug Squad Members</strong></p>';
+      $output .= '<div class="container">';
+      $output .= '  <div class="row">';
+      $output .=      theme('item_list', array('items' => $members, 'attributes' => array('class' => array('leadership', 'bug-squad'))));
+      $output .= '  </div> <!-- /.row -->';
+      $output .= '</div> <!-- /.container -->';
+
+      return $output;
+    }
   }
 }
 
@@ -710,35 +744,4 @@ function borg_system_powered_by() {
   $output .= '</span>';
 
   return $output;
-}
-
-/**
- * Overrides theme_field__body__docs().
- */
-function borg_field__body__docs($variables) {
-  if ($variables['element']['#object']->nid == '2306') {
-    $output = backdrop_render($variables['element'][0]);
-    $bug_squad = borg_project_metrics_teams('3489194');
-    $divs = '
-      <div class="bug-squad-header">
-        <strong>Bug Squad Members</strong>
-      </div>';
-    $divs .= '<div class="flex-grid">';
-    foreach ($bug_squad as $key => $member) {
-      $divs .= "
-        <div class='bug-squad-member col'>
-          <img class='gh-avatar' src=\"{$member['avatar_url']}\" />
-          {$member['name']}
-        </div>";
-    }
-    $divs .= '</div>';
-    $members = $divs;
-    $variables['bug_squad'] = array(
-      '#type' => 'markup',
-      '#markup' => $members,
-    );
-    $output .= $divs;
-
-    return $output;
-  }
 }
