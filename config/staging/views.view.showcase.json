@@ -33,7 +33,7 @@
                         "offset": "0"
                     }
                 },
-                "style_plugin": "grid",
+                "style_plugin": "default",
                 "row_plugin": "fields",
                 "fields": {
                     "field_screen_lg": {
@@ -331,16 +331,10 @@
                 },
                 "title": "Sites that use Backdrop",
                 "style_options": {
+                    "grouping": [],
                     "row_class": "",
-                    "default_row_class": 0,
-                    "row_class_special": 0,
-                    "uses_fields": 0,
-                    "columns": "2",
-                    "alignment": "horizontal",
-                    "fill_single_line": 1,
-                    "caption": "",
-                    "summary": "",
-                    "deprecated_table": "1"
+                    "default_row_class": 1,
+                    "row_class_special": 0
                 },
                 "row_options": {
                     "default_field_elements": 1,
