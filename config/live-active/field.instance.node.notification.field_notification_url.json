@@ -11,12 +11,11 @@
         "active": 0,
         "settings": []
     },
-    "description": "Each notification should link to additional information on BackdropCMS.org or elsewhere. ",
+    "description": "Please link to a matching post in the BackdropCMS.org blog/news section whenever possible. Do not link directlty to GitHub release pages.",
     "required": 0,
     "deleted": 0,
     "default_value": [
         {
-            "title": "",
             "url": ""
         }
     ],

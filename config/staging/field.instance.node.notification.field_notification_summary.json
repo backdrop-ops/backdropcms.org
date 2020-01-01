@@ -3,17 +3,17 @@
     "field_name": "field_notification_summary",
     "entity_type": "node",
     "bundle": "notification",
-    "label": "Summary",
+    "label": "Snippit",
     "widget": {
         "weight": "-2",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
         "settings": {
-            "size": "60"
+            "size": "128"
         }
     },
-    "description": "Short text to go with notification.",
+    "description": "A short sentence to expand on the notification title.",
     "required": 0,
     "deleted": 0,
     "default_value": [
