@@ -512,7 +512,16 @@
                     }
                 },
                 "defaults": {
-                    "header": false
+                    "header": false,
+                    "title": false,
+                    "sitename_title": false
+                },
+                "title": "Security Advisories for Backdrop CMS",
+                "sitename_title": 0,
+                "style_options": {
+                    "uses_fields": 0,
+                    "description": "This list includes the latest advisories for both Backdrop core and any project in the contributed repository.",
+                    "icon": 1
                 }
             }
         },
