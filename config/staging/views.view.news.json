@@ -456,11 +456,17 @@
                     "filters": false,
                     "filter_groups": false
                 },
-                "row_plugin": "node_rss",
+                "row_plugin": "rss_fields",
                 "row_options": {
-                    "relationship": "none",
-                    "item_length": "full",
-                    "links": 0
+                    "title_field": "title_1",
+                    "link_field": "path",
+                    "description_field": "body",
+                    "creator_field": "name",
+                    "date_field": "created",
+                    "guid_field_options": {
+                        "guid_field": "nid",
+                        "guid_field_is_permalink": 1
+                    }
                 },
                 "fields": {
                     "title_1": {
@@ -495,7 +501,7 @@
                             "more_link": 0,
                             "more_link_text": "",
                             "more_link_path": "",
-                            "strip_tags": 0,
+                            "strip_tags": 1,
                             "trim": 0,
                             "preserve_tags": "",
                             "html": 0
@@ -572,7 +578,7 @@
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "Body",
+                        "label": "",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -606,7 +612,7 @@
                         "element_class": "",
                         "element_label_type": "",
                         "element_label_class": "",
-                        "element_label_colon": 1,
+                        "element_label_colon": false,
                         "element_wrapper_type": "",
                         "element_wrapper_class": "",
                         "element_default_classes": 1,
@@ -799,7 +805,8 @@
                 "style_options": {
                     "grouping": [],
                     "uses_fields": 1,
-                    "description": "News & Announcements for Backdrop CMS"
+                    "description": "News & Announcements for Backdrop CMS",
+                    "icon": 1
                 },
                 "filters": {
                     "type": {
