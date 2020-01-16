@@ -282,6 +282,26 @@ function borg_preprocess_comment(&$variables){
 }
 
 /**
+ * Prepares variables for all RSS rows.
+ */
+function borg_preprocess_views_view_row_rss(&$variables) {
+  $view = &$variables['view'];
+  $item = &$variables['row'];
+
+  // Un-escpape the previously escaped title to prevent double escaping.
+  $variables['title'] = decode_entities($item->title);
+
+  // Add a special class to the featured image to optimize for Feedly.
+  $view->result[0]->field_field_image[0]['rendered']['#item']['attributes']['class'] = array('webfeedsFeaturedVisual');
+  // Add an image tag to the top of the description.
+  $image = drupal_render($view->result[0]->field_field_image[0]['rendered']);
+  $complete_description = '<![CDATA[' . $image . '<br/>' . $item->description . ']]>';
+
+  $item->description = $complete_description;
+  $variables['description'] = $complete_description;
+}
+
+/**
  * Prepares variables for views grid templates.
  * @see views-view-grid.tpl.php
  */
