@@ -1,0 +1,13 @@
+/**
+ * Styling for the 'Create' and 'Ready' pages.
+ */
+
+.tugboat-create-page,
+.tugboat-ready-page {
+  text-align: center;
+}
+
+.tugboat-create-page .form-submit,
+.tugboat-ready-page .button {
+  margin: 0;
+}
