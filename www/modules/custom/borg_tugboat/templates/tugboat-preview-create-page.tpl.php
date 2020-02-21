@@ -1,6 +1,9 @@
 <?php
 /**
- * Template file for the create demo page.
+ * Template file for the Create page.
+ *
+ * Available variables:
+ * - $form: The form array for the 'Create' button.
  */
 ?>
 

@@ -1,0 +1,212 @@
+<?php
+/**
+ * @file
+ * Integrates with Tugboat.qa to allow creating on-the-fly preview sites.
+ */
+
+define('TUGBOAT_API_URL', 'https://api.tugboat.qa/v3/');
+
+/**
+ * Implements hook_config_info().
+ */
+function tugboat_config_info() {
+  return array(
+    'tugboat.settings' => array(
+      'label' => t('Tugboat settings'),
+      'group' => t('Configuration'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function tugboat_menu() {
+  $config = config('tugboat.settings');
+  $url = check_plain($config->get('page_url'));
+  $components = substr_count($url, '/');
+
+  return array(
+    'admin/config/services/tugboat' => array(
+      'title' => 'Tugboat',
+      'description' => 'Configure Tugboat.qa integration.',
+      'page callback' => 'backdrop_get_form',
+      'page arguments' => array('tugboat_admin_settings'),
+      'access arguments' => array('administer tugboat settings'),
+      'file' => 'tugboat.admin.inc',
+    ),
+    $url => array(
+      'title' => check_plain($config->get('create_page_title')),
+      'page callback' => 'tugboat_preview_create_page',
+      'access arguments' => array('create tugboat preview sites'),
+      'file' => 'tugboat.pages.inc',
+    ),
+    $url . '/%' => array(
+      'title' => check_plain($config->get('ready_page_title')),
+      'page callback' => 'tugboat_preview_ready_page',
+      'page arguments' => array($components + 1),
+      'access arguments' => array('create tugboat preview sites'),
+      'file' => 'tugboat.pages.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function tugboat_permission() {
+  return array(
+    'administer tugboat settings' => array(
+      'title' => t('Administer Tugboat settings'),
+    ),
+    'create tugboat preview sites' => array(
+      'title' => t('Create Tugboat preview sites'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function tugboat_theme() {
+  return array(
+    'tugboat_preview_create_page' => array(
+      'variables' => array(
+        'form' => NULL,
+      ),
+      'template' => 'templates/tugboat-preview-create-page',
+    ),
+    'tugboat_preview_ready_page' => array(
+      'variables' => array(
+        'url' => NULL,
+        'age' => NULL,
+      ),
+      'template' => 'templates/tugboat-preview-ready-page',
+    ),
+  );
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Delete preview sites older than the specified age.
+ */
+function tugboat_cron() {
+  require_once backdrop_get_path('module', 'tugboat') . '/unirest-php/src/Unirest.php';
+
+  $config = config('tugboat.settings');
+  $age = $config->get('preview_site_age');
+
+  // Run at an interval that matches the preview site age.
+  if ((REQUEST_TIME - state_get('tugboat_cron', 0)) > $age) {
+    state_set('tugboat_cron', REQUEST_TIME);
+
+    $headers = tugboat_api_headers();
+    $delete_timestamp = REQUEST_TIME - $age;
+    $delete_count = 0;
+
+    // Get a list of previews created by this module (so we don't delete any
+    // previews created through Tugboat directly).
+    foreach ($config->get('previews') as $preview_id => $preview_url) {
+      // Load each preview to check if it should be deleted.
+      $preview_response = Unirest\Request::get(TUGBOAT_API_URL . 'previews/' . $preview_id, $headers);
+      $preview = tugboat_api_get_response($preview_response, 'watchdog');
+
+      // Delete if not a base preview (anchor) and it's older than the specified
+      // age.
+      if ($preview) {
+        if (!$preview->anchor && strtotime($preview->createdAt) < $delete_timestamp) {
+          $delete_response = Unirest\Request::delete(TUGBOAT_API_URL . 'previews/' . $preview_id, $headers);
+          $deleted = tugboat_api_get_response($delete_response, 'watchdog');
+
+          // Keep track of how many previews were deleted and update config.
+          if ($deleted) {
+            $delete_count++;
+            $config->clear('previews.' . $preview_id);
+          }
+        }
+      }
+      elseif ($preview_response->code == 404) {
+        // Preview doesn't exist in Tugboat, so remove from config.
+        $config->clear('previews.' . $preview_id);
+      }
+    }
+
+    // Log deletions in watchdog.
+    if ($delete_count) {
+      watchdog('tugboat', 'Deleted @count previews older than @date.', array(
+        '@count' => $delete_count,
+        '@date' => format_date($delete_timestamp),
+      ));
+    }
+
+    $config->save();
+  }
+}
+
+/**
+ * Get an array of headers to use in API requests.
+ *
+ * @param string $access_token
+ *   The access token to use for authorization. This is only needed when you
+ *   want to use a specific value instead of loading it from settings or config
+ *   (e.g. validating the user input token before saving it).
+ *
+ * @return array
+ *   An array of headers to use for all API requests.
+ */
+function tugboat_api_headers($access_token = NULL) {
+  $token = $access_token;
+
+  if (empty($token)) {
+    $token = settings_get('tugboat_access_token');
+
+    if (empty($token)) {
+      $token = config_get('tugboat.settings', 'access_token');
+    }
+  }
+
+  return array('Authorization' => 'Bearer ' . $token);
+}
+
+/**
+ * Get the response from an API request and either deal with the error, or
+ * return the successful result.
+ *
+ * @param object $response
+ *   The API request response object.
+ *   @see http://unirest.io/php#user-content-response-object
+ * @param string $type
+ *   The type of error to return. One of: 'form', 'watchdog' or 'message'.
+ *   Defaults to 'message'.
+ * @param string $form_item
+ *   The form item to highlight with the error message. Only applies when $type
+ *   is 'form'.
+ *
+ * @return object|false
+ *   The body of the successful request, or FALSE if there was an error.
+ */
+function tugboat_api_get_response($response, $type = 'message', $form_item = NULL) {
+  // Get the type of return code by the first number.
+  $code_type = substr($response->code, 0, 1);
+
+  if ($code_type != '2' && $code_type != '3') {
+    $error = 'Tugboat error #' . check_plain($response->body->code) . ': ' . check_plain($response->body->message);
+
+    switch ($type) {
+      case 'form':
+        form_set_error($form_item, $error);
+        break;
+      case 'watchdog':
+        watchdog('tugboat', $error, array(), WATCHDOG_ERROR);
+        break;
+      default:
+        backdrop_set_message($error, 'error');
+    }
+
+    return FALSE;
+  }
+  else {
+    return !empty($response->body) ? $response->body : TRUE;
+  }
+}

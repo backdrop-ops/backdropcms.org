@@ -96,9 +96,9 @@ function borg_blocks_tagline($settings) {
   $version = check_plain($settings['version']);
 
   $demo_attributes = array('class' => array('button', 'demo'));
-  if (module_exists('borg_tugboat')) {
+  if (module_exists('tugboat')) {
     $demo_text = t('Demo Backdrop');
-    $demo_link = l($demo_text, 'demo/create', array('attributes' => $demo_attributes, 'html' => TRUE));
+    $demo_link = l($demo_text, 'demo', array('attributes' => $demo_attributes, 'html' => TRUE));
   }
   else {
     $pantheon_url = 'https://dashboard.pantheon.io/sites/create?upstream_id=bf703821-4c18-45a1-88b8-3d9ec302273d';
