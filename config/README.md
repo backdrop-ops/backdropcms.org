@@ -2,7 +2,7 @@ Config Workflow Instructions
 =============================
 
 
-## How to work with confifg for backdropcms.org
+## How to work with config for backdropcms.org
 
 
 Rule #1 never commit anything into the live-active directory.
@@ -41,7 +41,7 @@ $config_directories['staging'] = '../config/staging';
 
 1) Make changes to code and/or config in your local environment.
 
-2) Commit changes to code (do not incclude changes to config in this step).
+2) Commit changes to code (do not include changes to config in this step).
 
 3) Manually copy the entire contents of your dev-active directory into staging.
 
