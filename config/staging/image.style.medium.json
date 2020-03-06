@@ -1,18 +1,17 @@
 {
     "_config_name": "image.style.medium",
-    "overridden": false,
+    "overridden": true,
     "module": "image",
     "label": "Medium (220x220)",
     "name": "medium",
-    "effects": [
-        {
-            "name": "image_scale",
+    "effects": {
+        "1": {
+            "name": "image_scale_and_crop",
             "data": {
-                "width": 220,
-                "height": 220,
-                "upscale": 1
+                "width": "220",
+                "height": "220"
             },
-            "weight": 1
+            "weight": 2
         }
-    ]
+    }
 }
