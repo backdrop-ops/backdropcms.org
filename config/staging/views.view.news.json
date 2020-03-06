@@ -603,7 +603,7 @@
                             "more_link": 0,
                             "more_link_text": "",
                             "more_link_path": "",
-                            "strip_tags": 1,
+                            "strip_tags": 0,
                             "trim": 0,
                             "preserve_tags": "<a>",
                             "html": 0
@@ -861,6 +861,13 @@
                     "operator": "AND",
                     "groups": {
                         "1": "AND"
+                    }
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "10",
+                        "offset": "0"
                     }
                 }
             }
