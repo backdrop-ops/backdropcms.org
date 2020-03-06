@@ -605,7 +605,7 @@
                             "more_link_path": "",
                             "strip_tags": 1,
                             "trim": 0,
-                            "preserve_tags": "<a>",
+                            "preserve_tags": "<a> <p> <br> <ul> <ol> <li> <figure> <figcaption> <img>",
                             "html": 0
                         },
                         "element_type": "",
@@ -621,9 +621,9 @@
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
                         "click_sort_column": "value",
-                        "type": "text_default",
+                        "type": "text_trimmed",
                         "settings": {
-                            "trim_length": "600"
+                            "trim_length": "1200"
                         },
                         "group_column": "value",
                         "group_columns": [],
