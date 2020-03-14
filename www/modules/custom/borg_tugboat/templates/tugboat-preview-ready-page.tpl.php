@@ -14,7 +14,11 @@
       Thank you for creating a new demo sandbox. You can access your new Backdrop website at:
     </p>
 
-    <p class="borg-demo-url"><?php print l($url, $url); ?></p>
+    <p class="borg-demo-url">
+      <strong>URL:</strong> <?php print l($url, $url); ?><br />
+      <strong>Username:</strong> admin<br />
+      <strong>Password:</strong> password
+    </p>
 
     <p class="borg-demo-button">
       <?php print l(t('Visit your site'), $url, array('attributes' => array('class' => array('button button-large')))); ?>
@@ -27,16 +31,14 @@
 
   <div class="borg-demo-done-left">
     <p>
-      This demo sandbox will act as a new Backdrop installation would. You will
-      need to run the installer and set an administrator account as part of the
-      setup. Note that sending email from demo sandboxis not allowed, so
-      <strong>password recovery will not work</strong>. Be sure to remember your
-      password.
+      Note that sending emails from demo sandboxes is not allowed, so
+      <strong>password recovery will not work</strong>. If you change the admin
+      password, be sure to remember it.
     </p>
     <p>
-      Demo sandboxes will show you the Standard install. Additional add-ons can
-      be installed using the Installer module (Administration > Functionality >
-      Install new modules).
+      Demo sandboxes are setup using the <em>Standard</em> install. Additional
+      add-ons can be installed using the Installer module (Administration >
+      Functionality > Install new modules).
     </p>
     <p>
       There is no database export functionality in the demo sandbox. <strong>Any
