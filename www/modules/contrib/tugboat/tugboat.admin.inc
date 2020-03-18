@@ -27,12 +27,51 @@ function tugboat_admin_settings($form, &$form_state) {
     $form['tugboat.qa']['access_token']['#description'] = t("An <a href=\"@url\">access token</a> generated from Tugboat.qa. This has already been set in the 'settings' file.", array('@url' => 'https://dashboard.tugboat.qa/access-tokens'));
     $form['tugboat.qa']['access_token']['#disabled'] = TRUE;
   }
+  $form['tugboat.qa']['build_method'] = array(
+    '#type' => 'radios',
+    '#title' => t('Build method'),
+    '#description' => t("How to build new previews. 'Create' takes longer but allows <a href=\"@build\">build commands</a> to run (exactly which build commands are run depends whether you have a Base Preview set or not), whereas 'Clone' is quicker but skips all build commands.", array('@build' => 'https://docs.tugboat.qa/building-a-preview/preview-deep-dive/how-previews-work/#why-build-phases-matter')),
+    '#default_value' => $config->get('build_method'),
+    '#options' => array(
+      'create' => t('Create'),
+      'clone' => t('Clone'),
+    ),
+  );
+  $form['tugboat.qa']['repository_id'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Repository ID'),
+    '#description' => t("The ID of the Tugboat repository to create new previews in. This 24-character, alphanumeric hash can be found in the URL when viewing the repository page in the Tugboat.qa dashboard."),
+    '#default_value' => $config->get('repository_id'),
+    '#size' => 30,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="build_method"]' => array('value' => 'create'),
+      ),
+    ),
+  );
+  $form['tugboat.qa']['git_ref'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Git Ref'),
+    '#description' => t("The git ref to build new previews for. This can be a pull request number, branch, tag, or commit hash."),
+    '#default_value' => $config->get('git_ref'),
+    '#size' => 30,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="build_method"]' => array('value' => 'create'),
+      ),
+    ),
+  );
   $form['tugboat.qa']['preview_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Preview ID'),
-    '#description' => t("The ID of the Tugboat preview to use for cloning new previews from. This 24-character, alphanumeric hash can be found in the URL when viewing the preview page in the Tugboat.qa dashboard (e.g. <code>5e177775fa8a5e61a7e64d53</code>)."),
+    '#description' => t("The ID of the Tugboat preview to use for cloning new previews from. This 24-character, alphanumeric hash can be found in the URL when viewing the preview page in the Tugboat.qa dashboard."),
     '#default_value' => $config->get('preview_id'),
     '#size' => 30,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="build_method"]' => array('value' => 'clone'),
+      ),
+    ),
   );
   $form['this_site'] = array(
     '#type' => 'fieldset',
@@ -97,8 +136,6 @@ function tugboat_admin_settings($form, &$form_state) {
  * Validate handler for tugboat_admin_settings().
  */
 function tugboat_admin_settings_validate($form, &$form_state) {
-  require_once backdrop_get_path('module', 'tugboat') . '/unirest-php/src/Unirest.php';
-
   $values = $form_state['values'];
 
   // Validate the access token.
@@ -107,13 +144,26 @@ function tugboat_admin_settings_validate($form, &$form_state) {
     $token = settings_get('tugboat_access_token');
     $form_state['values']['access_token'] = '';
   }
-  // We try getting a list of projects just to test if the access token works.
-  $project_response = Unirest\Request::get(TUGBOAT_API_URL . 'projects', tugboat_api_headers($token));
-  tugboat_api_get_response($project_response, 'form', 'access_token');
+  // We try getting a list of API keys just to test if the access token works.
+  $keys = tugboat_api_curl('/keys', array('token' => $token));
+  if ($keys['code'] == 401) {
+    form_set_error('access_token', t('Invalid access token.'));
+  }
 
+  // Validate the repository ID.
+  if ($values['build_method'] == 'create') {
+    $repo = tugboat_api_curl('/repos/' . $values['repository_id'], array('token' => $token));
+    if ($repo['code'] == 404) {
+      form_set_error('repository_id', t('Invalid repository ID.'));
+    }
+  }
   // Validate the preview ID.
-  $preview_response = Unirest\Request::get(TUGBOAT_API_URL . 'previews/' . $values['preview_id'], tugboat_api_headers($token));
-  tugboat_api_get_response($preview_response, 'form', 'preview_id');
+  elseif ($values['build_method'] == 'clone') {
+    $preview = tugboat_api_curl('/previews/' . $values['preview_id'], array('token' => $token));
+    if ($preview['code'] == 404) {
+      form_set_error('preview_id', t('Invalid preview ID.'));
+    }
+  }
 }
 
 /**

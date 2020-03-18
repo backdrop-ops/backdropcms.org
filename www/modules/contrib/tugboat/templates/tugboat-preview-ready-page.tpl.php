@@ -3,6 +3,8 @@
  * Template file for the Ready page.
  *
  * Available variables:
+ * - $preview_id: The ID of the Tugboat preview (can be used to make API calls
+ *   to get more data about the preview site).
  * - $url: The URL of the new preview site.
  * - $age: How long the preview site will be available for.
  */

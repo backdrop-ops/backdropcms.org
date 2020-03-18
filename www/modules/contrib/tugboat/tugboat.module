@@ -4,7 +4,7 @@
  * Integrates with Tugboat.qa to allow creating on-the-fly preview sites.
  */
 
-define('TUGBOAT_API_URL', 'https://api.tugboat.qa/v3/');
+define('TUGBOAT_API_URL', 'https://api.tugboat.qa/v3');
 
 /**
  * Implements hook_config_info().
@@ -24,7 +24,6 @@ function tugboat_config_info() {
 function tugboat_menu() {
   $config = config('tugboat.settings');
   $url = check_plain($config->get('page_url'));
-  $components = substr_count($url, '/');
 
   return array(
     'admin/config/services/tugboat' => array(
@@ -44,7 +43,7 @@ function tugboat_menu() {
     $url . '/%' => array(
       'title' => check_plain($config->get('ready_page_title')),
       'page callback' => 'tugboat_preview_ready_page',
-      'page arguments' => array($components + 1),
+      'page arguments' => array(substr_count($url, '/') + 1),
       'access arguments' => array('create tugboat preview sites'),
       'file' => 'tugboat.pages.inc',
     ),
@@ -78,6 +77,7 @@ function tugboat_theme() {
     ),
     'tugboat_preview_ready_page' => array(
       'variables' => array(
+        'preview_id' => NULL,
         'url' => NULL,
         'age' => NULL,
       ),
@@ -92,16 +92,12 @@ function tugboat_theme() {
  * Delete preview sites older than the specified age.
  */
 function tugboat_cron() {
-  require_once backdrop_get_path('module', 'tugboat') . '/unirest-php/src/Unirest.php';
-
   $config = config('tugboat.settings');
   $age = $config->get('preview_site_age');
 
   // Run at an interval that matches the preview site age.
   if ((REQUEST_TIME - state_get('tugboat_cron', 0)) > $age) {
     state_set('tugboat_cron', REQUEST_TIME);
-
-    $headers = tugboat_api_headers();
     $delete_timestamp = REQUEST_TIME - $age;
     $delete_count = 0;
 
@@ -109,26 +105,24 @@ function tugboat_cron() {
     // previews created through Tugboat directly).
     foreach ($config->get('previews') as $preview_id => $preview_url) {
       // Load each preview to check if it should be deleted.
-      $preview_response = Unirest\Request::get(TUGBOAT_API_URL . 'previews/' . $preview_id, $headers);
-      $preview = tugboat_api_get_response($preview_response, 'watchdog');
+      $preview = tugboat_api_curl('/previews/' . $preview_id);
 
-      // Delete if not a base preview (anchor) and it's older than the specified
-      // age.
-      if ($preview) {
-        if (!$preview->anchor && strtotime($preview->createdAt) < $delete_timestamp) {
-          $delete_response = Unirest\Request::delete(TUGBOAT_API_URL . 'previews/' . $preview_id, $headers);
-          $deleted = tugboat_api_get_response($delete_response, 'watchdog');
+      if ($preview['code'] == 404) {
+        // Preview doesn't exist in Tugboat, so remove from config.
+        $config->clear('previews.' . $preview_id);
+      }
+      elseif ($preview['code'] == 200) {
+        // Delete if not a base preview (anchor) and it's older than the
+        // specified age.
+        if (!$preview['body']['anchor'] && strtotime($preview['body']['createdAt']) < $delete_timestamp) {
+          $deleted = tugboat_api_curl('/previews/' . $preview_id, array('method' => 'delete'));
 
           // Keep track of how many previews were deleted and update config.
-          if ($deleted) {
+          if ($deleted['code'] == 204) {
             $delete_count++;
             $config->clear('previews.' . $preview_id);
           }
         }
-      }
-      elseif ($preview_response->code == 404) {
-        // Preview doesn't exist in Tugboat, so remove from config.
-        $config->clear('previews.' . $preview_id);
       }
     }
 
@@ -145,68 +139,144 @@ function tugboat_cron() {
 }
 
 /**
- * Get an array of headers to use in API requests.
+ * Get the access token to use in API requests.
  *
- * @param string $access_token
- *   The access token to use for authorization. This is only needed when you
- *   want to use a specific value instead of loading it from settings or config
- *   (e.g. validating the user input token before saving it).
- *
- * @return array
- *   An array of headers to use for all API requests.
+ * @return string
+ *   The Tugboat access token, loaded from settings or config.
  */
-function tugboat_api_headers($access_token = NULL) {
-  $token = $access_token;
+function tugboat_get_token() {
+  $token = settings_get('tugboat_access_token');
 
   if (empty($token)) {
-    $token = settings_get('tugboat_access_token');
-
-    if (empty($token)) {
-      $token = config_get('tugboat.settings', 'access_token');
-    }
+    $token = config_get('tugboat.settings', 'access_token');
   }
 
-  return array('Authorization' => 'Bearer ' . $token);
+  return $token;
 }
 
 /**
- * Get the response from an API request and either deal with the error, or
- * return the successful result.
+ * Use cURL to make a request to the Tugboat API.
  *
- * @param object $response
- *   The API request response object.
- *   @see http://unirest.io/php#user-content-response-object
- * @param string $type
- *   The type of error to return. One of: 'form', 'watchdog' or 'message'.
- *   Defaults to 'message'.
- * @param string $form_item
- *   The form item to highlight with the error message. Only applies when $type
- *   is 'form'.
+ * @param string $path
+ *   The path to send the request to. This value is appended to TUGBOAT_API_URL
+ *   and should start with a '/'.
+ * @param array $options
+ *   An associative array containing:
+ *   - method: (optional) The request method to use. Can be 'get', 'post' or
+ *     'delete'. Defaults to 'get'
+ *   - body: (optional) An associative array of keys/values to send as the body
+ *     of the request. Only used when 'method' is set to 'post'.
+ *   - token: (optional) The access token to use for this request. Defaults to
+ *     the token previously set in settings/config.
  *
- * @return object|false
- *   The body of the successful request, or FALSE if there was an error.
+ * @return array
+ *   An associative array containing:
+ *   - code: The HTTP response code (e.g. 200).
+ *   - header: An associative array of HTTP response header key/value pairs.
+ *   - body: An associative array of return values.
  */
-function tugboat_api_get_response($response, $type = 'message', $form_item = NULL) {
-  // Get the type of return code by the first number.
-  $code_type = substr($response->code, 0, 1);
+function tugboat_api_curl($path, $options = array()) {
+  // Set default values.
+  $options += array(
+    'method' => 'get',
+    'body' => array(),
+    'token' => tugboat_get_token(),
+  );
 
-  if ($code_type != '2' && $code_type != '3') {
-    $error = 'Tugboat error #' . check_plain($response->body->code) . ': ' . check_plain($response->body->message);
+  // Initialise session.
+  $ch = curl_init(TUGBOAT_API_URL . $path);
 
-    switch ($type) {
-      case 'form':
-        form_set_error($form_item, $error);
-        break;
-      case 'watchdog':
-        watchdog('tugboat', $error, array(), WATCHDOG_ERROR);
-        break;
-      default:
-        backdrop_set_message($error, 'error');
+  // Set options.
+  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Authorization: Bearer ' . $options['token'],
+    'Content-Type: application/json',
+    'Accept: application/json',
+  ));
+  curl_setopt($ch, CURLOPT_HEADER, TRUE);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
+  if (backdrop_strtolower($options['method']) == 'post') {
+    curl_setopt($ch, CURLOPT_POST, TRUE);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($options['body']));
+  }
+  elseif (backdrop_strtolower($options['method']) == 'delete') {
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+  }
+
+  // Execute and parse response.
+  $response = curl_exec($ch);
+  $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+  $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $header = trim(substr($response, 0, $header_size));
+  $body = json_decode(substr($response, $header_size), TRUE);
+
+  // Close session.
+  curl_close($ch);
+
+  // Log errors to watchdog.
+  if ($code >= 400) {
+    watchdog('tugboat', 'Tugboat error #@code: @message', array(
+      '@code' => $body['code'],
+      '@message' => $body['message'],
+    ), WATCHDOG_ERROR);
+  }
+
+  // Return response data.
+  return array(
+    'code' => $code,
+    'header' => tugboat_parse_header($header),
+    'body' => $body,
+  );
+}
+
+/**
+ * Parse HTTP response header.
+ *
+ * @param string $header
+ *   The header string returned from the HTTP request.
+ *
+ * @return array
+ *   An associative array where each key/value is a specific header item and
+ *   value.
+ *
+ * @see https://stackoverflow.com/a/20933560/4168619
+ */
+function tugboat_parse_header($header) {
+  $header_array = array();
+  $key = '';
+
+  foreach (explode("\n", $header) as $h) {
+    $h = explode(':', $h, 2);
+    $h0 = trim($h[0]);
+
+    if (isset($h[1])) {
+      $h1 = trim($h[1]);
+
+      if (!isset($header_array[$h[0]])) {
+        // Add new value.
+        $header_array[$h[0]] = $h1;
+      }
+      elseif (is_array($header_array[$h[0]])) {
+        // Merge value into existing array.
+        $header_array[$h[0]] = array_merge($header_array[$h[0]], array($h1));
+      }
+      else {
+        // Convert existing value to array and merge in new value.
+        $header_array[$h[0]] = array_merge(array($header_array[$h[0]]), array($h1));
+      }
+
+      // Store key for possible future values.
+      $key = $h[0];
     }
+    else {
+      if (substr($h[0], 0, 1) == "\t") {
+        $header_array[$key] .= "\r\n\t" . $h0;
+      }
+      elseif (!$key) {
+        $header_array[] = $h0;
+      }
+    }
+  }
 
-    return FALSE;
-  }
-  else {
-    return !empty($response->body) ? $response->body : TRUE;
-  }
+  return $header_array;
 }
