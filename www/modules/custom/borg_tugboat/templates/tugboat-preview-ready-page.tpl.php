@@ -3,6 +3,8 @@
  * Template file for the Ready page.
  *
  * Available variables:
+ * - $preview_id: The ID of the Tugboat preview (can be used to make API calls
+ *   to get more data about the preview site).
  * - $url: The URL of the new preview site.
  * - $age: How long the preview site will be available for.
  */
@@ -11,13 +13,24 @@
 <div class="borg-demo-done-page">
   <div class="borg-demo-done-center">
     <p class="borg-demo-thank-you">
-      Thank you for creating a new demo sandbox. You can access your new Backdrop website at:
+      Thank you for creating a new demo sandbox. You can access your new
+      Backdrop website here:
     </p>
 
-    <p class="borg-demo-url"><?php print l($url, $url); ?></p>
-
     <p class="borg-demo-button">
-      <?php print l(t('Visit your site'), $url, array('attributes' => array('class' => array('button button-large')))); ?>
+      <?php print l(t('Visit your site'), $login_url, array('attributes' => array('class' => array('button button-large')))); ?>
+    </p>
+
+    <p class="borg-demo-button-description">
+      The button above will take you to the site and automatically log you in as
+      the admin user. You may, however, like to note the following login details
+      for future reference:
+    </p>
+
+    <p class="borg-demo-url">
+      <strong>URL:</strong> <?php print l($url, $url); ?><br />
+      <strong>Username:</strong> admin<br />
+      <strong>Password:</strong> password
     </p>
 
     <p class="borg-demo-persist-notice">
@@ -27,16 +40,14 @@
 
   <div class="borg-demo-done-left">
     <p>
-      This demo sandbox will act as a new Backdrop installation would. You will
-      need to run the installer and set an administrator account as part of the
-      setup. Note that sending email from demo sandboxis not allowed, so
-      <strong>password recovery will not work</strong>. Be sure to remember your
-      password.
+      Note that sending emails from demo sandboxes is not allowed, so
+      <strong>password recovery will not work</strong>. If you change the admin
+      password, be sure to remember it.
     </p>
     <p>
-      Demo sandboxes will show you the Standard install. Additional add-ons can
-      be installed using the Installer module (Administration > Functionality >
-      Install new modules).
+      Demo sandboxes are setup using the <em>Standard</em> install. Additional
+      add-ons can be installed using the Installer module (Administration >
+      Functionality > Install new modules).
     </p>
     <p>
       There is no database export functionality in the demo sandbox. <strong>Any

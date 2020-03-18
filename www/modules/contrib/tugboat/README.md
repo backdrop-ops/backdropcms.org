@@ -7,9 +7,9 @@ development. This module provides integration with Tugboat to allow creating
 on-the-fly sites with the push of a button.
 
 This module was originally built as a custom module for BackdropCMS.org where it
-is still used to allow people to demo a Backdrop site quickly and easily. This
-version has been re-written to use Tugboat's new API and to be more generic
-(removing some of the Backdrop-specific wording, etc.)
+was used to allow people to demo a Backdrop site quickly and easily. It has been
+re-written to use Tugboat's new [API](https://api.tugboat.qa/) and to be more
+generic (removing some of the Backdrop-specific wording, etc.).
 
 To use this module, you'll need a Tugboat.qa account and a Git repository that
 will be used to create the preview sites. See the
@@ -45,7 +45,8 @@ Current Maintainers
 Credits
 -------
 
-- Originally written for BackdropCMS.org by [Nate Lampton](https://github.com/quicksketch).
+- Originally written for BackdropCMS.org by
+  [Nate Lampton](https://github.com/quicksketch).
 - Moved to its own contrib repo using
   [instructions](https://gbayer.com/development/moving-files-from-one-git-repository-to-another-preserving-history/)
   by Greg Bayer.

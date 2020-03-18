@@ -42,43 +42,62 @@ function tugboat_preview_create_form($form, &$form_state) {
  * Submit handler for tugboat_preview_create_form().
  */
 function tugboat_preview_create_form_submit($form, &$form_state) {
-  require_once backdrop_get_path('module', 'tugboat') . '/unirest-php/src/Unirest.php';
-  // Prevent issues with duplicate response headers by disabling FOLLOWLOCATION.
-  Unirest\Request::curlOpt(CURLOPT_FOLLOWLOCATION, FALSE);
-
   $config = config('tugboat.settings');
+  $build_method = $config->get('build_method');
+  $repository_id = $config->get('repository_id');
+  $git_ref = $config->get('git_ref');
   $preview_id = $config->get('preview_id');
+  $error_message = FALSE;
 
-  // Clone the provided preview.
-  $clone_response = Unirest\Request::post(TUGBOAT_API_URL . 'previews/' . $preview_id . '/clone', tugboat_api_headers());
-  $cloned = tugboat_api_get_response($clone_response, 'form', 'create_preview_site');
+  // Build a new preview.
+  if ($build_method == 'create') {
+    $built = tugboat_api_curl('/previews', array('method' => 'post', 'body' => array('ref' => $git_ref, 'repo' => $repository_id)));
+  }
+  elseif ($build_method == 'clone') {
+    $built = tugboat_api_curl('/previews/' . $preview_id . '/clone');
+  }
 
-  if ($cloned) {
+  if ($built['code'] >= 400) {
+    $error_message = $built['body']['message'];
+  }
+  else {
     // Keep checking the job until it's complete and the preview's ready.
-    $job_response = Unirest\Request::get(TUGBOAT_API_URL . 'jobs/' . $cloned->job, tugboat_api_headers());
-    if ($job_response->code == 200) {
-      do {
-        sleep($job_response->headers['Retry-After']);
-        $job_response = Unirest\Request::get(TUGBOAT_API_URL . 'jobs/' . $cloned->job, tugboat_api_headers());
-      }
-      while ($job_response->code == 200);
+    $job = tugboat_api_curl('/jobs/' . $built['body']['job']);
+    while ($job['code'] == 200) {
+      sleep($job['header']['Retry-After']);
+      $job = tugboat_api_curl('/jobs/' . $built['body']['job']);
     }
 
-    $job = tugboat_api_get_response($job_response, 'form', 'create_preview_site');
-    if ($job) {
+    if ($job['code'] >= 400) {
+      $error_message = $job['body']['message'];
+    }
+    else {
       // Get new preview.
-      $preview_response = Unirest\Request::get(TUGBOAT_API_URL . 'previews/' . $job->preview, tugboat_api_headers());
-      $preview = tugboat_api_get_response($preview_response, 'form', 'create_preview_site');
+      $preview = tugboat_api_curl('/previews/' . $job['body']['preview']);
 
-      // Add the new preview to config.
-      $config->set('previews.' . $preview->id, $preview->url);
-      $config->save();
+      if ($preview['code'] >= 400) {
+        $error_message = $preview['body']['message'];
+      }
+      else {
+        // Add the new preview to config.
+        $config->set('previews.' . $preview['body']['id'], $preview['body']['url']);
 
-      // Redirect to the 'Preview ready' page.
-      backdrop_set_message(t('New site created successfully!'));
-      $form_state['redirect'] = $config->get('page_url') . '/' . $preview->id;
+        // Redirect to the 'Preview ready' page.
+        backdrop_set_message(t('New site created successfully!'));
+        $form_state['redirect'] = $config->get('page_url') . '/' . $preview['body']['id'];
+      }
     }
   }
+
+  // Display error message.
+  if ($error_message) {
+    backdrop_set_message(t('An error occurred: @message', array('@message' => $error_message)), 'error');
+
+    // Reload the page so the message can be displayed.
+    $form_state['redirect'] = $config->get('page_url');
+  }
+
+  $config->save();
 }
 
 /**
@@ -92,6 +111,7 @@ function tugboat_preview_create_form_ajax($form, $form_state) {
   }
   else {
     // Allow messages to be displayed immediately.
+    // TODO: This doesn't seem to work...
     $commands[] = ajax_command_remove('.tugboat-create-page .messages');
     $commands[] = ajax_command_prepend('.tugboat-create-page', theme('status_messages'));
   }
@@ -114,6 +134,7 @@ function tugboat_preview_ready_page($preview_id) {
   // Only show valid preview IDs.
   if (isset($previews[$preview_id])) {
     return theme('tugboat_preview_ready_page', array(
+      'preview_id' => $preview_id,
       'url' => $previews[$preview_id],
       'age' => format_interval($config->get('preview_site_age')),
     ));
