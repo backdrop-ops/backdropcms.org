@@ -30,3 +30,30 @@ function borg_tugboat_form_tugboat_preview_create_form_alter(&$form, &$form_stat
   $form['#attributes'] = array('class' => array('borg-tugboat-create-demo-form'));
   $form['create_preview_site']['#attributes'] = array('class' => array('button', 'button-large', 'demo'));
 }
+
+/**
+ * Implements template_preprocess_HOOK() for tugboat_preview_ready_page.
+ *
+ * Get the login URL from the preview log.
+ */
+function borg_tugboat_preprocess_tugboat_preview_ready_page(&$variables) {
+  $variables['login_url'] = $variables['url'];
+  $log = tugboat_api_curl('/previews/' . $variables['preview_id'] . '/log');
+
+  if ($log['code'] >= 400) {
+    backdrop_set_message(t('An error occurred: @message', array('@message' => $log['body']['message'])), 'error');
+  }
+  else {
+    // Since the login URL is towards the end, reverse the array to find it
+    // quicker.
+    $logs = array_reverse($log['body']);
+
+    foreach ($logs as $l) {
+      if (strpos($l['message'], 'Login URL:') === 0) {
+        $message = explode(':', $l['message'], 2);
+        $variables['login_url'] .= trim($message[1]);
+        break;
+      }
+    }
+  }
+}
