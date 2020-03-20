@@ -594,53 +594,6 @@
                             "group_items": []
                         }
                     },
-                    "combine": {
-                        "id": "combine",
-                        "table": "views",
-                        "field": "combine",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "contains",
-                        "value": "",
-                        "group": 1,
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "combine_op",
-                            "label": "",
-                            "description": "",
-                            "use_operator": 0,
-                            "operator": "combine_op",
-                            "identifier": "s",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        },
-                        "fields": {
-                            "title": "title",
-                            "name": "name",
-                            "body": "body"
-                        }
-                    },
                     "recommended": {
                         "id": "recommended",
                         "table": "project_release_supported_versions",
@@ -679,9 +632,65 @@
                             "default_group_multiple": [],
                             "group_items": []
                         }
+                    },
+                    "keys": {
+                        "id": "keys",
+                        "table": "search_index",
+                        "field": "keys",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "optional",
+                        "value": "",
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "keys_op",
+                            "label": "",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "keys_op",
+                            "identifier": "s",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "remove_score": 0
                     }
                 },
                 "sorts": {
+                    "score": {
+                        "id": "score",
+                        "table": "search_index",
+                        "field": "score",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    },
                     "created": {
                         "id": "created",
                         "table": "node",
@@ -856,50 +865,6 @@
                             "group_items": []
                         }
                     },
-                    "combine": {
-                        "id": "combine",
-                        "table": "views",
-                        "field": "combine",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "contains",
-                        "value": "",
-                        "group": 1,
-                        "exposed": false,
-                        "expose": {
-                            "operator_id": false,
-                            "label": "",
-                            "description": "",
-                            "use_operator": false,
-                            "operator": "",
-                            "identifier": "",
-                            "required": false,
-                            "remember": false,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated"
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        },
-                        "fields": {
-                            "title": "title",
-                            "name": "name",
-                            "body": "body"
-                        }
-                    },
                     "recommended": {
                         "id": "recommended",
                         "table": "project_release_supported_versions",
@@ -938,6 +903,49 @@
                             "default_group_multiple": [],
                             "group_items": []
                         }
+                    },
+                    "keys": {
+                        "id": "keys",
+                        "table": "search_index",
+                        "field": "keys",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "optional",
+                        "value": "",
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "keys_op",
+                            "label": "",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "keys_op",
+                            "identifier": "s",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "remove_score": 0
                     }
                 },
                 "defaults": {
@@ -1020,48 +1028,6 @@
                             "group_items": []
                         }
                     },
-                    "title": {
-                        "id": "title",
-                        "table": "node",
-                        "field": "title",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "contains",
-                        "value": "",
-                        "group": "1",
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "title_op",
-                            "label": "",
-                            "description": "",
-                            "use_operator": 0,
-                            "operator": "title_op",
-                            "identifier": "s",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
-                    },
                     "recommended": {
                         "id": "recommended",
                         "table": "project_release_supported_versions",
@@ -1100,6 +1066,49 @@
                             "default_group_multiple": [],
                             "group_items": []
                         }
+                    },
+                    "keys": {
+                        "id": "keys",
+                        "table": "search_index",
+                        "field": "keys",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "optional",
+                        "value": "",
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "keys_op",
+                            "label": "",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "keys_op",
+                            "identifier": "s",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "remove_score": 0
                     }
                 },
                 "defaults": {

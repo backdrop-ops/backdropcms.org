@@ -67,6 +67,7 @@
 
 .views-exposed-form .views-widget-filter-combine,
 .views-exposed-form .views-widget-filter-title,
+.views-exposed-form .views-widget-filter-keys,
 .views-exposed-form .views-submit-button {
   height: 2em;
   padding: 0;
@@ -76,7 +77,8 @@
 }
 
 .views-exposed-form .views-widget-filter-combine,
-.views-exposed-form .views-widget-filter-title {
+.views-exposed-form .views-widget-filter-title,
+.views-exposed-form .views-widget-filter-keys, {
   width: calc(100% - 2.3em);
 }
 
