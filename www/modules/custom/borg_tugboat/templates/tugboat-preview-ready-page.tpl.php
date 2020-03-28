@@ -18,7 +18,7 @@
     </p>
 
     <p class="borg-demo-button">
-      <?php print l(t('Visit your site'), $login_url, array('attributes' => array('class' => array('button button-large')))); ?>
+      <?php print l(t('Visit your site'), $login_url, array('attributes' => array('class' => array('button button-large'), 'target' => '_blank'))); ?>
     </p>
 
     <p class="borg-demo-button-description">
@@ -28,7 +28,7 @@
     </p>
 
     <p class="borg-demo-url">
-      <strong>URL:</strong> <?php print l($url, $url); ?><br />
+      <strong>URL:</strong> <?php print l($url, $url, array('attributes' => array('target' => '_blank'))); ?><br />
       <strong>Username:</strong> admin<br />
       <strong>Password:</strong> password
     </p>
