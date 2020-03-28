@@ -167,7 +167,10 @@ function _borg_mailers_security_cron_send_email($nid) {
   watchdog('borg_mailers_security', t('Starting mail send to Backdrop CMS Security list subscribers for !link.'), array('!link' => $link), WATCHDOG_NOTICE, NULL);
 
   // Allow for a longer execution time to send these emails.
-  ini_set('max_execution_time' , 300);
+  if (ini_get('max_execution_time') < 300) {
+    ini_set('max_execution_time' , 300);
+  }
+
   $start_time = microtime(TRUE);
 
   $language = language_default();
