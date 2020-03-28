@@ -300,7 +300,7 @@ function comment_node_type_load(&$types) {
   foreach ($types as $type_name => $type) {
     $types[$type_name]->settings += array(
       'comment_enabled' => FALSE,
-      'comment_default' => COMMENT_NODE_OPEN,
+      'comment_default' => COMMENT_NODE_CLOSED,
       'comment_per_page' => 50,
       'comment_mode' => COMMENT_MODE_THREADED,
       'comment_anonymous' => COMMENT_ANONYMOUS_MAYNOT_CONTACT,
@@ -1149,7 +1149,7 @@ function comment_form_node_type_form_alter(&$form, $form_state) {
       '#type' => 'checkbox',
       '#title' => t('Show comment replies in a threaded list'),
       '#default_value' => $node_type->settings['comment_mode'],
-      '#description' => t('A threaded list differs from chronologocal in that each comment follows it\'s parent, and is usually indented.'),
+      '#description' => t('A threaded list differs from a chronological list in that each comment follows its parent, and is usually indented.'),
     );
     $form['comment']['comment_anonymous'] = array(
       '#type' => 'select',
