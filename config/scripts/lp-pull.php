@@ -8,8 +8,8 @@
  * If you don't have those creds, but would like to contribute to the
  * backdropcms.org code base please request them on:
  * Zulip: https://backdrop.zulipchat.com/#narrow/stream/218635-Backdrop
- * 
- * or file a new issue on 
+ *
+ * or file a new issue on
  * https://github.com/backdrop-ops/backdropcms.org/issues/
  *
  * requesting either a copy of the DB or access to creds.
