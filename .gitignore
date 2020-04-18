@@ -2,7 +2,7 @@
 /.idea
 .DS_Store
 
-# Ingnore the private files directory
+# Ingnore the private files directory.
 private-files
 
 # Backups.
@@ -15,8 +15,8 @@ private-files
 *.tar
 *.tar.gz
 
-# Ignore libs
+# Ignore libs.
 vendor
 
-# Ignore env vars
+# Ignore env vars.
 .env
