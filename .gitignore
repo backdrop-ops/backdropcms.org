@@ -10,4 +10,13 @@ private-files
 /*.sql.gz
 /*.tgz
 /*.tar.gz
+*.sql
+*.sql.gz
+*.tar
+*.tar.gz
 
+# Ignore libs
+vendor
+
+# Ignore env vars
+.env
