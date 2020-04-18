@@ -3,12 +3,10 @@
  * @file
  * Get the latest sanitized database for local development.
  *
- * This will only work if you have the creds set up in
- * your .env file.
+ * This will only work if you have the creds set up in your .env file.
  *
- * If you don't have those creds, but would like to contribute
- * to the backdropcms.org code base please request them on:
- *
+ * If you don't have those creds, but would like to contribute to the
+ * backdropcms.org code base please request them on:
  * Zulip: https://backdrop.zulipchat.com/#narrow/stream/218635-Backdrop
  * 
  * or file a new issue on 
@@ -27,7 +25,7 @@ $pass = getenv('LP_PASS');
 $db_url = getenv('LP_DB_URL');
 $files_url = getenv('LP_FILES_URL');
 
-if (!isset($user) || !isset($pass)) {
+if (empty($user) || empty($pass) || empty($db_url)) {
   print "\n\t\033[33mWarning\033[0m: You don't seem to have your credentials"
     . " set in your \033[1m.env\033[0m file.\n\n"
     . "\tIf you have them then set them and: \033[1mlando rebuild -y\033[0m\n\n"
