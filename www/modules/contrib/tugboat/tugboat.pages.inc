@@ -107,7 +107,8 @@ function tugboat_preview_create_form_ajax($form, $form_state) {
   $commands = array();
 
   if (isset($form_state['redirect'])) {
-    $commands[] = ajax_command_redirect($form_state['redirect']);
+    // Temporarily hacked to fix https://github.com/backdrop-contrib/tugboat/issues/11
+    $commands[] = ajax_command_redirect(url($form_state['redirect']));
   }
   else {
     // Allow messages to be displayed immediately.
