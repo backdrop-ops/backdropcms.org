@@ -53,6 +53,9 @@ function _project_github_create_package(array &$errors, array &$payload) {
   // Make a list of all files sans the archive.
   $files = file_scan_directory($directory, '/.*/', array('nomask' => '/^$/'));
 
+  // Allow other modules to modify the files.
+  backdrop_alter('project_github_create_package', $files, $project_name);
+
   // Individually rezip each file, modifying .info files as needed.
   $archive = new ZipArchive();
   $archive_name = $project_name . '.zip';

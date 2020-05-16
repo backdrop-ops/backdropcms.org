@@ -233,6 +233,10 @@ function project_release_project_edit_form_submit($form, &$form_state) {
 
   backdrop_set_message(t('Release settings have been saved.'));
 
+  // Queue release XML generation for update status module.
+  $queue = BackdropQueue::get('project_release_xml');
+  $queue->createItem(array('project_nid' => $nid));
+
   // Since we've possibly adjusted the status/recommended releases, we need to
   // recompute the update status for each set of releases and re-generate the
   // download table.

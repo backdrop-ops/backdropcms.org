@@ -51,38 +51,48 @@ function project_release_release_create_history($project_nid = NULL) {
 
   // If we're operating on all projects, generate the huge list, too.
   if (is_null($project_nid)) {
-    $result = db_query('SELECT n.title, n.nid, n.status, n.type, p.name AS machine_name, u.name AS username FROM {node} n INNER JOIN {project} p ON n.nid = p.nid INNER JOIN {users} u ON n.uid = u.uid');
-    $xml = '';
-    foreach ($result as $project) {
-      $xml .= " <project>\n";
-      $xml .= '  <title>' . check_plain($project->title) . "</title>\n";
-      $xml .= '  <short_name>' . check_plain($project->machine_name) . "</short_name>\n";
-      $xml .= '  <link>' . url('node/' . $project->nid, array('absolute' => TRUE)) . "</link>\n";
-      $xml .= '  <dc:creator>' . check_plain($project->username) . "</dc:creator>\n";
-      $xml .= '  <type>' . check_plain($project->type) . "</type>\n";
-      if (!$project->status) {
-        // If it's not published, we can skip the rest for this project.
-        $xml .= "  <project_status>unpublished</project_status>\n";
-      }
-      else {
-        $xml .= "  <project_status>published</project_status>\n";
+    $all_projects = db_query('SELECT n.title, n.nid, n.status, n.type, p.name AS machine_name, u.name AS username FROM {node} n INNER JOIN {project} p ON n.nid = p.nid INNER JOIN {users} u ON n.uid = u.uid');
+    $all_projects_meta = array();
+    foreach ($all_projects as $project) {
+      $project_meta = array(
+        'key' => 'project',
+        'value' => array(
+          'title' => $project->title,
+          'short_name' => $project->machine_name,
+          'link' => url('node/' . $project->nid, array('absolute' => TRUE)),
+          'dc:creator' => $project->username,
+          'type' => $project->type,
+          'project_status' => $project->status ? 'published' : 'unpublished',
+        ),
+      );
+      if ($project->status) {
+        $api_versions_meta = array();
+
         // Include a list of supported API versions for this project.
         $project_api_versions = db_query('SELECT DISTINCT version_api FROM project_release WHERE project_nid = :nid', array(':nid' => $project->nid))->fetchCol();
-        $xml_api_terms = '';
         foreach ($project_api_versions as $api_version) {
-          $xml_api_terms .= '   <api_version>' . check_plain($api_version) . "</api_version>\n";
-        }
-        if (!empty($xml_api_terms)) {
-          $xml .= "  <api_versions>\n" . $xml_api_terms . "  </api_versions>\n";
+          $project_meta['value']['api_versions'][] = array(
+            'key' => 'api_version',
+            'value' => $api_version,
+          );
         }
       }
-
-      $xml .= " </project>\n";
+      backdrop_alter('project_release_project_list_xml', $project_meta, $project, $project_api_versions);
+      $all_projects_meta[$project->nid] = $project_meta;
     }
-    if (empty($xml)) {
+    if (empty($all_projects_meta)) {
       return watchdog('project_release', 'No projects found on this server.');
     }
-    project_release_history_write_xml($xml);
+    $all_projects_meta = array(array(
+      'key' => 'projects',
+      // Dublin core namespace according to http://dublincore.org/documents/dcmi-namespace/
+      'attributes' => array(
+        'xmlns:dc' => 'http://purl.org/dc/elements/1.1/',
+      ),
+      'value' => $all_projects_meta,
+    ));
+
+    project_release_history_write_xml($all_projects_meta);
   }
 
   return TRUE;
@@ -105,14 +115,22 @@ function project_release_release_create_history($project_nid = NULL) {
  */
 function project_release_history_generate_project_xml(Node $project_node, $version_api = NULL) {
   $releases_xml = array(
-    'all' => '',
+    'all' => array(),
   );
 
   if ($project_node->status) {
     foreach (project_release_query_releases($project_node->nid, $version_api) as $release_node) {
-      $output = "<release>\n";
-      $output .= '  <name>' . check_plain($release_node->title) . "</name>\n";
-      $output .= '  <version>' . check_plain($release_node->project_release['version']) . "</version>\n";
+      $release_meta = array(
+        'key' => 'release',
+        'value' => array(
+          'name' => $release_node->title,
+          'version' => $release_node->project_release['version'],
+          'status' => $release_node->status ? 'published' : 'unpublished',
+          'date' => $release_node->created,
+          'filesize' => $release_node->project_release['download_size'],
+          'security_update' => $release_node->project_release['security_update'] ? 'true' : 'false',
+        ),
+      );
       foreach (array('major', 'minor', 'patch', 'extra') as $version_type) {
         $version_type = 'version_' . $version_type;
         // 0 is a totally legitimate value for any of these version fields, so
@@ -120,63 +138,52 @@ function project_release_history_generate_project_xml(Node $project_node, $versi
         // *not* want to include anything in the release history XML if the
         // value is an empty string.
         if (isset($release_node->project_release[$version_type]) && $release_node->project_release[$version_type] !== '') {
-          $output .= "  <$version_type>" . check_plain($release_node->project_release[$version_type]) . "</$version_type>\n";
+          $release_meta['value'][$version_type] = $release_node->project_release[$version_type];
         }
       }
 
       if ($release_node->status) {
         // Published, so we should include the links.
-        $output .= "  <status>published</status>\n";
         $release_link = !empty($release_node->project_release['release_link']) ? $release_node->project_release['release_link'] : url('node/' . $release_node->nid, array('absolute' => TRUE));
-        $output .= '  <release_link>' . check_plain($release_link) . "</release_link>\n";
-        $output .= '  <download_link>' . check_plain($release_node->project_release['download_link']) . "</download_link>\n";
+        $release_meta['value']['release_link'] = $release_link;
+        $release_meta['value']['download_link'] = $release_node->project_release['download_link'];
       }
-      else {
-        $output .= "  <status>unpublished</status>\n";
-      }
-      // We want to include the rest of these regardless of the status.
-      $output .= '  <date>' . check_plain($release_node->created) . "</date>\n";
-      // We no longer provide an MD5 hash like Drupal 7 did. Update module
-      // never used this value though, so restoring it provides little value.
-      //$output .= '  <mdhash>'  . check_plain($release->download_md5) . "</mdhash>\n";
-      $output .= '  <filesize>' . check_plain($release_node->project_release['download_size']) . "</filesize>\n";
-
-      $security_update = $release_node->project_release['security_update'];
-      $output .= "  <security_update>" . ($security_update ? 'true' : 'false') . "</security_update>\n";
 
       // Backwards-compatibility: Provide security update information as a
       // "term". Update.module cares *only* about security updates, it has no
       // support for the "New features" or "Bug fixes" terms.
       if (!empty($security_update)) {
-        $output .= "  <terms>\n";
-        $output .= "    <term><name>Release type</name><value>Security update</value></term>\n";
-        $output .= "  </terms>\n";
+        $project_meta['terms']['term'] = array(
+          'name' => 'Release type',
+          0 => array(
+            'key' => 'value',
+            'value' => 'Security update',
+          ),
+        );
       }
-
-      $output .= "</release>\n";
 
       // API-specific file.
       $release_version_api = $release_node->project_release['version_api'];
+      backdrop_alter('project_release_release_xml', $release_meta, $release_node, $project_node);
       if ($release_version_api) {
-        if (!isset($releases_xml[$release_version_api])) {
-          $releases_xml[$release_version_api] = '';
-        }
-        $releases_xml[$release_version_api] .= $output;
+        $releases_xml[$release_version_api][] = $release_meta;
       }
       // All releases file.
-      $releases_xml['all'] .= $output;
+      $releases_xml['all'][] = $release_meta;
     }
   }
 
-  foreach ($releases_xml as $release_version_api => $release_xml) {
-    $xml = '<title>' . check_plain($project_node->title) . "</title>\n";
-    $xml .= '<short_name>' . check_plain($project_node->project['name']) . "</short_name>\n";
-    $xml .= '<dc:creator>' . check_plain($project_node->name) . "</dc:creator>\n";
-    $xml .= '<type>' . check_plain($project_node->type) . "</type>\n";
-    $xml .= '<api_version>' . $release_version_api . "</api_version>\n";
+  foreach ($releases_xml as $release_version_api => $release_meta) {
+    $project_meta = array(
+      'title' => $project_node->title,
+      'short_name' => $project_node->project['name'],
+      'dc:creator' => $project_node->name,
+      'type' => $project_node->type,
+      'api_version' => $release_version_api,
+      'project_status' => $project_node->status ? 'published' : 'unpublished',
+    );
 
     if ($project_node->status) {
-      $project_status = 'published';
       if ($release_version_api !== 'all') {
         // Include the info about supported and recommended major versions.
         $query = db_query('SELECT version_major, supported, recommended FROM {project_release_supported_versions} WHERE nid = :nid AND version_api = :version_api AND (supported = 1 OR recommended = 1)', array(':nid' => $project_node->nid, ':version_api' => $release_version_api));
@@ -187,41 +194,40 @@ function project_release_history_generate_project_xml(Node $project_node, $versi
             $supported_majors[] = $version_info->version_major;
           }
           if ($version_info->recommended) {
-            $recommended_major = $version_info->version_major;
+            $project_meta['recommended_major'] = $version_info->version_major;
           }
         }
-        if (isset($recommended_major)) {
-          $xml .= '<recommended_major>' . $recommended_major . "</recommended_major>\n";
-        }
         if (empty($supported_majors)) {
-          $project_status = 'unsupported';
+          $project_meta['project_status'] = 'unsupported';
         }
         else {
-          $xml .= '<supported_majors>' . implode(',', $supported_majors) . "</supported_majors>\n";
+          $project_meta['supported_majors'] = implode(',', $supported_majors);
           // To avoid confusing existing clients, include <default_major>, too.
-          $xml .= '<default_major>' . min($supported_majors) . "</default_major>\n";
+          $project_meta['default_major'] = min($supported_majors);
         }
       }
-      $xml .= '<project_status>' . $project_status . "</project_status>\n";
-      $xml .= '<link>' . url('node/' . $project_node->nid, array('absolute' => TRUE)) . "</link>\n";
-    }
-    else {
-      $xml .= "<project_status>unpublished</project_status>\n";
+      $project_meta['link'] = url('node/' . $project_node->nid, array('absolute' => TRUE));
     }
 
-    if (!empty($release_xml)) {
-      $xml .= "<releases>\n" . $release_xml . "</releases>\n";
+    if (!empty($release_meta)) {
+      $project_meta['releases'] = $release_meta;
     }
 
-    project_release_history_write_xml($xml, $project_node, $release_version_api);
+    $project = array(0 => array(
+      'key' => 'project',
+      'attributes' => array('xmlns:dc' => 'http://purl.org/dc/elements/1.1/'),
+      'value' => $project_meta,
+    ));
+    backdrop_alter('project_release_project_xml', $project, $project_node, $release_version_api);
+    project_release_history_write_xml($project, $project_node, $release_version_api);
   }
 }
 
 /**
  * Write out the XML history for a given project and version to a file.
  *
- * @param $xml
- *   String containing the XML representation of the history.
+ * @param array $xml
+ *   Array containing the XML representation of the history.
  * @param $project_node
  *   An object containing (at least) the title and project attributes.
  * @param $version_api
@@ -230,21 +236,18 @@ function project_release_history_generate_project_xml(Node $project_node, $versi
  * @throws Exception
  * @return bool
  */
-function project_release_history_write_xml($xml, Node $project_node = NULL, $version_api = NULL) {
-  // Dublin core namespace according to http://dublincore.org/documents/dcmi-namespace/
-  $dc_namespace = 'xmlns:dc="http://purl.org/dc/elements/1.1/"';
+function project_release_history_write_xml(array $xml, Node $project_node = NULL, $version_api = NULL) {
   $full_xml = '<?xml version="1.0" encoding="utf-8"?>' . "\n";
+  $full_xml .= format_xml_elements($xml);
   if (is_null($project_node)) {
     // We are outputting a global project list.
     $project_dir = 'project-list';
     $filename = 'project-list-all.xml';
-    $full_xml .= '<projects ' . $dc_namespace . ">\n" . $xml . "</projects>\n";
   }
   else {
     // Setup the filenames we'll be using.
     $project_dir = $project_node->project['name'];
     $filename = $project_node->project['name'] . '-' . strtr($version_api, '/', '_') . '.xml';
-    $full_xml .= '<project ' . $dc_namespace . ">\n" . $xml . "</project>\n";
   }
 
   // Make sure we've got the right project-specific subdirectory.

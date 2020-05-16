@@ -1,10 +1,10 @@
-name = Project GitHub Integration
-description = Provides web hook responses to integrate projects with GitHub.
+name = Project Code Sign Integration
+description = Signs project release archives with digital signatures.
 type = module
 package = Project
 backdrop = 1.x
+dependencies[] = code_sign
 dependencies[] = project_release
-dependencies[] = githubapi
 
 ; Added by Backdrop CMS packaging script on 2020-05-16
 project = project

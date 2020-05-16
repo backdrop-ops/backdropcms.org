@@ -18,16 +18,20 @@ function project_menu() {
     'position' => 'right',
     'type' => MENU_NORMAL_ITEM,
   );
+  $items['admin/config/project/modules'] = array(
+    'title' => 'Modules',
+    'weight' => -10,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
   $items['admin/config/project/settings'] = array(
     'title' => 'Project settings',
-    'description' => 'Main project module settings.',
+    'description' => 'Configure system-wide settings for the Project module.',
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('project_settings_form'),
     'access callback' => 'user_access',
     'access arguments' => array('administer projects'),
-    'description' => t('Configure system-wide settings for the Project module.'),
     'file' => 'project.admin.inc',
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_LOCAL_TASK,
   );
   return $items;
 }
