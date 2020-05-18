@@ -1,0 +1,72 @@
+<?php
+/**
+ * @file
+ * Install and update routines for project_code_sign.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function project_code_sign_schema() {
+  $schema = array();
+
+  $schema['project_code_sign_signatures'] = array(
+    'description' => t('Previously generated signatures for module releases'),
+    'fields' => array(
+      'sid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('The Signature ID.'),
+      ),
+      'release_nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => t('The NID of the signed release.'),
+      ),
+      'version' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => t('The version name matching the "version" field in {project_release}.'),
+      ),
+      'release_timestamp' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('The release timestamp as added to the XML block.'),
+      ),
+      'signature_timestamp' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'description' => t('When the signature was generated.'),
+      ),
+      'crypto_engine' => array(
+        'type' => 'varchar',
+        'length' => 40,
+        'not null' => TRUE,
+        'description' => t('The name of the module signing the release.'),
+      ),
+      'profile_id' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => t('The profile ID used to sign the release.  Engine specific, but typically the key ID of the siging key.'),
+      ),
+      'signature' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'description' => t('The signature itself as added to the XML block.'),
+      ),
+    ),
+    'primary key' => array('sid'),
+    'indexes' => array(
+      'release_nid_index' => array('release_nid'),
+      'release_timestamp_index' => array('release_timestamp'),
+    ),
+  );
+
+  return $schema;
+}

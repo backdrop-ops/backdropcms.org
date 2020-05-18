@@ -101,6 +101,7 @@ class GitHubAPI {
     $this->curl->setHeader('Content-Type', 'application/json');
     $this->curl->setUserAgent('Backdrop CMS GitHub API module');
     $this->curl->setHeader('Accept', '*/*');
+    $this->curl->setHeader('Authorization', 'token ' . $this->getToken());
   }
 
   /**
@@ -367,7 +368,7 @@ class GitHubAPI {
   /**
    * Perform GET request to GitHub API and return answer.
    *
-   * @access protected
+   * @access public
    * @param string $command
    *   String value. GitHub API url with tokens like :owner, :repo and ect.
    * @param array $params
@@ -379,10 +380,6 @@ class GitHubAPI {
    */
   public function getRequest($command, $params = array(), $headers = array()) {
     $this->prepareCommand($command, $params);
-
-    if ($this->getToken()) {
-      $params['access_token'] = $this->getToken();
-    }
 
     // Add default 1000 per page.
     $params['per_page'] = $this->per_page;
@@ -406,9 +403,9 @@ class GitHubAPI {
   /**
    * Perform PUT request to GitHub API and return answer.
    *
-   * @access protected
+   * @access public
    * @param $command
-   *   String value. GitHub API url with tokens like :owner, :repo and ect.
+   *   String value. GitHub API url with tokens like :owner, :repo and etc.
    * @param $params array
    *   Values for request and tokens for request url. LIke :owner, :repo, :id and etc.
    * @return stdClass|FALSE
@@ -419,13 +416,8 @@ class GitHubAPI {
     //$params['committer'] = $this->getCommittrer();
     $this->prepareCommand($command, $params);
 
-    $query = '';
-    if ($this->getToken()) {
-      $query = '?access_token=' . $this->getToken();
-    }
-
     $this->reInitCurl();
-    $this->curl->put(GITHUB_API_URI . '/' . $command . $query, $params);
+    $this->curl->put(GITHUB_API_URI . '/' . $command, $params);
     $response = $this->getResponse();
     return $response;
   }
@@ -433,7 +425,7 @@ class GitHubAPI {
   /**
    * Perform POST request to GitHub API and return answer.
    *
-   * @access protected
+   * @access public
    * @param $command
    *   String value. GitHub API url with tokens like :owner, :repo and ect.
    * @param $params array
@@ -444,12 +436,8 @@ class GitHubAPI {
   public function postRequest($command, $params = array()) {
 
     $this->prepareCommand($command, $params);
-    $query = '';
-    if ($this->getToken()) {
-      $query = '?access_token=' . $this->getToken();
-    }
     $this->reInitCurl();
-    $this->curl->post(GITHUB_API_URI . '/' . $command . $query, $params);
+    $this->curl->post(GITHUB_API_URI . '/' . $command, $params);
     $response = $this->getResponse();
     return $response;
   }
@@ -457,7 +445,7 @@ class GitHubAPI {
   /**
    * Perform DELETE request to GitHub API and return answer.
    *
-   * @access protected
+   * @access public
    * @param $command
    *   String value. GitHub API url with tokens like :owner, :repo and ect.
    * @param $params array
@@ -466,17 +454,11 @@ class GitHubAPI {
    *   FALSE if request failed. Object if success.
    */
   public function deleteRequest($command, $params = array()) {
-
     $this->prepareCommand($command, $params);
-
-    $query = '';
-    if ($this->getToken()) {
-      $query = '?access_token=' . $this->getToken();
-    }
-
     $this->reInitCurl();
-    $this->curl->delete(GITHUB_API_URI . '/' . $command . $query, $params);
+    $this->curl->delete(GITHUB_API_URI . '/' . $command, $params);
     $response = $this->getResponse();
+
     return $response;
   }
 
@@ -486,13 +468,13 @@ class GitHubAPI {
    *
    * @access private
    * @param $command
-   *   String value. GitHub API url with tokens like :owner, :repo and ect.
+   *   String value. GitHub API url with tokens like :owner, :repo and etc.
    * @param $params array
    *   Values for request and tokens for request url. LIke :owner, :repo, :id and etc.
    */
   private function prepareCommand(&$command, &$params) {
     foreach ($params as $key => $val) {
-      if ($key[0] == ':') {
+      if (strpos($key, ':') === 0) {
         $command = str_replace($key, $val, $command);
         unset($params[$key]);
       }
@@ -791,7 +773,7 @@ class GitHubAPI {
       $url = 'repos/:owner/:repo/:archive_format/:ref';
     }
 
-    // First request return 302 with linkg to download;
+    // First request returns a 302 with link to download;
     $this->getRequest($url, $settings);
 
     if (isset($this->curl->responseHeaders['Location'])) {
@@ -829,8 +811,9 @@ class GitHubAPI {
    *   An array of settings for new comment
    *     - :tag: Tag name for release.
    *
-   * @return object
-   *   Release information.
+   * @return stdClass|FALSE
+   *   The newly added asset information response from GitHub. Or FALSE if the
+   *   asset upload failed.
    *
    * @see SetRepoName
    * @see SetOwnerName
@@ -861,7 +844,6 @@ class GitHubAPI {
    * @see SetOwnerName
    */
   public function addAsset($settings) {
-
     $get_release_settings = array(
       ':tag' => $settings[':tag'],
     );
@@ -877,12 +859,10 @@ class GitHubAPI {
       $query['label'] = $settings['label'];
     }
 
-
     $upload_url = $upload_url . "?" . backdrop_http_build_query($query);
 
     $this->reInitCurl();
     $this->curl->setHeader('Content-Type', $this->getMimeType($settings['filename']));
-    $this->curl->setHeader('Authorization', 'token ' . $this->getToken());
     $response = $this->curl->post($upload_url, $settings['content']);
 
     if ($this->curl->error) {
