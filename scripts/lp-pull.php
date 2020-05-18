@@ -22,10 +22,10 @@
  * The variables required are the LP_* vars.
  * LP stands for lando pull.
  *
- * LP_USER is the database user for the server.
- * LP_PASS is the database user's password for the server.
- * LP_DB_URL is the URL where b.org puts the sanitized databases.
- * LP_FILES_URL is the url where b.org puts the files backups.
+ * LP_USER is the htpassword user for sanitize.b.org.
+ * LP_PASS is the htpassword password for sanitize.b.org.
+ * LP_DB_URL is the URL where s.b.org puts the sanitized databases.
+ * LP_FILES_URL is the url where s.b.org puts the files backups.
  */
 
 $user = getenv('LP_USER');
