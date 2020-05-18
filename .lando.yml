@@ -28,3 +28,7 @@ tooling:
       - appserver: php /app/config/scripts/lp-pull.php --database
       - database: /helpers/sql-import.sh backdropcmsorg-latest-sanitized.sql.gz
       - appserver: rm -rf /app/backdropcmsorg-latest-sanitized.sql.gz
+  phpcs:
+    service: appserver
+    cmd:
+      - "/app/vendor/bin/phpcs -n --report=full --standard=Backdrop --ignore=vendor/*,README.md --extensions=install,module,php,inc,theme"
