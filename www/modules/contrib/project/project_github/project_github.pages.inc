@@ -419,6 +419,7 @@ function project_github_convert_full_name($repository_full_name) {
  */
 function project_github_get_release_zip($repository_full_name, $tag) {
   $repo = project_github_convert_full_name($repository_full_name);
+
   $githubapi = githubapi_get_class($repo);
   if ($archive_contents = $githubapi->getArchive(array(':ref' => $tag))) {
     return $archive_contents;

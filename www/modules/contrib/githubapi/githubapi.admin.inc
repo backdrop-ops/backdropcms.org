@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Administration pages provided by github API module.
+ * Administration pages provided by GitHub API module.
  */
 
 /**
@@ -89,8 +89,6 @@ function githubapi_admin_settings_submit($form, &$form_state) {
  * Get token handler for the githubapi_admin_settings() form.
  */
 function githubapi_link_user_submit($form, &$form_state) {
-  global $base_url;
-
   $config = config('githubapi.settings');
   $params = array();
 
@@ -102,7 +100,7 @@ function githubapi_link_user_submit($form, &$form_state) {
 
   $params['scope'] = GITHUB_SCOPE;
 
-  $params['redirect_uri'] = $base_url . '/githubapi/register';
+  $params['redirect_uri'] = url('githubapi/register', array('absolute' => TRUE));
 
   $query = http_build_query($params);
 
@@ -149,7 +147,7 @@ function githubapi_revoke_submit($form, &$form_state) {
       backdrop_set_message(t('Unexpected Basic authorization error. Make sure that client_id and client_secret is properly set.'), 'error');
       break;
     default:
-      backdrop_set_message(t('Unexpected behaviour. Debug data: status_message = !error.', array('!error' => $result->error), 'error'));
+      backdrop_set_message(t('Unexpected behaviour. Debug data: status_message = !error.', array('!error' => $result->error)), 'error');
 
   }
 }

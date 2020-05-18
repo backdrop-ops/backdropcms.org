@@ -9,7 +9,7 @@
  */
 function githubapi_sso_schema() {
   $schema['githubapi_sso_login'] = array(
-    'description' => 'If github login does not match users.name, we store github login here.',
+    'description' => 'If GitHub login does not match users.name, we store GitHub logins here.',
     'fields' => array(
       'uid' => array(
         'type' => 'int',

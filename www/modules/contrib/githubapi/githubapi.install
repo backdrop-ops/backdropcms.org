@@ -29,12 +29,6 @@ function githubapi_schema() {
         'length' => 255,
         'not null' => TRUE,
       ),
-      'sender' => array(
-        'description' => 'Event sender.',
-        'type' => 'blob',
-        'size' => 'big',
-        'serialize' => TRUE,
-      ),
       'rid' => array(
         'description' => 'The {githubapi_repositories}.id of the repo for hook.',
         'type' => 'int',
@@ -43,7 +37,7 @@ function githubapi_schema() {
         'default' => 0,
       ),
       'data' => array(
-        'description' => 'Event data execept sender and repository.',
+        'description' => 'The complete event data as sent by GitHub.',
         'type' => 'blob',
         'size' => 'big',
         'serialize' => TRUE,
@@ -199,4 +193,22 @@ function githubapi_update_1002() {
 function githubapi_update_1003() {
   $schema = backdrop_get_schema_unprocessed('githubapi');
   db_change_field('githubapi_repositories', 'secret', 'secret', $schema['githubapi_repositories']['fields']['secret']);
+}
+
+/**
+ * Remove the "sender" column from the payload database table.
+ */
+function githubapi_update_1004() {
+  if (db_field_exists('githubapi_payload', 'sender')) {
+    db_drop_field('githubapi_payload', 'sender');
+  }
+}
+
+/**
+ * Add default setting for payload lifetime (1 week).
+ */
+function githubapi_update_1005() {
+  if (config_get('githubapi.settings', 'payload_lifetime') === NULL) {
+    config_set('githubapi.settings', 'payload_lifetime', 604800);
+  }
 }

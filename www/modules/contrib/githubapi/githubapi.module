@@ -23,7 +23,7 @@ define('GITHUB_API_USER_AGENT', 'Backdrop CMS GitHub API module');
  */
 function githubapi_config_info() {
   $prefixes['githubapi.settings'] = array(
-    'label' => t('github API settings'),
+    'label' => t('GitHub API Settings'),
     'group' => t('Configuration'),
   );
   return $prefixes;
@@ -36,7 +36,7 @@ function githubapi_menu() {
   $items = array();
 
   $items['admin/config/system/githubapi'] = array(
-    'title' => 'github API settings',
+    'title' => 'GitHub API Settings',
     'page callback' => 'githubapi_repos',
     'access callback' => 'user_access',
     'access arguments' => array('administer site configuration'),
@@ -50,7 +50,7 @@ function githubapi_menu() {
   );
 
   $items['admin/config/system/githubapi/settings'] = array(
-    'title' => 'github API settings',
+    'title' => 'GitHub API Settings',
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('githubapi_admin_settings'),
     'access callback' => 'user_access',
@@ -101,7 +101,26 @@ function githubapi_menu() {
   return $items;
 }
 
-function gitlc_github_rid_load($rid) {
+/**
+ * Implements hook_cron().
+ *
+ * Remove old payloads from the database table.
+ */
+function githubapi_cron() {
+  $cache_lifetime = config_get('githubapi.settings', 'payload_lifetime');
+  $older_than = REQUEST_TIME - $cache_lifetime;
+  db_query('DELETE FROM {githubapi_payload} WHERE timestamp < :time', array(':time' => $older_than));
+}
+
+/**
+ * Load a repository from the database.
+ *
+ * @param int $rid
+ *   The repository ID.
+ *
+ * @return array|FALSE
+ */
+function githubapi_repo_load($rid) {
   return db_select('githubapi_repositories', 'gr')
     ->fields('gr')
     ->condition('id', $rid)
@@ -203,12 +222,10 @@ function githubapi_payload_process() {
       exit('The provided secret key did not match the server key.');
     }
     if ($event_name) {
-      $sender = $event['sender'];
       $record = array(
         'type' => $event_name,
-        'sender' => $sender,
         'rid' => $repo['id'],
-        'data' => array_diff_key($event, array('sender' => NULL)),
+        'data' => $event,
         'timestamp' => REQUEST_TIME,
       );
       backdrop_write_record('githubapi_payload', $record);
@@ -228,11 +245,7 @@ function githubapi_payload_process() {
 function githubapi_get_class($repo) {
   module_load_include('inc', 'githubapi', 'githubapi_class');
 
-  $config = config('githubapi.settings');
-  $token = settings_get('githubapi_token');
-  if (empty($token)) {
-    $token = $config->get('token');
-  }
+  $token = githubapi_get_token();
 
   $githubapi = new GitHubAPI();
   $githubapi->setOwnerName($repo['owner']);
