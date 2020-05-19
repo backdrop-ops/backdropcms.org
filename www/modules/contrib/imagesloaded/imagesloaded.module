@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * This module does nothing on its own besides providing the imagesLoaded library. 
+ * You only need to install it if another module requires it. 
+ */
+ 
+/**
+ * Implements hook_library_info().
+ */
+function imagesloaded_library_info() {
+  $libraries['imagesloaded'] = array(
+    'title' => 'imagesLoaded',
+    'website' => 'https://github.com/desandro/imagesloaded',
+    'version' => '4.1.4',
+    'js' => array(
+      backdrop_get_path('module', 'imagesloaded') . '/library/imagesloaded.pkgd.min.js' => array(),
+    ),
+  );
+  return $libraries;
+}

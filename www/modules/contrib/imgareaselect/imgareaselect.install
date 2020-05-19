@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install and update functions for the ImgAreaSelect module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+ 
+function imgareaselect_install() {
+  
+  backdrop_set_message( t('The ImgAreaSelect library has been installed. It does not provide any new functionality on its own but may be used by other modules.'));
+
+}

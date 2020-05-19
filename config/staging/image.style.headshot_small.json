@@ -2,14 +2,23 @@
     "_config_name": "image.style.headshot_small",
     "label": "Headshot - small (150x150)",
     "name": "headshot_small",
-    "effects": [
-        {
-            "name": "image_scale_and_crop",
+    "effects": {
+        "1": {
+            "name": "manualcrop_reuse",
+            "data": {
+                "reuse_crop_style": "headshot_large",
+                "apply_all_effects": 0
+            },
+            "weight": "0"
+        },
+        "2": {
+            "name": "image_scale",
             "data": {
                 "width": "150",
-                "height": "150"
+                "height": "150",
+                "upscale": 0
             },
-            "weight": "1"
+            "weight": "3"
         }
-    ]
+    }
 }

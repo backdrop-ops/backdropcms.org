@@ -1,15 +1,19 @@
 {
     "_config_name": "image.style.headshot_large",
-    "label": "Headshot - large (260x260)",
+    "label": "Headshot - large (220x220)",
     "name": "headshot_large",
-    "effects": [
-        {
-            "name": "image_scale_and_crop",
+    "effects": {
+        "1": {
+            "name": "manualcrop_crop_and_scale",
             "data": {
-                "width": "260",
-                "height": "260"
+                "width": "220",
+                "height": "220",
+                "upscale": 1,
+                "respectminimum": 1,
+                "onlyscaleifcrop": 0,
+                "style_name": "headshot_large"
             },
-            "weight": "1"
+            "weight": 0
         }
-    ]
+    }
 }

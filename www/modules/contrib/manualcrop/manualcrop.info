@@ -1,0 +1,16 @@
+name = Manual Crop
+description = Lets you manually crop an image based upon the image style effects.
+package = Image
+backdrop = 1.x
+type = module
+
+configure = admin/config/media/manualcrop
+
+dependencies[] = image
+dependencies[] = imgareaselect
+dependencies[] = imagesloaded
+
+; Added by Backdrop CMS packaging script on 2020-02-28
+project = manualcrop
+version = 1.x-1.7.3
+timestamp = 1582922813

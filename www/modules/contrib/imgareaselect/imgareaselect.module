@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * This module does nothing on its own besides providing the ImgAreaSelect library. 
+ * You only need to install it if another module requires it. 
+ */
+ 
+/**
+ * Implements hook_library_info().
+ */
+function imgareaselect_library_info() {
+  $libraries['imgareaselect'] = array(
+    'title' => 'ImgAreaSelect',
+    'website' => 'https://github.com/odyniec/imgareaselect',
+    'version' => '0.9.11-rc.1',
+    'js' => array(
+      backdrop_get_path('module', 'imgareaselect') . '/library/jquery.imgareaselect.dev.js' => array(),
+    ),
+    'css' => array(
+      backdrop_get_path('module', 'imgareaselect') . '/library/css/imgareaselect-animated.css' => array(
+        'type' => 'file',
+      ),
+    )
+  );
+  return $libraries;
+}

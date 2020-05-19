@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install and update functions for the imagesLoaded module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+ 
+function imagesloaded_install() {
+  
+  backdrop_set_message( t('The imagesLoaded library has been installed. It does not provide any new functionality on its own but may be used by other modules.'));
+
+}

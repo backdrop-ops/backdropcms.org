@@ -11,7 +11,22 @@
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "medium"
+            "browser_view": "image_library",
+            "preview_image_style": "medium",
+            "manualcrop_enable": 1,
+            "manualcrop_keyboard": 1,
+            "manualcrop_thumblist": 0,
+            "manualcrop_inline_crop": 0,
+            "manualcrop_crop_info": 1,
+            "manualcrop_instant_preview": 1,
+            "manualcrop_instant_crop": 0,
+            "manualcrop_default_crop_area": 1,
+            "manualcrop_maximize_default_crop_area": 1,
+            "manualcrop_styles_mode": "include",
+            "manualcrop_styles_list": {
+                "headshot_large": "headshot_large"
+            },
+            "manualcrop_require_cropping": []
         }
     },
     "description": "",
@@ -23,12 +38,13 @@
         "file_directory": "images/profile",
         "file_extensions": "png gif jpg jpeg",
         "max_filesize": "",
+        "max_dimensions": "350x350",
+        "min_dimensions": "",
         "alt_field": 0,
         "title_field": 0,
-        "default_image": "public://default_images_0",
+        "orientate": 0,
         "user_register_form": 0,
-        "max_dimensions": "350x350",
-        "min_dimensions": ""
+        "default_image": "public://default_images_0"
     },
     "display": {
         "default": {

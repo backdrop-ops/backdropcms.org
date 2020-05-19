@@ -1,0 +1,198 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the Manual Crop module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function manualcrop_requirements($phase) {
+  $requirements = array();
+
+  if ($phase == 'runtime') {
+    $libraries = array('imagesloaded' => 'imagesLoaded', 'imgareaselect' => 'ImgAreaSelect');
+    $t = get_t();
+    $req_error = array();
+
+    foreach ($libraries as $machinename => $name) {
+      $installed = module_exists($machinename);
+      if (!$installed) {
+        $req_error[] = $machinename;
+      }
+    }
+    if (!empty($req_error)) {
+      if (count($req_error > 1)) {
+        $value = $t('Required libraries not installed');
+        $connector = $names = '';
+        foreach ($req_error as $library) {
+          $names .= $connector . $libraries[$library];
+          $connector = ', ';
+        }
+        $description = $t('Download and enable the following modules: @names.', array(
+          '@names' => $names,
+        ));
+      } else {
+        $value = $t('Required library not installed');
+        $description = $t('Download and enable the @name module.', array(
+          '@name' => $req_error[0],
+        ));
+      }
+      $requirements['manualcrop'] = array(
+        'title' => $t('Manual Crop'),
+        'value' => $value,
+        'description' => $description,
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_install().
+ */
+function manualcrop_install() {
+  // Our hooks should run after the Insert module.
+  db_query("UPDATE {system} SET weight = 20 WHERE name = 'manualcrop'");
+
+  // Grant the crop permission to all user roles.
+  _manualcrop_grant_crop_permission();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function manualcrop_uninstall() {
+  if (module_exists('file_entity') && function_exists('file_type_load_all')) {
+    // Remove the settings for individual file types.
+    foreach (file_type_load_all() as $type) {
+      variable_del('manualcrop_file_entity_settings_' . $type->type);
+    }
+  }
+}
+
+/**
+ * Implements hook_schema().
+ */
+function manualcrop_schema() {
+  $schema['manualcrop'] = array(
+    'description' => 'Holds the crop-area position and size all cropped images.',
+    'fields' => array(
+      'fid' => array(
+        'description' => 'The {file_managed}.fid of the image file.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+      'vid' => array(
+        'description' => 'The {file_managed_revisions}.vid (if it exists) of the file.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'style_name' => array(
+        'description' => 'The machine name of the style.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'x' => array(
+        'description' => 'The x-position of the left top cropping-area corner.',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'y' => array(
+        'description' => 'The y-position of the left top cropping-area corner.',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'width' => array(
+        'description' => 'The width of the cropping-area.',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'height' => array(
+        'description' => 'The height of the cropping-area.',
+        'type' => 'int',
+        'size' => 'small',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'foreign keys' => array(
+      'file' => array(
+        'table' => 'file_managed',
+        'columns' => array('fid' => 'fid'),
+      ),
+    ),
+    'primary key' => array('fid', 'vid', 'style_name'),
+    'indexes' => array(
+      'vid' => array('vid'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Add index on vid.
+ */
+function manualcrop_update_1001() {
+  if (db_index_exists('manualcrop', 'vid')) {
+    db_drop_index('manualcrop', 'vid');
+  }
+  db_add_index('manualcrop', 'vid', array('vid'));
+}
+
+/**
+ * Move manualcrop settings from variables to config.
+ */
+function manualcrop_update_1000() {
+  // Migrate variables to config.
+  $config = config('manualcrop.settings');
+  if (module_exists('file_entity') && function_exists('file_type_load_all')) {
+    // Remove the settings for individual file types.
+    foreach (file_type_load_all() as $type) {
+      $file_entity_vars[] = 'manualcrop_file_entity_settings_' . $type->type;
+      $config->set('file_entity_settings_' . $type->type, 'manualcrop_file_entity_settings_' . $type->type);
+    }
+  }
+  $config->set('cache_control', update_variable_get('manualcrop_cache_control', 1));
+  $config->set('force_effect_order', update_variable_get('manualcrop_force_effect_order', 1));
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('manualcrop_cache_control');
+  update_variable_del('manualcrop_force_effect_order');
+  foreach($file_entity_vars as $file_entity_var) {
+    update_variable_del($file_entity_var);
+  }
+}
+
+
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function manualcrop_update_last_removed() {
+  return 7110;
+}
+
+/**
+ * Grant the crop permission to all user roles.
+ */
+function _manualcrop_grant_crop_permission() {
+  foreach (user_roles() as $rid => $role) {
+    user_role_grant_permissions($rid , array('use manualcrop'));
+  }
+}
