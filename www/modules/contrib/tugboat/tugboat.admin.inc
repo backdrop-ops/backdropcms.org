@@ -185,3 +185,162 @@ function tugboat_admin_settings_submit($form, &$form_state) {
   backdrop_set_message(t('The configuration options have been saved.'));
   backdrop_set_message(t('Create preview sites here: <a href="/@url">/@url</a>.', array('@url' => $form_state['values']['page_url'])));
 }
+
+/**
+ * The Tugboat previews reports page.
+ */
+function tugboat_admin_previews() {
+  $page = &backdrop_static(__FUNCTION__);
+
+  if (!isset($page)) {
+    $config = config('tugboat.settings');
+    $previews = $config->get('previews');
+    $rows = array();
+
+    // Create the table header.
+    $header = array(
+      array('data' => t('Name'), 'class' => array(RESPONSIVE_PRIORITY_LOW)),
+      array('data' => t('ID')),
+      array('data' => t('Created'), 'class' => array(RESPONSIVE_PRIORITY_MEDIUM)),
+      array('data' => t('Size'), 'class' => array(RESPONSIVE_PRIORITY_LOW)),
+      array('data' => t('Expires'), 'class' => array(RESPONSIVE_PRIORITY_MEDIUM)),
+      array('data' => t('Operations')),
+    );
+
+    foreach ($previews as $preview_id => $preview_url) {
+      // Load the preview.
+      $preview = tugboat_api_curl('/previews/' . $preview_id);
+
+      if ($preview['code'] == 404) {
+        // Preview doesn't exist in Tugboat, so remove from config.
+        $config->clear('previews.' . $preview_id);
+      }
+      elseif ($preview['code'] == 200) {
+        // Prepare operations links.
+        $links['visit'] = array(
+          'title' => t('Visit site'),
+          'href' => $preview_url,
+          'attributes' => array(
+            'target' => '_blank',
+          ),
+        );
+        $links['delete'] = array(
+          'title' => t('Delete preview'),
+          'href' => 'admin/reports/tugboat/delete/' . $preview_id,
+          'query' => array('destination' => current_path()),
+        );
+        $operations = array(
+          '#type' => 'dropbutton',
+          '#links' => $links,
+        );
+
+        // Calculate dates.
+        $created = strtotime(check_plain($preview['body']['createdAt']));
+        $age = $config->get('preview_site_age');
+        $expires = $created + $age;
+        $time_diff = time() - $expires;
+
+        // Create the table rows.
+        $rows[] = array(
+          check_plain($preview['body']['name']),
+          $preview_id,
+          format_date($created, 'short'),
+          format_size(check_plain($preview['body']['size'])),
+          t($time_diff < 0 ? '%time' : 'Now (next cron run)', array('%time' => format_interval(abs($time_diff), 1))),
+          backdrop_render($operations),
+        );
+      }
+    }
+
+    // Display the table of previews.
+    $page['previews_table'] = array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
+      '#empty' => t('There are no Tugboat previews available.'),
+    );
+
+    // Add button to delete all previews.
+    if ($previews) {
+      $page['delete_previews_form'] = array(
+        '#markup' => l(t('Delete all previews'), 'admin/reports/tugboat/delete-all', array(
+          'query' => array('destination' => current_path()),
+          'attributes' => array('class' => array('button', 'button-danger')),
+        )),
+      );
+    }
+
+    // Save any changes to config.
+    $config->save();
+  }
+
+  return $page;
+}
+
+/**
+ * Menu callback for deleting a Tugboat preview.
+ */
+function tugboat_admin_previews_delete($form, &$form_state, $preview_id) {
+  $form['preview_id'] = array(
+    '#type' => 'value',
+    '#value' => $preview_id,
+  );
+
+  return confirm_form($form, t('Are you sure you want to delete preview #@id?', array('@id' => $preview_id)), 'admin/reports/tugboat');
+}
+
+/**
+ * Submit handler for tugboat_admin_previews_delete().
+ */
+function tugboat_admin_previews_delete_submit($form, &$form_state) {
+  $preview_id = $form_state['values']['preview_id'];
+
+  // Delete the preview.
+  $deleted = tugboat_api_curl('/previews/' . $preview_id, array('method' => 'delete'));
+
+  // Display message.
+  if ($deleted['code'] == 204) {
+    backdrop_set_message(t('Preview #@id was successfully deleted.', array('@id' => $preview_id)));
+    config_clear('tugboat.settings', 'previews.' . $preview_id);
+  }
+  else {
+    backdrop_set_message(t('There was an issue deleting preview #@id: @message', array('@id' => $preview_id, '@message' => $deleted['body']['message'])), 'error');
+  }
+}
+
+/**
+ * Form callback for deleting all Tugboat previews.
+ */
+function tugboat_admin_previews_delete_all($form) {
+  return confirm_form($form, t('Are you sure you want to delete <em>all</em> previews?'), 'admin/reports/tugboat');
+}
+
+/**
+ * Submit handler for tugboat_admin_previews_delete_all().
+ */
+function tugboat_admin_previews_delete_all_submit($form, &$form_state) {
+  $delete_count = 0;
+  $delete_failures = 0;
+
+  foreach (config_get('tugboat.settings', 'previews') as $preview_id => $preview_url) {
+    // Delete the preview.
+    $deleted = tugboat_api_curl('/previews/' . $preview_id, array('method' => 'delete'));
+
+    // Display message.
+    if ($deleted['code'] == 204) {
+      $delete_count++;
+      config_clear('tugboat.settings', 'previews.' . $preview_id);
+    }
+    else {
+      $delete_failures++;
+    }
+  }
+
+  if ($delete_count > 0) {
+    backdrop_set_message(format_plural($delete_count, 'Successfully deleted 1 preview.', 'Successfully deleted @count previews.'));
+  }
+  if ($delete_failures > 0) {
+    $message = format_plural($delete_count, 'Failed to delete 1 preview.', 'Failed to delete @count previews.');
+    backdrop_set_message($message . ' ' . t('Please check the log for details.'), 'error');
+  }
+}

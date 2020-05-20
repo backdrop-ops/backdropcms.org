@@ -47,6 +47,27 @@ function tugboat_menu() {
       'access arguments' => array('create tugboat preview sites'),
       'file' => 'tugboat.pages.inc',
     ),
+    'admin/reports/tugboat' => array(
+      'title' => 'Tugboat previews',
+      'description' => 'Manage Tugboat preview sites.',
+      'page callback' => 'tugboat_admin_previews',
+      'access arguments' => array('administer tugboat settings'),
+      'file' => 'tugboat.admin.inc',
+    ),
+    'admin/reports/tugboat/delete/%' => array(
+      'title' => 'Delete preview',
+      'page callback' => 'backdrop_get_form',
+      'page arguments' => array('tugboat_admin_previews_delete', 4),
+      'access arguments' => array('administer tugboat settings'),
+      'file' => 'tugboat.admin.inc',
+    ),
+    'admin/reports/tugboat/delete-all' => array(
+      'title' => 'Delete all previews',
+      'page callback' => 'backdrop_get_form',
+      'page arguments' => array('tugboat_admin_previews_delete_all'),
+      'access arguments' => array('administer tugboat settings'),
+      'file' => 'tugboat.admin.inc',
+    ),
   );
 }
 

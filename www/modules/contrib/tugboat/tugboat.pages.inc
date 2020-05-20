@@ -54,7 +54,7 @@ function tugboat_preview_create_form_submit($form, &$form_state) {
     $built = tugboat_api_curl('/previews', array('method' => 'post', 'body' => array('ref' => $git_ref, 'repo' => $repository_id)));
   }
   elseif ($build_method == 'clone') {
-    $built = tugboat_api_curl('/previews/' . $preview_id . '/clone');
+    $built = tugboat_api_curl('/previews/' . $preview_id . '/clone', array('method' => 'post'));
   }
 
   if ($built['code'] >= 400) {
@@ -107,7 +107,6 @@ function tugboat_preview_create_form_ajax($form, $form_state) {
   $commands = array();
 
   if (isset($form_state['redirect'])) {
-    // Temporarily hacked to fix https://github.com/backdrop-contrib/tugboat/issues/11
     $commands[] = ajax_command_redirect(url($form_state['redirect']));
   }
   else {
