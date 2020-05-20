@@ -12,7 +12,7 @@
 
 <div class="tugboat-ready-page">
   <div class="tugboat-ready-intro">
-    <p>Your new preview site is ready! You can access it at:</p>
+    <p><?php print t('Your new preview site is ready! You can access it at:'); ?></p>
     <p class="tugboat-ready-url"><?php print l($url, $url); ?></p>
   </div>
 
@@ -21,6 +21,6 @@
   </div>
 
   <div class="tugboat-ready-age">
-    <p>This preview site will be available for <strong><?php print $age; ?></strong>. After this it will be automatically deleted.</p>
+    <p><?php print t('This preview site will be available for <strong>@age</strong>. After this it will be automatically deleted.', array('@age' => $age)); ?></p>
   </div>
 </div>
