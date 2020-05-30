@@ -145,6 +145,7 @@ function borg_github_project_github_create_package_alter(array &$files, $project
     // Remove any screenshots used only on the project pages.
     '/\/screenshots\/.*/',
     // Remove CI files not needed in distributed projects.
+    '/\.gitlc\.yml/',
     '/\.github\/.*/',
     '/\.gitlab\/.*/',
     '/\.gitlab-ci\.yml/',
