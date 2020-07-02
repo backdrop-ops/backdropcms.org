@@ -611,7 +611,7 @@
                             "description": "",
                             "use_operator": 0,
                             "operator": "combine_op",
-                            "identifier": "s",
+                            "identifier": "combine",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -773,7 +773,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": true,
-                        "content": "<p class=\"text-align-center\">No results found.</p>\n",
+                        "content": "<p>No results found.</p>\r\n",
                         "format": "filtered_html",
                         "tokenize": 0
                     }
@@ -803,6 +803,15 @@
                 },
                 "path": "themes",
                 "display_description": "",
+                "defaults": {
+                    "filters": false,
+                    "filter_groups": false,
+                    "header": false,
+                    "title": false
+                },
+                "header": [],
+                "title": "Themes for Backdrop CMS",
+                "exposed_block": true,
                 "filters": {
                     "status": {
                         "value": 1,
@@ -866,19 +875,22 @@
                         "operator": "contains",
                         "value": "",
                         "group": 1,
-                        "exposed": false,
+                        "exposed": true,
                         "expose": {
-                            "operator_id": false,
+                            "operator_id": "combine_op",
                             "label": "",
                             "description": "",
-                            "use_operator": false,
-                            "operator": "",
-                            "identifier": "",
-                            "required": false,
-                            "remember": false,
+                            "use_operator": 0,
+                            "operator": "combine_op",
+                            "identifier": "combine",
+                            "required": 0,
+                            "remember": 0,
                             "multiple": false,
                             "remember_roles": {
-                                "authenticated": "authenticated"
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "3": 0
                             }
                         },
                         "is_grouped": false,
@@ -940,21 +952,12 @@
                         }
                     }
                 },
-                "defaults": {
-                    "filters": false,
-                    "filter_groups": false,
-                    "header": false,
-                    "title": false
-                },
                 "filter_groups": {
                     "operator": "AND",
                     "groups": {
                         "1": "AND"
                     }
-                },
-                "header": [],
-                "title": "Themes for Backdrop CMS",
-                "exposed_block": true
+                }
             }
         },
         "layouts": {
