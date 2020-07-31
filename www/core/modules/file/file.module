@@ -461,7 +461,7 @@ function file_entity_info() {
     );
   }
 
-  return array(
+  $entity_info = array(
     'file' => array(
       'label' => t('File'),
       'bundle label' => t('Type'),
@@ -493,6 +493,14 @@ function file_entity_info() {
       'static cache' => FALSE,
     ),
   );
+
+  // If the cache table has been created, then enable entity caching.
+  if (db_table_exists('cache_entity_file')) {
+    $entity_info['file']['entity cache'] = TRUE;
+    $entity_info['file']['field cache'] = FALSE;
+  }
+
+  return $entity_info;
 }
 
 /**
@@ -3382,7 +3390,6 @@ function file_view_file($file, $display = 'full', $langcode = NULL) {
   }
 
   $formatter = $display['formatter'];
-  $settings = $display['settings'][$formatter];
 
   // Attempt to display the file with the specified display.
   // See file_display() for details.
