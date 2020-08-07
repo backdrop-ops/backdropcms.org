@@ -27,6 +27,7 @@ function borg_mailers_security_node_insert($node) {
 function borg_mailers_security_node_update($node) {
   _borg_mailers_security_worker($node);
 }
+
 /**
  * Implements hook_mail().
  */
@@ -45,8 +46,17 @@ function borg_mailers_security_mail($key, &$message, $params) {
       '<p>' . $field_sa_versions[0]['value'] . ' </p>' .
       '<p>' . $field_sa_solution[0]['value'] . '</p>'
     );
-    watchdog('borg_mailers_security', 'made it to hook_mail', $variables = array(), WATCHDOG_NOTICE, NULL);
   }
+}
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+function borg_mailers_security_cron_queue_info() {
+  $queues['borg_mailers_security_cron_send_email'] = array(
+    'worker callback' => '_borg_mailers_security_cron_send_email',
+  );
+  return $queues;
 }
 
 /**
@@ -61,9 +71,13 @@ function _borg_mailers_security_subscribers() {
     ->condition('field_security_mailing_list_value', 1)
     ->execute();
 
-  $to = [];
+  $uids = [];
   foreach ($result as $subscriber) {
-    $account = user_load($subscriber->entity_id);
+    $uids[] = $subscriber->entity_id;
+  }
+  $accounts = user_load_multiple($uids);
+  $to = [];
+  foreach ($accounts as $account) {
     $to[$account->uid] = $account->mail;
   }
 
@@ -112,7 +126,7 @@ function _borg_mailers_record_mail_sent($nid) {
  * emails for the security annoncements.
  *
  * @param Node $node
- * A Security Announcement Node Object.
+ *   A Security Announcement Node Object.
  *
  * @see _borg_mailers_record_mail_sent().
  * @see _borg_mailers_security_subscribers().
@@ -124,18 +138,49 @@ function _borg_mailers_security_worker($node) {
 
   if (!$sent) {
     if (($node->type == 'sa') && $node->status == 1) {
-      $language = language_default();
-      $params = array('node' => $node);
-      $to = _borg_mailers_security_subscribers();
-      foreach ($to as $address) {
-        backdrop_mail('borg_mailers_security', 'borg_mailers_security_email', $address, $language, $params);
-      }
-      // Set a watchdog message and print a message for the user.
-      watchdog('borg_mailers_security', t('Mail sent to Backdrop CMS Security list subscribers.'), $variables = array(), WATCHDOG_NOTICE, NULL);
-      backdrop_set_message(t('Mail sent to Backdrop CMS Security list subscribers.'));
+      $queue = BackdropQueue::get('borg_mailers_security_cron_send_email');
+      $queue->createItem($node->nid);
 
-      // Record that the message was sent.
+      // Set a watchdog message and print a message for the user.
+      backdrop_set_message(t('Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.'));
+
+      // Record that the message has been queued to be sent.
       _borg_mailers_record_mail_sent($node->nid);
     }
   }
+}
+
+/**
+ * Queue callback. This function is called on cron jobs.
+ *
+ * @param Node $node
+ *   The security announcement node.
+ */
+function _borg_mailers_security_cron_send_email($nid) {
+  // Ensure that the node still exists before sending mail.
+  $node = node_load($nid);
+  if (!$node || $node->status != NODE_PUBLISHED) {
+    return;
+  }
+
+  $link = l($node->label(), 'node/' . $node->nid);
+  watchdog('borg_mailers_security', t('Starting mail send to Backdrop CMS Security list subscribers for !link.'), array('!link' => $link), WATCHDOG_NOTICE, NULL);
+
+  // Allow for a longer execution time to send these emails.
+  if (ini_get('max_execution_time') < 300) {
+    ini_set('max_execution_time' , 300);
+  }
+
+  $start_time = microtime(TRUE);
+
+  $language = language_default();
+  $params = array('node' => $node);
+  $addresses = _borg_mailers_security_subscribers();
+  foreach ($addresses as $address) {
+    backdrop_mail('borg_mailers_security', 'borg_mailers_security_email', $address, $language, $params);
+  }
+
+  $time_elapsed = format_interval(microtime(TRUE) - $start_time);
+
+  watchdog('borg_mailers_security', t('@count emails sent in @time to Backdrop CMS Security list subscribers for !link.'), array('@count' => count($addresses), '@time' => $time_elapsed, '!link' => $link), WATCHDOG_NOTICE, NULL);
 }

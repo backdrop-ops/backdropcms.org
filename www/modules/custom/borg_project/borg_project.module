@@ -5,13 +5,29 @@
  */
 
 /**
- * Implements hook_cron().
+ * Implements hook_project_release_release_xml_alter().
  */
-function borg_project_cron() {
-  // Temporary measure to ensure Travis-CI results don't end up in usage stats.
-  // This should be removed at any time after late 2016, after enough time has
-  // passed that pull requests/testing is not happening on Backdrop 1.x prior
-  // to https://github.com/backdrop/backdrop-issues/issues/1566 having been
-  // fixed and merged.
-  db_query("DELETE FROM {project_usage_raw} WHERE hostname LIKE '173.247.%' OR hostname LIKE '199.182.%' OR hostname LIKE '199.91.%';");
+function borg_project_project_release_release_xml_alter(&$release_xml, $release_node, $project_node) {
+  // Project release module specifies a "security_update" key such as this:
+  //
+  // <security_update>true</security_update>
+  //
+  // But update module still checks for a taxonomy term (legacy from
+  // drupal.org). Of the structure:
+  //
+  // <terms>
+  //   <term>
+  //     <name>Release type</name>
+  //     <value>Security update</value>
+  //   </term>
+  // </terms>
+  //
+  // Provide a backwards-compatible key for update module until its key is
+  // updated to use the new security_update value directly.
+  if ($release_xml['value']['security_update'] === 'true') {
+    $release_xml['value']['terms']['term'] = array(
+      'name' => 'Release type',
+      'value' => 'Security update',
+    );
+  }
 }

@@ -61,6 +61,13 @@ else {
 define('HISTORY_ROOT', $history_root);
 
 /**
+ * Bootstrap Backdrop to database level.
+ */
+chdir(BACKDROP_ROOT);
+include_once './core/includes/bootstrap.inc';
+backdrop_bootstrap(BACKDROP_BOOTSTRAP_DATABASE);
+
+/**
  * Find and serve the proper history file.
  */
 
@@ -119,13 +126,6 @@ echo $file;
 
 // Record usage statistics.
 if (isset($_GET['site_key'])) {
-  if (!chdir(BACKDROP_ROOT)) {
-    exit(1);
-  }
-
-  include_once './core/includes/bootstrap.inc';
-  backdrop_bootstrap(BACKDROP_BOOTSTRAP_DATABASE);
-
   // We can't call module_exists without bootstrapping to a higher level so
   // we'll settle for checking that the table exists.
   if (db_table_exists('project_usage_raw')) {

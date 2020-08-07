@@ -1,0 +1,12 @@
+name = Project Code Sign Integration
+description = Signs project release archives with digital signatures.
+type = module
+package = Project
+backdrop = 1.x
+dependencies[] = code_sign
+dependencies[] = project_release
+
+; Added by Backdrop CMS packaging script on 2020-05-16
+project = project
+version = 1.x-1.1.0
+timestamp = 1589663206

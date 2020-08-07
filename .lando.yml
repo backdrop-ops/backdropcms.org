@@ -1,6 +1,8 @@
 # Backdrop recipe
 name: borg
 recipe: backdrop
+env_file:
+  - .env
 config:
   php: '7.2'
   webroot: www
@@ -19,3 +21,14 @@ tooling:
     cmd: drush --root=/app/www --uri=https://borg.lndo.site
   redis-cli:
     service: cache
+  pulldb:
+    service: appserver
+    description: 'Pull just the latest DB from backdropcms.org'
+    cmd:
+      - appserver: php /app/scripts/lp-pull.php --database
+      - database: /helpers/sql-import.sh backdropcmsorg-latest-sanitized.sql.gz
+      - appserver: rm -rf /app/backdropcmsorg-latest-sanitized.sql.gz
+  phpcs:
+    service: appserver
+    cmd:
+      - "/app/vendor/bin/phpcs -n --report=full --standard=Backdrop --ignore=vendor/*,README.md --extensions=install,module,php,inc,theme"

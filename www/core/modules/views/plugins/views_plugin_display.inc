@@ -1951,6 +1951,9 @@ class views_plugin_display extends views_plugin {
           '#type' => 'submit',
           '#value' => t('Change theme'),
           '#submit' => array('views_ui_edit_display_form_change_theme'),
+          '#attributes' => array(
+            'class' => array('use-ajax-submit'),
+          ),
         );
 
         $form['analysis'] = array(
@@ -1965,6 +1968,9 @@ class views_plugin_display extends views_plugin {
           '#type' => 'submit',
           '#value' => t('Rescan template files'),
           '#submit' => array('views_ui_config_item_form_rescan'),
+          '#attributes' => array(
+            'class' => array('use-ajax-submit'),
+          ),
         );
         $form['rescan_button']['markup'] = array(
           '#markup' => '<div class="description">' . t("<strong>Important!</strong> When adding, removing, or renaming template files, it is necessary to make Backdrop aware of the changes by making it rescan the files on your system. By clicking this button you clear Backdrop's theme registry and thereby trigger this rescanning process. The highlighted templates above will then reflect the new state of your system.") . '</div>',
@@ -2757,12 +2763,12 @@ class views_plugin_display extends views_plugin {
       foreach ($this->get_handlers($type) as $key => $handler) {
         if ($handler->can_expose() && $handler->is_exposed()) {
           if ($handler->is_a_group()) {
-            if ($id != $key && $identifier == $handler->options['group_info']['identifier']) {
+            if ($id != $key && isset($handler->options['group_info']['identifier']) && $identifier == $handler->options['group_info']['identifier']) {
               return FALSE;
             }
           }
           else {
-            if ($id != $key && $identifier == $handler->options['expose']['identifier']) {
+            if ($id != $key && isset($handler->options['expose']['identifier']) && $identifier == $handler->options['expose']['identifier']) {
               return FALSE;
             }
           }

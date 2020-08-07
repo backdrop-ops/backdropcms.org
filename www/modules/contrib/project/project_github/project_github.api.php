@@ -70,3 +70,32 @@ function hook_github_project_validate_release(Node $release_node, array &$errors
     $errors['project_type_invalid'] = t('Project releases are only supported on module projects.');
   }
 }
+
+/**
+ * Modify the contents of the GitHub webhook payload.
+ *
+ * @param $project_name
+ *   The name of the project.
+ * @param array $files
+ *   An array representing the files in the payload directory after the payload
+ *   has been unzipped, and the original zip file deleted, and before the new
+ *   archive is created and resent to GitHub.
+ * @return NULL
+ *   No return value.
+ */
+function hook_project_github_create_package_alter(array &$files, $project_name) {
+  foreach ($files as $path => $file) {
+    $extension = substr($file->filename, strrpos($file->filename, '.') + 1);
+    if ($extension === 'info' && $file->name == $project_name) {
+      $directory_path = rtrim($path, $file->filename);
+      if (is_dir($directory_path . 'screenshots')) {
+        $screenshots_directory_path = $directory_path . 'screenshots/';
+      }
+    }
+  }
+  foreach ($files as $path => $file) {
+    if (strrpos($path, $screenshots_directory_path) === 0) {
+      unset($files[$path]);
+    }
+  }
+}

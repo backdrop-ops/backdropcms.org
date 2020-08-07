@@ -2066,10 +2066,10 @@ function layout_locked_message($item, $type = 'layout') {
 
   // The path varies based on the item type.
   $path_type = 'manage';
-  $button_title = 'Save layout';
+  $button_title = t('Save layout');
   if ($type === 'menu_item') {
     $path_type = 'menu';
-    $button_title = 'Save menu settings';
+    $button_title = t('Save menu settings');
   }
 
   $message = '';
@@ -2814,14 +2814,16 @@ function _layout_settings_get_group_operations($template_info, $is_default) {
   $links = array();
 
   if (!empty($template_info['flexible'])) {
-    $links['configure'] = array(
-      'title' => t('Configure regions'),
-      'href' => 'admin/structure/layouts/settings/flexible-template/' . $template_info['name'] . '/configure',
-    );
-    $links['edit'] = array(
-      'title' => t('Configure name'),
-      'href' => 'admin/structure/layouts/settings/flexible-template/' . $template_info['name'] . '/edit',
-    );
+    if (user_access('administer flexible templates')) {
+      $links['configure'] = array(
+        'title' => t('Configure regions'),
+        'href' => 'admin/structure/layouts/settings/flexible-template/' . $template_info['name'] . '/configure',
+      );
+      $links['edit'] = array(
+        'title' => t('Configure name'),
+        'href' => 'admin/structure/layouts/settings/flexible-template/' . $template_info['name'] . '/edit',
+      );
+    }
     if (user_access('synchronize configuration')) {
       $links['export'] = array(
         'title' => t('Export'),
@@ -2832,10 +2834,12 @@ function _layout_settings_get_group_operations($template_info, $is_default) {
         ),
       );
     }
-    $links['delete'] = array(
-      'title' => t('Delete'),
-      'href' => 'admin/structure/layouts/settings/flexible-template/' . $template_info['name'] . '/delete',
-    );
+    if (user_access('administer flexible templates')) {
+      $links['delete'] = array(
+        'title' => t('Delete'),
+        'href' => 'admin/structure/layouts/settings/flexible-template/' . $template_info['name'] . '/delete',
+      );
+    }
   }
   if ($is_default) {
     $links['disable'] = array(

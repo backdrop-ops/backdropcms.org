@@ -958,6 +958,12 @@ description = Tests the form API email element.
 group = Form API
 file = form.test
 
+[FormH5datetimeTestCase]
+name = Form API html5 datetime
+description = Tests the form API html5 date and time elements.
+group = Form API
+file = form.test
+
 [HTMLIdTestCase]
 name = Unique HTML IDs
 description = Tests functionality of backdrop_html_id().
@@ -1348,7 +1354,7 @@ description = Test the file tokens.
 group = Token
 file = token.test
 
-; Added by Backdrop CMS packaging script on 2019-12-18
+; Added by Backdrop CMS packaging script on 2020-06-17
 project = backdrop
-version = 1.14.2
-timestamp = 1576703413
+version = 1.16.2
+timestamp = 1592424712

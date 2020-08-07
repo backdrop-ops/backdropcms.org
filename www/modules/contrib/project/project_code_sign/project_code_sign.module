@@ -1,0 +1,191 @@
+<?php
+/**
+ * @file
+ * Signs project release archives with digital signatures.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function project_code_sign_menu() {
+  $items = array();
+
+  $items['admin/config/project/code-sign'] = array(
+    'title' => 'Code sign',
+    'description' => 'Configure project release signing settings.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('project_code_sign_admin_form'),
+    'access arguments' => array('administer projects'),
+    'file' => 'project_code_sign.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_FORM_alter for project_release_admin_regenerate_form.
+ */
+function project_code_sign_form_project_release_admin_regenerate_form_alter(&$form, &$form_state) {
+  $form['project_code_sign_regenerate'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Regenerate signatures'),
+    '#default_value' => FALSE,
+    '#description' => t('Check this box to delete the signature cache and regenerate the module signatures.'),
+    '#weight' => -10,
+  );
+  array_unshift($form['#submit'], 'project_code_sign_clear_signature_cache');
+}
+
+/**
+ * Additional submit handler for project_release_admin_regenerate_form().
+ */
+function project_code_sign_clear_signature_cache($form, &$form_state) {
+  if (!empty($form_state['values']['project_code_sign_regenerate'])) {
+    db_truncate('project_code_sign_signatures')->execute();
+    backdrop_set_message('Signature cache cleared.');
+  }
+}
+
+/**
+ * Implements hook_project_release_release_xml_alter().
+ *
+ * Generate a signature record for the project.
+ */
+function project_code_sign_project_release_release_xml_alter(&$project_meta, $release, $project) {
+  $project_values = $project_meta['value'];
+
+  $sig_list = array();
+  $signers = project_code_sign_get_active_signature_profiles();
+
+  foreach ($signers as $signer => $signer_info) {
+    $signature = project_code_sign_sign_url($signer_info['crypto_engine'], $signer_info['profile_id'], $release, $project_values['date'], $project_values['download_link']);
+    if ($signature) {
+      $sig_list[] = array(
+        'key' => 'signature',
+        'value' => array(
+          'crypto_engine' => $signer_info['crypto_engine'],
+          'profile_id' => $signer_info['profile_id'],
+          'signature_block' => $signature,
+        ),
+      );
+    }
+  }
+
+  // Add the signatures to the release.
+  if ($sig_list) {
+    $project_meta['value'][] = array(
+      'key' => 'signatures',
+      'value' => $sig_list,
+    );
+  }
+}
+
+/**
+ * Sign some data with a specified crypto engine.
+ *
+ * This function will return a digital signature for a release.  The signature,
+ * the signer's ID (crypto engine, profile), and what is signed (release NID,
+ * version, release timestamp) will be saved in the database.
+ *
+ * If the package has already been signed in the past, then the existing
+ * signature will be returned instead.  A signature is considered identical if
+ * the (crytpto engine, profile) has previously signed the same (release NID,
+ * version, release timestamp) of the package.
+ *
+ * @param $crypto_engine
+ *   The name of the module (e.g., code_sign_gnupg) signing the package.
+ * @param $profile_id
+ *   The profile ID that should sign the package as returned by
+ *   code_sign_get_signing_profiles().  Typically, this is the key ID of the
+ *   signing key.
+ * @param $release
+ *   The project_release node.
+ * @param $release_timestamp
+ *   The timestamp of the release.
+ * @param $url
+ *   The URL of the package to be signed.
+ * @param $force
+ *   If TRUE, sign even if a version exists in the database.
+ * @return string|NULL
+ *   Returns a string with the signature on success, NULL on failure.
+ *
+ * @see code_sign_get_signing_profiles()
+ * @see code_sign_sign()
+ */
+function project_code_sign_sign_url($crypto_engine, $profile_id, $release, $release_timestamp, $url, $force = FALSE) {
+  if (!$url) {
+    watchdog('project_codesign', 'No data to sign', array(), WATCHDOG_WARNING);
+    return;
+  }
+
+  // If the project has already been signed, return the existing signature.
+  if ($release_timestamp && !$force) {
+    $existing_sig = db_select('project_code_sign_signatures', 's')
+      ->fields('s', array('signature'))
+      ->condition('s.crypto_engine', $crypto_engine)
+      ->condition('s.profile_id', $profile_id)
+      ->condition('s.release_nid', $release->nid)
+      ->condition('s.version', $release->project_release['version'])
+      ->condition('s.release_timestamp', $release_timestamp)
+      ->execute()
+      ->fetchColumn();
+    if ($existing_sig) {
+      return unserialize($existing_sig);
+    }
+  }
+
+  // Fetch the project to sign.
+  $file = system_retrieve_file($url, 'temporary://');
+  if (!$file) {
+    watchdog('project_codesign', 'Could not fetch URL @url', array('@url' => $url), WATCHDOG_ERROR);
+    return NULL;
+  }
+  $data = file_get_contents($file);
+  file_unmanaged_delete($file);
+
+  $options = array(
+    'project' => $release,
+  );
+
+  // Generate, save, and return a signature.
+  $signature = code_sign_sign($crypto_engine, $profile_id, $data, $options);
+  $code_sign_record = array(
+    'release_nid' => $release->nid,
+    'version' => $release->project_release['version'],
+    'release_timestamp' => $release_timestamp,
+    'signature_timestamp' => time(),
+    'crypto_engine' => $crypto_engine,
+    'profile_id' => $profile_id,
+    'signature' => $signature,
+  );
+  backdrop_write_record('project_code_sign_signatures', $code_sign_record);
+
+  // Verify the signature before returning.
+  $result = code_sign_verify($crypto_engine, $data, $signature, $options);
+
+  // Only return valid signatures.
+  return $result ? $signature : NULL;
+}
+
+/**
+ * Returns a list of active signature profiles.  The signature profiles are
+ * selected in the project_codesign admin page.
+ *
+ * @return array
+ *   An array of signature profiles to use when signing.
+ *
+ * @see code_sign_get_signing_profiles()
+ */
+function project_code_sign_get_active_signature_profiles() {
+  $all_profiles = code_sign_get_signing_profiles();
+  $selected_profiles = array_filter(config('project_codesign.settings')->get('enabled_profiles'));
+
+  // Return an array, even if $selected_profiles is not valid.
+  if (!is_array($selected_profiles)) {
+    return array();
+  }
+
+  // Return the list of active profiles that are enabled.
+  return array_intersect_key($all_profiles, $selected_profiles);
+}

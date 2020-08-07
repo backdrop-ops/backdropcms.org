@@ -44,6 +44,15 @@ function project_release_init() {
 function project_release_menu() {
   $items = array();
 
+  $items['admin/config/project/releases'] = array(
+    'title' => 'Regenerate Release XML',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('project_release_admin_regenerate_form'),
+    'access arguments' => array('administer projects'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'project_release.admin.inc',
+  );
+
   $items['node/%project/edit/releases'] = array(
     'title' => 'Releases',
     'page callback' => 'project_release_project_edit_releases',
@@ -668,7 +677,7 @@ function _project_release_node_save(Node $node) {
     // Determine the download file size if not provided.
     $is_new = empty($node->original);
     $update_download_size = FALSE;
-    if (is_null($node->project_release['download_size']) || $node->project_release['download_size'] === '') {
+    if (!isset($node->project_release['download_size']) || $node->project_release['download_size'] === '') {
       $update_download_size = TRUE;
     }
     if (!$is_new && $node->original->project_release['download_link'] !== $node->project_release['download_link']) {
@@ -685,10 +694,16 @@ function _project_release_node_save(Node $node) {
 
     // Update supported versions on shutdown.
     backdrop_register_shutdown_function('project_release_check_supported_versions', $node->project_release['project_nid'], $node->project_release['version_api'], $node->project_release['version_major']);
+  }
 
+  if (project_node_is_project($node) || project_release_node_is_release($node)) {
+    $nid = $node->nid;
+    if (project_release_node_is_release($node)) {
+      $nid = project_release_get_release_project_nid($node);
+    }
     // Queue release XML generation for update status module.
     $queue = BackdropQueue::get('project_release_xml');
-    $queue->createItem(array('project_nid' => project_release_get_release_project_nid($node)));
+    $queue->createItem(array('project_nid' => $nid));
   }
 }
 

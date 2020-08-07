@@ -8,7 +8,6 @@
 
 define('GITHUB_SSO_SCOPE', 'user:email');
 
-
 /**
  * Implements hook_menu().
  */
@@ -92,7 +91,7 @@ function githubapi_sso_form_user_login_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Display link to github button.
+ * Display link to GitHub button.
  */
 function githubapi_sso_link($form, &$form_state, $account) {
   $form['actions']['submit'] = array(
@@ -104,11 +103,12 @@ function githubapi_sso_link($form, &$form_state, $account) {
 
 /**
  * Process Login page Github login form validation.
- * We use validation step to redirect user before user_login validate happen.
+ *
+ * We use validation step to redirect the user before user_login validate.
  */
 function githubapi_sso_login_validate($form, &$form_state) {
   if ($form_state['clicked_button']['#id'] == 'edit-githubapi-sso') {
-    // Before redirect to github, let's clear session error from user login validation.
+    // Before redirect to GitHub, let's clear session error from user login validation.
     unset($_SESSION['messages']['error']);
     githubapi_sso_redirect_to_github();
   }
@@ -145,7 +145,7 @@ function githubapi_sso_redirect_to_github() {
 }
 
 /**
- * Display unlink to github button.
+ * Display unlink to GitHub button.
  */
 function githubapi_sso_unlink($form, &$form_state, $githubapi_sso) {
   $form_state['githubapi_sso'] = $githubapi_sso;
@@ -213,9 +213,10 @@ function githubapi_sso_get_access_token() {
 }
 
 /**
- * Process attach github login to user loged user.
+ * Process attach GitHub login to user account.
  *
- * @param $user_info array that contain github user data.
+ * @param $user_info array
+ *   GitHub user data.
  */
 function github_sso_assign($user_info) {
   // We need to check if it's already used.
@@ -227,14 +228,14 @@ function github_sso_assign($user_info) {
 
   if ($githubapi_sso) {
     // This login already assigned.
-    backdrop_set_message(t('This github login already assigned to another user.'), 'error');
+    backdrop_set_message(t('This GitHub login already assigned to another user.'), 'error');
     backdrop_set_message(t('Failed connecting to GitHub.'), 'error');
     backdrop_goto('user');
   }
   else {
     db_insert('githubapi_sso_login')
       ->fields(array(
-        'uid' => $user->uid,
+        'uid' => $GLOBALS['user']->uid,
         'name' => $user_info['login'],
       ))
       ->execute();
@@ -244,9 +245,10 @@ function github_sso_assign($user_info) {
 }
 
 /**
- * Process login and attach github login to user name.
+ * Process login and attach GitHub login to user name.
  *
- * @param $user_info array that contain github user data.
+ * @param $user_info array
+ *   Contains GitHub user data.
  */
 function github_sso_login($user_info) {
   global $user;
@@ -286,7 +288,7 @@ function github_sso_login($user_info) {
       backdrop_goto('');
     }
 
-    // We don't have any account with email or login match github. Let's register new one!
+    // We don't have any account with email or login match GitHub. Let's register new one!
     $userinfo = array(
       'name' => $user_info['login'],
       'mail' => $user_info['email'],
@@ -334,9 +336,12 @@ function github_sso_login($user_info) {
 }
 
 /**
- * Get the user info provided by github.
+ * Get the user info provided by GitHub.
  *
- * @param $token The token for the github user
+ * @param string $token
+ *   The token for the GitHub user.
+ * @return array
+ *   The GitHub user information returned by GitHub.
  */
 function githubapi_sso_get_user_info($token) {
 
@@ -352,7 +357,7 @@ function githubapi_sso_get_user_info($token) {
 
   $github_user = FALSE;
   if ($request->code == 200) {
-    $github_user = drupal_json_decode($request->data);
+    $github_user = backdrop_json_decode($request->data);
 
     if (empty($github_user['email'])) {
       $github_user_emails = githubapi_sso_get_user_emails($token);
@@ -367,7 +372,10 @@ function githubapi_sso_get_user_info($token) {
 /**
  * Get the private email addresses from the user.
  *
- * @param $token The token for the github user
+ * @param string $token
+ *   The token for the GitHub user.
+ * @return array
+ *   The response from GitHub containing email addresses for the user.
  */
 function githubapi_sso_get_user_emails($token) {
   // Collects the User information from GitHub.
@@ -382,7 +390,7 @@ function githubapi_sso_get_user_emails($token) {
 
   $github_user_emails = FALSE;
   if ($request->code == 200) {
-    $github_user_emails = drupal_json_decode($request->data);
+    $github_user_emails = backdrop_json_decode($request->data);
   }
   return $github_user_emails;
 }
