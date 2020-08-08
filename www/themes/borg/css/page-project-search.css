@@ -54,6 +54,12 @@
   color: #5A5D5E;
 }
 
+.block-views--exp-modules-modules,
+.block-views--exp-modules-themes,
+.block-views--exp-modules-layouts {
+  width: 100%;
+}
+
 .views-exposed-widgets {
   width: 100%;
 }
@@ -78,7 +84,7 @@
 
 .views-exposed-form .views-widget-filter-combine,
 .views-exposed-form .views-widget-filter-title,
-.views-exposed-form .views-widget-filter-keys, {
+.views-exposed-form .views-widget-filter-keys {
   width: calc(100% - 2.3em);
 }
 
