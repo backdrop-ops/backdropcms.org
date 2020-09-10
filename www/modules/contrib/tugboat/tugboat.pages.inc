@@ -49,12 +49,19 @@ function tugboat_preview_create_form_submit($form, &$form_state) {
   $preview_id = $config->get('preview_id');
   $error_message = FALSE;
 
+  // Determine the expiration time.
+  $preview_site_age = $config->get('preview_site_age');
+  $expire_date = date_create();
+  $expire_date->modify("+$preview_site_age seconds");
+  $expire_date->setTimezone(timezone_open('UTC'));
+  $expire_string = $expire_date->format('c');
+
   // Build a new preview.
   if ($build_method == 'create') {
-    $built = tugboat_api_curl('/previews', array('method' => 'post', 'body' => array('ref' => $git_ref, 'repo' => $repository_id)));
+    $built = tugboat_api_curl('/previews', array('method' => 'post', 'body' => array('ref' => $git_ref, 'repo' => $repository_id, 'expires' => $expire_string)));
   }
   elseif ($build_method == 'clone') {
-    $built = tugboat_api_curl('/previews/' . $preview_id . '/clone', array('method' => 'post'));
+    $built = tugboat_api_curl('/previews/' . $preview_id . '/clone', array('method' => 'post', 'body' => array('expires' => $expire_string)));
   }
 
   if ($built['code'] >= 400) {
@@ -80,7 +87,9 @@ function tugboat_preview_create_form_submit($form, &$form_state) {
       }
       else {
         // Add the new preview to config.
-        $config->set('previews.' . $preview['body']['id'], $preview['body']['url']);
+        $previews = state_get('tugboat_previews');
+        $previews[$preview['body']['id']] = $preview['body']['url'];
+        state_set('tugboat_previews', $previews);
 
         // Redirect to the 'Preview ready' page.
         backdrop_set_message(t('New site created successfully!'));
@@ -96,8 +105,6 @@ function tugboat_preview_create_form_submit($form, &$form_state) {
     // Reload the page so the message can be displayed.
     $form_state['redirect'] = $config->get('page_url');
   }
-
-  $config->save();
 }
 
 /**
@@ -129,7 +136,7 @@ function tugboat_preview_ready_page($preview_id) {
   backdrop_add_css(backdrop_get_path('module', 'tugboat') . '/css/tugboat.css');
 
   $config = config('tugboat.settings');
-  $previews = $config->get('previews');
+  $previews = state_get('tugboat_previews', array());
 
   // Only show valid preview IDs.
   if (isset($previews[$preview_id])) {

@@ -1,0 +1,23 @@
+<?php
+/**
+ * @file
+ * Install and update hooks for the Tugboat module.
+ */
+
+/**
+ * Changes previews from being stored in config to state.
+ */
+function tugboat_update_1000() {
+  $config = config('tugboat.settings');
+  $previews = (array) $config->get('previews');
+  state_set('tugboat_previews', $previews);
+  $config->clear('previews');
+  $config->save();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function tugboat_uninstall() {
+  state_del('tugboat_previews');
+}

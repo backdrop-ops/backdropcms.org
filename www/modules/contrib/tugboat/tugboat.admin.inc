@@ -194,7 +194,8 @@ function tugboat_admin_previews() {
 
   if (!isset($page)) {
     $config = config('tugboat.settings');
-    $previews = $config->get('previews');
+    $previews = state_get('tugboat_previews', array());
+    $original_previews = $previews;
     $rows = array();
 
     // Create the table header.
@@ -212,8 +213,8 @@ function tugboat_admin_previews() {
       $preview = tugboat_api_curl('/previews/' . $preview_id);
 
       if ($preview['code'] == 404) {
-        // Preview doesn't exist in Tugboat, so remove from config.
-        $config->clear('previews.' . $preview_id);
+        // Preview doesn't exist in Tugboat, so remove from list.
+        unset($previews[$preview_id]);
       }
       elseif ($preview['code'] == 200) {
         // Prepare operations links.
@@ -270,8 +271,10 @@ function tugboat_admin_previews() {
       );
     }
 
-    // Save any changes to config.
-    $config->save();
+    // Save any changes to the list of previews.
+    if ($original_previews !== $previews) {
+      state_set('tugboat_previews', $previews);
+    }
   }
 
   return $page;
@@ -301,7 +304,9 @@ function tugboat_admin_previews_delete_submit($form, &$form_state) {
   // Display message.
   if ($deleted['code'] == 204) {
     backdrop_set_message(t('Preview #@id was successfully deleted.', array('@id' => $preview_id)));
-    config_clear('tugboat.settings', 'previews.' . $preview_id);
+    $previews = state_get('tugboat_previews', array());
+    unset($previews[$preview_id]);
+    state_set('tugboat_previews', $previews);
   }
   else {
     backdrop_set_message(t('There was an issue deleting preview #@id: @message', array('@id' => $preview_id, '@message' => $deleted['body']['message'])), 'error');
@@ -321,22 +326,24 @@ function tugboat_admin_previews_delete_all($form) {
 function tugboat_admin_previews_delete_all_submit($form, &$form_state) {
   $delete_count = 0;
   $delete_failures = 0;
+  $previews = state_get('tugboat_previews', array());
 
-  foreach (config_get('tugboat.settings', 'previews') as $preview_id => $preview_url) {
+  foreach ($previews as $preview_id => $preview_url) {
     // Delete the preview.
     $deleted = tugboat_api_curl('/previews/' . $preview_id, array('method' => 'delete'));
 
-    // Display message.
     if ($deleted['code'] == 204) {
       $delete_count++;
-      config_clear('tugboat.settings', 'previews.' . $preview_id);
     }
     else {
       $delete_failures++;
     }
   }
 
+  // Display message.
   if ($delete_count > 0) {
+    // Remove all known previews, even if some fail.
+    state_del('tugboat_previews');
     backdrop_set_message(format_plural($delete_count, 'Successfully deleted 1 preview.', 'Successfully deleted @count previews.'));
   }
   if ($delete_failures > 0) {
