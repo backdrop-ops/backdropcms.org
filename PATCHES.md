@@ -7,6 +7,10 @@ Patches to Backdrop Core:
 Patches to Backdrop Contrib:
 ============================
 
+akismet - prevent PHP fatal when bulk deleting users
+  https://github.com/backdrop-contrib/akismet/issues/9
+  https://github.com/backdrop-contrib/akismet/pull/10.patch
+
 bakery - Prevent PHP 7.2 errors about deprecated mcrypt.
   https://github.com/backdrop-contrib/bakery/issues/8
   https://github.com/backdrop-contrib/bakery/pull/9.patch
