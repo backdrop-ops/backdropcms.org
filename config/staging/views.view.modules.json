@@ -40,7 +40,7 @@
                 "pager": {
                     "type": "full",
                     "options": {
-                        "items_per_page": "25",
+                        "items_per_page": "2",
                         "offset": "0",
                         "id": "0",
                         "total_pages": "",
@@ -807,7 +807,11 @@
                     "filters": false,
                     "filter_groups": false,
                     "header": false,
-                    "title": false
+                    "title": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
                 },
                 "header": [],
                 "title": "Themes for Backdrop CMS",
@@ -957,6 +961,23 @@
                     "groups": {
                         "1": "AND"
                     }
+                },
+                "style_plugin": "list",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "result",
+                    "default_row_class": 0,
+                    "row_class_special": 1,
+                    "type": "ol",
+                    "wrapper_class": "project-search__results-wrapper l-content-wrapper",
+                    "class": "project-search__results"
+                },
+                "row_plugin": "node",
+                "row_options": {
+                    "relationship": "none",
+                    "view_mode": "project_search",
+                    "links": 1,
+                    "comments": 0
                 }
             }
         },

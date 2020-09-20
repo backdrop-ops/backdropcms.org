@@ -45,18 +45,6 @@
         "project_search": {
             "label": "above",
             "type": "number_integer",
-            "weight": "4",
-            "settings": {
-                "thousand_separator": ",",
-                "prefix_suffix": 1,
-                "decimal_separator": ".",
-                "scale": 0
-            },
-            "module": "number"
-        },
-        "project_search": {
-            "label": "above",
-            "type": "number_integer",
             "weight": "2",
             "settings": {
                 "thousand_separator": "",
