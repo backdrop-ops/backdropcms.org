@@ -8,8 +8,9 @@
  ******************************************************************************/
 
 /**
- * Projects.
- */
+ * Projects -- all display modes.
+**/
+
 article.node-project h2 {
   padding: .4em 0;
 }
@@ -25,10 +26,20 @@ article.node-project .content h2 {
   text-transform: uppercase;
   font-weight: 600;
 }
+article.node-project .field-name-field-image {
+  margin-bottom: 0;
+}
 article.node-project .content p:last-child {
   margin-bottom: 0;
 }
+article.node-project .field-name-body br {
+  display: none;
+}
 
+
+/**
+ * Projects -- full.
+**/
 /* This should add a headline to docs that don't have one */
 .node-project.view-mode-full .field-name-body .field-item > p:first-child:before {
   content: 'Documentation';
@@ -43,7 +54,7 @@ article.node-project .content p:last-child {
 
 /**
  * Projects -- teasers.
- */
+**/
 article.node-project.view-mode-teaser {
   padding: 0;
 }
@@ -52,14 +63,78 @@ article.node-project.view-mode-teaser .content h2 {
 }
 
 /**
+ * Projects -- search results.
+**/
+.node-project.view-mode-project-search {
+  border: 1px solid #d4d4d6;
+  background-color: #ffffff;
+  margin: 15px 0;
+  padding: 0;
+}
+.node-project.view-mode-project-search .project-main {
+  padding: 15px;
+}
+.node-project.view-mode-project-search h3 a:hover {
+  text-decoration: underline;
+}
+.node-project.view-mode-project-search .download {
+  display: none;
+}
+.node-project.view-mode-project-search .download-size {
+  margin-left: 10px;
+}
+.node-project.view-mode-project-search a.more-details {
+  text-align: center;
+  text-transform: uppercase;
+  margin: 10px 0 0 0;
+  border-radius: 0;
+  display: block;
+}
+.node-project.view-mode-project-search .project-foot {
+  border-top: 1px solid #d4d4d6;
+  background-color: #fafafa;
+  padding: 15px;
+  margin: 15px 0 0 0;
+}
+.node-project.view-mode-project-search .project-foot .field,
+.node-project.view-mode-project-search .project-usage {
+  margin-bottom: 5px;
+}
+.node-project.view-mode-project-search .field-name-field-download-count .field-item,
+.node-project.view-mode-project-search .field-name-field-download-count .field-label,
+.node-project.view-mode-project-search .project-usage .usage-total,
+.node-project.view-mode-project-search .project-usage .usage-label {
+  display: inline;
+  margin-right: 10px;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .node-project.view-mode-project-search .download {
+    _display: inline-block;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .project-main .field-name-body,
+  .project-main .download-links {
+    margin-right: 307px; /* 202px + 15px */
+  }
+  .node-project.view-mode-project-search .field-name-field-image {
+    float: right;
+    margin-left: 15px;
+  }
+}
+
+
+/**
  * Project releases.
  */
  .node-project-release ul.links.inline {
    display: none;
  }
- .node-project-release .content h2 {
+ article.node-project-release .content h2 {
    display: block;
  }
+
  .node-project-release .form-item {
    font-size: 1.3em;
  }
@@ -78,7 +153,6 @@ article.node-project.view-mode-teaser .content h2 {
 .project-sidebar .field,
 .project-sidebar .project-usage {
   font-size: 1rem;
-  margin: 30px 0;
   text-align: center;
 }
 .project-sidebar .field-item,
@@ -86,18 +160,16 @@ article.node-project.view-mode-teaser .content h2 {
   font-size: 1.25rem;
 }
 @media (min-width: 25em) { /* 400px @ 16px font size */
-  .project-sidebar .field,
+  .project-sidebar .field-type-number-integer,
   .project-sidebar .project-usage {
     float: left;
     width: 50%;
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .project-sidebar .field,
+  .project-sidebar .field-type-number-integer,
   .project-sidebar .project-usage {
-    text-align: left;
-    float: none;
-    width: auto;
+    margin: 30px 0;
   }
 }
 
@@ -106,25 +178,15 @@ article.node-project.view-mode-teaser .content h2 {
   margin-top: 15px;
 }
 .project-foot .item-list ul {
-  list-style-type: none;
-  text-align: center;
   margin: 0;
-  padding: 0;
 }
 .project-foot .item-list li {
-  display: inline-block;
-  padding: 10px 5px 5px 5px;
-  margin: 0;
-}
-.project-foot .item-list li:first-child,
-.project-foot .item-list li:last-child,
-.project-foot .item-list li:nth-last-child(2) {
-  display: block;
-  margin: 0 auto;
-  padding: 10px 15px 5px 15px;
+  list-style-type: none;
+  text-align: left;
+  margin: 0 0 5px 0;
 }
 .project-foot .item-list li:last-child {
-  padding: 0;
+  margin-bottom: 0;
 }
 .project-foot a {
   font-size: 16px;
@@ -151,22 +213,12 @@ article.node-project.view-mode-teaser .content h2 {
   line-height: 27px;
   width: 100%;
 }
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .project-foot .item-list ul {
-    text-align: left;
-  }
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .project-foot .item-list li {
-    padding: 5px;
+    text-align: right;
   }
-  .project-foot .item-list li:first-child,
-  .project-foot .item-list li:last-child,
-  .project-foot .item-list li:nth-last-child(2) {
-    display: inline-block;
-    padding: 5px;
-  }
-  .project-foot .item-list li:last-child {
-    padding: 5px 0;
-  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .project-foot a,
   .project-foot a.button {
     width: auto;

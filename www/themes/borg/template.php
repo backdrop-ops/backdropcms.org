@@ -229,28 +229,17 @@ function borg_preprocess_node(&$variables){
   if ($variables['view_mode'] == 'project_search') {
     $node = $variables['node']; // Nice shorthand.
 
-    // Move a few project fields into the sidebar.
-    $sidebar = array();
+    // Move the image into the sidebar.
+    $variables['image'] = backdrop_render($variables['content']['field_image']);;
+
+    // Add some statistics info for the footer.
     if (isset($variables['content']['field_download_count'])) {
-      $sidebar['field_download_count'] = $variables['content']['field_download_count'];
-      unset($variables['content']['field_download_count']);
+      $variables['stats'] = backdrop_render($variables['content']['field_download_count']);
     }
     if (isset($variables['content']['project_usage'])) {
-      $sidebar['project_usage'] = $variables['content']['project_usage'];
-      $sidebar['project_usage']['#weight'] = 10;
-      unset($variables['content']['project_usage']);
+      $variables['content']['project_usage']['#weight'] = 10;
+      $variables['stats'] .= backdrop_render($variables['content']['project_usage']);
     }
-    $variables['content']['sidebar'] = $sidebar;
-
-    // Build a footer of useful info.
-    $footer = array(
-      'info' => array(
-        '#type' => 'link',
-        '#title' => t('More Info'),
-        '#href' => url('node/' . $node->nid, array('absolute' => TRUE)),
-        '#attributes' => array('class' => array('read-more')),
-      ),
-    );
 
     // Get the recomended release info.
     $release = FALSE;
@@ -259,39 +248,61 @@ function borg_preprocess_node(&$variables){
       $release = reset($result);
     }
 
+    // Add an area fore more links.
+    $variables['content']['links'] = array(
+      '#type' => 'container',
+      '#attributes' => array('class' => array('download-links')),
+      '#weight' => 10,
+    );
+
+    $variables['release_info'] = '';
     if ($release) {
-      // Release date.
-      $date = format_date($release->node_created, 'short');
-      // Build a footer of useful info.
-      $footer += array(
-        'version' => array(
-          '#type' => 'markup',
-          '#markup' => '<span>' . t('v @version', array('@version' => $release->project_release_node_version)) . '</span>',
-        ),
-        'latest' => array(
-          '#type' => 'markup',
-          '#markup' => '<span class="release-date">' . t('latest release @date', array('@date' => $date)) . '</span>',
-        ),
-        'download' => array(
-          '#type' => 'link',
-          '#title' => t('Download'),
-          '#href' => $release->project_release_node_download_link,
-          '#attributes' => array('class' => array('button', 'button-small')),
-        ),
-        'size' => array(
-          '#type' => 'markup',
-          '#markup' => '<span class="download-size"><span>' . format_size($release->project_release_node_download_size) . '</span></span>',
-        ),
+      // Add the latest release version.
+      $release_info['version'] = array(
+        '#type' => 'markup',
+        '#markup' => '<span>' . t('Version: @version', array('@version' => $release->project_release_node_version)) . '</span>',
       );
+      // Add the latest release date.
+      $date = format_date($release->node_created, 'short');
+      $release_info['latest'] = array(
+        '#type' => 'markup',
+        '#markup' => '<span class="release-date">' . t('latest release @date', array('@date' => $date)) . '</span>',
+      );
+
+      // Add download link.
+      $variables['content']['links']['download'] = array(
+        '#type' => 'container',
+        '#attributes' => array('class' => array('download')),
+      );
+      $variables['content']['links']['download']['button'] = array(
+        '#type' => 'link',
+        '#title' => t('Download'),
+        '#href' => $release->project_release_node_download_link,
+        '#attributes' => array('class' => array('button', 'button-small')),
+        '#weight' => -11,
+      );
+      // Add download file size.
+      $variables['content']['links']['download']['size'] = array(
+        '#type' => 'markup',
+        '#markup' => '<span class="download-size"><span>' . format_size($release->project_release_node_download_size) . '</span></span>',
+        '#weight' => -10,
+      );
+      $items = array();
+      foreach ($release_info as $item) {
+        $items[] = backdrop_render($item);
+      }
+      $variables['release_info'] = theme('item_list', array('items' => $items));
     }
 
-    $items = array();
-    foreach ($footer as $item) {
-      $items[] = backdrop_render($item);
-    }
+    // Add a more info link.
+    $variables['content']['links']['more'] = array(
+      '#type' => 'link',
+      '#title' => t('More details'),
+      '#href' => url('node/' . $node->nid, array('absolute' => TRUE)),
+      '#attributes' => array('class' => array('button', 'button-small', 'more-details')),
+      '#weight' => 10,
+    );
 
-    // Add some new info to the footer.
-    $variables['footer'] = theme('item_list', array('items' => $items));
   }
 
   if ($variables['type'] == 'project_module' || $variables['type'] == 'project_theme' || $variables['type'] == 'project_layout') {
@@ -299,7 +310,7 @@ function borg_preprocess_node(&$variables){
     if ($variables['view_mode'] == 'teaser') {
       if (isset($variables['content']['links'])) {
         $old_title = $variables['content']['links']['node']['#links']['node-readmore']['title'];
-        $new_title = str_replace('Read more', 'More Info', $old_title);
+        $new_title = str_replace('Read more', 'More details', $old_title);
         unset($variables['content']['links']);
       }
     }
@@ -380,7 +391,7 @@ function borg_preprocess_views_view_row_rss(&$variables) {
   // Add a special class to the featured image to optimize for Feedly.
   $view->result[0]->field_field_image[0]['rendered']['#item']['attributes']['class'] = array('webfeedsFeaturedVisual');
   // Add an image tag to the top of the description.
-  $image = drupal_render($view->result[0]->field_field_image[0]['rendered']);
+  $image = backdrop_render($view->result[0]->field_field_image[0]['rendered']);
   $complete_description = '<![CDATA[' . $image . '<br/>' . $item->description . ']]>';
 
   $item->description = $complete_description;

@@ -6,33 +6,28 @@
  */
 ?>
 <article class="node-<?php print $node->nid; ?> <?php print implode(' ', $classes); ?> container"<?php print backdrop_attributes($attributes); ?>>
-  <div class="row">
-    <div class="col-md-10 col-lg-9 project-content">
-      <?php print render($title_prefix); ?>
-      <?php if (!$page): ?>
-        <h2><a href="<?php print $node_url; ?>" rel="bookmark"><?php print $title; ?></a></h2>
-      <?php endif; ?>
-      <?php print render($title_suffix); ?>
+  <div class="project-main">
+    <?php print render($title_prefix); ?>
+    <?php if (!$page): ?>
+      <h3><a href="<?php print $node_url; ?>" rel="bookmark"><?php print $title; ?></a></h3>
+    <?php endif; ?>
+    <?php print render($title_suffix); ?>
 
-      <?php
-        // We hide the links now so that we can render them later.
-        hide($content['sidebar']);
-        print render($content);
-      ?>
-    </div>
-    <div class="col-md-2 col-lg-3 project-sidebar">
-      <?php print render($content['sidebar']); ?>
-    </div>
-  </div><!-- /.row -->
+    <?php print $image; ?>
 
-  <div class="row">
-    <div class="col-xs-12 project-foot">
-      <?php print $footer; ?>
+    <?php print render($content); ?>
 
-      <?php if ($display_submitted): ?>
-        <?php print $user_picture; ?>
-        <p class="submitted"><?php print $submitted; ?></p>
-      <?php endif; ?>
+    <?php print $more; ?>
+  </div><!-- /.project-main -->
+
+  <div class="project-foot">
+    <div class="row">
+      <div class="col-sm-6">
+        <?php print $stats; ?>
+      </div>
+      <div class="col-sm-6">
+        <?php print $release_info; ?>
+      </div>
     </div>
-  </div><!-- /.row -->
+  </div>
 </article>
