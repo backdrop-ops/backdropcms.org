@@ -153,6 +153,9 @@ article.node-project.view-mode-teaser .content h2 {
     font-size: 1.125em; /* relative size: 18px; */
     line-height: 1.45; /* 26.1px @ 18px font size */
   }
+  .project-main a.more-details {
+    max-width: 350px;
+  }
 }
 
 
