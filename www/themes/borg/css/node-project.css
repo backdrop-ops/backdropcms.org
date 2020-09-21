@@ -155,31 +155,7 @@ article.node-project.view-mode-teaser .content h2 {
   }
 }
 
-/**
- * View-modes used only on the modues / themes / layouts search pages.
- */
-.project-sidebar .field,
-.project-sidebar .project-usage {
-  font-size: 1rem;
-  text-align: center;
-}
-.project-sidebar .field-item,
-.project-sidebar .usage-total {
-  font-size: 1.25rem;
-}
-@media (min-width: 25em) { /* 400px @ 16px font size */
-  .project-sidebar .field-type-number-integer,
-  .project-sidebar .project-usage {
-    float: left;
-    width: 50%;
-  }
-}
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .project-sidebar .field-type-number-integer,
-  .project-sidebar .project-usage {
-    margin: 30px 0;
-  }
-}
+
 
 /**
  * Project releases.
