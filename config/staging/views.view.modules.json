@@ -686,7 +686,7 @@
                         "id": "created",
                         "table": "node",
                         "field": "created",
-                        "relationship": "latest_release",
+                        "relationship": "nid",
                         "group_type": "group",
                         "ui_name": "",
                         "order": "DESC",
@@ -694,7 +694,7 @@
                         "expose": {
                             "label": ""
                         },
-                        "granularity": "second"
+                        "granularity": "day"
                     }
                 },
                 "title": "Modules for Backdrop CMS",
