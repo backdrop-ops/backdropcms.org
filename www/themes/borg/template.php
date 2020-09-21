@@ -230,16 +230,30 @@ function borg_preprocess_node(&$variables){
     $node = $variables['node']; // Nice shorthand.
 
     // Move the image into the sidebar.
-    $variables['image'] = backdrop_render($variables['content']['field_image']);;
+    $variables['image'] = backdrop_render($variables['content']['field_image']);
+
+    // Start a place for footer info.
+    $footer_links = array();
 
     // Add some statistics info for the footer.
     if (isset($variables['content']['field_download_count'])) {
-      $variables['stats'] = backdrop_render($variables['content']['field_download_count']);
+      $count = backdrop_render($variables['content']['field_download_count']);
+      $footer_links['count']['data'] = $count;
     }
     if (isset($variables['content']['project_usage'])) {
       $variables['content']['project_usage']['#weight'] = 10;
-      $variables['stats'] .= backdrop_render($variables['content']['project_usage']);
+      $usage = backdrop_render($variables['content']['project_usage']);
+      $footer_links['usage']['data'] = $usage;
     }
+
+    // Add a more info link to content.
+    $variables['content']['more'] = array(
+      '#type' => 'link',
+      '#title' => t('More details'),
+      '#href' => url('node/' . $node->nid, array('absolute' => TRUE)),
+      '#attributes' => array('class' => array('button', 'button-small', 'more-details')),
+      '#weight' => 10,
+    );
 
     // Get the recomended release info.
     $release = FALSE;
@@ -248,33 +262,26 @@ function borg_preprocess_node(&$variables){
       $release = reset($result);
     }
 
-    // Add an area fore more links.
-    $variables['content']['links'] = array(
-      '#type' => 'container',
-      '#attributes' => array('class' => array('download-links')),
-      '#weight' => 10,
-    );
-
-    $variables['release_info'] = '';
     if ($release) {
       // Add the latest release version.
-      $release_info['version'] = array(
+      $version = array(
         '#type' => 'markup',
-        '#markup' => '<span>' . t('Version: @version', array('@version' => $release->project_release_node_version)) . '</span>',
+        '#markup' => '<span>' . t('Version: <strong>@version</strong>', array('@version' => $release->project_release_node_version)) . '</span>',
       );
+      $footer_links['version']['data'] = backdrop_render($version);
+
       // Add the latest release date.
       $date = format_date($release->node_created, 'short');
-      $release_info['latest'] = array(
+      $latest = array(
         '#type' => 'markup',
-        '#markup' => '<span class="release-date">' . t('latest release @date', array('@date' => $date)) . '</span>',
+        '#markup' => '<span class="release-date">' . t('Released: <strong>@date</strong>', array('@date' => $date)) . '</span>',
       );
+      $footer_links['latest']['data'] = backdrop_render($latest);
 
+      // Add an area for download info.
+      $variables['download'] = array();
       // Add download link.
-      $variables['content']['links']['download'] = array(
-        '#type' => 'container',
-        '#attributes' => array('class' => array('download')),
-      );
-      $variables['content']['links']['download']['button'] = array(
+      $variables['download']['button'] = array(
         '#type' => 'link',
         '#title' => t('Download'),
         '#href' => $release->project_release_node_download_link,
@@ -282,25 +289,17 @@ function borg_preprocess_node(&$variables){
         '#weight' => -11,
       );
       // Add download file size.
-      $variables['content']['links']['download']['size'] = array(
+      $variables['download']['size'] = array(
         '#type' => 'markup',
         '#markup' => '<span class="download-size"><span>' . format_size($release->project_release_node_download_size) . '</span></span>',
         '#weight' => -10,
       );
-      $items = array();
-      foreach ($release_info as $item) {
-        $items[] = backdrop_render($item);
-      }
-      $variables['release_info'] = theme('item_list', array('items' => $items));
     }
 
-    // Add a more info link.
-    $variables['content']['links']['more'] = array(
-      '#type' => 'link',
-      '#title' => t('More details'),
-      '#href' => url('node/' . $node->nid, array('absolute' => TRUE)),
-      '#attributes' => array('class' => array('button', 'button-small', 'more-details')),
-      '#weight' => 10,
+    // Put release info in a list.
+    $variables['footer_info'] = array(
+      '#theme' => 'item_list',
+      '#items' => $footer_links,
     );
 
   }

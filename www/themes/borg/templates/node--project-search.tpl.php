@@ -6,28 +6,35 @@
  */
 ?>
 <article class="node-<?php print $node->nid; ?> <?php print implode(' ', $classes); ?> container"<?php print backdrop_attributes($attributes); ?>>
+
   <div class="project-main">
-    <?php print render($title_prefix); ?>
-    <?php if (!$page): ?>
-      <h3><a href="<?php print $node_url; ?>" rel="bookmark"><?php print $title; ?></a></h3>
-    <?php endif; ?>
-    <?php print render($title_suffix); ?>
+    <div class="row">
+      <div class="col-md-8">
+        <?php print render($title_prefix); ?>
+        <?php if (!$page): ?>
+          <h3><a href="<?php print $node_url; ?>" rel="bookmark"><?php print $title; ?></a></h3>
+        <?php endif; ?>
+        <?php print render($title_suffix); ?>
+      </div>
+      <div class="col-md-4 column-download">
+        <?php print render($download); ?>
+      </div>
+    </div><!-- /.row -->
 
-    <?php print $image; ?>
-
-    <?php print render($content); ?>
-
-    <?php print $more; ?>
+    <div class="row">
+      <div class="col-md-6 col-md-push-6">
+        <?php print $image; ?>
+      </div>
+      <div class="col-md-6 col-md-pull-6">
+        <?php print render($content); ?>
+        <?php print $more; ?>
+      </div>
+    </div><!-- /.row -->
   </div><!-- /.project-main -->
 
   <div class="project-foot">
-    <div class="row">
-      <div class="col-sm-6">
-        <?php print $stats; ?>
-      </div>
-      <div class="col-sm-6">
-        <?php print $release_info; ?>
-      </div>
-    </div>
-  </div>
+    <?php print render($footer_info); ?>
+  </div><!-- /.project-foot -->
+
 </article>
+
