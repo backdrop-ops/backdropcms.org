@@ -84,6 +84,9 @@ article.node-project.view-mode-teaser .content h2 {
 .project-main .column-download {
   display: none;
 }
+.project-main .field-name-field-image img {
+  border: 1px solid #d4d4d6;
+}
 .project-main a.more-details {
   text-align: center;
   text-transform: uppercase;
@@ -132,6 +135,12 @@ article.node-project.view-mode-teaser .content h2 {
   }
   .project-main .download-size {
     margin-left: 8px;
+  }
+  .project-main .field-name-field-image {
+    margin-top: 15px;
+  }
+  .project-main a.more-details {
+    margin: 30px 0 0 0;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
