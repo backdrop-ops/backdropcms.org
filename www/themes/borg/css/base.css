@@ -20,7 +20,7 @@ body {
 }
 
 p {
-  font-size: 1.125em; /* relative size */
+  font-size: 1.125em; /* relative size: 18px; */
   line-height: 1.45; /* 26.1px @ 18px font size */
   margin: 1em 0;
 }
@@ -32,6 +32,12 @@ p {
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   p {
     line-height: 1.45; /* 26.1px @ 18px font size */
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  p {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.5; /* 30px @ 20px font size */
   }
 }
 

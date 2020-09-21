@@ -38,7 +38,7 @@ article.node-project .field-name-body br {
 
 
 /**
- * Projects -- full.
+ * Projects -- full display mode only.
 **/
 /* This should add a headline to docs that don't have one */
 .node-project.view-mode-full .field-name-body .field-item > p:first-child:before {
@@ -53,7 +53,7 @@ article.node-project .field-name-body br {
 }
 
 /**
- * Projects -- teasers.
+ * Projects -- teaser display mode only.
 **/
 article.node-project.view-mode-teaser {
   padding: 0;
@@ -63,42 +63,40 @@ article.node-project.view-mode-teaser .content h2 {
 }
 
 /**
- * Projects -- search results.
+ * Projects -- project_search display mode only (for search results)
 **/
 .node-project.view-mode-project-search {
   border: 1px solid #d4d4d6;
   background-color: #ffffff;
-  margin: 15px 0;
+  margin: 0;
   padding: 0;
 }
-.node-project.view-mode-project-search .project-main {
+
+.project-main {
   padding: 15px;
 }
-.node-project.view-mode-project-search h3 a:hover {
+.project-main h3 {
+  text-align: center;
+}
+.project-main h3 a:hover {
   text-decoration: underline;
 }
-.node-project.view-mode-project-search .download {
+.project-main .column-download {
   display: none;
 }
-.node-project.view-mode-project-search .download-size {
-  margin-left: 10px;
-}
-.node-project.view-mode-project-search a.more-details {
+.project-main a.more-details {
   text-align: center;
   text-transform: uppercase;
   margin: 10px 0 0 0;
   border-radius: 0;
   display: block;
 }
-.node-project.view-mode-project-search .project-foot {
+
+.project-foot {
   border-top: 1px solid #d4d4d6;
   background-color: #fafafa;
   padding: 15px;
   margin: 15px 0 0 0;
-}
-.node-project.view-mode-project-search .project-foot .field,
-.node-project.view-mode-project-search .project-usage {
-  margin-bottom: 5px;
 }
 .node-project.view-mode-project-search .field-name-field-download-count .field-item,
 .node-project.view-mode-project-search .field-name-field-download-count .field-label,
@@ -109,43 +107,44 @@ article.node-project.view-mode-teaser .content h2 {
 }
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  .node-project.view-mode-project-search .download {
-    _display: inline-block;
+  .project-foot .item-list ul {
+    margin: 0;
+    columns: 2;
+  }
+  .project-foot .item-list li {
+    list-style-type: none;
+    margin: 0 0 5px 0;
+  }
+  .project-foot ul > li:nth-last-of-type(-n+2) {
+    text-align: right;
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .project-main .field-name-body,
-  .project-main .download-links {
-    margin-right: 307px; /* 202px + 15px */
+  .project-main h3 {
+    text-align: left;
+    margin: 0;
+    margin-top: 0;
   }
-  .node-project.view-mode-project-search .field-name-field-image {
-    float: right;
-    margin-left: 15px;
+  .project-main .column-download {
+    display: block;
+    margin-top: 20px;
+    text-align: right;
+  }
+  .project-main .download-size {
+    margin-left: 8px;
   }
 }
-
-
-/**
- * Project releases.
- */
- .node-project-release ul.links.inline {
-   display: none;
- }
- article.node-project-release .content h2 {
-   display: block;
- }
-
- .node-project-release .form-item {
-   font-size: 1.3em;
- }
- .node-project-release .form-item label {
-   font-size: 1em;
-   margin: 2em 0 1em;
-   padding: .8em 0 0;
-   border-top: 1px solid #d4d6d6;
-   text-transform: uppercase;
-   font-weight: 600;
- }
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .project-main {
+    padding: 30px;
+  }
+  .project-foot {
+    padding: 15px 30px;
+    margin: 30px 0 0 0;
+    font-size: 1.125em; /* relative size: 18px; */
+    line-height: 1.45; /* 26.1px @ 18px font size */
+  }
+}
 
 /**
  * View-modes used only on the modues / themes / layouts search pages.
@@ -173,57 +172,27 @@ article.node-project.view-mode-teaser .content h2 {
   }
 }
 
+/**
+ * Project releases.
+ */
+ .node-project-release ul.links.inline {
+   display: none;
+ }
+ article.node-project-release .content h2 {
+   display: block;
+ }
 
-.project-foot {
-  margin-top: 15px;
-}
-.project-foot .item-list ul {
-  margin: 0;
-}
-.project-foot .item-list li {
-  list-style-type: none;
-  text-align: left;
-  margin: 0 0 5px 0;
-}
-.project-foot .item-list li:last-child {
-  margin-bottom: 0;
-}
-.project-foot a {
-  font-size: 16px;
-  height: 30px;
-  line-height: 27px;
-  margin: 0;
-  padding: 0 20px 0 15px;
-  background-color: white;
-  border: 2px solid #007cba;
-  display: inline-block;
-  position: relative;
-  text-transform: uppercase;
-  transition: color 0.33s ease 0s;
-  white-space: nowrap;
-  width: 100%;
-  box-sizing: border-box;
-}
-.project-foot a:hover {
-  background-color: #007CBA;
-  color: white;
-}
-.project-foot a.button {
-  margin: 0;
-  line-height: 27px;
-  width: 100%;
-}
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  .project-foot .item-list li {
-    text-align: right;
-  }
-}
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .project-foot a,
-  .project-foot a.button {
-    width: auto;
-  }
-}
+ .node-project-release .form-item {
+   font-size: 1.3em;
+ }
+ .node-project-release .form-item label {
+   font-size: 1em;
+   margin: 2em 0 1em;
+   padding: .8em 0 0;
+   border-top: 1px solid #d4d6d6;
+   text-transform: uppercase;
+   font-weight: 600;
+ }
 
 /**
  * Project releases -- teasers.
@@ -241,7 +210,6 @@ article.node-project-release.view-mode-project-search article.view-mode-teaser {
   margin-bottom: 0;
   border-bottom: 0;
 }
-
 
 /**
  * Download table (view).
