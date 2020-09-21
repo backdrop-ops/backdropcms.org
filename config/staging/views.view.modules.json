@@ -40,7 +40,7 @@
                 "pager": {
                     "type": "full",
                     "options": {
-                        "items_per_page": "2",
+                        "items_per_page": "25",
                         "offset": "0",
                         "id": "0",
                         "total_pages": "",
@@ -63,7 +63,7 @@
                     }
                 },
                 "style_plugin": "list",
-                "row_plugin": "fields",
+                "row_plugin": "node",
                 "fields": {
                     "title": {
                         "id": "title",
@@ -741,10 +741,10 @@
                     }
                 },
                 "row_options": {
-                    "default_field_elements": 0,
-                    "inline": [],
-                    "separator": " ",
-                    "hide_empty": 0
+                    "relationship": "none",
+                    "view_mode": "project_search",
+                    "links": 1,
+                    "comments": 0
                 },
                 "use_ajax": false,
                 "header": [],
