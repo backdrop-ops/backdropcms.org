@@ -86,7 +86,7 @@ function akismet_help($path, $arg) {
   if ($path == 'admin/config/content/akismet') {
     $output .= '<p>';
     $output .= t('All listed forms below are protected by Akismet, unless users are able to <a href="@permissions-url">bypass Akismet\'s protection</a>.', array(
-      '@permissions-url' => url('admin/people/permissions', array('fragment' => 'module-akismet')),
+      '@permissions-url' => url('admin/config/people/permissions', array('fragment' => 'module-akismet')),
     ));
     $output .= ' ';
     $output .= t('You can <a href="@add-form-url">add a form</a> to protect, configure already protected forms, or remove the protection.', array(
@@ -2381,8 +2381,8 @@ function akismet_form_user_multiple_cancel_confirm_alter(&$form, &$form_state) {
  * Form submit handler for node_multiple_delete_confirm().
  */
 function akismet_form_user_multiple_cancel_confirm_submit($form, &$form_state) {
-  $uids = array_keys($form_state['values']['accounts']);
-  if (!empty($form_state['values']['akismet']['feedback'])) {
+  $uids = array_keys($form_state['accounts']);
+  if ($uids && !empty($form_state['values']['akismet']['feedback'])) {
     if (akismet_data_report_multiple('user', $uids, $form_state['values']['akismet']['feedback'])) {
       backdrop_set_message(t('The users were successfully reported.'));
     }

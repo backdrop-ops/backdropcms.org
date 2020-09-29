@@ -111,26 +111,33 @@ function tugboat_theme() {
  * Implements hook_cron().
  *
  * Delete preview sites older than the specified age.
+ *
+ * Note that when we create previews, we already specify an "expires"
+ * parameter. This makes it so that Tugboat should clean up the preview at the
+ * specified date automatically. This acts as a safety, as well as serving to
+ * bring our own list of previews up-to-date with what is in Tugboat.
+ *
+ * @see tugboat_preview_create_form_submit()
  */
 function tugboat_cron() {
   $config = config('tugboat.settings');
   $age = $config->get('preview_site_age');
+  $previews = state_get('tugboat_previews', array());
 
   // Run at an interval that matches the preview site age.
   if ((REQUEST_TIME - state_get('tugboat_cron', 0)) > $age) {
-    state_set('tugboat_cron', REQUEST_TIME);
     $delete_timestamp = REQUEST_TIME - $age;
     $delete_count = 0;
 
     // Get a list of previews created by this module (so we don't delete any
     // previews created through Tugboat directly).
-    foreach ($config->get('previews') as $preview_id => $preview_url) {
+    foreach ($previews as $preview_id => $preview_url) {
       // Load each preview to check if it should be deleted.
       $preview = tugboat_api_curl('/previews/' . $preview_id);
 
       if ($preview['code'] == 404) {
-        // Preview doesn't exist in Tugboat, so remove from config.
-        $config->clear('previews.' . $preview_id);
+        // Preview doesn't exist in Tugboat, so remove from the list.
+        unset($previews[$preview_id]);
       }
       elseif ($preview['code'] == 200) {
         // Delete if not a base preview (anchor) and it's older than the
@@ -141,7 +148,7 @@ function tugboat_cron() {
           // Keep track of how many previews were deleted and update config.
           if ($deleted['code'] == 204) {
             $delete_count++;
-            $config->clear('previews.' . $preview_id);
+            unset($previews[$preview_id]);
           }
         }
       }
@@ -155,7 +162,8 @@ function tugboat_cron() {
       ));
     }
 
-    $config->save();
+    state_set('tugboat_cron', REQUEST_TIME);
+    state_set('tugboat_previews', $previews);
   }
 }
 

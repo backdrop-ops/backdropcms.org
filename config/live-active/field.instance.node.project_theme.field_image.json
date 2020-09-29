@@ -11,7 +11,8 @@
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "project"
+            "preview_image_style": "project",
+            "browser_view": "image_library"
         }
     },
     "description": "Include a screenshot of this project in action. The image should be a 4:3 ratio size for best display.",
@@ -43,13 +44,19 @@
             },
             "module": "image"
         },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
+        },
         "project_search": {
             "label": "hidden",
             "type": "image",
             "weight": "0",
             "settings": {
                 "image_style": "project",
-                "image_link": "",
+                "image_link": "content",
                 "image_float": ""
             },
             "module": "image"

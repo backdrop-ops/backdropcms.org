@@ -35,7 +35,13 @@
         "project_search": {
             "label": "above",
             "type": "hidden",
-            "weight": "7",
+            "weight": "4",
+            "settings": []
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "0",
             "settings": []
         }
     }

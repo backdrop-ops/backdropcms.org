@@ -306,7 +306,7 @@ function akismet_admin_configure_form($form, &$form_state, $akismet_form = NULL)
         //   but are not sanitized: http://drupal.org/node/98696
         $permissions[backdrop_html_class($permission)] = array(
           'title' => $all_permissions[$permission]['title'],
-          'href' => 'admin/people/permissions',
+          'href' => 'admin/config/people/permissions',
           'fragment' => 'module-' . $all_permissions[$permission]['module'],
           'html' => TRUE,
         );

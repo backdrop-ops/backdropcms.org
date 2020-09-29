@@ -193,19 +193,13 @@ function borg_preprocess_views_exposed_form(&$variables) {
   if (substr($variables['form']['#id'], 0, 26) == 'views-exposed-form-modules'){
     // Update search field
     $search_field_key = '';
-    $search_type = '';
-    if (!empty($variables['form']['title'])){
-      $search_field_key = 'title';
-      if($variables['form']['#id'] == 'views-exposed-form-modules-page-2') {
-        $search_type = 'themes';
-      }
-      elseif ($variables['form']['#id'] == 'views-exposed-form-modules-page-3') {
-        $search_type = 'layouts';
-      }
-    }
-    elseif (!empty($variables['form']['keys'])){
+    $search_type = arg(0);
+
+    if (!empty($variables['form']['keys'])){
       $search_field_key = 'keys';
-      $search_type = 'modules';
+    }
+    elseif (!empty($variables['form']['title'])){
+      $search_field_key = 'title';
     }
 
     if (!empty($search_field_key)){
@@ -224,6 +218,103 @@ function borg_preprocess_views_exposed_form(&$variables) {
  * @see node.tpl.php
  */
 function borg_preprocess_node(&$variables){
+  // Add missing node type suggestion.
+  array_unshift($variables['theme_hook_suggestions'], 'node__' . $variables['node']->type);
+
+  // Add theme hook suggestions for view mode.
+  if ($variables['view_mode'] != 'full') {
+    array_unshift($variables['theme_hook_suggestions'], 'node__' . $variables['view_mode']);
+  }
+
+  if ($variables['view_mode'] == 'project_search') {
+    $node = $variables['node']; // Nice shorthand.
+
+    // Move the image into the sidebar.
+    $variables['image'] = backdrop_render($variables['content']['field_image']);
+
+    // Start a place for footer info.
+    $footer_links = array();
+
+    // Add some statistics info for the footer.
+    if (isset($variables['content']['field_download_count'])) {
+      $count = backdrop_render($variables['content']['field_download_count']);
+      $footer_links['count']['data'] = $count;
+    }
+    if (isset($variables['content']['project_usage'])) {
+      $variables['content']['project_usage']['#weight'] = 10;
+      $usage = backdrop_render($variables['content']['project_usage']);
+      $footer_links['usage']['data'] = $usage;
+    }
+
+    // Add a more info link to content.
+    $variables['content']['more'] = array(
+      '#type' => 'link',
+      '#title' => t('More details'),
+      '#href' => url('node/' . $node->nid, array('absolute' => TRUE)),
+      '#attributes' => array('class' => array('button', 'button-small', 'more-details')),
+      '#weight' => 10,
+    );
+
+    // Get the recomended release info.
+    $release = FALSE;
+    $result = views_get_view_result('project_release_download_table', 'recommended', $node->nid);
+    if (count($result) == 1) {
+      $release = reset($result);
+    }
+
+    if ($release) {
+      // Add the latest release version.
+      $version = array(
+        '#type' => 'markup',
+        '#markup' => '<span>' . t('Version: <strong>@version</strong>', array('@version' => $release->project_release_node_version)) . '</span>',
+      );
+      $footer_links['version']['data'] = backdrop_render($version);
+
+      // Add the latest release date.
+      $date = format_date($release->node_created, 'short');
+      $latest = array(
+        '#type' => 'markup',
+        '#markup' => '<span class="release-date">' . t('Released: <strong>@date</strong>', array('@date' => $date)) . '</span>',
+      );
+      $footer_links['latest']['data'] = backdrop_render($latest);
+
+      // Add an area for download info.
+      $variables['download'] = array();
+      // Add download link.
+      $variables['download']['button'] = array(
+        '#type' => 'link',
+        '#title' => t('Download'),
+        '#href' => $release->project_release_node_download_link,
+        '#attributes' => array('class' => array('button', 'button-small')),
+        '#weight' => -11,
+      );
+      // Add download file size.
+      $variables['download']['size'] = array(
+        '#type' => 'markup',
+        '#markup' => '<span class="download-size"><span>' . format_size($release->project_release_node_download_size) . '</span></span>',
+        '#weight' => -10,
+      );
+    }
+
+    // Put release info in a list.
+    $variables['footer_info'] = array(
+      '#theme' => 'item_list',
+      '#items' => $footer_links,
+    );
+
+  }
+
+  if ($variables['type'] == 'project_module' || $variables['type'] == 'project_theme' || $variables['type'] == 'project_layout') {
+
+    if ($variables['view_mode'] == 'teaser') {
+      if (isset($variables['content']['links'])) {
+        $old_title = $variables['content']['links']['node']['#links']['node-readmore']['title'];
+        $new_title = str_replace('Read more', 'More details', $old_title);
+        unset($variables['content']['links']);
+      }
+    }
+  }
+
   // For blog posts.
   if ($variables['type'] == 'post') {
     // Load the author.
@@ -254,9 +345,14 @@ function borg_preprocess_node(&$variables){
 
   // For project nodes include a special stylesheet.
   if (($variables['type'] == 'core') || substr($variables['type'], 0, 8) == 'project_'){
-    unset($variables['content']['project_release_downloads']['#prefix']);
-    $variables['classes'][] = 'node-project';
-    backdrop_add_css($path . '/css/node-project.css');
+    if ($variables['type'] == 'project_release') {
+
+    }
+    else {
+      unset($variables['content']['project_release_downloads']['#prefix']);
+      $variables['classes'][] = 'node-project';
+      backdrop_add_css($path . '/css/node-project.css');
+    }
   }
 
   // For showcase nodes include a special stylesheet.
@@ -294,7 +390,7 @@ function borg_preprocess_views_view_row_rss(&$variables) {
   // Add a special class to the featured image to optimize for Feedly.
   $view->result[0]->field_field_image[0]['rendered']['#item']['attributes']['class'] = array('webfeedsFeaturedVisual');
   // Add an image tag to the top of the description.
-  $image = drupal_render($view->result[0]->field_field_image[0]['rendered']);
+  $image = backdrop_render($view->result[0]->field_field_image[0]['rendered']);
   $complete_description = '<![CDATA[' . $image . '<br/>' . $item->description . ']]>';
 
   $item->description = $complete_description;

@@ -22,6 +22,7 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
+            "76f1022e-0cda-43e9-a761-97750100be23",
             "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "content": [],
@@ -30,7 +31,8 @@
         ],
         "half2": [
             "78355c13-bb46-4609-a607-7fa6192a1afd",
-            "f763943b-8712-44ff-ba00-e45044734b4b"
+            "f763943b-8712-44ff-ba00-e45044734b4b",
+            "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1"
         ],
         "below": [
             "65611a78-5d6e-4d50-8705-058169d6120c",
@@ -137,6 +139,31 @@
                 }
             }
         },
+        "76f1022e-0cda-43e9-a761-97750100be23": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<h2 class=\"text-align-center\">Announcing -&nbsp;<span class=\"link\"><a href=\"https://backdrop-live.backdropcms.org/\" style=\"color: #7CF5A9;\">Backdrop LIVE, Sept 17-19</a></span></h2>\r\n",
+                    "format": "full_html"
+                },
+                "uuid": "76f1022e-0cda-43e9-a761-97750100be23",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d": {
             "plugin": "borg_blocks:tagline",
             "data": {
@@ -147,7 +174,7 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "1.16.2"
+                        "version": "1.17.0"
                     },
                     "contexts": []
                 },
@@ -232,6 +259,31 @@
                     "contexts": []
                 },
                 "uuid": "f763943b-8712-44ff-ba00-e45044734b4b",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Badges",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "Linux Foundation Core Infrastructure Initiative\r\n\r\n<a href=\"https://bestpractices.coreinfrastructure.org/projects/4114\"><img src=\"https://bestpractices.coreinfrastructure.org/projects/4114/badge\"></a>",
+                    "format": "full_html"
+                },
+                "uuid": "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1",
                 "style": {
                     "plugin": "default",
                     "data": {

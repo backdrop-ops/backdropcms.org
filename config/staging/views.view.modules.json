@@ -63,7 +63,7 @@
                     }
                 },
                 "style_plugin": "list",
-                "row_plugin": "fields",
+                "row_plugin": "node",
                 "fields": {
                     "title": {
                         "id": "title",
@@ -695,7 +695,7 @@
                         "id": "created",
                         "table": "node",
                         "field": "created",
-                        "relationship": "latest_release",
+                        "relationship": "nid",
                         "group_type": "group",
                         "ui_name": "",
                         "order": "DESC",
@@ -703,7 +703,7 @@
                         "expose": {
                             "label": ""
                         },
-                        "granularity": "second"
+                        "granularity": "day"
                     }
                 },
                 "title": "Modules for Backdrop CMS",
@@ -750,10 +750,10 @@
                     }
                 },
                 "row_options": {
-                    "default_field_elements": 0,
-                    "inline": [],
-                    "separator": " ",
-                    "hide_empty": 0
+                    "relationship": "none",
+                    "view_mode": "project_search",
+                    "links": 1,
+                    "comments": 0
                 },
                 "use_ajax": false,
                 "header": [],
@@ -816,7 +816,11 @@
                     "filters": false,
                     "filter_groups": false,
                     "header": false,
-                    "title": false
+                    "title": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
                 },
                 "header": [],
                 "title": "Themes for Backdrop CMS",
@@ -965,6 +969,23 @@
                     "groups": {
                         "1": "AND"
                     }
+                },
+                "style_plugin": "list",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "result",
+                    "default_row_class": 0,
+                    "row_class_special": 1,
+                    "type": "ol",
+                    "wrapper_class": "project-search__results-wrapper l-content-wrapper",
+                    "class": "project-search__results"
+                },
+                "row_plugin": "node",
+                "row_options": {
+                    "relationship": "none",
+                    "view_mode": "project_search",
+                    "links": 1,
+                    "comments": 0
                 }
             }
         },
