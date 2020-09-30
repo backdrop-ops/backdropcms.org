@@ -22,7 +22,6 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
-            "76f1022e-0cda-43e9-a761-97750100be23",
             "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "content": [],
@@ -139,31 +138,6 @@
                 }
             }
         },
-        "76f1022e-0cda-43e9-a761-97750100be23": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<h2 class=\"text-align-center\">Announcing -&nbsp;<span class=\"link\"><a href=\"https://backdrop-live.backdropcms.org/\" style=\"color: #7CF5A9;\">Backdrop LIVE, Sept 17-19</a></span></h2>\r\n",
-                    "format": "full_html"
-                },
-                "uuid": "76f1022e-0cda-43e9-a761-97750100be23",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d": {
             "plugin": "borg_blocks:tagline",
             "data": {
@@ -174,7 +148,7 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "1.17.0"
+                        "version": "1.17.1"
                     },
                     "contexts": []
                 },
@@ -228,6 +202,7 @@
                     "style": "default",
                     "block_settings": {
                         "delta": "books",
+                        "description": "",
                         "reusable": true
                     },
                     "contexts": []

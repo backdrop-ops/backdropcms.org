@@ -3,7 +3,7 @@
     "field_name": "field_online",
     "entity_type": "node",
     "bundle": "event",
-    "label": "You may attend this event remotely",
+    "label": "Attend this event remotely",
     "widget": {
         "weight": "3",
         "type": "options_onoff",
@@ -29,7 +29,7 @@
         "default": {
             "label": "inline",
             "type": "boolean_yes_no",
-            "weight": "4",
+            "weight": "2",
             "settings": {
                 "format": "yes-no",
                 "custom_on": "",
