@@ -23,7 +23,7 @@ function youtube_colorbox_form_youtube_settings_form_alter(&$form, &$form_state)
   // Provide warning about the need to set 'Enable Colorbox load' to TRUE in the
   // Colorbox module settings. Otherwise links provided by YouTube Colorbox will
   // not work as expected. This warning appears in the YouTube module settings.
-  if (!variable_get('colorbox_load', FALSE)) {
+  if (!config_get('colorbox.settings','colorbox_load', FALSE)) {
     $args = array('!colorbox_settings' => l('Colorbox module settings', 'admin/config/media/colorbox'));
     $message = t('Please enable \'Enable Colorbox load\' in the !colorbox_settings for thumbnails linked by YouTube Field Colorbox to work as expected.', $args);
     backdrop_set_message($message, 'warning');
@@ -161,32 +161,32 @@ function youtube_colorbox_field_item_uri($item, $settings) {
   }
 
   // Global YouTube module configuration.
-  $config = config('youtube.settings')
-  $domain = $config->get('privacy') ? 'youtube-nocookie.com' : 'youtube.com';
-  $player_class = $config->get('player_class');
-  if (!$config->get('suggest')) {
+  $config = config('youtube.settings');
+  $domain = $config->get('youtube_privacy') ? 'youtube-nocookie.com' : 'youtube.com';
+  $player_class = $config->get('youtube_player_class');
+  if (!$config->get('youtube_suggest')) {
     $parameters['rel'] = '0';
   }
-  if ($config->get('modestbranding')) {
+  if ($config->get('youtube_modestbranding')) {
     $parameters['modestbranding'] = '1';
   }
-  if ($config->get('theme')) {
+  if ($config->get('youtube_theme')) {
     $parameters['theme'] = 'light';
   }
-  if ($config->get('color')) {
+  if ($config->get('youtube_color')) {
     $parameters['color'] = 'white';
   }
-  if ($config->get('enablejsapi')) {
+  if ($config->get('youtube_enablejsapi')) {
     global $base_url;
     $parameters['enablejsapi'] = '1';
     $parameters['origin'] = $base_url;
   }
-  if ($config->get('wmode')) {
+  if ($config->get('youtube_wmode')) {
     $parameters['wmode'] = 'opaque';
   }
 
   $uri = array(
-    'path' => 'https://' . $domain . '/embed/' . $item['video_id'],
+    'path' => 'https://www.' . $domain . '/embed/' . $item['video_id'],
     'options' => array(
       'attributes' => array(
         'class' => array('colorbox-load', $player_class),

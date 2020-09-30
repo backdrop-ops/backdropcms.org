@@ -31,24 +31,26 @@ function youtube_token_info_alter(&$data) {
   }
 
   foreach ($youtube_fields as $field) {
-    $field_info = field_info_instance($field['entity_type'], $field['field_name'], $field['bundle']);
-    $field_label = $field_info['label'];
-
-    // Modify the default field token.
-    $data['tokens'][$field['entity_type']][$field['field_name']] = array(
-      'name' => $field_label . t(": Default"),
-      'description' => t("The YouTube video field value's Default (or Token if exists) view mode output."),
-    );
-
-    // Add two new tokens.
-    $data['tokens'][$field['entity_type']][$field['field_name'] . '__youtube_video_url'] = array(
-      'name' => $field_label . t(": Video URL"),
-      'description' => t("The YouTube video field value's youtube.com URL."),
-    );
-    $data['tokens'][$field['entity_type']][$field['field_name'] . '__youtube_image_url'] = array(
-      'name' => $field_label . t(": Image URL"),
-      'description' => t("The YouTube video field value's local image URL."),
-    );
+    if (isset($data['tokens'][$field['entity_type']])) {
+      $field_info = field_info_instance($field['entity_type'], $field['field_name'], $field['bundle']);
+      $field_label = $field_info['label'];
+  
+      // Modify the default field token.
+      $data['tokens'][$field['entity_type']][$field['field_name']] = array(
+        'name' => $field_label . t(": Default"),
+        'description' => t("The YouTube video field value's Default (or Token if exists) view mode output."),
+      );
+  
+      // Add two new tokens.
+      $data['tokens'][$field['entity_type']][$field['field_name'] . '__youtube_video_url'] = array(
+        'name' => $field_label . t(": Video URL"),
+        'description' => t("The YouTube video field value's youtube.com URL."),
+      );
+      $data['tokens'][$field['entity_type']][$field['field_name'] . '__youtube_image_url'] = array(
+        'name' => $field_label . t(": Image URL"),
+        'description' => t("The YouTube video field value's local image URL."),
+      );
+    }
   }
 }
 

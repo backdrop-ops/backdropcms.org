@@ -30,11 +30,11 @@ function youtube_get_video_id($input) {
  */
 function youtube_size_options() {
   return array(
+    'responsive' => 'responsive (full-width of container)',
     '420x315' => '450px by 315px',
     '480x360' => '480px by 360px',
     '640x480' => '640px by 480px',
     '960x720' => '960px by 720px',
-    'responsive' => 'responsive (full-width of container)',
     'custom' => 'custom',
   );
 }

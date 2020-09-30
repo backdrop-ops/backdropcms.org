@@ -259,6 +259,13 @@ function youtube_field_formatter_info() {
         'image_link' => '',
       ),
     ),
+    'youtube_url' => array(
+      'label' => t('YouTube URL'),
+      'field types' => array('youtube'),
+      'settings' => array(
+        'link' => TRUE,
+      ),
+    ),
   );
 
   return $formatters;
@@ -359,6 +366,14 @@ function youtube_field_formatter_settings_form($field, $instance, $view_mode, $f
     }
   }
 
+  if ($display['type'] == 'youtube_url') {
+    $element['link'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Output this field as a link'),
+      '#default_value' => $settings['link'],
+    );
+  }
+
   return $element;
 }
 
@@ -413,6 +428,19 @@ function youtube_field_formatter_settings_summary($field, $instance, $view_mode)
     $link_types = youtube_thumbnail_link_types();
     if (isset($settings['image_link']) && isset($link_types[$settings['image_link']])) {
       $summary .= '<br/>' . t('Linked to: ') . $link_types[$settings['image_link']] . '.';
+    }
+
+    return $summary;
+  }
+
+  // Summary for the thumbnail style.
+  if ($display['type'] == 'youtube_url') {
+    $summary = t('YouTube URL');
+    if (isset($settings['link'])) {
+      $summary .= t(', as link.');
+    }
+    else {
+      $summary .= t(', as plain text.');
     }
 
     return $summary;
@@ -493,6 +521,31 @@ function youtube_field_formatter_view($entity_type, $entity, $field, $instance, 
         );
       }
       break;
+
+    case 'youtube_url':
+      foreach ($items as $delta => $item) {
+        if (!empty($display['settings']['link'])) {
+          $element[$delta] = array(
+            '#theme'   => 'link',
+            '#text'    => check_plain($item['input']),
+            '#path'    => $item['input'],
+            '#options' => array(
+              'attributes' => array(
+                'class' => array('youtube-url'),
+                'id'    => drupal_html_class($item['video_id']),
+              ),
+              'html'       => TRUE,
+            ),
+          );
+        }
+        else {
+          $element[$delta] = array(
+            '#markup' => check_plain($item['input']),
+          );
+        }
+      }
+      break;
+
   }
 
   return $element;
