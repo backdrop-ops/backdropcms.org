@@ -1,5 +1,7 @@
 # Ignore dev for local
 dev-active/*.json
+dev-active/.htaccess
+
 
 # Ignore specific config files in staging
 staging/devel.settings.json
