@@ -64,7 +64,13 @@ description = Test prevention of unauthorized image style generation.
 group = Image
 file = image.test
 
-; Added by Backdrop CMS packaging script on 2020-06-17
+[ImageStyleTokenTests]
+name = Image Style token tests
+description = Test image style and attribute tokens.
+group = Image
+file = token.test
+
+; Added by Backdrop CMS packaging script on 2020-09-30
 project = backdrop
-version = 1.16.2
-timestamp = 1592424712
+version = 1.17.1
+timestamp = 1601500405
