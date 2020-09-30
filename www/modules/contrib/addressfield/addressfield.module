@@ -73,19 +73,18 @@ function addressfield_get_address_fields($entity_type = '') {
     }
   }
 
-  /* @todo restore after field_info_field_map gets added to Backdrop CMS 
   // Get all addressfield fields.
   $fields = array_filter(field_info_field_map(), 'addressfield_field_map_filter');
   if (!empty($fields)) {
-    // Keep only the fields present on this entity_type to spare some
-    // iterations in the calling function.
+    // Keep only the fields present on this entity_type to spare some iterations
+    // in the calling function.
     foreach ($fields as $field_name => $field) {
       if (!isset($field['bundles'][$entity_type])) {
         unset($fields[$field_name]);
       }
     }
   }
-  */
+
   return $fields;
 }
 
@@ -152,7 +151,7 @@ function addressfield_addressfield_format_info() {
       'weight' => -82,
       'file' => 'formats/address-hide-premise.inc',
     ),
-    
+
     'name_oneline' => array(
       'title' => t('Show a Full Name field'),
       'format callback' => 'addressfield_format_name_oneline_generate',
@@ -556,20 +555,6 @@ function addressfield_field_info() {
 }
 
 /**
- * Implements hook_field_load()
- */
-function addressfield_field_load($entity_type, $entities, $field, $instances, $langcode, &$items, $age) {
-  foreach ($entities as $id => $entity) {
-    foreach ($items[$id] as $delta => &$item) {
-      if (!empty($item['data_serialized'])) {
-        $item['data'] = unserialize($item['data_serialized']);
-      }
-      unset($item['data_serialized']);
-    }
-  }
-}
-
-/**
  * Returns an array of default values for the addressfield form elements.
  *
  * @param $field
@@ -585,10 +570,6 @@ function addressfield_field_load($entity_type, $entities, $field, $instances, $l
 function addressfield_default_values($field, $instance, array $address = array()) {
   $available_countries = _addressfield_country_options_list($field, $instance);
   $default_country = $instance['widget']['settings']['default_country'];
-  // Resolve the special site_default option.
-  if ($default_country == 'site_default') {
-    $default_country = variable_get('site_default_country', '');
-  }
   // Fallback to the first country in the list if the default country is not
   // available, or is empty even though the field is required.
   $not_available = $default_country && !isset($available_countries[$default_country]);
@@ -635,39 +616,57 @@ function addressfield_field_is_empty($item, $field) {
 }
 
 /**
+ * Implements hook_field_load().
+ */
+function addressfield_field_load($entity_type, $entities, $field, $instances, $langcode, &$items) {
+  foreach ($entities as $id => $entity) {
+    foreach($items[$id] as &$item) {
+      _addressfield_normalize_item($item);
+      if (!empty($item['data_serialized'])) {
+        $item['data'] = unserialize($item['data_serialized']);
+      }
+      unset($item['data_serialized']);
+    }
+  }
+}
+
+/**
  * Implements hook_field_presave().
  */
 function addressfield_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
-  foreach ($items as $delta => &$item) {
-    // If the first name and last name are set but the name line isn't...
-    if (isset($item['first_name']) && isset($item['last_name']) && !isset($item['name_line'])) {
-      // Combine the first and last name to be the name line.
-      $items[$delta]['name_line'] = $items[$delta]['first_name'] . ' ' . $items[$delta]['last_name'];
-    }
-    elseif (isset($item['name_line'])) {
-      // Otherwise if the name line is set, separate it out into a best guess at
-      // the first and last name.
-      $names = explode(' ', $item['name_line']);
+  foreach ($items as &$item) {
+    _addressfield_normalize_item($item);
+    $item['data_serialized'] = serialize(isset($item['data']) ? $item['data'] : array());
+  }
+}
 
-      $item['first_name'] = array_shift($names);
-      $item['last_name'] = implode(' ', $names);
-    }
+/**
+ * Normalizes an addressfield item, so that items that were saved in an
+ * older format can be compared more easily to newer items.
+ */
+function _addressfield_normalize_item(&$item) {
+  // If the first name and last name are set but the name line isn't...
+  if (isset($item['first_name']) && isset($item['last_name']) && !isset($item['name_line'])) {
+    // Combine the first and last name to be the name line.
+    $item['name_line'] = $item['first_name'] . ' ' . $item['last_name'];
+  }
+  elseif (isset($item['name_line'])) {
+    // Otherwise if the name line is set, separate it out into a best guess at
+    // the first and last name.
+    $names = explode(' ', $item['name_line']);
 
-    // Trim whitespace from all of the address components and convert any double
-    // spaces to single spaces.
-    foreach ($item as $key => &$value) {
-      if (!in_array($key, array('data')) && is_string($value)) {
-        $value = trim(preg_replace('/[[:blank:]]{2,}/u', ' ', $value));
-      }
-    }
+    $item['first_name'] = array_shift($names);
+    $item['last_name'] = implode(' ', $names);
+  }
 
-    if (isset($item['data'])) {
-      $item['data_serialized'] = serialize($item['data']);
-    }
-    else {
-      $item['data_serialized'] = serialize(array());
+  // Trim whitespace from all of the address components and convert any double
+  // spaces to single spaces.
+  foreach ($item as $key => &$value) {
+    if (!in_array($key, array('data')) && is_string($value)) {
+      $value = trim(preg_replace('/[[:blank:]]{2,}/u', ' ', $value));
     }
   }
+
 }
 
 /**
@@ -681,10 +680,7 @@ function addressfield_field_widget_info() {
     'field types' => array('addressfield'),
     'settings' => array(
       'available_countries' => array(),
-      // Can't use variable_get('site_default_country') here because it would
-      // set the value in stone. Instead, the site_default option allows the
-      // default country to always reflect the current site setting.
-      'default_country' => 'site_default',
+      'default_country' => '',
       'format_handlers' => array('address'),
     ),
   );
@@ -713,7 +709,7 @@ function addressfield_field_widget_settings_form($field, $instance) {
     $form['default_country'] = array(
       '#type' => 'select',
       '#title' => t('Default country'),
-      '#options' => array('site_default' => t('- Site default -')) + _addressfield_country_options_list(),
+      '#options' => array(_addressfield_country_options_list()),
       '#default_value' => $settings['default_country'],
       '#empty_value' => '',
     );

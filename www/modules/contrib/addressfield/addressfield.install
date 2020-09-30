@@ -114,3 +114,74 @@ function addressfield_field_schema() {
     // TODO Add indexes.
   );
 }
+
+/**
+ * Rename the data column to data_serialized.
+ */
+function addressfield_update_1002() {
+  $spec = array(
+    'description' => 'Additional data for this address (serialized).',
+    'type' => 'text',
+    'size' => 'big',
+    'not null' => FALSE,
+    'serialize' => TRUE,
+    'initial' => serialize(array())
+  );
+  $fields = field_read_fields(array(
+    'module' => 'addressfield',
+  ));
+  foreach ($fields as $field_name => $field) {
+    if ($field['deleted']) {
+      $table = "field_deleted_data_{$field['id']}";
+      $revision_table = "field_deleted_revision_{$field['id']}";
+    }
+    else {
+      $table = "field_data_{$field['field_name']}";
+      $revision_table = "field_revision_{$field['field_name']}";
+    }
+    $column = $field['field_name'] . '_data';
+    $new_column = $field['field_name'] . '_data_serialized';
+    if (db_field_exists($table, $column)) {
+      db_change_field($table, $column, $new_column, $spec);
+      db_change_field($revision_table, $column, $new_column, $spec);
+    }
+  }
+}
+
+/**
+ * Serialize existing values in the data_serialized column.
+ */
+function addressfield_update_1003() {
+  $fields = field_read_fields(array(
+    'module' => 'addressfield',
+  ));
+  $serialized_false = serialize(false);
+
+  foreach ($fields as $field) {
+
+    $column = $field['field_name'] . '_data_serialized';
+    $columns = array('entity_type', 'entity_id', 'revision_id', 'delta', 'language', $column);
+
+    foreach (array('data', 'revision') as $table_type) {
+      $table = $field['deleted']
+        ? 'field_deleted_' . $table_type . '_' . $field['id']
+        : 'field_' . $table_type . '_' . $field['field_name'];
+      $result = db_select($table, 't')->fields('t', $columns)->execute();
+
+      foreach ($result as $row) {
+        $data = $row->$column;
+        $unserialized_data = @unserialize($data);
+        if ($unserialized_data === FALSE && $data !== $serialized_false) {
+          db_update($table)
+            ->fields(array($column => serialize($data)))
+            ->condition('entity_type', $row->entity_type)
+            ->condition('entity_id', $row->entity_id)
+            ->condition('revision_id', $row->revision_id)
+            ->condition('delta', $row->delta)
+            ->condition('language', $row->language)
+            ->execute();
+        }
+      }
+    }
+  }
+}

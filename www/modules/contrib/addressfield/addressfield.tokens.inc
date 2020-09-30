@@ -103,7 +103,7 @@ function addressfield_token_info_alter(&$data) {
  */
 function addressfield_tokens($type, $tokens, array $data = array(), array $options = array()) {
   if (isset($options['language'])) {
-    $language_code = $options['language']->language;
+    $language_code = $options['language']->langcode;
   }
   else {
     $language_code = LANGUAGE_NONE;

@@ -50,8 +50,8 @@ class addressfield_views_handler_filter_country_admin extends views_handler_filt
 
     // Since multiple values is not allowed...
     $filters = explode('-', $this->value[0]);
-    $default_country = (isset($filters[0])) ? $filters[0] : array();
-    $default_admin = (isset($filters[1])) ? $filters[1] : array();
+    $default_country = (isset($filters[0])) ? $filters[0] : '';
+    $default_admin = (isset($filters[1])) ? $filters[1] : '';
 
     $id = $this->options['expose']['identifier'];
     $field = field_info_field($this->definition['field_name']);
@@ -177,8 +177,8 @@ class addressfield_views_handler_filter_country_admin extends views_handler_filt
     $this->ensure_my_table();
     $this->query->add_where($this->options['group'], "$this->table_alias.$this->country_field", array($filters[0]), $this->operator);
 
-    // @todo find out why this 'Array' hack is necessary.
-    if (isset($filters[1]) && !empty($filters[1]) && ($filters[1] != 'Array')) {
+    // Only add the where when a value is provided.
+    if (isset($filters[1]) && !empty($filters[1])) {
       $this->query->add_where($this->options['group'], "$this->table_alias.$this->admin_field", array($filters[1]), $this->operator);
     }
   }
