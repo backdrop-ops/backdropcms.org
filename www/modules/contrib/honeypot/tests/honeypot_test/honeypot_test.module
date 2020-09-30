@@ -4,12 +4,18 @@
  * Implements hook_menu().
  */
 function honeypot_test_menu() {
-  return array(
-    'honeypot_test/submit_form' => array(
-      'page callback' => 'honeypot_test_submit_form',
-      'access callback' => TRUE,
-    ),
+  $items['honeypot_test/submit_form'] = array(
+    'page callback' => 'honeypot_test_submit_form',
+    'access callback' => TRUE,
   );
+  $items['honeypot_test/honeypot_test_form'] = array(
+    'title' => 'Honeypot Test',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('honeypot_test_form'),
+    'access callback' => TRUE,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  return $items;
 }
 
 /**
@@ -27,4 +33,47 @@ function honeypot_test_submit_form() {
   $errors = form_get_errors();
   print backdrop_json_encode($errors);
   exit();
+}
+
+/**
+ * Honeypot Test Form
+ *
+ * It just creates a very basic form with a textfield.
+ */
+function honeypot_test_form($form, &$form_state) {
+
+  $form['description'] = array(
+    '#type' => 'item',
+    '#title' => t('A form with nothing but a textfield'),
+  );
+  // This is the first form element. It's a textfield with a label, "Name"
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+  );
+
+  // Adds a simple submit button that refreshes the form and clears its
+  // contents. This is the default behavior for forms.
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+
+  return $form;
+}
+
+/**
+ * Submit callback for honeypot_test_form.
+ */
+function honeypot_test_form_submit($form, &$form_state) {
+  backdrop_set_message('Success!');
+}
+
+/**
+ * Implements hook_honeypot_protect_forms_info().
+ */
+function honeypot_test_honeypot_protect_forms_info() {
+  return array(
+    'honeypot_test_form',
+  );
 }

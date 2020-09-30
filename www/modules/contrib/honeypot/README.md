@@ -40,16 +40,15 @@ accessed by site administrators.
 Use in Your Own Forms
 ---------------------
 
-If you want to add honeypot to your own forms, or to any form through your own
-module's hook_form_alter's, you can simply place the following function call
-inside your form builder function (or inside a hook_form_alter):
+If you want to add honeypot to your own forms, or to any form, you can use this hook:
 
 ```
-    honeypot_add_form_protection(
-      $form,
-      $form_state,
-      array('honeypot', 'time_restriction')
-    );
+function hook_honeypot_protect_forms_info() {
+  return array(
+    'my_form_id',
+    'my_other_form_id',
+  );
+}
 ```
 
 Note that you can enable or disable either the honeypot field, or the time

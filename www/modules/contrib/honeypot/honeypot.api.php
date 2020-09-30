@@ -46,6 +46,22 @@ function hook_honeypot_add_form_protection($options, $form) {
 }
 
 /**
+ * Add form ID(s) to the list of forms being protected.
+ *
+ * Honeypot keeps a list of form IDs that will be protected. Use this hook to
+ * add additional form IDs that aren't already offered in the module settings.
+ *
+ * @return array
+ *   Array of form IDs.
+ */
+function hook_honeypot_protect_forms_info() {
+  return array(
+    'my_form_id',
+    'my_other_form_id',
+  );
+}
+
+/**
  * React to the rejection of a form submission.
  *
  * When honeypot rejects a form submission, it calls this hook with the form ID,

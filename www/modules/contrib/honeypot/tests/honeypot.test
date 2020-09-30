@@ -59,6 +59,25 @@ class HoneypotFormTestCase extends BackdropWebTestCase {
     ));
   }
 
+  public function testHookAddFormToProtect() {
+    $config = config('honeypot.settings');
+
+    // Disable universal protection so we can test the hook.
+    $config->set('protect_all_forms', FALSE);
+    $config->save();
+
+    // Set up form and submit it.
+    $edit['name'] = $this->randomName();
+    $edit['url'] = 'http://www.example.com/';
+    $this->backdropPost('honeypot_test/honeypot_test_form', $edit, t('Submit'));
+
+    // Form should have error message.
+    $this->assertText(t('There was a problem with your form submission. Please refresh the page and try again.'), 'Registration form protected by honeypot.');
+
+    $config->set('protect_all_forms', TRUE);
+    $config->save();
+  }
+
   /**
    * Test user registration (anonymous users).
    */
@@ -185,6 +204,22 @@ class HoneypotFormTestCase extends BackdropWebTestCase {
     $form_errors = backdrop_json_decode($this->content);
     $this->assertNoRaw('There was a problem with your form submission. Please wait 6 seconds and try again.');
     $this->assertFalse($form_errors, 'The were no validation errors when submitting the form.');
+  }
+
+  /**
+   * Test that any (not-strict-empty) value triggers protection.
+   */
+  public function testStrictEmptinessOnHoneypotField() {
+    // Initialise the form values.
+    $edit['name'] = $this->randomName();
+    $edit['mail'] = $edit['name'] . '@example.com';
+
+    // Any value that is not strictly empty should trigger Honeypot.
+    foreach (['0', ' '] as $value) {
+      $edit['url'] = $value;
+      $this->backdropPost('user/register', $edit, t('Create new account'));
+      $this->assertText(t('There was a problem with your form submission. Please refresh the page and try again.'), "Honeypot protection is triggered when the honeypot field contains '{$value}'.");
+    }
   }
 }
 
@@ -350,6 +385,7 @@ class HoneypotCssTestCase extends BackdropWebTestCase {
    * Test CSS works when default file scheme is not public://
    */
   public function testHoneypotCssNonpublicFileSystem() {
+    config_set('system.core', 'file_private_path', 'files/private');
     config_set('system.core', 'file_default_scheme', 'private');
 
     $honeypot_css = honeypot_get_css_file_path();
