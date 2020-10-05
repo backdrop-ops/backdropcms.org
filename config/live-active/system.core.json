@@ -98,5 +98,7 @@
     "form_cache_expiration": 21600,
     "dblog_row_limit": "1000",
     "dblog_date_format": "M jS, Y g:ia",
-    "log_date_format": "M jS, Y g:ia"
+    "log_date_format": "M jS, Y g:ia",
+    "user_password_reject_weak": false,
+    "user_password_strength_threshold": 50
 }
