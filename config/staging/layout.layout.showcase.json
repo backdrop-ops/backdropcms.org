@@ -4,6 +4,7 @@
     "name": "showcase",
     "title": "Showcase",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": -3,
     "storage": 1,
@@ -38,6 +39,7 @@
         ],
         "title": []
     },
+    "contexts": [],
     "content": {
         "d0eddbc8-ff4b-41be-b700-bd5d455b7669": {
             "plugin": "borg_blocks:branding",
@@ -158,8 +160,10 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<h2>Here are a few websites built with Backdrop CMS.&nbsp; <a href=\"https://backdropcms.org/node/add/showcase\">Add your own!</a></h2>\r\n",
-                    "format": "filtered_html"
+                    "content": "<h2>Here are a few examples. <a href=\"https://backdropcms.org/node/add/showcase\">Add your own!</a></h2>\r\n",
+                    "format": "filtered_html",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "550622bf-f009-4afa-8e06-0616795a9d63",
                 "style": {
