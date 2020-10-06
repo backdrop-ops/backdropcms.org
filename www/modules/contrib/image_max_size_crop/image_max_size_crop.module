@@ -1,0 +1,130 @@
+<?php
+/**
+ * @file
+ * Crop images that exceed a given dimension.
+ */
+
+/**
+ * Implements hook_image_effect_info().
+ */
+function image_max_size_crop_image_effect_info() {
+  return array(
+    'image_max_size_crop' => array(
+      'label' => t('Maximum crop'),
+      'help' => t('Images larger than the specified dimension(s) will be cropped to fit those dimensions. Smaller images will remain untouched.'),
+      'effect callback' => 'image_max_size_crop_effect',
+      'dimensions callback' => 'image_max_size_crop_dimensions',
+      'form callback' => 'image_max_size_crop_form',
+      'summary theme' => 'image_max_size_crop_summary',
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function image_max_size_crop_theme() {
+  return array(
+    'image_max_size_crop_summary' => array(
+      'variables' => array('data' => NULL),
+    ),
+  );
+}
+
+/**
+ * Image effect callback.
+ *
+ * @param object $image
+ *   An image object returned by image_load().
+ * @param array $data
+ *   An array of attributes to use when performing the crop effect with the
+ *   following items:
+ *   - "width": An integer representing the desired width in pixels.
+ *   - "height": An integer representing the desired height in pixels.
+ *   - "anchor": A string describing where the crop should originate in the form
+ *     of "XOFFSET-YOFFSET". XOFFSET is either a number of pixels or
+ *     "left", "center", "right" and YOFFSET is either a number of pixels or
+ *     "top", "center", "bottom".
+ *
+ * @return boolean
+ *   TRUE on success or FALSE on failure to crop image.
+ */
+function image_max_size_crop_effect(&$image, $data) {
+  // Set sane default values.
+  $data += array(
+    'width' => NULL,
+    'height' => NULL,
+    'anchor' => 'center-center',
+  );
+
+  // Get new image dimensions.
+  $dimensions = $image->info;
+  image_max_size_crop_dimensions($dimensions, $data);
+
+  // If new dimensions haven't changed, then cropping isn't necessary.
+  if ($dimensions['width'] == $image->info['width'] && $dimensions['height'] == $image->info['height']) {
+    return TRUE;
+  }
+
+  // Crop the image.
+  list($x, $y) = explode('-', $data['anchor']);
+  $x = image_filter_keyword($x, $image->info['width'], $dimensions['width']);
+  $y = image_filter_keyword($y, $image->info['height'], $dimensions['height']);
+  if (!image_crop($image, $x, $y, $dimensions['width'], $dimensions['height'])) {
+    watchdog('image', 'Image crop failed using the %toolkit toolkit on %path (%mimetype, %dimensions)', array(
+      '%toolkit' => $image->toolkit,
+      '%path' => $image->source,
+      '%mimetype' => $image->info['mime_type'],
+      '%dimensions' => $image->info['width'] . 'x' . $image->info['height'],
+    ), WATCHDOG_ERROR);
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+/**
+ * Image dimensions callback.
+ *
+ * @param array $dimensions
+ *   The existing image dimensions: an array with components width and height,
+ *   in pixels.
+ * @param array $data
+ *   The new, maximum image dimensions: an array with components width and
+ *   height, in pixels.
+ */
+function image_max_size_crop_dimensions(&$dimensions, $data) {
+  if (!empty($data['width']) && $data['width'] < $dimensions['width']) {
+    $dimensions['width'] = $data['width'];
+  }
+
+  if (!empty($data['height']) && $data['height'] < $dimensions['height']) {
+    $dimensions['height'] = $data['height'];
+  }
+}
+
+/**
+ * Form structure for the maximum crop form.
+ *
+ * @see image_crop_form()
+ */
+function image_max_size_crop_form($data) {
+  // Copy the existing crop form.
+  $form = image_crop_form($data);
+
+  // Only one field (width or height) is required.
+  $form['width']['#required'] = FALSE;
+  $form['height']['#required'] = FALSE;
+  $form['#element_validate'] = array('image_effect_scale_validate');
+
+  return $form;
+}
+
+/**
+ * Returns HTML for a summary of the maximum mrop image effect.
+ *
+ * @see theme_image_crop_summary()
+ */
+function theme_image_max_size_crop_summary($variables) {
+  return theme('image_crop_summary', $variables);
+}

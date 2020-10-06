@@ -1,0 +1,12 @@
+name = Image Maximum Crop
+description = Crop images that exceed a given dimension.
+backdrop = 1.x
+type = module
+dependencies[] = image
+package = Media
+tags[] = Images
+
+; Added by Backdrop CMS packaging script on 2020-10-06
+project = image_max_size_crop
+version = 1.x-1.0.0
+timestamp = 1601985170

@@ -3,15 +3,6 @@
     "label": "Showcase Preview (512x512)",
     "name": "showcase_preview_512x512",
     "effects": {
-        "1": {
-            "name": "image_crop",
-            "data": {
-                "width": "512",
-                "height": "512",
-                "anchor": "center-top"
-            },
-            "weight": "-9"
-        },
         "2": {
             "name": "image_scale",
             "data": {
@@ -20,6 +11,15 @@
                 "upscale": 0
             },
             "weight": "-10"
+        },
+        "3": {
+            "name": "image_max_size_crop",
+            "data": {
+                "width": "",
+                "height": "512",
+                "anchor": "center-top"
+            },
+            "weight": "3"
         }
     }
 }
