@@ -36,17 +36,18 @@
                 "style_plugin": "default",
                 "row_plugin": "node",
                 "sorts": {
-                    "sticky": {
-                        "id": "sticky",
-                        "table": "node",
-                        "field": "sticky",
-                        "order": "DESC"
-                    },
-                    "created": {
-                        "id": "created",
-                        "table": "node",
-                        "field": "created",
-                        "order": "DESC"
+                    "random": {
+                        "id": "random",
+                        "table": "views",
+                        "field": "random",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "ASC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
                     }
                 },
                 "arguments": {
@@ -223,6 +224,17 @@
                 "displays": {
                     "page": "page",
                     "default": 0
+                },
+                "sorts": {
+                    "created": {
+                        "id": "created",
+                        "table": "node",
+                        "field": "created",
+                        "order": "DESC"
+                    }
+                },
+                "defaults": {
+                    "sorts": false
                 }
             }
         }
