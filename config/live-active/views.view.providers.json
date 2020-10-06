@@ -344,10 +344,10 @@
                     }
                 },
                 "sorts": {
-                    "title": {
-                        "id": "title",
-                        "table": "node",
-                        "field": "title",
+                    "random": {
+                        "id": "random",
+                        "table": "views",
+                        "field": "random",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
@@ -761,7 +761,7 @@
                     "style_options": false,
                     "row_plugin": false,
                     "row_options": false,
-                    "sorts": false,
+                    "sorts": true,
                     "pager": false,
                     "pager_options": false,
                     "footer": false,
@@ -784,21 +784,6 @@
                 },
                 "row_plugin": "fields",
                 "row_options": [],
-                "sorts": {
-                    "random": {
-                        "id": "random",
-                        "table": "views",
-                        "field": "random",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "order": "ASC",
-                        "exposed": false,
-                        "expose": {
-                            "label": ""
-                        }
-                    }
-                },
                 "pager": {
                     "type": "some",
                     "options": {
@@ -1042,7 +1027,7 @@
                     "style_options": false,
                     "row_plugin": false,
                     "row_options": false,
-                    "sorts": false,
+                    "sorts": true,
                     "pager": false,
                     "pager_options": false,
                     "footer": false,
@@ -1067,21 +1052,6 @@
                 },
                 "row_plugin": "fields",
                 "row_options": [],
-                "sorts": {
-                    "random": {
-                        "id": "random",
-                        "table": "views",
-                        "field": "random",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "order": "ASC",
-                        "exposed": false,
-                        "expose": {
-                            "label": ""
-                        }
-                    }
-                },
                 "pager": {
                     "type": "some",
                     "options": {
