@@ -158,7 +158,7 @@ function borg_blocks_upgrade($settings) {
   $output .= '    <div class="col-md-4 column">';
   $output .=        $included_modules_icon_link;
   $output .= '      <h3>' . $included_modules . '</h3>';
-  $output .= '      <p>' . t('More than than 60 Drupal modules have been merged into Backdrop core.') . '</p>';
+  $output .= '      <p>' . t('More than than 70 Drupal modules have been merged into Backdrop core.') . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $top_modules_icon_link;
@@ -168,7 +168,7 @@ function borg_blocks_upgrade($settings) {
   $output .= '    <div class="col-md-4 column">';
   $output .=        $total_addons_icon_link;
   $output .= '      <h3>' . $total_addons . '</h3>';
-  $output .= '      <p>' . t('More than 500 modules, themes, and layouts are available for Backdrop CMS.') . '</p>';
+  $output .= '      <p>' . t('More than 700 modules, themes, and layouts are available for Backdrop CMS.') . '</p>';
   $output .= '    </div>';
   $output .= '  </div>';
   $output .= '</div>';
