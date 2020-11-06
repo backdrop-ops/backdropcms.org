@@ -33,7 +33,7 @@ tooling:
     cmd:
       - php /app/scripts/pull-db-files.php --files
       - tar -xzf backdropcmsorg-files-latest.tar.gz
-      - mv files/ www/
+      - rm -r www/files/ && mv files/ www/
       - rm -f backdropcmsorg-files-latest.tar.gz
   phpcs:
     service: appserver
