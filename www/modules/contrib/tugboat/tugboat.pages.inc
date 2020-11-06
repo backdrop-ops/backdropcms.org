@@ -71,7 +71,9 @@ function tugboat_preview_create_form_submit($form, &$form_state) {
     // Keep checking the job until it's complete and the preview's ready.
     $job = tugboat_api_curl('/jobs/' . $built['body']['job']);
     while ($job['code'] == 200) {
-      sleep($job['header']['Retry-After']);
+      // Tugboat's `$job['header']['Retry-After']` value is hard-coded to '10'
+      // seconds, so ignore it and check more frequently for a quicker build.
+      sleep(3);
       $job = tugboat_api_curl('/jobs/' . $built['body']['job']);
     }
 
