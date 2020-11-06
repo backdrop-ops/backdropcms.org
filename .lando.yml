@@ -1,4 +1,3 @@
-# Backdrop recipe
 name: borg
 recipe: backdrop
 env_file:
@@ -21,13 +20,21 @@ tooling:
     cmd: drush --root=/app/www --uri=https://borg.lndo.site
   redis-cli:
     service: cache
-  pulldb:
+  pull-db:
     service: appserver
-    description: 'Pull just the latest DB from backdropcms.org'
+    description: 'Get the latest DB from backdropcms.org'
     cmd:
-      - appserver: php /app/scripts/lp-pull.php --database
+      - appserver: php /app/scripts/pull-db-files.php --database
       - database: /helpers/sql-import.sh backdropcmsorg-latest-sanitized.sql.gz
-      - appserver: rm -rf /app/backdropcmsorg-latest-sanitized.sql.gz
+      - appserver: rm -f backdropcmsorg-latest-sanitized.sql.gz
+  pull-files:
+    service: appserver
+    description: 'Get the latest files from backdropcms.org'
+    cmd:
+      - php /app/scripts/pull-db-files.php --files
+      - tar -xzf backdropcmsorg-files-latest.tar.gz
+      - mv files/ www/
+      - rm -f backdropcmsorg-files-latest.tar.gz
   phpcs:
     service: appserver
     cmd:
