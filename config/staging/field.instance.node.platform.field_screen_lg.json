@@ -5,13 +5,14 @@
     "bundle": "platform",
     "label": "Screenshot (desktop)",
     "widget": {
-        "weight": "5",
+        "weight": "6",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "showcase_preview_512x512"
+            "preview_image_style": "showcase_preview_512x512",
+            "browser_view": "image_library"
         }
     },
     "description": "",
@@ -39,7 +40,8 @@
             "settings": {
                 "image_style": "",
                 "image_link": "",
-                "image_float": ""
+                "image_float": "",
+                "image_load": "auto"
             },
             "module": "image"
         },
