@@ -1,0 +1,12 @@
+name = Webform
+description = Enables the creation of forms and questionnaires.
+backdrop = 1.x
+package = Webform
+configure = admin/config/content/webform
+type = module
+php = 5.3
+
+; Added by Backdrop CMS packaging script on 2020-06-11
+project = webform
+version = 1.x-4.23.0
+timestamp = 1591927246
