@@ -470,21 +470,7 @@
                     "name": "main-menu",
                     "weight": "0"
                 },
-                "header": {
-                    "area": {
-                        "id": "area",
-                        "table": "views",
-                        "field": "area",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "Apr 24 security advisory email correction",
-                        "empty": 0,
-                        "content": "<p><strong>Note:</strong> No new Backdrop core security updates have been released since <a href=\"/security/backdrop-sa-core-2019-009\">April 18, 2019</a>. The Backdrop core security advisory emails sent from backdropcms.org on Tue Apr 23 at 10:20pm PDT refer to issues resolved on February 21, 2018 and were sent accidentally while updating security advisory content on backdropcms.org.</p>\r\n",
-                        "format": "filtered_html",
-                        "tokenize": 0
-                    }
-                }
+                "header": []
             }
         },
         "feed": {
