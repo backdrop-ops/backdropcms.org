@@ -5,13 +5,14 @@
     "bundle": "platform",
     "label": "Logo",
     "widget": {
-        "weight": "2",
+        "weight": "3",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "logo"
+            "preview_image_style": "logo",
+            "browser_view": "image_library"
         }
     },
     "description": "",
@@ -39,7 +40,8 @@
             "settings": {
                 "image_style": "",
                 "image_link": "",
-                "image_float": ""
+                "image_float": "",
+                "image_load": "auto"
             },
             "module": "image"
         },
@@ -50,7 +52,8 @@
             "settings": {
                 "image_style": "",
                 "image_link": "",
-                "image_float": ""
+                "image_float": "",
+                "image_load": "auto"
             },
             "module": "image"
         }
