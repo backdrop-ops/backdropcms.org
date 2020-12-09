@@ -10,7 +10,7 @@ in version control).
 
 ## Rule #1
 
-> **Never commit anything into the `live-active` directory!**
+**Never commit anything into the `live-active` directory!**
 
 'Live' config will only ever be added and committed to directly from the live
 server. All changes that need to be made to configuration should be added and
