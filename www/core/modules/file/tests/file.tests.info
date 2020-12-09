@@ -64,12 +64,6 @@ description = Test file administration page functionality.
 group = File
 file = file.test
 
-[FileAdminTestCase]
-name = File administration
-description = Test file administration page functionality.
-group = File
-file = file.test
-
 [FileTestHelper]
 name = FileTestHelper
 description = FileTestHelper
@@ -91,12 +85,6 @@ file = file.test
 [FileEditTestCase]
 name = File edit
 description = Create a file and test file edit functionality.
-group = File
-file = file.test
-
-[FileAdminTestCase]
-name = File administration
-description = Test file administration page functionality.
 group = File
 file = file.test
 
@@ -136,7 +124,7 @@ description = Test overriding file entity attributes.
 group = File
 file = file.test
 
-; Added by Backdrop CMS packaging script on 2020-09-30
+; Added by Backdrop CMS packaging script on 2020-11-25
 project = backdrop
-version = 1.17.1
-timestamp = 1601500405
+version = 1.17.4
+timestamp = 1606364093
