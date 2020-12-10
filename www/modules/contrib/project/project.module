@@ -261,6 +261,53 @@ function project_get_project_from_menu() {
 }
 
 /**
+ * Implements hook_permission().
+ */
+function project_permission() {
+  $permissions = array(
+    'administer projects' => array(
+      'title' => t('Administer projects'),
+      'description' => t('Administer all projects.'),
+      'restrict access' => TRUE,
+    ),
+    'create sandbox projects' => array(
+      'title' => t('Create sandbox projects'),
+      'description' => t('Create any type of projects as a sandbox. Users must also have the correct project-type create permission.'),
+    ),
+    'create full projects' => array(
+      'title' => t('Create full projects (any type)'),
+      'description' => t('Create any type of project as a full project. Users must also have the correct project-type create permission.'),
+    ),
+    'delete any full project' => array(
+      'title' => t('Delete any full project'),
+      'description' => t('Delete any type of full project. Users must also have the correct project-type delete permission.'),
+    ),
+    'delete own full project' => array(
+      'title' => t('Delete own full project'),
+      'description' => t('Delete full projects that the user owns. Users must also have the correct project-type delete permission.'),
+    ),
+    'delete any sandbox project' => array(
+      'title' => t('Delete any sandbox project'),
+      'description' => t('Delete any type of sandbox project. Users must also have the correct project-type delete permission.'),
+    ),
+    'delete own sandbox project' => array(
+      'title' => t('Delete own sandbox project'),
+      'description' => t('Delete sandbox projects that the user owns. Users must also have the correct project-type delete permission.'),
+    ),
+  );
+
+  $node_type_names = node_type_get_names();
+  foreach (project_project_node_types() as $type) {
+    $permissions["create full $type projects"] = array(
+      'title' => t('Create full %type projects', array('%type' => $node_type_names[$type])),
+      'description' => t('Create %type type of project as a full project. Users must also have the %type: Create new content permission.', array('%type' => $node_type_names[$type])),
+    );
+  }
+
+  return $permissions;
+}
+
+/**
  * Implements hook_node_load().
  */
 function project_node_load($nodes, $types) {

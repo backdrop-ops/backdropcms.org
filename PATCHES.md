@@ -23,3 +23,6 @@ project - change #type to easily style links
   https://github.com/backdrop-contrib/project/issues/31
   https://github.com/backdrop-contrib/project/pull/32.patch
 
+project - restore missing releases sub-tab
+  https://github.com/backdrop-contrib/project/issues/41
+  https://github.com/backdrop-contrib/project/pull/44.patch
