@@ -76,3 +76,12 @@ function metatag_opengraph_metatag_bundled_config_alter(array &$configs) {
     }
   }
 }
+
+/**
+ * Implements template_preprocess_page().
+ */
+function metatag_opengraph_preprocess_page(&$variables) {
+  // Add 'prefix' attribute to html tag.
+  // @see http://ogp.me/
+  $variables['html_attributes']['prefix'] = 'og: http://ogp.me/ns#';
+}

@@ -18,7 +18,7 @@ if (class_exists('i18n_string_object_wrapper')) {
       // This will result in a context like
       // 'metatag_views:view_name__page:description' for the 'description' tag
       // on the 'page' display of the 'view_name' view.
-      return array('metatag_views', $this->object->view_id . METATAG_VIEWS_CONTEXT_SEPARATOR . $this->object->id);
+      return array('metatag_views', $this->object->view_id . '__' . $this->object->id);
     }
 
   }

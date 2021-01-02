@@ -37,7 +37,7 @@ class MetatagCoreOutputCachingTest extends MetatagTestHelper {
     $this->assertText('Test page for user tokens.');
     $this->assertText('Hello ' . $account1->name);
     $xpath = $this->xpath("//h1");
-    $this->verbose($xpath);
+    $this->verbose(check_plain(var_export($xpath, TRUE)));
     $this->assertEqual(trim((string)$xpath[0]), 'Hello ' . $account1->name);
 
     // Confirm the page title itself.
@@ -58,7 +58,7 @@ class MetatagCoreOutputCachingTest extends MetatagTestHelper {
     $this->assertText('Test page for user tokens.');
     $this->assertText('Hello ' . $account2->name);
     $xpath = $this->xpath("//h1");
-    $this->verbose($xpath);
+    $this->verbose(check_plain(var_export($xpath, TRUE)));
     $this->assertEqual(trim((string)$xpath[0]), 'Hello ' . $account2->name);
 
     // Confirm the page title has not been updated, which is as designed.
@@ -88,7 +88,7 @@ class MetatagCoreOutputCachingTest extends MetatagTestHelper {
     $this->assertText('Test page for user tokens.');
     $this->assertText('Hello ' . $account1->name);
     $xpath = $this->xpath("//h1");
-    $this->verbose($xpath);
+    $this->verbose(check_plain(var_export($xpath, TRUE)));
     $this->assertEqual(trim((string)$xpath[0]), 'Hello ' . $account1->name);
 
     // Confirm the page title itself.
@@ -109,7 +109,7 @@ class MetatagCoreOutputCachingTest extends MetatagTestHelper {
     $this->assertText('Test page for user tokens.');
     $this->assertText('Hello ' . $account2->name);
     $xpath = $this->xpath("//h1");
-    $this->verbose($xpath);
+    $this->verbose(check_plain(var_export($xpath, TRUE)));
     $this->assertEqual(trim((string)$xpath[0]), 'Hello ' . $account2->name);
 
     // Confirm the page title has changed, i.e. it shows the second account name

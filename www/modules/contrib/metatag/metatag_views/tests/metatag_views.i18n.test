@@ -57,7 +57,7 @@ class MetatagViewsI18nTest extends MetatagTestHelper {
     // Plan out the different translation string tests.
     $string_en = 'Testing Metatag:Views.';
     $string_fr = 'French page description.';
-    $config_name = 'metatag_views:metatag_views_test' . METATAG_VIEWS_CONTEXT_SEPARATOR . 'page:description';
+    $config_name = 'metatag_views:metatag_views_test__page:description';
     $path = 'metatag-views-test';
 
     // Confirm the string is present as it has been grabbed by the string-

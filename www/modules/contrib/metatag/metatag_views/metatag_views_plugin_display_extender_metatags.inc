@@ -65,8 +65,10 @@ class metatag_views_plugin_display_extender_metatags extends views_plugin_displa
 
       // Leave some possibility for future versions to support translation.
       foreach ($metatags as $langcode => $values) {
-        if (!empty($form['metatags'][$langcode]['#metatag_defaults'])) {
-          metatag_filter_values_from_defaults($form_state['values']['metatags'][$langcode], $form['metatags'][$langcode]['#metatag_defaults']);
+        $defaults['metatag'] = $form['options']['metatags'][$langcode]['#metatag_defaults']['config'];
+
+        if (!empty($defaults)) {
+          metatag_filter_values_from_defaults($metatags[$langcode], $defaults);
         }
       }
 

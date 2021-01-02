@@ -133,11 +133,19 @@ class BackdropDefaultMetaTag implements BackdropMetaTagInterface {
         $element = $base_element + array(
           '#tag' => 'meta',
           '#attributes' => array(
-            'name' => $this->info['name'],
             'content' => $value,
           ),
           '#weight' => $this->getWeight(),
         );
+
+        if (in_array($this->info['group'], array('facebook', 'open-graph'))) {
+          // Open Graph tags need a property attribute, instead of name.
+          $element['#attributes']['property'] = $this->info['name'];
+        }
+        else {
+          // Fall back to name attribute for all others.
+          $element['#attributes']['name'] = $this->info['name'];
+        }
 
         // Add header information if desired.
         if (!empty($this->info['header'])) {

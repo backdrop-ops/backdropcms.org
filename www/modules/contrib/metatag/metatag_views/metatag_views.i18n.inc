@@ -88,7 +88,7 @@ function metatag_views_i18n_list_displays() {
       if (!empty($display->display_options['metatags'][LANGUAGE_NONE])) {
         // Need to rig i18n_string's ability to find the record.
         $display->view_id = $view_id;
-        $displays[$display->view_id . METATAG_VIEWS_CONTEXT_SEPARATOR . $display->id] = $display;
+        $displays[$display->view_id . '__' . $display->id] = $display;
       }
     }
   }

@@ -19,7 +19,7 @@ function metatag_metatag_config_instance_info() {
     if (metatag_entity_supports_metatags($entity_type)) {
       $info[$entity_type] = array('label' => $entity_info['label']);
       foreach ($entity_info['bundles'] as $bundle => $bundle_info) {
-        if (count($entity_info['bundles'] == 1) && $bundle == $entity_type) {
+        if (count($entity_info['bundles']) == 1 && $bundle == $entity_type) {
           // Skip default bundles (entities that do not really have bundles).
           continue;
         }
@@ -77,7 +77,7 @@ function metatag_metatag_info() {
 
   $info['tags']['abstract'] = array(
     'label' => t('Abstract'),
-    'description' => t("A oncise summary of the page's content, preferably 150 characters or less. May be used for archiving purposes."),
+    'description' => t("A concise summary of the page's content, preferably 150 characters or less. May be used to archive a summary about the page. This meta tag is <em>no longer</em> supported by major search engines."),
     'class' => 'BackdropTextMetaTag',
     'group' => 'basic',
     'weight' => ++$weight,
@@ -301,7 +301,7 @@ function metatag_metatag_info() {
 
   $info['tags']['revisit-after'] = array(
     'label' => t('Revisit After'),
-    'description' => t('Tell search engines when to index the page again. Very few search engines support this tag, it is more useful to use an <a href="@xmlsitemap">XML Sitemap</a> file.', array('@xmlsitemap' => 'https://www.drupal.org/project/xmlsitemap')),
+    'description' => t('Tell search engines when to index the page again. Very few search engines support this tag, it is more useful to use an <a href="@xmlsitemap">XML Sitemap</a> file.', array('@xmlsitemap' => 'https://backdropcms.org/project/xmlsitemap')),
     'class' => 'BackdropDateIntervalMetaTag',
     'group' => 'advanced',
     'weight' => ++$weight,

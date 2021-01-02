@@ -423,7 +423,7 @@ function metatag_bulk_revert_form() {
     '#default_value' => array(),
   );
 
-  $metatags = metatag_get_info();
+  $metatags = metatag_get_info(NULL, NULL, TRUE);
   $options = array();
   foreach ($metatags['tags'] as $tag_name => $tag) {
     $options[$tag_name] = t('@group_label: @tag_label', array(
@@ -713,6 +713,29 @@ function metatag_admin_settings_form() {
     );
   }
 
+  $form['enable'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Enable Meta tags'),
+    '#description' => t("Enable the specific meta tags that will be used/relevant for this site."),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $metatags = metatag_get_info(NULL, NULL, TRUE);
+  $options = array();
+  foreach ($metatags['tags'] as $tag) {
+    $options[$tag['name']] = t('@group_label: @tag_label', array(
+      '@group_label' => $metatags['groups'][$tag['group']]['label'],
+      '@tag_label' => $tag['label'],
+    ));
+  }
+  $default = $settings->get('enabled_tags');
+  $form['enable']['enabled_tags'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Meta tags to enable'),
+    '#options' => $options,
+    '#default_value' => isset($default) ? $default : array(),
+  );
+
   $form['advanced'] = array(
     '#type' => 'fieldset',
     '#title' => t('Advanced settings'),
@@ -749,15 +772,16 @@ function metatag_admin_settings_form() {
     '#description' => t('When disabled, meta tags will only be output on public-facing pages.'),
     '#default_value' => $settings->get('tag_admin_pages'),
   );
+  $form['advanced']['token_sanitize'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Sanitize token data to ensure meta tag text is safe'),
+    '#description' => t('When disabled, token replacements may return raw, unfiltered values.'),
+    '#default_value' => $settings->get('token_sanitize'),
+  );
   $form['advanced']['extended_permissions'] = array(
     '#type' => 'checkbox',
     '#title' => t('Provide a permission for each individual meta tag'),
     '#default_value' => $settings->get('extended_permissions'),
-  );
-  $form['advanced']['token_sanitize'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Sanitize meta tag text during token replacement'),
-    '#default_value' => $settings->get('token_sanitize'),
   );
   $form['advanced']['pager_string'] = array(
     '#title' => t('Replace the token [current-page:pager] with the following custom pager string:'),

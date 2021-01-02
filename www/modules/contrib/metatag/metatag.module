@@ -1313,9 +1313,11 @@ function metatag_metatags_form(array &$form, $instance, array $metatags = array(
   // Merge in the default options.
   $options += array(
     'token types' => array(),
-    'defaults' => metatag_config_load_with_defaults($instance),
+    'defaults' => array(),
     'instance' => $instance,
   );
+  $options['defaults'] += array('config' => array());
+  $options['defaults']['config'] += metatag_config_load_with_defaults($instance);
 
   // Allow the defined tokens to be modified.
   backdrop_alter('metatag_token_types', $options);
@@ -1392,6 +1394,11 @@ function metatag_metatags_form(array &$form, $instance, array $metatags = array(
     }
     else {
       $metatag_form['#access'] = $form['metatags']['#access'];
+    }
+
+    // Add placeholders for inherited default values.
+    if (!empty($options['defaults']['config'][$metatag])) {
+      $metatag_form['value']['#placeholder'] = $options['defaults']['config'][$metatag]['value'];
     }
 
     if (!empty($metatag_info['group'])) {
@@ -1758,6 +1765,7 @@ function metatag_prepare_tags() {
       }
       else {
         $metatags = metatag_metatags_view($instance, array());
+        // If output caching is enabled, save this for later.
         if ($cache_output) {
           metatag_cache_set($cid, $metatags);
         }
@@ -1777,6 +1785,7 @@ function metatag_prepare_tags() {
     }
     else {
       $metatags = metatag_metatags_view($instance, array());
+      // If output caching is enabled, save this for later.
       if ($cache_output) {
         metatag_cache_set($cid, $metatags);
       }
@@ -1847,6 +1856,11 @@ function _metatag_entity_is_page($entity_type, $entity) {
 
   // Support for core node revisions.
   elseif (!empty($uri['path']) && strpos($current_path, $uri['path']) === 0 && strpos($current_path, '/revisions/') && strpos($current_path, '/view')) {
+    return TRUE;
+  }
+
+  // Support for views taxonomy pages with depth specifier.
+  elseif ($entity_type == 'taxonomy_term' && strpos($current_path, $uri['path']) === 0 && count(explode('/', $current_path)) == 4) {
     return TRUE;
   }
 
@@ -1965,12 +1979,8 @@ function metatag_form_alter(&$form, $form_state, $form_id) {
 
 /**
  * Get the meta tag information array of a meta tag.
- *
- * @param $metatag
- *   The meta tag name, e.g. description, for which the info shall be returned,
- *   or NULL to return an array with info about all meta tags.
  */
-function metatag_get_info($type = NULL, $name = NULL) {
+function metatag_get_info($type = NULL, $name = NULL, $include_disabled = FALSE) {
   // Use the advanced backdrop_static() pattern, since this is called very often.
   static $backdrop_static_fast;
   if (!isset($backdrop_static_fast)) {
@@ -1993,13 +2003,18 @@ function metatag_get_info($type = NULL, $name = NULL) {
       $info = module_invoke_all('metatag_info');
       $info += array('tags' => array(), 'groups' => array());
 
-      // Merge in default values.
+      $enabled = config_get('metatag.settings', 'enabled_tags');
       foreach ($info['tags'] as $key => $data) {
+        // Merge in default values.
         $info['tags'][$key] += array(
-          // Merge in default values.
           'name' => $key,
           'class' => 'BackdropTextMetaTag',
         );
+
+        // Only show enabled tags.
+        if (empty($enabled[$key]) && !$include_disabled) {
+          unset($info['tags'][$key]);
+        }
       }
 
       // Let other modules alter the entity info using
@@ -2076,7 +2091,15 @@ function metatag_preprocess_page(&$variables) {
             $variables['head_title'] = check_plain($data['#value']);
           }
           else {
-            backdrop_add_html_head($data, 'metatag_preprocess_page-' . $tag);
+            // Account for multi-valued tags.
+            if (!isset($data['#tag']) && !empty($data[0])) {
+              foreach($data as $delta => $subdata) {
+                backdrop_add_html_head($subdata, 'metatag_preprocess_page-' . $tag . '-' . $delta);
+              }
+            }
+            else {
+              backdrop_add_html_head($data, 'metatag_preprocess_page-' . $tag);
+            }
           }
         }
       }
@@ -2731,9 +2754,7 @@ function metatag_entity_type_is_suitable($entity_type, $entity_info = array()) {
  */
 function metatag_node_type_insert($info) {
   if (metatag_entity_supports_metatags('node')) {
-    if (metatag_entity_type_enable('node', $info->type)) {
-      backdrop_set_message(t('Metatag support has been enabled for the @label content type.', array('@label' => $info->name)));
-    }
+    metatag_entity_type_enable('node', $info->type);
   }
 }
 

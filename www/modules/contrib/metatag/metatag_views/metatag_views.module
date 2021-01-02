@@ -4,15 +4,30 @@
  * Provides native meta tag integration with Views.
  */
 
-// This is used to join the view name and the display name when building the
-// context string.
-define('METATAG_VIEWS_CONTEXT_SEPARATOR', '__');
+function metatag_views_autoload_info() {
+  return array(
+    'metatag_views_plugin_display_extender_metatags' => 'metatag_views_plugin_display_extender_metatags.inc',
+  );
+}
 
 /**
  * Implements hook_views_api().
  */
 function metatag_views_views_api() {
   return array('api' => 3.0);
+}
+
+function metatag_views_views_plugins() {
+  $plugins = array();
+  $plugins['display_extender']['metatags'] = array(
+    'title' => t('Meta tags'),
+    'help' => t('Provides meta tags for views.'),
+    'handler' => 'metatag_views_plugin_display_extender_metatags',
+    'enabled' => TRUE,
+    'path' => backdrop_get_path('module', 'metatag_views'),
+  );
+
+  return $plugins;
 }
 
 /**
@@ -32,9 +47,9 @@ function metatag_views_views_preview_info_alter(&$rows, $view) {
 
   // Set the page title to be the previewed views title before fetching meta
   // tag values.
-  $title = drupal_set_title();
+  $title = backdrop_set_title();
   if ($view_title = $view->get_title()) {
-    drupal_set_title($view_title);
+    backdrop_set_title($view_title);
   }
 
   $instance = 'view:' . $view->name;
@@ -52,13 +67,13 @@ function metatag_views_views_preview_info_alter(&$rows, $view) {
   }
 
   // Restore the page title.
-  drupal_set_title($title);
+  backdrop_set_title($title);
 }
 
 /**
- * Implements hook_page_alter().
+ * Implements hook_preprocess_HOOK().
  */
-function metatag_views_page_alter(&$page) {
+function metatag_views_preprocess_page(&$variables) {
   // By default do not add meta tags to admin pages. To enable meta tags on
   // admin pages set the 'metatag_tag_admin_pages' variable to TRUE.
   if (path_is_admin(current_path()) && !variable_get('metatag_tag_admin_pages', FALSE)) {
@@ -78,7 +93,7 @@ function metatag_views_page_alter(&$page) {
     }
 
     // Prevent Views settings from overwriting global:frontpage.
-    if (drupal_is_front_page() && metatag_config_is_enabled('global:frontpage')) {
+    if (backdrop_is_front_page() && metatag_config_is_enabled('global:frontpage')) {
       return;
     }
 
@@ -104,7 +119,7 @@ function metatag_views_page_alter(&$page) {
 
       // Translate all of the meta tags using i18n, but don't update the
       // strings.
-      metatag_translate_metatags($metatags[LANGUAGE_NONE], 'metatag_views:' . $view->name . METATAG_VIEWS_CONTEXT_SEPARATOR . $view->current_display, NULL, FALSE);
+      metatag_translate_metatags($metatags[LANGUAGE_NONE], 'metatag_views:' . $view->name . '__' . $view->current_display, NULL, FALSE);
 
       // Build options for meta tag rendering.
       $options = array();
@@ -112,7 +127,10 @@ function metatag_views_page_alter(&$page) {
       $options['language'] = $language->language;
 
       // Add the metatags.
-      // @todo
+      $processed_metatags = metatag_metatags_view($instance, $metatags, $options);
+      foreach ($processed_metatags as $name => $data) {
+        backdrop_add_html_head($data, $name);
+      }
     }
   }
 }

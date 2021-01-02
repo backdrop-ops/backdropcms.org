@@ -4,7 +4,7 @@
  * Tests that each of the Metatag base tags work correctly.
  */
 
-abstract class MetatagTagsTestBase extends MetatagTestHelper {
+class MetatagTagsTestBase extends MetatagTestHelper {
 
   /**
    * All of the meta tags defined by this module which will be tested.

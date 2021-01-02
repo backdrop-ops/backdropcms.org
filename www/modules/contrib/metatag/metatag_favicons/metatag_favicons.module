@@ -76,14 +76,9 @@ function theme_metatag_shortcut_icon($variables) {
  *  The absolute URL to the favicon, empty string if not found.
  */
 function metatag_favicons_get_theme_favicon() {
-  $favicon_url = '';
+  $favicon = backdrop_get_favicon();
 
-  // Is the favicon enabled?
-  if (theme_get_setting('toggle_favicon')) {
-    $favicon_url = theme_get_setting('favicon');
-  }
-
-  return $favicon_url;
+  return url($favicon['path'], array('absolute' => TRUE));
 }
 
 /**

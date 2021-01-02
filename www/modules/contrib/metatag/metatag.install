@@ -27,6 +27,8 @@ function metatag_requirements($phase) {
     }
 
     // Check that Entity_Translation is current.
+      // @todo update with backdrop version of entity translation.
+    /*
     if (module_exists('entity_translation')
       && !empty($module_data['entity_translation'])
       && !empty($module_data['entity_translation']->schema_version)
@@ -34,13 +36,16 @@ function metatag_requirements($phase) {
       $requirements['metatag_et_version'] = array(
         'severity' => REQUIREMENT_ERROR,
         'title' => 'Metatag',
-        'value' => $t('<a href="@url">Entity_Translation</a> is out of date and requires updating', array('@url' => 'https://www.backdrop.org/project/entity_translation')),
+        'value' => $t('<a href="@url">Entity_Translation</a> is out of date and requires updating', array('@url' => 'https://backdropcms.org/project/entity_translation')),
         'description' => $t('The Entity_Translation module is out of date and needs to be updated in order to be compatible with Metatag.'),
       );
     }
+    */
 
     // It's recommended to install the Imagecache Token module to make image
     // tokens easier to do.
+      // @todo update with backdrop version of imagecache token.
+    /*
     if (!module_exists('imagecache_token')) {
       $requirements['metatag_imagecache_token'] = array(
         'severity' => REQUIREMENT_INFO,
@@ -49,6 +54,7 @@ function metatag_requirements($phase) {
         'description' => $t("It is recommended to install the <a href=\"@url\">Imagecache Token module</a> to make it easier to control image meta tags, e.g. og:image. See the Metatag module's README.txt for details.", array('@url' => 'https://backdrop.org/project/imagecache_token')),
       );
     }
+    */
 
     // The Admin Language module can cause problems.
     if (module_exists('admin_language') && variable_get('admin_language_force_neutral', 0)) {
@@ -196,7 +202,7 @@ function metatag_install() {
     }
   }
 
-  backdrop_set_message(t('Please visit the <a href="@url">Metatag settings page</a> to determine which types of content should allow meta tags.', array('@url' => url('admin/config/search/metatags/settings'))));
+  backdrop_set_message(t('Please visit the <a href="@url">Metatag settings page</a> to determine which types of content should allow meta tags.', array('@url' => url('admin/config/metadata/metatags/settings'))));
 }
 
 /**
@@ -525,4 +531,16 @@ function metatag_update_1003() {
       config_set($filename, 'label', $labels[$name]);
     }
   }
+}
+
+/**
+ * Enable all metatags for existing sites.
+ */
+function metatag_update_1004() {
+  $enabled_tags = array();
+  $metatags = metatag_get_info(NULL, NULL, TRUE);
+  foreach ($metatags['tags'] as $tag_name => $tag) {
+    $enabled_tags[$tag_name] = $tag_name;
+  }
+  config_set('metatag.settings', 'enabled_tags', $enabled_tags);
 }

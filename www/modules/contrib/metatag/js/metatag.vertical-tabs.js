@@ -10,7 +10,7 @@ Backdrop.behaviors.metatagFieldsetSummaries = {
   attach: function (context) {
     $('fieldset.metatags-form', context).backdropSetSummary(function (context) {
       var vals = [];
-      $("input[type='text'], select, textarea", context).each(function() {
+      $("#edit-metatags-und-basic input[type='text'], #edit-metatags-und-basic select, #edit-metatags-und-basic textarea", context).each(function() {
         var input_field = $(this).attr('name');
         // Verify the field exists before proceeding.
         if (input_field === undefined) {
