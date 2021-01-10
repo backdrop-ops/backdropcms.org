@@ -1,0 +1,25 @@
+<?php
+/**
+ * @file
+ * Provides customizations for Backdropcms.org user profiles.
+ */
+
+/**
+ * Implements hook_form_FORM_ID_alter() for views_exposed_form.
+ */
+function borg_profile_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
+  // Only edit the form on user profile pages.
+  $user = menu_get_object('user', 1);
+  if ($user !== NULL) {
+    if (!empty($user->name)) {
+      // Search for projects by username and hide the exposed form.
+      $form_state['input']['user'] = $user->name;
+      $form['#attributes']['class'][] = 'element-hidden';
+    }
+    else {
+      // Hide the form if there's no username to search by (otherwise all
+      // projects will be displayed).
+      $form['#access'] = FALSE;
+    }
+  }
+}

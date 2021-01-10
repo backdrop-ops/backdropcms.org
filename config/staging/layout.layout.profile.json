@@ -4,6 +4,7 @@
     "name": "profile",
     "title": "Profile",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": 0,
     "storage": 1,
@@ -22,7 +23,8 @@
         ],
         "top": [],
         "content": [
-            "74c7a5c2-bf2d-4691-9a02-2a2e8d95fc40"
+            "74c7a5c2-bf2d-4691-9a02-2a2e8d95fc40",
+            "93e3f58a-fe72-4249-8b00-b4c2b3c9b09a"
         ],
         "sidebar": [
             "97bb4110-eb79-469c-8f00-e4a1b1dcc054"
@@ -36,6 +38,7 @@
         ],
         "title": []
     },
+    "contexts": [],
     "content": {
         "d6e3bb1e-7e20-42df-8e00-c9643bcb883f": {
             "plugin": "borg_blocks:branding",
@@ -142,6 +145,42 @@
                             "title_classes": "block-title",
                             "content_tag": "div",
                             "content_classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "93e3f58a-fe72-4249-8b00-b4c2b3c9b09a": {
+            "plugin": "views:user_projects-block_1",
+            "data": {
+                "module": "views",
+                "delta": "user_projects-block_1",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": 10,
+                    "offset": 0,
+                    "path": null,
+                    "fields_override": null,
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "93e3f58a-fe72-4249-8b00-b4c2b3c9b09a",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
                         }
                     }
                 }
