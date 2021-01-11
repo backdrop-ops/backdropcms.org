@@ -1093,7 +1093,7 @@
                         "exclude": 0,
                         "alter": {
                             "alter_text": true,
-                            "text": "<p><strong>[field_mention_link]</strong>\r\n<br />Author(s): [field_mention_author_link]\r\n<br />Date: [field_mention_date]\r\n<br />Language: [field_mention_language]</p>",
+                            "text": "<strong>Mention link:</strong> [field_mention_link]\r\n<br /><strong>Author(s):</strong> [field_mention_author_link]\r\n<br /><strong>Date:</strong> [field_mention_date]\r\n<br /><strong>Language:</strong> [field_mention_language]",
                             "make_link": 0,
                             "path": "",
                             "absolute": 0,
