@@ -92,3 +92,14 @@
   }
 }
 
+
+/*******************************************************************************
+ * Profile pages.
+ ******************************************************************************/
+.view-user-projects {
+  margin-top: 20px;
+}
+.view-user-projects .view-header p {
+  font-size: inherit;
+  margin-bottom: 10px;
+}
