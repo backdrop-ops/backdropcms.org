@@ -16,7 +16,6 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
   // directory listing, finding the first non-test .info file, and reading
   // the "type" property from it.
 
-  $access_token = settings_get('project_github_access_token');
   $info = _borg_github_get_info_file_data($errors, $payload, $access_token);
   if (empty($info)) {
     return;
@@ -73,7 +72,7 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
  * Implements hook_github_project_release_validate().
  */
 function borg_github_github_project_release_validate(Node $release_node, array &$errors, array $payload) {
-  $access_token = settings_get('project_github_access_token');
+  $access_token = githubapi_get_token();
   $info = _borg_github_get_info_file_data($errors, $payload, $access_token);
   if (empty($info)) {
     return;
@@ -253,8 +252,45 @@ function _borg_github_get_info_file_data(array &$errors, array $payload, $access
 
 /**
  * Implements hook_project_github_create_package_alter().
+ *
+ * Modify the contents of the GitHub webhook payload.
+ *
+ * @param array $files
+ *   An array representing the files in the payload directory after the payload
+ *   has been unzipped, and the original zip file deleted, and before the new
+ *   archive is created and resent to GitHub.
+ * @param $project_name
+ *   The name of the project.
+ *
+ * @return NULL
+ *   No return value.
  */
 function borg_github_project_github_create_package_alter(&$files, $project_name) {
+  $excluded_file_patterns = array(
+    // Remove any screenshots used only on the project pages.
+    '/\/screenshots\/.*/',
+
+    // Remove files related to GitHub-specific functionality.
+    '/\.github\/.*/',
+    '/\.gitattributes/',
+
+    // Remove CI files not needed in distributed projects.
+    '/\.gitlc\.yml/',
+    '/\.gitlab\/.*/',
+    '/\.gitlab-ci\.yml/',
+    '/\.travis\.yml/',
+    '/\.tugboat\/.*/',
+    '/\.zenci\.yml/',
+  );
+
+  foreach ($files as $path => $file) {
+    foreach ($excluded_file_patterns as $pattern) {
+      if (preg_match($pattern, $path)) {
+        unset($files[$path]);
+      }
+    }
+  }
+
   // The parsed contents of the project's .info file.
   $info_contents = array();
   // The path to the project directory.
@@ -338,46 +374,4 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
     // Update the field_image field with the file ID. See above.
   }
 */
-}
-
-/**
- * Implements hook_project_github_create_package_alter().
- *
- * Modify the contents of the GitHub webhook payload.
- *
- * @param array $files
- *   An array representing the files in the payload directory after the payload
- *   has been unzipped, and the original zip file deleted, and before the new
- *   archive is created and resent to GitHub.
- * @param $project_name
- *   The name of the project.
- *
- * @return NULL
- *   No return value.
- */
-function borg_github_project_github_create_package_alter(array &$files, $project_name) {
-  $excluded_file_patterns = array(
-    // Remove any screenshots used only on the project pages.
-    '/\/screenshots\/.*/',
-
-    // Remove files related to GitHub-specific functionality.
-    '/\.github\/.*/',
-    '/\.gitattributes/',
-
-    // Remove CI files not needed in distributed projects.
-    '/\.gitlc\.yml/',
-    '/\.gitlab\/.*/',
-    '/\.gitlab-ci\.yml/',
-    '/\.travis\.yml/',
-    '/\.tugboat\/.*/',
-    '/\.zenci\.yml/',
-  );
-
-  foreach ($files as $path => $file) {
-    foreach ($excluded_file_patterns as $pattern) {
-      if (preg_match($pattern, $path)) {
-        unset($files[$path]);
-      }
-    }
-  }
 }
