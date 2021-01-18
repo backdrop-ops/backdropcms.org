@@ -5,6 +5,9 @@
 # Ignore the private files directory.
 private-files
 
+# Ignore developer modules
+modules/contrib/devel
+
 # Backups.
 *.sql
 *.sql.gz
