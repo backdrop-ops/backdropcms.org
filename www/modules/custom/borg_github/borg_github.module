@@ -93,7 +93,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
         $uc_color = ucfirst($color);
         // Check color is allowed.
         if (in_array($uc_color, $allowed_colors)) {
-          $project_colors[] = array('value' => $color);
+          $project_colors[] = array('value' => $uc_color);
         }
       }
 
@@ -165,6 +165,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
     $project_tags = array();
     // Save each into field_project_tags.
     foreach ($info['tags'] as $tag) {
+      $tag = ucwords($tag);
       $existing_terms = taxonomy_term_load_multiple_by_name($tag, 'project_tags');
       if (empty($existing_terms)) {
         $term = entity_create('taxonomy_term', array(
