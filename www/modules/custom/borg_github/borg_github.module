@@ -108,13 +108,24 @@ function borg_github_github_project_release_validate(Node $release_node, array &
     $old_screenshots = !empty($project_node->field_project_screenshots[LANGUAGE_NONE]) ? $project_node->field_project_screenshots[LANGUAGE_NONE] : NULL;
     $project_screenshots = array();
 
-    // Todo: We allow a $info['screenshots']['default'] which is the smaller
-    // version which will be used in Backdrop themes pages. Should we unset it
-    // here so it doesnt show up on BackdropCMS?
-    ksort($info['screenshots']);
-    // If settings exist, follow each path to ensure the file exists.
-    foreach ($info['screenshots'] as $screenshot) {
-      $screenshot_url = str_replace('{+path}', $screenshot, $payload['repository']['contents_url']);
+    // Get the contents of the screenshots folder.
+    $tag_name = $payload['release']['tag_name'];
+    $tag_name = ltrim($tag_name, 'v');
+
+    $repo = project_github_convert_full_name($payload['repository']['full_name']);
+
+    $githubapi = githubapi_get_class($repo);
+    $settings[':owner'] = $repo['owner'];
+    $settings[':repo'] = $repo['name'];
+    $settings[':tag'] = $tag_name;
+
+    $url = 'repos/:owner/:repo/contents/screenshots';
+
+    $archive_contents = $githubapi->getRequest($url, $settings);
+
+    // Use http query to save screenshot locally.
+    foreach ($archive_contents as $screenshot) {
+      $screenshot_url = $screenshot->download_url;
       $contents_result = backdrop_http_request($screenshot_url, array(
         'headers' => array(
           'Authorization' => 'token ' . $access_token,
@@ -125,7 +136,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
         $parts = pathinfo($screenshot_url);
         $filename = file_munge_filename($parts['basename'], 'png jpg');
         $dir = 'public://project-screenshots/' . $payload['repository']['name'];
-        $uri = $dir . '/' . $parts['basename'];
+        $uri = $dir . '/' . $filename;
         file_prepare_directory($dir, FILE_CREATE_DIRECTORY);
 
         $file = file_save_data($contents_result->data, $uri);
@@ -134,6 +145,7 @@ function borg_github_github_project_release_validate(Node $release_node, array &
           $file->uid = $release_node->uid;
           $file->save();
         }
+        file_usage_add($file, 'node', 'node', $project_node->nid);
 
         $project_screenshots[] = array('fid' => $file->fid);
 
@@ -142,9 +154,12 @@ function borg_github_github_project_release_validate(Node $release_node, array &
 
     if (!empty($project_screenshots)) {
       $project_node->field_project_screenshots[LANGUAGE_NONE] = $project_screenshots;
-      // Delete the old images.
-      foreach ($old_screenshots as $old_screenshot) {
-        file_delete($old_screenshot['fid']);
+      // Mark the old images for deletion.
+      if ($old_screenshots) {
+        foreach ($old_screenshots as $old_screenshot) {
+          $old_file = file_load($old_screenshot['fid']);
+          file_usage_delete($old_file, 'node', 'node', $project_node->nid);
+        }
       }
     }
   }
@@ -268,9 +283,6 @@ function _borg_github_get_info_file_data(array &$errors, array $payload, $access
  */
 function borg_github_project_github_create_package_alter(&$files, $project_name) {
   $excluded_file_patterns = array(
-    // Remove any screenshots used only on the project pages.
-    '/\/screenshots\/.*/',
-
     // Remove files related to GitHub-specific functionality.
     '/\.github\/.*/',
     '/\.gitattributes/',
