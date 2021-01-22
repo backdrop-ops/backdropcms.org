@@ -326,65 +326,37 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
     }
   }
 
-  if (!empty($info_contents) && $info_contents['type'] == 'theme' && !empty($directory_path) && !file_exists($directory_path . 'screenshot.png') && !empty($screenshots_directory_path)) {
-    // There's no screenshot.png, but we found a screenshots directory, and
-    // the info file mentions it.
-    if (!empty($info_contents['screenshots'])) {
-      // If a default is set, use that.
-      if (!empty($info_contents['screenshots']['default'])) {
-        $default_screenshot = $info_contents['screenshots']['default'];
-        if (file_exists($screenshots_directory_path . $default_screenshot)) {
-          $new_screenshot = $screenshots_directory_path . $default_screenshot;
-        }
-      }
-      else {
-        // copy the first screenshot listed.
-        foreach ($info_contents['screenshots'] as $listed_screenshot) {
-          if (file_exists($screenshots_directory_path . $listed_screenshot)) {
-            $new_screenshot = $screenshots_directory_path . $listed_screenshot;
-            break;
-          }
-        }
+  if (!empty($info_contents) && $info_contents['type'] == 'theme' && !empty($directory_path) && !file_exists($directory_path . 'screenshot.png') && !empty($screenshots_directory_path) && !empty($info_contents['screenshot'])) {
+
+    // If a default screenshot has been set in the info file, use that.
+    if (!empty($info_contents['screenshots']['default'])) {
+      $default_screenshot = $info_contents['screenshots']['default'];
+      if (file_exists($screenshots_directory_path . $default_screenshot)) {
+        $new_screenshot = $screenshots_directory_path . $default_screenshot;
       }
     }
 
-    // There's no screenshot.png AND we found a screenshots directory but
-    // the info file doesnt mention it; OR the screenshots listed in the .info
-    // file didnt match any in the screenshots folder.
-    if (empty($info_contents['screenshots']) || empty($new_screenshot)) {
-      $scanned_screenshots = scandir($screenshots_directory_path);
-      // Check if valid image, skip first two because [0] = "." [1] = "..".
-      for ($i = 2; $i <= 7; $i++) {
-        $path = $screenshots_directory_path . $scanned_screenshots[$i];
-        if (exif_imagetype(url($path, array('absolute' => TRUE)))) {
-          $new_screenshot = $screenshots_directory_path . $scanned_screenshots[$i];
-          break;
-        }
-        $i++;
-      }        
+    // If a screenshot.png is in the screenshots folder, use that.
+    if (empty($new_screenshot) && file_exists($screenshots_directory_path . 'screenshot.png')) {
+      $new_screenshot = $screenshots_directory_path . 'screenshot.png';
     }
 
+    // Copy the discovered screenshot to the root of the release, because the
+    // screenshots directory is going to be deleted.
     if (!empty($new_screenshot)) {
       $extension = substr($new_screenshot, strrpos($new_screenshot, '.') + 1);
       $screenshot = $directory_path . 'screenshot.' . $extension;
-      file_unmanaged_copy($new_screenshot, $screenshot, FILE_EXISTS_REPLACE);
+      file_unmanaged_move($new_screenshot, $screenshot, FILE_EXISTS_REPLACE);
     }
 
     foreach ($files as $path => $file) {
       // Remove references to the screenshots folder from the list of files so 
-      // they are not resent to GitHub. borg_github will take care of deleting the
-      // actual folder on disc.
+      // they are not resent to GitHub. borg_github will take care of deleting
+      // the actual folder on disc.
       if (strrpos($path, $screenshots_directory_path) === 0) {
         unset($files[$path]);
       }
     }
   }
 
-/* @todo
-  if ($project_node->type === 'project_layout') {
-    // Find the first screenshot in the project.
-    // Copy & Save the file to the filesystem. See above.
-    // Update the field_image field with the file ID. See above.
-  }
-*/
 }
