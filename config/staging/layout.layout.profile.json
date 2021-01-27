@@ -29,7 +29,9 @@
         "sidebar": [
             "97bb4110-eb79-469c-8f00-e4a1b1dcc054"
         ],
-        "bottom": [],
+        "bottom": [
+            "83e7ffdd-921a-4350-9e00-c657fb50bb4d"
+        ],
         "footer": [
             "6413ac7a-18d6-43b9-8500-f349f2566247",
             "4055f636-9104-45b4-ae5c-925ac360d641",
@@ -210,6 +212,35 @@
                     "exposed": []
                 },
                 "uuid": "97bb4110-eb79-469c-8f00-e4a1b1dcc054",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "83e7ffdd-921a-4350-9e00-c657fb50bb4d": {
+            "plugin": "block:user_profile_disclaimer",
+            "data": {
+                "module": "block",
+                "delta": "user_profile_disclaimer",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "user_profile_disclaimer",
+                        "description": "",
+                        "reusable": true
+                    },
+                    "contexts": [],
+                    "admin_label": "User profile disclaimer",
+                    "admin_description": "",
+                    "title": ""
+                },
+                "uuid": "83e7ffdd-921a-4350-9e00-c657fb50bb4d",
                 "style": {
                     "plugin": "default",
                     "data": {
