@@ -4,7 +4,13 @@ description = Check the functionality of CKEditor module.
 group = CKEditor
 file = ckeditor.test
 
-; Added by Backdrop CMS packaging script on 2020-11-25
+[CKEditorRtlTestCase]
+name = CKEditor RTL
+description = Check the functionality of CKEditor with right-to-left languages.
+group = CKEditor
+file = ckeditor_rtl.test
+
+; Added by Backdrop CMS packaging script on 2021-01-27
 project = backdrop
-version = 1.17.4
-timestamp = 1606364093
+version = 1.18.1
+timestamp = 1611786026

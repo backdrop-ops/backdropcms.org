@@ -83,8 +83,8 @@ group = System
 file = tests/system.test
 
 [FrontPageTestCase]
-name = Front page
-description = Tests front page functionality and administration.
+name = Home page
+description = Tests home page functionality and administration.
 group = System
 file = tests/system.test
 
@@ -209,7 +209,7 @@ description = Tests limiting menu block level and depth.
 group = System
 file = tests/system.test
 
-; Added by Backdrop CMS packaging script on 2020-11-25
+; Added by Backdrop CMS packaging script on 2021-01-27
 project = backdrop
-version = 1.17.4
-timestamp = 1606364093
+version = 1.18.1
+timestamp = 1611786026

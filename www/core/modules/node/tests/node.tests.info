@@ -5,8 +5,8 @@ group = Node
 file = node.test
 
 [NodeFrontPageCallback]
-name = Custom front page
-description = Test changing front page to custom redirect /node to custom page.
+name = Custom home page
+description = Test changing home page to custom redirect /node to custom page.
 group = Node
 file = node.test
 
@@ -214,7 +214,7 @@ description = Tests the new node states for Draft, Publish Now and Schedule Publ
 group = Node
 file = node.test
 
-; Added by Backdrop CMS packaging script on 2020-11-25
+; Added by Backdrop CMS packaging script on 2021-01-27
 project = backdrop
-version = 1.17.4
-timestamp = 1606364093
+version = 1.18.1
+timestamp = 1611786026
