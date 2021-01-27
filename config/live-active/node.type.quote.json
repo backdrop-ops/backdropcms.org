@@ -17,7 +17,7 @@
         "sticky_default": 0,
         "promote_enabled": 0,
         "promote_default": 0,
-        "revision_enabled": 1,
+        "revision_enabled": 0,
         "revision_default": 0,
         "node_preview": "0",
         "node_submitted": 0,
@@ -27,6 +27,7 @@
         "formblock_show_help": 0,
         "menu_options": {
             "main-menu": "main-menu",
+            "menu-more-developer-resources": 0,
             "devel": 0,
             "menu-footer-menu": 0,
             "menu-handbook": 0,
@@ -42,6 +43,10 @@
             ""
         ],
         "project_release_type": "",
-        "hidden_path": "0"
-    }
+        "hidden_path": 0,
+        "menu_default": 0,
+        "scheduling_enabled": 1,
+        "node_submitted_format": "[node:created:medium] by [node:author]"
+    },
+    "node_preview": "0"
 }

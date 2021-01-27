@@ -30,7 +30,7 @@
         "sticky_enabled": 0,
         "sticky_default": 0,
         "revision_enabled": 1,
-        "revision_default": 1,
+        "revision_default": 0,
         "node_submitted": 0,
         "node_user_picture": true,
         "language": 0,
@@ -43,7 +43,9 @@
         "project_release_type": "",
         "hidden_path": 0,
         "node_preview": "1",
-        "scheduling_enabled": 1
+        "scheduling_enabled": 1,
+        "menu_default": 0,
+        "node_submitted_format": "[node:created:medium] by [node:author]"
     },
     "orig_type": "docs",
     "node_preview": "1"

@@ -18,7 +18,7 @@
         "promote_enabled": 1,
         "promote_default": 0,
         "revision_enabled": 1,
-        "revision_default": 1,
+        "revision_default": 0,
         "node_preview": "1",
         "node_submitted": 0,
         "node_user_picture": true,
@@ -44,7 +44,9 @@
         ],
         "project_release_type": "",
         "hidden_path": 0,
-        "scheduling_enabled": 1
+        "scheduling_enabled": 1,
+        "menu_default": 0,
+        "node_submitted_format": "[node:created:medium] by [node:author]"
     },
     "node_preview": "1"
 }
