@@ -1,0 +1,52 @@
+services:
+  php:
+    image: tugboatqa/php:7.2-apache
+    default: true
+    depends: mariadb
+    commands:
+      init:
+        # Install PHP 'zip' extension to allow installing Backdrop modules.
+        - docker-php-ext-install zip
+        # Enable Apache 'rewrite' module for clean URLs.
+        - a2enmod rewrite
+        # Link the document root to the expected path.
+        - ln -snf $TUGBOAT_ROOT/www $DOCROOT
+        # Use the Tugboat-specific Backdrop settings.
+        - cp $TUGBOAT_ROOT/.tugboat/settings.local.php $TUGBOAT_ROOT/www/settings.local.php
+        # Generate a unique hash_salt to secure the site.
+        - echo "\$settings['hash_salt'] = '$(openssl rand -hex 32)';" >> $TUGBOAT_ROOT/www/settings.local.php
+        # Download a copy of the latest files directory.
+        - wget --http-user=$SANITIZE_USER --http-password=$SANITIZE_PASS -c https://sanitize.backdropcms.org/backdropcms.org/files_backups/backdropcmsorg-files-latest.tar.gz
+        - tar -xzf backdropcmsorg-files-latest.tar.gz && rm backdropcmsorg-files-latest.tar.gz
+      build:
+        # Delete previous comments in the PR.
+        - cd $TUGBOAT_ROOT/.tugboat && ./delete-comments.sh
+        # Generate and store a random password for the admin user.
+        - openssl rand -hex 6 > $TUGBOAT_ROOT/.tugboat/password
+        # Replace the files directory.
+        - rm -rf $TUGBOAT_ROOT/www/files && cp -r $TUGBOAT_ROOT/files $TUGBOAT_ROOT/www
+        # Update config.
+        - rm -f $TUGBOAT_ROOT/config/live-active/*.json
+        - cp $TUGBOAT_ROOT/config/staging/*.json $TUGBOAT_ROOT/config/live-active
+        # Set appropriate file permissions/ownership.
+        - chown -R www-data:www-data $TUGBOAT_ROOT/www
+        - find $TUGBOAT_ROOT/www/files $TUGBOAT_ROOT/www/layouts $TUGBOAT_ROOT/www/modules $TUGBOAT_ROOT/www/themes -type d -exec chmod 2775 {} \;
+        - find $TUGBOAT_ROOT/www/files $TUGBOAT_ROOT/www/layouts $TUGBOAT_ROOT/www/modules $TUGBOAT_ROOT/www/themes -type f -exec chmod 0664 {} \;
+        # Reset the password for User 1 (run script from Backdrop root dir).
+        - cd $TUGBOAT_ROOT/www && $TUGBOAT_ROOT/.tugboat/reset-password.sh
+        # Post a comment in the PR.
+        - cd $TUGBOAT_ROOT/.tugboat && ./post-comment.sh
+  mariadb:
+    image: tugboatqa/mariadb:latest
+    commands:
+      init:
+        # Configure database for UTF-8: https://api.backdropcms.org/database-configuration#utf8mb4
+        - echo "[mysqld]\ninnodb_large_prefix=true\ninnodb_file_format=barracuda\ninnodb_file_per_table=true" >> /etc/mysql/conf.d/utf8mb.conf
+        # Download a copy of the latest database.
+        - wget --http-user=$SANITIZE_USER --http-password=$SANITIZE_PASS -c https://sanitize.backdropcms.org/backdropcms.org/sanitized/backdropcmsorg-latest-sanitized.sql.gz
+        - gunzip backdropcmsorg-latest-sanitized.sql.gz
+      build:
+        # Drop and re-create the database.
+        - mysqladmin -f drop tugboat && mysqladmin create tugboat
+        # Import the sanitized database.
+        - mysql -u tugboat -ptugboat tugboat < backdropcmsorg-latest-sanitized.sql
