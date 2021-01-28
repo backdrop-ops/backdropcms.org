@@ -56,7 +56,7 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
         $variables['top_attributes']['class'][] = 'has-background';
       }
 
-      // Check counts of each type of photos.
+      // Check counts of each type of photos and quotes.
       $desktop_count = $tablet_count = $phone_count = 0;
       if (!empty($node->field_screen_lg)) {
         $desktop_count = count($node->field_screen_lg[$lang]);
@@ -66,6 +66,9 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
       }
       if (!empty($node->field_screen_sm)) {
         $phone_count = count($node->field_screen_sm[$lang]);
+      }
+      if (!empty($node->field_pullquote)) {
+        $quote_count = count($node->field_pullquote[$lang]);
       }
 
       // Assemble the desktop photos into individual rows.
@@ -133,10 +136,12 @@ function template_preprocess_layout__double_fixed_case(&$variables) {
       $quote_rows = array();
       if (!empty($node->field_pullquote[$lang])) {
         foreach ($node->field_pullquote[$lang] as $delta => $info) {
-          $output  = '<blockquote>';
-          $output .= check_markup($info['value'], $info['format']);
-          $output .= '</blockquote>';
-          $quote_rows[$delta] = $output;
+          if (!empty($info['value'])) {
+            $output  = '<blockquote>';
+            $output .= check_markup($info['value'], $info['format']);
+            $output .= '</blockquote>';
+            $quote_rows[$delta] = $output;
+          }
         }
       }
 
