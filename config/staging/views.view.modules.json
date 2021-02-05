@@ -633,24 +633,24 @@
                             "group_items": []
                         }
                     },
-                    "combine": {
-                        "id": "combine",
-                        "table": "views",
-                        "field": "combine",
+                    "keys": {
+                        "id": "keys",
+                        "table": "search_index",
+                        "field": "keys",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "contains",
+                        "operator": "optional",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "combine_op",
+                            "operator_id": "keys_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "combine_op",
-                            "identifier": "combine",
+                            "operator": "keys_op",
+                            "identifier": "s",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -674,11 +674,7 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "fields": {
-                            "title": "title",
-                            "name": "name",
-                            "body": "body"
-                        }
+                        "remove_score": 0
                     }
                 },
                 "sorts": {
@@ -756,8 +752,7 @@
                 "row_options": {
                     "relationship": "none",
                     "view_mode": "project_search",
-                    "title": 1,
-                    "links": 0,
+                    "links": 1,
                     "comments": 0
                 },
                 "use_ajax": false,
@@ -925,24 +920,24 @@
                             "group_items": []
                         }
                     },
-                    "combine": {
-                        "id": "combine",
-                        "table": "views",
-                        "field": "combine",
+                    "keys": {
+                        "id": "keys",
+                        "table": "search_index",
+                        "field": "keys",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "contains",
+                        "operator": "optional",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "combine_op",
+                            "operator_id": "keys_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "combine_op",
-                            "identifier": "combine",
+                            "operator": "keys_op",
+                            "identifier": "s",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -966,11 +961,7 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "fields": {
-                            "title": "title",
-                            "name": "name",
-                            "body": "body"
-                        }
+                        "remove_score": 0
                     }
                 },
                 "filter_groups": {
@@ -993,8 +984,7 @@
                 "row_options": {
                     "relationship": "none",
                     "view_mode": "project_search",
-                    "title": 1,
-                    "links": 0,
+                    "links": 1,
                     "comments": 0
                 }
             }
@@ -1101,24 +1091,24 @@
                             "group_items": []
                         }
                     },
-                    "combine": {
-                        "id": "combine",
-                        "table": "views",
-                        "field": "combine",
+                    "keys": {
+                        "id": "keys",
+                        "table": "search_index",
+                        "field": "keys",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "contains",
+                        "operator": "optional",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "combine_op",
+                            "operator_id": "keys_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "combine_op",
-                            "identifier": "combine",
+                            "operator": "keys_op",
+                            "identifier": "s",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -1142,11 +1132,7 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "fields": {
-                            "title": "title",
-                            "name": "name",
-                            "body": "body"
-                        }
+                        "remove_score": 0
                     }
                 },
                 "defaults": {
