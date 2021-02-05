@@ -633,24 +633,24 @@
                             "group_items": []
                         }
                     },
-                    "keys": {
-                        "id": "keys",
-                        "table": "search_index",
-                        "field": "keys",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "optional",
+                        "operator": "contains",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "keys_op",
+                            "operator_id": "combine_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "keys_op",
-                            "identifier": "s",
+                            "operator": "combine_op",
+                            "identifier": "combine",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -674,7 +674,11 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "remove_score": 0
+                        "fields": {
+                            "title": "title",
+                            "name": "name",
+                            "body": "body"
+                        }
                     }
                 },
                 "sorts": {
@@ -752,7 +756,8 @@
                 "row_options": {
                     "relationship": "none",
                     "view_mode": "project_search",
-                    "links": 1,
+                    "title": 1,
+                    "links": 0,
                     "comments": 0
                 },
                 "use_ajax": false,
@@ -920,24 +925,24 @@
                             "group_items": []
                         }
                     },
-                    "keys": {
-                        "id": "keys",
-                        "table": "search_index",
-                        "field": "keys",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "optional",
+                        "operator": "contains",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "keys_op",
+                            "operator_id": "combine_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "keys_op",
-                            "identifier": "s",
+                            "operator": "combine_op",
+                            "identifier": "combine",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -961,7 +966,11 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "remove_score": 0
+                        "fields": {
+                            "title": "title",
+                            "name": "name",
+                            "body": "body"
+                        }
                     }
                 },
                 "filter_groups": {
@@ -984,7 +993,8 @@
                 "row_options": {
                     "relationship": "none",
                     "view_mode": "project_search",
-                    "links": 1,
+                    "title": 1,
+                    "links": 0,
                     "comments": 0
                 }
             }
@@ -1091,24 +1101,24 @@
                             "group_items": []
                         }
                     },
-                    "keys": {
-                        "id": "keys",
-                        "table": "search_index",
-                        "field": "keys",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "optional",
+                        "operator": "contains",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "keys_op",
+                            "operator_id": "combine_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "keys_op",
-                            "identifier": "s",
+                            "operator": "combine_op",
+                            "identifier": "combine",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -1132,7 +1142,11 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "remove_score": 0
+                        "fields": {
+                            "title": "title",
+                            "name": "name",
+                            "body": "body"
+                        }
                     }
                 },
                 "defaults": {
