@@ -1,0 +1,12 @@
+{
+    "_config_name": "block.custom.user_profile_disclaimer",
+    "delta": "user_profile_disclaimer",
+    "info": "User profile disclaimer",
+    "title": "",
+    "description": "",
+    "body": {
+        "value": "<div class=\"text-align-center\">The information displayed in this profile is created and maintained by the individual member.<br />\r\nAs such, Backdrop CMS is not responsible for, nor guarantees the accuracy of, this information.</div>\r\n",
+        "format": "filtered_html"
+    },
+    "default_langcode": "und"
+}
