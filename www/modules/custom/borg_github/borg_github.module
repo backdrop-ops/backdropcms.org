@@ -9,7 +9,6 @@
  */
 function borg_github_github_project_validate(Node $project_node, array &$errors, array $payload) {
   $access_token = githubapi_get_token();
-
   // Project module will create the first type of project in the system, but
   // we have multiple project types on BackdropCMS.org (modules/themes/layouts).
   // So we have to check the contents of the repository to determine the type
@@ -17,8 +16,203 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
   // directory listing, finding the first non-test .info file, and reading
   // the "type" property from it.
 
+  $info = _borg_github_get_info_file_data($errors, $payload, $access_token);
+  if (empty($info)) {
+    return;
+  }
+
+  $allowed_types = array(
+    'module' => 'project_module',
+    'theme' => 'project_theme',
+    'layout' => 'project_layout',
+  );
+  if (!isset($info['type'])) {
+    $errors['no_type'] = t('The project node could not be created on BackdropCMS.org because no "type" property was specified in the project .info file. Info file contents: !contents', array('!contents' => print_r($info, TRUE)));
+    return;
+  }
+  elseif (!array_key_exists($info['type'], $allowed_types)) {
+    $errors['invalid_type'] = t('The project node could not be created on BackdropCMS.org because "type" property was "@value". Only values of @list are allowed.', array('@value' => $info['type'], '@list' => implode(array_keys($allowed_types))));
+    return;
+  }
+
+  // Finally, we have an allowed project type from the .info file.
+  $project_node->type = $allowed_types[$info['type']];
+
+  // Update the title using the project title as well from the .info file.
+  $project_node->title = $info['name'];
+
+  // Set the text format to Filtered HTML. The default is whatever is used for
+  // anonymous users, which currently is plain_text.
+  $project_node->body[LANGUAGE_NONE][0]['format'] = 'filtered_html';
+
+  // If this is a theme, attach the screenshot as the image.
+  if ($project_node->type === 'project_theme') {
+    // At this point we have found the .info file, but need its contents.
+    $screenshot_url = str_replace('{+path}', 'screenshot.png', $payload['repository']['contents_url']);
+    $contents_result = backdrop_http_request($screenshot_url, array(
+      'headers' => array(
+        'Authorization' => 'token ' . $access_token,
+        'Accept' => 'application/vnd.github.v3.raw',
+      ),
+    ));
+    if ($contents_result->code == 200) {
+      $filename = file_munge_filename($payload['repository']['name'] . '.png', 'png');
+      $uri = 'public://theme-screenshots/' . $filename;
+      $file = file_save_data($contents_result->data, $uri);
+      if ($file->uid !== $project_node->uid) {
+        $file->uid = $project_node->uid;
+        $file->save();
+      }
+      $project_node->field_image[LANGUAGE_NONE][0]['fid'] = $file->fid;
+    }
+  }
+}
+
+/**
+ * Implements hook_github_project_release_validate().
+ */
+function borg_github_github_project_release_validate(Node $release_node, array &$errors, array $payload) {
+  $access_token = githubapi_get_token();
+  $info = _borg_github_get_info_file_data($errors, $payload, $access_token);
+  if (empty($info)) {
+    return;
+  }
+
+  $project_node = node_load($release_node->project_release['project_nid']);
+
+  if ($project_node->type === 'project_theme') {
+    // Check for colors settings.
+    if (isset($info['colors']) && is_array($info['colors'])) {
+      $field_project_colors = field_info_field('field_project_colors');
+      $allowed_colors = list_allowed_values($field_project_colors);
+
+      $project_colors = array();
+
+      // Save each into field_project_colors.
+      foreach ($info['colors'] as $color) {
+        $uc_color = ucfirst($color);
+        // Check color is allowed.
+        if (in_array($uc_color, $allowed_colors)) {
+          $project_colors[] = array('value' => $uc_color);
+        }
+      }
+
+      $project_node->field_project_colors[LANGUAGE_NONE] = $project_colors;
+
+    }
+  }
+
+  // Check for screenshot settings.
+  if (isset($info['screenshots']) && is_array($info['screenshots'])) {
+    // Record existing screenshots to delete later.
+    $old_screenshots = !empty($project_node->field_project_screenshots[LANGUAGE_NONE]) ? $project_node->field_project_screenshots[LANGUAGE_NONE] : NULL;
+    $project_screenshots = array();
+
+    // Get the contents of the screenshots folder.
+    $tag_name = $payload['release']['tag_name'];
+    $tag_name = ltrim($tag_name, 'v');
+
+    $repo = project_github_convert_full_name($payload['repository']['full_name']);
+
+    $githubapi = githubapi_get_class($repo);
+    $settings[':owner'] = $repo['owner'];
+    $settings[':repo'] = $repo['name'];
+    $settings[':tag'] = $tag_name;
+
+    $url = 'repos/:owner/:repo/contents/screenshots';
+
+    $archive_contents = $githubapi->getRequest($url, $settings);
+
+    // Use http query to save screenshot locally.
+    foreach ($archive_contents as $screenshot) {
+      $screenshot_url = $screenshot->download_url;
+      $contents_result = backdrop_http_request($screenshot_url, array(
+        'headers' => array(
+          'Authorization' => 'token ' . $access_token,
+          'Accept' => 'application/vnd.github.v3.raw',
+        ),
+      ));
+      if ($contents_result->code == 200) {
+        $parts = pathinfo($screenshot_url);
+        $filename = file_munge_filename($parts['basename'], 'png jpg');
+        $dir = 'public://project-screenshots/' . $payload['repository']['name'];
+        $uri = $dir . '/' . $filename;
+        file_prepare_directory($dir, FILE_CREATE_DIRECTORY);
+
+        $file = file_save_data($contents_result->data, $uri, FILE_EXISTS_REPLACE);
+
+        if ($file->uid !== $release_node->uid) {
+          $file->uid = $release_node->uid;
+          $file->save();
+        }
+        file_usage_add($file, 'node', 'node', $project_node->nid);
+
+        $project_screenshots[] = array('fid' => $file->fid);
+
+      }
+    }
+
+    if (!empty($project_screenshots)) {
+      $project_node->field_project_screenshots[LANGUAGE_NONE] = $project_screenshots;
+      // Mark the old images for deletion.
+      if ($old_screenshots) {
+        foreach ($old_screenshots as $old_screenshot) {
+          $old_file = file_load($old_screenshot['fid']);
+          file_usage_delete($old_file, 'node', 'node', $project_node->nid);
+        }
+      }
+    }
+  }
+
+  // Check for maintainers settings.
+  if (isset($info['maintainers']) && is_array($info['maintainers'])) {
+    $project_maintainers_github = array();
+    // Save each into field_project_maintainers_github.
+    foreach ($info['maintainers'] as $maintainer) {
+      $project_maintainers_github[] = array('value' => $maintainer);
+    }
+
+    $project_node->field_project_maintainers_github[LANGUAGE_NONE] = $project_maintainers_github;
+  }
+
+  // Check for tags settings.
+  if (isset($info['tags']) && is_array($info['tags'])) {
+    $project_tags = array();
+    // Save each into field_project_tags.
+    foreach ($info['tags'] as $tag) {
+      $tag = ucwords($tag);
+      $existing_terms = taxonomy_term_load_multiple_by_name($tag, 'project_tags');
+      if (empty($existing_terms)) {
+        $term = entity_create('taxonomy_term', array(
+          'name' => $tag,
+          'vocabulary' => 'project_tags',
+          'langcode' => LANGUAGE_NONE,
+        ));
+        taxonomy_term_save($term);
+      }
+      else {
+        $term = reset($existing_terms);
+      }
+
+      $project_tags[] = array('tid' => $term->tid);
+
+    }
+
+    $project_node->field_project_tags[LANGUAGE_NONE] = $project_tags;
+
+  }
+
+  // Save project node.
+  $project_node->save();
+
+}
+
+/**
+ * Get the info file data from a project().
+ */
+function _borg_github_get_info_file_data(array &$errors, array $payload, $access_token) {
   // Get the contents of the release.
-  // See https://developer.github.com/v3/git/trees/#get-a-tree-recursively
+  // See https://developer.github.com/v3/git/trees/#get-a-tree-recursively.
   $tag = $payload['release']['tag_name'];
   $trees_url = str_replace('{/sha}', '/' . $tag, $payload['repository']['trees_url']) . '?recursive=1';
 
@@ -68,61 +262,8 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
     return;
   }
 
-  // Info file contents retrieved. Parse and check the "type" property.
-  $info = backdrop_parse_info_format($info_contents);
-  $allowed_types = array(
-    'module' => 'project_module',
-    'theme' => 'project_theme',
-    'layout' => 'project_layout',
-  );
-  if (!isset($info['type'])) {
-    $errors['no_type'] = t('The project node could not be created on BackdropCMS.org because no "type" property was specified in the project .info file. Info file contents: !contents', array('!contents' => print_r($info, TRUE)));
-    return;
-  }
-  elseif (!array_key_exists($info['type'], $allowed_types)) {
-    $errors['invalid_type'] = t('The project node could not be created on BackdropCMS.org because "type" property was "@value". Only values of @list are allowed.', array('@value' => $info['type'], '@list' => implode(array_keys($allowed_types))));
-    return;
-  }
+  return backdrop_parse_info_format($info_contents);
 
-  // Finally, we have an allowed project type from the .info file.
-  $project_node->type = $allowed_types[$info['type']];
-
-  // Update the title using the project title as well from the .info file.
-  $project_node->title = $info['name'];
-
-  // Set the text format to Filtered HTML. The default is whatever is used for
-  // anonymous users, which currently is plain_text.
-  $project_node->body[LANGUAGE_NONE][0]['format'] = 'filtered_html';
-
-  // If this is a theme, attach the screenshot as the image.
-  if ($project_node->type === 'project_theme') {
-    // At this point we have found the .info file, but need its contents.
-    $screenshot_url = str_replace('{+path}', 'screenshot.png', $payload['repository']['contents_url']);
-    $contents_result = backdrop_http_request($screenshot_url, array(
-      'headers' => array(
-        'Authorization' => 'token ' . $access_token,
-        'Accept' => 'application/vnd.github.v3.raw',
-      ),
-    ));
-    if ($contents_result->code == 200) {
-      $filename = file_munge_filename($payload['repository']['name'] . '.png', 'png');
-      $uri = 'public://theme-screenshots/' . $filename;
-      $file = file_save_data($contents_result->data, $uri);
-      if ($file->uid !== $project_node->uid) {
-        $file->uid = $project_node->uid;
-        $file->save();
-      }
-      $project_node->field_image[LANGUAGE_NONE][0]['fid'] = $file->fid;
-    }
-  }
-
-/* @todo
-  if ($project_node->type === 'project_layout') {
-    // Find the first screenshot in the project.
-    // Copy & Save the file to the filesystem. See above.
-    // Update the field_image field with the file ID. See above.
-  }
-*/
 }
 
 /**
@@ -140,11 +281,8 @@ function borg_github_github_project_validate(Node $project_node, array &$errors,
  * @return NULL
  *   No return value.
  */
-function borg_github_project_github_create_package_alter(array &$files, $project_name) {
+function borg_github_project_github_create_package_alter(&$files, $project_name) {
   $excluded_file_patterns = array(
-    // Remove any screenshots used only on the project pages.
-    '/\/screenshots\/.*/',
-
     // Remove files related to GitHub-specific functionality.
     '/\.github\/.*/',
     '/\.gitattributes/',
@@ -165,4 +303,73 @@ function borg_github_project_github_create_package_alter(array &$files, $project
       }
     }
   }
+
+  // The parsed contents of the project's .info file.
+  $info_contents = array();
+  // The path to the project directory.
+  $directory_path = '';
+  // The path to the screenshots directory. Includes trailing slash.
+  $screenshots_directory_path = '';
+
+  foreach ($files as $path => $file) {
+    // Find the base .info file. If the file is a .info file, and it is named
+    // the same as the project, then we use this file, even if there are 
+    // multiple .info files in the package.
+    $extension = substr($file->filename, strrpos($file->filename, '.') + 1);
+    if ($extension === 'info' && $file->name == $project_name) {
+      $info_contents = backdrop_parse_info_file($file->uri);
+      $directory_path = rtrim($path, $file->filename);
+      if (is_dir($directory_path . 'screenshots')) {
+        $screenshots_directory_path = $directory_path . 'screenshots/';
+      }
+      break;
+    }
+  }
+
+  if (empty($info_contents) || $info_contents['type'] != 'theme') {
+    return;
+  }
+  
+  if (empty($directory_path) || file_exists($directory_path . 'screenshot.png')) {
+    return;
+  }
+
+  if (empty($screenshots_directory_path)) {
+    return;
+  }
+
+  if (!empty($info_contents['screenshot'])) {
+    return;
+  }
+
+  // If a default screenshot has been set in the info file, use that.
+  if (!empty($info_contents['screenshots']['default'])) {
+    $default_screenshot = $info_contents['screenshots']['default'];
+    if (file_exists($screenshots_directory_path . $default_screenshot)) {
+      $new_screenshot = $screenshots_directory_path . $default_screenshot;
+    }
+  }
+
+  // If a screenshot.png is in the screenshots folder, use that.
+  if (empty($new_screenshot) && file_exists($screenshots_directory_path . 'screenshot.png')) {
+    $new_screenshot = $screenshots_directory_path . 'screenshot.png';
+  }
+
+  // Copy the discovered screenshot to the root of the release, because the
+  // screenshots directory is going to be deleted.
+  if (!empty($new_screenshot)) {
+    $extension = substr($new_screenshot, strrpos($new_screenshot, '.') + 1);
+    $destination = $directory_path . 'screenshot.' . $extension;
+    $success = file_unmanaged_move($new_screenshot, $destination, FILE_EXISTS_REPLACE);
+  }
+
+  foreach ($files as $path => $file) {
+    // Remove references to the screenshots folder from the list of files so 
+    // they are not resent to GitHub. borg_github will take care of deleting
+    // the actual folder on disc.
+    if (strrpos($path, $screenshots_directory_path) === 0) {
+      unset($files[$path]);
+    }
+  }
+
 }
