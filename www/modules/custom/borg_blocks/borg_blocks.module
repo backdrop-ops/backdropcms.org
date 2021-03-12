@@ -163,12 +163,12 @@ function borg_blocks_upgrade($settings) {
   $output .= '    <div class="col-md-4 column">';
   $output .=        $top_modules_icon_link;
   $output .= '      <h3>' . $top_modules . '</h3>';
-  $output .= '      <p>' . t('Of the top 100 Drupal 7 modules, 91 of them are ready for Backdrop CMS.') . '</p>';
+  $output .= '      <p>' . t('Of the top 100 Drupal 7 modules, 94 of them are ready for Backdrop CMS.') . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $total_addons_icon_link;
   $output .= '      <h3>' . $total_addons . '</h3>';
-  $output .= '      <p>' . t('More than 700 modules, themes, and layouts are available for Backdrop CMS.') . '</p>';
+  $output .= '      <p>' . t('More than 750 modules, themes, and layouts are available for Backdrop CMS.') . '</p>';
   $output .= '    </div>';
   $output .= '  </div>';
   $output .= '</div>';
