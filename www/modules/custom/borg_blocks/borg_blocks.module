@@ -149,7 +149,7 @@ function borg_blocks_upgrade($settings) {
   $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" />';
   $top_modules_icon_link = l($top_modules_icon, 'node/2255', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $total_addons = l(t('500+ total add-ons'), 'node/1686');
+  $total_addons = l(t('750+ total add-ons'), 'node/1686');
   $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" />';
   $total_addons_icon_link = l($total_addons_icon, 'node/1686', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
