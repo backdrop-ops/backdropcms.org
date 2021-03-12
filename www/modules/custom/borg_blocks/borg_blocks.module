@@ -145,7 +145,7 @@ function borg_blocks_upgrade($settings) {
   $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" />';
   $included_modules_icon_link = l($included_modules_icon, 'node/1683', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $top_modules = l(t('91% of top modules ready'), 'node/2255');
+  $top_modules = l(t('94% of top modules ready'), 'node/2255');
   $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" />';
   $top_modules_icon_link = l($top_modules_icon, 'node/2255', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
