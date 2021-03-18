@@ -468,7 +468,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "operator": "=",
-                        "value": "All",
+                        "value": "1",
                         "group": 1,
                         "exposed": true,
                         "expose": {
@@ -484,7 +484,8 @@
                             "remember_roles": {
                                 "authenticated": "authenticated",
                                 "anonymous": 0,
-                                "administrator": 0
+                                "4": 0,
+                                "3": 0
                             }
                         },
                         "is_grouped": false,
