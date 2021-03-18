@@ -1,0 +1,53 @@
+<?php
+/**
+ * @file
+ * Module install and update functions for the Restrict Abusive Words module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function restrict_abusive_words_schema() {
+  $schema = array();
+  $schema['restrict_abusive_words'] = array(
+    'fields' => array(
+      'id' => array(
+        'description' => 'The ID of the abusive word.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'words' => array(
+        'description' => 'Abusive word.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_update_N(): Converts variables to config.
+ */
+function restrict_abusive_words_update_1000() {
+  $config = config('restrict_abusive_words.settings');
+
+  $config->set('actions', update_variable_get('restrict_abusive_words_actions', FALSE));
+  $config->set('user_roles', update_variable_get('restrict_abusive_words_user_roles', array()));
+  $config->set('disable_user_roles', update_variable_get('restrict_abusive_words_disable_user_roles', array()));
+  $config->set('general_form', update_variable_get('restrict_abusive_words_general_form', array()));
+  $config->set('node', update_variable_get('restrict_abusive_words_node', array()));
+  $config->set('comment', update_variable_get('restrict_abusive_words_comment', array()));
+
+  $config->save();
+
+  // Delete all variables related to this module.
+  variable_del('restrict_abusive_words_actions');
+  variable_del('restrict_abusive_words_user_roles');
+  variable_del('restrict_abusive_words_disable_user_roles');
+  variable_del('restrict_abusive_words_general_form');
+  variable_del('restrict_abusive_words_entity_node');
+  variable_del('restrict_abusive_words_entity_comment');
+}
