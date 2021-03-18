@@ -1,0 +1,99 @@
+<?php
+/**
+ * @file
+ * Tests for the xmlsitemap_engines module.
+ */
+
+class XMLSitemapEnginesFunctionalTest extends XMLSitemapTestHelper {
+  protected $submit_url;
+
+  function setUp($modules = array()) {
+    $modules[] = 'xmlsitemap_engines';
+    $modules[] = 'xmlsitemap_engines_test';
+    parent::setUp($modules);
+
+    $this->admin_user = $this->backdropCreateUser(array('access content', 'administer xmlsitemap'));
+    $this->backdropLogin($this->admin_user);
+
+    // @todo For some reason the test client does not have clean URLs while
+    // the test runner does, so it causes mismatches in watchdog assertions
+    // later.
+    config_set('system.core', 'clean_url', 0);
+
+    $this->submit_url = url('ping', array('absolute' => TRUE, 'query' => array('sitemap' => ''))) . '[sitemap]';
+  }
+
+  function submitEngines() {
+    $config = config('xmlsitemap.settings');
+    state_set('xmlsitemap_engines_submit_last', REQUEST_TIME - 10000);
+    state_set('xmlsitemap_generated_last', REQUEST_TIME - 100);
+    $config->set('engines_minimum_lifetime', 0);
+    $config->set('engines_submit_updated', FALSE);
+    $config->save();
+    xmlsitemap_engines_cron();
+    $this->assertTrue(state_get('xmlsitemap_engines_submit_last', 0) > (REQUEST_TIME - 100), 'Submitted the sitemaps to search engines.');
+  }
+
+  function testPrepareURL() {
+    $sitemap = 'http://example.com/sitemap.xml';
+    $input = 'http://example.com/ping?sitemap=[sitemap]&foo=bar';
+    $output = 'http://example.com/ping?sitemap=http://example.com/sitemap.xml&foo=bar';
+    $this->assertEqual(xmlsitemap_engines_prepare_url($input, $sitemap), $output);
+  }
+
+  function testSubmitSitemaps() {
+    $sitemaps = array();
+    $sitemap = new stdClass();
+    $sitemap->uri = array(
+      'path' => 'http://example.com/sitemap.xml',
+      'options' => array(),
+    );
+    $sitemaps[] = $sitemap;
+    $sitemap = new stdClass();
+    $sitemap->uri = array(
+      'path' => 'http://example.com/sitemap-2.xml',
+      'options' => array(),
+    );
+    $sitemaps[] = $sitemap;
+    xmlsitemap_engines_submit_sitemaps($this->submit_url, $sitemaps);
+
+    $this->assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'Recieved ping for @sitemap.', 'variables' => array('@sitemap' => 'http://example.com/sitemap.xml')));
+    $this->assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'Recieved ping for @sitemap.', 'variables' => array('@sitemap' => 'http://example.com/sitemap-2.xml')));
+  }
+
+  function testPing() {
+    $edit = array('engines[simpletest]' => TRUE);
+    $this->backdropPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));
+    $this->assertText(t('The configuration options have been saved.'));
+
+    $this->submitEngines();
+    $this->assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'Submitted the sitemap to %url and received response @code.'));
+    $this->assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'Recieved ping for @sitemap.'));
+  }
+
+  function testCustomURL() {
+    $edit = array('engines_custom_urls' => 'an-invalid-url');
+    $this->backdropPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));
+    $this->assertText('Invalid URL an-invalid-url.');
+    $this->assertNoText('The configuration options have been saved.');
+
+    $url = url('ping', array('absolute' => TRUE));
+    $edit = array('engines_custom_urls' => $url);
+    $this->backdropPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));
+    $this->assertText(t('The configuration options have been saved.'));
+
+    $this->submitEngines();
+    $this->assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'Submitted the sitemap to %url and received response @code.', 'variables' => array('%url' => $url, '@code' => '404')));
+    $this->assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'No valid sitemap parameter provided.'));
+    $this->assertWatchdogMessage(array('type' => 'page not found', 'message' => 'ping'));
+
+    $edit = array('engines_custom_urls' => $this->submit_url);
+    $this->backdropPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));
+    $this->assertText(t('The configuration options have been saved.'));
+
+    $this->submitEngines();
+    $url = xmlsitemap_engines_prepare_url($this->submit_url, url('sitemap.xml', array('absolute' => TRUE)));
+    $this->assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'Submitted the sitemap to %url and received response @code.', 'variables' => array('%url' => $url, '@code' => '200')));
+    $this->assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'Recieved ping for @sitemap.', 'variables' => array('@sitemap' => url('sitemap.xml', array('absolute' => TRUE)))));
+  }
+}

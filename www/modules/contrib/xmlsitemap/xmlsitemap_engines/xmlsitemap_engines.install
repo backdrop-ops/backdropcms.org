@@ -1,0 +1,85 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the xmlsitemap_engines module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function xmlsitemap_engines_install() {
+  // Set this module's weight to 1 so xmlsitemap_engines_cron() runs after
+  // the sitemap has been generated in xmlsitemap_cron().
+  db_update('system')
+    ->fields(array('weight' => 2))
+    ->condition('type', 'module')
+    ->condition('name', 'xmlsitemap_engines')
+    ->execute();
+
+  // Set default config values.
+  $config = config('xmlsitemap.settings');
+  $config->set('engines', array());
+  $config->set('engines_custom_urls', '');
+  $config->set('engines_minimum_lifetime', 86400);
+  $config->set('engines_submit_updated', TRUE);
+  $config->save();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function xmlsitemap_engines_uninstall() {
+  // Remove config engine values out of the xmlsitemap config.
+  $config = config('xmlsitemap.settings');
+  $config->clear('engines');
+  $config->clear('engines_custom_urls');
+  $config->clear('engines_minimum_lifetime');
+  $config->clear('engines_submit_updated');
+  $config->save();
+}
+
+/**
+ * Upgrade from Drupal 7 to Backdrop CMS. Convert variables to config.
+ */
+function xmlsitemap_engines_update_1000() {
+  // Set all default engine values.
+  $config = config('xmlsitemap.settings');
+  $config->set('engines', array());
+  $config->set('engines_custom_urls', '');
+  $config->set('engines_minimum_lifetime', 86400);
+  $config->set('engines_submit_last', '');
+  $config->set('engines_submit_updated', TRUE);
+  $config->save();
+
+  // Convert any overridden variables to config.
+  $convert = array(
+    'xmlsitemap_engines_engines',
+    'xmlsitemap_engines_custom_urls',
+    'xmlsitemap_engines_minimum_lifetime',
+    'xmlsitemap_engines_submit_last',
+    'xmlsitemap_engines_submit_updated',
+  );
+  foreach ($convert as $name) {
+    $value = variable_get($name, FALSE);
+    if ($value) {
+      if ($name == 'xmlsitemap_engines_engines') {
+        $config->set('engines', $value);
+      }
+      else {
+        $new_key = substr($name, 11);
+        $config->set($new_key, $value);
+      }
+    }
+  }
+
+  // Save all these config changes.
+  $config->save();
+}
+
+/**
+ * Convert config that should be state.
+ */
+function xmlsitemap_engines_update_1001() {
+  state_set('xmlsitemap_engines_submit_last', config_get('xmlsitemap.settings', 'engines_submit_last'), 0);
+  config_clear('xmlsitemap.settings', 'engines_submit_last');
+}

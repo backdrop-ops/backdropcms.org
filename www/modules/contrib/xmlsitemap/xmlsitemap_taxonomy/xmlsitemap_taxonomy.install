@@ -1,0 +1,24 @@
+<?php
+/**
+ * @file
+ * Install and uninstall schema and functions for the xmlsitemap_taxonomy module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function xmlsitemap_taxonomy_uninstall() {
+  backdrop_load('module', 'taxonomy');
+  backdrop_load('module', 'xmlsitemap');
+  $vocabularies = taxonomy_get_vocabularies();
+  foreach ($vocabularies as $vid => $vocabulary) {
+    xmlsitemap_link_bundle_delete('taxonomy_term', $vocabulary->machine_name);
+  }
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function xmlsitemap_taxonomy_update_last_removed() {
+  return 7200;
+}

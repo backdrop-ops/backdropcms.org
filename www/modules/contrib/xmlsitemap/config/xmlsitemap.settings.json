@@ -1,0 +1,28 @@
+{
+    "_config_name": "xmlsitemap.settings",
+    "_config_static": true,
+    "minimum_lifetime" : 0,
+    "xsl" : 1,
+    "prefetch_aliases" : 1,
+    "chunk_size" : "auto",
+    "batch_limit" : 100,
+    "path" : "xmlsitemap",
+    "base_url": "",
+    "developer_mode" : 0,
+    "frontpage_priority" : 1.0,
+    "frontpage_changefreq" : 86400,
+    "lastmod_format": "",
+    "gz" : false,
+    "disable_cron_regeneration" : 0,
+    "output_elements": {
+        "0": "lastmod",
+        "1": "changefreq",
+        "2": "priority"
+    },
+    "regenerate_last" : "",
+    "custom_links" : "",
+    "priority_default" : "",
+    "languages" : "",
+    "max_chunks" : "",
+    "max_filesize" : ""
+}

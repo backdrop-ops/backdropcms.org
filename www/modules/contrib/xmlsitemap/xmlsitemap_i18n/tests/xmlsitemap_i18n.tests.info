@@ -1,0 +1,21 @@
+[XMLSitemapI18nTest]
+name = XML sitemap i18n tests
+description = Functional and integration tests for the XML sitemap and internationalization modules.
+group = XML sitemap
+file = xmlsitemap_i18n.test
+dependencies[] = i18n
+dependencies[] = disable-this-test-for-now
+
+[XMLSitemapI18nNodeTest]
+name = XML sitemap i18n node tests
+description = Functional and integration tests for the XML sitemap node and internationalization modules.
+group = XML sitemap
+file = xmlsitemap_i18n.test
+dependencies[] = i18n
+dependencies[] = disable-this-test-for-now
+
+
+; Added by Backdrop CMS packaging script on 2020-05-25
+project = xmlsitemap
+version = 1.x-1.0.6
+timestamp = 1590459600

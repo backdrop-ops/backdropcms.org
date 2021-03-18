@@ -1,0 +1,40 @@
+<?php
+/**
+ * @file
+ * Unit tests for the xmlsitemap_taxonomy module.
+ */
+
+class XMLSitemapTaxonomyFunctionalTest extends XMLSitemapTestHelper {
+  protected $normal_user;
+  protected $terms = array();
+
+  function setUp($modules = array()) {
+    $modules[] = 'xmlsitemap_taxonomy';
+    $modules[] = 'taxonomy';
+    parent::setUp($modules);
+
+    $this->admin_user = $this->backdropCreateUser(array('administer taxonomy', 'administer xmlsitemap'));
+    $this->normal_user = $this->backdropCreateUser(array('access content'));
+  }
+
+  function testTaxonomySettings() {
+    $this->backdropLogin($this->admin_user);
+
+    $edit = array(
+      'name' => $this->randomName(),
+      'machine_name' => backdrop_strtolower($this->randomName()),
+      'xmlsitemap[status]' => '1',
+      'xmlsitemap[priority]' => '1.0',
+    );
+    $this->backdropPost('admin/structure/taxonomy/add', $edit, 'Save');
+    $this->assertText("Created new vocabulary {$edit['name']}.");
+    $vocabulary = taxonomy_vocabulary_machine_name_load($edit['machine_name']);
+
+    $edit = array(
+      'name' => $this->randomName(),
+      'xmlsitemap[status]' => 'default',
+      'xmlsitemap[priority]' => 'default',
+    );
+    $this->backdropPost("admin/structure/taxonomy/{$vocabulary->machine_name}/add", $edit, 'Save');
+  }
+}

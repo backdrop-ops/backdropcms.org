@@ -1,0 +1,12 @@
+type = module
+name = XML sitemap user
+description = Adds user profile links to the sitemap.
+package = XML sitemap
+backdrop = 1.x
+
+dependencies[] = xmlsitemap
+
+; Added by Backdrop CMS packaging script on 2020-05-25
+project = xmlsitemap
+version = 1.x-1.0.6
+timestamp = 1590459600

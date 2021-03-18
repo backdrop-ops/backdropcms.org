@@ -1,0 +1,15 @@
+type = module
+name = XML sitemap internationalization
+description = Enables multilingual XML sitemaps.
+package = XML sitemap
+backdrop = 1.x
+
+dependencies[] = xmlsitemap
+dependencies[] = i18n
+
+hidden = TRUE
+
+; Added by Backdrop CMS packaging script on 2020-05-25
+project = xmlsitemap
+version = 1.x-1.0.6
+timestamp = 1590459600

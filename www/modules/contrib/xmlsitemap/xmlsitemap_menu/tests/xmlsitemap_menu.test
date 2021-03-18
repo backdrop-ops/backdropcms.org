@@ -1,0 +1,41 @@
+<?php
+/**
+ * @file
+ * Unit tests for the xmlsitemap_menu module.
+ */
+
+class XMLSitemapMenuFunctionalTest extends XMLSitemapTestHelper {
+  protected $normal_user;
+  protected $menu_items = array();
+
+  function setUp($modules = array()) {
+    $modules[] = 'xmlsitemap_menu';
+    $modules[] = 'menu';
+    parent::setUp($modules);
+
+    $this->admin_user = $this->backdropCreateUser(array('administer menu', 'administer xmlsitemap'));
+    $this->normal_user = $this->backdropCreateUser(array('access content'));
+  }
+
+  function testMenuSettings() {
+    $this->backdropLogin($this->admin_user);
+
+    $edit = array(
+      'title' => $this->randomName(),
+      'menu_name' => backdrop_strtolower($this->randomName()),
+      'xmlsitemap[status]' => '1',
+      'xmlsitemap[priority]' => '1.0',
+    );
+    $this->backdropPost('admin/structure/menu/add', $edit, 'Save');
+    $menu = menu_load($edit['menu_name']);
+
+    $this->clickLink('Add link');
+    $edit = array(
+      'link_title' => $this->randomName(),
+      'link_path' => 'node',
+      'xmlsitemap[status]' => 'default',
+      'xmlsitemap[priority]' => 'default',
+    );
+    $this->backdropPost(NULL, $edit, 'Save');
+  }
+}

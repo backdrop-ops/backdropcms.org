@@ -1,0 +1,17 @@
+<?php
+/**
+ * @file
+ * Install and uninstall schema and functions for the xmlsitemap_menu module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function xmlsitemap_menu_uninstall() {
+  backdrop_load('module', 'menu');
+  backdrop_load('module', 'xmlsitemap');
+  $menus = array_keys(menu_get_menus());
+  foreach ($menus as $menu) {
+    xmlsitemap_link_bundle_delete('menu_link', $menu);
+  }
+}
