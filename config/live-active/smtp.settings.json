@@ -1,7 +1,7 @@
 {
     "_config_name": "smtp.settings",
     "smtp_library": "modules/contrib/smtp/smtp.module",
-    "smtp_on": "1",
+    "smtp_on": "0",
     "smtp_queue": 0,
     "smtp_host": "smtp.sendgrid.net",
     "smtp_hostbackup": "smtp.sendgrid.net",
