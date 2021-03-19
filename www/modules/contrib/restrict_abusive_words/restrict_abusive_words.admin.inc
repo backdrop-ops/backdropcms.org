@@ -1,12 +1,11 @@
 <?php
-
 /**
  * @file
  * Contains administrative configuration page.
  */
 
 /**
- * Restrict Abusive Words administration page for general setting.
+ * Administration form for general settings.
  */
 function restrict_abusive_words_admin_form($form, &$form_state) {
   $config = config('restrict_abusive_words.settings');
@@ -23,63 +22,65 @@ function restrict_abusive_words_admin_form($form, &$form_state) {
     'user_register_form' => t('User Registration Form'),
     'user_profile_form' => t('User Profile Form'),
     'webform' => t('Webform'),
+    // @todo add node forms and comment forms here, use #states below.
   );
 
   $node_types = node_type_get_types();
+  $node_type = array();
+  $comment_type = array();
   foreach ($node_types as $type) {
     $node_type[$type->type] = $type->name;
+    // @toto check if comments are enabled before including.
+    $comment_type[$type->type] = $type->name . ' comments';
   }
 
   $actions = array(
-    'prevent_form' => t('Prevent form submission'),
-    'deactive_form' => t('Deactivate the user'),
+    'prevent_form' => t('Prevent the form from being submitted until abusive words are removed.'),
+    'deactive_form' => t('Submit the form as usual, but then unpublish the content, or block the user.'),
   );
 
   $form['restrict_abusive_words_actions'] = array(
     '#type' => 'radios',
-    '#title' => t('Choose the action.'),
-    '#description' => t('Choose the action after submitting the form, it will prevent the form from being submitted or deactivate the content/user etc.'),
+    '#title' => t('How should abusive words be handled?'),
     '#options' => $actions,
     '#default_value' => $config->get('restrict_abusive_words_actions'),
   );
 
+  // @todo - convert to permission.
   $form['restrict_abusive_words_disable_user_roles'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Disable User Roles'),
-    '#description' => t('Disable Restrict Abusive Words for the selected user roles. By default no user role is selected.'),
+    '#title' => t('Remove restrictions for the following Roles:'),
     '#options' => $user_role,
     '#default_value' => $config->get('restrict_abusive_words_disable_user_roles'),
   );
 
+  // @todo - convert to permission (or remove entirely, the inverse is above)
   $form['restrict_abusive_words_user_roles'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Enable User Roles'),
-    '#description' => t('Restrict the use of abusive words for the selected user roles. If no user roles are checked, it will assume all user roles.'),
+    '#title' => t('Restrict the use of abusive words for the selected user roles:'),
+    '#description' => t('If no user roles are checked, it will assume all user roles.'),
     '#options' => $user_role,
     '#default_value' => $config->get('restrict_abusive_words_user_roles'),
   );
 
   $form['restrict_abusive_words_general_form'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Select General Form'),
-    '#description' => t('Restrict abusive words use in General Form.'),
+    '#title' => t('Restrict abusive words use on the following general forms:'),
     '#options' => $general_form,
     '#default_value' => $config->get('restrict_abusive_words_general_form'),
   );
 
   $form['restrict_abusive_words_entity_node'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Select Node Form'),
-    '#description' => t('Restrict abusive words use in Node Form.'),
+    '#title' => t('Restrict abusive words use on the following types of content:'),
     '#options' => $node_type,
     '#default_value' => $config->get('restrict_abusive_words_entity_node'),
   );
 
   $form['restrict_abusive_words_entity_comment'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('Select Comment Node Form'),
-    '#description' => t('Restrict abusive words use in Comment Node Form.'),
-    '#options' => $node_type,
+    '#title' => t('Restrict abusive words use on the following types of comments:'),
+    '#options' => $comment_type,
     '#default_value' => $config->get('restrict_abusive_words_entity_comment'),
   );
 
@@ -87,7 +88,7 @@ function restrict_abusive_words_admin_form($form, &$form_state) {
 }
 
 /**
- * Admin Add form to add abusive words.
+ * Add form to add abusive words.
  */
 function restrict_abusive_words_admin_add_form($form, &$form_state) {
   $form = array();
@@ -121,7 +122,7 @@ function restrict_abusive_words_admin_add_form($form, &$form_state) {
 }
 
 /**
- * Validate handler to add abusive words.
+ * Validate handler: Add abusive words.
  */
 function restrict_abusive_words_admin_add_form_validate($form, &$form_state) {
   $words_list = explode("\n", $form_state['values']['words_list']);
@@ -131,13 +132,14 @@ function restrict_abusive_words_admin_add_form_validate($form, &$form_state) {
     $search_string = _restrict_abusive_words_get_words_list();
     $check_word = _restrict_abusive_words_exists_words($search_string, $word);
     if ($check_word) {
-      form_set_error('words_list', $word . ' already exists in the abusive word list.');
+      $message = t('The word %word already exists in the abusive word list.', array('%word' => $word));
+      form_set_error('words_list', $message);
     }
   }
 }
 
 /**
- * Submit handler to add abusive words.
+ * Submit handler: Add abusive words.
  */
 function restrict_abusive_words_admin_add_form_submit($form, &$form_state) {
   $words_list = explode("\n", $form_state['values']['words_list']);
@@ -156,7 +158,7 @@ function restrict_abusive_words_admin_add_form_submit($form, &$form_state) {
 }
 
 /**
- * Confirmation callback to delete word from abusive word list.
+ * Confirmation handler: Delete word from abusive word list.
  */
 function restrict_abusive_words_admin_form_delete_confirm($form, &$form_state, $word_id) {
   $form = array();
@@ -168,7 +170,7 @@ function restrict_abusive_words_admin_form_delete_confirm($form, &$form_state, $
 }
 
 /**
- * Submit callback to delete word from abusive word list.
+ * Submit handler: Delete word from abusive word list.
  */
 function restrict_abusive_words_admin_form_delete_confirm_submit($form, &$form_state) {
   if ($form_state['values']['confirm']) {
@@ -184,7 +186,7 @@ function restrict_abusive_words_admin_form_delete_confirm_submit($form, &$form_s
 }
 
 /**
- * Lists of existing abusive words or phrases that are configured to restrict.
+ * Page Callback: List of existing abusive words or phrases.
  */
 function restrict_abusive_words_admin_list() {
   $build = array();
@@ -199,7 +201,7 @@ function restrict_abusive_words_admin_list() {
     ->extend('PagerDefault')
     ->extend('TableSort')
     ->orderByHeader($header)
-    ->limit(10)
+    ->limit(50)
     ->execute();
 
   foreach ($list as $word) {
@@ -220,7 +222,7 @@ function restrict_abusive_words_admin_list() {
 }
 
 /**
- * Restrict Abusive Word edit word form.
+ * Page callback: edit Restrict Abusive Word form.
  */
 function restrict_abusive_words_admin_edit_form($form, &$form_state, $word_id = NULL) {
   if (!isset($word_id) || !is_numeric($word_id)) {
@@ -263,13 +265,15 @@ function restrict_abusive_words_admin_edit_form($form, &$form_state, $word_id = 
 }
 
 /**
- * Restrict Abusive Words edit form submit handler.
+ * Submit handler: edit Restrict Abusive Word form.
  */
 function restrict_abusive_words_admin_edit_form_submit($form, &$form_state) {
   if (isset($form_state['values'])) {
     backdrop_write_record('restrict_abusive_words', $form_state['values'], 'id');
-    watchdog('restrict_abusive_words', 'Updated word: %word', array('%word' => $form_state['values']['words']));
-    backdrop_set_message(t('Updated word: %word', array('%word' => $form_state['values']['words'])));
+    $message = 'Updated word: %word';
+    $replacements = array('%word' => $form_state['values']['words']);
+    watchdog('restrict_abusive_words', $message, $replacements);
+    backdrop_set_message(t($message, $replacements));
     $form_state['redirect'] = 'admin/config/content/restrict_abusive_words/list';
     cache_clear_all('*', 'cache_field', TRUE);
     cache_clear_all('restrict_abusive_words', 'cache');

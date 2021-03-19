@@ -14,6 +14,7 @@ function restrict_abusive_words_config_info() {
   );
   return $prefixes;
 }
+
 /**
  * Implements hook_permission().
  */
@@ -199,7 +200,7 @@ function restrict_abusive_words_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Callback function to validate user related form for abusive words.
+ * Validate handler: user related form for abusive words.
  */
 function _restrict_abusive_words_user_form_validate(&$form, &$form_state) {
   if (isset($form_state['values'])) {
@@ -229,7 +230,7 @@ function _restrict_abusive_words_user_form_validate(&$form, &$form_state) {
 }
 
 /**
- * Callback function to validate web form for abusive words.
+ * Validate handler: web form for abusive words.
  */
 function _restrict_abusive_words_web_form_validate(&$form, &$form_state) {
   if (isset($form_state['values'])) {
@@ -248,7 +249,7 @@ function _restrict_abusive_words_web_form_validate(&$form, &$form_state) {
 }
 
 /**
- * Callback function to validate node form for abusive words.
+ * Validate handler: node form for abusive words.
  */
 function _restrict_abusive_words_node_form_validate(&$form, &$form_state) {
   if (isset($form_state['values'])) {
@@ -278,7 +279,7 @@ function _restrict_abusive_words_node_form_validate(&$form, &$form_state) {
 }
 
 /**
- * Callback function to validate node comment form for abusive words.
+ * Validate handler: node comment form for abusive words.
  */
 function _restrict_abusive_words_comment_form_validate(&$form, &$form_state) {
   if (isset($form_state['values'])) {
@@ -308,7 +309,7 @@ function _restrict_abusive_words_comment_form_validate(&$form, &$form_state) {
 }
 
 /**
- * Callback function to submit user related form for abusive words.
+ * Submit hadnler: user related form for abusive words.
  */
 function _restrict_abusive_words_user_form_submit(&$form, &$form_state) {
   if (isset($form_state['values'])) {
@@ -327,11 +328,13 @@ function _restrict_abusive_words_user_form_submit(&$form, &$form_state) {
         }
       }
       elseif (($key == 'name') || ($key == 'mail')) {
+        $user = $form_state['user'];
         $check_word = _restrict_abusive_words_search_words($search_string, $form_state['values'][$key]);
       }
 
       if ($check_word !== FALSE) {
-        _restrict_abusive_words_submit_message($check_word);
+        $entity = 'User account';
+        _restrict_abusive_words_submit_message($entity, $user->name, $check_word);
         $form_state['values']['status'] = FALSE;
       }
     }
@@ -339,7 +342,7 @@ function _restrict_abusive_words_user_form_submit(&$form, &$form_state) {
 }
 
 /**
- * Callback function to submit web form for abusive words.
+ * Submit hadnler: web form for abusive words.
  */
 function _restrict_abusive_words_web_form_submit(&$form, &$form_state) {
   if (isset($form_state['values'])) {
@@ -351,7 +354,9 @@ function _restrict_abusive_words_web_form_submit(&$form, &$form_state) {
       }
 
       if ($check_word !== FALSE) {
-        _restrict_abusive_words_submit_message($check_word);
+        $entity = t('Webform submission');
+        $node = $form_state['build_info']['args'][0];
+        _restrict_abusive_words_submit_message($entity, check_plain($node->title), $check_word);
         $form_state['values']['status'] = FALSE;
       }
     }
@@ -359,7 +364,7 @@ function _restrict_abusive_words_web_form_submit(&$form, &$form_state) {
 }
 
 /**
- * Implement _restrict_abusive_words_node_form_submit.
+ * Submit hadnler: node form for abusive words.
  */
 function _restrict_abusive_words_node_form_submit(&$form, &$form_state) {
   if (isset($form_state['values'])) {
@@ -425,7 +430,15 @@ function _restrict_abusive_words_comment_form_submit(&$form, &$form_state) {
 }
 
 /**
- * Check the word or phrase is exist in the abusive word list.
+ * Check if the word or phrase exists in the abusive word list.
+ *
+ * @param array $words
+ *   The list of abusive words or phrases.
+ * @param array $string
+ *   A potential abusive word or phrase.
+ *
+ * @return bool
+ *   TRUE if the word is restructed, FALSE if not.
  */
 function _restrict_abusive_words_search_words($words, $string) {
   if (!empty($string) && isset($words)) {
@@ -439,7 +452,15 @@ function _restrict_abusive_words_search_words($words, $string) {
 }
 
 /**
- * Check the word or phrase is exists in the abusive word list.
+ * Check if the word or phrase exists in the abusive word list.
+ *
+ * @param array $words
+ *   The list of abusive words or phrases.
+ * @param array $string
+ *   The string to search for matching abusive words or phrases.
+ *
+ * @return bool
+ *   TRUE if the word is restructed, FALSE if not.
  */
 function _restrict_abusive_words_exists_words($words, $string) {
   if (!empty($string) && isset($words)) {
@@ -453,7 +474,10 @@ function _restrict_abusive_words_exists_words($words, $string) {
 }
 
 /**
- * Implement _restrict_abusive_words_get_words_list().
+ * Get the complete list of abusive words or phrases.
+ *
+ * @return array
+ *   Complete set of abusive words or phrases.
  */
 function _restrict_abusive_words_get_words_list() {
   $output = array();
@@ -469,22 +493,43 @@ function _restrict_abusive_words_get_words_list() {
 
 /**
  * Error message against the field name(machine name).
+ *
+ * @param string $field
+ *   The machine name of the field that fails validation.
+ * @param string $word
+ *   The word or phrase that is causing the problem.
  */
 function _restrict_abusive_words_validation_message($field, $word) {
-  $message = t("The word %word is not allowed. Please correct the word or contact the site administrator.", array("%word" => $word));
+  $replacements = array('%word' => $word);
+  $message = t('The word %word is not allowed. Please replace the word and try again.', $replacements);
   form_set_error($field, $message);
 }
 
 /**
  * Warning message against the Content.
+ *
+ * @param string $type
+ *   The type of item that is being inspected.
+ * @param string $title
+ *   The title of the item that is being inspected.
+ * @param string $word
+ *   The word or phrase that is causing the problem.
  */
-function _restrict_abusive_words_submit_message($entity, $title, $word) {
-  $message = "$title( {$entity} ) is deactivated, please check the word: $word, it is not allowed.";
+function _restrict_abusive_words_submit_message($type, $title, $word) {
+  $replacements = array(
+    '@type' => $type,
+    '%title' => $title,
+    '%word' => $word,
+  );
+  $message = t('The @type %title has been deactivated because the phrase %word is not allowed.', $replacements);
   backdrop_set_message($message, 'warning');
 }
 
 /**
  * Get list of abusive word in autocomplete form.
+ *
+ * @param string $string
+ *   String to compare asinst words in the restricted list.
  */
 function _restrict_abusive_words_abusive_word_autocomplete($string) {
   if (!empty($string)) {
