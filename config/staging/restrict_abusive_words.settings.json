@@ -1,0 +1,68 @@
+{
+    "_config_name": "restrict_abusive_words.settings",
+    "_module": "restrict_abusive_words",
+    "restrict_abusive_words_actions": "deactive_form",
+    "restrict_abusive_words_disable_user_roles": {
+        "Editor": "Editor",
+        "Developer": "Developer",
+        "Anonymous": 0,
+        "Authenticated": 0
+    },
+    "restrict_abusive_words_user_roles": {
+        "Anonymous": 0,
+        "Authenticated": 0,
+        "Editor": 0,
+        "Developer": 0
+    },
+    "restrict_abusive_words_general_form": {
+        "user_register_form": "user_register_form",
+        "user_profile_form": "user_profile_form",
+        "webform": 0
+    },
+    "restrict_abusive_words_entity_node": {
+        "event": "event",
+        "external_mention": "external_mention",
+        "organization": "organization",
+        "post": "post",
+        "showcase": "showcase",
+        "supporter": "supporter",
+        "book": 0,
+        "core": 0,
+        "core_release": 0,
+        "docs": 0,
+        "feature": 0,
+        "notification": 0,
+        "page": 0,
+        "platform": 0,
+        "project_dummy": 0,
+        "project_layout": 0,
+        "project_module": 0,
+        "project_release": 0,
+        "project_theme": 0,
+        "quote": 0,
+        "sa": 0
+    },
+    "restrict_abusive_words_entity_comment": {
+        "book": 0,
+        "core": 0,
+        "core_release": 0,
+        "docs": 0,
+        "event": 0,
+        "external_mention": 0,
+        "feature": 0,
+        "notification": 0,
+        "organization": 0,
+        "page": 0,
+        "platform": 0,
+        "post": 0,
+        "project_dummy": 0,
+        "project_layout": 0,
+        "project_module": 0,
+        "project_release": 0,
+        "project_theme": 0,
+        "quote": 0,
+        "sa": 0,
+        "showcase": 0,
+        "supporter": 0
+    }
+}
