@@ -14,6 +14,7 @@
         "formblock_expose": 0,
         "formblock_show_help": 0,
         "menu_options": {
+            "menu-more-developer-resources": 0,
             "devel": 0,
             "menu-footer-menu": 0,
             "menu-handbook": 0,
@@ -42,7 +43,9 @@
         "project_release_type": "project_release",
         "hidden_path": 0,
         "node_preview": "1",
-        "scheduling_enabled": 0
+        "scheduling_enabled": 0,
+        "menu_default": 0,
+        "node_submitted_format": "[node:created:medium] by [node:author]"
     },
     "orig_type": "project_module",
     "node_preview": "1"

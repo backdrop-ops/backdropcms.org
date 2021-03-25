@@ -101,5 +101,11 @@
     "log_date_format": "M jS, Y g:ia",
     "user_password_reject_weak": false,
     "user_password_strength_threshold": 50,
-    "config_sync_clear_staging": 1
+    "config_sync_clear_staging": 1,
+    "_config_translatables": [
+        "anonymous",
+        "site_name",
+        "site_slogan",
+        "maintenance_mode_message"
+    ]
 }
