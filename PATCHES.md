@@ -1,9 +1,7 @@
 Patches to Backdrop Core:
 =========================
 
-* Search exposed filter fix
-  https://github.com/backdrop/backdrop-issues/issues/4938
-  https://github.com/backdrop/backdrop/pull/3526.patch
+* None
 
 
 Patches to Backdrop Contrib:
