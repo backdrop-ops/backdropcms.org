@@ -1,0 +1,106 @@
+<?php
+/*
+ +--------------------------------------------------------------------+
+ | CiviCRM version 5                                                  |
+ +--------------------------------------------------------------------+
+ | This file is a part of CiviCRM.                                    |
+ |                                                                    |
+ | CiviCRM is free software; you can copy, modify, and distribute it  |
+ | under the terms of the GNU Affero General Public License           |
+ | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
+ |                                                                    |
+ | CiviCRM is distributed in the hope that it will be useful, but     |
+ | WITHOUT ANY WARRANTY; without even the implied warranty of         |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.               |
+ | See the GNU Affero General Public License for more details.        |
+ |                                                                    |
+ | You should have received a copy of the GNU Affero General Public   |
+ | License and the CiviCRM Licensing Exception along                  |
+ | with this program; if not, contact CiviCRM LLC                     |
+ | at info[AT]civicrm[DOT]org. If you have questions about the        |
+ | GNU Affero General Public License or the licensing of CiviCRM,     |
+ | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
+ +--------------------------------------------------------------------+
+ */
+
+/* @file
+ * A simple module to synchronize Backdrop Roles with Specified CiviCRM Groups
+ */
+
+/**
+ * Implements hook_install().
+ */
+function civicrm_group_roles_install() {
+  $t = get_t();
+  $here = l($t('here'), 'admin/config/civicrm/civicrm_group_roles/add_rule');
+  backdrop_set_message($t('CiviGroup Roles Sync installed. You will need to specify sync rules !1.', array('!1' => $here)));
+}
+
+/**
+ * Implements hook_enable().
+ */
+function civicrm_group_roles_enable() {
+  db_query("UPDATE {system} SET weight = 110 WHERE name = 'civicrm_group_roles'");
+}
+
+/**
+ * Implements hook_schema().
+ */
+function civicrm_group_roles_schema() {
+  $schema['civicrm_group_roles_rules'] = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'role_name' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'group_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function civicrm_group_roles_update_last_removed() {
+  return 7400;
+}
+
+/**
+ * Change role_id to role_name.
+ */
+function civicrm_group_roles_update_1000() {
+  if (db_table_exists('civicrm_group_roles_rules') && db_field_exists('civicrm_group_roles_rules', 'role_id')) {
+    $new_field = array(
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => TRUE,
+      'default' => '',
+    );
+
+    db_change_field('civicrm_group_roles_rules', 'role_id', 'role_name', $new_field);
+  }
+}
+
+/**
+ * Add new debugging setting.
+ */
+function civicrm_group_roles_update_1001() {
+  $config = config('civicrm_group_roles.settings');
+  if ($config->get('civicrm_group_roles_debugging') == NULL) {
+    $config->set('civicrm_group_roles_debugging', 0);
+    $config->save();
+  }
+}

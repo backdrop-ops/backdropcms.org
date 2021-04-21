@@ -1,0 +1,23 @@
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         bootstrap="tests/phpunit/bootstrap.php"
+>
+  <testsuites>
+    <testsuite name="CiviCRM-Backdrop Test Suite">
+      <directory>./tests/phpunit</directory>
+    </testsuite>
+  </testsuites>
+
+  <filter>
+    <whitelist>
+      <directory suffix=".php">./CiviBackdrop</directory>
+    </whitelist>
+  </filter>
+</phpunit>

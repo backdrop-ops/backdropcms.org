@@ -1,0 +1,10 @@
+name = CiviGroup Roles Sync
+description = Sync Backdrop Roles to CiviCRM Groups.
+version = 1.x-5.36.0
+backdrop = 1.x
+type = module
+package = CiviCRM
+project = civicrm
+configure = admin/config/civicrm/civicrm_group_roles
+
+dependencies[] = civicrm

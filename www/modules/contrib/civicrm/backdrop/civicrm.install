@@ -1,0 +1,114 @@
+<?php
+/*
+ +--------------------------------------------------------------------+
+ | Copyright CiviCRM LLC. All rights reserved.                        |
+ |                                                                    |
+ | This work is published under the GNU AGPLv3 license with some      |
+ | permitted exceptions and without any warranty. For full license    |
+ | and copyright information, see https://civicrm.org/licensing       |
+ +--------------------------------------------------------------------+
+ */
+
+/**
+ *
+ * @package CRM
+ * @copyright CiviCRM LLC https://civicrm.org/licensing
+ * $Id$
+ *
+ */
+
+/**
+ * Enable CiviCRM.
+ */
+function civicrm_enable() {
+  db_query("UPDATE {system} SET weight = 100 WHERE name = 'civicrm'");
+
+  menu_rebuild();
+
+  menu_link_maintain('civicrm', 'delete', 'civicrm', 'CiviCRM');
+
+  $options = array(
+    'link_title' => 'CiviCRM',
+    'link_path' => 'civicrm/dashboard',
+    'module' => 'civicrm',
+    'options' => array('alter' => TRUE),
+  );
+  menu_link_save($options);
+
+  if (!civicrm_initialize()) {
+    $installLink = url('civicrm/setup');
+    $message = t('<p class="error"><strong>CiviCRM is almost ready.</strong> You must <a href="@url">configure CiviCRM</a> for it to work.</p>', [
+      '@url' => $installLink,
+    ]);
+    backdrop_set_message($message, 'status', FALSE);
+    return;
+  }
+
+  // also invoke civicrm menu rebuild
+  CRM_Core_Menu::store();
+
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function civicrm_uninstall() {
+  require_once 'civicrm.module';
+
+  if (!civicrm_initialize()) {
+    return;
+  }
+
+  require_once 'CRM/Core/Config.php';
+  $config = CRM_Core_Config::singleton();
+
+  require_once 'CRM/Core/DAO.php';
+  CRM_Core_DAO::dropAllTables();
+}
+
+function civicrm_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+  switch ($phase) {
+    case 'runtime':
+      if (!civicrm_initialize()) {
+        $installLink = url('civicrm/setup');
+        $requirements['civicrm'] = array(
+          'title' => $t("CiviCRM"),
+          'severity' => REQUIREMENT_ERROR,
+          'value' => $t('<p class="error"><strong>CiviCRM is almost ready.</strong> You must <a href="@url">configure CiviCRM</a> for it to work.</p>', [
+            '@url' => $installLink,
+          ]),
+        );
+        return $requirements;
+      }
+      $vc = new CRM_Utils_VersionCheck();
+      $vc->fetch();
+      if ($vc->isInfoAvailable && isset($vc->versionInfo['patch']) && $vc->versionInfo['patch']['severity'] == 'critical') {
+        $severity = REQUIREMENT_ERROR;
+        $value = $vc->localVersion . ': ' . $vc->versionInfo['patch']['title'];
+        $description = $vc->versionInfo['patch']['message'];
+      }
+      else {
+        $severity = REQUIREMENT_OK;
+        $value = $vc->localVersion;
+        $description = NULL;
+      }
+      $requirements['civicrm'] = array(
+        'title' => $t("CiviCRM"),
+        'severity' => $severity,
+        'value' => $value,
+        'description' => $description,
+      );
+      break;
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function civicrm_update_last_removed() {
+  return 7401;
+}

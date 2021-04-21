@@ -20,3 +20,6 @@ vendor
 
 # Ignore env vars.
 .env
+
+# Ignore local settings files
+*.settings.local.php

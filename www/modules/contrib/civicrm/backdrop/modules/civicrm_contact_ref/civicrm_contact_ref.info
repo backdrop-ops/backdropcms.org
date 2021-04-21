@@ -1,0 +1,13 @@
+name = CiviCRM Contact Reference Field
+description = Makes a CiviCRM Contact Reference Field.
+version = 1.x-5.36.0
+backdrop = 1.x
+type = module
+package = CiviCRM
+project = civicrm
+
+dependencies[] = civicrm
+dependencies[] = text
+dependencies[] = list
+
+files[] = civicrm_contact_ref.feeds.inc

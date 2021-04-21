@@ -1,0 +1,9 @@
+name = CiviEngage
+description = DEPRECATED Walklist and Phone-banking support for CiviCRM. This module will not be ported to Drupal 8. Please see: https://civicrm.org/blog/jamie/civicrmengage-is-dead-long-live-civicrmengage
+version = 1.x-5.36.0
+backdrop = 1.x
+type = module
+package = CiviCRM
+project = civicrm
+
+dependencies[] = civicrm

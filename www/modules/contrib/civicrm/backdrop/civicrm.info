@@ -1,0 +1,10 @@
+name = CiviCRM
+description = Constituent relationship management system. Allows sites to manage contacts, relationships and groups, and track contact activities, contributions, memberships and events. See the <a href="https://civicrm.org/">CiviCRM website</a> for more information.
+version = 1.x-5.36.0
+package = CiviCRM
+backdrop = 1.x
+project = civicrm
+php = 7.2
+type = module
+
+stylesheets[all][] = civicrm_backdrop.css
