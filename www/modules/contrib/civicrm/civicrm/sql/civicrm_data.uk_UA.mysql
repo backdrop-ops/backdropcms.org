@@ -4750,7 +4750,7 @@ VALUES
    ('group_type'                    , 'Тип групи'                         , NULL, 1, 1, 0),
    ('grant_status'                  , 'Статус гранту'                       , NULL, 1, 1, 0),
    ('grant_type'                    , 'Надати Тип'                         , NULL, 1, 1, 0),
-   ('custom_search'                 , 'Індивідуальний пошук'                      , NULL, 1, 1, 0),
+   ('custom_search'                 , 'Саморобний пошук'                      , NULL, 1, 1, 0),
    ('activity_status'               , 'Статус діяльності'                    , 'Integer', 1, 1, 0),
    ('case_type'                     , 'Тип Справи'                          , NULL, 1, 1, 0),
    ('case_status'                   , 'Статус справи'                        , NULL, 1, 1, 0),
@@ -5085,7 +5085,7 @@ VALUES
   (@option_group_id_csgOpt, 'Завжди показувати Смарт-групи',   2, 'alwaysshow', NULL, 0, NULL,  2,  NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_csgOpt, 'Приховати Смарт-групи'       ,   3, 'hide', NULL, 0, NULL,  3,  NULL, 0, 0, 1, NULL, NULL, NULL),
 
-  (@option_group_id_ceOpt, 'Iндивідуальні дані'              ,   1, 'CustomData', NULL, 0, NULL, 1, NULL, 0, 0, 1, NULL, NULL, NULL),
+  (@option_group_id_ceOpt, 'Саморобні дані'              ,   1, 'CustomData', NULL, 0, NULL, 1, NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_ceOpt, 'Адреса'                  ,   2, 'Address', NULL, 0, NULL, 2, NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_ceOpt, 'Налаштування комунікації',   3, 'CommunicationPreferences', NULL, 0, NULL, 3, NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_ceOpt, 'Примітки'                    ,   4, 'Notes', NULL, 0, NULL, 4, NULL, 0, 0, 1, NULL, NULL, NULL),
@@ -5200,7 +5200,7 @@ VALUES
   (@option_group_id_report , 'Звіт по внесках від організацій',    'contribute/organizationSummary', 'CRM_Report_Form_Contribute_OrganizationSummary', NULL, 0, NULL, 9,  'Відображає деталізований список внесків, які згруповані по організаціям, та які включають внески зроблені працівниками цих організацій.', 0, 0, 1, @contributeCompId, NULL, NULL),
   (@option_group_id_report , 'Звіт по внесках домогосподарств',       'contribute/householdSummary',    'CRM_Report_Form_Contribute_HouseholdSummary',    NULL, 0, NULL, 10, 'Відображає детальний перелік внесків, згрупований за домогосподарствами, і включає внески, зроблені членами домогосподарства.', 0, 0, 1, @contributeCompId, NULL, NULL),
   (@option_group_id_report , 'Звіт про топ спонсорів',                       'contribute/topDonor',            'CRM_Report_Form_Contribute_TopDonor',            NULL, 0, NULL, 11, 'Надає список топ спонсорів за визначений Вами період часу. Ви можете включити таку кількість спонсорів, яку захочете (наприклад, топ 100 спонсорів).', 0, 0, 1, @contributeCompId, NULL, NULL),
-  (@option_group_id_report , 'SYBUNT Звіт',                           'contribute/sybunt',              'CRM_Report_Form_Contribute_Sybunt',              NULL, 0, NULL, 12, 'SYBUNT означає: \"у певний рік (роки), але не в цей рік\". Надає список громадян, які зробили внески в певний проміжок часу існування Вашої організації, але не зробили внесок в той період часу, що був визначений Вами.', 0, 0, 1, @contributeCompId, NULL, NULL),
+  (@option_group_id_report , 'Звіт ЯРАНЦ',                           'contribute/sybunt',              'CRM_Report_Form_Contribute_Sybunt',              NULL, 0, NULL, 12, 'ЯРАНЦ означає: \"у якийсь рік (роки), але не цей рік\". Надає список людей, які зробили внески в певний проміжок часу існування Вашої організації, але не зробили внесок в той період часу, що був визначений Вами.', 0, 0, 1, @contributeCompId, NULL, NULL),
   (@option_group_id_report , 'LYBUNT Звіт',                           'contribute/lybunt',              'CRM_Report_Form_Contribute_Lybunt',              NULL, 0, NULL, 13, 'LYBUNT означає: \"минулого року, але не в цей рік\". Надає інформацію про список громадян, які зробили внески минулого року, але не зробили внески у проміжок часу, визначений Вами як поточний рік.', 0, 0, 1, @contributeCompId, NULL, NULL),
   (@option_group_id_report , 'Звіт по Пільговому кредиту',                      'contribute/softcredit',          'CRM_Report_Form_Contribute_SoftCredit',          NULL, 0, NULL, 14, 'Показує внески, зроблені контактами, які були визначені як пільгові кредити для інших контактів.', 0, 0, 1,@contributeCompId, NULL, NULL),
   (@option_group_id_report , 'Звіт по членству (короткий)',             'member/summary',                 'CRM_Report_Form_Member_Summary',                 NULL, 0, NULL, 15, 'Надає підсумок по членству за типом і датою приєднання.', 0, 0, 1, @memberCompId, NULL, NULL),
@@ -5562,7 +5562,7 @@ VALUES
 -- WYSIWYG Editor Presets
 (@option_group_id_wysiwyg_presets, 'За умовчанням',   '1', 'default',   NULL, NULL, 1, 1, NULL, 0, 1, 1, NULL, NULL, NULL),
 (@option_group_id_wysiwyg_presets, 'CiviПошта',  '2', 'civimail',  NULL, NULL, 0, 2, NULL, 0, 1, 1, @mailCompId, NULL, NULL),
-(@option_group_id_wysiwyg_presets, 'CiviЗахід', '3', 'civievent', NULL, NULL, 0, 3, NULL, 0, 1, 1, @eventCompId, NULL, NULL),
+(@option_group_id_wysiwyg_presets, 'CiviЗаходи', '3', 'civievent', NULL, NULL, 0, 3, NULL, 0, 1, 1, @eventCompId, NULL, NULL),
 
 -- Environment
 (@option_group_id_env, 'Робоча версія', 'Production', 'Production', NULL, NULL, 1, 1, 'Production Environment', 0, 1, 1, NULL, NULL, NULL),
@@ -6398,7 +6398,7 @@ INSERT INTO civicrm_uf_field
        ( 10,     'contribution_status_id',      1, 1, 3, 'User and User Admin Only', 0, 0, NULL, 'Статус', 'Contribution', NULL, NULL ),
        ( 10,     'receive_date',                1, 1, 4, 'User and User Admin Only', 0, 0, NULL, 'Отримано', 'Contribution', NULL, NULL ),
        ( 10,     'contribution_source',         0, 0, 5, 'User and User Admin Only', 0, 0, NULL, 'Джерело', 'Contribution', NULL, NULL ),
-       ( 10,     'payment_instrument',          0, 0, 6, 'User and User Admin Only', 0, 0, NULL, 'Метод оплати', 'Contribution', NULL, NULL ),
+       ( 10,     'payment_instrument',          0, 0, 6, 'User and User Admin Only', 0, 0, NULL, 'Спосіб оплати', 'Contribution', NULL, NULL ),
        ( 10,     'contribution_check_number',                0, 0, 7, 'User and User Admin Only', 0, 0, NULL, 'Перевірити номер', 'Contribution', NULL, NULL ),
        ( 10,     'send_receipt',                0, 0, 8, 'User and User Admin Only', 0, 0, NULL, 'Надіслати підтвердження', 'Contribution', NULL, NULL ),
        ( 10,     'invoice_id',                  0, 0, 9, 'User and User Admin Only', 0, 0, NULL, 'ID чеку', 'Contribution', NULL, NULL ),
@@ -6413,7 +6413,7 @@ INSERT INTO civicrm_uf_field
        ( 11,     'financial_type',              0, 1, 7, 'User and User Admin Only', 0, 0, NULL, 'Вид внеску', 'Membership', NULL, NULL ),
        ( 11,     'total_amount',                0, 1, 8, 'User and User Admin Only', 0, 0, NULL, 'Сума', 'Membership', NULL, NULL ),
        ( 11,     'receive_date',                1, 1, 9, 'User and User Admin Only', 0, 0, NULL, 'Отримано', 'Membership', NULL, NULL ),
-       ( 11,     'payment_instrument',          0, 0, 10, 'User and User Admin Only', 0, 0, NULL, 'Метод оплати', 'Membership', NULL, NULL ),
+       ( 11,     'payment_instrument',          0, 0, 10, 'User and User Admin Only', 0, 0, NULL, 'Спосіб оплати', 'Membership', NULL, NULL ),
        ( 11,     'contribution_check_number',                0, 0, 11, 'User and User Admin Only', 0, 0, NULL, 'Перевірити номер', 'Membership', NULL, NULL ),
        ( 11,     'contribution_status_id',      1, 1, 12, 'User and User Admin Only', 0, 0, NULL, 'Статус платежу', 'Membership', NULL, NULL ),
        ( 11,     'soft_credit',                 0, 0, 13, 'User and User Admin Only', 0, 0, NULL, 'Причетні особи', 'Membership', NULL, NULL ),
@@ -23042,7 +23042,7 @@ INSERT INTO `civicrm_price_field_value` (  `price_field_id`, `name`, `label`, `a
 VALUES ( @fieldID, 'contribution_amount', 'Contribution Amount', '1', '1', '0', '1', 1);
 
 -- CRM-13833
-INSERT INTO civicrm_option_group (`name`, `title`, `is_reserved`, `is_active`) VALUES ('soft_credit_type', 'Типи пільгових кредитів', 1, 1);
+INSERT INTO civicrm_option_group (`name`, `title`, `is_reserved`, `is_active`) VALUES ('soft_credit_type', 'Види завдячень', 1, 1);
 
 SELECT @option_group_id_soft_credit_type := max(id) from civicrm_option_group where name = 'soft_credit_type';
 
@@ -23873,4 +23873,4 @@ INSERT INTO `civicrm_report_instance`
     ( `domain_id`, `title`, `report_id`, `description`, `permission`, `form_values`)
 VALUES
     (  @domainID, 'Survey Details', 'survey/detail', 'Detailed report for canvassing, phone-banking, walk lists or other surveys.', 'access CiviReport', 'a:39:{s:6:"fields";a:2:{s:9:"sort_name";s:1:"1";s:6:"result";s:1:"1";}s:22:"assignee_contact_id_op";s:2:"eq";s:25:"assignee_contact_id_value";s:0:"";s:12:"sort_name_op";s:3:"has";s:15:"sort_name_value";s:0:"";s:17:"street_number_min";s:0:"";s:17:"street_number_max";s:0:"";s:16:"street_number_op";s:3:"lte";s:19:"street_number_value";s:0:"";s:14:"street_name_op";s:3:"has";s:17:"street_name_value";s:0:"";s:15:"postal_code_min";s:0:"";s:15:"postal_code_max";s:0:"";s:14:"postal_code_op";s:3:"lte";s:17:"postal_code_value";s:0:"";s:7:"city_op";s:3:"has";s:10:"city_value";s:0:"";s:20:"state_province_id_op";s:2:"in";s:23:"state_province_id_value";a:0:{}s:13:"country_id_op";s:2:"in";s:16:"country_id_value";a:0:{}s:12:"survey_id_op";s:2:"in";s:15:"survey_id_value";a:0:{}s:12:"status_id_op";s:2:"eq";s:15:"status_id_value";s:1:"1";s:11:"custom_1_op";s:2:"in";s:14:"custom_1_value";a:0:{}s:11:"custom_2_op";s:2:"in";s:14:"custom_2_value";a:0:{}s:17:"custom_3_relative";s:1:"0";s:13:"custom_3_from";s:0:"";s:11:"custom_3_to";s:0:"";s:11:"description";s:75:"Detailed report for canvassing, phone-banking, walk lists or other surveys.";s:13:"email_subject";s:0:"";s:8:"email_to";s:0:"";s:8:"email_cc";s:0:"";s:10:"permission";s:17:"access CiviReport";s:6:"groups";s:0:"";s:9:"domain_id";i:1;}');
-UPDATE civicrm_domain SET version = '5.36.0';
+UPDATE civicrm_domain SET version = '5.36.1';

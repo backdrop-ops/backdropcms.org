@@ -4736,8 +4736,8 @@ VALUES
    ('acl_role'                      , 'Ruolo ACL'                           , NULL, 1, 1, 0),
    ('accept_creditcard'             , 'Carte di Credito Accettate'              , NULL, 1, 1, 0),
    ('payment_instrument'            , 'Metodi di Pagamento'                    , 'Integer', 1, 1, 0),
-   ('contribution_status'           , 'Stato Contributo'                , NULL, 1, 1, 1),
-   ('pcp_status'                    , 'Stato PCP'                         , NULL, 1, 1, 1),
+   ('contribution_status'           , 'Status Contributo'                , NULL, 1, 1, 1),
+   ('pcp_status'                    , 'Status PCP'                         , NULL, 1, 1, 1),
    ('pcp_owner_notify'              , 'Notifiche del proprietario PCP'            , NULL, 1, 1, 1),
    ('participant_role'              , 'Ruolo Partecipante'                   , 'Integer', 1, 1, 0),
    ('event_type'                    , 'Tipo di evento'                         , 'Integer', 1, 1, 0),
@@ -4748,12 +4748,12 @@ VALUES
    ('user_dashboard_options'        , 'Opzioni Dettagli Utente'             , NULL, 1, 1, 1),
    ('address_options'               , 'Opzioni di indirizzamento'                 , NULL, 1, 1, 0),
    ('group_type'                    , 'Tipo di Gruppo'                         , NULL, 1, 1, 0),
-   ('grant_status'                  , 'Stato Sovvenzione'                       , NULL, 1, 1, 0),
+   ('grant_status'                  , 'Status Sovvenzione'                       , NULL, 1, 1, 0),
    ('grant_type'                    , 'Tipo di Sovvenzione'                         , NULL, 1, 1, 0),
    ('custom_search'                 , 'Ricerca personalizzata'                      , NULL, 1, 1, 0),
    ('activity_status'               , 'Status Attività'                    , 'Integer', 1, 1, 0),
    ('case_type'                     , 'Tipo di Caso'                          , NULL, 1, 1, 0),
-   ('case_status'                   , 'Stato del Caso'                        , NULL, 1, 1, 0),
+   ('case_status'                   , 'Status Caso'                        , NULL, 1, 1, 0),
    ('participant_listing'           , 'Elenco Partecipanti'                , NULL, 1, 1, 0),
    ('safe_file_extension'           , 'Estensione File Sicuro'                , NULL, 1, 1, 0),
    ('from_email_address'            , 'Da indirizzo email'                 , NULL, 1, 1, 0),
@@ -4778,7 +4778,7 @@ VALUES
    ('event_badge'                   , 'Nome Badge Evento'                   , NULL, 1, 1, 0),
    ('note_privacy'                  , 'Livelli di privacy per le note'           , NULL, 1, 1, 0),
    ('campaign_type'                 , 'Tipo di Campagna'                      , NULL, 1, 1, 0),
-   ('campaign_status'               , 'Stato Campagna'                    , NULL, 1, 1, 0),
+   ('campaign_status'               , 'Status Campagna'                    , NULL, 1, 1, 0),
    ('system_extensions'             , 'Estensioni CiviCRM'                 , NULL, 1, 1, 0),
    ('mail_approval_status'          , 'Stato Approvazione CiviMail'           , NULL, 1, 1, 0),
    ('engagement_index'              , 'Indice Impegni'                   , NULL, 1, 1, 0),
@@ -4792,7 +4792,7 @@ VALUES
    ('conference_slot'               , 'Slot Conferenza'                    , NULL, 1, 1, 0),
    ('batch_type'                    , 'Tipo Batch'                         , NULL, 1, 1, 1),
    ('batch_mode'                    , 'Modo Batch'                         , NULL, 1, 1, 1),
-   ('batch_status'                  , 'Stato Batch'                       , NULL, 1, 1, 1),
+   ('batch_status'                  , 'Status Batch'                       , NULL, 1, 1, 1),
    ('sms_api_type'                  , 'Tipologia API'                           , NULL, 1, 1, 0),
    ('sms_provider_name'             , 'Nome Interno SMS Provider'         , NULL, 1, 1, 0),
    ('auto_renew_options'            , 'Opzioni Auto Rinnovo'                 , NULL, 1, 1, 1),
@@ -4806,7 +4806,7 @@ VALUES
    ('wysiwyg_presets'               , 'Preset Editor WYSIWYG'             , NULL, 1, 1, 0),
    ('relative_date_filters'         , 'Filtri data relativa'              , NULL, 1, 1, 0),
    ('pledge_status'                 , 'Stato Impegno di pagamento'                      , NULL, 1, 1, 1),
-   ('contribution_recur_status'     , 'Stato Contributo Ricorrenti'      , NULL, 1, 1, 1),
+   ('contribution_recur_status'     , 'Status Contributo Ricorrente'      , NULL, 1, 1, 1),
    ('environment'                   , 'Ambiente'                        , NULL, 1, 1, 0),
    ('activity_default_assignee'     , 'Assegnatario di default Attività'          , NULL, 1, 1, 0);
 
@@ -4928,9 +4928,9 @@ VALUES
    (@option_group_id_act, 'Apri Caso',          13, 'Open Case',          NULL, 0,  0, 13, '', 0, 1, 1, @caseCompId, NULL, 'fa-folder-open-o'),
    (@option_group_id_act, 'Azione supplementare',          14, 'Follow up',          NULL, 0,  0, 14, '', 0, 1, 1, @caseCompId, NULL, 'fa-share-square-o'),
    (@option_group_id_act, 'Modifica Tipo Caso',   15, 'Change Case Type',   NULL, 0,  0, 15, '', 0, 1, 1, @caseCompId, NULL, 'fa-random'),
-   (@option_group_id_act, 'Modifica Stato Caso', 16, 'Change Case Status', NULL, 0,  0, 16, '', 0, 1, 1, @caseCompId, NULL, 'fa-pencil-square-o'),
+   (@option_group_id_act, 'Cambia Status Caso', 16, 'Change Case Status', NULL, 0,  0, 16, '', 0, 1, 1, @caseCompId, NULL, 'fa-pencil-square-o'),
    (@option_group_id_act, 'Cambia Oggetto del Caso',53, 'Change Case Subject',NULL, 0,  0, 53, '', 0, 1, 1, @caseCompId, NULL, 'fa-pencil-square-o'),
-   (@option_group_id_act, 'Cambia Dati personalizzati', 33, 'Change Custom Data', NULL, 0,  0, 33, '', 0, 1, 1, @caseCompId, NULL, 'fa-table'),
+   (@option_group_id_act, 'Cambia Dato Personalizzato', 33, 'Change Custom Data', NULL, 0,  0, 33, '', 0, 1, 1, @caseCompId, NULL, 'fa-table'),
 
    (@option_group_id_act, 'Promemoria Rinnovo Iscrizione',        17, 'Membership Renewal Reminder',  NULL, 1, NULL, 17, 'promemoria rinnovo iscrizione offline',                      0, 1, 1, @memberCompId, NULL, NULL),
    (@option_group_id_act, 'Modifica Data Inizio Caso',             18, 'Change Case Start Date',         NULL, 0,  0, 18, '', 0, 1, 1, @caseCompId, NULL , 'fa-calendar'),
@@ -4953,7 +4953,7 @@ VALUES
    (@option_group_id_act, 'SMS Massivo',                           34, 'Mass SMS',         NULL, 1, NULL, 34, 'SMS Massivo',                                                    0, 1, 1, NULL, NULL, NULL),
 
 -- Additional Membership-related Activity Types
-   (@option_group_id_act, 'Cambia Stato Iscrizione',           35, 'Change Membership Status',   NULL, 1, NULL, 35, 'Cambia Stato Iscrizione.',                         0, 1, 1, @memberCompId, NULL, NULL),
+   (@option_group_id_act, 'Cambia Status Iscrizione',           35, 'Change Membership Status',   NULL, 1, NULL, 35, 'Cambia Status Iscrizione.',                         0, 1, 1, @memberCompId, NULL, NULL),
    (@option_group_id_act, 'Cambia tipo di iscrizione',             36, 'Change Membership Type',     NULL, 1, NULL, 36, 'Cambia tipo di iscrizione.',                           0, 1, 1, @memberCompId, NULL, NULL),
 
    (@option_group_id_act, 'Cancella Contributo ricorrente',      37, 'Cancel Recurring Contribution', NULL,1, 0, 37, '', 0, 1, 1, @contributeCompId, NULL, NULL),
@@ -5026,7 +5026,7 @@ VALUES
    (@option_group_id_acc, 'Amex'      ,  3, 'Amex'      , NULL, 0, NULL, 3, NULL, 0, 0, 1, NULL, NULL, NULL),
    (@option_group_id_acc, 'Discover'  ,  4, 'Discover'  , NULL, 0, NULL, 4, NULL, 0, 0, 1, NULL, NULL, NULL),
 
-  (@option_group_id_pi, 'Carta di credito',  1, 'Credit Card', NULL, 0, 0, 1, NULL, 0, 1, 1, NULL, NULL, NULL),
+  (@option_group_id_pi, 'Carta di Credito',  1, 'Credit Card', NULL, 0, 0, 1, NULL, 0, 1, 1, NULL, NULL, NULL),
   (@option_group_id_pi, 'Carta di Debito',   2, 'Debit Card',  NULL, 0, 0, 2, NULL, 0, 1, 1, NULL, NULL, NULL),
   (@option_group_id_pi, 'Cassa',         3, 'Cash',        NULL, 0, 0, 3, NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_pi, 'Assegno',        4, 'Check',       NULL, 0, 1, 4, NULL, 0, 1, 1, NULL, NULL, NULL),
@@ -5085,7 +5085,7 @@ VALUES
   (@option_group_id_csgOpt, 'Mostra Sempre Gruppi Smart',   2, 'alwaysshow', NULL, 0, NULL,  2,  NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_csgOpt, 'Nascondi Gruppi Smart'       ,   3, 'hide', NULL, 0, NULL,  3,  NULL, 0, 0, 1, NULL, NULL, NULL),
 
-  (@option_group_id_ceOpt, 'Dati personalizzati'              ,   1, 'CustomData', NULL, 0, NULL, 1, NULL, 0, 0, 1, NULL, NULL, NULL),
+  (@option_group_id_ceOpt, 'Dati Personalizzati'              ,   1, 'CustomData', NULL, 0, NULL, 1, NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_ceOpt, 'Indirizzo'                  ,   2, 'Address', NULL, 0, NULL, 2, NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_ceOpt, 'Preferenze per le comunicazioni',   3, 'CommunicationPreferences', NULL, 0, NULL, 3, NULL, 0, 0, 1, NULL, NULL, NULL),
   (@option_group_id_ceOpt, 'Note'                    ,   4, 'Notes', NULL, 0, NULL, 4, NULL, 0, 0, 1, NULL, NULL, NULL),
@@ -5679,7 +5679,7 @@ VALUES
   ( 'Incentivi'             , @contactID, @opCost, 'Account to record cost of premiums provided to payors', '5100', 'COGS', 0, 1, 0, 1 ),
   ( 'Inventario Premium'   , @contactID, @opAsset, 'Account representing value of premiums inventory', '1375', 'OCASSET', 0, 1, 0, 0 ),
   ( 'Sconti'            , @contactID, @opval, 'Contra-revenue account for amounts discounted from sales', '4900', 'INC', 0, 1, 0, 0 ),
-  ( 'Conto Gestore dei Pagamenti ', @contactID, @opAsset, 'Account to record payments into a payment processor merchant account', '1150', 'BANK', 0, 1, 0, 0),
+  ( 'Conto del Processore di Pagamento', @contactID, @opAsset, 'Account to record payments into a payment processor merchant account', '1150', 'BANK', 0, 1, 0, 0),
   ( 'Entrate Posticipate - Tariffa eventi', @contactID, @opLiability, 'Event revenue to be recognized in future months when the events occur', '2730', 'OCLIAB', 0, 1, 0, 0),
   ( 'Entrate Posticipate - Quote membri', @contactID, @opLiability, 'Membership revenue to be recognized in future months', '2740', 'OCLIAB', 0, 1, 0, 0
 );
@@ -5977,8 +5977,8 @@ VALUES
  ('PayPal_Express',     'PayPal - Express',       NULL,1,0,'Nome utente','Password','Firma',NULL,'Payment_PayPalImpl','https://www.paypal.com/','https://api-3t.paypal.com/',NULL,'https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif','https://www.sandbox.paypal.com/','https://api-3t.sandbox.paypal.com/',NULL,'https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif',2, 1),
  ('AuthNet',            'Authorize.Net',          NULL,1,0,'Login API','Chiave Pagamento','Hash MD5',NULL,'Payment_AuthorizeNet','https://secure2.authorize.net/gateway/transact.dll',NULL,'https://api2.authorize.net/xml/v1/request.api',NULL,'https://test.authorize.net/gateway/transact.dll',NULL,'https://apitest.authorize.net/xml/v1/request.api',NULL,1,1),
  ('PayJunction',        'PayJunction',            NULL,0,0,'User Name','Password',NULL,NULL,'Payment_PayJunction','https://payjunction.com/quick_link',NULL,NULL,NULL,'https://www.payjunctionlabs.com/quick_link',NULL,NULL,NULL,1,1),
- ('Dummy',              'Gestore dei pagamenti simulato',NULL,1,1,'Nome utente',NULL,NULL,NULL,'Payment_Dummy',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,1),
- ('Elavon',             'Gestore dei pagamenti Elavon','Elavon / Nova Venditore Virtuale',0,0,'SSL ID Venditore','SSL ID Utente','SSL Pin',NULL,'Payment_Elavon','https://www.myvirtualmerchant.com/VirtualMerchant/processxml.do',NULL,NULL,NULL,'https://www.myvirtualmerchant.com/VirtualMerchant/processxml.do',NULL,NULL,NULL,1,0),
+ ('Dummy',              'Processore di Pagamento Fittizio',NULL,1,1,'Nome utente',NULL,NULL,NULL,'Payment_Dummy',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,1),
+ ('Elavon',             'Processore di Pagamento Elavon','Elavon / Nova Venditore Virtuale',0,0,'SSL ID Venditore','SSL ID Utente','SSL Pin',NULL,'Payment_Elavon','https://www.myvirtualmerchant.com/VirtualMerchant/processxml.do',NULL,NULL,NULL,'https://www.myvirtualmerchant.com/VirtualMerchant/processxml.do',NULL,NULL,NULL,1,0),
  ('Realex',             'Pagamento Realex',         NULL,0,0,'Merchant ID', 'Password', NULL, 'Account', 'Payment_Realex', 'https://epage.payandshop.com/epage.cgi', NULL, NULL, NULL, 'https://epage.payandshop.com/epage-remote.cgi', NULL, NULL, NULL, 1, 0),
  ('PayflowPro',         'PayflowPro',             NULL,0,0,'Vendor ID', 'Password', 'Partner (merchant)', 'User', 'Payment_PayflowPro', 'https://Payflowpro.paypal.com', NULL, NULL, NULL, 'https://pilot-Payflowpro.paypal.com', NULL, NULL, NULL, 1, 0),
  ('FirstData',          'FirstData (ossia linkpoint)', 'FirstData (ossia linkpoint)', 0, 0, 'Store name', 'certificate path', NULL, NULL, 'Payment_FirstData', 'https://secure.linkpt.net', NULL, NULL, NULL, 'https://staging.linkpt.net', NULL, NULL, NULL, 1, NULL);
@@ -6395,7 +6395,7 @@ INSERT INTO civicrm_uf_field
        (  9,           'state_province',        1,           0,           8,      'User and User Admin Only',  0,           0,             3,             'Provincia/Stato',         'Contact',      NULL,   NULL),
        ( 10,     'financial_type',              0, 1, 1, 'User and User Admin Only', 0, 0, NULL, 'Tipo Finanziario', 'Contribution', NULL, NULL ),
        ( 10,     'total_amount',                0, 1, 2, 'User and User Admin Only', 0, 0, NULL, 'Importo', 'Contribution', NULL, NULL ),
-       ( 10,     'contribution_status_id',      1, 1, 3, 'User and User Admin Only', 0, 0, NULL, 'Stato', 'Contribution', NULL, NULL ),
+       ( 10,     'contribution_status_id',      1, 1, 3, 'User and User Admin Only', 0, 0, NULL, 'Status', 'Contribution', NULL, NULL ),
        ( 10,     'receive_date',                1, 1, 4, 'User and User Admin Only', 0, 0, NULL, 'Ricevuto', 'Contribution', NULL, NULL ),
        ( 10,     'contribution_source',         0, 0, 5, 'User and User Admin Only', 0, 0, NULL, 'Fonte', 'Contribution', NULL, NULL ),
        ( 10,     'payment_instrument',          0, 0, 6, 'User and User Admin Only', 0, 0, NULL, 'Metodo di Pagamento', 'Contribution', NULL, NULL ),
@@ -6415,7 +6415,7 @@ INSERT INTO civicrm_uf_field
        ( 11,     'receive_date',                1, 1, 9, 'User and User Admin Only', 0, 0, NULL, 'Ricevuto', 'Membership', NULL, NULL ),
        ( 11,     'payment_instrument',          0, 0, 10, 'User and User Admin Only', 0, 0, NULL, 'Metodo di Pagamento', 'Membership', NULL, NULL ),
        ( 11,     'contribution_check_number',                0, 0, 11, 'User and User Admin Only', 0, 0, NULL, 'Numero Assegno', 'Membership', NULL, NULL ),
-       ( 11,     'contribution_status_id',      1, 1, 12, 'User and User Admin Only', 0, 0, NULL, 'Stato del pagamento', 'Membership', NULL, NULL ),
+       ( 11,     'contribution_status_id',      1, 1, 12, 'User and User Admin Only', 0, 0, NULL, 'Status Pagamento', 'Membership', NULL, NULL ),
        ( 11,     'soft_credit',                 0, 0, 13, 'User and User Admin Only', 0, 0, NULL, 'Credito in Favore', 'Membership', NULL, NULL ),
        ( 11,     'soft_credit_type',            0, 0, 14, 'User and User Admin Only', 0, 0, NULL, 'Tipo Credito in Favore', 'Membership', NULL, NULL ),
        ( 12,     'first_name',                  1, 0,  1, 'User and User Admin Only', 0, 0, NULL, 'Nome',  'Individual', NULL, NULL),
@@ -22982,7 +22982,7 @@ SELECT @financial_account_id_ef         := max(id) FROM civicrm_financial_accoun
 SELECT @financial_account_id_bf         := max(id) FROM civicrm_financial_account WHERE name = 'Commissioni bancarie';
 SELECT @financial_account_id_ap        := max(id) FROM civicrm_financial_account WHERE name = 'Fatture Attive';
 SELECT @financial_account_id_ar        := max(id) FROM civicrm_financial_account WHERE name = 'Deposito Conto bancario';
-SELECT @financial_account_id_pp        := max(id) FROM civicrm_financial_account WHERE name = 'Conto Gestore dei Pagamenti ';
+SELECT @financial_account_id_pp        := max(id) FROM civicrm_financial_account WHERE name = 'Conto del Processore di Pagamento';
 SELECT @financial_account_id_pr        := max(id) FROM civicrm_financial_account WHERE name = 'Incentivi';
 SELECT @financial_account_id_dref      := max(id) FROM civicrm_financial_account WHERE name = 'Entrate Posticipate - Tariffa eventi';
 SELECT @financial_account_id_drmd      := max(id) FROM civicrm_financial_account WHERE name = 'Entrate Posticipate - Quote membri';
@@ -23873,4 +23873,4 @@ INSERT INTO `civicrm_report_instance`
     ( `domain_id`, `title`, `report_id`, `description`, `permission`, `form_values`)
 VALUES
     (  @domainID, 'Survey Details', 'survey/detail', 'Detailed report for canvassing, phone-banking, walk lists or other surveys.', 'access CiviReport', 'a:39:{s:6:"fields";a:2:{s:9:"sort_name";s:1:"1";s:6:"result";s:1:"1";}s:22:"assignee_contact_id_op";s:2:"eq";s:25:"assignee_contact_id_value";s:0:"";s:12:"sort_name_op";s:3:"has";s:15:"sort_name_value";s:0:"";s:17:"street_number_min";s:0:"";s:17:"street_number_max";s:0:"";s:16:"street_number_op";s:3:"lte";s:19:"street_number_value";s:0:"";s:14:"street_name_op";s:3:"has";s:17:"street_name_value";s:0:"";s:15:"postal_code_min";s:0:"";s:15:"postal_code_max";s:0:"";s:14:"postal_code_op";s:3:"lte";s:17:"postal_code_value";s:0:"";s:7:"city_op";s:3:"has";s:10:"city_value";s:0:"";s:20:"state_province_id_op";s:2:"in";s:23:"state_province_id_value";a:0:{}s:13:"country_id_op";s:2:"in";s:16:"country_id_value";a:0:{}s:12:"survey_id_op";s:2:"in";s:15:"survey_id_value";a:0:{}s:12:"status_id_op";s:2:"eq";s:15:"status_id_value";s:1:"1";s:11:"custom_1_op";s:2:"in";s:14:"custom_1_value";a:0:{}s:11:"custom_2_op";s:2:"in";s:14:"custom_2_value";a:0:{}s:17:"custom_3_relative";s:1:"0";s:13:"custom_3_from";s:0:"";s:11:"custom_3_to";s:0:"";s:11:"description";s:75:"Detailed report for canvassing, phone-banking, walk lists or other surveys.";s:13:"email_subject";s:0:"";s:8:"email_to";s:0:"";s:8:"email_cc";s:0:"";s:10:"permission";s:17:"access CiviReport";s:6:"groups";s:0:"";s:9:"domain_id";i:1;}');
-UPDATE civicrm_domain SET version = '5.36.0';
+UPDATE civicrm_domain SET version = '5.36.1';
