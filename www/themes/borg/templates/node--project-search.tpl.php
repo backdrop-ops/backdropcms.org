@@ -27,7 +27,6 @@
       </div>
       <div class="col-md-8 col-md-pull-4">
         <?php print render($content); ?>
-        <?php print $more; ?>
       </div>
     </div><!-- /.row -->
   </div><!-- /.project-main -->
