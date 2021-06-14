@@ -1,0 +1,74 @@
+{
+    "_config_name": "filter.format.markdown",
+    "format": "markdown",
+    "name": "Markdown",
+    "editor": "",
+    "editor_settings": [],
+    "cache": true,
+    "status": 1,
+    "filters": {
+        "codefilter": {
+            "status": 1,
+            "weight": -46,
+            "module": "codefilter",
+            "settings": []
+        },
+        "filter_image_caption": {
+            "status": 1,
+            "weight": -44,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_autop": {
+            "status": 0,
+            "weight": -48,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_url": {
+            "status": 1,
+            "weight": -45,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_htmlcorrector": {
+            "status": 1,
+            "weight": -42,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html_escape": {
+            "status": 0,
+            "weight": -50,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_image_align": {
+            "status": 1,
+            "weight": -43,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html": {
+            "status": 0,
+            "weight": -49,
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <h3> <h4> <h5> <p> <img> <figure> <figcaption>"
+            },
+            "module": "filter"
+        },
+        "filter_markdown": {
+            "status": 1,
+            "weight": -47,
+            "module": "markdown",
+            "settings": []
+        }
+    },
+    "roles": {
+        "4": "4",
+        "3": "3",
+        "anonymous": 0,
+        "authenticated": 0
+    },
+    "weight": 0
+}
