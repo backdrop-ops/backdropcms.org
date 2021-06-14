@@ -1,0 +1,12 @@
+name = Markdown filter
+description = Allows content to be submitted using Markdown, a simple plain-text syntax that is transformed into valid XHTML.
+package = "Input filters"
+backdrop = 1.x
+type = module
+configure = admin/config/content/formats
+php = 5.3
+
+; Added by Backdrop CMS packaging script on 2016-11-20
+project = markdown
+version = 1.x-1.5
+timestamp = 1479693578
