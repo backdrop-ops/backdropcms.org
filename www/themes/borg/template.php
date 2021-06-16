@@ -271,7 +271,7 @@ function borg_preprocess_node(&$variables){
       $footer_links['version']['data'] = backdrop_render($version);
 
       // Add the latest release date.
-      $date = format_date($release->node_created, 'short');
+      $date = format_date($release->node_project_release_supported_versions_created, 'short');
       $latest = array(
         '#type' => 'markup',
         '#markup' => '<span class="release-date">' . t('Released: <strong>@date</strong>', array('@date' => $date)) . '</span>',
