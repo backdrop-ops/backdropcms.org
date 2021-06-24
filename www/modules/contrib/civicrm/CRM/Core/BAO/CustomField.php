@@ -1191,6 +1191,13 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
           }
           $display = implode(', ', $disp);
         }
+        elseif ($field['data_type'] == 'Float' && isset($value)) {
+          // $value can also be an array(while using IN operator from search builder or api).
+          foreach ((array) $value as $val) {
+            $disp[] = CRM_Utils_Number::formatLocaleNumeric($val);
+          }
+          $display = implode(', ', $disp);
+        }
         break;
     }
     return $display;
@@ -1550,6 +1557,13 @@ SELECT id
           $fName = $fileDAO->uri;
           $mimeType = $fileDAO->mime_type;
         }
+      }
+      elseif (empty($value['name'])) {
+        // Happens when calling the API to update custom fields values, but the filename
+        // is empty, for an existing entity (in a specific case, was from a d7-webform
+        // that was updating a relationship with a File customfield, so $value['id'] was
+        // not empty, but the filename was empty.
+        return;
       }
       else {
         $fName = $value['name'];
@@ -1992,6 +2006,11 @@ WHERE  id IN ( %1, %2 )
           }
         }
       }
+    }
+
+    // Remove option group IDs from fields changed to Text html_type.
+    if ($htmlType == 'Text') {
+      $params['option_group_id'] = '';
     }
 
     // check for orphan option groups

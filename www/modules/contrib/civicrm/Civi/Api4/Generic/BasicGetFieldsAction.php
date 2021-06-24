@@ -214,6 +214,24 @@ class BasicGetFieldsAction extends BasicGetAction {
     return $this;
   }
 
+  /**
+   * Helper function to retrieve options from an option group (for non-DAO entities).
+   *
+   * @param string $optionGroupName
+   */
+  public function pseudoconstantOptions(string $optionGroupName) {
+    if ($this->getLoadOptions()) {
+      $options = \CRM_Core_OptionValue::getValues(['name' => $optionGroupName]);
+      foreach ($options as &$option) {
+        $option['id'] = $option['value'];
+      }
+    }
+    else {
+      $options = TRUE;
+    }
+    return $options;
+  }
+
   public function fields() {
     return [
       [
@@ -300,6 +318,11 @@ class BasicGetFieldsAction extends BasicGetAction {
       [
         'name' => 'readonly',
         'data_type' => 'Boolean',
+        'description' => 'True for auto-increment, calculated, or otherwise non-editable fields.',
+      ],
+      [
+        'name' => 'output_formatters',
+        'data_type' => 'Array',
       ],
     ];
   }

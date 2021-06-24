@@ -12,7 +12,7 @@ use Civi\Api4\Action\Afform\Submit;
  */
 function _afform_fields_filter($params) {
   $result = [];
-  $fields = \Civi\Api4\Afform::getfields()->setCheckPermissions(FALSE)->setAction('create')->execute()->indexBy('name');
+  $fields = \Civi\Api4\Afform::getfields(FALSE)->setAction('create')->execute()->indexBy('name');
   foreach ($fields as $fieldName => $field) {
     if (isset($params[$fieldName])) {
       $result[$fieldName] = $params[$fieldName];
@@ -49,10 +49,19 @@ function afform_civicrm_config(&$config) {
   }
   Civi::$statics[__FUNCTION__] = 1;
 
-  Civi::dispatcher()->addListener(Submit::EVENT_NAME, [Submit::class, 'processContacts'], 500);
-  Civi::dispatcher()->addListener(Submit::EVENT_NAME, [Submit::class, 'processGenericEntity'], -1000);
-  Civi::dispatcher()->addListener('hook_civicrm_angularModules', ['\Civi\Afform\AngularDependencyMapper', 'autoReq'], -1000);
-  Civi::dispatcher()->addListener('hook_civicrm_alterAngular', ['\Civi\Afform\AfformMetadataInjector', 'preprocess']);
+  $dispatcher = Civi::dispatcher();
+  $dispatcher->addListener(Submit::EVENT_NAME, [Submit::class, 'processContacts'], 500);
+  $dispatcher->addListener(Submit::EVENT_NAME, [Submit::class, 'processGenericEntity'], -1000);
+  $dispatcher->addListener('hook_civicrm_angularModules', ['\Civi\Afform\AngularDependencyMapper', 'autoReq'], -1000);
+  $dispatcher->addListener('hook_civicrm_alterAngular', ['\Civi\Afform\AfformMetadataInjector', 'preprocess']);
+  $dispatcher->addListener('hook_civicrm_check', ['\Civi\Afform\StatusChecks', 'hook_civicrm_check']);
+
+  // Register support for email tokens
+  if (CRM_Extension_System::singleton()->getMapper()->isActiveModule('authx')) {
+    $dispatcher->addListener('hook_civicrm_alterMailContent', ['\Civi\Afform\Tokens', 'applyCkeditorWorkaround']);
+    $dispatcher->addListener('hook_civicrm_tokens', ['\Civi\Afform\Tokens', 'hook_civicrm_tokens']);
+    $dispatcher->addListener('hook_civicrm_tokenValues', ['\Civi\Afform\Tokens', 'hook_civicrm_tokenValues']);
+  }
 }
 
 /**
@@ -156,7 +165,7 @@ function afform_civicrm_managed(&$entities) {
         'domain_id' => CRM_Core_BAO_Domain::getDomain()->id,
         'is_active' => TRUE,
         'name' => $afform['name'],
-        'label' => $afform['title'] ?? ts('(Untitled)'),
+        'label' => $afform['title'] ?? E::ts('(Untitled)'),
         'directive' => _afform_angular_module_name($afform['name'], 'dash'),
         'permission' => "@afform:" . $afform['name'],
       ],
@@ -165,16 +174,98 @@ function afform_civicrm_managed(&$entities) {
 }
 
 /**
- * Implements hook_civicrm_caseTypes().
+ * Implements hook_civicrm_tabset().
  *
- * Generate a list of case-types.
- *
- * Note: This hook only runs in CiviCRM 4.4+.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
+ * Adds afforms as contact summary tabs.
  */
-function afform_civicrm_caseTypes(&$caseTypes) {
-  _afform_civix_civicrm_caseTypes($caseTypes);
+function afform_civicrm_tabset($tabsetName, &$tabs, $context) {
+  if ($tabsetName !== 'civicrm/contact/view') {
+    return;
+  }
+  $scanner = \Civi::service('afform_scanner');
+  $weight = 111;
+  foreach ($scanner->getMetas() as $afform) {
+    if (!empty($afform['contact_summary']) && $afform['contact_summary'] === 'tab') {
+      $module = _afform_angular_module_name($afform['name']);
+      $tabs[] = [
+        'id' => $afform['name'],
+        'title' => $afform['title'],
+        'weight' => $weight++,
+        'icon' => 'crm-i fa-list-alt',
+        'is_active' => TRUE,
+        'template' => 'afform/contactSummary/AfformTab.tpl',
+        'module' => $module,
+        'directive' => _afform_angular_module_name($afform['name'], 'dash'),
+      ];
+      // If this is the real contact summary page (and not a callback from ContactLayoutEditor), load module.
+      if (empty($context['caller'])) {
+        Civi::service('angularjs.loader')->addModules($module);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_civicrm_pageRun().
+ *
+ * Adds afforms as contact summary blocks.
+ */
+function afform_civicrm_pageRun(&$page) {
+  if (get_class($page) !== 'CRM_Contact_Page_View_Summary') {
+    return;
+  }
+  $scanner = \Civi::service('afform_scanner');
+  $cid = $page->get('cid');
+  $side = 'left';
+  foreach ($scanner->getMetas() as $afform) {
+    if (!empty($afform['contact_summary']) && $afform['contact_summary'] === 'block') {
+      $module = _afform_angular_module_name($afform['name']);
+      $block = [
+        'module' => $module,
+        'directive' => _afform_angular_module_name($afform['name'], 'dash'),
+      ];
+      $content = CRM_Core_Smarty::singleton()->fetchWith('afform/contactSummary/AfformBlock.tpl', ['contactId' => $cid, 'block' => $block]);
+      CRM_Core_Region::instance("contact-basic-info-$side")->add([
+        'markup' => '<div class="crm-summary-block">' . $content . '</div>',
+        'weight' => 1,
+      ]);
+      Civi::service('angularjs.loader')->addModules($module);
+      $side = $side === 'left' ? 'right' : 'left';
+    }
+  }
+}
+
+/**
+ * Implements hook_civicrm_contactSummaryBlocks().
+ *
+ * @link https://github.com/civicrm/org.civicrm.contactlayout
+ */
+function afform_civicrm_contactSummaryBlocks(&$blocks) {
+  $afforms = \Civi\Api4\Afform::get(FALSE)
+    ->setSelect(['name', 'title', 'directive_name', 'module_name', 'type', 'type:icon', 'type:label'])
+    ->addWhere('contact_summary', '=', 'block')
+    ->execute();
+  foreach ($afforms as $index => $afform) {
+    // Create a group per afform type
+    $blocks += [
+      "afform_{$afform['type']}" => [
+        'title' => $afform['type:label'],
+        'icon' => $afform['type:icon'],
+        'blocks' => [],
+      ],
+    ];
+    $blocks["afform_{$afform['type']}"]['blocks'][$afform['name']] = [
+      'title' => $afform['title'],
+      'tpl_file' => 'afform/contactSummary/AfformBlock.tpl',
+      'module' => $afform['module_name'],
+      'directive' => $afform['directive_name'],
+      'sample' => [
+        $afform['type:label'],
+      ],
+      'edit' => 'civicrm/admin/afform#/edit/' . $afform['name'],
+      'system_default' => [0, $index % 2],
+    ];
+  }
 }
 
 /**
@@ -271,10 +362,15 @@ function afform_civicrm_buildAsset($asset, $params, &$mimeType, &$content) {
   }
 
   $moduleName = _afform_angular_module_name($params['name'], 'camel');
+  $formMetaData = (array) civicrm_api4('Afform', 'get', [
+    'checkPermissions' => FALSE,
+    'select' => ['redirect', 'name'],
+    'where' => [['name', '=', $params['name']]],
+  ], 0);
   $smarty = CRM_Core_Smarty::singleton();
   $smarty->assign('afform', [
     'camel' => $moduleName,
-    'meta' => ['name' => $params['name']],
+    'meta' => $formMetaData,
     'templateUrl' => "~/$moduleName/$moduleName.aff.html",
   ]);
   $mimeType = 'text/javascript';
@@ -348,7 +444,7 @@ function afform_civicrm_permissionList(&$permissions) {
   foreach ($scanner->getMetas() as $name => $meta) {
     $permissions['@afform:' . $name] = [
       'group' => 'afform',
-      'title' => ts('Afform: Inherit permission of %1', [
+      'title' => E::ts('Afform: Inherit permission of %1', [
         1 => $name,
       ]),
     ];
@@ -401,4 +497,63 @@ function afform_civicrm_alterApiRoutePermissions(&$permissions, $entity, $action
       $permissions = CRM_Core_Permission::ALWAYS_ALLOW_PERMISSION;
     }
   }
+}
+
+/**
+ * Implements hook_civicrm_preProcess().
+ *
+ * Wordpress only: Adds Afforms to the shortcode dialog (when editing pages/posts).
+ */
+function afform_civicrm_preProcess($formName, &$form) {
+  if ($formName === 'CRM_Core_Form_ShortCode') {
+    $form->components['afform'] = [
+      'label' => E::ts('Form Builder'),
+      'select' => [
+        'key' => 'name',
+        'entity' => 'Afform',
+        'select' => ['minimumInputLength' => 0],
+        'api' => [
+          'params' => ['type' => ['IN' => ['form', 'search']]],
+        ],
+      ],
+    ];
+  }
+}
+
+// Wordpress only: Register callback for rendering shortcodes
+if (function_exists('add_filter')) {
+  add_filter('civicrm_shortcode_get_markup', 'afform_shortcode_content', 10, 4);
+}
+
+/**
+ * Wordpress only: Render Afform content for shortcodes.
+ *
+ * @param string $content
+ *   HTML Markup
+ * @param array $atts
+ *   Shortcode attributes.
+ * @param array $args
+ *   Existing shortcode arguments.
+ * @param string $context
+ *   How many shortcodes are present on the page: 'single' or 'multiple'.
+ * @return string
+ *   Modified markup.
+ */
+function afform_shortcode_content($content, $atts, $args, $context) {
+  if ($atts['component'] === 'afform') {
+    $afform = civicrm_api4('Afform', 'get', [
+      'select' => ['directive_name', 'module_name'],
+      'where' => [['name', '=', $atts['name']]],
+    ])->first();
+    if ($afform) {
+      Civi::service('angularjs.loader')->addModules($afform['module_name']);
+      $content = "
+        <div class='crm-container' id='bootstrap-theme'>
+          <crm-angular-js modules='{$afform['module_name']}'>
+            <{$afform['directive_name']}></{$afform['directive_name']}>
+          </crm-angular-js>
+        </div>";
+    }
+  }
+  return $content;
 }

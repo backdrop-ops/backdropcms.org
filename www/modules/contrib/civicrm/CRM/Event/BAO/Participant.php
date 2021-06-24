@@ -80,10 +80,6 @@ class CRM_Event_BAO_Participant extends CRM_Event_DAO_Participant {
       $params['participant_fee_amount'] = CRM_Utils_Rule::cleanMoney($params['participant_fee_amount']);
     }
 
-    if (!empty($params['fee_amount'])) {
-      $params['fee_amount'] = CRM_Utils_Rule::cleanMoney($params['fee_amount']);
-    }
-
     // ensure that role ids are encoded as a string
     if (isset($params['role_id']) && is_array($params['role_id'])) {
       if (in_array(key($params['role_id']), CRM_Core_DAO::acceptedSQLOperators(), TRUE)) {
@@ -1902,7 +1898,7 @@ WHERE    civicrm_participant.contact_id = {$contactID} AND
       $eventTitle = $dao->title;
       $eventId = $dao->event_id;
     }
-    if (!$details['allow_selfcancelxfer']) {
+    if (!$details['allow_selfcancelxfer'] && !$isBackOffice) {
       $details['eligible'] = FALSE;
       $details['ineligible_message'] = ts('This event registration can not be transferred or cancelled. Contact the event organizer if you have questions.');
       return $details;

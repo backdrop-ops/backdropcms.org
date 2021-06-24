@@ -276,6 +276,7 @@
   </foreignKey>
   <field>
     <name>campaign_id</name>
+    <component>CiviCampaign</component>
     <uniqueName>member_campaign_id</uniqueName>
     <type>int unsigned</type>
     <title>Campaign ID</title>
@@ -283,7 +284,7 @@
     <comment>The campaign for which this membership is attached.</comment>
     <add>3.4</add>
     <html>
-      <type>Select</type>
+      <type>EntityRef</type>
       <label>Campaign</label>
     </html>
   </field>

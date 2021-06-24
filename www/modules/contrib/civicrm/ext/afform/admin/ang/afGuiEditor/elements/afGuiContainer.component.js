@@ -12,7 +12,7 @@
     },
     require: {editor: '^^afGuiEditor'},
     controller: function($scope, crmApi4, dialogService, afGui) {
-      var ts = $scope.ts = CRM.ts(),
+      var ts = $scope.ts = CRM.ts('org.civicrm.afform_admin'),
         ctrl = this;
 
       this.$onInit = function() {
@@ -36,6 +36,14 @@
           }
           initializeBlockContainer();
         }
+      };
+
+      this.sortableOptions = {
+        handle: '.af-gui-bar',
+        connectWith: '[ui-sortable]',
+        cancel: 'input,textarea,button,select,option,a,.dropdown-menu',
+        placeholder: 'af-gui-dropzone',
+        containment: '#afGuiEditor-canvas-body'
       };
 
       $scope.isSelectedFieldset = function(entityName) {

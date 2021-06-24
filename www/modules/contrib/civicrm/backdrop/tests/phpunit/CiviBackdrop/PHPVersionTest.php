@@ -9,7 +9,7 @@ class PhpVersionTest extends \PHPUnit\Framework\TestCase implements EndToEndInte
   /**
    * CIVICRM_DRUPAL_PHP_MINIMUM (civicrm.module) should match CRM_Upgrade_Incremental_General::MIN_INSTALL_PHP_VER.
    */
-  public function testConstantMatch() {
+  public function testConstantMatch(): void {
     $constantFile = $this->getBackdropModulePath() . '/civicrm.module';
     $this->assertFileExists($constantFile);
     $content = file_get_contents($constantFile);
@@ -26,7 +26,7 @@ class PhpVersionTest extends \PHPUnit\Framework\TestCase implements EndToEndInte
   /**
    * "php" requirement (civicrm.info) should match CRM_Upgrade_Incremental_General::MIN_INSTALL_PHP_VER.
    */
-  public function testInfoMatch() {
+  public function testInfoMatch(): void {
     $infoFile = $this->getBackdropModulePath() . '/civicrm.info';
     $this->assertFileExists($infoFile);
     $info = drupal_parse_info_file($infoFile);

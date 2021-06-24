@@ -584,20 +584,10 @@ abstract class CRM_Core_Payment {
     // not documented clearly above.
     switch ($context) {
       case 'contributionPageRecurringHelp':
-        // require exactly two parameters
-        if (array_keys($params) == [
-          'is_recur_installments',
-          'is_email_receipt',
-        ]) {
-          $gotText = ts('Your recurring contribution will be processed automatically.');
-          if ($params['is_recur_installments']) {
-            $gotText .= ' ' . ts('You can specify the number of installments, or you can leave the number of installments blank if you want to make an open-ended commitment. In either case, you can choose to cancel at any time.');
-          }
-          if ($params['is_email_receipt']) {
-            $gotText .= ' ' . ts('You will receive an email receipt for each recurring contribution.');
-          }
+        if ($params['is_recur_installments']) {
+          return ts('You can specify the number of installments, or you can leave the number of installments blank if you want to make an open-ended commitment. In either case, you can choose to cancel at any time.');
         }
-        return $gotText;
+        return '';
 
       case 'contributionPageContinueText':
         return ts('Click the <strong>Continue</strong> button to proceed with the payment.');
@@ -1176,9 +1166,9 @@ abstract class CRM_Core_Payment {
   protected function getAmount($params = []) {
     if (!CRM_Utils_Rule::numeric($params['amount'])) {
       CRM_Core_Error::deprecatedWarning('Passing Amount value that is not numeric is deprecated please report this in gitlab');
-      return CRM_Utils_Money::formatLocaleNumericRoundedByPrecision(filter_var($params['amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION), 2);
+      return CRM_Utils_Money::formatUSLocaleNumericRounded(filter_var($params['amount'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION), 2);
     }
-    return CRM_Utils_Money::formatLocaleNumericRoundedByPrecision($params['amount'], 2);
+    return CRM_Utils_Money::formatUSLocaleNumericRounded($params['amount'], 2);
   }
 
   /**
@@ -1289,7 +1279,7 @@ abstract class CRM_Core_Payment {
    *   URL to notify outcome of transaction.
    */
   protected function getNotifyUrl() {
-    $url = CRM_Utils_System::url(
+    $url = CRM_Utils_System::getNotifyUrl(
       'civicrm/payment/ipn/' . $this->_paymentProcessor['id'],
       [],
       TRUE,
@@ -1312,6 +1302,23 @@ abstract class CRM_Core_Payment {
    *   the result in an nice formatted array (or an error object - but throwing exceptions is preferred)
    */
   protected function doDirectPayment(&$params) {
+    CRM_Core_Error::deprecatedFunctionWarning('doPayment');
+    return $params;
+  }
+
+  /**
+   * Calling this from outside the payment subsystem is deprecated - use doPayment.
+   * @deprecated
+   *
+   * @param array $params
+   *   Assoc array of input parameters for this transaction.
+   * @param string $component
+   *
+   * @return array
+   *   the result in an nice formatted array (or an error object - but throwing exceptions is preferred)
+   */
+  protected function doTransferCheckout(&$params, $component = 'contribute') {
+    CRM_Core_Error::deprecatedFunctionWarning('doPayment');
     return $params;
   }
 
@@ -1357,14 +1364,16 @@ abstract class CRM_Core_Payment {
    * @throws \Civi\Payment\Exception\PaymentProcessorException
    */
   public function doPayment(&$params, $component = 'contribute') {
+    $propertyBag = \Civi\Payment\PropertyBag::cast($params);
     $this->_component = $component;
     $statuses = CRM_Contribute_BAO_Contribution::buildOptions('contribution_status_id', 'validate');
 
     // If we have a $0 amount, skip call to processor and set payment_status to Completed.
     // Conceivably a processor might override this - perhaps for setting up a token - but we don't
-    // have an example of that at the mome.
-    if ($params['amount'] == 0) {
+    // have an example of that at the moment.
+    if ($propertyBag->getAmount() == 0) {
       $result['payment_status_id'] = array_search('Completed', $statuses);
+      $result['payment_status'] = 'Completed';
       return $result;
     }
 
@@ -1372,6 +1381,7 @@ abstract class CRM_Core_Payment {
       $result = $this->doTransferCheckout($params, $component);
       if (is_array($result) && !isset($result['payment_status_id'])) {
         $result['payment_status_id'] = array_search('Pending', $statuses);
+        $result['payment_status'] = 'Pending';
       }
     }
     else {
@@ -1380,9 +1390,11 @@ abstract class CRM_Core_Payment {
         if (!empty($params['is_recur'])) {
           // See comment block.
           $result['payment_status_id'] = array_search('Pending', $statuses);
+          $result['payment_status'] = 'Pending';
         }
         else {
           $result['payment_status_id'] = array_search('Completed', $statuses);
+          $result['payment_status'] = 'Completed';
         }
       }
     }

@@ -19,7 +19,7 @@
     },
     controllerAs: 'editor',
     controller: function($scope, crmApi4, afGui, $parse, $timeout, $location) {
-      var ts = $scope.ts = CRM.ts('afform');
+      var ts = $scope.ts = CRM.ts('org.civicrm.afform_admin');
       $scope.crmUrl = CRM.url;
 
       $scope.afform = null;
@@ -52,7 +52,7 @@
         editor.layout = {'#children': []};
         $scope.entities = {};
 
-        if ($scope.afform.type === 'form') {
+        if (editor.getFormType() === 'form') {
           editor.allowEntityConfig = true;
           editor.layout['#children'] = afGui.findRecursive($scope.afform.layout, {'#tag': 'af-form'})[0]['#children'];
           $scope.entities = _.mapValues(afGui.findRecursive(editor.layout['#children'], {'#tag': 'af-entity'}, 'name'), backfillEntityDefaults);
@@ -63,7 +63,7 @@
           }
         }
 
-        if ($scope.afform.type === 'block') {
+        else if (editor.getFormType() === 'block') {
           editor.layout['#children'] = $scope.afform.layout;
           editor.blockEntity = $scope.afform.join || $scope.afform.block;
           $scope.entities[editor.blockEntity] = backfillEntityDefaults({
@@ -73,9 +73,12 @@
           });
         }
 
-        if ($scope.afform.type === 'search') {
+        else if (editor.getFormType() === 'search') {
           editor.layout['#children'] = afGui.findRecursive($scope.afform.layout, {'af-fieldset': ''})[0]['#children'];
-
+          editor.searchDisplay = afGui.findRecursive(editor.layout['#children'], function(item) {
+            return item['#tag'] && item['#tag'].indexOf('crm-search-display-') === 0;
+          })[0];
+          editor.searchFilters = getSearchFilterOptions();
         }
 
         // Set changesSaved to true on initial load, false thereafter whenever changes are made to the model
@@ -84,6 +87,10 @@
           $scope.changesSaved = $scope.changesSaved === 1;
         }, true);
       }
+
+      this.getFormType = function() {
+        return $scope.afform.type;
+      };
 
       $scope.updateLayoutHtml = function() {
         $scope.layoutHtml = '...Loading...';
@@ -171,6 +178,55 @@
       this.getAfform = function() {
         return $scope.afform;
       };
+
+      this.toggleContactSummary = function() {
+        if ($scope.afform.contact_summary) {
+          $scope.afform.contact_summary = false;
+          if ($scope.afform.type === 'search') {
+            delete editor.searchDisplay.filters;
+          }
+        } else {
+          $scope.afform.contact_summary = 'block';
+          if ($scope.afform.type === 'search') {
+            editor.searchDisplay.filters = editor.searchFilters[0].key;
+          }
+        }
+      };
+
+      function getSearchFilterOptions() {
+        var searchDisplay = editor.meta.searchDisplays[editor.searchDisplay['search-name'] + '.' + editor.searchDisplay['display-name']],
+          entityCount = {},
+          options = [];
+
+        addFields(searchDisplay['saved_search.api_entity'], '');
+
+        _.each(searchDisplay['saved_search.api_params'].join, function(join) {
+          var joinInfo = join[0].split(' AS ');
+          addFields(joinInfo[0], joinInfo[1] + '.');
+        });
+
+        function addFields(entityName, prefix) {
+          var entity = afGui.getEntity(entityName);
+          entityCount[entity.entity] = (entityCount[entity.entity] || 0) + 1;
+          var count = (entityCount[entity.entity] > 1 ? ' ' + entityCount[entity.entity] : '');
+          if (entityName === 'Contact') {
+            options.push({
+              key: "{'" + prefix + "id': options.contact_id}",
+              label: entity.label + count
+            });
+          } else {
+            _.each(entity.fields, function(field) {
+              if (field.fk_entity === 'Contact') {
+                options.push({
+                  key: "{'" + prefix + field.name + "': options.contact_id}",
+                  label: entity.label + count + ' ' + field.label
+                });
+              }
+            });
+          }
+        }
+        return options;
+      }
 
       // Validates that a drag-n-drop action is allowed
       this.onDrop = function(event, ui) {

@@ -2023,16 +2023,15 @@ abstract class CRM_Utils_Hook {
    * This hook is called when exporting Civi's permission to the CMS. Use this hook to modify
    * the array of system permissions for CiviCRM.
    *
-   * @param array $permissions
-   *   Array of permissions. See CRM_Core_Permission::getCorePermissions() for
-   *   the format of this array.
+   * @param array $newPermissions
+   *   Array to be filled with permissions.
    *
    * @return null
    *   The return value is ignored
    */
-  public static function permission(&$permissions) {
-    return self::singleton()->invoke(['permissions'], $permissions,
-      self::$_nullObject, self::$_nullObject, self::$_nullObject, self::$_nullObject, self::$_nullObject,
+  public static function permission(&$newPermissions) {
+    return self::singleton()->invoke(['permissions'], $newPermissions, self::$_nullObject,
+      self::$_nullObject, self::$_nullObject, self::$_nullObject, self::$_nullObject,
       'civicrm_permission'
     );
   }

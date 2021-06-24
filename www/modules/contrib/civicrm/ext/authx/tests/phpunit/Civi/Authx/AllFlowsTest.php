@@ -34,7 +34,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    */
   protected $quirks = [];
 
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void {
     \Civi\Test::e2e()
       ->installMe(__DIR__)
       ->callback(
@@ -46,7 +46,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
       ->apply();
   }
 
-  public function setUp() {
+  public function setUp(): void {
     $quirks = [
       'Joomla' => ['sendsExcessCookies', 'authErrorShowsForm'],
       'WordPress' => ['sendsExcessCookies'],
@@ -64,7 +64,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     \Civi::settings()->set('authx_guards', []);
   }
 
-  public function tearDown() {
+  public function tearDown(): void {
     foreach ($this->settingsBackup as $setting => $value) {
       \Civi::settings()->set($setting, $value);
     }
@@ -93,7 +93,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     return $exs;
   }
 
-  public function testAnonymous() {
+  public function testAnonymous(): void {
     $http = $this->createGuzzle(['http_errors' => FALSE]);
 
     /** @var \Psr\Http\Message\RequestInterface $request */
@@ -113,7 +113,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    * @throws \GuzzleHttp\Exception\GuzzleException
    * @dataProvider getStatelessExamples
    */
-  public function testStatelessContactOnly($credType, $flowType) {
+  public function testStatelessContactOnly($credType, $flowType): void {
     if ($credType === 'pass') {
       $this->assertTrue(TRUE, 'No need to test password credentials with non-user contacts');
       return;
@@ -131,7 +131,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     // Phase 2: Request succeeds if this credential type is enabled
     \Civi::settings()->set("authx_{$flowType}_cred", [$credType]);
     $response = $http->send($request);
-    $this->assertMyContact($this->getLebowskiCID(), NULL, $response);
+    $this->assertMyContact($this->getLebowskiCID(), NULL, $credType, $flowType, $response);
     if (!in_array('sendsExcessCookies', $this->quirks)) {
       $this->assertNoCookies($response);
     }
@@ -148,7 +148,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    * @throws \GuzzleHttp\Exception\GuzzleException
    * @dataProvider getStatelessExamples
    */
-  public function testStatelessUserContact($credType, $flowType) {
+  public function testStatelessUserContact($credType, $flowType): void {
     $http = $this->createGuzzle(['http_errors' => FALSE]);
 
     /** @var \Psr\Http\Message\RequestInterface $request */
@@ -162,7 +162,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     // Phase 2: Request succeeds if this credential type is enabled
     \Civi::settings()->set("authx_{$flowType}_cred", [$credType]);
     $response = $http->send($request);
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $credType, $flowType, $response);
     if (!in_array('sendsExcessCookies', $this->quirks)) {
       $this->assertNoCookies($response);
     }
@@ -196,12 +196,12 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     // Request OK. Policy requires site_key, and we have one.
     \Civi::settings()->set("authx_guards", ['site_key']);
     $response = $http->send($request->withHeader('X-Civi-Key', CIVICRM_SITE_KEY));
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $credType, $flowType, $response);
 
     // Request OK. Policy does not require site_key, and we do not have one
     \Civi::settings()->set("authx_guards", []);
     $response = $http->send($request);
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $credType, $flowType, $response);
 
     // Request fails. Policy requires site_key, but we don't have the wrong value.
     \Civi::settings()->set("authx_guards", ['site_key']);
@@ -224,7 +224,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    * @throws \GuzzleHttp\Exception\GuzzleException
    * @dataProvider getCredTypes
    */
-  public function testStatefulLoginAllowed($credType) {
+  public function testStatefulLoginAllowed($credType): void {
     $flowType = 'login';
     $credFunc = 'cred' . ucfirst(preg_replace(';[^a-zA-Z0-9];', '', $credType));
 
@@ -240,12 +240,12 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     $response = $http->post('civicrm/authx/login', [
       'form_params' => ['_authx' => $this->$credFunc($this->getDemoCID())],
     ]);
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $credType, $flowType, $response);
     $this->assertHasCookies($response);
 
     // Phase 3: We can use cookies to request other pages
     $response = $http->get('civicrm/authx/id');
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $credType, $flowType, $response);
     $response = $http->get('civicrm/user');
     $this->assertDashboardOk();
 
@@ -270,7 +270,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    * @throws \GuzzleHttp\Exception\GuzzleException
    * @dataProvider getCredTypes
    */
-  public function testStatefulLoginProhibited($credType) {
+  public function testStatefulLoginProhibited($credType): void {
     $flowType = 'login';
     $http = $this->createGuzzle(['http_errors' => FALSE]);
     $credFunc = 'cred' . ucfirst(preg_replace(';[^a-zA-Z0-9];', '', $credType));
@@ -292,7 +292,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    * @throws \GuzzleHttp\Exception\GuzzleException
    * @dataProvider getCredTypes
    */
-  public function testStatefulAutoAllowed($credType) {
+  public function testStatefulAutoAllowed($credType): void {
     $flowType = 'auto';
     $cookieJar = new CookieJar();
     $http = $this->createGuzzle(['http_errors' => FALSE, 'cookies' => $cookieJar]);
@@ -304,7 +304,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     $this->assertEquals(0, $cookieJar->count());
     $response = $http->send($request);
     $this->assertTrue($cookieJar->count() >= 1);
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $credType, $flowType, $response);
 
     // FIXME: Assert that re-using cookies yields correct result.
   }
@@ -319,7 +319,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    * @throws \GuzzleHttp\Exception\GuzzleException
    * @dataProvider getCredTypes
    */
-  public function testStatefulAutoProhibited($credType) {
+  public function testStatefulAutoProhibited($credType): void {
     $flowType = 'auto';
     $cookieJar = new CookieJar();
     $http = $this->createGuzzle(['http_errors' => FALSE, 'cookies' => $cookieJar]);
@@ -339,7 +339,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    * @throws \CiviCRM_API3_Exception
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function testStatefulStatelessOverlap() {
+  public function testStatefulStatelessOverlap(): void {
     \Civi::settings()->set("authx_login_cred", ['api_key']);
     \Civi::settings()->set("authx_header_cred", ['api_key']);
 
@@ -350,10 +350,10 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     $response = $http->post('civicrm/authx/login', [
       'form_params' => ['_authx' => $this->credApikey($this->getDemoCID())],
     ]);
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), 'api_key', 'login', $response);
     $this->assertHasCookies($response);
     $response = $http->get('civicrm/authx/id');
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), 'api_key', 'login', $response);
 
     // Phase 2: Make a single, stateless request with different creds
     /** @var \Psr\Http\Message\RequestInterface $request */
@@ -367,7 +367,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
 
     // Phase 3: Original session is still valid
     $response = $http->get('civicrm/authx/id');
-    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response);
+    $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), 'api_key', 'login', $response);
   }
 
   /**
@@ -377,7 +377,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    * @throws \CiviCRM_API3_Exception
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
-  public function testMultipleStateless() {
+  public function testMultipleStateless(): void {
     \Civi::settings()->set("authx_header_cred", ['api_key']);
     $cookieJar = new CookieJar();
     $http = $this->createGuzzle(['http_errors' => FALSE, 'cookies' => $cookieJar]);
@@ -393,7 +393,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
         case 'L':
           $request = $this->applyAuth($this->requestMyContact(), 'api_key', 'header', $this->getLebowskiCID());
           $response = $http->send($request);
-          $this->assertMyContact($this->getLebowskiCID(), NULL, $response, 'Expected Lebowski in step #' . $i);
+          $this->assertMyContact($this->getLebowskiCID(), NULL, 'api_key', 'header', $response, 'Expected Lebowski in step #' . $i);
           $actualSteps .= 'L';
           break;
 
@@ -407,7 +407,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
         case 'D':
           $request = $this->applyAuth($this->requestMyContact(), 'api_key', 'header', $this->getDemoCID());
           $response = $http->send($request);
-          $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), $response, 'Expected demo in step #' . $i);
+          $this->assertMyContact($this->getDemoCID(), $this->getDemoUID(), 'api_key', 'header', $response, 'Expected demo in step #' . $i);
           $actualSteps .= 'D';
           break;
 
@@ -463,15 +463,23 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    *   The expected contact ID
    * @param int|null $uid
    *   The expected user ID
+   * @param string $credType
+   * @param string $flow
    * @param \Psr\Http\Message\ResponseInterface $response
    */
-  public function assertMyContact($cid, $uid, ResponseInterface $response) {
+  public function assertMyContact($cid, $uid, $credType, $flow, ResponseInterface $response): void {
     $this->assertContentType('application/json', $response);
     $this->assertStatusCode(200, $response);
     $j = json_decode((string) $response->getBody(), 1);
     $formattedFailure = $this->formatFailure($response);
     $this->assertEquals($cid, $j['contact_id'], "Response did not give expected contact ID\n" . $formattedFailure);
     $this->assertEquals($uid, $j['user_id'], "Response did not give expected user ID\n" . $formattedFailure);
+    if ($flow !== NULL) {
+      $this->assertEquals($flow, $j['flow'], "Response did not give expected flow type\n" . $formattedFailure);
+    }
+    if ($credType !== NULL) {
+      $this->assertEquals($credType, $j['cred'], "Response did not give expected cred type\n" . $formattedFailure);
+    }
   }
 
   /**
@@ -479,7 +487,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    *
    * @param \Psr\Http\Message\ResponseInterface $response
    */
-  public function assertAnonymousContact(ResponseInterface $response) {
+  public function assertAnonymousContact(ResponseInterface $response): void {
     $formattedFailure = $this->formatFailure($response);
     $this->assertContentType('application/json', $response);
     $this->assertStatusCode(200, $response);
@@ -496,7 +504,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
    *
    * @param \Psr\Http\Message\ResponseInterface $response
    */
-  public function assertDashboardUnauthorized($response = NULL) {
+  public function assertDashboardUnauthorized($response = NULL): void {
     $response = $this->resolveResponse($response);
     if (!in_array('authErrorShowsForm', $this->quirks)) {
       $this->assertStatusCode(403, $response);
@@ -507,7 +515,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
     );
   }
 
-  public function assertDashboardOk($response = NULL) {
+  public function assertDashboardOk($response = NULL): void {
     $response = $this->resolveResponse($response);
     $this->assertStatusCode(200, $response);
     $this->assertContentType('text/html', $response);
@@ -617,7 +625,7 @@ class AllFlowsTest extends \PHPUnit\Framework\TestCase implements EndToEndInterf
   /**
    * @param \Psr\Http\Message\ResponseInterface $response
    */
-  private function assertFailedDueToProhibition($response) {
+  private function assertFailedDueToProhibition($response): void {
     $this->assertBodyRegexp(';HTTP 401;', $response);
     $this->assertContentType('text/plain', $response);
     if (!in_array('sendsExcessCookies', $this->quirks)) {

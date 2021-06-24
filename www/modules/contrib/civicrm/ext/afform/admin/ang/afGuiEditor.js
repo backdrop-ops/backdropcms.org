@@ -6,15 +6,17 @@
     .service('afGui', function(crmApi4, $parse, $q) {
 
       // Parse strings of javascript that php couldn't interpret
+      // TODO: Figure out which attributes actually need to be evaluated, as a whitelist would be less error-prone than a blacklist
+      var doNotEval = ['filters'];
       function evaluate(collection) {
         _.each(collection, function(item) {
           if (_.isPlainObject(item)) {
             evaluate(item['#children']);
-            _.each(item, function(node, idx) {
-              if (_.isString(node)) {
-                var str = _.trim(node);
+            _.each(item, function(prop, key) {
+              if (_.isString(prop) && !_.includes(doNotEval, key)) {
+                var str = _.trim(prop);
                 if (str[0] === '{' || str[0] === '[' || str.slice(0, 3) === 'ts(') {
-                  item[idx] = $parse(str)({ts: CRM.ts('afform')});
+                  item[key] = $parse(str)({ts: CRM.ts('afform')});
                 }
               }
             });
@@ -172,12 +174,28 @@
       };
     });
 
-  // Shoehorn in a non-angular widget for picking icons
   $(function() {
+    // Shoehorn in a non-angular widget for picking icons
     $('#crm-container').append('<div style="display:none"><input id="af-gui-icon-picker"></div>');
     CRM.loadScript(CRM.config.resourceBase + 'js/jquery/jquery.crmIconPicker.js').done(function() {
       $('#af-gui-icon-picker').crmIconPicker();
     });
+    // Add css class while dragging
+    $('#crm-container')
+      .on('sortover', function(e) {
+        $('.af-gui-container').removeClass('af-gui-dragtarget');
+        $(e.target).closest('.af-gui-container').addClass('af-gui-dragtarget');
+      })
+      .on('sortout', '.af-gui-container', function() {
+        $(this).removeClass('af-gui-dragtarget');
+      })
+      .on('sortstart', '#afGuiEditor', function() {
+        $('#afGuiEditor').addClass('af-gui-dragging');
+      })
+      .on('sortstop', '#afGuiEditor', function() {
+        $('.af-gui-dragging').removeClass('af-gui-dragging');
+        $('.af-gui-dragtarget').removeClass('af-gui-dragtarget');
+      });
   });
 
   // Connect bootstrap dropdown.js with angular

@@ -21,13 +21,9 @@ namespace Civi\Api4\Utils;
 
 use CRM_Core_DAO_AllCoreTables as AllCoreTables;
 
-require_once 'api/v3/utils.php';
-
 class CoreUtil {
 
   /**
-   * todo this class should not rely on api3 code
-   *
    * @param $entityName
    *
    * @return \CRM_Core_DAO|string
@@ -38,7 +34,28 @@ class CoreUtil {
     if ($entityName === 'CustomValue' || strpos($entityName, 'Custom_') === 0) {
       return 'CRM_Core_BAO_CustomValue';
     }
-    return \_civicrm_api3_get_BAO($entityName);
+    $dao = self::getApiClass($entityName)::getInfo()['dao'] ?? NULL;
+    if (!$dao) {
+      return NULL;
+    }
+    $bao = str_replace("DAO", "BAO", $dao);
+    // Check if this entity actually has a BAO. Fall back on the DAO if not.
+    $file = strtr($bao, '_', '/') . '.php';
+    return stream_resolve_include_path($file) ? $bao : $dao;
+  }
+
+  /**
+   * @param $entityName
+   * @return string|\Civi\Api4\Generic\AbstractEntity
+   */
+  public static function getApiClass($entityName) {
+    if (strpos($entityName, 'Custom_') === 0) {
+      $groupName = substr($entityName, 7);
+      return self::isCustomEntity($groupName) ? 'Civi\Api4\CustomValue' : NULL;
+    }
+    // Because "Case" is a reserved php keyword
+    $className = 'Civi\Api4\\' . ($entityName === 'Case' ? 'CiviCase' : $entityName);
+    return class_exists($className) ? $className : NULL;
   }
 
   /**
@@ -64,11 +81,14 @@ class CoreUtil {
    */
   public static function getApiNameFromTableName($tableName) {
     $entityName = AllCoreTables::getBriefName(AllCoreTables::getClassForTable($tableName));
-    if (!$entityName) {
-      $customGroup = \CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $tableName, 'name', 'table_name');
-      $entityName = $customGroup ? "Custom_$customGroup" : NULL;
+    // Real entities
+    if ($entityName) {
+      // Verify class exists
+      return self::getApiClass($entityName) ? $entityName : NULL;
     }
-    return $entityName;
+    // Multi-value custom group pseudo-entities
+    $customGroup = \CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $tableName, 'name', 'table_name');
+    return self::isCustomEntity($customGroup) ? "Custom_$customGroup" : NULL;
   }
 
   /**
@@ -118,6 +138,17 @@ class CoreUtil {
       ];
     }
     return NULL;
+  }
+
+  /**
+   * Checks if a custom group exists and is multivalued
+   *
+   * @param $customGroupName
+   * @return bool
+   * @throws \CRM_Core_Exception
+   */
+  private static function isCustomEntity($customGroupName) {
+    return $customGroupName && \CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $customGroupName, 'is_multiple', 'name');
   }
 
 }

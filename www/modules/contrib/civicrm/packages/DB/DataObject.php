@@ -1167,7 +1167,7 @@ class DB_DataObject extends DB_DataObject_Overload
             }
 
             // CRM-14986 starts
-            if (($v & DB_DATAOBJECT_DATE) || ($v & DB_DATAOBJECT_TIME) || $v & DB_DATAOBJECT_MYSQLTIMESTAMP) {
+            if (($v & DB_DATAOBJECT_DATE) || ($v & DB_DATAOBJECT_TIME) || ($v & DB_DATAOBJECT_MYSQLTIMESTAMP)) {
               if (strpos($this->$k, '-') !== FALSE) {
                 /*
                  * per CRM-14986 we have been having ongoing problems with the format returned from $dao->find(TRUE) NOT
@@ -1183,9 +1183,9 @@ class DB_DataObject extends DB_DataObject_Overload
             // CRM-14986 ends
 
             // DATE is empty... on a col. that can be null..
-            // note: this may be usefull for time as well..
+            // Also useful for MYSQLTIMESTAMP to stop NO_ZERO_DATE errors
             if (!$this->$k &&
-                    (($v & DB_DATAOBJECT_DATE) || ($v & DB_DATAOBJECT_TIME)) &&
+                    (($v & DB_DATAOBJECT_DATE) || ($v & DB_DATAOBJECT_TIME) || ($v & DB_DATAOBJECT_MYSQLTIMESTAMP)) &&
                     !($v & DB_DATAOBJECT_NOTNULL)) {
 
                 $rightq .= " NULL ";

@@ -396,6 +396,7 @@ class CRM_Contact_BAO_Query {
     'im',
     'address_name',
     'master_id',
+    'location_type',
   ];
 
   /**
@@ -1276,6 +1277,14 @@ class CRM_Contact_BAO_Query {
                   $this->_pseudoConstantsSelect["{$name}-{$elementFullName}"]['table'] = $tName;
                   $this->_pseudoConstantsSelect["{$name}-{$elementFullName}"]['join']
                     = "\nLEFT JOIN $tableName `$tName` ON `$tName`.id = $aName.state_province_id";
+                  if ($addWhere) {
+                    $this->_whereTables["{$name}-address"] = $addressJoin;
+                  }
+                  break;
+
+                case 'civicrm_location_type':
+                  $this->_tables[$tName] = "\nLEFT JOIN $tableName `$tName` ON `$tName`.id = $aName.location_type_id";
+
                   if ($addWhere) {
                     $this->_whereTables["{$name}-address"] = $addressJoin;
                   }
@@ -3284,7 +3293,8 @@ WHERE  $smartGroupClause
     $tagTree = CRM_Core_BAO_Tag::getChildTags();
     foreach ((array) $value as $tagID) {
       if (!empty($tagTree[$tagID])) {
-        $value = array_unique(array_merge($value, $tagTree[$tagID]));
+        // make sure value is an array here (see CORE-2502)
+        $value = array_unique(array_merge((array) $value, $tagTree[$tagID]));
       }
     }
 
@@ -5782,7 +5792,7 @@ INNER JOIN civicrm_relationship displayRelType ON ( displayRelType.contact_id_a 
 INNER JOIN $tableName transform_temp ON ( transform_temp.contact_id = displayRelType.contact_id_a OR transform_temp.contact_id = displayRelType.contact_id_b )
 ";
         $qcache['where'] = "
-WHERE displayRelType.relationship_type_id = {$this->_displayRelationshipType}
+AND displayRelType.relationship_type_id = {$this->_displayRelationshipType}
 AND   displayRelType.is_active = 1
 ";
       }
@@ -5803,7 +5813,7 @@ INNER JOIN $tableName transform_temp ON ( transform_temp.contact_id = displayRel
 ";
         }
         $qcache['where'] = "
-WHERE displayRelType.relationship_type_id = $relType
+AND displayRelType.relationship_type_id = $relType
 AND   displayRelType.is_active = 1
 ";
       }
@@ -5827,10 +5837,14 @@ AND   displayRelType.is_active = 1
       else {
         $from .= $qcache['from'];
       }
-      $where = $qcache['where'];
+      if (!strlen($where)) {
+        $where = " WHERE 1 ";
+      }
+      $where .= $qcache['where'];
       if (!empty($this->_tables['civicrm_case'])) {
         // Change the join on CiviCRM case so that it joins on the right contac from the relationship.
         $from = str_replace("ON civicrm_case_contact.contact_id = contact_a.id", "ON civicrm_case_contact.contact_id = transform_temp.contact_id", $from);
+        $where = str_replace("AND civicrm_case_contact.contact_id = contact_a.id", "AND civicrm_case_contact.contact_id = transform_temp.contact_id", $where);
         $where .= " AND displayRelType.case_id = civicrm_case_contact.case_id ";
       }
       if (!empty($this->_permissionFromClause) && !stripos($from, 'aclContactCache')) {

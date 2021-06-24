@@ -10,7 +10,7 @@ namespace CiviBackdrop {
    */
   class HookTest extends \PHPUnit\Framework\TestCase implements EndToEndInterface {
 
-    public function testFoo() {
+    public function testFoo(): void {
       $arg1 = 'hello';
       $arg2 = array(
         'foo' => 123,
