@@ -202,7 +202,7 @@ class CRM_Member_Form_MembershipRenewal extends CRM_Member_Form {
     $defaults['total_amount'] = CRM_Utils_Money::formatLocaleNumericRoundedForDefaultCurrency(CRM_Core_DAO::getFieldValue('CRM_Member_DAO_MembershipType',
       $this->_memType,
       'minimum_fee'
-    ));
+    ) ?? 0);
 
     $defaults['record_contribution'] = 0;
     $defaults['num_terms'] = 1;
@@ -276,7 +276,7 @@ class CRM_Member_Form_MembershipRenewal extends CRM_Member_Form {
 
         //CRM-16950
         $taxAmount = NULL;
-        $totalAmount = $values['minimum_fee'] ?? NULL;
+        $totalAmount = $values['minimum_fee'] ?? 0;
         // @todo - feels a bug - we use taxRate from the form default rather than from the specified type?!?
         if ($this->getTaxRateForFinancialType($values['financial_type_id'])) {
           $taxAmount = ($taxRate / 100) * CRM_Utils_Array::value('minimum_fee', $values);
@@ -458,7 +458,7 @@ class CRM_Member_Form_MembershipRenewal extends CRM_Member_Form {
    * @throws \CRM_Core_Exception
    * @throws \CiviCRM_API3_Exception
    */
-  public function postProcess() {
+  public function postProcess(): void {
     // get the submitted form values.
     $this->_params = $this->controller->exportValues($this->_name);
     $this->assignBillingName();
@@ -677,6 +677,10 @@ class CRM_Member_Form_MembershipRenewal extends CRM_Member_Form {
       $membership->membership_type_id
     ));
     $this->assign('customValues', $customValues);
+
+    $membership_status = CRM_Member_PseudoConstant::membershipStatus($membership->status_id, NULL, 'label');
+    $this->assign('mem_status', $membership_status);
+    $this->assign('mem_join_date', CRM_Utils_Date::formatDateOnlyLong($membership->join_date));
     $this->assign('mem_start_date', CRM_Utils_Date::formatDateOnlyLong($membership->start_date));
     $this->assign('mem_end_date', CRM_Utils_Date::formatDateOnlyLong($membership->end_date));
     if ($this->_mode) {

@@ -96,6 +96,11 @@ class SpecGatherer {
       if (array_key_exists('contactType', $DAOField) && !empty($values['contact_type']) && $DAOField['contactType'] != $values['contact_type']) {
         continue;
       }
+      if (!empty($DAOField['component']) &&
+        !in_array($DAOField['component'], \Civi::settings()->get('enable_components'), TRUE)
+      ) {
+        continue;
+      }
       if ($action !== 'create' || isset($DAOField['default'])) {
         $DAOField['required'] = FALSE;
       }
@@ -132,7 +137,7 @@ class SpecGatherer {
     $customFields = CustomField::get(FALSE)
       ->addWhere('custom_group.extends', 'IN', $extends)
       ->addWhere('custom_group.is_multiple', '=', '0')
-      ->setSelect(['custom_group.name', '*'])
+      ->setSelect(['custom_group.name', 'custom_group.title', '*'])
       ->execute();
 
     foreach ($customFields as $fieldArray) {
@@ -148,7 +153,7 @@ class SpecGatherer {
   private function getCustomGroupFields($customGroup, RequestSpec $specification) {
     $customFields = CustomField::get(FALSE)
       ->addWhere('custom_group.name', '=', $customGroup)
-      ->setSelect(['custom_group.name', 'custom_group.table_name', '*'])
+      ->setSelect(['custom_group.name', 'custom_group.table_name', 'custom_group.title', '*'])
       ->execute();
 
     foreach ($customFields as $fieldArray) {

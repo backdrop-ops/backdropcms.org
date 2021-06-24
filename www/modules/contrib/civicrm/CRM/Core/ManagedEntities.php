@@ -237,7 +237,7 @@ class CRM_Core_ManagedEntities {
    */
   public function insertNewEntity($todo) {
     $result = civicrm_api($todo['entity'], 'create', $todo['params']);
-    if ($result['is_error']) {
+    if (!empty($result['is_error'])) {
       $this->onApiError($todo['entity'], 'create', $todo['params'], $result);
     }
 
@@ -245,7 +245,9 @@ class CRM_Core_ManagedEntities {
     $dao->module = $todo['module'];
     $dao->name = $todo['name'];
     $dao->entity_type = $todo['entity'];
-    $dao->entity_id = $result['id'];
+    // A fatal error will result if there is no valid id but if
+    // this is v4 api we might need to access it via ->first().
+    $dao->entity_id = $result['id'] ?? $result->first()['id'];
     $dao->cleanup = $todo['cleanup'] ?? NULL;
     $dao->save();
   }
@@ -474,7 +476,7 @@ class CRM_Core_ManagedEntities {
       'params' => $params,
       'result' => $result,
     ]);
-    throw new Exception('API error: ' . $result['error_message']);
+    throw new Exception('API error: ' . $result['error_message'] . ' on ' . $entity . '.' . $action);
   }
 
 }

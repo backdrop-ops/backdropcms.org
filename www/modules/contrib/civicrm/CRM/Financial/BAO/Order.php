@@ -79,6 +79,13 @@ class CRM_Financial_BAO_Order {
   protected $priceFieldMetadata = [];
 
   /**
+   * Metadata for price sets.
+   *
+   * @var array
+   */
+  protected $priceSetMetadata = [];
+
+  /**
    * Get form object.
    *
    * @return \CRM_Core_Form|NULL
@@ -245,12 +252,38 @@ class CRM_Financial_BAO_Order {
    */
   public function getPriceFieldsMetadata(): array {
     if (empty($this->priceFieldMetadata)) {
-      $this->priceFieldMetadata = CRM_Price_BAO_PriceSet::getCachedPriceSetDetail($this->getPriceSetID())['fields'];
+      $this->getPriceSetMetadata();
       if ($this->getForm()) {
         CRM_Utils_Hook::buildAmount($this->form->getFormContext(), $this->form, $this->priceFieldMetadata);
       }
     }
     return $this->priceFieldMetadata;
+  }
+
+  /**
+   * Get the metadata for the fields in the price set.
+   *
+   * @return array
+   */
+  public function getPriceSetMetadata(): array {
+    if (empty($this->priceSetMetadata)) {
+      $priceSetMetadata = CRM_Price_BAO_PriceSet::getCachedPriceSetDetail($this->getPriceSetID());
+      $this->priceFieldMetadata = $priceSetMetadata['fields'];
+      unset($priceSetMetadata['fields']);
+      $this->priceSetMetadata = $priceSetMetadata;
+    }
+    return $this->priceSetMetadata;
+  }
+
+  /**
+   * Get the financial type id for the order.
+   *
+   * This may differ to the line items....
+   *
+   * @return int
+   */
+  public function getFinancialTypeID(): int {
+    return (int) $this->getOverrideFinancialTypeID() ?: $this->getPriceSetMetadata()['financial_type_id'];
   }
 
   /**
@@ -284,6 +317,59 @@ class CRM_Financial_BAO_Order {
       $this->lineItems = $this->calculateLineItems();
     }
     return $this->lineItems;
+  }
+
+  /**
+   * Get line items that specifically relate to memberships.
+   *
+   * return array
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
+  public function getMembershipLineItems():array {
+    $lines = $this->getLineItems();
+    foreach ($lines as $index => $line) {
+      if (empty($line['membership_type_id'])) {
+        unset($lines[$index]);
+        continue;
+      }
+      if (empty($line['membership_num_terms'])) {
+        $lines[$index]['membership_num_terms'] = 1;
+      }
+    }
+    return $lines;
+  }
+
+  /**
+   * Get an array of all membership types included in the order.
+   *
+   * @return array
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
+  public function getMembershipTypes(): array {
+    $types = [];
+    foreach ($this->getMembershipLineItems() as $line) {
+      $types[$line['membership_type_id']] = CRM_Member_BAO_MembershipType::getMembershipType((int) $line['membership_type_id']);
+    }
+    return $types;
+  }
+
+  /**
+   * Get an array of all membership types included in the order.
+   *
+   * @return array
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
+  public function getRenewableMembershipTypes(): array {
+    $types = [];
+    foreach ($this->getMembershipTypes() as $id => $type) {
+      if (!empty($type['auto_renew'])) {
+        $types[$id] = $type;
+      }
+    }
+    return $types;
   }
 
   /**

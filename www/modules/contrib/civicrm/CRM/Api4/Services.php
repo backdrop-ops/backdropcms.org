@@ -43,9 +43,10 @@ class CRM_Api4_Services {
     $subscribers = $container->findTaggedServiceIds('event_subscriber');
 
     foreach (array_keys($subscribers) as $subscriber) {
+      $getSubscribedEvents = [$container->findDefinition($subscriber)->getClass(), 'getSubscribedEvents'];
       $dispatcher->addMethodCall(
-        'addSubscriber',
-        [new Reference($subscriber)]
+        'addSubscriberServiceMap',
+        [$subscriber, $getSubscribedEvents()]
       );
     }
 
@@ -93,6 +94,7 @@ class CRM_Api4_Services {
           if ($serviceClass->isInstantiable()) {
             $definition = $container->register(str_replace('\\', '_', $serviceName), $serviceName);
             $definition->addTag($tag);
+            $definition->setPublic(TRUE);
           }
         }
         $container->addResource($resource);

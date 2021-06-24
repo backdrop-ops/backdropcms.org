@@ -1231,10 +1231,8 @@ WHERE civicrm_event.is_active = 1
           $sendTemplateParams['bcc'] = CRM_Utils_Array::value('bcc_confirm',
             $values['event']
           );
-          // append invoice pdf to email
-          $prefixValue = Civi::settings()->get('contribution_invoice_settings');
-          $invoicing = $prefixValue['invoicing'] ?? NULL;
-          if (isset($invoicing) && isset($prefixValue['is_email_pdf']) && !empty($values['contributionId'])) {
+
+          if (Civi::settings()->get('invoicing') && Civi::settings()->get('invoice_is_email_pdf') && !empty($values['contributionId'])) {
             $sendTemplateParams['isEmailPdf'] = TRUE;
             $sendTemplateParams['contributionId'] = $values['contributionId'];
           }
@@ -1322,7 +1320,7 @@ WHERE civicrm_event.is_active = 1
         $groupTitle = NULL;
         foreach ($fields as $k => $v) {
           if (!$groupTitle) {
-            $groupTitle = $v['groupTitle'];
+            $groupTitle = $v['groupDisplayTitle'];
           }
           // suppress all file fields from display
           if (

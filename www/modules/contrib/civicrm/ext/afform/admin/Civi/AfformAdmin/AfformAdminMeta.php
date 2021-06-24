@@ -18,10 +18,10 @@ class AfformAdminMeta {
       ->execute();
     // Pluralize tabs (too bad option groups only store a single label)
     $plurals = [
-      'form' => ts('Custom Forms'),
-      'search' => ts('Search Displays'),
-      'block' => ts('Field Blocks'),
-      'system' => ts('System Forms'),
+      'form' => E::ts('Custom Forms'),
+      'search' => E::ts('Search Forms'),
+      'block' => E::ts('Field Blocks'),
+      'system' => E::ts('System Forms'),
     ];
     foreach ($afformTypes as $index => $type) {
       $afformTypes[$index]['plural'] = $plurals[$type['name']] ?? \CRM_Utils_String::pluralize($type['label']);
@@ -84,7 +84,7 @@ class AfformAdminMeta {
       'includeCustom' => TRUE,
       'loadOptions' => ['id', 'label'],
       'action' => 'create',
-      'select' => ['name', 'label', 'input_type', 'input_attrs', 'required', 'options', 'help_pre', 'help_post', 'serialize', 'data_type'],
+      'select' => ['name', 'label', 'input_type', 'input_attrs', 'required', 'options', 'help_pre', 'help_post', 'serialize', 'data_type', 'fk_entity'],
       'where' => [['input_type', 'IS NOT NULL']],
     ];
     if (in_array($entityName, ['Individual', 'Household', 'Organization'])) {
@@ -233,8 +233,8 @@ class AfformAdminMeta {
         'description' => $perm['description'] ?? NULL,
       ];
     }
-
-    $data['dateRanges'] = \CRM_Utils_Array::makeNonAssociative(\CRM_Core_OptionGroup::values('relative_date_filters'), 'id', 'label');
+    $dateRanges = \CRM_Utils_Array::makeNonAssociative(\CRM_Core_OptionGroup::values('relative_date_filters'), 'id', 'label');
+    $data['dateRanges'] = array_merge([['id' => '{}', 'label' => E::ts('Choose Date Range')]], $dateRanges);
 
     return $data;
   }

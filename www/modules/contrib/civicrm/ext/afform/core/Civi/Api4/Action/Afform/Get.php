@@ -4,6 +4,7 @@ namespace Civi\Api4\Action\Afform;
 
 use Civi\Api4\CustomField;
 use Civi\Api4\CustomGroup;
+use CRM_Afform_ExtensionUtil as E;
 
 /**
  * @inheritDoc
@@ -127,10 +128,11 @@ class Get extends \Civi\Api4\Generic\BasicGetAction {
         'name' => $name,
         'type' => 'block',
         'requires' => [],
-        'title' => ts('%1 block (default)', [1 => $custom['title']]),
+        'title' => E::ts('%1 block (default)', [1 => $custom['title']]),
         'description' => '',
         'is_dashlet' => FALSE,
         'is_public' => FALSE,
+        'is_token' => FALSE,
         'permission' => 'access CiviCRM',
         'join' => 'Custom_' . $custom['name'],
         'block' => $custom['extends'],

@@ -25,6 +25,7 @@ class PropertyBag implements \ArrayAccess {
   protected $props = ['default' => []];
 
   protected static $propMap = [
+    'amount'                      => TRUE,
     'billingStreetAddress'        => TRUE,
     'billingSupplementalAddress1' => TRUE,
     'billingSupplementalAddress2' => TRUE,
@@ -62,6 +63,8 @@ class PropertyBag implements \ArrayAccess {
     'frequency_interval'          => 'recurFrequencyInterval',
     'recurFrequencyUnit'          => TRUE,
     'frequency_unit'              => 'recurFrequencyUnit',
+    'recurInstallments'           => TRUE,
+    'installments'                => 'recurInstallments',
     'subscriptionId'              => 'recurProcessorID',
     'recurProcessorID'            => TRUE,
     'transactionID'               => TRUE,
@@ -75,8 +78,29 @@ class PropertyBag implements \ArrayAccess {
    * @var bool
    * Temporary, internal variable to help ease transition to PropertyBag.
    * Used by cast() to suppress legacy warnings.
+   * For paymentprocessors that have not converted to propertyBag we need to support "legacy" properties - eg. "is_recur"
+   *   without warnings. Setting this allows us to pass a propertyBag into doPayment() and expect it to "work" with
+   *   existing payment processors.
    */
-  protected $suppressLegacyWarnings = FALSE;
+  protected $suppressLegacyWarnings = TRUE;
+
+  /**
+   * Get the value of the suppressLegacyWarnings parameter
+   * @return bool
+   */
+  public function getSuppressLegacyWarnings() {
+    return $this->suppressLegacyWarnings;
+  }
+
+  /**
+   * Set the suppressLegacyWarnings parameter - useful for unit tests.
+   * Eg. you could set to FALSE for unit tests on a paymentprocessor to capture use of legacy keys in that processor
+   * code.
+   * @param bool $suppressLegacyWarnings
+   */
+  public function setSuppressLegacyWarnings(bool $suppressLegacyWarnings) {
+    $this->suppressLegacyWarnings = $suppressLegacyWarnings;
+  }
 
   /**
    * Get the property bag.
@@ -988,6 +1012,31 @@ class PropertyBag implements \ArrayAccess {
       throw new \InvalidArgumentException("recurFrequencyUnit must be day|week|month|year");
     }
     return $this->set('recurFrequencyUnit', $label, $recurFrequencyUnit);
+  }
+
+  /**
+   * @param string $label
+   *
+   * @return int
+   */
+  public function getRecurInstallments($label = 'default') {
+    return $this->get('recurInstallments', $label);
+  }
+
+  /**
+   * @param int $recurInstallments
+   * @param string $label
+   *
+   * @return \Civi\Payment\PropertyBag
+   * @throws \CRM_Core_Exception
+   */
+  public function setRecurInstallments($recurInstallments, $label = 'default') {
+    // Counts zero as positive which is ok - means no installments
+    if (!\CRM_Utils_Type::validate($recurInstallments, 'Positive')) {
+      throw new InvalidArgumentException('recurInstallments must be 0 or a positive integer');
+    }
+
+    return $this->set('recurInstallments', $label, (int) $recurInstallments);
   }
 
   /**

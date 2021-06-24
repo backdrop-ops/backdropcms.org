@@ -13,11 +13,14 @@
       defn: '='
     },
     controller: function($scope, $element, crmApi4) {
-      var ts = $scope.ts = CRM.ts('afform'),
+      var ts = $scope.ts = CRM.ts('org.civicrm.afform'),
         ctrl = this,
         boolOptions = [{id: true, label: ts('Yes')}, {id: false, label: ts('No')}],
         // Only used for is_primary radio button
         noOptions = [{id: true, label: ''}];
+
+      // Attributes for each of the low & high date fields when using search_range
+      this.inputAttrs = [];
 
       this.$onInit = function() {
         var closestController = $($element).closest('[af-fieldset],[af-join],[af-repeat-item]');
@@ -25,6 +28,27 @@
         $scope.fieldId = ctrl.fieldName + '-' + id++;
 
         $element.addClass('af-field-type-' + _.kebabCase(ctrl.defn.input_type));
+
+
+        if (ctrl.defn.search_range) {
+          // Initialize value as object unless using relative date select
+          var initialVal = $scope.dataProvider.getFieldData()[ctrl.fieldName];
+          if (!_.isArray($scope.dataProvider.getFieldData()[ctrl.fieldName]) &&
+            (ctrl.defn.input_type !== 'Select' || !ctrl.defn.is_date || initialVal !== '{}')
+          ) {
+            $scope.dataProvider.getFieldData()[ctrl.fieldName] = {};
+          }
+          // Initialize inputAttrs (only used for datePickers at the moment)
+          if (ctrl.defn.is_date) {
+            this.inputAttrs.push(ctrl.defn.input_attrs || {});
+            for (var i = 1; i <= 2; ++i) {
+              var attrs = _.cloneDeep(ctrl.defn.input_attrs || {});
+              attrs.placeholder = attrs['placeholder' + i];
+              attrs.timePlaceholder = attrs['timePlaceholder' + i];
+              ctrl.inputAttrs.push(attrs);
+            }
+          }
+        }
 
         // is_primary field - watch others in this afRepeat block to ensure only one is selected
         if (ctrl.fieldName === 'is_primary' && 'repeatIndex' in $scope.dataProvider) {
@@ -74,6 +98,41 @@
             result.push({id: opt.id, text: opt.label});
           }, [])
         };
+      };
+
+      // Getter/Setter function for fields of type select.
+      $scope.getSetSelect = function(val) {
+        var currentVal = $scope.dataProvider.getFieldData()[ctrl.fieldName];
+        // Setter
+        if (arguments.length) {
+          if (ctrl.defn.is_date) {
+            // The '{}' string is a placeholder for "choose date range"
+            if (val === '{}') {
+              val = !_.isPlainObject(currentVal) ? {} : currentVal;
+            }
+          }
+          // If search_range, this select is the "low" value (the high value uses ng-model without a getterSetter fn)
+          else if (ctrl.defn.search_range) {
+            return ($scope.dataProvider.getFieldData()[ctrl.fieldName]['>='] = val);
+          }
+          // A multi-select needs to split string value into an array
+          if (ctrl.defn.input_attrs && ctrl.defn.input_attrs.multiple) {
+            val = val ? val.split(',') : [];
+          }
+          return ($scope.dataProvider.getFieldData()[ctrl.fieldName] = val);
+        }
+        // Getter
+        if (_.isArray(currentVal)) {
+          return currentVal.join(',');
+        }
+        if (ctrl.defn.is_date) {
+          return _.isPlainObject(currentVal) ? '{}' : currentVal;
+        }
+        // If search_range, this select is the "low" value (the high value uses ng-model without a getterSetter fn)
+        else if (ctrl.defn.search_range) {
+          return currentVal['>='];
+        }
+        return currentVal;
       };
 
     }

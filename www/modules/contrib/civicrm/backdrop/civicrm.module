@@ -170,6 +170,22 @@ function civicrm_menu_alter(&$items) {
 }
 
 /**
+ * Implements hook_layout_access_info().
+ *
+ * Adding a CiviCRM checksum visibility condition.
+ */
+function civicrm_layout_access_info() {
+  $info = array(
+    'civicrm_checksum' => array(
+      'title' => t('CiviCRM checksum'),
+      'description' => t('Has the page been loaded with a valid CiviCRM checksum?'),
+      'class' => 'CivicrmChecksumLayoutAccess',
+    ),
+  );
+  return $info;
+}
+
+/**
  * Display profile form in tabs on user account
  */
 function civicrm_profile_form($form, &$form_state, $account, $profile_name) {
@@ -920,6 +936,9 @@ function civicrm_autoload_info() {
     'views_handler_argument_civicrm_week' => 'modules/views/civicrm/views_handler_argument_civicrm_week.inc',
     'views_handler_argument_civicrm_year' => 'modules/views/civicrm/views_handler_argument_civicrm_year.inc',
     'views_handler_argument_civicrm_year_month' => 'modules/views/civicrm/views_handler_argument_civicrm_year_month.inc',
+
+    // layout visibility conditions handlers
+    'CivicrmChecksumLayoutAccess' => 'modules/layouts/plugins/access/civicrm_checksum_layout_access.inc',
 
     // Views plugins are mapped in hook_views_plugins() in civicrm.views.inc.
   );

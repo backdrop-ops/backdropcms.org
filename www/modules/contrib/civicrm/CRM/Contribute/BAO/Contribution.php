@@ -10,6 +10,7 @@
  */
 
 use Civi\Api4\Activity;
+use Civi\Api4\ActivityContact;
 use Civi\Api4\Contribution;
 use Civi\Api4\ContributionRecur;
 use Civi\Api4\PaymentProcessor;
@@ -533,11 +534,22 @@ class CRM_Contribute_BAO_Contribution extends CRM_Contribute_DAO_Contribution {
         'id' => $existingActivity['id'] ?? NULL,
       ], $campaignParams);
       if (!$activityParams['id']) {
-        // Don't set target contacts on update as these will have been
-        // correctly created and we risk overwriting them with
-        // 'best guess' params.
         $activityParams['source_contact_id'] = (int) ($params['source_contact_id'] ?? (CRM_Core_Session::getLoggedInContactID() ?: $contribution->contact_id));
         $activityParams['target_contact_id'] = ($activityParams['source_contact_id'] === (int) $contribution->contact_id) ? [] : [$contribution->contact_id];
+      }
+      else {
+        list($sourceContactId, $targetContactId) = self::getActivitySourceAndTarget($activityParams['id']);
+
+        if (empty($targetContactId) && $sourceContactId != $contribution->contact_id) {
+          // If no target contact exists and the source contact is not equal to
+          // the contribution contact, update the source contact
+          $activityParams['source_contact_id'] = $contribution->contact_id;
+        }
+        elseif (isset($targetContactId) && $targetContactId != $contribution->contact_id) {
+          // If a target contact exists and it is not equal to the contribution
+          // contact, update the target contact
+          $activityParams['target_contact_id'] = [$contribution->contact_id];
+        }
       }
       Activity::save(FALSE)->addRecord($activityParams)->execute();
     }
@@ -3458,10 +3470,6 @@ INNER JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_ac
         $trxnParams['payment_processor_id'] = $params['payment_processor'];
       }
 
-      if (isset($fromFinancialAccountId)) {
-        $trxnParams['from_financial_account_id'] = $fromFinancialAccountId;
-      }
-
       // consider external values passed for recording transaction entry
       if (!empty($financialTrxnValues)) {
         $trxnParams = array_merge($trxnParams, $financialTrxnValues);
@@ -5288,7 +5296,7 @@ LIMIT 1;";
     }
     $result = civicrm_api3('Contribution', 'get', ['id' => $id]);
     // lab.c.o mail#46 - show labels, not values, for custom fields with option values.
-    if (!empty($messageToken)) {
+    if (!empty($messageToken['contribution'])) {
       foreach ($result['values'][$id] as $fieldName => $fieldValue) {
         if (strpos($fieldName, 'custom_') === 0 && array_search($fieldName, $messageToken['contribution']) !== FALSE) {
           $result['values'][$id][$fieldName] = CRM_Core_BAO_CustomField::displayValue($result['values'][$id][$fieldName], $fieldName);
@@ -5411,6 +5419,40 @@ LIMIT 1;";
       }
     }
     return $values;
+  }
+
+  /**
+   * Get the activity source and target contacts linked to a contribution
+   *
+   * @param $activityId
+   *
+   * @return array
+   */
+  private static function getActivitySourceAndTarget($activityId): array {
+    $activityContactQuery = ActivityContact::get(FALSE)->setWhere([
+      ['activity_id', '=', $activityId],
+      ['record_type_id:name', 'IN', ['Activity Source', 'Activity Targets']],
+    ])->execute();
+
+    $sourceContactKey = CRM_Core_PseudoConstant::getKey('CRM_Activity_BAO_ActivityContact', 'record_type_id', 'Activity Source');
+    $targetContactKey = CRM_Core_PseudoConstant::getKey('CRM_Activity_BAO_ActivityContact', 'record_type_id', 'Activity Targets');
+
+    $sourceContactId = NULL;
+    $targetContactId = NULL;
+
+    for ($i = 0; $i < $activityContactQuery->count(); $i++) {
+      $record = $activityContactQuery->itemAt($i);
+
+      if ($record['record_type_id'] === $sourceContactKey) {
+        $sourceContactId = $record['contact_id'];
+      }
+
+      if ($record['record_type_id'] === $targetContactKey) {
+        $targetContactId = $record['contact_id'];
+      }
+    }
+
+    return [$sourceContactId, $targetContactId];
   }
 
 }

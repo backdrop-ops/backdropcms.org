@@ -436,11 +436,26 @@ if (!CRM.vars) CRM.vars = {};
           formatResult: formatCrmSelect2,
           formatSelection: formatCrmSelect2
         };
+
       // quickform doesn't support optgroups so here's a hack :(
+      // Instead of using wrapAll or similar that repeatedly appends options to the group and redraw the page (=> very slow on large lists),
+      // build bulk HTML and insert in single shot
+      var optGroups = {};
       $('option[value^=crm_optgroup]', this).each(function () {
-        $(this).nextUntil('option[value^=crm_optgroup]').wrapAll('<optgroup label="' + $(this).text() + '" />');
+        var groupHtml = '';
+          $(this).nextUntil('option[value^=crm_optgroup]').each(function () {
+          groupHtml += this.outerHTML;
+        });
+        optGroups[$(this).text()] = groupHtml;
         $(this).remove();
       });
+      var replacedHtml = '';
+      for (var groupLabel in optGroups) {
+        replacedHtml += '<optgroup label="' + groupLabel + '">' + optGroups[groupLabel] + '</optgroup>';
+      }
+      if (replacedHtml) {
+        $el.html(replacedHtml);
+      }
 
       // quickform does not support disabled option, so yet another hack to
       // add disabled property for option values
@@ -741,6 +756,7 @@ if (!CRM.vars) CRM.vars = {};
     }
     markup += '<div><div class="crm-select2-row-label '+(row.label_class || '')+'">' +
       (row.color ? '<span class="crm-select-item-color" style="background-color: ' + row.color + '"></span> ' : '') +
+      (row.icon ? '<i class="crm-i ' + row.icon + '" aria-hidden="true"></i> ' : '') +
       _.escape((row.prefix !== undefined ? row.prefix + ' ' : '') + row.label + (row.suffix !== undefined ? ' ' + row.suffix : '')) +
       '</div>' +
       '<div class="crm-select2-row-description">';

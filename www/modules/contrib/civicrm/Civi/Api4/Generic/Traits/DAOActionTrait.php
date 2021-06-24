@@ -15,6 +15,7 @@ namespace Civi\Api4\Generic\Traits;
 use Civi\Api4\CustomField;
 use Civi\Api4\Service\Schema\Joinable\CustomGroupJoinable;
 use Civi\Api4\Utils\FormattingUtil;
+use Civi\Api4\Utils\CoreUtil;
 
 /**
  * @method string getLanguage()
@@ -35,8 +36,7 @@ trait DAOActionTrait {
    * @return \CRM_Core_DAO|string
    */
   protected function getBaoName() {
-    require_once 'api/v3/utils.php';
-    return \_civicrm_api3_get_BAO($this->getEntityName());
+    return CoreUtil::getBAOFromApiName($this->getEntityName());
   }
 
   /**
@@ -158,8 +158,6 @@ trait DAOActionTrait {
    * @param array $params
    * @param int $entityId
    *
-   * @return mixed
-   *
    * @throws \API_Exception
    * @throws \CRM_Core_Exception
    */
@@ -185,6 +183,14 @@ trait DAOActionTrait {
         if ($field['html_type'] === 'CheckBox') {
           // this function should be part of a class
           formatCheckBoxField($value, 'custom_' . $field['id'], $this->getEntityName());
+        }
+
+        if ($field['data_type'] === 'ContactReference' && !is_numeric($value)) {
+          require_once 'api/v3/utils.php';
+          $value = \_civicrm_api3_resolve_contactID($value);
+          if ('unknown-user' === $value) {
+            throw new \API_Exception("\"{$field['name']}\" \"{$value}\" cannot be resolved to a contact ID", 2002, ['error_field' => $field['name'], "type" => "integer"]);
+          }
         }
 
         \CRM_Core_BAO_CustomField::formatCustomField(
@@ -225,7 +231,7 @@ trait DAOActionTrait {
     if (!isset($info[$fieldName])) {
       $info = [];
       $fields = CustomField::get(FALSE)
-        ->addSelect('id', 'name', 'html_type', 'custom_group.extends')
+        ->addSelect('id', 'name', 'html_type', 'data_type', 'custom_group.extends')
         ->addWhere('custom_group.name', '=', $groupName)
         ->execute()->indexBy('name');
       foreach ($fields as $name => $field) {

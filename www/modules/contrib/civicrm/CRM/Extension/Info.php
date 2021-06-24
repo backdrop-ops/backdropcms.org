@@ -66,6 +66,13 @@ class CRM_Extension_Info {
   public $maintainer = NULL;
 
   /**
+   * @var string|null
+   *  The name of a class which handles the install/upgrade lifecycle.
+   * @see \CRM_Extension_Upgrader_Interface
+   */
+  public $upgrader = NULL;
+
+  /**
    * Load extension info an XML file.
    *
    * @param $file
@@ -150,13 +157,14 @@ class CRM_Extension_Info {
     $this->type = (string) $info->attributes()->type;
     $this->file = (string) $info->file;
     $this->label = (string) $info->name;
+    $this->upgrader = (string) $info->upgrader;
 
     // Convert first level variables to CRM_Core_Extension properties
     // and deeper into arrays. An exception for URLS section, since
     // we want them in special format.
     foreach ($info as $attr => $val) {
       if (count($val->children()) == 0) {
-        $this->$attr = (string) $val;
+        $this->$attr = trim((string) $val);
       }
       elseif ($attr === 'urls') {
         $this->urls = [];
@@ -173,6 +181,13 @@ class CRM_Extension_Info {
             'type' => 'psr4',
             'prefix' => (string) $psr4->attributes()->prefix,
             'path' => (string) $psr4->attributes()->path,
+          ];
+        }
+        foreach ($val->psr0 as $psr0) {
+          $this->classloader[] = [
+            'type' => 'psr0',
+            'prefix' => (string) $psr0->attributes()->prefix,
+            'path' => (string) $psr0->attributes()->path,
           ];
         }
       }

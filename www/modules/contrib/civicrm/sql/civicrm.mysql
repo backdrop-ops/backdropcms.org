@@ -890,7 +890,7 @@ CREATE TABLE `civicrm_batch` (
      `created_id` int unsigned    COMMENT 'FK to Contact ID',
      `created_date` datetime    COMMENT 'When was this item created',
      `modified_id` int unsigned    COMMENT 'FK to Contact ID',
-     `modified_date` datetime    COMMENT 'When was this item created',
+     `modified_date` datetime    COMMENT 'When was this item modified',
      `saved_search_id` int unsigned    COMMENT 'FK to Saved Search ID',
      `status_id` int unsigned NOT NULL   COMMENT 'fk to Batch Status options in civicrm_option_values',
      `type_id` int unsigned    COMMENT 'fk to Batch Type options in civicrm_option_values',
@@ -1178,10 +1178,7 @@ CREATE TABLE `civicrm_financial_type` (
 ,
         PRIMARY KEY (`id`)
  
-    ,     UNIQUE INDEX `UI_id`(
-        id
-  )
-  
+ 
  
 )  ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC  ;
 
@@ -1519,7 +1516,7 @@ CREATE TABLE `civicrm_case_type` (
      `name` varchar(64) NOT NULL   COMMENT 'Machine name for Case Type',
      `title` varchar(64) NOT NULL   COMMENT 'Natural language name for Case Type',
      `description` varchar(255)    COMMENT 'Description of the Case Type',
-     `is_active` tinyint    COMMENT 'Is this entry active?',
+     `is_active` tinyint   DEFAULT 1 COMMENT 'Is this case type enabled?',
      `is_reserved` tinyint    COMMENT 'Is this case type a predefined system type?',
      `weight` int NOT NULL  DEFAULT 1 COMMENT 'Ordering of the case types',
      `definition` blob    COMMENT 'xml definition of case type' 
@@ -1641,7 +1638,7 @@ CREATE TABLE `civicrm_queue_item` (
      `weight` int NOT NULL   ,
      `submit_time` datetime NOT NULL   COMMENT 'date on which this item was submitted to the queue',
      `release_time` datetime    COMMENT 'date on which this job becomes available; null if ASAP',
-     `data` text    COMMENT 'Serialized queue data' 
+     `data` longtext    COMMENT 'Serialized queue data' 
 ,
         PRIMARY KEY (`id`)
  
@@ -2240,6 +2237,8 @@ CREATE TABLE `civicrm_note` (
      `entity_id` int unsigned NOT NULL   COMMENT 'Foreign key to the referenced item.',
      `note` text    COMMENT 'Note and/or Comment.',
      `contact_id` int unsigned    COMMENT 'FK to Contact ID creator',
+     `note_date` timestamp   DEFAULT CURRENT_TIMESTAMP COMMENT 'Date attached to the note',
+     `created_date` timestamp NOT NULL  DEFAULT CURRENT_TIMESTAMP COMMENT 'When the note was created.',
      `modified_date` timestamp   DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'When was this note last modified/edited',
      `subject` varchar(255)    COMMENT 'subject of note description',
      `privacy` varchar(255)    COMMENT 'Foreign Key to Note Privacy Level (which is an option value pair and hence an implicit FK)' 
@@ -2662,7 +2661,7 @@ CREATE TABLE `civicrm_group` (
         name
   )
   
-,          CONSTRAINT FK_civicrm_group_saved_search_id FOREIGN KEY (`saved_search_id`) REFERENCES `civicrm_saved_search`(`id`) ON DELETE SET NULL,          CONSTRAINT FK_civicrm_group_created_id FOREIGN KEY (`created_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL,          CONSTRAINT FK_civicrm_group_modified_id FOREIGN KEY (`modified_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL  
+,          CONSTRAINT FK_civicrm_group_saved_search_id FOREIGN KEY (`saved_search_id`) REFERENCES `civicrm_saved_search`(`id`) ON DELETE CASCADE,          CONSTRAINT FK_civicrm_group_created_id FOREIGN KEY (`created_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL,          CONSTRAINT FK_civicrm_group_modified_id FOREIGN KEY (`modified_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL  
 )  ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC  ;
 
 -- /*******************************************************
@@ -3418,13 +3417,9 @@ CREATE TABLE `civicrm_entity_file` (
 ,
         PRIMARY KEY (`id`)
  
-    ,     INDEX `index_entity`(
-        entity_table
-      , entity_id
-  )
-  ,     UNIQUE INDEX `UI_entity_table_entity_id_file_id`(
-        entity_table
-      , entity_id
+    ,     UNIQUE INDEX `UI_entity_id_entity_table_file_id`(
+        entity_id
+      , entity_table
       , file_id
   )
   
@@ -4121,11 +4116,11 @@ CREATE TABLE `civicrm_contribution_recur` (
      `amount` decimal(20,2) NOT NULL   COMMENT 'Amount to be collected (including any sales tax) by payment processor each recurrence.',
      `currency` varchar(3)   DEFAULT NULL COMMENT '3 character string, value from config setting or input via user.',
      `frequency_unit` varchar(8)   DEFAULT 'month' COMMENT 'Time units for recurrence of payment.',
-     `frequency_interval` int unsigned NOT NULL   COMMENT 'Number of time units for recurrence of payment.',
+     `frequency_interval` int unsigned NOT NULL  DEFAULT 1 COMMENT 'Number of time units for recurrence of payment.',
      `installments` int unsigned    COMMENT 'Total number of payments to be made. Set this to 0 if this is an open-ended commitment i.e. no set end date.',
-     `start_date` datetime NOT NULL   COMMENT 'The date the first scheduled recurring contribution occurs.',
-     `create_date` datetime NOT NULL   COMMENT 'When this recurring contribution record was created.',
-     `modified_date` datetime    COMMENT 'Last updated date for this record. mostly the last time a payment was received',
+     `start_date` datetime NOT NULL  DEFAULT CURRENT_TIMESTAMP COMMENT 'The date the first scheduled recurring contribution occurs.',
+     `create_date` datetime NOT NULL  DEFAULT CURRENT_TIMESTAMP COMMENT 'When this recurring contribution record was created.',
+     `modified_date` datetime   DEFAULT CURRENT_TIMESTAMP COMMENT 'Last updated date for this record. mostly the last time a payment was received',
      `cancel_date` datetime    COMMENT 'Date this recurring contribution was cancelled by contributor- if we can get access to it',
      `cancel_reason` text    COMMENT 'Free text field for a reason for cancelling',
      `end_date` datetime    COMMENT 'Date this recurring contribution finished successfully',
@@ -4133,7 +4128,7 @@ CREATE TABLE `civicrm_contribution_recur` (
      `payment_token_id` int unsigned    COMMENT 'Optionally used to store a link to a payment token used for this recurring contribution.',
      `trxn_id` varchar(255)    COMMENT 'unique transaction id. may be processor id, bank id + trans id, or account number + check number... depending on payment_method',
      `invoice_id` varchar(255)    COMMENT 'unique invoice id, system generated or passed in',
-     `contribution_status_id` int unsigned   DEFAULT 1 ,
+     `contribution_status_id` int unsigned   DEFAULT 2 ,
      `is_test` tinyint   DEFAULT 0 ,
      `cycle_day` int unsigned NOT NULL  DEFAULT 1 COMMENT 'Day in the period when the payment should be charged e.g. 1st of month, 15th etc.',
      `next_sched_contribution_date` datetime    COMMENT 'Next scheduled date',
@@ -5009,13 +5004,9 @@ CREATE TABLE `civicrm_line_item` (
 ,
         PRIMARY KEY (`id`)
  
-    ,     INDEX `index_entity`(
-        entity_table
-      , entity_id
-  )
-  ,     UNIQUE INDEX `UI_line_item_value`(
-        entity_table
-      , entity_id
+    ,     UNIQUE INDEX `UI_line_item_value`(
+        entity_id
+      , entity_table
       , contribution_id
       , price_field_value_id
       , price_field_id

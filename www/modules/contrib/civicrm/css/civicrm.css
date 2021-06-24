@@ -24,21 +24,24 @@
   flex-wrap: wrap;
   box-sizing: border-box;
 }
-.crm-container .crm-flex-box > * {
+.crm-flex-box > * {
   flex: 1;
   box-sizing: border-box;
   min-width: 0; /* prevents getting squashed by whitespace:nowrap content */
 }
-.crm-container .crm-flex-box > .crm-flex-2 {
+.crm-container .crm-flex-1 {
+  flex: 1;
+}
+.crm-container .crm-flex-2 {
   flex: 2;
 }
-.crm-container .crm-flex-box > .crm-flex-3 {
+.crm-container .crm-flex-3 {
   flex: 3;
 }
-.crm-container .crm-flex-box > .crm-flex-4 {
+.crm-container .crm-flex-4 {
   flex: 4;
 }
-.crm-container .crm-flex-box > .crm-flex-5 {
+.crm-container .crm-flex-5 {
   flex: 5;
 }
 
@@ -410,10 +413,13 @@ input.crm-form-entityref {
   margin-bottom: 1em;
 }
 
-.crm-container .crm-section .label {
-  float: left;
-  width: 17%;
-  text-align: right;
+/* todo: See PR#19968 to move towards configurable breakpoints */
+@media (min-width: 480px) {
+  .crm-container .crm-section .label {
+    float: left;
+    width: 17%;
+    text-align: right;
+  }
 }
 
 .crm-container .crm-section .label label{
@@ -424,8 +430,10 @@ input.crm-form-entityref {
   text-align: left;
 }
 
-.crm-container .crm-section .content {
-  margin-left: 19%;
+@media (min-width: 480px) {
+  .crm-container .crm-section .content {
+    margin-left: 19%;
+  }
 }
 
 .crm-container .no-label .content {
@@ -3358,6 +3366,9 @@ span.crm-select-item-color {
 }
 .crm-container span.crm-editable-enabled {
   display: inline-block !important;
+  padding-right: 2px;
+  min-height: 1em;
+  min-width: 3em;
 }
 
 .crm-container .crm-editable-enabled .crm-i {
