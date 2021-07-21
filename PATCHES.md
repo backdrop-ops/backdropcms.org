@@ -7,6 +7,12 @@ Patches to Backdrop Core:
 Patches to Backdrop Contrib:
 ============================
 
+borg - decrease header icon font size
+  https://github.com/backdrop-contrib/borg/issues/22
+  https://github.com/backdrop-contrib/borg/pull/23.patch
+
+---
+
 akismet - prevent PHP fatal when bulk deleting users
   https://github.com/backdrop-contrib/akismet/issues/9
   https://github.com/backdrop-contrib/akismet/pull/10.patch
