@@ -22,10 +22,10 @@
     </div><!-- /.row -->
 
     <div class="row">
-      <div class="col-md-4 col-md-push-8">
+      <div class="<?php print implode(' ', $classes_col1); ?>">
         <?php print $image; ?>
       </div>
-      <div class="col-md-8 col-md-pull-4">
+      <div class="<?php print implode(' ', $classes_col2); ?>">
         <?php print render($content); ?>
       </div>
     </div><!-- /.row -->
