@@ -10,16 +10,16 @@ $(document).ready(function() {
   // clicks on all elements.
   $(document.body).bind("mousedown keyup touchstart", function(event) {
     console.group("Running Google Analytics for Backdrop.");
-    console.info(event);
+    console.info("Event '%s' has been detected.", event.type);
 
     // Catch the closest surrounding link of a clicked element.
     $(event.target).closest("a,area").each(function() {
-      console.info("Element '%o' has been detected. Link '%s' found.", this, this.href);
+      console.info("Closest element '%o' has been found. URL '%s' extracted.", this, this.href);
 
       // Is the clicked URL internal?
       if (Backdrop.googleanalytics.isInternal(this.href)) {
         // Skip 'click' tracking, if custom tracking events are bound.
-        if ($(this).is('.colorbox')) {
+        if ($(this).is('.colorbox') && (Backdrop.settings.googleanalytics.trackColorbox)) {
           // Do nothing here. The custom event will handle all tracking.
           console.info("Click on .colorbox item has been detected.");
         }
@@ -27,12 +27,22 @@ $(document).ready(function() {
         else if (Backdrop.settings.googleanalytics.trackDownload && Backdrop.googleanalytics.isDownload(this.href)) {
           // Download link clicked.
           console.info("Download url '%s' has been found. Tracked download as extension '%s'.", Backdrop.googleanalytics.getPageUrl(this.href), Backdrop.googleanalytics.getDownloadExtension(this.href).toUpperCase());
-          ga("send", "event", "Downloads", Backdrop.googleanalytics.getDownloadExtension(this.href).toUpperCase(), Backdrop.googleanalytics.getPageUrl(this.href));
+          ga("send", {
+            "hitType": "event",
+            "eventCategory": "Downloads",
+            "eventAction": Backdrop.googleanalytics.getDownloadExtension(this.href).toUpperCase(),
+            "eventLabel": Backdrop.googleanalytics.getPageUrl(this.href),
+            "transport": "beacon"
+          });
         }
         else if (Backdrop.googleanalytics.isInternalSpecial(this.href)) {
           // Keep the internal URL for Google Analytics website overlay intact.
           console.info("Click on internal special link '%s' has been tracked.", Backdrop.googleanalytics.getPageUrl(this.href));
-          ga("send", "pageview", { "page": Backdrop.googleanalytics.getPageUrl(this.href) });
+          ga("send", {
+            "hitType": "pageview",
+            "page": Backdrop.googleanalytics.getPageUrl(this.href),
+            "transport": "beacon"
+          });
         }
         else {
           // e.g. anchor in same page or other internal page link
@@ -43,13 +53,25 @@ $(document).ready(function() {
         if (Backdrop.settings.googleanalytics.trackMailto && $(this).is("a[href^='mailto:'],area[href^='mailto:']")) {
           // Mailto link clicked.
           console.info("Click on e-mail '%s' has been tracked.", this.href.substring(7));
-          ga("send", "event", "Mails", "Click", this.href.substring(7));
+          ga("send", {
+            "hitType": "event",
+            "eventCategory": "Mails",
+            "eventAction": "Click",
+            "eventLabel": this.href.substring(7),
+            "transport": "beacon"
+          });
         }
         else if (Backdrop.settings.googleanalytics.trackOutbound && this.href.match(/^\w+:\/\//i)) {
-          if (Backdrop.settings.googleanalytics.trackDomainMode != 2 || (Backdrop.settings.googleanalytics.trackDomainMode == 2 && !Backdrop.googleanalytics.isCrossDomain(this.hostname, Backdrop.settings.googleanalytics.trackCrossDomains))) {
+          if (Backdrop.settings.googleanalytics.trackDomainMode !== 2 || (Backdrop.settings.googleanalytics.trackDomainMode === 2 && !Backdrop.googleanalytics.isCrossDomain(this.hostname, Backdrop.settings.googleanalytics.trackCrossDomains))) {
             // External link clicked / No top-level cross domain clicked.
             console.info("Outbound link '%s' has been tracked.", this.href);
-            ga("send", "event", "Outbound links", "Click", this.href);
+            ga("send", {
+              "hitType": "event",
+              "eventCategory": "Outbound links",
+              "eventAction": "Click",
+              "eventLabel": this.href,
+              "transport": "beacon"
+            });
           }
           else {
             console.info("Internal link '%s' clicked, not tracked.", this.href);
@@ -65,19 +87,27 @@ $(document).ready(function() {
   if (Backdrop.settings.googleanalytics.trackUrlFragments) {
     window.onhashchange = function() {
       console.info("Track URL '%s' as pageview. Hash '%s' has changed.", location.pathname + location.search + location.hash, location.hash);
-      ga('send', 'pageview', location.pathname + location.search + location.hash);
-    }
+      ga("send", {
+        "hitType": "pageview",
+        "page": location.pathname + location.search + location.hash
+      });
+    };
   }
 
   // Colorbox: This event triggers when the transition has completed and the
   // newly loaded content has been revealed.
-  $(document).bind("cbox_complete", function () {
-    var href = $.colorbox.element().attr("href");
-    if (href) {
-      console.info("Colorbox transition to url '%s' has been tracked.", Backdrop.googleanalytics.getPageUrl(href));
-      ga("send", "pageview", { "page": Backdrop.googleanalytics.getPageUrl(href) });
-    }
-  });
+  if (Backdrop.settings.googleanalytics.trackColorbox) {
+    $(document).bind("cbox_complete", function () {
+      var href = $.colorbox.element().attr("href");
+      if (href) {
+        console.info("Colorbox transition to url '%s' has been tracked.", Backdrop.googleanalytics.getPageUrl(href));
+        ga("send", {
+          "hitType": "pageview",
+          "page": Backdrop.googleanalytics.getPageUrl(href)
+        });
+      }
+    });
+  }
 
 });
 
@@ -94,7 +124,7 @@ $(document).ready(function() {
 Backdrop.googleanalytics.isCrossDomain = function (hostname, crossDomains) {
   /**
    * jQuery < 1.6.3 bug: $.inArray crushes IE6 and Chrome if second argument is
-   * `null` or `undefined`, http://bugs.jquery.com/ticket/10076,
+   * `null` or `undefined`, https://bugs.jquery.com/ticket/10076,
    * https://github.com/jquery/jquery/commit/a839af034db2bd934e4d4fa6758a3fed8de74174
    *
    * @todo: Remove/Refactor in D8
@@ -153,8 +183,8 @@ Backdrop.googleanalytics.isInternalSpecial = function (url) {
  * Extract the relative internal URL from an absolute internal URL.
  *
  * Examples:
- * - http://mydomain.com/node/1 -> /node/1
- * - http://example.com/foo/bar -> http://example.com/foo/bar
+ * - https://mydomain.com/node/1 -> /node/1
+ * - https://example.com/foo/bar -> https://example.com/foo/bar
  *
  * @param string url
  *   The web url to check.

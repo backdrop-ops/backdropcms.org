@@ -60,6 +60,11 @@ function googleanalytics_permission() {
       'description' => t('Enter PHP code in the field for tracking visibility settings.'),
       'restrict access' => TRUE,
     ),
+    'add JS snippets for google analytics' => array(
+      'title' => t('Add JavaScript snippets'),
+      'description' => 'Enter JavaScript code snippets for advanced Google Analytics functionality.',
+      'restrict access' => TRUE,
+    ),
   );
 }
 
@@ -86,7 +91,7 @@ function googleanalytics_menu() {
  * Insert JavaScript to the appropriate scope/region of the page.
  */
 function googleanalytics_preprocess_layout() {
-  global $user;
+  global $base_path, $user;
   $config = config('googleanalytics.settings');
 
   $id = $config->get('account');
@@ -118,8 +123,11 @@ function googleanalytics_preprocess_layout() {
       $link_settings['trackDownload'] = $track_download;
       $link_settings['trackDownloadExtensions'] = $trackfiles_extensions;
     }
+    if (module_exists('colorbox') && ($track_colorbox = $config->get('trackcolorbox'))) {
+      $link_settings['trackColorbox'] = $track_colorbox;
+    }
     if ($track_domain_mode = $config->get('domain_mode')) {
-      $link_settings['trackDomainMode'] = $track_domain_mode;
+      $link_settings['trackDomainMode'] = (int) $track_domain_mode;
     }
     if ($track_cross_domains = $config->get('cross_domains')) {
       $link_settings['trackCrossDomains'] = preg_split('/(\r\n?|\n)/', $track_cross_domains);
@@ -184,11 +192,23 @@ function googleanalytics_preprocess_layout() {
 
     // Track access denied (403) and file not found (404) pages.
     if ($status == '403 Forbidden') {
-      // See http://www.google.com/support/analytics/bin/answer.py?answer=86927
-      $url_custom = '"/403.html?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer';
+      // See https://www.google.com/support/analytics/bin/answer.py?answer=86927
+      $url_custom = '"' . $base_path . '403.html?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer';
     }
     elseif ($status == '404 Not Found') {
-      $url_custom = '"/404.html?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer';
+      $url_custom = '"' . $base_path . '404.html?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer';
+    }
+
+    // #2693595: User has entered an invalid login and clicked on forgot
+    // password link. This link contains the username or email address and may
+    // get send to Google if we do not override it. Override only if 'name'
+    // query param exists. Last custom url condition, this need to win.
+    //
+    // URLs to protect are:
+    // - user/password?name=username
+    // - user/password?name=foo@example.com
+    if (arg(0) == 'user' && arg(1) == 'password' && array_key_exists('name', drupal_get_query_parameters())) {
+      $url_custom = '"' . $base_path . 'user/password"';
     }
 
     // Add custom dimensions and metrics.
@@ -239,11 +259,10 @@ function googleanalytics_preprocess_layout() {
     $script .= '})(window,document,"script",';
 
     // Which version of the tracking library should be used?
-    $library_tracker_url = '//www.google-analytics.com/' . ($debug ? 'analytics_debug.js' : 'analytics.js');
-    $library_cache_url = 'http:' . $library_tracker_url;
+    $library_tracker_url = 'https://www.google-analytics.com/' . ($debug ? 'analytics_debug.js' : 'analytics.js');
 
     // Should a local cached copy of analytics.js be used?
-    if ($config->get('cache') && $url = _googleanalytics_cache($library_cache_url)) {
+    if ($config->get('cache') && $url = _googleanalytics_cache($library_tracker_url)) {
       // A dummy query-string is added to filenames, to gain control over
       // browser-caching. The string changes on every update or full cache
       // flush, forcing browsers to load a new copy of the files, as the
@@ -283,12 +302,14 @@ function googleanalytics_preprocess_layout() {
       $googleanalytics_adsense_script .= 'window.google_analytics_domain_name = "none";';
     }
 
+    // Disable cookies.
+    if ($config->get('disable_cookies')) {
+      $create_only_fields['storage'] = 'none';
+    }
+
     // Track logged in users across all devices.
     if ($config->get('trackuserid') && user_is_logged_in()) {
-      // The USER_ID value should be a unique, persistent, and non-personally
-      // identifiable string identifier that represents a user or signed-in
-      // account across devices.
-      $create_only_fields['userId'] = backdrop_hmac_base64($user->uid, backdrop_get_private_key() . backdrop_get_hash_salt());
+      $create_only_fields['userId'] = google_analytics_user_id_hash($user->uid);
     }
 
     // Create a tracker.
@@ -343,11 +364,28 @@ function googleanalytics_preprocess_layout() {
       // Custom tracking. Prepend before all other JavaScript.
       // @TODO: https://support.google.com/adsense/answer/98142
       // sounds like it could be appended to $script.
-      backdrop_add_js($googleanalytics_adsense_script, array('type' => 'inline', 'group' => JS_LIBRARY-1));
+      backdrop_add_js($googleanalytics_adsense_script, array('type' => 'inline', 'group' => JS_LIBRARY-1, 'requires_jquery' => FALSE));
     }
 
-    backdrop_add_js($script, array('scope' => 'header', 'type' => 'inline'));
+    backdrop_add_js($script, array('scope' => 'header', 'type' => 'inline', 'requires_jquery' => FALSE));
   }
+}
+
+/**
+ * Generate user id hash to implement USER_ID.
+ *
+ * The USER_ID value should be a unique, persistent, and non-personally
+ * identifiable string identifier that represents a user or signed-in
+ * account across devices.
+ *
+ * @param int $uid
+ *   User id.
+ *
+ * @return string
+ *   User id hash.
+ */
+function google_analytics_user_id_hash($uid) {
+  return backdrop_hmac_base64($uid, backdrop_get_private_key() . backdrop_get_hash_salt());
 }
 
 /**
@@ -431,7 +469,7 @@ function googleanalytics_user_presave($account) {
 function googleanalytics_cron() {
   // Regenerate the tracking code file every day.
   if (REQUEST_TIME - state_get('googleanalytics_last_cache', 0) >= 86400 && config_get('googleanalytics.settings', 'cache')) {
-    _googleanalytics_cache('http://www.google-analytics.com/analytics.js', TRUE);
+    _googleanalytics_cache('https://www.google-analytics.com/analytics.js', TRUE);
     state_set('googleanalytics_last_cache', REQUEST_TIME);
   }
 }
@@ -447,14 +485,14 @@ function googleanalytics_preprocess_search_results(&$variables) {
     // found. But the pager item mumber can tell the number of search results.
     global $pager_total_items;
 
-    backdrop_add_js('window.googleanalytics_search_results = ' . intval($pager_total_items[0]) . ';', array('type' => 'inline', 'group' => JS_LIBRARY-1));
+    backdrop_add_js('window.googleanalytics_search_results = ' . intval($pager_total_items[0]) . ';', array('type' => 'inline', 'group' => JS_LIBRARY-1, 'requires_jquery' => FALSE));
   }
 }
 
 /**
  * Helper function for grabbing search keys. Function is missing in D7.
  *
- * http://api.drupal.org/api/function/search_get_keys/6
+ * https://api.drupal.org/api/function/search_get_keys/6
  */
 function googleanalytics_search_get_keys() {
   static $return;
@@ -495,6 +533,10 @@ function _googleanalytics_cache($location, $synchronize = FALSE) {
         if ($data_hash_local != $data_hash_remote && file_prepare_directory($path)) {
           // Save updated tracking code file to disk.
           file_unmanaged_save_data($result->data, $file_destination, FILE_EXISTS_REPLACE);
+          // Based on Backdrop Core backdrop_build_css_cache().
+          if (settings_get('css_gzip_compression', TRUE) && config_get('system.core', 'clean_url') && extension_loaded('zlib')) {
+            file_unmanaged_save_data(gzencode($result->data, 9, FORCE_GZIP), $file_destination . '.gz', FILE_EXISTS_REPLACE);
+          }
           watchdog('googleanalytics', 'Locally cached tracking code file has been updated.', array(), WATCHDOG_INFO);
 
           // Change query-strings on css/js files to enforce reload for all users.
@@ -507,6 +549,10 @@ function _googleanalytics_cache($location, $synchronize = FALSE) {
           // There is no need to flush JS here as core refreshes JS caches
           // automatically, if new files are added.
           file_unmanaged_save_data($result->data, $file_destination, FILE_EXISTS_REPLACE);
+          // Based on Backdrop Core backdrop_build_css_cache().
+          if (settings_get('css_gzip_compression', TRUE) && config_get('system.core', 'clean_url') && extension_loaded('zlib')) {
+            file_unmanaged_save_data(gzencode($result->data, 9, FORCE_GZIP), $file_destination . '.gz', FILE_EXISTS_REPLACE);
+          }
           watchdog('googleanalytics', 'Locally cached tracking code file has been saved.', array(), WATCHDOG_INFO);
 
           // Return the local JS file path.
@@ -542,8 +588,10 @@ function googleanalytics_clear_js_cache() {
  *
  * @param $account
  *   A user object containing an array of roles to check.
- * @return boolean
- *   A decision on if the current user is being tracked by Google Analytics.
+ *
+ * @return bool
+ *   TRUE if the current user is being tracked by Google Analytics,
+ *   otherwise FALSE.
  */
 function _googleanalytics_visibility_user($account) {
 
@@ -573,6 +621,12 @@ function _googleanalytics_visibility_user($account) {
 /**
  * Based on visibility setting this function returns TRUE if GA code should
  * be added for the current role and otherwise FALSE.
+ *
+ * @param $account
+ *   A user object containing an array of roles to check.
+ *
+ * @return bool
+ *   TRUE if GA code should be added for the current role and otherwise FALSE.
  */
 function _googleanalytics_visibility_roles($account) {
 
@@ -647,13 +701,16 @@ function _googleanalytics_visibility_pages() {
 }
 
 /**
- * Based on headers send by clients this function returns TRUE if GA code should
+ * Based on headers sent by clients this function returns TRUE if GA code should
  * be added to the current page and otherwise FALSE.
  */
 function _googleanalytics_visibility_header($account) {
-  if (($account->uid || config_get('system.core', 'cache') == 0) && config_get('googleanalytics.settings', 'privacy_donottrack') && !empty($_SERVER['HTTP_DNT'])) {
-    // Disable tracking if caching is disabled or a visitors is logged in and
-    // have opted out from tracking via DNT (Do-Not-Track) header.
+  $cache = config_get('system.core', 'cache');
+  $donottrack = config_get('googleanalytics.settings', 'privacy_donottrack');
+
+  if (($account->uid || $cache == 0) && $donottrack && !empty($_SERVER['HTTP_DNT'])) {
+    // Disable tracking if caching is disabled, or if a visitor is logged in and
+    // has opted out from tracking via DNT (Do-Not-Track) header.
     return FALSE;
   }
 
