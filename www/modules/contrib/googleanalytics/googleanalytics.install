@@ -120,3 +120,11 @@ function googleanalytics_update_1001() {
 function googleanalytics_update_1002() {
   config_set('googleanalytics.settings', 'privacy_donottrack', FALSE);
 }
+
+/**
+ * Set default value for new configuration option 'Disable cookies'.
+ */
+function googleanalytics_update_1003() {
+  config_set('googleanalytics.settings', 'disable_cookies', FALSE);
+  config_set('googleanalytics.settings', 'premium', FALSE);
+}

@@ -2,6 +2,7 @@
     "_config_name": "googleanalytics.settings",
     "_config_static": true,
     "account": "UA-",
+    "premium": false,
     "domain_mode": 0,
     "cross_domains": "",
     "visibility_pages": 0,
@@ -14,6 +15,7 @@
     "trackmailto": true,
     "trackfiles": true,
     "trackfiles_extensions": "7z|aac|arc|arj|asf|asx|avi|bin|csv|doc|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls|xml|z|zip",
+    "trackcolorbox": true,
     "tracklinkid": false,
     "trackurlfragments": false,
     "trackmessages": {
@@ -26,6 +28,7 @@
     "trackdoubleclick": false,
     "tracker_anonymizeip": true,
     "privacy_donottrack": false,
+    "disable_cookies": false,
     "custom_dimension": [],
     "custom_metric": [],
     "cache": false,
