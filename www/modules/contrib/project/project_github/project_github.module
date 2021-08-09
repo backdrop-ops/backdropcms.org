@@ -168,12 +168,15 @@ function project_github_node_prepare(Node $node) {
 }
 
 /**
- * Implements hook_node_insert().
+ * Implements hook_node_presave().
  */
 function project_github_node_presave(Node $node) {
   if (project_node_is_project($node) && $node->project['github_sync_readme']) {
     module_load_include('inc', 'project_github', 'project_github.pages');
     project_github_update_readme($node);
+    // Delete the cached project release table that appears on the node project
+    // page so that it will be rebuilt the next time that page is viewed.
+    cache('cache_project_release_download_table')->delete($node->nid);
   }
 }
 
