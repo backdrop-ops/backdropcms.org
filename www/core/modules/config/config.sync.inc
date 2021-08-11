@@ -44,18 +44,16 @@ function _config_sync_validate(&$context) {
     $context['sandbox']['current_index'] = 0;
   }
 
-  $config_files = array_slice($context['results']['pending_changes'], $context['sandbox']['current_index'], $context['sandbox']['batch_size']);
-  try {
+    $config_files = array_slice($context['results']['pending_changes'], $context['sandbox']['current_index'], $context['sandbox']['batch_size']);
     foreach ($config_files as $config_file => $config_change_type) {
-      config_sync_validate_file($config_file, $config_change_type, $context['results']['all_configs']);
-      $context['sandbox']['current_index']++;
+        try {
+            config_sync_validate_file($config_file, $config_change_type, $context['results']['all_configs']);
+        }
+        catch (ConfigValidateException $e) {
+            $context['results']['errors'][] = $e->getMessage();
+        }
+        $context['sandbox']['current_index']++;
     }
-  }
-  catch (ConfigValidateException $e) {
-    $context['results']['errors'][] = $e->getMessage();
-    $context['finished'] = 1;
-    return;
-  }
 
   $context['finished'] = $context['sandbox']['total_size'] ? $context['sandbox']['current_index'] / $context['sandbox']['total_size'] : 1;
 }
