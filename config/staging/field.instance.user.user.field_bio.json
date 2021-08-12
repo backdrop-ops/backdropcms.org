@@ -13,10 +13,15 @@
             "rows": "10"
         }
     },
-    "description": "",
+    "description": "Please say a few words about yourself. This will be visible in your public profile.",
     "required": 0,
     "deleted": 0,
-    "default_value": null,
+    "default_value": [
+        {
+            "value": "",
+            "format": "filtered_html"
+        }
+    ],
     "default_value_function": null,
     "settings": {
         "text_processing": "1",

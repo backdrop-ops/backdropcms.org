@@ -69,8 +69,6 @@
         "select account cancellation method",
         "use advanced search",
         "use PHP for tracking visibility",
-        "use text format filtered_html",
-        "use text format full_html",
         "view own unpublished content",
         "view revisions",
         "view the administration theme",
@@ -275,6 +273,8 @@
         "create full project_module projects",
         "create full project_theme projects",
         "administer restrict abusive words",
-        "administer xmlsitemap"
+        "administer xmlsitemap",
+        "use text format filtered_html",
+        "use text format full_html"
     ]
 }
