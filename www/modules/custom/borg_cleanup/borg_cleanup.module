@@ -33,9 +33,17 @@ function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
     '#markup' => '<small>' . l(t('Forgot password?'), 'user/password') . '</small>',
     '#weight' => 10,
   );
-  $form['actions']['register'] = array(
-    '#markup' => '<small>' . l(t('Create a new account!'), 'user/register') . '</small>',
-    '#weight' => 11,
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Removes useless description text from log in form, adds additional links.
+ */
+function borg_cleanup_form_user_pass_alter(&$form, &$form_state) {
+  $form['actions']['forgot'] = array(
+    '#markup' => '<small>' . l(t('Log in'), 'user/login') . '</small>',
+    '#weight' => 10,
   );
 }
 
