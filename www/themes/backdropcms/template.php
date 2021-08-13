@@ -12,7 +12,7 @@ function backdropcms_preprocess_page(&$variables) {
   $variables['fp'] = '';
   $user_pages = array('login', 'register', 'password');
   if (arg(0) == 'user') {
-    if (!in_array($user_pages, arg(1)) && (is_numeric(arg(1)) && arg(2) != 'edit')) {
+    if (!in_array(arg(1), $user_pages) && (is_numeric(arg(1)) && arg(2) != 'edit')) {
       $variables['fp'] = "
       <!-- Facebook Pixel Code -->
       <script>
