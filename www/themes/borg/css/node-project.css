@@ -233,13 +233,19 @@ article.node-project-release.view-mode-project-search article.view-mode-teaser {
 .node-project .view-project-release-download-table th,
 .node-project .view-project-release-download-table td {
   padding: 5px .8em .0 0;
+}
+.node-project .view-project-release-download-table th {
   vertical-align: bottom;
+}
+.node-project .view-project-release-download-table td {
+  vertical-align: top;
 }
 .node-project .view-project-release-download-table .recommended td:first-child a {
   display: inline-block;
   margin: 0 .2em 0 0;
 }
-.node-project .view-project-release-download-table .recommended td:first-child a:after {
+.node-project .view-project-release-download-table .recommended td:first-child a:after,
+.node-project .view-project-release-download-table .supported td:first-child a:after {
   content: "\f0ab";
   font-family: 'FontAwesome';
   display: inline-block;
