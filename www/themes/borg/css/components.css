@@ -896,6 +896,12 @@ body.user-form .page-title {
   padding: 15px 0;
   display: flex;
 }
+#user-register-form .field-type-text-long .form-item,
+#user-register-form .form-type-checkbox .form-item {
+  /* undo flex */
+  display: block;
+  padding-bottom: 0;
+}
 #user-register-form fieldset .form-item {
   padding: 5px 0;
   margin-bottom: .5em;
@@ -905,7 +911,12 @@ body.user-form .page-title {
   padding-right: 15px;
   display: inline-block;
 }
-#user-register-form .form-item input {
+#user-register-form .field-type-text-long label,
+#user-register-form .form-type-checkbox label {
+  width: auto;
+}
+#user-register-form .form-item input[type="text"],
+#user-register-form .form-item input[type="email"] {
   width: 100%;
   flex: 1;
 }
