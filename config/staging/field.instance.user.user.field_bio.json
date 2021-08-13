@@ -14,23 +14,23 @@
         }
     },
     "description": "Please say a few words about yourself. This will be visible in your public profile.",
-    "required": 0,
+    "required": 1,
     "deleted": 0,
     "default_value": [
         {
             "value": "",
-            "format": "filtered_html"
+            "format": "plain_text"
         }
     ],
     "default_value_function": null,
     "settings": {
         "text_processing": "1",
-        "user_register_form": 0
+        "user_register_form": 1
     },
     "display": {
         "default": {
             "label": "hidden",
-            "type": "text_default",
+            "type": "plain_text",
             "weight": "0",
             "settings": [],
             "module": "text"
