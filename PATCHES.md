@@ -1,7 +1,9 @@
 Patches to Backdrop Core:
 =========================
 
-* None
+Text module -- formatted text fields should not lock when empty due to access.
+  https://github.com/backdrop/backdrop-issues/issues/5151
+  https://github.com/backdrop/backdrop/pull/3686.patch
 
 
 Patches to Backdrop Contrib:
