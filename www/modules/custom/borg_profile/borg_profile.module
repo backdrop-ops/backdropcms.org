@@ -14,7 +14,7 @@ function borg_profile_form_views_exposed_form_alter(&$form, &$form_state, $form_
     $username = '';
 
     // Get the user's GitHub username from their GitHub social field (if set).
-    if (isset($user->field_social)) {
+    if (!empty($user->field_social)) {
       $github_url = '';
       foreach ($user->field_social[$user->langcode] as $service) {
         if ($service['service'] == 'github') {
