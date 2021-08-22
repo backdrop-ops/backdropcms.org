@@ -60,7 +60,7 @@
     "admin_theme": "seven",
     "node_admin_theme": "1",
     "filter_fallback_format": "plain_text",
-    "user_cancel_method": "user_cancel_block_unpublish",
+    "user_cancel_method": "user_cancel_delete",
     "config_sync_batch_size": 20,
     "default_nodes_main": "10",
     "field_purge_batch_size": 200,
@@ -98,7 +98,7 @@
     "dblog_row_limit": "1000",
     "dblog_date_format": "M jS, Y g:ia",
     "log_date_format": "M jS, Y g:ia",
-    "user_password_reject_weak": false,
+    "user_password_reject_weak": 0,
     "user_password_strength_threshold": 50,
     "config_sync_clear_staging": 1,
     "_config_translatables": [
