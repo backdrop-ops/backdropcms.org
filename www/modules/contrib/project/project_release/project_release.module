@@ -1069,18 +1069,28 @@ function project_release_download_table($pid, $_clear = FALSE) {
   if ($_clear || ($cache = cache_get($pid, 'cache_project_release_download_table')) === FALSE) {
     $output = views_embed_view('project_release_download_table', 'block', $pid);
 
-    // BEGIN DEBUGGING: a bit of instrumentation to detect when the project
-    // release table is generated empty, in which case no header will be in the
-    // output.
+    // A bit of instrumentation to detect when the project release table is
+    // generated empty, in which case no header will be in the output.
     if (strpos($output, 'Recommended releases') === FALSE) {
-      watchdog('project_release', 'Missing releases for node @pid.', array('@pid' => $pid));
+      watchdog('project_release', 'Missing releases for node @pid from View.', array('@pid' => $pid));
     }
-    // END DEBUGGING
+    else {
+      watchdog('project_release', 'Releases present for node @pid from View.', array('@pid' => $pid));
+    }
 
     cache_set($pid, $output, 'cache_project_release_download_table');
-    return $output;
+    return '<!-- release download table from View -->' . $output;
   }
-  return $cache->data;
+  $output = $cache->data;
+
+    if (strpos($output, 'Recommended releases') === FALSE) {
+      watchdog('project_release', 'Missing releases for node @pid from cache.', array('@pid' => $pid));
+    }
+//     else {
+//       watchdog('project_release', 'Releases present for node @pid from cache.', array('@pid' => $pid));
+//     }
+
+  return '<!-- release download table from cache -->' . $output;
 }
 
 /**
