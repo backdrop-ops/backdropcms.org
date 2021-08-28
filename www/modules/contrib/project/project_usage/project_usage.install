@@ -80,7 +80,7 @@ function project_usage_schema() {
         'default' => 0,
       ),
       'hostname' => array(
-        'description' => 'The IP address of the incoming request (to detect possible abuse).',
+        'description' => 'The hashed IP address of the incoming request. Actual IP address is not logged for privacy.',
         'type' => 'varchar',
         'length' => 128,
         'not null' => TRUE,
@@ -133,7 +133,7 @@ function project_usage_schema() {
         'length' => 128,
         'not null' => TRUE,
         'default' => '',
-        'description' => "The IP address of the incoming request (to detect possible abuse).",
+        'description' => 'The hashed IP address of the incoming request. Actual IP address is not logged for privacy.',
       ),
     ),
     'primary key' => array('timestamp', 'site_key', 'project_nid'),
@@ -250,3 +250,34 @@ function project_usage_schema() {
   return $schema;
 }
 
+/**
+ * Hash IP addresses for privacy.
+ */
+function project_usage_update_1000() {
+  // Include password.inc for user_hash_password().
+  require_once BACKDROP_ROOT . '/' . settings_get('password_inc', 'core/includes/password.inc');
+
+  // Update raw values. Hashed IPs have a longer value (55 characters) than an
+  // IP address (16 characters max).
+  $raw_rows = db_query("SELECT hostname FROM {project_usage_raw} WHERE LENGTH(hostname) < :hash_length GROUP BY hostname", array(
+    'hash_length' => BACKDROP_HASH_LENGTH,
+  ));
+
+  foreach ($raw_rows as $raw_row) {
+    db_query("UPDATE {project_usage_raw} SET hostname = :hostname_hashed WHERE :hostname = :hostname", array(
+      'hostname_hashed' => $raw_row->hostname,
+      'hostname' => user_hash_password($raw_row->hostname),
+    ));
+  }
+
+  // Update daily values with a hashed IP address.
+  $day_rows = db_query("SELECT hostname FROM {project_usage_day} WHERE LENGTH(hostname) < :hash_length GROUP BY hostname", array(
+    'hash_length' => BACKDROP_HASH_LENGTH,
+  ));
+  foreach ($day_rows as $day_row) {
+    db_query("UPDATE {project_usage_day} SET hostname = :hostname_hashed WHERE hostname = :hostname", array(
+      ':hostname_hashed' => user_hash_password($day_row->hostname),
+      ':hostname' => $day_row->hostname,
+    ));
+  }
+}
