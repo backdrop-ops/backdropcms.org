@@ -144,7 +144,7 @@ function project_telemetry_project_settings_submit(&$form, &$form_state) {
  *   Either a Project or Project Release node.
  */
 function project_telemetry_page(Node $node) {
-  if ($node->type === 'project') {
+  if (project_node_is_project($node)) {
     $output = project_telemetry_project_page($node);
   }
   else {
