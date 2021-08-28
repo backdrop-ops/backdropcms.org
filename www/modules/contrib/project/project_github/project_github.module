@@ -168,7 +168,7 @@ function project_github_node_prepare(Node $node) {
 }
 
 /**
- * Implements hook_node_presave().
+ * Implements hook_node_insert().
  */
 function project_github_node_presave(Node $node) {
   if (project_node_is_project($node) && $node->project['github_sync_readme']) {

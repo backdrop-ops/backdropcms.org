@@ -3,6 +3,19 @@
 /**
  * @file
  * Processes the project_usage statistics.
+ *
+ * This script should be run from the command line, with a similar format:
+ *
+ * @code
+ * ./project-usage-process.php --url=http://example.com --root=/var/www/html
+ * @endcode
+ *
+ * Running this on a cron job could look like this:
+ *
+ * @code
+ * # Run once per hour:
+ * 0 * * * * /var/www/html/modules/contrib/project/project_usage/project-usage-process.php --url=http://example.com --root=/var/html/www
+ * @endcode
  */
 
 // Define the root directory of the Backdrop installation.
