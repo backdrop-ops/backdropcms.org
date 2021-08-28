@@ -1,0 +1,126 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the project_usage module.
+ *
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function project_telemetry_uninstall() {
+  $state_settings = array(
+    'project_telemetry_last_daily',
+  );
+  foreach ($state_settings as $setting) {
+    state_del($setting);
+  }
+}
+
+/**
+ * Implements hook_schema().
+ */
+function project_telemetry_schema() {
+  $schema['project_telemetry'] = array(
+    'description' => 'Stores per-project telemetry settings.',
+    'fields' => array(
+      'project_nid' => array(
+        'description' => 'The {node}.nid of the requested project.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'enabled' => array(
+        'description' => 'Boolean value indicating if collecting Telemetry data is allowed on this project.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'allowed_values' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'description' => 'A key-value pair of allowed Telemetry data. Where the key is defined in hook_telemetry_info() and the value is the human-readable label.',
+      ),
+    ),
+    'primary key' => array('project_nid'),
+  );
+  $schema['project_telemetry_raw'] = array(
+    'description' => 'Table used to store raw usage information.',
+    'fields' => array(
+      'project_name' => array(
+        'description' => 'Primary Key: The {project}.name of the project.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'site_key' => array(
+        'description' => 'Primary Key: An MD5 hash that identifies the site from which the request was made.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'timestamp' => array(
+        'description' => 'The Unix timestamp of when the request was made.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'version_api' => array(
+        'description' => 'The {project_release}.version_api of the API version requested.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'version' => array(
+        'description' => 'The {project_release}.version of the requested project.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'project_nid' => array(
+        'description' => 'The {node}.nid of the requested project.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'release_nid' => array(
+        'description' => 'The {node}.nid of the requested release.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'item_key' => array(
+        'description' => 'A Telemetry item key, such as "php_version" or "system_os".',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'item_value' => array(
+        'description' => 'A Telemetry value for the provided key, such as the PHP version or OS used by the site.',
+        'type' => 'varchar',
+        'length' => 1024,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('project_name', 'site_key', 'item_key'),
+    'indexes' => array(
+      'timestamp' => array('timestamp'),
+      'project_nid_item_key' => array('project_nid', 'item_key'),
+      'release_nid_item_key' => array('project_nid', 'item_key'),
+    ),
+  );
+
+  return $schema;
+}
+

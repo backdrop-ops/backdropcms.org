@@ -19,9 +19,19 @@
  *   location ^= /release-history {
  *     rewrite ^/(.*)$ /modules/project/project_release/project-release-serve-history.php?q=$1;
  *   }
- *
  * @endcode
  *
+ * To call this file directly (without the rewrite):
+ *
+ * @code
+ * http://example.com/modules/project/project_release/project-release-serve-history.php?q=example_project/1.x&version=1.x-1.0.0&site_key=JF7UsBYsZDXiUL3j97rdUAp49X1WNvsEW-Y4uheoRHw
+ * @endcode
+ *
+ * Or with the rewrite in place:
+ *
+ * @code
+ * http://example.com/release-history/example_project/1.x?version=1.x-1.0.0&site_key=JF7UsBYsZDXiUL3j97rdUAp49X1WNvsEW-Y4uheoRHw
+ * @endcode
  *
  * Configuration within this file is usually unnecessary and settings should be
  * automatically determined. If manual setting of the BACKDROP_ROOT or
@@ -90,7 +100,7 @@ else {
   $version_api = $args[1];
 }
 
-// Sanitize the user-supplied input for use in filenames.
+// Sanitize the user-supplied input for use in file names.
 $whitelist_regexp = '@[^a-zA-Z0-9_.-]@';
 $safe_project_name = preg_replace($whitelist_regexp, '#', $project_name);
 $safe_api_vers = preg_replace($whitelist_regexp, '#', $version_api);
@@ -129,9 +139,12 @@ if (isset($_GET['site_key'])) {
   // We can't call module_exists without bootstrapping to a higher level so
   // we'll settle for checking that the table exists.
   if (db_table_exists('project_usage_raw')) {
+    // Have to include password.inc for user_hash_password().
+    require_once BACKDROP_ROOT . '/' . settings_get('password_inc', 'core/includes/password.inc');
+
     $site_key = $_GET['site_key'];
     $project_version = isset($_GET['version']) ? $_GET['version'] : '';
-    $ip_address = ip_address();
+    $ip_address_hashed = user_hash_password(ip_address());
 
     // Compute a GMT timestamp for beginning of the day. getdate() is
     // affected by the server's timezone so we need to cancel it out.
@@ -139,9 +152,23 @@ if (isset($_GET['site_key'])) {
     $time_parts = getdate($now - date('Z', $now));
     $timestamp = gmmktime(0, 0, 0, $time_parts['mon'], $time_parts['mday'], $time_parts['year']);
 
-    $result = db_query("UPDATE {project_usage_raw} SET version_api = :version_api, version = :version, hostname = :hostname WHERE name = :name AND timestamp = :timestamp AND site_key = :site_key", array(':version_api' => $version_api, ':version' => $project_version, ':hostname' => $ip_address, ':name' => $project_name, ':timestamp' => $timestamp, ':site_key' => $site_key));
+    $result = db_query("UPDATE {project_usage_raw} SET version_api = :version_api, version = :version, hostname = :hostname WHERE name = :name AND timestamp = :timestamp AND site_key = :site_key", array(
+      ':version_api' => $version_api,
+      ':version' => $project_version,
+      ':hostname' => $ip_address_hashed,
+      ':name' => $project_name,
+      ':timestamp' => $timestamp,
+      ':site_key' => $site_key,
+    ));
     if ($result->rowCount() === 0) {
-      db_query("INSERT INTO {project_usage_raw} (name, timestamp, site_key, version_api, version, hostname) VALUES (:name, :timestamp, :site_key, :version_api, :version, :hostname)", array(':name' => $project_name, ':timestamp' => $timestamp, ':site_key' => $site_key, ':version_api' => $version_api, ':version' => $project_version, ':hostname' => $ip_address));
+      db_query("INSERT INTO {project_usage_raw} (name, timestamp, site_key, version_api, version, hostname) VALUES (:name, :timestamp, :site_key, :version_api, :version, :hostname)", array(
+        ':name' => $project_name,
+        ':timestamp' => $timestamp,
+        ':site_key' => $site_key,
+        ':version_api' => $version_api,
+        ':version' => $project_version,
+        ':hostname' => $ip_address_hashed,
+      ));
     }
   }
 }

@@ -49,6 +49,7 @@ function project_usage_settings_form($form, &$form_state) {
 function project_usage_settings_form_submit($form, &$form_state) {
   $config = config('project_usage.settings');
   $config->set('life_weekly_project', (int) $form_state['values']['life_weekly_project']);
-  $config->set('life_weekly_project', (int) $form_state['values']['life_weekly_release']);
+  $config->set('life_weekly_release', (int) $form_state['values']['life_weekly_release']);
+  $config->save();
   backdrop_set_message(t('Configuration saved.'));
 }

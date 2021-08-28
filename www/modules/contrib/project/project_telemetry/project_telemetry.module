@@ -1,0 +1,175 @@
+<?php
+/**
+ * @file
+ * Collects usage information from sites running the core "Telemetry" module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function project_telemetry_menu() {
+  $items['node/%node/telemetry'] = array(
+    'page callback' => 'project_telemetry_page',
+    'page arguments' => array(1),
+    'access callback' => 'project_telemetry_access',
+    'access arguments' => array(1),
+    'file' => 'project_telemetry.pages.inc',
+    'title' => 'Telemetry',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -1,
+  );
+  $items['node/%node/edit/telemetry'] = array(
+    'title' => 'Telemetry',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('project_telemetry_project_settings', 1),
+    'access arguments' => array('administer projects'),
+    'file' => 'project_telemetry.pages.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * Menu access callback; checks if Telemetry is enabled on this node.
+ */
+function project_telemetry_access($node, $account = NULL) {
+  $access = user_access('access project telemetry data', $account);
+  return $access && ($node->type === 'project' || $node->type === 'project_release');
+}
+
+/**
+ * Implements hook_node_load().
+ */
+function project_telemetry_node_load(array $nodes, array $types) {
+  $project_nids = array();
+  foreach ($nodes as $node) {
+    if (project_node_is_project($node)) {
+      $project_nids[] = $node->nid;
+      $nodes[$node->nid]->project['telemetry'] = array(
+        'enabled' => FALSE,
+        'allowed_values' => array(),
+      );
+    }
+  }
+  if ($project_nids) {
+    $result = db_select('project_telemetry', 'pt')
+      ->fields('pt')
+      ->condition('project_nid', $project_nids)
+      ->execute();
+    foreach ($result as $row) {
+      $project_telemetry_data = (array) $row;
+      $project_telemetry_data['allowed_values'] = unserialize($project_telemetry_data['allowed_values']);
+      unset($project_telemetry_data['project_nid']);
+      $nodes[$row->project_nid]->project['telemetry'] = $project_telemetry_data;
+    }
+  }
+}
+
+/**
+ * Implements hook_node_prepare().
+ */
+function project_telemetry_node_prepare(Node $node) {
+  _project_telemetry_node_defaults($node);
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function project_telemetry_node_insert(Node $node) {
+  if (project_node_is_project($node)) {
+    _project_telemetry_node_defaults($node);
+    $record = array('project_nid' => $node->nid) + $node->project['telemetry'];
+    $record['enabled'] = $record['enabled'] ? 1 : 0;
+    backdrop_write_record('project_telemetry', $record);
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function project_telemetry_node_update(Node $node) {
+  if (project_node_is_project($node)) {
+    _project_telemetry_node_defaults($node);
+    $record = array('project_nid' => $node->nid) + $node->project['telemetry'];
+    $record['enabled'] = $record['enabled'] ? 1 : 0;
+    $exists = db_query('SELECT project_nid FROM {project_telemetry} WHERE project_nid = :project_nid', array(':project_nid' => $node->nid))->fetchField();
+    $primary_keys = $exists ? array('project_nid') : array();
+    backdrop_write_record('project_telemetry', $record, $primary_keys);
+  }
+}
+
+/**
+ * Populate default values for telemetry settings on a project node.
+ *
+ * @param Node $node
+ *   A project node, passed by reference.
+ */
+function _project_telemetry_node_defaults(Node $node) {
+  if (project_node_is_project($node)) {
+    // Set default values.
+    if (empty($node->project['telemetry'])) {
+      $node->project['telemetry'] = array();
+    }
+    $node->project['telemetry'] += array(
+      'enabled' => FALSE,
+      'allowed_values' => array(),
+    );
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function project_telemetry_node_delete(Node $node) {
+  if (project_node_is_project($node)) {
+    db_query("DELETE FROM {project_telemetry} WHERE project_nid = :nid", array(':nid' => $node->nid));
+  }
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function project_telemetry_admin_paths() {
+  $paths = array();
+  if (config_get('system.core', 'node_admin_theme')) {
+    $paths['node/*/edit/telemetry'] = TRUE;
+  }
+  return $paths;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function project_telemetry_cron() {
+  // Throttle to only once every 6 hours.
+  $last_run = state_get('telemetry_cron_last', 0);
+  $interval = 21600;
+  if ($last_run + $interval < REQUEST_TIME) {
+    project_telemetry_delete_stale_data();
+    state_set('telemetry_cron_last', REQUEST_TIME);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function project_telemetry_theme() {
+  $items['project_telemetry_allowed_values'] = array(
+    'render element' => 'element',
+    'file' => 'project_telemetry.theme.inc',
+  );
+  return $items;
+}
+
+/**
+ * Delete stale data past a certain age.
+ *
+ * @param int $stale_age
+ *   The number of seconds by which data will be considered stale. Defaults
+ *   to 604800 seconds (2 weeks).
+ */
+function project_telemetry_delete_stale_data($stale_age = 3600) {
+  db_delete('project_telemetry_raw')
+    ->condition('timestamp', REQUEST_TIME - $stale_age, '<')
+    ->execute();
+}
