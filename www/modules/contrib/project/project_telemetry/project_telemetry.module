@@ -34,7 +34,19 @@ function project_telemetry_menu() {
  */
 function project_telemetry_access($node, $account = NULL) {
   $access = user_access('access project telemetry data', $account);
-  return $access && ($node->type === 'project' || $node->type === 'project_release');
+  return $access && $node->type === 'project' && !empty($node->project['telemetry']['enabled']);
+}
+
+/**
+ * Implements hook_permission().
+ */
+function project_telemetry_permission() {
+  return array(
+    'access project telemetry data' =>  array(
+      'title' => t('Access project telemetry data'),
+      'description' => t('View the collected data from installed projects through the Telemetry module.'),
+    ),
+  );
 }
 
 /**
