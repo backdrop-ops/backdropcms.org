@@ -34,7 +34,7 @@ function project_telemetry_menu() {
  */
 function project_telemetry_access($node, $account = NULL) {
   $access = user_access('access project telemetry data', $account);
-  return $access && $node->type === 'project' && !empty($node->project['telemetry']['enabled']);
+  return $access && project_node_is_project($node) && !empty($node->project['telemetry']['enabled']);
 }
 
 /**
