@@ -35,6 +35,10 @@ project - restore missing releases sub-tab
   https://github.com/backdrop-contrib/project/issues/41
   https://github.com/backdrop-contrib/project/pull/44.patch
 
+project - add debugging code
+  https://github.com/backdrop-ops/backdropcms.org/issues/824
+  https://github.com/backdrop-ops/backdropcms.org/pull/825.patch
+
 restrict_abusive_words - prevent PHP notice
   https://github.com/backdrop-contrib/restrict_abusive_words/issues/1
   fix committed to -dev
