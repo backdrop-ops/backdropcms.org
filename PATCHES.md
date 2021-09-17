@@ -27,14 +27,6 @@ colorbox - Remove dependance on libraries API
   https://github.com/backdrop-contrib/colorbox/issues/9
   https://github.com/backdrop-contrib/colorbox/pull/10.patch
 
-project - change #type to easily style links
-  https://github.com/backdrop-contrib/project/issues/31
-  https://github.com/backdrop-contrib/project/pull/32.patch
-
-project - restore missing releases sub-tab
-  https://github.com/backdrop-contrib/project/issues/41
-  https://github.com/backdrop-contrib/project/pull/44.patch
-
 project - add debugging code
   https://github.com/backdrop-ops/backdropcms.org/issues/824
   https://github.com/backdrop-ops/backdropcms.org/pull/825.patch
