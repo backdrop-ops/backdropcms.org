@@ -28,7 +28,10 @@
                     "type": "basic"
                 },
                 "pager": {
-                    "type": "full"
+                    "type": "none",
+                    "options": {
+                        "offset": "0"
+                    }
                 },
                 "style_plugin": "table",
                 "row_plugin": "fields",
@@ -1163,6 +1166,12 @@
                         "hide_alter_empty": 1,
                         "display_as_link": 1
                     }
+                },
+                "pager": {
+                    "type": "none",
+                    "options": {
+                        "offset": "0"
+                    }
                 }
             }
         },
@@ -1442,6 +1451,12 @@
                         "date_format": "short",
                         "custom_date_format": "",
                         "timezone": ""
+                    }
+                },
+                "pager": {
+                    "type": "none",
+                    "options": {
+                        "offset": "0"
                     }
                 }
             }

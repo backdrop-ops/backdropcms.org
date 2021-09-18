@@ -729,7 +729,7 @@ function project_release_node_delete(Node $node) {
  */
 function project_release_node_view($node, $view_mode, $langcode) {
   if (project_node_is_project($node)) {
-    if (!empty($node->project['releases_enabled']) && $view_mode !== 'rss' && $view_mode !== 'search_index') {
+    if (!empty($node->project['releases_enabled']) && !in_array($view_mode, array('rss', 'search_index', 'project_search'))) {
       $download_table = project_release_download_table($node->nid);
       if ($download_table) {
         $node->content['project_release_downloads'] = array(
@@ -1068,22 +1068,8 @@ function project_release_parse_version_extra($version_extra) {
 function project_release_download_table($pid, $_clear = FALSE) {
   if ($_clear || ($cache = cache_get($pid, 'cache_project_release_download_table')) === FALSE) {
     $output = views_embed_view('project_release_download_table', 'block', $pid);
-
-    // DEBUGGING: only cache the output if it contains at least one release. If
-    // it doesn't, post a notice in watchdog. We can look for these notices and
-    // then see if anything suspicious got posted shortly before; meanwhile, we
-    // won't be caching the bogus Views so visitors are more likely to see the
-    // page with proper releases (given the sporadic nature of the bug). (Note
-    // that there are a small number of projects that truly have no releases.)
-    if (strpos($output, 'Recommended releases') !== FALSE || strpos($output, 'Other releases') !== FALSE) {
-      cache_set($pid, $output, 'cache_project_release_download_table');
-      return $output;
-    }
-    else {
-      watchdog('project_release', 'Missing releases for node @pid.', array('@pid' => $pid));
-      return $output;
-    }
-
+    cache_set($pid, $output, 'cache_project_release_download_table');
+    return $output;
   }
   return $cache->data;
 }
