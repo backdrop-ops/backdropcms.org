@@ -10,19 +10,16 @@
  +--------------------------------------------------------------------+
  */
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4\Service\Spec;
 
 use Civi\Api4\CustomField;
 use Civi\Api4\Service\Spec\Provider\Generic\SpecProviderInterface;
 use Civi\Api4\Utils\CoreUtil;
 
+/**
+ * Class SpecGatherer
+ * @package Civi\Api4\Service\Spec
+ */
 class SpecGatherer {
 
   /**
@@ -135,9 +132,9 @@ class SpecGatherer {
       $extends = $customInfo['extends'];
     }
     $customFields = CustomField::get(FALSE)
-      ->addWhere('custom_group.extends', 'IN', $extends)
-      ->addWhere('custom_group.is_multiple', '=', '0')
-      ->setSelect(['custom_group.name', 'custom_group.title', '*'])
+      ->addWhere('custom_group_id.extends', 'IN', $extends)
+      ->addWhere('custom_group_id.is_multiple', '=', '0')
+      ->setSelect(['custom_group_id.name', 'custom_group_id.title', '*'])
       ->execute();
 
     foreach ($customFields as $fieldArray) {
@@ -152,8 +149,8 @@ class SpecGatherer {
    */
   private function getCustomGroupFields($customGroup, RequestSpec $specification) {
     $customFields = CustomField::get(FALSE)
-      ->addWhere('custom_group.name', '=', $customGroup)
-      ->setSelect(['custom_group.name', 'custom_group.table_name', 'custom_group.title', '*'])
+      ->addWhere('custom_group_id.name', '=', $customGroup)
+      ->setSelect(['custom_group_id.name', 'custom_group_id.table_name', 'custom_group_id.title', '*'])
       ->execute();
 
     foreach ($customFields as $fieldArray) {
@@ -166,10 +163,13 @@ class SpecGatherer {
    * @param string $entityName
    *
    * @return array
+   * @throws \API_Exception
    */
-  private function getDAOFields($entityName) {
+  private function getDAOFields(string $entityName): array {
     $bao = CoreUtil::getBAOFromApiName($entityName);
-
+    if (!$bao) {
+      throw new \API_Exception('Entity not loaded' . $entityName);
+    }
     return $bao::getSupportedFields();
   }
 

@@ -224,13 +224,12 @@ class CRM_Contact_Form_CustomData extends CRM_Core_Form {
           TRUE,
           NULL,
           FALSE,
-          TRUE,
+          CRM_Core_Permission::EDIT,
           $this->_copyValueId
         );
         $valueIdDefaults = [];
         $groupTreeValueId = CRM_Core_BAO_CustomGroup::formatGroupTree($groupTree, $this->_copyValueId, $this);
         CRM_Core_BAO_CustomGroup::setDefaults($groupTreeValueId, $valueIdDefaults, FALSE, FALSE, $this->get('action'));
-        $tableId = $groupTreeValueId[$this->_groupID]['table_id'];
         foreach ($valueIdDefaults as $valueIdElementName => $value) {
           // build defaults for COPY action for new record saving
           $valueIdElementNamePieces = explode('_', $valueIdElementName);
@@ -244,13 +243,6 @@ class CRM_Contact_Form_CustomData extends CRM_Core_Form {
       }
       return $customDefaultValue;
     }
-
-    $groupTree = CRM_Core_BAO_CustomGroup::getTree($this->_contactType,
-      NULL,
-      $this->_tableID,
-      $this->_groupID,
-      $this->_contactSubType
-    );
 
     if (empty($_POST['hidden_custom_group_count'])) {
       // custom data building in edit mode (required to handle multi-value)

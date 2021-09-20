@@ -71,16 +71,13 @@ class CRM_Contact_Form_Task_Useradd extends CRM_Core_Form {
     $this->add('text', 'cms_name', ts('Username'), ['class' => 'huge']);
     $this->addRule('cms_name', ts('Username is required'), 'required');
 
-    // For WordPress only, comply with how WordPress sets passwords via magic link
+    // WordPress may or may not require setting passwords via magic link, depending on its configuration.
     // For other CMS, output the password fields
-    if ($config->userFramework !== 'WordPress' || ($config->userFramework === 'WordPress' && !$config->userSystem->isUserRegistrationPermitted())) {
+    if ($config->userSystem->showPasswordFieldWhenAdminCreatesUser()) {
       $this->add('password', 'cms_pass', ts('Password'), ['class' => 'huge']);
       $this->add('password', 'cms_confirm_pass', ts('Confirm Password'), ['class' => 'huge']);
       $this->addRule('cms_pass', ts('Password is required'), 'required');
-      $this->addRule([
-        'cms_pass',
-        'cms_confirm_pass',
-      ], ts('Password mismatch'), 'compare');
+      $this->addFormRule(['CRM_Contact_Form_Task_Useradd', 'passwordMatch']);
     }
 
     $this->add('text', 'email', ts('Email'), ['class' => 'huge'])->freeze();
@@ -138,6 +135,20 @@ class CRM_Contact_Form_Task_Useradd extends CRM_Core_Form {
     $config->userSystem->checkUserNameEmailExists($check_params, $errors);
 
     return empty($errors) ? TRUE : $errors;
+  }
+
+  /**
+   * Validation Rule.
+   *
+   * @param array $params
+   *
+   * @return array|bool
+   */
+  public static function passwordMatch($params) {
+    if ($params['cms_pass'] !== $params['cms_confirm_pass']) {
+      return ['cms_pass' => ts('Password mismatch')];
+    }
+    return TRUE;
   }
 
 }

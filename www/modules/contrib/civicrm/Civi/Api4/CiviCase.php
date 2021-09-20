@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,14 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4;
 
 /**
@@ -25,6 +16,8 @@ namespace Civi\Api4;
  * Note that the class for this entity is named "CiviCase" because "Case" is a keyword reserved by php.
  *
  * @see https://docs.civicrm.org/user/en/latest/case-management/what-is-civicase/
+ * @searchable primary
+ * @since 5.37
  * @package Civi\Api4
  */
 class CiviCase extends Generic\DAOEntity {

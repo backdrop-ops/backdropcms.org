@@ -10,13 +10,6 @@
  +--------------------------------------------------------------------+
  */
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4\Generic\Traits;
 
 use Civi\Api4\Utils\FormattingUtil;
@@ -31,7 +24,7 @@ trait CustomValueActionTrait {
 
   public function __construct($customGroup, $actionName) {
     $this->customGroup = $customGroup;
-    parent::__construct('CustomValue', $actionName, ['id', 'entity_id']);
+    parent::__construct('CustomValue', $actionName);
   }
 
   /**
@@ -49,9 +42,28 @@ trait CustomValueActionTrait {
   }
 
   /**
+   * Is this api call permitted?
+   *
+   * This function is called if checkPermissions is set to true.
+   *
+   * @return bool
+   */
+  public function isAuthorized(): bool {
+    if ($this->getActionName() !== 'getFields') {
+      // Check access to custom group
+      $permissionToCheck = $this->getActionName() == 'get' ? \CRM_Core_Permission::VIEW : \CRM_Core_Permission::EDIT;
+      $groupId = \CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $this->getCustomGroup(), 'id', 'name');
+      if (!\CRM_Core_BAO_CustomGroup::checkGroupAccess($groupId, $permissionToCheck)) {
+        return FALSE;
+      }
+    }
+    return parent::isAuthorized();
+  }
+
+  /**
    * @inheritDoc
    */
-  protected function writeObjects($items) {
+  protected function writeObjects(&$items) {
     $fields = $this->entityFields();
     foreach ($items as $idx => $item) {
       FormattingUtil::formatWriteParams($item, $fields);

@@ -18,24 +18,17 @@ class SqlFunctionCOUNT extends SqlFunction {
 
   protected static $category = self::CATEGORY_AGGREGATE;
 
-  protected static $params = [
-    [
-      'prefix' => ['', 'DISTINCT', 'ALL'],
-      'expr' => 1,
-      'must_be' => ['SqlField', 'SqlWild'],
-      'cant_be' => [],
-    ],
-  ];
+  protected static $dataType = 'Integer';
 
-  /**
-   * Reformat result as array if using default separator
-   *
-   * @see \Civi\Api4\Utils\FormattingUtil::formatOutputValues
-   * @param string $value
-   * @return string|array
-   */
-  public function formatOutputValue($value) {
-    return (int) $value;
+  protected static function params(): array {
+    return [
+      [
+        'flag_before' => ['DISTINCT' => ts('Distinct')],
+        'max_expr' => 1,
+        'must_be' => ['SqlField', 'SqlWild'],
+        'cant_be' => [],
+      ],
+    ];
   }
 
   /**

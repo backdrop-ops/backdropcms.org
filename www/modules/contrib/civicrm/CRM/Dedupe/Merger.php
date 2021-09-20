@@ -655,14 +655,14 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
    */
   protected static function getMultiValueCidRefs() {
     $fields = \Civi\Api4\CustomField::get(FALSE)
-      ->addSelect('custom_group.table_name', 'column_name', 'serialize')
+      ->addSelect('custom_group_id.table_name', 'column_name', 'serialize')
       ->addWhere('data_type', '=', 'ContactReference')
       ->addWhere('serialize', 'IS NOT EMPTY')
       ->execute();
 
     $map = [];
     foreach ($fields as $field) {
-      $map[$field['custom_group.table_name']][$field['column_name']] = $field['serialize'];
+      $map[$field['custom_group_id.table_name']][$field['column_name']] = $field['serialize'];
     }
     return $map;
   }
@@ -1282,10 +1282,12 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
 
     // handle custom fields
     $mainTree = CRM_Core_BAO_CustomGroup::getTree($main['contact_type'], NULL, $mainId, -1,
-      CRM_Utils_Array::value('contact_sub_type', $main), NULL, TRUE, NULL, TRUE, $checkPermissions
+      CRM_Utils_Array::value('contact_sub_type', $main), NULL, TRUE, NULL, TRUE,
+      $checkPermissions ? CRM_Core_Permission::EDIT : FALSE
     );
     $otherTree = CRM_Core_BAO_CustomGroup::getTree($main['contact_type'], NULL, $otherId, -1,
-      CRM_Utils_Array::value('contact_sub_type', $other), NULL, TRUE, NULL, TRUE, $checkPermissions
+      CRM_Utils_Array::value('contact_sub_type', $other), NULL, TRUE, NULL, TRUE,
+      $checkPermissions ? CRM_Core_Permission::EDIT : FALSE
     );
 
     foreach ($otherTree as $gid => $group) {
@@ -1702,7 +1704,7 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
    * @return string
    */
   public static function getMergeCacheKeyString($rule_group_id, $group_id, $criteria, $checkPermissions, $searchLimit) {
-    $contactType = CRM_Dedupe_BAO_RuleGroup::getContactTypeForRuleGroup($rule_group_id);
+    $contactType = CRM_Dedupe_BAO_DedupeRuleGroup::getContactTypeForRuleGroup($rule_group_id);
     $cacheKeyString = "merge_{$contactType}";
     $cacheKeyString .= $rule_group_id ? "_{$rule_group_id}" : '_0';
     $cacheKeyString .= $group_id ? "_{$group_id}" : '_0';

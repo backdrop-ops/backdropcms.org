@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,20 +8,16 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
 namespace Civi\Api4;
 
 /**
  * LineItem entity.
  *
+ * @searchable secondary
+ * @since 5.31
  * @package Civi\Api4
  */
 class LineItem extends Generic\DAOEntity {
+  use Generic\Traits\ReadOnly;
 
 }

@@ -1265,7 +1265,7 @@ WHERE entity_id =%1 AND entity_table = %2";
    * @throws CRM_Core_Exception
    */
   public static function sendSMS(
-    &$contactDetails = NULL,
+    &$contactDetails,
     &$activityParams,
     &$smsProviderParams = [],
     &$contactIds = NULL,
@@ -1417,7 +1417,7 @@ WHERE entity_id =%1 AND entity_table = %2";
   public static function sendSMSMessage(
     $toID,
     &$tokenText,
-    $smsProviderParams = [],
+    $smsProviderParams,
     $activityID,
     $sourceContactID = NULL
   ) {
@@ -1574,7 +1574,7 @@ WHERE entity_id =%1 AND entity_table = %2";
         'contact_type' => 'Individual',
         'used' => 'Unsupervised',
       ];
-      $fieldsArray = CRM_Dedupe_BAO_Rule::dedupeRuleFields($ruleParams);
+      $fieldsArray = CRM_Dedupe_BAO_DedupeRule::dedupeRuleFields($ruleParams);
 
       $tmpConatctField = [];
       if (is_array($fieldsArray)) {

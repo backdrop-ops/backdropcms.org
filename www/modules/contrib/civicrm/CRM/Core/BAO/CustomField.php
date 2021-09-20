@@ -109,11 +109,9 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
   }
 
   /**
-   * Create/ update several fields at once in a mysql efficient way.
-   *
+   * Save multiple fields, now deprecated in favor of self::writeRecords.
    * https://lab.civicrm.org/dev/core/issues/1093
-   *
-   * The intention is that apiv4 would expose any BAO with bulkSave as a new action.
+   * @deprecated
    *
    * @param array $bulkParams
    *   Array of arrays as would be passed into create
@@ -123,9 +121,26 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
    * @throws \CiviCRM_API3_Exception
    */
   public static function bulkSave($bulkParams, $defaults = []) {
-    $addedColumns = $sql = $customFields = $pre = $post = [];
+    CRM_Core_Error::deprecatedFunctionWarning(__CLASS__ . '::writeRecords');
     foreach ($bulkParams as $index => $fieldParams) {
-      $params = array_merge($defaults, $fieldParams);
+      $bulkParams[$index] = array_merge($defaults, $fieldParams);
+    }
+    self::writeRecords($bulkParams);
+  }
+
+  /**
+   * Create/update several fields at once in a mysql efficient way.
+   *
+   * @param array $records
+   * @return CRM_Core_DAO_CustomField[]
+   * @throws CRM_Core_Exception
+   * @throws CiviCRM_API3_Exception
+   */
+  public static function writeRecords(array $records) {
+    $addedColumns = $sql = $customFields = $pre = $post = [];
+    foreach ($records as $index => $params) {
+      CRM_Utils_Hook::pre(empty($params['id']) ? 'create' : 'edit', 'CustomField', $params['id'] ?? NULL, $params);
+
       $changeSerialize = self::getChangeSerialize($params);
       $customField = self::createCustomFieldRecord($params);
       // Serialize/deserialize sql must run after/before the table is altered
@@ -136,12 +151,10 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
         $post[] = self::getAlterSerializeSQL($customField);
       }
       $fieldSQL = self::getAlterFieldSQL($customField, empty($params['id']) ? 'add' : 'modify');
-      if (!isset($params['custom_group_id'])) {
-        $params['custom_group_id'] = civicrm_api3('CustomField', 'getvalue', ['id' => $customField->id, 'return' => 'custom_group_id']);
-      }
+
       $tableName = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $customField->custom_group_id, 'table_name');
       $sql[$tableName][] = $fieldSQL;
-      $addedColumns[$tableName][] = $customField->name;
+      $addedColumns[$tableName][] = $customField->column_name;
       $customFields[$index] = $customField;
     }
 
@@ -166,9 +179,12 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
     }
 
     CRM_Utils_System::flushCache();
+    Civi::cache('metadata')->clear();
+
     foreach ($customFields as $index => $customField) {
-      CRM_Utils_Hook::post(empty($bulkParams[$index]['id']) ? 'create' : 'edit', 'CustomField', $customField->id, $customField);
+      CRM_Utils_Hook::post(empty($records[$index]['id']) ? 'create' : 'edit', 'CustomField', $customField->id, $customField);
     }
+    return $customFields;
   }
 
   /**
@@ -293,8 +309,8 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
    *   Return only top level custom data, for eg, only Participant and ignore subname and subtype.
    * @param bool $onlySubType
    *   Return only custom data for subtype.
-   * @param bool $checkPermission
-   *   If false, do not include permissioning clause.
+   * @param bool|int $checkPermission
+   *   Either a CRM_Core_Permission constant or FALSE to disable checks
    *
    * @return array
    *   an array of active custom fields.
@@ -308,8 +324,12 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
     $customDataSubName = NULL,
     $onlyParent = FALSE,
     $onlySubType = FALSE,
-    $checkPermission = TRUE
+    $checkPermission = CRM_Core_Permission::EDIT
   ) {
+    if ($checkPermission === TRUE) {
+      CRM_Core_Error::deprecatedWarning('Unexpected TRUE passed to CustomField::getFields $checkPermission param.');
+      $checkPermission = CRM_Core_Permission::EDIT;
+    }
     if (empty($customDataType)) {
       $customDataType = ['Contact', 'Individual', 'Organization', 'Household'];
     }
@@ -320,7 +340,7 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
     }
     if ($customDataType && !is_array($customDataType)) {
 
-      if (in_array($customDataType, CRM_Contact_BAO_ContactType::subTypes())) {
+      if (in_array($customDataType, CRM_Contact_BAO_ContactType::subTypes(), TRUE)) {
         // This is the case when getFieldsForImport() requires fields
         // limited strictly to a subtype.
         $customDataSubType = $customDataType;
@@ -328,7 +348,7 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
         $onlySubType = TRUE;
       }
 
-      if (in_array($customDataType, array_keys(CRM_Core_SelectValues::customGroupExtends()))) {
+      if (array_key_exists($customDataType, CRM_Core_SelectValues::customGroupExtends())) {
         // this makes the method flexible to support retrieving fields
         // for multiple extends value.
         $customDataType = [$customDataType];
@@ -350,14 +370,14 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
     $cacheKey .= $inline ? '_1_' : '_0_';
     $cacheKey .= $onlyParent ? '_1_' : '_0_';
     $cacheKey .= $onlySubType ? '_1_' : '_0_';
-    $cacheKey .= $checkPermission ? '_1_' . CRM_Core_Session::getLoggedInContactID() . '_' : '_0_0_';
+    $cacheKey .= $checkPermission ? $checkPermission . CRM_Core_Session::getLoggedInContactID() . '_' : '_0_0_';
     $cacheKey .= '_' . CRM_Core_Config::domainID() . '_';
 
     $cgTable = CRM_Core_DAO_CustomGroup::getTableName();
 
     // also get the permission stuff here
     if ($checkPermission) {
-      $permissionClause = CRM_Core_Permission::customGroupClause(CRM_Core_Permission::VIEW,
+      $permissionClause = CRM_Core_Permission::customGroupClause($checkPermission,
         "{$cgTable}."
       );
     }
@@ -388,7 +408,7 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
         if (is_array($customDataType)) {
           $value = NULL;
           foreach ($customDataType as $dataType) {
-            if (in_array($dataType, array_keys(CRM_Core_SelectValues::customGroupExtends()))) {
+            if (array_key_exists($dataType, CRM_Core_SelectValues::customGroupExtends())) {
               if (in_array($dataType, ['Individual', 'Household', 'Organization'])) {
                 $val = "'" . CRM_Utils_Type::escape($dataType, 'String') . "', 'Contact' ";
               }
@@ -472,7 +492,7 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
 
         // also get the permission stuff here
         if ($checkPermission) {
-          $permissionClause = CRM_Core_Permission::customGroupClause(CRM_Core_Permission::VIEW,
+          $permissionClause = CRM_Core_Permission::customGroupClause($checkPermission,
             "{$cgTable}.", TRUE
           );
         }
@@ -539,7 +559,10 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
   }
 
   /**
-   * Return the field ids and names (with groups) for import purpose.
+   * Return field ids and names (with groups).
+   *
+   * NOTE: Despite this function's name, it is used both for IMPORT and EXPORT.
+   * The $checkPermission variable should be set to VIEW for export and EDIT for import.
    *
    * @param int|string $contactType Contact type
    * @param bool $showAll
@@ -548,8 +571,8 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
    *   Return fields ONLY related to basic types.
    * @param bool $search
    *   When called from search and multiple records need to be returned.
-   * @param bool $checkPermission
-   *   If false, do not include permissioning clause.
+   * @param bool|int $checkPermission
+   *   Either a CRM_Core_Permission constant or FALSE to disable checks
    *
    * @param bool $withMultiple
    *
@@ -563,6 +586,10 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
     $checkPermission = TRUE,
     $withMultiple = FALSE
   ) {
+    if ($checkPermission === TRUE) {
+      // TODO: Trigger deprecation notice for passing TRUE
+      $checkPermission = CRM_Core_Permission::EDIT;
+    }
     // Note: there are situations when we want getFieldsForImport() return fields related
     // ONLY to basic contact types, but NOT subtypes. And thats where $onlyParent is helpful
     $fields = &self::getFields($contactType,
@@ -1427,7 +1454,7 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
       NULL,
       FALSE,
       FALSE,
-      $checkPermission
+      $checkPermission ? CRM_Core_Permission::EDIT : FALSE
     );
 
     if (!array_key_exists($customFieldId, $customFields)) {
@@ -1987,9 +2014,15 @@ WHERE  id IN ( %1, %2 )
 
     // create any option group & values if required
     $allowedOptionTypes = ['String', 'Int', 'Float', 'Money'];
-    if ($htmlType != 'Text' && in_array($dataType, $allowedOptionTypes)) {
+    if ($htmlType !== 'Text' && in_array($dataType, $allowedOptionTypes, TRUE)) {
       //CRM-16659: if option_value then create an option group for this custom field.
-      if ($params['option_type'] == 1 && (empty($params['option_group_id']) || !empty($params['option_value']))) {
+      // An option_type of 2 would be a 'message' from the form layer not to handle
+      // the option_values key. If not set then it is not ignored.
+      $optionsType = (int) ($params['option_type'] ?? 0);
+      if (($optionsType !== 2 && empty($params['id']))
+        && (empty($params['option_group_id']) && !empty($params['option_value'])
+        )
+      ) {
         // first create an option group for this custom group
         $optionGroup = new CRM_Core_DAO_OptionGroup();
         $optionGroup->name = "{$params['column_name']}_" . date('YmdHis');

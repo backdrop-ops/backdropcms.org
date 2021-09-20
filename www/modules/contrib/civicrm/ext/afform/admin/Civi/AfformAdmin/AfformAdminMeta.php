@@ -2,6 +2,7 @@
 
 namespace Civi\AfformAdmin;
 
+use Civi\Api4\Utils\CoreUtil;
 use CRM_AfformAdmin_ExtensionUtil as E;
 
 class AfformAdminMeta {
@@ -51,14 +52,16 @@ class AfformAdminMeta {
   }
 
   /**
-   * @param $entityName
-   * @return array
+   * Get info about an api entity, with special handling for contact types
+   * @param string $entityName
+   * @return array|null
    */
-  public static function getApiEntity($entityName) {
-    if (in_array($entityName, ['Individual', 'Household', 'Organization'])) {
-      $contactTypes = \CRM_Contact_BAO_ContactType::basicTypeInfo();
+  public static function getApiEntity(string $entityName) {
+    $contactTypes = \CRM_Contact_BAO_ContactType::basicTypeInfo();
+    if (isset($contactTypes[$entityName])) {
       return [
         'entity' => 'Contact',
+        'contact_type' => $entityName,
         'label' => $contactTypes[$entityName]['label'],
       ];
     }
@@ -66,6 +69,10 @@ class AfformAdminMeta {
       ->addWhere('name', '=', $entityName)
       ->addSelect('title', 'icon')
       ->execute()->first();
+    if (!$info) {
+      // Disabled contact type or nonexistent api entity
+      return NULL;
+    }
     return [
       'entity' => $entityName,
       'label' => $info['title'],
@@ -81,10 +88,9 @@ class AfformAdminMeta {
   public static function getFields($entityName, $params = []) {
     $params += [
       'checkPermissions' => FALSE,
-      'includeCustom' => TRUE,
       'loadOptions' => ['id', 'label'],
       'action' => 'create',
-      'select' => ['name', 'label', 'input_type', 'input_attrs', 'required', 'options', 'help_pre', 'help_post', 'serialize', 'data_type', 'fk_entity'],
+      'select' => ['name', 'label', 'input_type', 'input_attrs', 'required', 'options', 'help_pre', 'help_post', 'serialize', 'data_type', 'fk_entity', 'readonly'],
       'where' => [['input_type', 'IS NOT NULL']],
     ];
     if (in_array($entityName, ['Individual', 'Household', 'Organization'])) {
@@ -99,7 +105,26 @@ class AfformAdminMeta {
       }
       $params['values']['state_province_id'] = \Civi::settings()->get('defaultContactStateProvince');
     }
-    return (array) civicrm_api4($entityName, 'getFields', $params, 'name');
+    $fields = (array) civicrm_api4($entityName, 'getFields', $params);
+
+    // Add implicit joins to search fields
+    if ($params['action'] === 'search') {
+      foreach (array_reverse($fields, TRUE) as $index => $field) {
+        if (!empty($field['fk_entity']) && !$field['options']) {
+          $fkLabelField = CoreUtil::getInfoItem($field['fk_entity'], 'label_field');
+          if ($fkLabelField) {
+            // Add the label field from the other entity to this entity's list of fields
+            $newField = civicrm_api4($field['fk_entity'], 'getFields', [
+              'where' => [['name', '=', $fkLabelField]],
+            ])->first();
+            $newField['name'] = $field['name'] . '.' . $newField['name'];
+            $newField['label'] = $field['label'] . ' ' . $newField['label'];
+            array_splice($fields, $index, 0, [$newField]);
+          }
+        }
+      }
+    }
+    return array_column($fields, NULL, 'name');
   }
 
   /**
@@ -121,32 +146,37 @@ class AfformAdminMeta {
 
     $contactTypes = \CRM_Contact_BAO_ContactType::basicTypeInfo();
 
+    // Call getFields on getFields to get input type labels
+    $inputTypeLabels = \Civi\Api4\Contact::getFields()
+      ->setLoadOptions(TRUE)
+      ->setAction('getFields')
+      ->addWhere('name', '=', 'input_type')
+      ->execute()
+      ->column('options')[0];
+
     // Scan all extensions for entities & input types
     foreach (\CRM_Extension_System::singleton()->getMapper()->getActiveModuleFiles() as $ext) {
       $dir = \CRM_Utils_File::addTrailingSlash(dirname($ext['filePath']));
       if (is_dir($dir)) {
         // Scan for entities
         foreach (glob($dir . 'afformEntities/*.php') as $file) {
-          $entity = include $file;
-          $afformEntity = basename($file, '.php');
-          // Contact pseudo-entities (Individual, Organization, Household) get special treatment,
-          // notably their fields are pre-loaded since they are both commonly-used and nonstandard
-          if (!empty($entity['contact_type'])) {
-            // Skip disabled contact types
-            if (!isset($contactTypes[$entity['contact_type']])) {
-              continue;
-            }
-            $entity['label'] = $contactTypes[$entity['contact_type']]['label'];
+          $entityInfo = include $file;
+          $entityName = basename($file, '.php');
+          $apiInfo = self::getApiEntity($entityInfo['entity'] ?? $entityName);
+          // Skip disabled contact types & entities from disabled components/extensions
+          if (!$apiInfo) {
+            continue;
           }
-          elseif (empty($entity['label']) || empty($entity['icon'])) {
-            $entity += self::getApiEntity($entity['entity']);
-          }
-          $data['entities'][$afformEntity] = $entity;
+          $entityInfo += $apiInfo;
+          $data['entities'][$entityName] = $entityInfo;
         }
-        // Scan for input types
+        // Scan for input types, use label from getFields if available
         foreach (glob($dir . 'ang/afGuiEditor/inputType/*.html') as $file) {
           $name = basename($file, '.html');
-          $data['inputType'][$name] = $name;
+          $data['inputType'][] = [
+            'name' => $name,
+            'label' => $inputTypeLabels[$name] ?? E::ts($name),
+          ];
         }
       }
     }

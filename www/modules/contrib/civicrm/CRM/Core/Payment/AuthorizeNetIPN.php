@@ -74,6 +74,10 @@ class CRM_Core_Payment_AuthorizeNetIPN extends CRM_Core_Payment_BaseIPN {
       if (!$contributionRecur->find(TRUE)) {
         throw new CRM_Core_Exception("Could not find contribution recur record: {$ids['ContributionRecur']} in IPN request: " . print_r($input, TRUE));
       }
+      // do a subscription check
+      if ($contributionRecur->processor_id != $input['subscription_id']) {
+        throw new CRM_Core_Exception('Unrecognized subscription.');
+      }
 
       // check if first contribution is completed, else complete first contribution
       $first = TRUE;
@@ -113,18 +117,9 @@ class CRM_Core_Payment_AuthorizeNetIPN extends CRM_Core_Payment_BaseIPN {
    */
   public function recur($input, $recur, $contribution, $first) {
 
-    // do a subscription check
-    if ($recur->processor_id != $input['subscription_id']) {
-      throw new CRM_Core_Exception('Unrecognized subscription.');
-    }
-
     $contributionStatus = CRM_Contribute_PseudoConstant::contributionStatus(NULL, 'name');
 
     $now = date('YmdHis');
-
-    $contribution->invoice_id = md5(uniqid(rand(), TRUE));
-    $contribution->total_amount = $input['amount'];
-    $contribution->trxn_id = $input['trxn_id'];
 
     $isFirstOrLastRecurringPayment = FALSE;
     if ($input['response_code'] == 1) {
@@ -163,17 +158,7 @@ class CRM_Core_Payment_AuthorizeNetIPN extends CRM_Core_Payment_BaseIPN {
       return FALSE;
     }
 
-    // check if contribution is already completed, if so we ignore this ipn
-    if ($contribution->contribution_status_id == 1) {
-      CRM_Core_Error::debug_log_message("Returning since contribution has already been handled.");
-      echo 'Success: Contribution has already been handled<p>';
-      return FALSE;
-    }
-
-    CRM_Contribute_BAO_Contribution::completeOrder($input, [
-      'participant' => NULL,
-      'contributionRecur' => $recur->id,
-    ], $contribution->id ?? NULL);
+    CRM_Contribute_BAO_Contribution::completeOrder($input, $recur->id, $contribution->id ?? NULL);
     return $isFirstOrLastRecurringPayment;
   }
 
@@ -188,7 +173,6 @@ class CRM_Core_Payment_AuthorizeNetIPN extends CRM_Core_Payment_BaseIPN {
     $input['amount'] = $this->retrieve('x_amount', 'String');
     $input['subscription_id'] = $this->retrieve('x_subscription_id', 'Integer');
     $input['response_code'] = $this->retrieve('x_response_code', 'Integer');
-    $input['MD5_Hash'] = $this->retrieve('x_MD5_Hash', 'String', FALSE, '');
     $input['response_reason_code'] = $this->retrieve('x_response_reason_code', 'String', FALSE);
     $input['response_reason_text'] = $this->retrieve('x_response_reason_text', 'String', FALSE);
     $input['subscription_paynum'] = $this->retrieve('x_subscription_paynum', 'Integer', FALSE, 0);
@@ -303,7 +287,7 @@ INNER JOIN civicrm_contribution co ON co.contribution_recur_id = cr.id
       throw new CRM_Core_Exception('Could not find contributionRecur id');
     }
     if ($contactID != $contRecur->contact_id) {
-      $message = ts("Recurring contribution appears to have been re-assigned from id %1 to %2, continuing with %2.", [1 => $ids['contact'], 2 => $contRecur->contact_id]);
+      $message = ts("Recurring contribution appears to have been re-assigned from id %1 to %2, continuing with %2.", [1 => $contactID, 2 => $contRecur->contact_id]);
       CRM_Core_Error::debug_log_message($message);
     }
     return $contRecur;

@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,13 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
 namespace Civi\Api4;
 
 /**
@@ -107,7 +99,7 @@ class CustomValue {
    * @throws \API_Exception
    */
   public static function replace($customGroup, $checkPermissions = TRUE) {
-    return (new Generic\BasicReplaceAction("Custom_$customGroup", __FUNCTION__, ['id', 'entity_id']))
+    return (new Generic\BasicReplaceAction("Custom_$customGroup", __FUNCTION__))
       ->setCheckPermissions($checkPermissions);
   }
 
@@ -123,15 +115,24 @@ class CustomValue {
   }
 
   /**
+   * @return \Civi\Api4\Generic\CheckAccessAction
+   */
+  public static function checkAccess($customGroup) {
+    return new Generic\CheckAccessAction("Custom_$customGroup", __FUNCTION__);
+  }
+
+  /**
    * @see \Civi\Api4\Generic\AbstractEntity::permissions()
    * @return array
    */
   public static function permissions() {
-    $entity = 'contact';
-    $permissions = \CRM_Core_Permission::getEntityActionPermissions();
-
-    // Merge permissions for this entity with the defaults
-    return \CRM_Utils_Array::value($entity, $permissions, []) + $permissions['default'];
+    // Permissions are managed by ACLs
+    return [
+      'create' => [],
+      'update' => [],
+      'delete' => [],
+      'get' => [],
+    ];
   }
 
   /**
@@ -142,7 +143,8 @@ class CustomValue {
     return [
       'class' => __CLASS__,
       'type' => ['CustomValue'],
-      'searchable' => TRUE,
+      'searchable' => 'secondary',
+      'primary_key' => ['id'],
       'see' => [
         'https://docs.civicrm.org/user/en/latest/organising-your-data/creating-custom-fields/#multiple-record-fieldsets',
         '\Civi\Api4\CustomGroup',

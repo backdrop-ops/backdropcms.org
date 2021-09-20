@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,13 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
 namespace Civi\Api4;
 
 /**
@@ -23,12 +15,25 @@ namespace Civi\Api4;
  *
  * @see https://docs.civicrm.org/dev/en/latest/financial/financialentities/#financial-accounts
  *
- * @bridge entity_id financial_account_id
  * @ui_join_filters account_relationship
  *
+ * @searchable bridge
+ * @since 5.37
  * @package Civi\Api4
  */
 class EntityFinancialAccount extends Generic\DAOEntity {
   use Generic\Traits\EntityBridge;
+
+  /**
+   * @return array
+   */
+  public static function getInfo() {
+    $info = parent::getInfo();
+    $info['bridge'] = [
+      'entity_id' => [],
+      'financial_account_id' => [],
+    ];
+    return $info;
+  }
 
 }

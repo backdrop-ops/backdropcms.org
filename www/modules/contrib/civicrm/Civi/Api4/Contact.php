@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,14 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4;
 
 /**
@@ -28,6 +19,8 @@ namespace Civi\Api4;
  * Creating a new contact requires at minimum a name or email address.
  *
  * @see https://docs.civicrm.org/user/en/latest/organising-your-data/contacts/
+ * @searchable primary
+ * @since 5.19
  * @package Civi\Api4
  */
 class Contact extends Generic\DAOEntity {

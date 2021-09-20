@@ -49,7 +49,7 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
     if ($user_register_conf != 'visitors' && !$user->hasPermission('administer users')) {
       $account->block();
     }
-    elseif ($verify_mail_conf) {
+    else {
       $account->activate();
     }
 
@@ -658,7 +658,7 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
       return NULL;
     }
 
-    return \Drupal::languageManager()->getCurrentLanguage()->getId();
+    return \Drupal::languageManager()->getConfigOverrideLanguage()->getId();
   }
 
   /**

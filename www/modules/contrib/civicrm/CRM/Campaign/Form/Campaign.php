@@ -314,7 +314,7 @@ class CRM_Campaign_Form_Campaign extends CRM_Core_Form {
     }
   }
 
-  public static function submit($params = [], $form) {
+  public static function submit($params, $form) {
     $groups = [];
     if (!empty($params['includeGroups']) && is_array($params['includeGroups'])) {
       foreach ($params['includeGroups'] as $key => $id) {
@@ -336,9 +336,6 @@ class CRM_Campaign_Form_Campaign extends CRM_Core_Form {
     }
 
     //process custom data.
-    $customFields = CRM_Core_BAO_CustomField::getFields('Campaign', FALSE, FALSE,
-      CRM_Utils_Array::value('campaign_type_id', $params)
-    );
     $params['custom'] = CRM_Core_BAO_CustomField::postProcess($params,
       $form->_campaignId,
       'Campaign'

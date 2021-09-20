@@ -89,7 +89,7 @@ function civicrm_api3_verify_mandatory($params, $daoName = NULL, $keys = [], $ve
     else {
       // Disallow empty values except for the number zero.
       // TODO: create a utility for this since it's needed in many places.
-      if (!array_key_exists($key, $params) || (empty($params[$key]) && $params[$key] !== 0 && $params[$key] !== '0')) {
+      if (!array_key_exists($key, $params) || (empty($params[$key]) && $params[$key] !== 0.0 && $params[$key] !== 0 && $params[$key] !== '0')) {
         $unmatched[] = $key;
       }
     }
@@ -320,15 +320,26 @@ function _civicrm_api3_get_DAO($name) {
   if ($name === 'MailingRecipients') {
     return 'CRM_Mailing_DAO_Recipients';
   }
-  // FIXME: DAO should be renamed CRM_ACL_DAO_AclRole
   if ($name === 'AclRole') {
-    return 'CRM_ACL_DAO_EntityRole';
+    return 'CRM_ACL_DAO_ACLEntityRole';
   }
   // FIXME: DAO should be renamed CRM_SMS_DAO_SmsProvider
   // But this would impact SMS extensions so need to coordinate
   // Probably best approach is to migrate them to use the api and decouple them from core BAOs
   if ($name === 'SmsProvider') {
     return 'CRM_SMS_DAO_Provider';
+  }
+  // Entity was renamed to CRM_Dedupe_DAO_DedupeRule for APIv4
+  if ($name === 'Rule') {
+    return 'CRM_Dedupe_DAO_DedupeRule';
+  }
+  // Entity was renamed to CRM_Dedupe_DAO_DedupeRuleGroup for APIv4
+  if ($name === 'RuleGroup') {
+    return 'CRM_Dedupe_DAO_DedupeRuleGroup';
+  }
+  // Entity was renamed to CRM_Dedupe_DAO_DedupeException for APIv4
+  if ($name === 'Exception') {
+    return 'CRM_Dedupe_DAO_DedupeException';
   }
   // FIXME: DAO names should follow CamelCase convention
   if ($name === 'Im' || $name === 'Acl' || $name === 'Pcp') {
@@ -1077,7 +1088,7 @@ function _civicrm_api3_object_to_array_unique_fields(&$dao, &$values) {
  *   ID of entity per $extends.
  */
 function _civicrm_api3_custom_format_params($params, &$values, $extends, $entityId = NULL) {
-  if (!empty($params['custom'])) {
+  if (!empty($params['custom']) && empty($params['check_permissions'])) {
     // The Import class does the formatting first - ideally it wouldn't but this early return
     // provides transitional support.
     return;
@@ -1104,7 +1115,7 @@ function _civicrm_api3_custom_format_params($params, &$values, $extends, $entity
       }
 
       CRM_Core_BAO_CustomField::formatCustomField($customFieldID, $values['custom'],
-        $value, $extends, $customValueID, $entityId, FALSE, FALSE, TRUE
+        $value, $extends, $customValueID, $entityId, FALSE, !empty($params['check_permissions']), TRUE
       );
     }
   }
@@ -1421,7 +1432,7 @@ function _civicrm_api3_custom_data_get(&$returnArray, $checkPermission, $entity,
     TRUE,
     NULL,
     TRUE,
-    $checkPermission
+    $checkPermission ? CRM_Core_Permission::VIEW : FALSE
   );
   $groupTree = CRM_Core_BAO_CustomGroup::formatGroupTree($groupTree, 1);
   $customValues = [];
@@ -2048,6 +2059,10 @@ function _civicrm_api3_swap_out_aliases(&$apiRequest, $fields) {
  */
 function _civicrm_api3_validate_integer(&$params, $fieldName, &$fieldInfo, $entity) {
   list($fieldValue, $op) = _civicrm_api3_field_value_check($params, $fieldName);
+  if ($fieldName === 'auto_renew' && $fieldValue === TRUE) {
+    // https://lab.civicrm.org/dev/rc/-/issues/14
+    $fieldValue = 1;
+  }
   if (strpos($op, 'NULL') !== FALSE || strpos($op, 'EMPTY') !== FALSE) {
     return;
   }
@@ -2067,9 +2082,14 @@ function _civicrm_api3_validate_integer(&$params, $fieldName, &$fieldInfo, $enti
         $fieldValue = NULL;
       }
     }
-    if (!empty($fieldInfo['pseudoconstant']) || !empty($fieldInfo['options']) || $fieldName === 'campaign_id') {
+    if (
+    (!empty($fieldInfo['pseudoconstant']) || !empty($fieldInfo['options']) || $fieldName === 'campaign_id')
+     // if it is already numeric AND it is an FK field we don't need to validate because
+     // sql will do that for us on insert (this also saves a big lookup)
+     && (!is_numeric($fieldValue) || empty($fieldInfo['FKClassName']))
+    ) {
       $additional_lookup_params = [];
-      if (strtolower($entity) == 'address' && $fieldName == 'state_province_id') {
+      if (strtolower($entity) === 'address' && $fieldName == 'state_province_id') {
         $country_id = _civicrm_api3_resolve_country_id($params);
         if (!empty($country_id)) {
           $additional_lookup_params = ['country_id' => $country_id];
@@ -2331,6 +2351,18 @@ function _civicrm_api3_api_match_pseudoconstant_value(&$value, $options, $fieldN
   // Hack for Profile formatting fields
   if ($fieldName === 'field_name' && (strpos($value, 'formatting') === 0)) {
     return;
+  }
+
+  // Legacy handling of tag used_for values, see https://github.com/civicrm/civicrm-core/pull/20573
+  if ($fieldName === 'used_for') {
+    $legacyTagUsedFor = [
+      'Activities' => 'Activity',
+      'Contacts' => 'Contact',
+      'Cases' => 'Case',
+      // Attachements [sic] was the original spelling
+      'Attachements' => 'File',
+    ];
+    $value = $legacyTagUsedFor[$value] ?? $value;
   }
 
   // Translate value into key

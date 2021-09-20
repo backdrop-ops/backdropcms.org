@@ -226,6 +226,7 @@ class CRM_Core_CodeGen_Specification {
       'attributes_simple' => trim($database['tableAttributes_simple']),
       'attributes_modern' => trim($database['tableAttributes_modern']),
       'comment' => $this->value('comment', $tableXML),
+      'description' => $this->value('description', $tableXML),
       'localizable' => $localizable,
       'log' => $this->value('log', $tableXML, 'false'),
       'archive' => $this->value('archive', $tableXML, 'false'),
@@ -272,7 +273,9 @@ class CRM_Core_CodeGen_Specification {
           $this->getForeignKey($foreignXML, $fields, $foreign, $name);
         }
       }
-      $table['foreignKey'] = &$foreign;
+      if (!empty($foreign)) {
+        $table['foreignKey'] = &$foreign;
+      }
     }
 
     if ($this->value('dynamicForeignKey', $tableXML)) {
@@ -285,7 +288,9 @@ class CRM_Core_CodeGen_Specification {
           $this->getDynamicForeignKey($foreignXML, $dynamicForeign, $name);
         }
       }
-      $table['dynamicForeignKey'] = $dynamicForeign;
+      if (!empty($dynamicForeign)) {
+        $table['dynamicForeignKey'] = $dynamicForeign;
+      }
     }
 
     $tables[$name] = &$table;
@@ -509,7 +514,7 @@ class CRM_Core_CodeGen_Specification {
     if (isset($fields[$name])) {
       $fields[$name]['autoincrement'] = $auto;
     }
-    $fields[$name]['autoincrement'] = $auto;
+
     $primaryKey = [
       'name' => $name,
       'autoincrement' => $auto,

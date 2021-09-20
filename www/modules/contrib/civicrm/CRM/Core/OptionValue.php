@@ -251,7 +251,7 @@ class CRM_Core_OptionValue {
    * @return bool
    *   true if object exists
    */
-  public static function optionExists($value, $daoName, $daoID, $optionGroupID, $fieldName = 'name', $domainSpecific) {
+  public static function optionExists($value, $daoName, $daoID, $optionGroupID, $fieldName, $domainSpecific) {
     $object = new $daoName();
     $object->$fieldName = $value;
     $object->option_group_id = $optionGroupID;
@@ -457,7 +457,7 @@ FROM
         'is_active' => $dao->is_active,
         'is_default' => $dao->is_default,
         'icon' => $dao->icon,
-        'color' => $dao->icon,
+        'color' => $dao->color,
       ];
     }
     return $values;

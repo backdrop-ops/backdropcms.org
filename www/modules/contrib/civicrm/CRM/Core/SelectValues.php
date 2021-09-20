@@ -562,32 +562,20 @@ class CRM_Core_SelectValues {
    *
    * @return array
    */
-  public static function contributionTokens() {
-    return array_merge([
-      '{contribution.contribution_id}' => ts('Contribution ID'),
-      '{contribution.total_amount}' => ts('Total Amount'),
-      '{contribution.fee_amount}' => ts('Fee Amount'),
-      '{contribution.net_amount}' => ts('Net Amount'),
-      '{contribution.non_deductible_amount}' => ts('Non-deductible Amount'),
-      '{contribution.receive_date}' => ts('Contribution Date Received'),
-      '{contribution.payment_instrument}' => ts('Payment Method'),
-      '{contribution.trxn_id}' => ts('Transaction ID'),
-      '{contribution.invoice_id}' => ts('Invoice ID'),
-      '{contribution.currency}' => ts('Currency'),
-      '{contribution.cancel_date}' => ts('Contribution Cancel Date'),
+  public static function contributionTokens(): array {
+    $tokens = [];
+    $processor = new CRM_Contribute_Tokens();
+    foreach ($processor->getAllTokens() as $token => $title) {
+      $tokens['{contribution.' . $token . '}'] = $title;
+    }
+    return array_merge($tokens, [
       '{contribution.cancel_reason}' => ts('Contribution Cancel Reason'),
-      '{contribution.receipt_date}' => ts('Receipt Date'),
-      '{contribution.thankyou_date}' => ts('Thank You Date'),
-      '{contribution.contribution_source}' => ts('Contribution Source'),
       '{contribution.amount_level}' => ts('Amount Level'),
-      //'{contribution.contribution_recur_id}' => ts('Contribution Recurring ID'),
-      //'{contribution.honor_contact_id}' => ts('Honor Contact ID'),
-      '{contribution.contribution_status_id}' => ts('Contribution Status'),
-      //'{contribution.honor_type_id}' => ts('Honor Type ID'),
-      //'{contribution.address_id}' => ts('Address ID'),
       '{contribution.check_number}' => ts('Check Number'),
       '{contribution.campaign}' => ts('Contribution Campaign'),
-    ], CRM_Utils_Token::getCustomFieldTokens('contribution', TRUE));
+      // @todo - we shouldn't need to include custom fields here -
+      // remove, with test.
+    ], CRM_Utils_Token::getCustomFieldTokens('Contribution', TRUE));
   }
 
   /**

@@ -22,8 +22,12 @@
       mode = CRM.config && CRM.config.isFrontend ? 'front' : 'back';
     }
     query = query || '';
-    var url,
-      frag = path.split('?');
+    var url, frag, hash = '';
+    if (path.indexOf('#') > -1) {
+      hash = '#' + path.split('#')[1];
+      path = path.split('#')[0];
+    }
+    frag = path.split('?');
     // Encode url path only if slashes in placeholder were also encoded
     if (tplURL[mode].indexOf('civicrm/placeholder-url-path') >= 0) {
       url = tplURL[mode].replace('civicrm/placeholder-url-path', frag[0]);
@@ -39,7 +43,7 @@
     if (frag[1]) {
       url += (url.indexOf('?') < 0 ? '?' : '&') + frag[1];
     }
-    return url;
+    return url + hash;
   };
 
   $.fn.crmURL = function () {
@@ -487,7 +491,7 @@
       if (settings.openInline) {
         settings.autoClose = $el.crmSnippet('isOriginalUrl');
         $(this).off('.openInline').on('click.openInline', settings.openInline, function(e) {
-          if ($(this).is(exclude + ', .crm-popup')) {
+          if ($(this).is(exclude + ', .crm-popup, [target=crm-popup]')) {
             return;
           }
           if ($(this).hasClass('open-inline-noreturn')) {
@@ -594,7 +598,7 @@
 
   $(function($) {
     $('body')
-      .on('click', 'a.crm-popup', CRM.popup)
+      .on('click', 'a.crm-popup, a[target=crm-popup]', CRM.popup)
       // Close unsaved dialog messages
       .on('dialogopen', function(e) {
         $('.alert.unsaved-dialog .ui-notify-cross', '#crm-notification-container').click();

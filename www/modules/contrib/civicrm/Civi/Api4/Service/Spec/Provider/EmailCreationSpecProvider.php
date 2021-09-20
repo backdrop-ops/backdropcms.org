@@ -10,13 +10,6 @@
  +--------------------------------------------------------------------+
  */
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4\Service\Spec\Provider;
 
 use Civi\Api4\Service\Spec\RequestSpec;
@@ -30,6 +23,9 @@ class EmailCreationSpecProvider implements Generic\SpecProviderInterface {
     $spec->getFieldByName('email')->setRequired(TRUE);
     $spec->getFieldByName('on_hold')->setRequired(FALSE);
     $spec->getFieldByName('is_bulkmail')->setRequired(FALSE);
+
+    $defaultLocationType = \CRM_Core_BAO_LocationType::getDefault()->id ?? NULL;
+    $spec->getFieldByName('location_type_id')->setDefaultValue($defaultLocationType);
   }
 
   /**

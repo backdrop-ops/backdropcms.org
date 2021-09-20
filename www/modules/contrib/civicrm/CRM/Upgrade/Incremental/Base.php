@@ -229,7 +229,39 @@ class CRM_Upgrade_Incremental_Base {
   public static function updateMessageTemplates($ctx, $version) {
     $messageTemplateObject = new CRM_Upgrade_Incremental_MessageTemplates($version);
     $messageTemplateObject->updateTemplates();
+  }
 
+  /**
+   * Updated a message token within a template.
+   *
+   * @param CRM_Queue_TaskContext $ctx
+   * @param string $workflowName
+   * @param string $old
+   * @param string $new
+   * @param $version
+   *
+   * @return bool
+   */
+  public static function updateMessageToken($ctx, string $workflowName, string $old, string $new, $version):bool {
+    $messageObj = new CRM_Upgrade_Incremental_MessageTemplates($version);
+    $messageObj->replaceTokenInTemplate($workflowName, $old, $new);
+    return TRUE;
+  }
+
+  /**
+   * Updated a message token within a template.
+   *
+   * @param CRM_Queue_TaskContext $ctx
+   * @param string $old
+   * @param string $new
+   * @param $version
+   *
+   * @return bool
+   */
+  public static function updateActionScheduleToken($ctx, string $old, string $new, $version):bool {
+    $messageObj = new CRM_Upgrade_Incremental_MessageTemplates($version);
+    $messageObj->replaceTokenInActionSchedule($old, $new);
+    return TRUE;
   }
 
   /**
@@ -268,7 +300,7 @@ class CRM_Upgrade_Incremental_Base {
    *
    * @return bool
    */
-  public function updateSmartGroups($ctx, $actions) {
+  public static function updateSmartGroups($ctx, $actions) {
     $groupUpdateObject = new CRM_Upgrade_Incremental_SmartGroups();
     $groupUpdateObject->updateGroups($actions);
     return TRUE;

@@ -353,6 +353,18 @@ class CRM_Member_Form extends CRM_Contribute_Form_AbstractEditPayment {
   }
 
   /**
+   * Get the contact id for the contribution.
+   *
+   * @return int
+   */
+  protected function getMembershipContactID(): int {
+    // It's not clear that $this->_contactID *could* be set outside
+    // tests when contact_id is not submitted - so this fallback
+    // is precautionary in order to be similar to past behaviour.
+    return (int) ($this->getSubmittedValue('contact_id') ?: $this->_contactID);
+  }
+
+  /**
    * Set variables in a way that can be accessed from different places.
    *
    * This is part of refactoring for unit testability on the submit function.
@@ -478,6 +490,7 @@ class CRM_Member_Form extends CRM_Contribute_Form_AbstractEditPayment {
    * @param array $formValues
    *
    * @return array
+   * @throws \API_Exception
    */
   protected function setPriceSetParameters(array $formValues): array {
     // process price set and get total amount and line items.
@@ -486,12 +499,9 @@ class CRM_Member_Form extends CRM_Contribute_Form_AbstractEditPayment {
     $priceSetDetails = $this->getPriceSetDetails($formValues);
     $this->_priceSet = $priceSetDetails[$this->_priceSetId];
     $this->order = new CRM_Financial_BAO_Order();
-    $this->order->setPriceSelectionFromUnfilteredInput($formValues);
-    $this->order->setPriceSetID($this->getPriceSetID($formValues));
     $this->order->setForm($this);
-    if ($priceSetDetails[$this->order->getPriceSetID()]['is_quick_config'] && isset($formValues['total_amount'])) {
-      // Amount overrides only permitted on quick config.
-      // Possibly Order object should enforce this...
+    $this->order->setPriceSelectionFromUnfilteredInput($formValues);
+    if (isset($formValues['total_amount'])) {
       $this->order->setOverrideTotalAmount((float) $formValues['total_amount']);
     }
     $this->order->setOverrideFinancialTypeID((int) $formValues['financial_type_id']);

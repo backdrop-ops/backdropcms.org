@@ -1,6 +1,7 @@
 <?php
 namespace Civi\Core;
 
+use Civi\Core\Event\EventScanner;
 use Civi\Core\Lock\LockManager;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -284,11 +285,6 @@ class Container {
     $container->setDefinition('cache_config', new Definition('ArrayObject'))
       ->setFactory([new Reference(self::SELF), 'createCacheConfig'])->setPublic(TRUE);
 
-    $container->setDefinition('civi.mailing.triggers', new Definition(
-      'Civi\Core\SqlTrigger\TimestampTriggers',
-      ['civicrm_mailing', 'Mailing']
-    ))->addTag('kernel.event_listener', ['event' => 'hook_civicrm_triggerInfo', 'method' => 'onTriggerInfo'])->setPublic(TRUE);
-
     $container->setDefinition('civi.activity.triggers', new Definition(
       'Civi\Core\SqlTrigger\TimestampTriggers',
       ['civicrm_activity', 'Activity']
@@ -338,6 +334,16 @@ class Container {
       ))->addTag('kernel.event_subscriber')->setPublic(TRUE);
     }
 
+    $dispatcherDefn = $container->getDefinition('dispatcher');
+    foreach (\CRM_Core_DAO_AllCoreTables::getBaoClasses() as $baoEntity => $baoClass) {
+      $listenerMap = EventScanner::findListeners($baoClass, $baoEntity);
+      if ($listenerMap) {
+        $file = (new \ReflectionClass($baoClass))->getFileName();
+        $container->addResource(new \Symfony\Component\Config\Resource\FileResource($file));
+        $dispatcherDefn->addMethodCall('addListenerMap', [$baoClass, $listenerMap]);
+      }
+    }
+
     \CRM_Api4_Services::hook_container($container);
 
     \CRM_Utils_Hook::container($container);
@@ -360,13 +366,28 @@ class Container {
     /** @var CiviEventDispatcher $dispatcher */
     $dispatcher = static::getBootService('dispatcher.boot');
 
+    // Sometimes, you have a generic event ('hook_pre') and wish to fire more targeted aliases ('hook_pre::MyEntity') to allow shorter subscriber lists.
+    $aliasEvent = function($eventName, $fieldName) {
+      return function($e) use ($eventName, $fieldName) {
+        \Civi::dispatcher()->dispatch($eventName . "::" . $e->{$fieldName}, $e);
+      };
+    };
+    $aliasMethodEvent = function($eventName, $methodName) {
+      return function($e) use ($eventName, $methodName) {
+        \Civi::dispatcher()->dispatch($eventName . "::" . $e->{$methodName}(), $e);
+      };
+    };
+
+    $dispatcher->addListener('civi.api4.validate', $aliasMethodEvent('civi.api4.validate', 'getEntityName'), 100);
+    $dispatcher->addListener('civi.api4.authorizeRecord', $aliasMethodEvent('civi.api4.authorizeRecord', 'getEntityName'), 100);
+
     $dispatcher->addListener('civi.core.install', ['\Civi\Core\InstallationCanary', 'check']);
     $dispatcher->addListener('civi.core.install', ['\Civi\Core\DatabaseInitializer', 'initialize']);
     $dispatcher->addListener('civi.core.install', ['\Civi\Core\LocalizationInitializer', 'initialize']);
     $dispatcher->addListener('hook_civicrm_post', ['\CRM_Core_Transaction', 'addPostCommit'], -1000);
-    $dispatcher->addListener('hook_civicrm_pre', ['\Civi\Core\Event\PreEvent', 'dispatchSubevent'], 100);
+    $dispatcher->addListener('hook_civicrm_pre', $aliasEvent('hook_civicrm_pre', 'entity'), 100);
     $dispatcher->addListener('civi.dao.preDelete', ['\CRM_Core_BAO_EntityTag', 'preDeleteOtherEntity']);
-    $dispatcher->addListener('hook_civicrm_post', ['\Civi\Core\Event\PostEvent', 'dispatchSubevent'], 100);
+    $dispatcher->addListener('hook_civicrm_post', $aliasEvent('hook_civicrm_post', 'entity'), 100);
     $dispatcher->addListener('hook_civicrm_post::Activity', ['\Civi\CCase\Events', 'fireCaseChange']);
     $dispatcher->addListener('hook_civicrm_post::Case', ['\Civi\CCase\Events', 'fireCaseChange']);
     $dispatcher->addListener('hook_civicrm_caseChange', ['\Civi\CCase\Events', 'delegateToXmlListeners']);
@@ -381,6 +402,7 @@ class Container {
     $dispatcher->addListener('hook_civicrm_buildAsset', ['\CRM_Utils_VisualBundle', 'buildAssetJs']);
     $dispatcher->addListener('hook_civicrm_buildAsset', ['\CRM_Utils_VisualBundle', 'buildAssetCss']);
     $dispatcher->addListener('hook_civicrm_buildAsset', ['\CRM_Core_Resources', 'renderMenubarStylesheet']);
+    $dispatcher->addListener('hook_civicrm_buildAsset', ['\CRM_Core_Resources', 'renderL10nJs']);
     $dispatcher->addListener('hook_civicrm_coreResourceList', ['\CRM_Utils_System', 'appendCoreResources']);
     $dispatcher->addListener('hook_civicrm_getAssetUrl', ['\CRM_Utils_System', 'alterAssetUrl']);
     $dispatcher->addListener('hook_civicrm_alterExternUrl', ['\CRM_Utils_System', 'migrateExternUrl'], 1000);
@@ -388,10 +410,6 @@ class Container {
     $dispatcher->addListener('hook_civicrm_permissionList', ['CRM_Core_Permission_List', 'findCiviPermissions'], 950);
     $dispatcher->addListener('hook_civicrm_permissionList', ['CRM_Core_Permission_List', 'findCmsPermissions'], 925);
 
-    $dispatcher->addListener('hook_civicrm_triggerInfo', ['\CRM_Contact_BAO_RelationshipCache', 'onHookTriggerInfo']);
-    $dispatcher->addListener('civi.dao.postInsert', ['\CRM_Core_BAO_RecurringEntity', 'triggerInsert']);
-    $dispatcher->addListener('civi.dao.postUpdate', ['\CRM_Core_BAO_RecurringEntity', 'triggerUpdate']);
-    $dispatcher->addListener('civi.dao.postDelete', ['\CRM_Core_BAO_RecurringEntity', 'triggerDelete']);
     $dispatcher->addListener('hook_civicrm_postSave_civicrm_domain', ['\CRM_Core_BAO_Domain', 'onPostSave']);
     $dispatcher->addListener('hook_civicrm_unhandled_exception', [
       'CRM_Core_LegacyErrorHandler',

@@ -13,6 +13,17 @@ function search_kit_civicrm_config(&$config) {
 }
 
 /**
+ * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+ */
+function search_kit_civicrm_container($container) {
+  $container->getDefinition('dispatcher')
+    ->addMethodCall('addListener', [
+      'civi.api4.authorizeRecord::SavedSearch',
+      ['CRM_Search_BAO_SearchDisplay', 'savedSearchCheckAccessByDisplay'],
+    ]);
+}
+
+/**
  * Implements hook_civicrm_xmlMenu().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_xmlMenu
@@ -45,6 +56,23 @@ function search_kit_civicrm_managed(&$entities) {
  */
 function search_kit_civicrm_angularModules(&$angularModules) {
   _search_kit_civix_civicrm_angularModules($angularModules);
+  // Fetch all search tasks provided by extensions and add their Angular modules as crmSearchTasks dependencies
+  $tasks = [];
+  $null = NULL;
+  $checkPermissions = FALSE;
+  \CRM_Utils_Hook::singleton()->invoke(['tasks', 'checkPermissions', 'userId'],
+    $tasks, $checkPermissions, $null,
+    $null, $null, $null, 'civicrm_searchKitTasks'
+  );
+  foreach ($tasks as $entityTasks) {
+    foreach ($entityTasks as $task) {
+      if (isset($task['module']) && $task['module'] !== 'crmSearchTasks' &&
+        !in_array($task['module'], $angularModules['crmSearchTasks']['requires'], TRUE)
+      ) {
+        $angularModules['crmSearchTasks']['requires'][] = $task['module'];
+      }
+    }
+  }
 }
 
 /**

@@ -848,9 +848,6 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
       // It's not clear why we set this on the form.
       $this->set('paymentProcessors', $this->_paymentProcessors);
     }
-    else {
-      throw new CRM_Core_Exception(ts('A payment processor configured for this page might be disabled (contact the site administrator for assistance).'));
-    }
   }
 
   /**
@@ -2243,7 +2240,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
       return (int) $tempID;
     }
 
-    $userID = $this->getLoggedInUserContactID();
+    $userID = CRM_Core_Session::getLoggedInContactID();
 
     if (!is_null($tempID) && $tempID === $userID) {
       CRM_Core_Resources::singleton()->addVars('coreForm', ['contact_id' => (int) $tempID]);
@@ -2283,10 +2280,12 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
 
   /**
    * Get the contact id of the logged in user.
+   * @deprecated
    *
    * @return int|false
    */
   public function getLoggedInUserContactID() {
+    CRM_Core_Error::deprecatedFunctionWarning('CRM_Core_Session::getLoggedInContactID()');
     // check if the user is logged in and has a contact ID
     $session = CRM_Core_Session::singleton();
     return $session->get('userID') ? (int) $session->get('userID') : FALSE;
@@ -2725,7 +2724,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     if (!$contactID) {
       return FALSE;
     }
-    if ($contactID === $this->getLoggedInUserContactID()) {
+    if ($contactID === CRM_Core_Session::getLoggedInContactID()) {
       return $contactID;
     }
     $userChecksum = CRM_Utils_Request::retrieve('cs', 'String', $this);
@@ -2747,6 +2746,20 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
       $this->exportedValues = $this->controller->exportValues($this->_name);
     }
     return $this->exportedValues[$fieldName] ?? NULL;
+  }
+
+  /**
+   * Get the active UFGroups (profiles) on this form
+   * Many forms load one or more UFGroups (profiles).
+   * This provides a standard function to retrieve the IDs of those profiles from the form
+   * so that you can implement things such as "is is_captcha field set on any of the active profiles on this form?"
+   *
+   * NOT SUPPORTED FOR USE OUTSIDE CORE EXTENSIONS - Added for reCAPTCHA core extension.
+   *
+   * @return array
+   */
+  public function getUFGroupIDs() {
+    return [];
   }
 
 }

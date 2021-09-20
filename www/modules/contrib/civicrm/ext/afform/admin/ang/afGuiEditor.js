@@ -181,7 +181,7 @@
       $('#af-gui-icon-picker').crmIconPicker();
     });
     // Add css class while dragging
-    $('#crm-container')
+    $(document)
       .on('sortover', function(e) {
         $('.af-gui-container').removeClass('af-gui-dragtarget');
         $(e.target).closest('.af-gui-container').addClass('af-gui-dragtarget');
@@ -190,10 +190,10 @@
         $(this).removeClass('af-gui-dragtarget');
       })
       .on('sortstart', '#afGuiEditor', function() {
-        $('#afGuiEditor').addClass('af-gui-dragging');
+        $('body').addClass('af-gui-dragging');
       })
-      .on('sortstop', '#afGuiEditor', function() {
-        $('.af-gui-dragging').removeClass('af-gui-dragging');
+      .on('sortstop', function() {
+        $('body').removeClass('af-gui-dragging');
         $('.af-gui-dragtarget').removeClass('af-gui-dragtarget');
       });
   });
@@ -210,11 +210,13 @@
           .on('show.bs.dropdown', function() {
             $scope.$apply(function() {
               $scope.menu.open = true;
+              element.closest('#afGuiEditor-canvas').addClass('af-gui-menu-open');
             });
           })
           .on('hidden.bs.dropdown', function() {
             $scope.$apply(function() {
               $scope.menu.open = false;
+              element.closest('#afGuiEditor-canvas').removeClass('af-gui-menu-open');
             });
           });
       }

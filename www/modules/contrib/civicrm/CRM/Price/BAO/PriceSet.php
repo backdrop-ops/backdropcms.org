@@ -456,11 +456,11 @@ WHERE     cpf.price_set_id = %1";
     $where = "
 WHERE price_set_id = %1
 AND is_active = 1
-AND ( active_on IS NULL OR active_on <= {$currentTime} )
 ";
     $dateSelect = '';
     if ($doNotIncludeExpiredFields) {
       $dateSelect = "
+AND ( active_on IS NULL OR active_on <= {$currentTime} )
 AND ( expire_on IS NULL OR expire_on >= {$currentTime} )
 ";
     }
@@ -884,32 +884,6 @@ WHERE  id = %1";
     CRM_Utils_Hook::buildAmount($component, $form, $feeBlock);
 
     self::addPriceFieldsToForm($form, $feeBlock, $validFieldsOnly, $className, $validPriceFieldIds);
-  }
-
-  /**
-   * Apply ACLs on Financial Type to the price options in a fee block.
-   *
-   * @param array $feeBlock
-   *   Fee block: array of price fields.
-   *
-   * @deprecated not used in civi universe as at Oct 2020.
-   *
-   * @return void
-   */
-  public static function applyACLFinancialTypeStatusToFeeBlock(&$feeBlock) {
-    CRM_Core_Error::deprecatedFunctionWarning('enacted in financialtypeacl extension');
-    if (CRM_Financial_BAO_FinancialType::isACLFinancialTypeStatus()) {
-      foreach ($feeBlock as $key => $value) {
-        foreach ($value['options'] as $k => $options) {
-          if (!CRM_Core_Permission::check('add contributions of type ' . CRM_Contribute_PseudoConstant::financialType($options['financial_type_id']))) {
-            unset($feeBlock[$key]['options'][$k]);
-          }
-        }
-        if (empty($feeBlock[$key]['options'])) {
-          unset($feeBlock[$key]);
-        }
-      }
-    }
   }
 
   /**
@@ -1657,7 +1631,7 @@ WHERE     ct.id = cp.financial_type_id AND
       case 'Text':
         $firstOption = reset($field['options']);
         $params["price_{$id}"] = [$firstOption['id'] => $params["price_{$id}"]];
-        CRM_Price_BAO_LineItem::format($id, $params, $field, $lineItem, CRM_Utils_Array::value('partial_payment_total', $params));
+        CRM_Price_BAO_LineItem::format($id, $params, $field, $lineItem);
         $optionValueId = key($field['options']);
 
         if (CRM_Utils_Array::value('name', $field['options'][$optionValueId]) === 'contribution_amount') {
@@ -1691,7 +1665,7 @@ WHERE     ct.id = cp.financial_type_id AND
         $amount_override = NULL;
 
         if ($priceSetID && count(self::filterPriceFieldsFromParams($priceSetID, $params)) === 1) {
-          $amount_override = CRM_Utils_Array::value('partial_payment_total', $params, CRM_Utils_Array::value('total_amount', $params));
+          $amount_override = CRM_Utils_Array::value('total_amount', $params);
         }
         CRM_Price_BAO_LineItem::format($id, $params, $field, $lineItem, $amount_override);
         if (!empty($field['options'][$optionValueId]['tax_rate'])) {
@@ -1706,7 +1680,7 @@ WHERE     ct.id = cp.financial_type_id AND
         $params["price_{$id}"] = [$params["price_{$id}"] => 1];
         $optionValueId = CRM_Utils_Array::key(1, $params["price_{$id}"]);
 
-        CRM_Price_BAO_LineItem::format($id, $params, $field, $lineItem, CRM_Utils_Array::value('partial_payment_total', $params));
+        CRM_Price_BAO_LineItem::format($id, $params, $field, $lineItem);
         if (!empty($field['options'][$optionValueId]['tax_rate'])) {
           $lineItem = self::setLineItem($field, $lineItem, $optionValueId, $totalTax);
         }
@@ -1714,7 +1688,7 @@ WHERE     ct.id = cp.financial_type_id AND
 
       case 'CheckBox':
 
-        CRM_Price_BAO_LineItem::format($id, $params, $field, $lineItem, CRM_Utils_Array::value('partial_payment_total', $params));
+        CRM_Price_BAO_LineItem::format($id, $params, $field, $lineItem);
         foreach ($params["price_{$id}"] as $optionId => $option) {
           if (!empty($field['options'][$optionId]['tax_rate'])) {
             $lineItem = self::setLineItem($field, $lineItem, $optionId, $totalTax);

@@ -10,13 +10,6 @@
  +--------------------------------------------------------------------+
  */
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4\Service\Spec\Provider;
 
 use Civi\Api4\Service\Spec\FieldSpec;
@@ -33,6 +26,8 @@ class CaseCreationSpecProvider implements Generic\SpecProviderInterface {
     $creator->setDescription('Contact who created the case.');
     $creator->setFkEntity('Contact');
     $creator->setInputType('EntityRef');
+    $creator->setRequired(TRUE);
+    $creator->setDefaultValue('user_contact_id');
     $spec->addFieldSpec($creator);
 
     $contact = new FieldSpec('contact_id', $spec->getEntity(), 'Array');
@@ -59,6 +54,18 @@ class CaseCreationSpecProvider implements Generic\SpecProviderInterface {
     $duration->setInputType('Number');
     $duration->setDescription('Open Case activity duration (minutes).');
     $spec->addFieldSpec($duration);
+
+    $defaultStatus = \CRM_Core_DAO::singleValueQuery('SELECT value FROM civicrm_option_value
+      WHERE is_default
+        AND domain_id = ' . \CRM_Core_BAO_Domain::getDomain()->id . '
+        AND option_group_id = (SELECT id FROM civicrm_option_group WHERE name = "case_status")
+      LIMIT 1');
+    if ($defaultStatus) {
+      $status = $spec->getFieldByName('status_id');
+      $status->setDefaultValue((int) $defaultStatus);
+    }
+
+    $spec->getFieldByName('start_date')->setDefaultValue('now');
   }
 
   /**

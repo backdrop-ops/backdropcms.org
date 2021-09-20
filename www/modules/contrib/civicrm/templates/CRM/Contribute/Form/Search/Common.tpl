@@ -25,7 +25,7 @@
     <label>{ts}Currency{/ts}</label> <br />
     {$form.contribution_currency_type.html|crmAddClass:twenty}
   </td>
-  {if $form.contribution_batch_id.html }
+  {if !empty($form.contribution_batch_id.html)}
     <td>
       {$form.contribution_batch_id.label}<br />
       {$form.contribution_batch_id.html}
@@ -110,6 +110,12 @@
           {$form.contribution_recurring.html}
         </td>
       </tr>
+      <tr>
+        <td>{$form.is_template.label} {help id="is-template" file="CRM/Contact/Form/Search/Advanced"}</td>
+        <td>
+          {$form.is_template.html}
+        </td>
+      </tr>
       </tbody>
     </table>
   </td>
@@ -130,8 +136,10 @@
     {$form.contribution_source.html|crmAddClass:twenty}
   </td>
   <td>
-    {$form.contribution_product_id.label} <br />
-    {$form.contribution_product_id.html|crmAddClass:twenty}
+    {if !empty($form.contribution_product_id)}
+      {$form.contribution_product_id.label} <br />
+      {$form.contribution_product_id.html|crmAddClass:twenty}
+    {/if}
   </td>
 </tr>
 <tr>
@@ -172,7 +180,7 @@ campaignTrClass='' campaignTdClass=''}
   </td>
 </tr>
 
-{if $contributionGroupTree}
+{if !empty($contributionGroupTree)}
 <tr>
   <td colspan="2">
   {include file="CRM/Custom/Form/Search.tpl" groupTree=$contributionGroupTree showHideLinks=false}</td>

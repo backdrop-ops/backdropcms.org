@@ -15,6 +15,15 @@ function financialacls_civicrm_config(&$config) {
 }
 
 /**
+ * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+ */
+function financialacls_civicrm_container($container) {
+  $dispatcherDefn = $container->getDefinition('dispatcher');
+  $container->addResource(new \Symfony\Component\Config\Resource\FileResource(__FILE__));
+  $dispatcherDefn->addMethodCall('addListener', ['civi.api4.authorizeRecord::Contribution', '_financialacls_civi_api4_authorizeContribution']);
+}
+
+/**
  * Implements hook_civicrm_xmlMenu().
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_xmlMenu
@@ -164,7 +173,7 @@ function financialacls_civicrm_pre($op, $objectName, $id, &$params) {
     if (empty($params['financial_type_id'])) {
       $params['financial_type_id'] = CRM_Core_DAO::getFieldValue('CRM_Price_DAO_LineItem', $params['id'], 'financial_type_id');
     }
-    if (!in_array($params['financial_type_id'], array_keys($types))) {
+    if (!array_key_exists($params['financial_type_id'], $types)) {
       throw new API_Exception('You do not have permission to ' . $op . ' this line item');
     }
   }
@@ -284,6 +293,51 @@ function financialacls_civicrm_permission(&$permissions) {
     ts('CiviCRM: administer CiviCRM Financial Types'),
     ts('Administer access to Financial Types'),
   ];
+}
+
+/**
+ * Listener for 'civi.api4.authorizeRecord::Contribution'
+ *
+ * @param \Civi\Api4\Event\AuthorizeRecordEvent $e
+ * @throws \CRM_Core_Exception
+ */
+function _financialacls_civi_api4_authorizeContribution(\Civi\Api4\Event\AuthorizeRecordEvent $e) {
+  if (!financialacls_is_acl_limiting_enabled()) {
+    return;
+  }
+  if ($e->getEntityName() === 'Contribution') {
+    $contributionID = $e->getRecord()['id'] ?? NULL;
+    $financialTypeID = $e->getRecord()['financial_type_id'] ?? CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_Contribution', $contributionID, 'financial_type_id');
+    if (!CRM_Core_Permission::check(_financialacls_getRequiredPermission($financialTypeID, $e->getActionName()), $e->getUserID())) {
+      $e->setAuthorized(FALSE);
+    }
+    if ($e->getActionName() === 'delete') {
+      // First check contribution financial type
+      // Now check permissioned line items & permissioned contribution
+      if (!CRM_Financial_BAO_FinancialType::checkPermissionedLineItems($contributionID, 'delete', FALSE, $e->getUserID())
+      ) {
+        $e->setAuthorized(FALSE);
+      }
+    }
+  }
+}
+
+/**
+ * Get the permission required to perform this action on this financial type.
+ *
+ * @param int $financialTypeID
+ * @param string $action
+ *
+ * @return string
+ */
+function _financialacls_getRequiredPermission(int $financialTypeID, string $action): string {
+  $financialType = CRM_Core_PseudoConstant::getName('CRM_Contribute_DAO_Contribution', 'financial_type_id', $financialTypeID);
+  $actionMap = [
+    'create' => 'add',
+    'update' => 'edit',
+    'delete' => 'delete',
+  ];
+  return $actionMap[$action] . ' contributions of type ' . $financialType;
 }
 
 /**
