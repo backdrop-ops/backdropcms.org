@@ -12,7 +12,6 @@
         "edit own article content",
         "edit own book content",
         "edit own page content",
-        "use text format full_html",
         "view own unpublished content",
         "access contextual links",
         "view the administration theme",
@@ -35,7 +34,6 @@
         "administer book outlines",
         "create new books",
         "add content to books",
-        "use text format filtered_html",
         "create showcase content",
         "edit own showcase content",
         "edit any showcase content",
@@ -56,6 +54,8 @@
         "edit meta tags",
         "revert revisions",
         "edit any platform content",
-        "notify of path changes"
+        "notify of path changes",
+        "use text format filtered_html",
+        "use text format full_html"
     ]
 }

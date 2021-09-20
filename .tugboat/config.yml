@@ -23,8 +23,8 @@ services:
         - cd $TUGBOAT_ROOT/.tugboat && ./delete-comments.sh
         # Generate and store a random password for the admin user.
         - openssl rand -hex 6 > $TUGBOAT_ROOT/.tugboat/password
-        # Replace the files directory.
-        - rm -rf $TUGBOAT_ROOT/www/files && cp -r $TUGBOAT_ROOT/files $TUGBOAT_ROOT/www
+        # Link to the files directory.
+        - cd $TUGBOAT_ROOT/www && rm -rf files && ln -s $TUGBOAT_ROOT/files files
         # Update config.
         - rm -f $TUGBOAT_ROOT/config/live-active/*.json
         - cp $TUGBOAT_ROOT/config/staging/*.json $TUGBOAT_ROOT/config/live-active

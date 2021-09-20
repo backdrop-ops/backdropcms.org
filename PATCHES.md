@@ -1,11 +1,19 @@
 Patches to Backdrop Core:
 =========================
 
-* None
+Text module -- formatted text fields should not lock when empty due to access.
+  https://github.com/backdrop/backdrop-issues/issues/5151
+  https://github.com/backdrop/backdrop/pull/3686.patch
 
 
 Patches to Backdrop Contrib:
 ============================
+
+borg - decrease header icon font size
+  https://github.com/backdrop-contrib/borg/issues/22
+  https://github.com/backdrop-contrib/borg/pull/23.patch
+
+---
 
 akismet - prevent PHP fatal when bulk deleting users
   https://github.com/backdrop-contrib/akismet/issues/9
@@ -18,14 +26,6 @@ bakery - Prevent PHP 7.2 errors about deprecated mcrypt.
 colorbox - Remove dependance on libraries API
   https://github.com/backdrop-contrib/colorbox/issues/9
   https://github.com/backdrop-contrib/colorbox/pull/10.patch
-
-project - change #type to easily style links
-  https://github.com/backdrop-contrib/project/issues/31
-  https://github.com/backdrop-contrib/project/pull/32.patch
-
-project - restore missing releases sub-tab
-  https://github.com/backdrop-contrib/project/issues/41
-  https://github.com/backdrop-contrib/project/pull/44.patch
 
 restrict_abusive_words - prevent PHP notice
   https://github.com/backdrop-contrib/restrict_abusive_words/issues/1

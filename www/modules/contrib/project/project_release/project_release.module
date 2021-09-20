@@ -729,7 +729,7 @@ function project_release_node_delete(Node $node) {
  */
 function project_release_node_view($node, $view_mode, $langcode) {
   if (project_node_is_project($node)) {
-    if (!empty($node->project['releases_enabled']) && $view_mode !== 'rss' && $view_mode !== 'search_index') {
+    if (!empty($node->project['releases_enabled']) && !in_array($view_mode, array('rss', 'search_index', 'project_search'))) {
       $download_table = project_release_download_table($node->nid);
       if ($download_table) {
         $node->content['project_release_downloads'] = array(

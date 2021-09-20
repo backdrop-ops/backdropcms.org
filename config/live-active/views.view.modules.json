@@ -691,6 +691,19 @@
                             "label": ""
                         }
                     },
+                    "promote": {
+                        "id": "promote",
+                        "table": "node",
+                        "field": "promote",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    },
                     "created": {
                         "id": "created",
                         "table": "node",

@@ -3,7 +3,7 @@
     "field_name": "field_bio",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Biography",
+    "label": "Biography (visible on your public profile)",
     "widget": {
         "weight": "7",
         "type": "text_textarea",
@@ -14,13 +14,18 @@
         }
     },
     "description": "",
-    "required": 0,
+    "required": 1,
     "deleted": 0,
-    "default_value": null,
+    "default_value": [
+        {
+            "value": "",
+            "format": "filtered_html"
+        }
+    ],
     "default_value_function": null,
     "settings": {
         "text_processing": "1",
-        "user_register_form": 0
+        "user_register_form": 1
     },
     "display": {
         "default": {

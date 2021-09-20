@@ -229,6 +229,15 @@ function borg_preprocess_node(&$variables){
   if ($variables['view_mode'] == 'project_search') {
     $node = $variables['node']; // Nice shorthand.
 
+    // Set column sizes for each view-mode.
+    $variables['classes_col1'] = array('col-md-4', 'col-md-push-8');
+    $variables['classes_col2'] = array('col-md-8', 'col-md-pull-4');
+
+    if ($node->type == 'project_theme') {
+      $variables['classes_col1'] = array('col-md-6', 'col-md-push-6');
+      $variables['classes_col2'] = array('col-md-6', 'col-md-pull-6');
+    }
+
     // Move the image into the sidebar.
     $variables['image'] = backdrop_render($variables['content']['field_image']);
 
@@ -271,7 +280,7 @@ function borg_preprocess_node(&$variables){
       $footer_links['version']['data'] = backdrop_render($version);
 
       // Add the latest release date.
-      $date = format_date($release->node_created, 'short');
+      $date = format_date($release->node_project_release_supported_versions_created, 'short');
       $latest = array(
         '#type' => 'markup',
         '#markup' => '<span class="release-date">' . t('Released: <strong>@date</strong>', array('@date' => $date)) . '</span>',
@@ -734,7 +743,7 @@ function borg_menu_tree__user_menu($variables) {
   $output .= '  </ul>';
 
   $output .= '  <a class="icon" title="Find us on GitHub" href="https://github.com/backdrop/backdrop"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>';
-  $output .= '  <a class="icon" title="Follow os on Twitter" href="https://twitter.com/backdropcms"><i class="fa fa-twitter fa-2x" aria-hidden="true"></i></a>';
+  $output .= '  <a class="icon" title="Follow us on Twitter" href="https://twitter.com/backdropcms"><i class="fa fa-twitter fa-2x" aria-hidden="true"></i></a>';
   $output .= '  <a class="icon" title="Subscribe to our Newsletter" href="https://backdropcms.org/newsletter"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></a>';
 
   $output .= '</nav>';

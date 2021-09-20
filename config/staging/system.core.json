@@ -36,7 +36,7 @@
     "rss_limit": "25",
     "rss_viewmode": "title",
     "action_recursion_limit": 35,
-    "log_row_limit": "1000",
+    "log_row_limit": "10000",
     "log_identity": "backdrop",
     "log_facility": 128,
     "log_format": "!base_url|!timestamp|!type|!ip|!request_uri|!referer|!uid|!link|!message",
@@ -60,7 +60,7 @@
     "admin_theme": "seven",
     "node_admin_theme": "1",
     "filter_fallback_format": "plain_text",
-    "user_cancel_method": "user_cancel_block_unpublish",
+    "user_cancel_method": "user_cancel_delete",
     "config_sync_batch_size": 20,
     "default_nodes_main": "10",
     "field_purge_batch_size": 200,
@@ -95,10 +95,10 @@
     "path_pattern": "account/[user:name]",
     "x_frame_options": "SAMEORIGIN",
     "form_cache_expiration": 21600,
-    "dblog_row_limit": "1000",
+    "dblog_row_limit": "10000",
     "dblog_date_format": "M jS, Y g:ia",
     "log_date_format": "M jS, Y g:ia",
-    "user_password_reject_weak": false,
+    "user_password_reject_weak": 0,
     "user_password_strength_threshold": 50,
     "config_sync_clear_staging": 1,
     "_config_translatables": [
@@ -106,5 +106,6 @@
         "site_name",
         "site_slogan",
         "maintenance_mode_message"
-    ]
+    ],
+    "block_interest_cohort": 1
 }
