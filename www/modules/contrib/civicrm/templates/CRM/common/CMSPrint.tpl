@@ -11,9 +11,9 @@
 {include file="CRM/common/debug.tpl"}
 {/if}
 
-<div id="crm-container" class="crm-container{if $urlIsPublic} crm-public{/if}" lang="{$config->lcMessages|truncate:2:"":true}" xml:lang="{$config->lcMessages|truncate:2:"":true}">
+<div id="crm-container" class="crm-container{if !empty($urlIsPublic)} crm-public{/if}" lang="{$config->lcMessages|truncate:2:"":true}" xml:lang="{$config->lcMessages|truncate:2:"":true}">
 
-{if $breadcrumb}
+{if !empty($breadcrumb)}
   <div class="breadcrumb">
     {foreach from=$breadcrumb item=crumb key=key}
       {if $key != 0}
@@ -24,9 +24,9 @@
   </div>
 {/if}
 
-{if $pageTitle}
+{if !empty($pageTitle)}
   <div class="crm-title">
-    <h1 class="title">{if $isDeleted}<del>{/if}{$pageTitle}{if $isDeleted}</del>{/if}</h1>
+    <h1 class="title">{if !empty($isDeleted)}<del>{/if}{$pageTitle}{if !empty($isDeleted)}</del>{/if}</h1>
   </div>
 {/if}
 
@@ -49,7 +49,7 @@
 </div>
 
 {crmRegion name='page-footer'}
-{if $urlIsPublic}
+{if !empty($urlIsPublic)}
   {include file="CRM/common/publicFooter.tpl"}
 {else}
   {include file="CRM/common/footer.tpl"}

@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,13 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
 namespace Civi\Api4;
 
 /**
@@ -24,11 +16,24 @@ namespace Civi\Api4;
  *
  * @see https://docs.civicrm.org/dev/en/latest/financial/financialentities/
  *
- * @bridge entity_id financial_trxn_id
- *
+ * @searchable bridge
+ * @since 5.37
  * @package Civi\Api4
  */
 class EntityFinancialTrxn extends Generic\DAOEntity {
   use Generic\Traits\EntityBridge;
+  use Generic\Traits\ReadOnly;
+
+  /**
+   * @return array
+   */
+  public static function getInfo() {
+    $info = parent::getInfo();
+    $info['bridge'] = [
+      'entity_id' => [],
+      'financial_trxn_id' => [],
+    ];
+    return $info;
+  }
 
 }

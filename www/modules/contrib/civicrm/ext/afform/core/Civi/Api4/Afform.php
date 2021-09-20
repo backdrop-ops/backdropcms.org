@@ -16,7 +16,7 @@ use Civi\Api4\Generic\BasicBatchAction;
  *      The `prefill` and `submit` actions are used for preparing forms and processing submissions.
  *
  * @see https://lab.civicrm.org/extensions/afform
- * @searchable false
+ * @searchable none
  * @package Civi\Api4
  */
 class Afform extends Generic\AbstractEntity {
@@ -44,7 +44,7 @@ class Afform extends Generic\AbstractEntity {
    * @return Action\Afform\Update
    */
   public static function update($checkPermissions = TRUE) {
-    return (new Action\Afform\Update('Afform', __FUNCTION__, 'name'))
+    return (new Action\Afform\Update('Afform', __FUNCTION__))
       ->setCheckPermissions($checkPermissions);
   }
 
@@ -53,7 +53,7 @@ class Afform extends Generic\AbstractEntity {
    * @return Action\Afform\Save
    */
   public static function save($checkPermissions = TRUE) {
-    return (new Action\Afform\Save('Afform', __FUNCTION__, 'name'))
+    return (new Action\Afform\Save('Afform', __FUNCTION__))
       ->setCheckPermissions($checkPermissions);
   }
 
@@ -89,7 +89,7 @@ class Afform extends Generic\AbstractEntity {
    * @return Generic\BasicBatchAction
    */
   public static function revert($checkPermissions = TRUE) {
-    return (new BasicBatchAction('Afform', __FUNCTION__, ['name'], function($item, BasicBatchAction $action) {
+    return (new BasicBatchAction('Afform', __FUNCTION__, function($item, BasicBatchAction $action) {
       $scanner = \Civi::service('afform_scanner');
       $files = [
         \CRM_Afform_AfformScanner::METADATA_FILE,
@@ -161,6 +161,10 @@ class Afform extends Generic\AbstractEntity {
         [
           'name' => 'contact_summary',
           'data_type' => 'String',
+          'options' => [
+            'block' => ts('Contact Summary Block'),
+            'tab' => ts('Contact Summary Tab'),
+          ],
         ],
         [
           'name' => 'repeat',
@@ -218,6 +222,15 @@ class Afform extends Generic\AbstractEntity {
       'prefill' => [],
       'submit' => [],
     ];
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public static function getInfo() {
+    $info = parent::getInfo();
+    $info['primary_key'] = ['name'];
+    return $info;
   }
 
 }

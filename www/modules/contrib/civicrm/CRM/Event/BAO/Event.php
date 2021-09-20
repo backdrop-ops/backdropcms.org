@@ -994,6 +994,15 @@ WHERE civicrm_event.is_active = 1
     $copyEvent->save();
 
     if ($blockCopyOfCustomValue) {
+      foreach ($params['custom'] as &$values) {
+        foreach ($values as &$value) {
+          // Ensure we don't copy over the template's id if it is passed in
+          // This is a bit hacky but it's unclear what the
+          // right behaviour is given the whole 'custom'
+          // field is form layer formatting that is reaching the BAO.
+          $value['id'] = NULL;
+        }
+      }
       CRM_Core_BAO_CustomValueTable::store($params['custom'], 'civicrm_event', $copyEvent->id);
     }
 
@@ -1160,6 +1169,7 @@ WHERE civicrm_event.is_active = 1
           'credit_card_exp_date' => CRM_Utils_Date::mysqlToIso(CRM_Utils_Date::format(CRM_Utils_Array::value('credit_card_exp_date', $participantParams))),
           'selfcancelxfer_time' => abs($values['event']['selfcancelxfer_time']),
           'selfservice_preposition' => $values['event']['selfcancelxfer_time'] < 0 ? 'after' : 'before',
+          'currency' => $values['event']['currency'] ?? CRM_Core_Config::singleton()->defaultCurrency,
         ]);
 
         // CRM-13890 : NOTE wait list condition need to be given so that
@@ -2035,12 +2045,7 @@ WHERE  ce.loc_block_id = $locBlockId";
    *   Whether the user has permission for this event (or if eventId=NULL an array of permissions)
    * @throws \CiviCRM_API3_Exception
    */
-  public static function checkPermission($eventId = NULL, $permissionType = CRM_Core_Permission::VIEW) {
-    if (empty($eventId)) {
-      CRM_Core_Error::deprecatedFunctionWarning('CRM_Event_BAO_Event::getAllPermissions');
-      return self::getAllPermissions();
-    }
-
+  public static function checkPermission(int $eventId, $permissionType = CRM_Core_Permission::VIEW) {
     switch ($permissionType) {
       case CRM_Core_Permission::EDIT:
         // We also set the cached "view" permission to TRUE if "edit" is TRUE

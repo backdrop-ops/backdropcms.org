@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,13 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
 namespace Civi\Api4;
 
 /**
@@ -28,7 +20,8 @@ namespace Civi\Api4;
  * Displaying an item to a user is done with the `DashboardContact` entity.
  *
  * @see \Civi\Api4\DashboardContact
- * @searchable false
+ * @searchable none
+ * @since 5.25
  * @package Civi\Api4
  */
 class Dashboard extends Generic\DAOEntity {

@@ -10,17 +10,11 @@
  +--------------------------------------------------------------------+
  */
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4\Service\Schema;
 
 use Civi\API\Exception\UnauthorizedException;
 use Civi\Api4\Query\Api4SelectQuery;
+use Civi\Api4\Service\Schema\Joinable\CustomGroupJoinable;
 use Civi\Api4\Utils\CoreUtil;
 
 class Joiner {
@@ -77,6 +71,21 @@ class Joiner {
       if ($joinEntity && !$query->checkEntityAccess($joinEntity)) {
         throw new UnauthorizedException('Cannot join to ' . $joinEntity);
       }
+      if ($query->getCheckPermissions() && is_a($link, CustomGroupJoinable::class)) {
+        // Check access to custom group
+        $groupId = \CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $link->getTargetTable(), 'id', 'table_name');
+        if (!\CRM_Core_BAO_CustomGroup::checkGroupAccess($groupId, \CRM_Core_Permission::VIEW)) {
+          throw new UnauthorizedException('Cannot join to ' . $link->getAlias());
+        }
+      }
+      if ($link->isDeprecated()) {
+        \CRM_Core_Error::deprecatedWarning("Deprecated join alias '$alias' used in APIv4 get. Should be changed to '{$alias}_id'");
+      }
+      // Serialized joins are rendered by Api4SelectQuery::renderSerializedJoin
+      if ($link->getSerialize()) {
+        // Virtual join, don't actually add this table
+        break;
+      }
 
       $bao = $joinEntity ? CoreUtil::getBAOFromApiName($joinEntity) : NULL;
       $conditions = $link->getConditionsForJoin($baseTableAlias);
@@ -97,7 +106,7 @@ class Joiner {
    * @param array $joinPath
    *
    * @return \Civi\Api4\Service\Schema\Joinable\Joinable[]
-   * @throws \Exception
+   * @throws \API_Exception
    */
   protected function getPath(string $baseTable, array $joinPath) {
     $cacheKey = sprintf('%s.%s', $baseTable, implode('.', $joinPath));
@@ -108,7 +117,7 @@ class Joiner {
         $links = $this->schemaMap->getPath($baseTable, $targetAlias);
 
         if (empty($links)) {
-          throw new \Exception(sprintf('Cannot join %s to %s', $baseTable, $targetAlias));
+          throw new \API_Exception(sprintf('Cannot join %s to %s', $baseTable, $targetAlias));
         }
         else {
           $fullPath = array_merge($fullPath, $links);

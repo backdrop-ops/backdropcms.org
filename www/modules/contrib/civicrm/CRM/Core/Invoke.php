@@ -103,7 +103,7 @@ class CRM_Core_Invoke {
         return CRM_Utils_System::redirect();
       }
       else {
-        CRM_Core_Error::statusBounce('You do not have permission to execute this url');
+        CRM_Core_Error::statusBounce(ts('You do not have permission to execute this url'));
       }
     }
   }
@@ -365,7 +365,7 @@ class CRM_Core_Invoke {
    *
    * @throws Exception
    */
-  public static function rebuildMenuAndCaches($triggerRebuild = FALSE, $sessionReset = FALSE) {
+  public static function rebuildMenuAndCaches(bool $triggerRebuild = FALSE, bool $sessionReset = FALSE): void {
     $config = CRM_Core_Config::singleton();
     $config->clearModuleList();
 
@@ -393,7 +393,10 @@ class CRM_Core_Invoke {
       $triggerRebuild ||
       CRM_Utils_Request::retrieve('triggerRebuild', 'Boolean', CRM_Core_DAO::$_nullObject, FALSE, 0, 'GET')
     ) {
-      CRM_Core_DAO::triggerRebuild();
+      Civi::service('sql_triggers')->rebuild();
+      // Rebuild Drupal 8/9/10 route cache only if "triggerRebuild" is set to TRUE as it's
+      // computationally very expensive and only needs to be done when routes change on the Civi-side.
+      // For example - when uninstalling an extension. We already set "triggerRebuild" to true for these operations.
       $config->userSystem->invalidateRouteCache();
     }
     CRM_Core_DAO_AllCoreTables::reinitializeCache(TRUE);

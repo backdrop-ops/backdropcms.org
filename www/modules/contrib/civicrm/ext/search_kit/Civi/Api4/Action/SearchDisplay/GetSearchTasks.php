@@ -26,17 +26,16 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
   public function _run(\Civi\Api4\Generic\Result $result) {
     $entity = Entity::get($this->checkPermissions)->addWhere('name', '=', $this->entity)
       ->addSelect('name', 'title_plural')
-      ->setChain(['actions' => [$this->entity, 'getActions', ['where' => [['name', 'IN', ['update', 'delete']]]], 'name']])
+      ->setChain(['actions' => ['$name', 'getActions', ['where' => [['name', 'IN', ['update', 'delete']]]], 'name']])
       ->execute()->first();
 
     if (!$entity) {
       return;
     }
-    $tasks = [];
+    $tasks = [$entity['name'] => []];
 
     if (array_key_exists($entity['name'], \CRM_Export_BAO_Export::getComponents())) {
-      $tasks[] = [
-        'name' => 'export',
+      $tasks[$entity['name']]['export'] = [
         'title' => E::ts('Export %1', [1 => $entity['title_plural']]),
         'icon' => 'fa-file-excel-o',
         'crmPopup' => [
@@ -47,33 +46,38 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
     }
 
     if (array_key_exists('update', $entity['actions'])) {
-      $tasks[] = [
-        'name' => 'update',
+      $tasks[$entity['name']]['update'] = [
+        'module' => 'crmSearchTasks',
         'title' => E::ts('Update %1', [1 => $entity['title_plural']]),
         'icon' => 'fa-save',
-        'uiDialog' => ['templateUrl' => '~/crmSearchActions/crmSearchActionUpdate.html'],
+        'uiDialog' => ['templateUrl' => '~/crmSearchTasks/crmSearchTaskUpdate.html'],
       ];
     }
 
     if (array_key_exists('delete', $entity['actions'])) {
-      $tasks[] = [
-        'name' => 'delete',
+      $tasks[$entity['name']]['delete'] = [
+        'module' => 'crmSearchTasks',
         'title' => E::ts('Delete %1', [1 => $entity['title_plural']]),
         'icon' => 'fa-trash',
-        'uiDialog' => ['templateUrl' => '~/crmSearchActions/crmSearchActionDelete.html'],
+        'uiDialog' => ['templateUrl' => '~/crmSearchTasks/crmSearchTaskDelete.html'],
       ];
     }
 
     if ($entity['name'] === 'Contact') {
-      // Add contact tasks which support standalone mode (with a 'url' property)
-      $contactTasks = \CRM_Contact_Task::permissionedTaskTitles(\CRM_Core_Permission::getPermission());
+      // Add contact tasks which support standalone mode
+      $contactTasks = $this->checkPermissions ? \CRM_Contact_Task::permissionedTaskTitles(\CRM_Core_Permission::getPermission()) : NULL;
       foreach (\CRM_Contact_Task::tasks() as $id => $task) {
-        if (isset($contactTasks[$id]) && !empty($task['url']) && $task['url'] !== 'civicrm/task/delete-contact') {
+        if (
+          (!$this->checkPermissions || isset($contactTasks[$id])) &&
+          // Must support standalone mode (with a 'url' property)
+          !empty($task['url']) &&
+          // The delete task is redundant with the new api-based one
+          $task['url'] !== 'civicrm/task/delete-contact'
+        ) {
           if ($task['url'] === 'civicrm/task/pick-profile') {
             $task['title'] = E::ts('Profile Update');
           }
-          $tasks[] = [
-            'name' => 'contact.' . $id,
+          $tasks[$entity['name']]['contact.' . $id] = [
             'title' => $task['title'],
             'icon' => $task['icon'] ?? 'fa-gear',
             'crmPopup' => [
@@ -86,10 +90,10 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
     }
 
     if ($entity['name'] === 'Contribution') {
+      // FIXME: tasks() function always checks permissions, should respect `$this->checkPermissions`
       foreach (\CRM_Contribute_Task::tasks() as $id => $task) {
         if (!empty($task['url'])) {
-          $tasks[] = [
-            'name' => 'contribution.' . $id,
+          $tasks[$entity['name']]['contribution.' . $id] = [
             'title' => $task['title'],
             'icon' => $task['icon'] ?? 'fa-gear',
             'crmPopup' => [
@@ -101,11 +105,30 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
       }
     }
 
-    usort($tasks, function($a, $b) {
+    // Call `hook_civicrm_searchKitTasks`.
+    // Note - this hook serves 2 purposes, both to augment this list of tasks AND to
+    // get a full list of Angular modules which provide tasks. That's why this hook needs
+    // the base-level array and not just the array of tasks for `$this->entity`.
+    // Although it may seem wasteful to have extensions add tasks for all possible entities and then
+    // discard most of it (all but the ones relevant to `$this->entity`), it's necessary to do it this way
+    // so that they can be declared as angular dependencies - see search_kit_civicrm_angularModules().
+    $null = NULL;
+    $checkPermissions = $this->checkPermissions;
+    $userId = $this->checkPermissions ? \CRM_Core_Session::getLoggedInContactID() : NULL;
+    \CRM_Utils_Hook::singleton()->invoke(['tasks', 'checkPermissions', 'userId'],
+      $tasks, $checkPermissions, $userId,
+      $null, $null, $null, 'civicrm_searchKitTasks'
+    );
+
+    usort($tasks[$entity['name']], function($a, $b) {
       return strnatcasecmp($a['title'], $b['title']);
     });
 
-    $result->exchangeArray($tasks);
+    foreach ($tasks[$entity['name']] as $name => &$task) {
+      $task['name'] = $name;
+    }
+
+    $result->exchangeArray(array_values($tasks[$entity['name']]));
   }
 
 }

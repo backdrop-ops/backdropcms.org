@@ -10,16 +10,7 @@
  +--------------------------------------------------------------------+
  */
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4\Generic;
-
-use Civi\Api4\Service\Spec\SpecFormatter;
 
 /**
  * @inheritDoc
@@ -28,27 +19,25 @@ use Civi\Api4\Service\Spec\SpecFormatter;
 class DAOGetFieldsAction extends BasicGetFieldsAction {
 
   /**
-   * Include custom fields for this entity, or only core fields?
-   *
-   * @var bool
-   */
-  protected $includeCustom = TRUE;
-
-  /**
    * Get fields for a DAO-based entity.
    *
    * @return array
    */
   protected function getRecords() {
     $fieldsToGet = $this->_itemsToGet('name');
+    $typesToGet = $this->_itemsToGet('type');
     /** @var \Civi\Api4\Service\Spec\SpecGatherer $gatherer */
     $gatherer = \Civi::container()->get('spec_gatherer');
-    // Any fields name with a dot in it is either custom or an implicit join
-    if ($fieldsToGet) {
-      $this->includeCustom = strpos(implode('', $fieldsToGet), '.') !== FALSE;
+    $includeCustom = TRUE;
+    if ($typesToGet) {
+      $includeCustom = in_array('Custom', $typesToGet, TRUE);
     }
-    $spec = $gatherer->getSpec($this->getEntityName(), $this->getAction(), $this->includeCustom, $this->values);
-    $fields = SpecFormatter::specToArray($spec->getFields($fieldsToGet), $this->loadOptions, $this->values);
+    elseif ($fieldsToGet) {
+      // Any fields name with a dot in it is either custom or an implicit join
+      $includeCustom = strpos(implode('', $fieldsToGet), '.') !== FALSE;
+    }
+    $spec = $gatherer->getSpec($this->getEntityName(), $this->getAction(), $includeCustom, $this->values);
+    $fields = $this->specToArray($spec->getFields($fieldsToGet));
     foreach ($fieldsToGet ?? [] as $fieldName) {
       if (empty($fields[$fieldName]) && strpos($fieldName, '.') !== FALSE) {
         $fkField = $this->getFkFieldSpec($fieldName, $fields);
@@ -59,6 +48,24 @@ class DAOGetFieldsAction extends BasicGetFieldsAction {
       }
     }
     return $fields;
+  }
+
+  /**
+   * @param \Civi\Api4\Service\Spec\FieldSpec[] $fields
+   *
+   * @return array
+   */
+  protected function specToArray($fields) {
+    $fieldArray = [];
+
+    foreach ($fields as $field) {
+      if ($this->loadOptions) {
+        $field->getOptions($this->values, $this->loadOptions, $this->checkPermissions);
+      }
+      $fieldArray[$field->getName()] = $field->toArray();
+    }
+
+    return $fieldArray;
   }
 
   /**
@@ -105,6 +112,16 @@ class DAOGetFieldsAction extends BasicGetFieldsAction {
     $fields[] = [
       'name' => 'custom_group_id',
       'data_type' => 'Integer',
+    ];
+    $fields[] = [
+      'name' => 'sql_filters',
+      'data_type' => 'Array',
+      '@internal' => TRUE,
+    ];
+    $fields[] = [
+      'name' => 'sql_renderer',
+      'data_type' => 'Array',
+      '@internal' => TRUE,
     ];
     return $fields;
   }

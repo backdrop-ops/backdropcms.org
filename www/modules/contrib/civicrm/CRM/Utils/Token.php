@@ -191,7 +191,7 @@ class CRM_Utils_Token {
    *   regular expression sutiable for using in preg_replace
    */
   private static function tokenRegex($token_type) {
-    return '/(?<!\{|\\\\)\{' . $token_type . '\.([\w]+(\-[\w\s]+)?)\}(?!\})/';
+    return '/(?<!\{|\\\\)\{' . $token_type . '\.([\w]+:?\w*(\-[\w\s]+)?)\}(?!\})/';
   }
 
   /**
@@ -1102,7 +1102,7 @@ class CRM_Utils_Token {
   public static function getTokens($string) {
     $matches = [];
     $tokens = [];
-    preg_match_all('/(?<!\{|\\\\)\{(\w+\.\w+)\}(?!\})/',
+    preg_match_all('/(?<!\{|\\\\)\{(\w+\.\w+:?\w*)\}(?!\})/',
       $string,
       $matches,
       PREG_PATTERN_ORDER
@@ -1558,12 +1558,22 @@ class CRM_Utils_Token {
 
   protected static function _buildContributionTokens() {
     $key = 'contribution';
-    if (self::$_tokens[$key] == NULL) {
-      self::$_tokens[$key] = array_keys(array_merge(CRM_Contribute_BAO_Contribution::exportableFields('All'),
-        ['campaign', 'financial_type'],
-        self::getCustomFieldTokens('Contribution')
-      ));
+
+    if (!isset(Civi::$statics[__CLASS__][__FUNCTION__][$key])) {
+      $processor = new CRM_Contribute_Tokens();
+      $tokens = array_merge(CRM_Contribute_BAO_Contribution::exportableFields('All'),
+        ['campaign' => [], 'financial_type' => [], 'payment_instrument' => []],
+        self::getCustomFieldTokens('Contribution'),
+        $processor->getPseudoTokens()
+      );
+      foreach ($tokens as $token) {
+        if (!empty($token['name'])) {
+          $tokens[$token['name']] = [];
+        }
+      }
+      Civi::$statics[__CLASS__][__FUNCTION__][$key] = array_keys($tokens);
     }
+    self::$_tokens[$key] = Civi::$statics[__CLASS__][__FUNCTION__][$key];
   }
 
   /**
@@ -1680,7 +1690,6 @@ class CRM_Utils_Token {
       //early return
       return $str;
     }
-    self::_buildContributionTokens();
 
     // here we intersect with the list of pre-configured valid tokens
     // so that we remove anything we do not recognize
@@ -1919,6 +1928,21 @@ class CRM_Utils_Token {
       $value = CRM_Utils_Date::customFormat($value);
     }
     return $value;
+  }
+
+  /**
+   * Get token deprecation information.
+   *
+   * @return array
+   */
+  public static function getTokenDeprecations(): array {
+    return [
+      'WorkFlowMessageTemplates' => [
+        'contribution_invoice_receipt' => [
+          '$display_name' => 'contact.display_name',
+        ],
+      ],
+    ];
   }
 
 }

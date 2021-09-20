@@ -257,7 +257,7 @@ class CRM_Member_BAO_Membership extends CRM_Member_DAO_Membership {
     // To skip status calculation we should use 'skipStatusCal'.
     // eg pay later membership, membership update cron CRM-3984
 
-    if (empty($params['is_override']) && empty($params['skipStatusCal'])) {
+    if (empty($params['skipStatusCal'])) {
       $fieldsToLoad = [];
       foreach (['start_date', 'end_date', 'join_date'] as $dateField) {
         if (!empty($params[$dateField]) && $params[$dateField] !== 'null' && strpos($params[$dateField], date('Ymd', CRM_Utils_Time::strtotime(trim($params[$dateField])))) !== 0) {
@@ -275,9 +275,23 @@ class CRM_Member_BAO_Membership extends CRM_Member_DAO_Membership {
           $params[$fieldToLoad] = $membership[$fieldToLoad];
         }
       }
-      $params['start_date'] = $params['start_date'] ?: 'null';
-      $params['end_date'] = $params['end_date'] ?: 'null';
-      $params['join_date'] = $params['join_date'] ?: 'null';
+      if (empty($params['id'])
+        && (empty($params['start_date']) || empty($params['join_date']) || (empty($params['end_date']) && !$isLifeTime))) {
+        // This is a new membership, calculate the membership dates.
+        $calcDates = CRM_Member_BAO_MembershipType::getDatesForMembershipType(
+          $params['membership_type_id'],
+          $params['join_date'] ?? NULL,
+          $params['start_date'] ?? NULL,
+          $params['end_date'] ?? NULL,
+          $params['num_terms'] ?? 1
+        );
+      }
+      else {
+        $calcDates = [];
+      }
+      $params['start_date'] = $params['start_date'] ?? ($calcDates['start_date'] ?? 'null');
+      $params['end_date'] = $params['end_date'] ?? ($calcDates['end_date'] ?? 'null');
+      $params['join_date'] = $params['join_date'] ?? ($calcDates['join_date'] ?? 'null');
 
       //fix for CRM-3570, during import exclude the statuses those having is_admin = 1
       $excludeIsAdmin = $params['exclude_is_admin'] ?? FALSE;
@@ -287,13 +301,15 @@ class CRM_Member_BAO_Membership extends CRM_Member_DAO_Membership {
         $excludeIsAdmin = TRUE;
       }
 
-      $calcStatus = CRM_Member_BAO_MembershipStatus::getMembershipStatusByDate($params['start_date'], $params['end_date'], $params['join_date'],
-        'now', $excludeIsAdmin, $params['membership_type_id'] ?? NULL, $params
-      );
-      if (empty($calcStatus)) {
-        throw new CRM_Core_Exception(ts("The membership cannot be saved because the status cannot be calculated for start_date: {$params['start_date']} end_date {$params['end_date']} join_date {$params['join_date']} as at " . CRM_Utils_Time::date('Y-m-d H:i:s')));
+      if (empty($params['is_override'])) {
+        $calcStatus = CRM_Member_BAO_MembershipStatus::getMembershipStatusByDate($params['start_date'], $params['end_date'], $params['join_date'],
+          'now', $excludeIsAdmin, $params['membership_type_id'] ?? NULL, $params
+        );
+        if (empty($calcStatus)) {
+          throw new CRM_Core_Exception(ts("The membership cannot be saved because the status cannot be calculated for start_date: {$params['start_date']} end_date {$params['end_date']} join_date {$params['join_date']} as at " . CRM_Utils_Time::date('Y-m-d H:i:s')));
+        }
+        $params['status_id'] = $calcStatus['id'];
       }
-      $params['status_id'] = $calcStatus['id'];
     }
 
     // data cleanup only: all verifications on number of related memberships are done upstream in:
@@ -344,20 +360,9 @@ class CRM_Member_BAO_Membership extends CRM_Member_DAO_Membership {
 
     // Record contribution for this membership and create a MembershipPayment
     // @todo deprecate this.
-    if (!empty($params['contribution_status_id']) && empty($params['relate_contribution_id'])) {
+    if (!empty($params['contribution_status_id'])) {
       $memInfo = array_merge($params, ['membership_id' => $membership->id]);
       $params['contribution'] = self::recordMembershipContribution($memInfo);
-    }
-
-    // Add/update MembershipPayment record for this membership if it is a related contribution
-    // @todo remove this - called from one remaining place in CRM_Member_Form_Membership
-    if (!empty($params['relate_contribution_id'])) {
-      $membershipPaymentParams = [
-        'membership_id' => $membership->id,
-        'membership_type_id' => $membership->membership_type_id,
-        'contribution_id' => $params['relate_contribution_id'],
-      ];
-      civicrm_api3('MembershipPayment', 'create', $membershipPaymentParams);
     }
 
     // If the membership has no associated contribution then we ensure
@@ -936,7 +941,7 @@ INNER JOIN  civicrm_membership_type type ON ( type.id = membership.membership_ty
         'contact_type' => $contactType,
         'used' => 'Unsupervised',
       ];
-      $fieldsArray = CRM_Dedupe_BAO_Rule::dedupeRuleFields($ruleParams);
+      $fieldsArray = CRM_Dedupe_BAO_DedupeRule::dedupeRuleFields($ruleParams);
 
       $tmpContactField = [];
       if (is_array($fieldsArray)) {
@@ -1773,6 +1778,8 @@ INNER JOIN  civicrm_contact contact ON ( contact.id = membership.contact_id AND 
   }
 
   /**
+   * @deprecated
+   *
    * @param int $contactID
    * @param int $membershipTypeID
    * @param bool $is_test
@@ -1786,7 +1793,6 @@ INNER JOIN  civicrm_contact contact ON ( contact.id = membership.contact_id AND 
    * @param $membershipSource
    * @param $isPayLater
    * @param array $memParams
-   * @param array $formDates
    * @param null|CRM_Contribute_BAO_Contribution $contribution
    * @param array $lineItems
    *
@@ -1794,7 +1800,8 @@ INNER JOIN  civicrm_contact contact ON ( contact.id = membership.contact_id AND 
    * @throws \CRM_Core_Exception
    * @throws \CiviCRM_API3_Exception
    */
-  public static function processMembership($contactID, $membershipTypeID, $is_test, $changeToday, $modifiedID, $customFieldsFormatted, $numRenewTerms, $membershipID, $pending, $contributionRecurID, $membershipSource, $isPayLater, $memParams = [], $formDates = [], $contribution = NULL, $lineItems = []) {
+  public static function processMembership($contactID, $membershipTypeID, $is_test, $changeToday, $modifiedID, $customFieldsFormatted, $numRenewTerms, $membershipID, $pending, $contributionRecurID, $membershipSource, $isPayLater, $memParams = [], $contribution = NULL, $lineItems = []) {
+    CRM_Core_Error::deprecatedFunctionWarning('use the order api, BAO functions should only be called from unit tested core code.');
     $renewalMode = $updateStatusId = FALSE;
     $allStatus = CRM_Member_PseudoConstant::membershipStatus();
     $format = '%Y%m%d';
@@ -1856,10 +1863,7 @@ INNER JOIN  civicrm_contact contact ON ( contact.id = membership.contact_id AND 
 
         $currentMembership['join_date'] = CRM_Utils_Date::customFormat($currentMembership['join_date'], $format);
         foreach (['start_date', 'end_date'] as $dateType) {
-          $currentMembership[$dateType] = $formDates[$dateType] ?? NULL;
-          if (empty($currentMembership[$dateType])) {
-            $currentMembership[$dateType] = $dates[$dateType] ?? NULL;
-          }
+          $currentMembership[$dateType] = $dates[$dateType] ?? NULL;
         }
         $currentMembership['is_test'] = $is_test;
 
@@ -1891,11 +1895,8 @@ INNER JOIN  civicrm_contact contact ON ( contact.id = membership.contact_id AND 
 
         // Insert renewed dates for CURRENT membership
         $memParams['join_date'] = CRM_Utils_Date::isoToMysql($membership->join_date);
-        $memParams['start_date'] = $formDates['start_date'] ?? CRM_Utils_Date::isoToMysql($membership->start_date);
-        $memParams['end_date'] = $formDates['end_date'] ?? NULL;
-        if (empty($memParams['end_date'])) {
-          $memParams['end_date'] = $dates['end_date'] ?? NULL;
-        }
+        $memParams['start_date'] = CRM_Utils_Date::isoToMysql($membership->start_date);
+        $memParams['end_date'] = $dates['end_date'] ?? NULL;
         $memParams['membership_type_id'] = $membershipTypeID;
 
         //set the log start date.
@@ -1929,10 +1930,7 @@ INNER JOIN  civicrm_contact contact ON ( contact.id = membership.contact_id AND 
         $dates = CRM_Member_BAO_MembershipType::getDatesForMembershipType($membershipTypeID, NULL, NULL, NULL, $numRenewTerms);
 
         foreach (['join_date', 'start_date', 'end_date'] as $dateType) {
-          $memParams[$dateType] = $formDates[$dateType] ?? NULL;
-          if (empty($memParams[$dateType])) {
-            $memParams[$dateType] = $dates[$dateType] ?? NULL;
-          }
+          $memParams[$dateType] = $dates[$dateType] ?? NULL;
         }
 
         $status = CRM_Member_BAO_MembershipStatus::getMembershipStatusByDate(CRM_Utils_Date::customFormat($dates['start_date'],

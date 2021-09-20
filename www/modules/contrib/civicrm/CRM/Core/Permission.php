@@ -208,25 +208,24 @@ class CRM_Core_Permission {
   }
 
   /**
+   * @param int $userId
    * @return bool
    */
-  public static function customGroupAdmin() {
-    $admin = FALSE;
-
+  public static function customGroupAdmin($userId = NULL) {
     // check if user has all powerful permission
     // or administer civicrm permission (CRM-1905)
-    if (self::check('access all custom data')) {
+    if (self::check('access all custom data', $userId)) {
       return TRUE;
     }
 
     if (
-      self::check('administer Multiple Organizations') &&
+      self::check('administer Multiple Organizations', $userId) &&
       self::isMultisiteEnabled()
     ) {
       return TRUE;
     }
 
-    if (self::check('administer CiviCRM')) {
+    if (self::check('administer CiviCRM data', $userId)) {
       return TRUE;
     }
 
@@ -236,21 +235,22 @@ class CRM_Core_Permission {
   /**
    * @param int $type
    * @param bool $reset
+   * @param int $userId
    *
    * @return array
    */
-  public static function customGroup($type = CRM_Core_Permission::VIEW, $reset = FALSE) {
+  public static function customGroup($type = CRM_Core_Permission::VIEW, $reset = FALSE, $userId = NULL) {
     $customGroups = CRM_Core_PseudoConstant::get('CRM_Core_DAO_CustomField', 'custom_group_id',
       ['fresh' => $reset]);
     $defaultGroups = [];
 
     // check if user has all powerful permission
     // or administer civicrm permission (CRM-1905)
-    if (self::customGroupAdmin()) {
-      $defaultGroups = array_keys($customGroups);
+    if (self::customGroupAdmin($userId)) {
+      return array_keys($customGroups);
     }
 
-    return CRM_ACL_API::group($type, NULL, 'civicrm_custom_group', $customGroups, $defaultGroups);
+    return CRM_ACL_API::group($type, $userId, 'civicrm_custom_group', $customGroups, $defaultGroups);
   }
 
   /**
@@ -591,7 +591,7 @@ class CRM_Core_Permission {
     $permissions = self::getCoreAndComponentPermissions($all);
 
     // Add any permissions defined in hook_civicrm_permission implementations.
-    $module_permissions = CRM_Core_Config::singleton()->userPermissionClass->getAllModulePermissions(TRUE, $permissions);
+    $module_permissions = CRM_Core_Config::singleton()->userPermissionClass->getAllModulePermissions(TRUE);
     $permissions = array_merge($permissions, $module_permissions);
     if (!$descriptions) {
       foreach ($permissions as $name => $attr) {
@@ -1136,6 +1136,8 @@ class CRM_Core_Permission {
     ];
     $permissions['line_item'] = $permissions['contribution'];
 
+    $permissions['financial_item'] = $permissions['contribution'];
+
     // Payment permissions
     $permissions['payment'] = [
       'get' => [
@@ -1484,6 +1486,10 @@ class CRM_Core_Permission {
       'default' => [
         'access CiviCRM',
       ],
+    ];
+
+    $permissions['saved_search'] = [
+      'default' => ['administer CiviCRM data'],
     ];
 
     // Profile permissions

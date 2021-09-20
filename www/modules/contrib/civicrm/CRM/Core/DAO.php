@@ -33,6 +33,13 @@ require_once 'CRM/Core/I18n.php';
 class CRM_Core_DAO extends DB_DataObject {
 
   /**
+   * Primary key field(s).
+   *
+   * @var string[]
+   */
+  public static $_primaryKey = ['id'];
+
+  /**
    * How many times has this instance been cloned.
    *
    * @var int
@@ -107,8 +114,6 @@ class CRM_Core_DAO extends DB_DataObject {
    */
   public static $_factory = NULL;
 
-  public static $_checkedSqlFunctionsExist = FALSE;
-
   /**
    * https://issues.civicrm.org/jira/browse/CRM-17748
    * internal variable for DAO to hold per-query settings
@@ -135,6 +140,15 @@ class CRM_Core_DAO extends DB_DataObject {
     $className = static::class;
     CRM_Core_Error::deprecatedWarning("$className needs to be regenerated. Missing getEntityTitle method.");
     return CRM_Core_DAO_AllCoreTables::getBriefName($className);
+  }
+
+  /**
+   * Returns user-friendly description of this entity.
+   *
+   * @return string|null
+   */
+  public static function getEntityDescription() {
+    return NULL;
   }
 
   public function __clone() {
@@ -526,11 +540,14 @@ class CRM_Core_DAO extends DB_DataObject {
   /**
    * Returns list of FK relationships.
    *
-   *
    * @return CRM_Core_Reference_Basic[]
    */
   public static function getReferenceColumns() {
-    return [];
+    if (!isset(Civi::$statics[static::class]['links'])) {
+      Civi::$statics[static::class]['links'] = static::createReferenceColumns(static::class);
+      CRM_Core_DAO_AllCoreTables::invoke(static::class, 'links_callback', Civi::$statics[static::class]['links']);
+    }
+    return Civi::$statics[static::class]['links'];
   }
 
   /**
@@ -888,7 +905,7 @@ class CRM_Core_DAO extends DB_DataObject {
    *
    * @param array $record
    *
-   * @return $this
+   * @return static
    * @throws \CRM_Core_Exception
    */
   public static function writeRecord(array $record): CRM_Core_DAO {
@@ -909,11 +926,26 @@ class CRM_Core_DAO extends DB_DataObject {
   }
 
   /**
+   * Bulk save multiple records
+   *
+   * @param array[] $records
+   * @return static[]
+   * @throws CRM_Core_Exception
+   */
+  public static function writeRecords(array $records) {
+    $results = [];
+    foreach ($records as $record) {
+      $results[] = static::writeRecord($record);
+    }
+    return $results;
+  }
+
+  /**
    * Delete a record from supplied params.
    *
    * @param array $record
    *   'id' is required.
-   * @return CRM_Core_DAO
+   * @return static
    * @throws CRM_Core_Exception
    */
   public static function deleteRecord(array $record) {
@@ -935,6 +967,21 @@ class CRM_Core_DAO extends DB_DataObject {
     CRM_Utils_Hook::post('delete', $entityName, $record['id'], $instance);
 
     return $instance;
+  }
+
+  /**
+   * Bulk delete multiple records.
+   *
+   * @param array[] $records
+   * @return static[]
+   * @throws CRM_Core_Exception
+   */
+  public static function deleteRecords(array $records) {
+    $results = [];
+    foreach ($records as $record) {
+      $results[] = static::deleteRecord($record);
+    }
+    return $results;
   }
 
   /**
@@ -1778,11 +1825,9 @@ LIKE %1
       $newObject = new $daoName();
 
       $fields = $object->fields();
-      if (!is_array($fieldsFix)) {
-        $fieldsToPrefix = [];
-        $fieldsToSuffix = [];
-        $fieldsToReplace = [];
-      }
+      $fieldsToPrefix = [];
+      $fieldsToSuffix = [];
+      $fieldsToReplace = [];
       if (!empty($fieldsFix['prefix'])) {
         $fieldsToPrefix = $fieldsFix['prefix'];
       }
@@ -1793,6 +1838,7 @@ LIKE %1
         $fieldsToReplace = $fieldsFix['replace'];
       }
 
+      $localizableFields = FALSE;
       foreach ($fields as $name => $value) {
         if ($name == 'id' || $value['name'] == 'id') {
           // copy everything but the id!
@@ -1816,11 +1862,33 @@ LIKE %1
           $newObject->$dbName = CRM_Utils_Date::isoToMysql($newObject->$dbName);
         }
 
+        if (!empty($value['localizable'])) {
+          $localizableFields = TRUE;
+        }
+
         if ($newData) {
           $newObject->copyValues($newData);
         }
       }
       $newObject->save();
+
+      // ensure we copy all localized fields as well
+      if (CRM_Core_I18n::isMultilingual() && $localizableFields) {
+        global $dbLocale;
+        $locales = CRM_Core_I18n::getMultilingual();
+        $curLocale = CRM_Core_I18n::getLocale();
+        // loop on other locales
+        foreach ($locales as $locale) {
+          if ($locale != $curLocale) {
+            // setLocale doesn't seems to be reliable to set dbLocale and we only need to change the db locale
+            $dbLocale = '_' . $locale;
+            $newObject->copyLocalizable($object->id, $newObject->id, $fieldsToPrefix, $fieldsToSuffix, $fieldsToReplace);
+          }
+        }
+        // restore dbLocale to starting value
+        $dbLocale = '_' . $curLocale;
+      }
+
       if (!$blockCopyofCustomValues) {
         $newObject->copyCustomFields($object->id, $newObject->id);
       }
@@ -1828,6 +1896,67 @@ LIKE %1
     }
 
     return $newObject;
+  }
+
+  /**
+   * Method that copies localizable fields from an old entity to a new one.
+   *
+   * Fixes bug dev/core#2479,
+   * where non current locale fields are copied from current locale losing translation when copying
+   *
+   * @param int $entityID
+   * @param int $newEntityID
+   * @param array $fieldsToPrefix
+   * @param array $fieldsToSuffix
+   * @param array $fieldsToReplace
+   */
+  protected function copyLocalizable($entityID, $newEntityID, $fieldsToPrefix, $fieldsToSuffix, $fieldsToReplace) {
+    $entity = get_class($this);
+    $object = new $entity();
+    $object->id = $entityID;
+    $object->find();
+
+    $newObject = new $entity();
+    $newObject->id = $newEntityID;
+
+    $newObject->find();
+
+    if ($object->fetch() && $newObject->fetch()) {
+
+      $fields = $object->fields();
+      foreach ($fields as $name => $value) {
+
+        if ($name == 'id' || $value['name'] == 'id') {
+          // copy everything but the id!
+          continue;
+        }
+
+        // only copy localizable fields
+        if (!$value['localizable']) {
+          continue;
+        }
+
+        $dbName = $value['name'];
+        $type = CRM_Utils_Type::typeToString($value['type']);
+        $newObject->$dbName = $object->$dbName;
+        if (isset($fieldsToPrefix[$dbName])) {
+          $newObject->$dbName = $fieldsToPrefix[$dbName] . $newObject->$dbName;
+        }
+        if (isset($fieldsToSuffix[$dbName])) {
+          $newObject->$dbName .= $fieldsToSuffix[$dbName];
+        }
+        if (isset($fieldsToReplace[$dbName])) {
+          $newObject->$dbName = $fieldsToReplace[$dbName];
+        }
+
+        if ($type == 'Timestamp' || $type == 'Date') {
+          $newObject->$dbName = CRM_Utils_Date::isoToMysql($newObject->$dbName);
+        }
+
+      }
+      $newObject->save();
+
+    }
   }
 
   /**
@@ -1978,7 +2107,7 @@ SELECT contact_id
    * @return object
    *   an object of type referenced by daoName
    */
-  public static function commonRetrieveAll($daoName, $fieldIdName = 'id', $fieldId, &$details, $returnProperities = NULL) {
+  public static function commonRetrieveAll($daoName, $fieldIdName, $fieldId, &$details, $returnProperities = NULL) {
     require_once str_replace('_', DIRECTORY_SEPARATOR, $daoName) . ".php";
     $object = new $daoName();
     $object->$fieldIdName = $fieldId;
@@ -2337,23 +2466,6 @@ SELECT contact_id
   }
 
   /**
-   * Because sql functions are sometimes lost, esp during db migration, we check here to avoid numerous support requests
-   * @see http://issues.civicrm.org/jira/browse/CRM-13822
-   * TODO: Alternative solutions might be
-   *  * Stop using functions and find another way to strip numeric characters from phones
-   *  * Give better error messages (currently a missing fn fatals with "unknown error")
-   */
-  public static function checkSqlFunctionsExist() {
-    if (!self::$_checkedSqlFunctionsExist) {
-      self::$_checkedSqlFunctionsExist = TRUE;
-      $dao = CRM_Core_DAO::executeQuery("SHOW function status WHERE db = database() AND name = 'civicrm_strip_non_numeric'");
-      if (!$dao->fetch()) {
-        self::triggerRebuild();
-      }
-    }
-  }
-
-  /**
    * Wrapper function to drop triggers.
    *
    * @param string $tableName
@@ -2467,7 +2579,7 @@ SELECT contact_id
    * @param string $tableName
    *   Table referred to.
    *
-   * @return array
+   * @return CRM_Core_Reference_Interface[]
    *   structure of table and column, listing every table with a
    *   foreign key reference to $tableName, and the column where the key appears.
    */
@@ -2504,7 +2616,12 @@ SELECT contact_id
     $contactReferences = [];
     $coreReferences = CRM_Core_DAO::getReferencesToTable('civicrm_contact');
     foreach ($coreReferences as $coreReference) {
-      if (!is_a($coreReference, 'CRM_Core_Reference_Dynamic')) {
+      if (
+        // Exclude option values
+        !is_a($coreReference, 'CRM_Core_Reference_Dynamic') &&
+        // Exclude references to other columns
+        $coreReference->getTargetKey() === 'id'
+      ) {
         $contactReferences[$coreReference->getReferenceTable()][] = $coreReference->getReferenceKey();
       }
     }
@@ -2764,20 +2881,9 @@ SELECT contact_id
    */
   public static function createSQLFilter($fieldName, $filter, $type = NULL, $alias = NULL, $returnSanitisedArray = FALSE) {
     foreach ($filter as $operator => $criteria) {
-      if (!CRM_Core_BAO_SchemaHandler::databaseSupportsUTF8MB4()) {
-        foreach ((array) $criteria as $criterion) {
-          if (!empty($criterion) && !is_numeric($criterion)
-            // The first 2 criteria are redundant but are added as they
-            // seem like they would
-            // be quicker than this 3rd check.
-            && max(array_map('ord', str_split($criterion))) >= 240) {
-            // String contains unsupported emojis.
-            // We return a clause that resolves to false as an emoji string by definition cannot be saved.
-            // note that if we return just 0 for false if gets lost in empty checks.
-            // https://stackoverflow.com/questions/16496554/can-php-detect-4-byte-encoded-utf8-chars
-            return '0 = 1';
-          }
-        }
+      $emojiFilter = CRM_Utils_SQL::handleEmojiInQuery($criteria);
+      if ($emojiFilter === '0 = 1') {
+        return $emojiFilter;
       }
 
       if (in_array($operator, self::acceptedSQLOperators(), TRUE)) {
@@ -2960,7 +3066,7 @@ SELECT contact_id
         $clauses[$fieldName] = CRM_Utils_SQL::mergeSubquery('Contact');
       }
       // Clause for an entity_table/entity_id combo
-      if ($fieldName == 'entity_id' && isset($fields['entity_table'])) {
+      if ($fieldName === 'entity_id' && isset($fields['entity_table'])) {
         $relatedClauses = [];
         $relatedEntities = $this->buildOptions('entity_table', 'get');
         foreach ((array) $relatedEntities as $table => $ent) {
@@ -3009,7 +3115,7 @@ SELECT contact_id
 
   /**
    * ensure database name is 'safe', i.e. only contains word characters (includes underscores)
-   * and dashes, and contains at least one [a-z] case insenstive.
+   * and dashes, and contains at least one [a-z] case insensitive.
    *
    * @param $database
    *

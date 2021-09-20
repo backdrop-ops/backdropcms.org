@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,13 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
 namespace Civi\Api4;
 
 /**
@@ -26,7 +18,8 @@ namespace Civi\Api4;
  * Note: this is a read-only api as routes are set via xml files and hooks.
  *
  * @see https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterMenu/
- * @searchable false
+ * @searchable none
+ * @since 5.19
  * @package Civi\Api4
  */
 class Route extends \Civi\Api4\Generic\AbstractEntity {

@@ -3,40 +3,44 @@
   "use strict";
 
   // Cribbed from the Api4 Explorer
-  angular.module('afGuiEditor').directive('afGuiFieldValue', function() {
+  angular.module('afGuiEditor').directive('afGuiFieldValue', function(afGui) {
     return {
-      scope: {
-        field: '=afGuiFieldValue'
+      bindToController: {
+        field: '<afGuiFieldValue'
       },
-      require: 'ngModel',
-      link: function (scope, element, attrs, ctrl) {
-        var ts = scope.ts = CRM.ts('org.civicrm.afform_admin'),
+      require: {
+        ngModel: 'ngModel',
+        editor: '^^afGuiEditor'
+      },
+      controller: function ($element, $timeout) {
+        var ts = CRM.ts('org.civicrm.afform_admin'),
+          ctrl = this,
           multi;
 
-        function destroyWidget() {
-          var $el = $(element);
-          if ($el.is('.crm-form-date-wrapper .crm-hidden-date')) {
-            $el.crmDatepicker('destroy');
-          }
-          if ($el.is('.select2-container + input')) {
-            $el.crmEntityRef('destroy');
-          }
-          $(element).removeData().removeAttr('type').removeAttr('placeholder').show();
-        }
-
         function makeWidget(field) {
-          var $el = $(element),
+          var options,
+            $el = $($element),
             inputType = field.input_type,
             dataType = field.data_type;
           multi = field.serialize || dataType === 'Array';
+          // Allow input_type to override dataType
+          if (inputType) {
+            multi = (dataType !== 'Boolean' &&
+              (inputType === 'CheckBox' || (field.input_attrs && field.input_attrs.multiple)));
+          }
           if (inputType === 'Date') {
             $el.crmDatepicker({time: (field.input_attrs && field.input_attrs.time) || false});
           }
           else if (field.fk_entity || field.options || dataType === 'Boolean') {
             if (field.fk_entity) {
-              $el.crmEntityRef({entity: field.fk_entity, select:{multiple: multi}});
+              // Static options for choosing current user or other entities on the form
+              options = field.fk_entity === 'Contact' ? ['user_contact_id'] : [];
+              _.each(ctrl.editor.getEntities({type: field.fk_entity}), function(entity) {
+                 options.push({id: entity.name, label: entity.label, icon: afGui.meta.entities[entity.type].icon});
+              });
+              $el.crmEntityRef({entity: field.fk_entity, select: {multiple: multi}, static: options});
             } else if (field.options) {
-              var options = _.transform(field.options, function(options, val) {
+              options = _.transform(field.options, function(options, val) {
                 options.push({id: val.id, text: val.label});
               }, []);
               $el.select2({data: options, multiple: multi});
@@ -71,23 +75,22 @@
           return list;
         };
 
-        // Copied from ng-list
-        ctrl.$parsers.push(parseList);
-        ctrl.$formatters.push(function(value) {
-          return _.isArray(value) ? value.join(', ') : value;
-        });
+        this.$onInit = function() {
+          // Copied from ng-list
+          ctrl.ngModel.$parsers.push(parseList);
+          ctrl.ngModel.$formatters.push(function(value) {
+            return _.isArray(value) ? value.join(',') : value;
+          });
 
-        // Copied from ng-list
-        ctrl.$isEmpty = function(value) {
-          return !value || !value.length;
+          // Copied from ng-list
+          ctrl.ngModel.$isEmpty = function(value) {
+            return !value || !value.length;
+          };
+
+          $timeout(function() {
+            makeWidget(ctrl.field);
+          });
         };
-
-        scope.$watchCollection('field', function(field) {
-          destroyWidget();
-          if (field) {
-            makeWidget(field);
-          }
-        });
       }
     };
   });

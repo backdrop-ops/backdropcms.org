@@ -10,16 +10,11 @@
  +--------------------------------------------------------------------+
  */
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4\Service\Spec;
 
-class RequestSpec {
+use Civi\Api4\Utils\CoreUtil;
+
+class RequestSpec implements \Iterator {
 
   /**
    * @var string
@@ -30,6 +25,11 @@ class RequestSpec {
    * @var string
    */
   protected $action;
+
+  /**
+   * @var string
+   */
+  protected $entityTableName;
 
   /**
    * @var FieldSpec[]
@@ -43,9 +43,16 @@ class RequestSpec {
   public function __construct($entity, $action) {
     $this->entity = $entity;
     $this->action = $action;
+    $this->entityTableName = CoreUtil::getTableName($entity);
   }
 
   public function addFieldSpec(FieldSpec $field) {
+    if (!$field->getEntity()) {
+      $field->setEntity($this->entity);
+    }
+    if (!$field->getTableName()) {
+      $field->setTableName($this->entityTableName);
+    }
     $this->fields[] = $field;
   }
 
@@ -124,6 +131,26 @@ class RequestSpec {
    */
   public function getAction() {
     return $this->action;
+  }
+
+  public function rewind() {
+    return reset($this->fields);
+  }
+
+  public function current() {
+    return current($this->fields);
+  }
+
+  public function key() {
+    return key($this->fields);
+  }
+
+  public function next() {
+    return next($this->fields);
+  }
+
+  public function valid() {
+    return key($this->fields) !== NULL;
   }
 
 }

@@ -103,25 +103,32 @@ trait DAOActionTrait {
    * @throws \API_Exception
    * @throws \CRM_Core_Exception
    */
-  protected function writeObjects($items) {
+  protected function writeObjects(&$items) {
     $baoName = $this->getBaoName();
 
-    // Some BAOs are weird and don't support a straightforward "create" method.
-    $oddballs = [
+    // TODO: Opt-in more entities to use the new writeRecords BAO method.
+    $functionNames = [
+      'Address' => 'add',
+      'CustomField' => 'writeRecords',
       'EntityTag' => 'add',
       'GroupContact' => 'add',
     ];
-    $method = $oddballs[$this->getEntityName()] ?? 'create';
-    if (!method_exists($baoName, $method)) {
-      $method = 'add';
+    $method = $functionNames[$this->getEntityName()] ?? NULL;
+    if (!isset($method)) {
+      $method = method_exists($baoName, 'create') ? 'create' : (method_exists($baoName, 'add') ? 'add' : 'writeRecords');
     }
 
     $result = [];
 
-    foreach ($items as $item) {
+    foreach ($items as &$item) {
       $entityId = $item['id'] ?? NULL;
       FormattingUtil::formatWriteParams($item, $this->entityFields());
       $this->formatCustomParams($item, $entityId);
+
+      // Skip individual processing if using writeRecords
+      if ($method === 'writeRecords') {
+        continue;
+      }
       $item['check_permissions'] = $this->getCheckPermissions();
 
       // For some reason the contact bao requires this
@@ -129,18 +136,11 @@ trait DAOActionTrait {
         $item['contact_id'] = $entityId;
       }
 
-      if ($this->getCheckPermissions()) {
-        $this->checkContactPermissions($baoName, $item);
-      }
-
       if ($this->getEntityName() === 'Address') {
         $createResult = $baoName::$method($item, $this->fixAddress);
       }
-      elseif (method_exists($baoName, $method)) {
-        $createResult = $baoName::$method($item);
-      }
       else {
-        $createResult = $baoName::writeRecord($item);
+        $createResult = $baoName::$method($item);
       }
 
       if (!$createResult) {
@@ -150,8 +150,47 @@ trait DAOActionTrait {
 
       $result[] = $this->baoToArray($createResult, $item);
     }
+
+    // Use bulk `writeRecords` method if the BAO doesn't have a create or add method
+    // TODO: reverse this from opt-in to opt-out and default to using `writeRecords` for all BAOs
+    if ($method === 'writeRecords') {
+      $items = array_values($items);
+      foreach ($baoName::writeRecords($items) as $i => $createResult) {
+        $result[] = $this->baoToArray($createResult, $items[$i]);
+      }
+    }
+
     FormattingUtil::formatOutputValues($result, $this->entityFields(), $this->getEntityName());
     return $result;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  protected function formatWriteValues(&$record) {
+    $this->resolveFKValues($record);
+    parent::formatWriteValues($record);
+  }
+
+  /**
+   * Looks up an id based on some other property of an fk entity
+   *
+   * @param array $record
+   */
+  private function resolveFKValues(array &$record): void {
+    foreach ($record as $key => $value) {
+      if (substr_count($key, '.') !== 1) {
+        continue;
+      }
+      [$fieldName, $fkField] = explode('.', $key);
+      $field = $this->entityFields()[$fieldName] ?? NULL;
+      if (!$field || empty($field['fk_entity'])) {
+        continue;
+      }
+      $fkDao = CoreUtil::getBAOFromApiName($field['fk_entity']);
+      $record[$fieldName] = \CRM_Core_DAO::getFieldValue($fkDao, $value, 'id', $fkField);
+      unset($record[$key]);
+    }
   }
 
   /**
@@ -176,7 +215,7 @@ trait DAOActionTrait {
       if (NULL !== $value) {
 
         if ($field['suffix']) {
-          $options = FormattingUtil::getPseudoconstantList($field, $field['suffix'], $params, $this->getActionName());
+          $options = FormattingUtil::getPseudoconstantList($field, $name, $params, $this->getActionName());
           $value = FormattingUtil::replacePseudoconstant($options, $value, TRUE);
         }
 
@@ -185,7 +224,10 @@ trait DAOActionTrait {
           formatCheckBoxField($value, 'custom_' . $field['id'], $this->getEntityName());
         }
 
-        if ($field['data_type'] === 'ContactReference' && !is_numeric($value)) {
+        // Match contact id to strings like "user_contact_id"
+        // FIXME handle arrays for multi-value contact reference fields, etc.
+        if ($field['data_type'] === 'ContactReference' && is_string($value) && !is_numeric($value)) {
+          // FIXME decouple from v3 API
           require_once 'api/v3/utils.php';
           $value = \_civicrm_api3_resolve_contactID($value);
           if ('unknown-user' === $value) {
@@ -197,20 +239,18 @@ trait DAOActionTrait {
           $field['id'],
           $customParams,
           $value,
-          $field['custom_group.extends'],
+          $field['custom_group_id.extends'],
           // todo check when this is needed
           NULL,
           $entityId,
           FALSE,
-          FALSE,
+          $this->getCheckPermissions(),
           TRUE
         );
       }
     }
 
-    if ($customParams) {
-      $params['custom'] = $customParams;
-    }
+    $params['custom'] = $customParams ?: NULL;
   }
 
   /**
@@ -224,47 +264,25 @@ trait DAOActionTrait {
     if (strpos($fieldExpr, '.') === FALSE) {
       return NULL;
     }
-    list($groupName, $fieldName) = explode('.', $fieldExpr);
-    list($fieldName, $suffix) = array_pad(explode(':', $fieldName), 2, NULL);
+    [$groupName, $fieldName] = explode('.', $fieldExpr);
+    [$fieldName, $suffix] = array_pad(explode(':', $fieldName), 2, NULL);
     $cacheKey = "APIv4_Custom_Fields-$groupName";
     $info = \Civi::cache('metadata')->get($cacheKey);
     if (!isset($info[$fieldName])) {
       $info = [];
       $fields = CustomField::get(FALSE)
-        ->addSelect('id', 'name', 'html_type', 'data_type', 'custom_group.extends')
-        ->addWhere('custom_group.name', '=', $groupName)
+        ->addSelect('id', 'name', 'html_type', 'data_type', 'custom_group_id.extends')
+        ->addWhere('custom_group_id.name', '=', $groupName)
         ->execute()->indexBy('name');
       foreach ($fields as $name => $field) {
         $field['custom_field_id'] = $field['id'];
         $field['name'] = $groupName . '.' . $name;
-        $field['entity'] = CustomGroupJoinable::getEntityFromExtends($field['custom_group.extends']);
+        $field['entity'] = CustomGroupJoinable::getEntityFromExtends($field['custom_group_id.extends']);
         $info[$name] = $field;
       }
       \Civi::cache('metadata')->set($cacheKey, $info);
     }
     return isset($info[$fieldName]) ? ['suffix' => $suffix] + $info[$fieldName] : NULL;
-  }
-
-  /**
-   * Check edit/delete permissions for contacts and related entities.
-   *
-   * @param string $baoName
-   * @param array $item
-   *
-   * @throws \Civi\API\Exception\UnauthorizedException
-   */
-  protected function checkContactPermissions($baoName, $item) {
-    if ($baoName === 'CRM_Contact_BAO_Contact' && !empty($item['id'])) {
-      $permission = $this->getActionName() === 'delete' ? \CRM_Core_Permission::DELETE : \CRM_Core_Permission::EDIT;
-      if (!\CRM_Contact_BAO_Contact_Permission::allow($item['id'], $permission)) {
-        throw new \Civi\API\Exception\UnauthorizedException('Permission denied to modify contact record');
-      }
-    }
-    else {
-      // Fixme: decouple from v3
-      require_once 'api/v3/utils.php';
-      _civicrm_api3_check_edit_permissions($baoName, $item);
-    }
   }
 
 }

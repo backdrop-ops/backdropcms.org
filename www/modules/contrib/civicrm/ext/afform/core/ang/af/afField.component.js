@@ -12,7 +12,7 @@
       fieldName: '@name',
       defn: '='
     },
-    controller: function($scope, $element, crmApi4) {
+    controller: function($scope, $element, crmApi4, $timeout) {
       var ts = $scope.ts = CRM.ts('org.civicrm.afform'),
         ctrl = this,
         boolOptions = [{id: true, label: ts('Yes')}, {id: false, label: ts('No')}],
@@ -86,6 +86,14 @@
           });
         }
 
+        // Set default value
+        if (ctrl.defn.afform_default) {
+          // Wait for parent controllers to initialize
+          $timeout(function() {
+            $scope.dataProvider.getFieldData()[ctrl.fieldName] = ctrl.defn.afform_default;
+          });
+        }
+
       };
 
       $scope.getOptions = function () {
@@ -100,7 +108,7 @@
         };
       };
 
-      // Getter/Setter function for fields of type select.
+      // Getter/Setter function for fields of type select or entityRef.
       $scope.getSetSelect = function(val) {
         var currentVal = $scope.dataProvider.getFieldData()[ctrl.fieldName];
         // Setter

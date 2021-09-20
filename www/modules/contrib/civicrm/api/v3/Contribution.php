@@ -15,6 +15,8 @@
  * @package CiviCRM_APIv3
  */
 
+use Civi\Api4\Contribution;
+
 /**
  * Add or update a Contribution.
  *
@@ -40,18 +42,14 @@ function civicrm_api3_contribution_create($params) {
   }
   $params['skipCleanMoney'] = TRUE;
 
-  if (!empty($params['check_permissions']) && CRM_Financial_BAO_FinancialType::isACLFinancialTypeStatus()) {
-    if (empty($params['id'])) {
-      $op = CRM_Core_Action::ADD;
-    }
-    else {
-      if (empty($params['financial_type_id'])) {
-        $params['financial_type_id'] = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_Contribution', $params['id'], 'financial_type_id');
-      }
-      $op = CRM_Core_Action::UPDATE;
-    }
-    CRM_Financial_BAO_FinancialType::getAvailableFinancialTypes($types, $op);
-    if (!in_array($params['financial_type_id'], array_keys($types))) {
+  if (!empty($params['check_permissions'])) {
+    // Check acls on this entity. Note that we pass in financial type id, if we have it
+    // since we know this is checked by acls. In v4 we do something more generic.
+    if (!Contribution::checkAccess()
+      ->setAction(empty($params['id']) ? 'create' : 'update')
+      ->addValue('id', $params['id'] ?? NULL)
+      ->addValue('financial_type_id', $params['financial_type_id'] ?? NULL)
+      ->execute()->first()['access']) {
       throw new API_Exception('You do not have permission to create this contribution');
     }
   }
@@ -70,6 +68,18 @@ function civicrm_api3_contribution_create($params) {
     CRM_Contribute_BAO_Contribution::checkFinancialTypeChange($params['financial_type_id'], $params['id'], $error);
     if (array_key_exists('financial_type_id', $error)) {
       throw new API_Exception($error['financial_type_id']);
+    }
+  }
+  if (!isset($params['tax_amount']) && empty($params['line_item'])
+    && empty($params['skipLineItem'])
+    && empty($params['id'])
+  ) {
+    $taxRates = CRM_Core_PseudoConstant::getTaxRates();
+    $taxRate = $taxRates[$params['financial_type_id']] ?? 0;
+    if ($taxRate) {
+      // Be afraid - historically if a contribution was tax then the passed in amount is EXCLUSIVE
+      $params['tax_amount'] = $params['total_amount'] * ($taxRate / 100);
+      $params['total_amount'] += $params['tax_amount'];
     }
   }
   _civicrm_api3_contribution_create_legacy_support_45($params);
@@ -204,23 +214,13 @@ function _civicrm_api3_contribution_create_legacy_support_45(&$params) {
 function civicrm_api3_contribution_delete($params) {
 
   $contributionID = !empty($params['contribution_id']) ? $params['contribution_id'] : $params['id'];
-  // First check contribution financial type
-  $financialType = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_Contribution', $contributionID, 'financial_type_id');
-  // Now check permissioned lineitems & permissioned contribution
-  if (!empty($params['check_permissions']) && CRM_Financial_BAO_FinancialType::isACLFinancialTypeStatus() &&
-    (
-      !CRM_Core_Permission::check('delete contributions of type ' . CRM_Contribute_PseudoConstant::financialType($financialType))
-      || !CRM_Financial_BAO_FinancialType::checkPermissionedLineItems($contributionID, 'delete', FALSE)
-    )
-  ) {
+  if (!empty($params['check_permissions']) && !\Civi\Api4\Utils\CoreUtil::checkAccessDelegated('Contribution', 'delete', ['id' => $contributionID], CRM_Core_Session::getLoggedInContactID() ?: 0)) {
     throw new API_Exception('You do not have permission to delete this contribution');
   }
   if (CRM_Contribute_BAO_Contribution::deleteContribution($contributionID)) {
     return civicrm_api3_create_success([$contributionID => 1]);
   }
-  else {
-    throw new API_Exception('Could not delete contribution');
-  }
+  throw new API_Exception('Could not delete contribution');
 }
 
 /**
@@ -671,7 +671,7 @@ function _ipn_process_transaction($params, $contribution, $input, $ids) {
     static $domainFromName;
     static $domainFromEmail;
     if (empty($domainFromEmail) && (empty($params['receipt_from_name']) || empty($params['receipt_from_email']))) {
-      list($domainFromName, $domainFromEmail) = CRM_Core_BAO_Domain::getNameAndEmail(TRUE);
+      [$domainFromName, $domainFromEmail] = CRM_Core_BAO_Domain::getNameAndEmail(TRUE);
     }
     $input['receipt_from_name'] = CRM_Utils_Array::value('receipt_from_name', $params, $domainFromName);
     $input['receipt_from_email'] = CRM_Utils_Array::value('receipt_from_email', $params, $domainFromEmail);
@@ -681,11 +681,9 @@ function _ipn_process_transaction($params, $contribution, $input, $ids) {
   if (!empty($params['payment_instrument_id'])) {
     $input['payment_instrument_id'] = $params['payment_instrument_id'];
   }
-  return CRM_Contribute_BAO_Contribution::completeOrder($input, [
-    'related_contact' => $ids['related_contact'] ?? NULL,
-    'participant' => !empty($objects['participant']) ? $objects['participant']->id : NULL,
-    'contributionRecur' => !empty($objects['contributionRecur']) ? $objects['contributionRecur']->id : NULL,
-  ], $objects['contribution']->id ?? NULL,
+  return CRM_Contribute_BAO_Contribution::completeOrder($input,
+    !empty($objects['contributionRecur']) ? $objects['contributionRecur']->id : NULL,
+   $objects['contribution']->id ?? NULL,
     $params['is_post_payment_create'] ?? NULL);
 }
 

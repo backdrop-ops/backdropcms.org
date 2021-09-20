@@ -278,6 +278,10 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
       $this->applyCustomData('Contribution', $this->getFinancialTypeID(), $this->_id);
     }
 
+    if (!empty($this->_values['is_template'])) {
+      $this->assign('is_template', TRUE);
+    }
+
     $this->_lineItems = [];
     if ($this->_id) {
       if (!empty($this->_compId) && $this->_compContext === 'participant') {
@@ -298,6 +302,9 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
       $this->_payNow = TRUE;
       $this->assign('payNow', $this->_payNow);
       CRM_Utils_System::setTitle(ts('Pay with Credit Card'));
+    }
+    elseif (!empty($this->_values['is_template'])) {
+      $this->setPageTitle(ts('Template Contribution'));
     }
     elseif ($this->_mode) {
       $this->setPageTitle($this->_ppID ? ts('Credit Card Pledge Payment') : ts('Credit Card Contribution'));
@@ -914,7 +921,7 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
     $order = new CRM_Financial_BAO_Order();
     $order->setPriceSelectionFromUnfilteredInput($fields);
     if (isset($fields['total_amount'])) {
-      $order->setOverrideTotalAmount($fields['total_amount']);
+      $order->setOverrideTotalAmount((float) CRM_Utils_Rule::cleanMoney($fields['total_amount']));
     }
     $lineItems = $order->getLineItems();
     try {
@@ -1446,7 +1453,7 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
         }
         else {
           $lineItems[$itemId]['tax_rate'] = $lineItems[$itemId]['tax_amount'] = "";
-          $submittedValues['tax_amount'] = 'null';
+          $submittedValues['tax_amount'] = 0;
         }
         if ($lineItems[$itemId]['tax_rate']) {
           $lineItems[$itemId]['tax_amount'] = ($lineItems[$itemId]['tax_rate'] / 100) * $lineItems[$itemId]['line_total'];
@@ -1585,9 +1592,6 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
         $params['participant_id'] = $pId;
         $params['skipLineItem'] = 1;
       }
-      elseif ($isRelatedId) {
-        $params['contribution_mode'] = 'membership';
-      }
       $params['line_item'] = $lineItem;
       $params['payment_processor_id'] = $params['payment_processor'] = $this->_paymentProcessor['id'] ?? NULL;
       $params['tax_amount'] = CRM_Utils_Array::value('tax_amount', $submittedValues, CRM_Utils_Array::value('tax_amount', $this->_values));
@@ -1671,9 +1675,7 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
    * @param array $lineItem
    */
   protected function invoicingPostProcessHook($submittedValues, $action, $lineItem) {
-
-    $invoiceSettings = Civi::settings()->get('contribution_invoice_settings');
-    if (empty($invoiceSettings['invoicing'])) {
+    if (!Civi::settings()->get('invoicing')) {
       return;
     }
     $taxRate = [];

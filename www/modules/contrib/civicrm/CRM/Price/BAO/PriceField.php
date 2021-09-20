@@ -281,7 +281,7 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
       $label = (!empty($qf->_membershipBlock) && $field->name == 'contribution_amount') ? ts('Additional Contribution') : $field->label;
     }
 
-    if ($field->name == 'contribution_amount') {
+    if ($field->name === 'contribution_amount') {
       $qf->_contributionAmount = 1;
     }
 
@@ -297,10 +297,9 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
     //use value field.
     $valueFieldName = 'amount';
     $separator = '|';
-    $invoiceSettings = Civi::settings()->get('contribution_invoice_settings');
     $taxTerm = Civi::settings()->get('tax_term');
-    $displayOpt = $invoiceSettings['tax_display_settings'] ?? NULL;
-    $invoicing = $invoiceSettings['invoicing'] ?? NULL;
+    $displayOpt = Civi::settings()->get('tax_display_settings');
+    $invoicing = Civi::settings()->get('invoicing');
     switch ($field->html_type) {
       case 'Text':
         $optionKey = key($customOption);
@@ -387,17 +386,7 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
               $postHelpText = '<span class="crm-price-amount-help-post-separator">:&nbsp;</span><span class="crm-price-amount-help-post description">' . $opt['help_post'] . '</span>';
             }
             if (isset($taxAmount) && $invoicing) {
-              if ($displayOpt == 'Do_not_show') {
-                $opt['label'] = '<span class="crm-price-amount-label">' . $opt['label'] . '</span>' . '<span class="crm-price-amount-amount">' . CRM_Utils_Money::format($opt[$valueFieldName] + $taxAmount) . '</span>';
-              }
-              elseif ($displayOpt == 'Inclusive') {
-                $opt['label'] = '<span class="crm-price-amount-label">' . $opt['label'] . '</span>' . '<span class="crm-price-amount-amount">' . CRM_Utils_Money::format($opt[$valueFieldName] + $taxAmount) . '</span>';
-                $opt['label'] .= '<span class="crm-price-amount-tax"> (includes ' . $taxTerm . ' of ' . CRM_Utils_Money::format($opt['tax_amount']) . ')</span>';
-              }
-              else {
-                $opt['label'] = '<span class="crm-price-amount-label">' . $opt['label'] . '</span>' . '<span class="crm-price-amount-amount">' . CRM_Utils_Money::format($opt[$valueFieldName]) . '</span>';
-                $opt['label'] .= '<span class="crm-price-amount-tax"> + ' . CRM_Utils_Money::format($opt['tax_amount']) . ' ' . $taxTerm . '</span>';
-              }
+              $opt['label'] = '<span class="crm-price-amount-label">' . $opt['label'] . '</span>' . self::getTaxLabel($opt, $valueFieldName, $displayOpt, $taxTerm);
             }
             else {
               $opt['label'] = '<span class="crm-price-amount-label">' . $opt['label'] . '</span>' . '<span class="crm-price-amount-amount">' . CRM_Utils_Money::format($opt[$valueFieldName]) . '</span>';
@@ -525,13 +514,12 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
         else {
           $visibility_id = self::getVisibilityOptionID('public');
         }
-        $element = &$qf->add('select', $elementName, $label,
-          [
-            '' => ts('- select -'),
-          ] + $selectOption,
-          $useRequired && $field->is_required,
-          ['price' => json_encode($priceVal), 'class' => 'crm-select2', 'data-price-field-values' => json_encode($customOption)]
-        );
+        $element = &$qf->add('select', $elementName, $label, $selectOption, $useRequired && $field->is_required, [
+          'placeholder' => ts('- select %1 -', [1 => $label]),
+          'price' => json_encode($priceVal),
+          'class' => 'crm-select2',
+          'data-price-field-values' => json_encode($customOption),
+        ]);
 
         // CRM-6902 - Add "max" option for a price set field
         $button = substr($qf->controller->getButtonName(), -4);
@@ -795,7 +783,7 @@ WHERE  id IN (" . implode(',', array_keys($priceFields)) . ')';
             $selectedAmounts[$opId] = $options[$opId]['amount'];
           }
         }
-        elseif (in_array($fields["price_{$fieldId}"], array_keys($options))) {
+        elseif (array_key_exists($fields["price_{$fieldId}"], $options)) {
           $selectedAmounts[$fields["price_{$fieldId}"]] = $options[$fields["price_{$fieldId}"]]['amount'];
         }
       }
@@ -804,7 +792,7 @@ WHERE  id IN (" . implode(',', array_keys($priceFields)) . ')';
       // now we have all selected amount in hand.
       $totalAmount = array_sum($selectedAmounts);
       // The form offers a field to enter the amount paid. This may differ from the amount that is due to complete the purchase
-      $totalPaymentAmountEnteredOnForm = CRM_Utils_Array::value('partial_payment_total', $fields, CRM_Utils_Array::value('total_amount', $fields));
+      $totalPaymentAmountEnteredOnForm = CRM_Utils_Array::value('total_amount', $fields);
       if ($totalAmount < 0) {
         $error['_qf_default'] = ts('%1 amount can not be less than zero. Please select the options accordingly.', [1 => $componentName]);
       }
@@ -848,7 +836,7 @@ WHERE  id IN (" . implode(',', array_keys($priceFields)) . ')';
     }
     elseif ($displayOpt == 'Inclusive') {
       $label = CRM_Utils_Money::format($opt[$valueFieldName] + $opt['tax_amount']);
-      $label .= '<span class="crm-price-amount-tax"> (includes ' . $taxTerm . ' of ' . CRM_Utils_Money::format($opt['tax_amount']) . ')</span>';
+      $label .= '<span class="crm-price-amount-tax"> ' . ts('(includes %1 of %2)', [1 => $taxTerm, 2 => CRM_Utils_Money::format($opt['tax_amount'])]) . '</span>';
     }
     else {
       $label = CRM_Utils_Money::format($opt[$valueFieldName]);

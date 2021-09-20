@@ -64,13 +64,18 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
   private $_afform;
 
   /**
+   * @var array
+   */
+  private $_extraEntityFields = [];
+
+  /**
    * @param \Civi\Api4\Generic\Result $result
    * @throws UnauthorizedException
    * @throws \API_Exception
    */
   public function _run(\Civi\Api4\Generic\Result $result) {
     // Only administrators can use this in unsecured "preview mode"
-    if (!(is_string($this->savedSearch) && is_string($this->display)) && $this->checkPermissions && !\CRM_Core_Permission::check('administer CiviCRM')) {
+    if (!(is_string($this->savedSearch) && is_string($this->display)) && $this->checkPermissions && !\CRM_Core_Permission::check('administer CiviCRM data')) {
       throw new UnauthorizedException('Access denied');
     }
     if (is_string($this->savedSearch)) {
@@ -88,9 +93,16 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
     if (!$this->savedSearch || !$this->display) {
       throw new \API_Exception("Error: SearchDisplay not found.");
     }
+    // Displays with acl_bypass must be embedded on an afform which the user has access to
+    if (
+      $this->checkPermissions && !empty($this->display['acl_bypass']) &&
+      !\CRM_Core_Permission::check('all CiviCRM permissions and ACLs') && !$this->loadAfform()
+    ) {
+      throw new UnauthorizedException('Access denied');
+    }
     $entityName = $this->savedSearch['api_entity'];
     $apiParams =& $this->savedSearch['api_params'];
-    $apiParams['checkPermissions'] = $this->checkPermissions;
+    $apiParams['checkPermissions'] = empty($this->display['acl_bypass']);
     $apiParams += ['where' => []];
     $settings = $this->display['settings'];
     $page = NULL;
@@ -101,7 +113,7 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
         if (empty($apiParams['having'])) {
           $apiParams['select'] = [];
         }
-        if (!in_array($this->return, $apiParams)) {
+        if (!in_array($this->return, $apiParams['select'], TRUE)) {
           $apiParams['select'][] = $this->return;
         }
         unset($apiParams['orderBy'], $apiParams['limit']);
@@ -148,22 +160,11 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
       return;
     }
 
-    // Process all filters that are included in SELECT clause. These filters are implicitly allowed.
-    foreach ($this->getSelectAliases() as $fieldName) {
-      if (isset($filters[$fieldName])) {
-        $value = $filters[$fieldName];
-        unset($filters[$fieldName]);
+    // Process all filters that are included in SELECT clause or are allowed by the Afform.
+    $allowedFilters = array_merge($this->getSelectAliases(), $this->getAfformFilters());
+    foreach ($filters as $fieldName => $value) {
+      if (in_array($fieldName, $allowedFilters, TRUE)) {
         $this->applyFilter($fieldName, $value);
-      }
-    }
-
-    // Other filters may be allowed if display is embedded in an afform.
-    if ($filters) {
-      foreach ($this->getAfformFilters() as $fieldName) {
-        if (isset($filters[$fieldName])) {
-          $value = $filters[$fieldName];
-          $this->applyFilter($fieldName, $value);
-        }
       }
     }
   }
@@ -201,10 +202,22 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
     // Array is either associative `OP => VAL` or sequential `IN (...)`
     if (is_array($value)) {
       $value = array_filter($value, [$this, 'hasValue']);
-      // Use IN if array does not contain operators as keys
+      // If array does not contain operators as keys, assume array of values
       if (array_diff_key($value, array_flip(CoreUtil::getOperators()))) {
-        $clause[] = [$fieldName, 'IN', $value];
+        // Use IN for regular fields
+        if (empty($field['serialize'])) {
+          $clause[] = [$fieldName, 'IN', $value];
+        }
+        // Use an OR group of CONTAINS for array fields
+        else {
+          $orGroup = [];
+          foreach ($value as $val) {
+            $orGroup[] = [$fieldName, 'CONTAINS', $val];
+          }
+          $clause[] = ['OR', $orGroup];
+        }
       }
+      // Operator => Value array
       else {
         foreach ($value as $operator => $val) {
           $clause[] = [$fieldName, $operator, $val];
@@ -269,27 +282,6 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
   }
 
   /**
-   * Determines if a column is eligible to use an aggregate function
-   * @param $fieldName
-   * @param $prefix
-   * @return bool
-   */
-  private function canAggregate($fieldName, $prefix) {
-    $apiParams = $this->savedSearch['api_params'];
-
-    // If the query does not use grouping, never
-    if (empty($apiParams['groupBy'])) {
-      return FALSE;
-    }
-    // If the column is used for a groupBy, no
-    if (in_array($prefix . $fieldName, $apiParams['groupBy'])) {
-      return FALSE;
-    }
-    // If the entity this column belongs to is being grouped by id, then also no
-    return !in_array($prefix . 'id', $apiParams['groupBy']);
-  }
-
-  /**
    * Returns field definition for a given field or NULL if not found
    * @param $fieldName
    * @return array|null
@@ -303,6 +295,10 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
   }
 
   /**
+   * Returns a list of filter fields and directive filters
+   *
+   * Automatically applies directive filters
+   *
    * @return array
    */
   private function getAfformFilters() {
@@ -311,16 +307,23 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
       return [];
     }
     // Get afform field filters
-    $filters = array_column(\CRM_Utils_Array::findAll(
+    $filterKeys = array_column(\CRM_Utils_Array::findAll(
       $afform['layout'] ?? [],
       ['#tag' => 'af-field']
     ), 'name');
-    // Get filters passed into search display directive
+    // Get filters passed into search display directive from Afform markup
     $filterAttr = $afform['searchDisplay']['filters'] ?? NULL;
     if ($filterAttr && is_string($filterAttr) && $filterAttr[0] === '{') {
-      $filters = array_unique(array_merge($filters, array_keys(\CRM_Utils_JS::getRawProps($filterAttr))));
+      foreach (\CRM_Utils_JS::decode($filterAttr) as $filterKey => $filterVal) {
+        $filterKeys[] = $filterKey;
+        // Automatically apply filters from the markup if they have a value
+        // (if it's a javascript variable it will have come back from decode() as NULL and we'll ignore it).
+        if ($this->hasValue($filterVal)) {
+          $this->applyFilter($filterKey, $filterVal);
+        }
+      }
     }
-    return $filters;
+    return $filterKeys;
   }
 
   /**
@@ -352,43 +355,29 @@ class Run extends \Civi\Api4\Generic\AbstractAction {
   }
 
   /**
-   * Adds additional useful fields to the select clause
+   * Adds additional fields to the select clause required to render the display
    *
    * @param array $apiParams
    */
   private function augmentSelectClause(&$apiParams): void {
-    $joinAliases = [];
-    // Select the ids of explicitly joined entities (helps with displaying links)
-    foreach ($apiParams['join'] ?? [] as $join) {
-      $joinAliases[] = $joinAlias = explode(' AS ', $join[0])[1];
-      $idFieldName = $joinAlias . '.id';
-      if (!in_array($idFieldName, $apiParams['select']) && !$this->canAggregate('id', $joinAlias . '.')) {
-        $apiParams['select'][] = $idFieldName;
-      }
-    }
-    // Select the ids of implicitly joined entities (helps with displaying links)
-    foreach ($apiParams['select'] as $fieldName) {
-      if (strstr($fieldName, '.') && !strstr($fieldName, ' AS ') && !strstr($fieldName, ':')) {
-        $idFieldName = $fieldNameWithoutPrefix = substr($fieldName, 0, strrpos($fieldName, '.'));
-        $idField = $this->getField($idFieldName);
-        $explicitJoin = '';
-        if (strstr($idFieldName, '.')) {
-          [$prefix, $fieldNameWithoutPrefix] = explode('.', $idFieldName, 2);
-          if (in_array($prefix, $joinAliases, TRUE)) {
-            $explicitJoin = $prefix . '.';
-          }
-        }
-        if (!in_array($idFieldName, $apiParams['select']) && !empty($idField['fk_entity']) && !$this->canAggregate($fieldNameWithoutPrefix, $explicitJoin)) {
-          $apiParams['select'][] = $idFieldName;
-        }
-      }
-    }
-    // Select value fields for in-place editing
+    $possibleTokens = '';
     foreach ($this->display['settings']['columns'] ?? [] as $column) {
+      // Collect display values in which a token is allowed
+      $possibleTokens .= ($column['rewrite'] ?? '') . ($column['link']['path'] ?? '');
+      if (!empty($column['links'])) {
+        $possibleTokens .= implode('', array_column($column['links'], 'path'));
+        $possibleTokens .= implode('', array_column($column['links'], 'text'));
+      }
+
+      // Select value fields for in-place editing
       if (isset($column['editable']['value']) && !in_array($column['editable']['value'], $apiParams['select'])) {
         $apiParams['select'][] = $column['editable']['value'];
       }
     }
+    // Add fields referenced via token
+    $tokens = [];
+    preg_match_all('/\\[([^]]+)\\]/', $possibleTokens, $tokens);
+    $apiParams['select'] = array_unique(array_merge($apiParams['select'], $tokens[1]));
   }
 
 }

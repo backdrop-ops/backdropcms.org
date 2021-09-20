@@ -6,7 +6,7 @@ namespace Civi\Api4;
  *
  * Provided by the Search Kit extension.
  *
- * @searchable false
+ * @searchable none
  * @package Civi\Api4
  */
 class SearchDisplay extends Generic\DAOEntity {
@@ -31,6 +31,9 @@ class SearchDisplay extends Generic\DAOEntity {
 
   public static function permissions() {
     $permissions = parent::permissions();
+    $permissions['default'] = ['administer CiviCRM data'];
+    $permissions['getSearchTasks'] = ['access CiviCRM'];
+    // Permission for run action is checked internally
     $permissions['run'] = [];
     return $permissions;
   }

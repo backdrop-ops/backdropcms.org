@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,13 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
 namespace Civi\Api4;
 
 /**
@@ -24,7 +16,8 @@ namespace Civi\Api4;
  * This represents one field in a Mapping collection.
  *
  * @see \Civi\Api4\Mapping
- * @searchable false
+ * @searchable none
+ * @since 5.19
  * @package Civi\Api4
  */
 class MappingField extends Generic\DAOEntity {

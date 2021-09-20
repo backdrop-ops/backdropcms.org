@@ -11,7 +11,6 @@
  */
 
 use Civi\ActionSchedule\Event\MailingQueryEvent;
-use Civi\Token\AbstractTokenSubscriber;
 use Civi\Token\TokenProcessor;
 use Civi\Token\TokenRow;
 
@@ -23,59 +22,97 @@ use Civi\Token\TokenRow;
  * At time of writing, we don't have any particularly special tokens -- we just
  * do some basic formatting based on the corresponding DB field.
  */
-class CRM_Contribute_Tokens extends AbstractTokenSubscriber {
+class CRM_Contribute_Tokens extends CRM_Core_EntityTokens {
 
   /**
-   * Get a list of tokens whose name and title match the DB fields.
+   * @return string
+   */
+  protected function getEntityName(): string {
+    return 'contribution';
+  }
+
+  /**
+   * @return string
+   */
+  protected function getEntityAlias(): string {
+    return 'contrib_';
+  }
+
+  /**
+   * Get the entity name for api v4 calls.
+   *
+   * In practice this IS just ucfirst($this->GetEntityName)
+   * but declaring it seems more legible.
+   *
+   * @return string
+   */
+  protected function getApiEntityName(): string {
+    return 'Contribution';
+  }
+
+  /**
+   * Metadata about the entity fields.
+   *
+   * @var array
+   */
+  protected $fieldMetadata = [];
+
+  /**
+   * Get a list of tokens for the entity for which access is permitted to.
+   *
+   * This list is historical and we need to question whether we
+   * should filter out any fields (other than those fields, like api_key
+   * on the contact entity) with permissions defined.
+   *
    * @return array
    */
-  protected function getPassthruTokens(): array {
+  protected function getExposedFields(): array {
     return [
       'contribution_page_id',
+      'source',
+      'id',
       'receive_date',
       'total_amount',
       'fee_amount',
       'net_amount',
+      'non_deductible_amount',
       'trxn_id',
       'invoice_id',
       'currency',
-      'contribution_cancel_date',
+      'cancel_date',
       'receipt_date',
       'thankyou_date',
       'tax_amount',
+      'contribution_status_id',
+      'financial_type_id',
+      'payment_instrument_id',
     ];
   }
 
   /**
-   * Get alias tokens.
+   * Get tokens supporting the syntax we are migrating to.
    *
-   * @return array
+   * In general these are tokens that were not previously supported
+   * so we can add them in the preferred way or that we have
+   * undertaken some, as yet to be written, db update.
+   *
+   * See https://lab.civicrm.org/dev/core/-/issues/2650
+   *
+   * @return string[]
    */
-  protected function getAliasTokens(): array {
-    return [
-      'id' => 'contribution_id',
-      'payment_instrument' => 'payment_instrument_id',
-      'source' => 'contribution_source',
-      'status' => 'contribution_status_id',
-      'type' => 'financial_type_id',
-      'cancel_date' => 'contribution_cancel_date',
-    ];
+  public function getBasicTokens(): array {
+    $return = [];
+    foreach ($this->getExposedFields() as $fieldName) {
+      $return[$fieldName] = $this->getFieldMetadata()[$fieldName]['title'];
+    }
+    return $return;
   }
 
   /**
    * Class constructor.
    */
   public function __construct() {
-    $tokens = CRM_Utils_Array::subset(
-      CRM_Utils_Array::collect('title', CRM_Contribute_DAO_Contribution::fields()),
-      $this->getPassthruTokens()
-    );
-    $tokens['id'] = ts('Contribution ID');
-    $tokens['payment_instrument'] = ts('Payment Instrument');
-    $tokens['source'] = ts('Contribution Source');
-    $tokens['status'] = ts('Contribution Status');
-    $tokens['type'] = ts('Financial Type');
-    $tokens = array_merge($tokens, CRM_Utils_Token::getCustomFieldTokens('Contribution'));
+    $tokens = $this->getAllTokens();
     parent::__construct('contribution', $tokens);
   }
 
@@ -101,35 +138,41 @@ class CRM_Contribute_Tokens extends AbstractTokenSubscriber {
       return;
     }
 
-    $fields = CRM_Contribute_DAO_Contribution::fields();
-    foreach ($this->getPassthruTokens() as $token) {
-      $e->query->select("e." . $fields[$token]['name'] . " AS contrib_{$token}");
+    $fields = $this->getFieldMetadata();
+    foreach (array_keys($this->getBasicTokens()) as $token) {
+      $e->query->select('e.' . $fields[$token]['name'] . ' AS ' . $this->getEntityAlias() . $token);
     }
-    foreach ($this->getAliasTokens() as $alias => $orig) {
-      $e->query->select("e." . $fields[$orig]['name'] . " AS contrib_{$alias}");
+    foreach (array_keys($this->getPseudoTokens()) as $token) {
+      $split = explode(':', $token);
+      $e->query->select('e.' . $fields[$split[0]]['name'] . ' AS ' . $this->getEntityAlias() . $split[0]);
     }
   }
 
   /**
    * @inheritDoc
+   * @throws \CRM_Core_Exception
    */
   public function evaluateToken(TokenRow $row, $entity, $field, $prefetch = NULL) {
     $actionSearchResult = $row->context['actionSearchResult'];
-    $fieldValue = $actionSearchResult->{"contrib_$field"} ?? NULL;
+    $aliasedField = $this->getEntityAlias() . $field;
+    $fieldValue = $actionSearchResult->{$aliasedField} ?? NULL;
 
-    $aliasTokens = $this->getAliasTokens();
-    if (in_array($field, ['total_amount', 'fee_amount', 'net_amount'])) {
+    if ($this->isPseudoField($field)) {
+      $split = explode(':', $field);
+      return $row->tokens($entity, $field, $this->getPseudoValue($split[0], $split[1], $actionSearchResult->{"contrib_$split[0]"} ?? NULL));
+    }
+    if ($this->isMoneyField($field)) {
       return $row->format('text/plain')->tokens($entity, $field,
         \CRM_Utils_Money::format($fieldValue, $actionSearchResult->contrib_currency));
     }
-    elseif (isset($aliasTokens[$field])) {
-      $row->dbToken($entity, $field, 'CRM_Contribute_BAO_Contribution', $aliasTokens[$field], $fieldValue);
+    if ($this->isDateField($field)) {
+      return $row->format('text/plain')->tokens($entity, $field, \CRM_Utils_Date::customFormat($fieldValue));
     }
-    elseif ($cfID = \CRM_Core_BAO_CustomField::getKeyID($field)) {
-      $row->customToken($entity, $cfID, $actionSearchResult->entity_id);
+    if ($this->isCustomField($field)) {
+      $row->customToken($entity, \CRM_Core_BAO_CustomField::getKeyID($field), $actionSearchResult->entity_id);
     }
     else {
-      $row->dbToken($entity, $field, 'CRM_Contribute_BAO_Contribution', $field, $fieldValue);
+      $row->format('text/plain')->tokens($entity, $field, (string) $fieldValue);
     }
   }
 

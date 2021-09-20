@@ -10,14 +10,11 @@
  +--------------------------------------------------------------------+
  */
 
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4\Generic;
+
+use Civi\Api4\Event\ValidateValuesEvent;
+use Civi\API\Exception\UnauthorizedException;
+use Civi\Api4\Utils\CoreUtil;
 
 /**
  * Create or update one or more $ENTITIES.
@@ -73,34 +70,48 @@ abstract class AbstractSaveAction extends AbstractAction {
   protected $reload = FALSE;
 
   /**
-   * @var string
-   */
-  private $idField;
-
-  /**
-   * BatchAction constructor.
-   * @param string $entityName
-   * @param string $actionName
-   * @param string $idField
-   */
-  public function __construct($entityName, $actionName, $idField = 'id') {
-    // $idField should be a string but some apis (e.g. CustomValue) give us an array
-    $this->idField = array_values((array) $idField)[0];
-    parent::__construct($entityName, $actionName);
-  }
-
-  /**
    * @throws \API_Exception
+   * @throws \Civi\API\Exception\UnauthorizedException
    */
   protected function validateValues() {
+    $idField = $this->getIdField();
+    // FIXME: There should be a protocol to report a full list of errors... Perhaps a subclass of API_Exception?
     $unmatched = [];
     foreach ($this->records as $record) {
-      if (empty($record[$this->idField])) {
+      if (empty($record[$idField])) {
         $unmatched = array_unique(array_merge($unmatched, $this->checkRequiredFields($record)));
       }
     }
     if ($unmatched) {
       throw new \API_Exception("Mandatory values missing from Api4 {$this->getEntityName()}::{$this->getActionName()}: " . implode(", ", $unmatched), "mandatory_missing", ["fields" => $unmatched]);
+    }
+
+    if ($this->checkPermissions) {
+      foreach ($this->records as $record) {
+        $action = empty($record[$idField]) ? 'create' : 'update';
+        if (!CoreUtil::checkAccessDelegated($this->getEntityName(), $action, $record, \CRM_Core_Session::getLoggedInContactID() ?: 0)) {
+          throw new UnauthorizedException("ACL check failed");
+        }
+      }
+    }
+
+    $e = new ValidateValuesEvent($this, $this->records, new \CRM_Utils_LazyArray(function() use ($idField) {
+      $existingIds = array_column($this->records, $idField);
+      $existing = civicrm_api4($this->getEntityName(), 'get', [
+        'checkPermissions' => $this->checkPermissions,
+        'where' => [[$idField, 'IN', $existingIds]],
+      ], $idField);
+
+      $result = [];
+      foreach ($this->records as $k => $new) {
+        $old = isset($new[$idField]) ? $existing[$new[$idField]] : NULL;
+        $result[$k] = ['old' => $old, 'new' => $new];
+      }
+      return $result;
+    }));
+    \Civi::dispatcher()->dispatch('civi.api4.validate', $e);
+    if (!empty($e->errors)) {
+      throw $e->toException();
     }
   }
 
@@ -108,7 +119,7 @@ abstract class AbstractSaveAction extends AbstractAction {
    * @return string
    */
   protected function getIdField() {
-    return $this->idField;
+    return CoreUtil::getInfoItem($this->getEntityName(), 'primary_key')[0];
   }
 
   /**

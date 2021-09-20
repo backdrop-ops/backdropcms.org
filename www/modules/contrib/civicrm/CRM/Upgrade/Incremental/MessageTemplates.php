@@ -271,6 +271,42 @@ class CRM_Upgrade_Incremental_MessageTemplates {
   }
 
   /**
+   * Replace a token with the new preferred option.
+   *
+   * @param string $workflowName
+   * @param string $old
+   * @param string $new
+   */
+  public function replaceTokenInTemplate(string $workflowName, string $old, string $new): void {
+    $oldToken = '{' . $old . '}';
+    $newToken = '{' . $new . '}';
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_msg_template
+      SET
+        msg_text = REPLACE(msg_text, '$oldToken', '$newToken'),
+        msg_subject = REPLACE(msg_subject, '$oldToken', '$newToken'),
+        msg_html = REPLACE(msg_html, '$oldToken', '$newToken')
+      WHERE workflow_name = '$workflowName'
+    ");
+  }
+
+  /**
+   * Replace a token with the new preferred option.
+   *
+   * @param string $old
+   * @param string $new
+   */
+  public function replaceTokenInActionSchedule(string $old, string $new): void {
+    $oldToken = '{' . $old . '}';
+    $newToken = '{' . $new . '}';
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_action_schedule
+      SET
+        body_text = REPLACE(body_text, '$oldToken', '$newToken'),
+        subject = REPLACE(subject, '$oldToken', '$newToken'),
+        body_html = REPLACE(body_html, '$oldToken', '$newToken')
+    ");
+  }
+
+  /**
    * Get the upgrade messages.
    */
   public function getUpgradeMessages() {

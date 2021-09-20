@@ -398,6 +398,9 @@ class CRM_Mailing_BAO_Mailing extends CRM_Mailing_DAO_Mailing {
    * @return array
    */
   public static function getLocationFilterAndOrderBy($email_selection_method, $location_type_id) {
+    if ($email_selection_method !== 'automatic' && !$location_type_id) {
+      throw new \CRM_Core_Exception(ts('You have selected an email Selection Method without specifying a Location Type. Please go back and change your recipient settings (using the wrench icon next to "Recipients").'));
+    }
     $email = CRM_Core_DAO_Email::getTableName();
     // Note: When determining the ORDER that results are returned, it's
     // the record that comes last that counts. That's because we are
@@ -1327,7 +1330,7 @@ ORDER BY   civicrm_email.is_bulkmail DESC
    *
    * @return bool|mixed|null|string
    */
-  private function getTokenData(&$token_a, $html = FALSE, &$contact, &$verp, &$urls, $event_queue_id) {
+  private function getTokenData(&$token_a, $html, &$contact, &$verp, &$urls, $event_queue_id) {
     $type = $token_a['type'];
     $token = $token_a['token'];
     $data = $token;

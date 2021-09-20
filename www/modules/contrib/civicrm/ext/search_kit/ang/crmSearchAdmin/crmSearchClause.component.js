@@ -9,6 +9,8 @@
       op: '@',
       skip: '<',
       label: '@',
+      hideLabel: '@',
+      placeholder: '<',
       deleteGroup: '&'
     },
     templateUrl: '~/crmSearchAdmin/crmSearchClause.html',
@@ -17,7 +19,7 @@
         ctrl = this,
         meta = {};
       this.conjunctions = {AND: ts('And'), OR: ts('Or'), NOT: ts('Not')};
-      this.operators = CRM.crmSearchAdmin.operators;
+      this.operators = {};
       this.sortOptions = {
         axis: 'y',
         connectWith: '.api4-clause-group-sortable',
@@ -29,7 +31,35 @@
 
       this.$onInit = function() {
         ctrl.hasParent = !!$element.attr('delete-group');
+        _.each(ctrl.clauses, updateOperators);
       };
+
+      // Return a list of operators allowed for the field in a given clause
+      this.getOperators = function(clause) {
+        var field = ctrl.getField(clause[0]);
+        if (!field || !field.operators) {
+          return CRM.crmSearchAdmin.operators;
+        }
+        var opKey = field.operators.join();
+        if (!ctrl.operators[opKey]) {
+          ctrl.operators[opKey] = _.filter(CRM.crmSearchAdmin.operators, function(operator) {
+            return _.includes(field.operators, operator.key);
+          });
+        }
+        return ctrl.operators[opKey];
+      };
+
+      // Ensures a clause is using an operator that is allowed for the field
+      function updateOperators(clause) {
+        // Recurse into AND/OR/NOT groups
+        if (ctrl.conjunctions[clause[0]]) {
+          _.each(clause[1], updateOperators);
+        }
+        else if (!ctrl.skip && (!clause[1] || !_.includes(_.pluck(ctrl.getOperators(clause), 'key'), clause[1]))) {
+          clause[1] = ctrl.getOperators(clause)[0].key;
+          ctrl.changeClauseOperator(clause);
+        }
+      }
 
       this.getField = function(expr) {
         if (!meta[expr]) {
@@ -63,13 +93,12 @@
         $('.api4-input.form-inline.ui-sortable-helper').css('margin-left', '' + offset + 'px');
       }
 
-      this.addClause = function() {
-        $timeout(function() {
-          if (ctrl.newClause) {
-            ctrl.clauses.push([ctrl.newClause, '=', '']);
-            ctrl.newClause = null;
-          }
-        });
+      this.addClause = function(value) {
+        if (value) {
+          var newIndex = ctrl.clauses.length;
+          ctrl.clauses.push([value, '=', '']);
+          updateOperators(ctrl.clauses[newIndex]);
+        }
       };
 
       this.deleteRow = function(index) {
@@ -80,6 +109,8 @@
       this.changeClauseField = function(clause, index) {
         if (clause[0] === '') {
           ctrl.deleteRow(index);
+        } else {
+          updateOperators(clause);
         }
       };
 

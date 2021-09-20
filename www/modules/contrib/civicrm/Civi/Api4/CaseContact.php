@@ -1,5 +1,4 @@
 <?php
-
 /*
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC. All rights reserved.                        |
@@ -9,14 +8,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
  */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC https://civicrm.org/licensing
- */
-
-
 namespace Civi\Api4;
 
 /**
@@ -24,7 +15,9 @@ namespace Civi\Api4;
  *
  * This connects a client to a case.
  *
+ * @searchable bridge
  * @see \Civi\Api4\Case
+ * @since 5.37
  * @package Civi\Api4
  */
 class CaseContact extends Generic\DAOEntity {

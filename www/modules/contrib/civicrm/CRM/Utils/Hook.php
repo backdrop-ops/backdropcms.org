@@ -517,9 +517,9 @@ abstract class CRM_Utils_Hook {
    *
    * @param string $op
    *   The type of operation being performed.
-   * @param string $groupID
+   * @param int $groupID
    *   The custom group ID.
-   * @param object $entityID
+   * @param int $entityID
    *   The entityID of the row in the custom table.
    * @param array $params
    *   The parameters that were sent into the calling function.
@@ -527,7 +527,7 @@ abstract class CRM_Utils_Hook {
    * @return null
    *   the return value is ignored
    */
-  public static function custom($op, $groupID, $entityID, &$params) {
+  public static function custom(string $op, int $groupID, int $entityID, &$params) {
     return self::singleton()
       ->invoke(['op', 'groupID', 'entityID', 'params'], $op, $groupID, $entityID, $params, self::$_nullObject, self::$_nullObject, 'civicrm_custom');
   }
@@ -537,9 +537,9 @@ abstract class CRM_Utils_Hook {
    *
    * @param string $op
    *   The type of operation being performed.
-   * @param string $groupID
+   * @param int $groupID
    *   The custom group ID.
-   * @param object $entityID
+   * @param int $entityID
    *   The entityID of the row in the custom table.
    * @param array $params
    *   The parameters that were sent into the calling function.
@@ -547,7 +547,7 @@ abstract class CRM_Utils_Hook {
    * @return null
    *   the return value is ignored
    */
-  public static function customPre($op, $groupID, $entityID, &$params) {
+  public static function customPre(string $op, int $groupID, int $entityID, array &$params) {
     return self::singleton()
       ->invoke(['op', 'groupID', 'entityID', 'params'], $op, $groupID, $entityID, $params, self::$_nullObject, self::$_nullObject, 'civicrm_customPre');
   }
@@ -1806,6 +1806,24 @@ abstract class CRM_Utils_Hook {
   }
 
   /**
+   * Define the list of fields supported in APIv4 data-translation.
+   *
+   * @param array $fields
+   *   List of data fields to translate, organized by table and column.
+   *   Omitted/unlisted fields are not translated. Any listed field may be translated.
+   *   Values should be TRUE.
+   *   Ex: $fields['civicrm_event']['summary'] = TRUE
+   * @return mixed
+   */
+  public static function translateFields(&$fields) {
+    return self::singleton()->invoke(['fields'], $fields, self::$_nullObject,
+      self::$_nullObject, self::$_nullObject, self::$_nullObject,
+      self::$_nullObject,
+      'civicrm_translateFields'
+    );
+  }
+
+  /**
    * This hook allows changes to the spec of which tables to log.
    *
    * @param array $logTableSpec
@@ -2545,7 +2563,7 @@ abstract class CRM_Utils_Hook {
    * @return mixed
    */
   public static function check(&$messages, $statusNames = [], $includeDisabled = FALSE) {
-    return self::singleton()->invoke(['messages'],
+    return self::singleton()->invoke(['messages', 'statusNames', 'includeDisabled'],
       $messages, $statusNames, $includeDisabled,
       self::$_nullObject, self::$_nullObject, self::$_nullObject,
       'civicrm_check'
@@ -2814,6 +2832,25 @@ abstract class CRM_Utils_Hook {
       ['permissions', 'entity', 'action'],
       $permissions, $entity, $action, self::$_nullObject, self::$_nullObject,
       self::$_nullObject, 'civicrm_alterApiRoutePermissions'
+    );
+  }
+
+  /**
+   * Allows an extension to override the checksum validation.
+   * For example you may want to invalidate checksums that were sent out/forwarded by mistake. You could also
+   * intercept and redirect to a different page in this case - eg. to say "sorry, you tried to use a compromised
+   * checksum".
+   *
+   * @param int $contactID
+   * @param string $checksum
+   * @param bool $invalid
+   *   Leave this at FALSE to allow the core code to perform validation. Set to TRUE to invalidate
+   */
+  public static function invalidateChecksum($contactID, $checksum, &$invalid) {
+    return self::singleton()->invoke(
+      ['contactID', 'checksum', 'invalid'],
+      $contactID, $checksum, $invalid, self::$_nullObject, self::$_nullObject,
+      self::$_nullObject, 'civicrm_invalidateChecksum'
     );
   }
 

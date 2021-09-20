@@ -52,11 +52,8 @@ class CRM_Price_BAO_LineItem extends CRM_Price_DAO_LineItem {
         $params['unit_price'] = 0;
       }
     }
-
-    $taxRates = CRM_Core_PseudoConstant::getTaxRates();
-    if (isset($params['financial_type_id'], $params['line_total'], $taxRates[$params['financial_type_id']])) {
-      $taxRate = $taxRates[$params['financial_type_id']];
-      $params['tax_amount'] = ($taxRate / 100) * $params['line_total'];
+    if (isset($params['financial_type_id'], $params['line_total'])) {
+      $params['tax_amount'] = self::getTaxAmountForLineItem($params);
     }
 
     $lineItemBAO = new CRM_Price_BAO_LineItem();
@@ -73,6 +70,15 @@ class CRM_Price_BAO_LineItem extends CRM_Price_DAO_LineItem {
         // should have correct line item & membership payment should not need to fix.
         $membershipPaymentParams['isSkipLineItem'] = TRUE;
         civicrm_api3('MembershipPayment', 'create', $membershipPaymentParams);
+      }
+    }
+    if ($lineItemBAO->entity_table === 'civicrm_participant' && $lineItemBAO->contribution_id && $lineItemBAO->entity_id) {
+      $participantPaymentParams = [
+        'participant_id' => $lineItemBAO->entity_id,
+        'contribution_id' => $lineItemBAO->contribution_id,
+      ];
+      if (!civicrm_api3('ParticipantPayment', 'getcount', $participantPaymentParams)) {
+        civicrm_api3('ParticipantPayment', 'create', $participantPaymentParams);
       }
     }
 
@@ -349,6 +355,11 @@ WHERE li.contribution_id = %1";
       $entityId = [$entityId];
     }
 
+    $params = [];
+    foreach ($entityId as $id) {
+      CRM_Utils_Hook::pre('delete', 'LineItem', $id, $params);
+    }
+
     $query = "DELETE FROM civicrm_line_item where entity_id IN ('" . implode("','", $entityId) . "') AND entity_table = '$entityTable'";
     $dao = CRM_Core_DAO::executeQuery($query);
     return TRUE;
@@ -389,6 +400,9 @@ WHERE li.contribution_id = %1";
           $line['entity_id'] = $entityId;
         }
         if (!empty($line['membership_type_id'])) {
+          if (($line['entity_table'] ?? '') !== 'civicrm_membership') {
+            CRM_Core_Error::deprecatedWarning('entity table should be already set');
+          }
           $line['entity_table'] = 'civicrm_membership';
         }
         if (!empty($contributionDetails->id)) {
@@ -424,7 +438,7 @@ WHERE li.contribution_id = %1";
    * @param $amount
    * @param array $otherParams
    */
-  public static function syncLineItems($entityId, $entityTable = 'civicrm_contribution', $amount, $otherParams = NULL) {
+  public static function syncLineItems($entityId, $entityTable, $amount, $otherParams = NULL) {
     if (!$entityId || CRM_Utils_System::isNull($amount)) {
       return;
     }
@@ -490,10 +504,10 @@ WHERE li.contribution_id = %1";
   public static function getLineItemArray(&$params, $entityId = NULL, $entityTable = 'contribution', $isRelatedID = FALSE) {
     if (!$entityId) {
       $priceSetDetails = CRM_Price_BAO_PriceSet::getDefaultPriceSet($entityTable);
-      $totalAmount = CRM_Utils_Array::value('partial_payment_total', $params, CRM_Utils_Array::value('total_amount', $params));
+      $totalAmount = $params['total_amount'] ?? 0;
       $financialType = $params['financial_type_id'] ?? NULL;
       foreach ($priceSetDetails as $values) {
-        if ($entityTable == 'membership') {
+        if ($entityTable === 'membership') {
           if ($isRelatedID != $values['membership_type_id']) {
             continue;
           }
@@ -502,16 +516,21 @@ WHERE li.contribution_id = %1";
           }
           $financialType = $values['financial_type_id'];
         }
-        $params['line_item'][$values['setID']][$values['priceFieldID']] = [
+        $taxRates = CRM_Core_PseudoConstant::getTaxRates();
+        $taxRate = $taxRates[$financialType] ?? 0;
+        $taxAmount = ($taxRate / 100) * $totalAmount / (1 + ($taxRate / 100));
+        $lineItem = [
           'price_field_id' => $values['priceFieldID'],
           'price_field_value_id' => $values['priceFieldValueID'],
           'label' => $values['label'],
           'qty' => 1,
-          'unit_price' => $totalAmount,
-          'line_total' => $totalAmount,
+          'unit_price' => $totalAmount - $taxAmount,
+          'line_total' => $totalAmount - $taxAmount,
           'financial_type_id' => $financialType,
           'membership_type_id' => $values['membership_type_id'],
+          'tax_amount' => $taxAmount,
         ];
+        $params['line_item'][$values['setID']][$values['priceFieldID']] = $lineItem;
         break;
       }
     }
@@ -1072,6 +1091,19 @@ WHERE li.contribution_id = %1";
   }
 
   /**
+   * Get the tax rate for the given line item.
+   *
+   * @param array $params
+   *
+   * @return float
+   */
+  protected static function getTaxAmountForLineItem(array $params): float {
+    $taxRates = CRM_Core_PseudoConstant::getTaxRates();
+    $taxRate = $taxRates[$params['financial_type_id']] ?? 0;
+    return ($taxRate / 100) * $params['line_total'];
+  }
+
+  /**
    * Helper function to retrieve financial trxn parameters to reverse
    *  for given financial item identified by $financialItemID
    *
@@ -1227,6 +1259,19 @@ WHERE li.contribution_id = %1";
    */
   protected function getSalesTaxTerm() {
     return CRM_Contribute_BAO_Contribution::checkContributeSettings('tax_term');
+  }
+
+  /**
+   * Whitelist of possible values for the entity_table field
+   *
+   * @return array
+   */
+  public static function entityTables(): array {
+    return [
+      'civicrm_contribution' => ts('Contribution'),
+      'civicrm_participant' => ts('Participant'),
+      'civicrm_membership' => ts('Membership'),
+    ];
   }
 
 }

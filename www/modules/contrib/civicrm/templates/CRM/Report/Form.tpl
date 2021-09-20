@@ -16,7 +16,7 @@
 {elseif $section eq 2}
   <div class="crm-block crm-content-block crm-report-layoutTable-form-block">
     {*include the table layout*}
-    {if !$chartEnabled || !$chartSupported}
+    {if empty($chartEnabled) || empty($chartSupported)}
       {include file="CRM/Report/Form/Layout/Table.tpl"}
     {/if}
   </div>
@@ -39,7 +39,7 @@
 
     {*include the table layout*}
 
-    {if !$chartEnabled || !$chartSupported}
+    {if empty($chartEnabled) || empty($chartSupported)}
       {include file="CRM/Report/Form/Layout/Table.tpl"}
     {/if}
     <br />
@@ -49,7 +49,7 @@
     {include file="CRM/Report/Form/ErrorMessage.tpl"}
   </div>
 {/if}
-{if $outputMode == 'print'}
+{if !empty($outputMode) && $outputMode == 'print'}
   <script type="text/javascript">
     window.print();
   </script>
