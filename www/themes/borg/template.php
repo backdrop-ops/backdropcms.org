@@ -831,28 +831,26 @@ function borg_menu_local_tasks($variables) {
  */
 function borg_github_info($variables) {
   $url = 'https://github.com/' . $variables['github_path'];
-  $clone_url = $url . '.git';
 
   if ($variables['github_path'] != 'backdrop/backdrop') {
-    $items = array(
-      l(t('Project page'), $url),
-      l(t('Issue Queue'), $url . '/issues'),
-      l(t('Documentation'), $url . '/wiki'),
-    );
+    $path_parts = explode('/', $variables['github_path']);
+    $project = $path_parts[1];
+    $has_wiki = borg_project_has_wiki($project);
+    if ($has_wiki) {
+      $items[] = l(t('Documentation'), $url . '/wiki');
+    }
   }
   else {
-    $items = array(
-      l(t('Project page'), $url),
-      l(t('Issue Queue'), $url . '-issues/issues'),
-      l(t('Documentation'), 'user-guide'),
-    );
+    $items[] = l(t('Documentation'), 'user-guide');
   }
+  $items[] = l(t('Report issues'), $url . '/issues');
+  $items[] = l(t('GitHub project page'), $url);
 
+  $list = theme('item_list', array('items' => $items));
 
-  $list = theme('item_list', array('items' => $items, 'title' => t('GitHub')));
-
+  $clone_url = $url . '.git';
   $clone  = '<div class="github-clone">';
-  $clone .= '<label class="github-clone-label">' . t('Clone URL') . '</label>';
+  $clone .= '<label class="github-clone-label">' . t('GitHub Clone URL') . '</label>';
   $clone .= '<input type="text" readonly="" aria-label="Clone this repository at ' . $clone_url . '" value="' . $clone_url . '">';
   $clone .= '</div>';
 
@@ -869,4 +867,28 @@ function borg_system_powered_by() {
   $output .= '</span>';
 
   return $output;
+}
+
+/**
+ * Returns whether a Backdrop project has anything in its Github Wiki.
+ */
+function borg_project_has_wiki($project) {
+  $cid = 'borg_project_has_wiki_' . $project;
+  $cached = cache_get($cid);
+  if ($cached->data) {
+    return $cached->data;
+  }
+  $url = 'https://github.com/backdrop-contrib/' . $project . '/wiki';
+  $page = file_get_contents($url);
+  if (empty($page)) {
+    // No project
+    $has_wiki = FALSE;
+  }
+  else {
+    $wiki_text = 'id="wiki-wrapper"';
+    $pos = strpos($page, $wiki_text);
+    $has_wiki = ($pos !== FALSE);
+  }
+  cache_set($cid, $has_wiki);
+  return $has_wiki;
 }
