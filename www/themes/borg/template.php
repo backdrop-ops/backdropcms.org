@@ -843,7 +843,7 @@ function borg_github_info($variables) {
   else {
     $items[] = l(t('Documentation'), 'user-guide');
   }
-  $items[] = l(t('Report issues'), $url . '/issues');
+  $items[] = l(t('View and/or report issues'), $url . '/issues');
   $items[] = l(t('GitHub project page'), $url);
 
   $list = theme('item_list', array('items' => $items));
