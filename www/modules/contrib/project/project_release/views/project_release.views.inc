@@ -335,4 +335,14 @@ function project_release_views_data_alter(&$data) {
       'label' => t('supported versions'),
     ),
   );
+
+  // Add a handler that lists the number of installs for a project node.
+  $data['node']['num_installs'] = array(
+    'title' => t('Installs'),
+    'help' => t('Number of installs for a project.'),
+    'real field' => 'nid',
+    'field' => array(
+      'handler' => 'project_release_handler_num_installs',
+    ),
+  );
 }

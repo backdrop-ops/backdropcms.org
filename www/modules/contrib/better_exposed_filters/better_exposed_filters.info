@@ -1,0 +1,11 @@
+type = module
+name = Better Exposed Filters
+description = Allow the use of checkboxes or radio buttons for exposed Views filters
+backdrop = 1.x
+package = Views
+dependencies[] = views
+
+; Added by Backdrop CMS packaging script on 2017-09-11
+project = better_exposed_filters
+version = 1.x-3.4.1
+timestamp = 1505197398
