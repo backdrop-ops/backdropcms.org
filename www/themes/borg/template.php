@@ -875,7 +875,7 @@ function borg_system_powered_by() {
 function borg_project_has_wiki($project) {
   $cid = 'borg_project_has_wiki_' . $project;
   $cached = cache_get($cid);
-  if ($cached->data) {
+  if ($cached) {
     return $cached->data;
   }
   $url = 'https://github.com/backdrop-contrib/' . $project . '/wiki';
@@ -889,6 +889,6 @@ function borg_project_has_wiki($project) {
     $pos = strpos($page, $wiki_text);
     $has_wiki = ($pos !== FALSE);
   }
-  cache_set($cid, $has_wiki);
+  cache_set($cid, $has_wiki, 'cache', CACHE_TEMPORARY);
   return $has_wiki;
 }
