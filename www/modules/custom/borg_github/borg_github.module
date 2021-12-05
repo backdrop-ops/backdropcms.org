@@ -375,14 +375,15 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
   // Copy the discovered screenshot to the root of the release, because the
   // screenshots directory is going to be deleted.
   if (!empty($new_screenshot)) {
-    watchdog('project_github', $new_screenshot, array(), WATCHDOG_INFO);
     $extension = substr($new_screenshot, strrpos($new_screenshot, '.') + 1);
-    watchdog('project_github', $extension, array(), WATCHDOG_INFO);
     $destination = $directory_path . 'screenshot.' . $extension;
-    watchdog('project_github', $directory_path, array(), WATCHDOG_INFO);
-    watchdog('project_github', $destination, array(), WATCHDOG_INFO);
     $success = file_unmanaged_copy($new_screenshot, $destination, FILE_EXISTS_REPLACE);
-    watchdog('project_github', $success, array(), WATCHDOG_INFO);
+    // Add the new file to the $files array so it can be packaged.
+    if ($success) {
+      $files[$success]->uri = $success;
+      $files[$success]->filename = 'screenshot.' . $extension;
+      $files[$success]->name = 'screenshot';
+    }
   }
 
   foreach ($files as $path => $file) {
