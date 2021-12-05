@@ -102,28 +102,28 @@ function borg_github_github_project_release_validate(Node $release_node, array &
     }
   }
 
-  // Check for screenshot settings.
-  if (isset($info['screenshots']) && is_array($info['screenshots'])) {
-    // Record existing screenshots to delete later.
-    $old_screenshots = !empty($project_node->field_project_screenshots[LANGUAGE_NONE]) ? $project_node->field_project_screenshots[LANGUAGE_NONE] : NULL;
-    $project_screenshots = array();
+  // Record existing screenshots to delete later.
+  $old_screenshots = !empty($project_node->field_project_screenshots[LANGUAGE_NONE]) ? $project_node->field_project_screenshots[LANGUAGE_NONE] : NULL;
+  $project_screenshots = array();
 
-    // Get the contents of the screenshots folder.
-    $tag_name = $payload['release']['tag_name'];
-    $tag_name = ltrim($tag_name, 'v');
+  // Look for a screenshots folder and get its contents.
+  $tag_name = $payload['release']['tag_name'];
+  $tag_name = ltrim($tag_name, 'v');
 
-    $repo = project_github_convert_full_name($payload['repository']['full_name']);
+  $repo = project_github_convert_full_name($payload['repository']['full_name']);
 
-    $githubapi = githubapi_get_class($repo);
-    $settings[':owner'] = $repo['owner'];
-    $settings[':repo'] = $repo['name'];
-    $settings[':tag'] = $tag_name;
+  $githubapi = githubapi_get_class($repo);
+  $settings[':owner'] = $repo['owner'];
+  $settings[':repo'] = $repo['name'];
+  $settings[':tag'] = $tag_name;
 
-    $url = 'repos/:owner/:repo/contents/screenshots';
+  $url = 'repos/:owner/:repo/contents/screenshots';
 
-    $archive_contents = $githubapi->getRequest($url, $settings);
+  $archive_contents = $githubapi->getRequest($url, $settings);
 
-    // Use http query to save screenshot locally.
+  // Use http query to save screenshots locally. We allow screenshots for all
+  // project types.
+  if (!empty($archive_contents)) {
     foreach ($archive_contents as $screenshot) {
       $screenshot_url = $screenshot->download_url;
       $contents_result = backdrop_http_request($screenshot_url, array(
@@ -151,15 +151,15 @@ function borg_github_github_project_release_validate(Node $release_node, array &
 
       }
     }
+  }
 
-    if (!empty($project_screenshots)) {
-      $project_node->field_project_screenshots[LANGUAGE_NONE] = $project_screenshots;
-      // Mark the old images for deletion.
-      if ($old_screenshots) {
-        foreach ($old_screenshots as $old_screenshot) {
-          $old_file = file_load($old_screenshot['fid']);
-          file_usage_delete($old_file, 'node', 'node', $project_node->nid);
-        }
+  if (!empty($project_screenshots)) {
+    $project_node->field_project_screenshots[LANGUAGE_NONE] = $project_screenshots;
+    // Mark the old images for deletion.
+    if ($old_screenshots) {
+      foreach ($old_screenshots as $old_screenshot) {
+        $old_file = file_load($old_screenshot['fid']);
+        file_usage_delete($old_file, 'node', 'node', $project_node->nid);
       }
     }
   }
@@ -326,19 +326,25 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
     }
   }
 
+  // Only themes.
   if (empty($info_contents) || $info_contents['type'] != 'theme') {
     return;
   }
-  
+
+  // If we couldnt determine the path, or there is already a screenshot, done.
   if (empty($directory_path) || file_exists($directory_path . 'screenshot.png')) {
     return;
   }
 
-  if (empty($screenshots_directory_path)) {
+  // If there is already a screenshot listed in the info file, we have to
+  // assume that this points to an existing screenshot somewhere else in the
+  // theme directory so, we're done.
+  if (!empty($info_contents['screenshot'])) {
     return;
   }
 
-  if (!empty($info_contents['screenshot'])) {
+  // No screenshot listed anywhere, and no screenshots directory, give up.
+  if (empty($screenshots_directory_path)) {
     return;
   }
 
@@ -355,12 +361,23 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
     $new_screenshot = $screenshots_directory_path . 'screenshot.png';
   }
 
+  // If still no screenshot, use the first image in the screenshots folder.
+  if (empty($new_screenshot)) {
+    foreach ($files as $path => $file) {
+      $parts = pathinfo($path);
+      if (strrpos($path, $screenshots_directory_path) === 0 && $parts['extension'] == 'png') {
+        $new_screenshot = $path;
+        break;
+      }
+    }
+  }
+
   // Copy the discovered screenshot to the root of the release, because the
   // screenshots directory is going to be deleted.
   if (!empty($new_screenshot)) {
     $extension = substr($new_screenshot, strrpos($new_screenshot, '.') + 1);
     $destination = $directory_path . 'screenshot.' . $extension;
-    $success = file_unmanaged_move($new_screenshot, $destination, FILE_EXISTS_REPLACE);
+    $success = file_unmanaged_copy($new_screenshot, $destination, FILE_EXISTS_REPLACE);
   }
 
   foreach ($files as $path => $file) {
