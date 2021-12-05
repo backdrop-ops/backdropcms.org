@@ -379,9 +379,11 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
     $destination = $directory_path . 'screenshot.' . $extension;
     $success = file_unmanaged_copy($new_screenshot, $destination, FILE_EXISTS_REPLACE);
     // Add the new file to the $files array so it can be packaged.
-    $files[$success]->uri = $success;
-    $files[$success]->filename = 'screenshot.' . $extension;
-    $files[$success]->name = 'screenshot';
+    if ($success) {
+      $files[$success]->uri = $success;
+      $files[$success]->filename = 'screenshot.' . $extension;
+      $files[$success]->name = 'screenshot';
+    }
   }
 
   foreach ($files as $path => $file) {
