@@ -413,5 +413,4 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
       unset($files[$path]);
     }
   }
-
 }
