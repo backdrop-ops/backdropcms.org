@@ -384,6 +384,26 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
       $files[$success]->uri = $success;
       $files[$success]->filename = 'screenshot.' . $extension;
       $files[$success]->name = 'screenshot';
+
+      // Save the new screenshot to the database.
+      $filename = file_munge_filename($project_name . '.png', 'png');
+      $destination = 'public://theme-screenshots/' . $filename;
+      $project_node = project_load($project_name);
+
+      if (!file_exists($destination) && $project_node && $uri = file_unmanaged_copy($success, $destination, FILE_EXISTS_REPLACE)) {
+        $image = entity_create('file', array(
+          'filename' => $filename,
+          'uri' => $uri,
+          'uid' => $project_node->uid,
+        ));
+
+        $image->save();
+
+        $project_node->field_image[LANGUAGE_NONE][0]['fid'] = $image->fid;
+        $project_node->save();
+        
+        file_usage_add($image, 'node', 'node', $project_node->nid);
+      }
     }
   }
 
