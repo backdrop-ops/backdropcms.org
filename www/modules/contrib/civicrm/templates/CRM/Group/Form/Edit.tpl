@@ -31,7 +31,7 @@
       <td>{$form.description.html}</td>
     </tr>
 
-    <tr><td colspan="2">If either of the following fields are filled out they will be used instead of the title or description field in profiles and Mailing List Subscription/unsubscribe forms</td></tr>
+    <tr><td colspan="2">{ts}If either of the following fields are filled out they will be used instead of the title or description field in profiles and Mailing List Subscription/unsubscribe forms{/ts}</td></tr>
 
     <tr class="crm-group-form-block-frontend-title">
       <td class="label">{$form.frontend_title.label} {if $action == 2}{include file='CRM/Core/I18n/Dialog.tpl' table='civicrm_group' field='frontend_title' id=$group.id}{/if}</td>
@@ -45,7 +45,7 @@
       <td>{$form.frontend_description.html}</td>
     </tr>
 
-    {if $form.group_type}
+    {if !empty($form.group_type)}
       <tr class="crm-group-form-block-group_type">
         <td class="label">{$form.group_type.label}</td>
         <td>{$form.group_type.html} {help id="id-group-type" file="CRM/Group/Page/Group.hlp"}</td>

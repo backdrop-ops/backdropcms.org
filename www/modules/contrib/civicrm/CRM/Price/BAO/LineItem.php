@@ -33,12 +33,6 @@ class CRM_Price_BAO_LineItem extends CRM_Price_DAO_LineItem {
    */
   public static function create(&$params) {
     $id = $params['id'] ?? NULL;
-    if ($id) {
-      CRM_Utils_Hook::pre('edit', 'LineItem', $id, $params);
-    }
-    else {
-      CRM_Utils_Hook::pre('create', 'LineItem', $id, $params);
-    }
 
     // unset entity table and entity id in $params
     // we never update the entity table and entity id during update mode
@@ -56,6 +50,13 @@ class CRM_Price_BAO_LineItem extends CRM_Price_DAO_LineItem {
       $params['tax_amount'] = self::getTaxAmountForLineItem($params);
     }
 
+    // Call the hooks after tax is set in case hooks wish to alter it.
+    if ($id) {
+      CRM_Utils_Hook::pre('edit', 'LineItem', $id, $params);
+    }
+    else {
+      CRM_Utils_Hook::pre('create', 'LineItem', $id, $params);
+    }
     $lineItemBAO = new CRM_Price_BAO_LineItem();
     $lineItemBAO->copyValues($params);
 
@@ -214,8 +215,6 @@ WHERE li.contribution_id = %1";
     ];
 
     $getTaxDetails = FALSE;
-    $invoiceSettings = Civi::settings()->get('contribution_invoice_settings');
-    $invoicing = $invoiceSettings['invoicing'] ?? NULL;
 
     $dao = CRM_Core_DAO::executeQuery("$selectClause $fromClause $whereClause $orderByClause", $params);
     while ($dao->fetch()) {
@@ -257,7 +256,7 @@ WHERE li.contribution_id = %1";
         $getTaxDetails = TRUE;
       }
     }
-    if ($invoicing) {
+    if (Civi::settings()->get('invoicing')) {
       // @todo - this is an inappropriate place to be doing form level assignments.
       $taxTerm = Civi::settings()->get('tax_term');
       $smarty = CRM_Core_Smarty::singleton();

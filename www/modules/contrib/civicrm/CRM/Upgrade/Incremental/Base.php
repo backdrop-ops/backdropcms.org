@@ -221,6 +221,26 @@ class CRM_Upgrade_Incremental_Base {
   }
 
   /**
+   * Add the specified option group, gracefully if it already exists.
+   *
+   * @param CRM_Queue_TaskContext $ctx
+   * @param array $params
+   * @param array $options
+   *
+   * @return bool
+   */
+  public static function addOptionGroup(CRM_Queue_TaskContext $ctx, $params, $options): bool {
+    $defaults = ['is_active' => 1];
+    $optionDefaults = ['is_active' => 1];
+    $optionDefaults['option_group_id'] = \CRM_Core_BAO_OptionGroup::ensureOptionGroupExists(array_merge($defaults, $params));
+
+    foreach ($options as $option) {
+      \CRM_Core_BAO_OptionValue::ensureOptionValueExists(array_merge($optionDefaults, $option));
+    }
+    return TRUE;
+  }
+
+  /**
    * Do any relevant message template updates.
    *
    * @param CRM_Queue_TaskContext $ctx
@@ -244,12 +264,17 @@ class CRM_Upgrade_Incremental_Base {
    */
   public static function updateMessageToken($ctx, string $workflowName, string $old, string $new, $version):bool {
     $messageObj = new CRM_Upgrade_Incremental_MessageTemplates($version);
-    $messageObj->replaceTokenInTemplate($workflowName, $old, $new);
+    if (!empty($workflowName)) {
+      $messageObj->replaceTokenInTemplate($workflowName, $old, $new);
+    }
+    else {
+      $messageObj->replaceTokenInMessageTemplates($old, $new);
+    }
     return TRUE;
   }
 
   /**
-   * Updated a message token within a template.
+   * Updated a message token within a scheduled reminder.
    *
    * @param CRM_Queue_TaskContext $ctx
    * @param string $old
@@ -261,6 +286,38 @@ class CRM_Upgrade_Incremental_Base {
   public static function updateActionScheduleToken($ctx, string $old, string $new, $version):bool {
     $messageObj = new CRM_Upgrade_Incremental_MessageTemplates($version);
     $messageObj->replaceTokenInActionSchedule($old, $new);
+    return TRUE;
+  }
+
+  /**
+   * Updated a message token within a label.
+   *
+   * @param CRM_Queue_TaskContext $ctx
+   * @param string $old
+   * @param string $new
+   * @param $version
+   *
+   * @return bool
+   */
+  public static function updatePrintLabelToken($ctx, string $old, string $new, $version):bool {
+    $messageObj = new CRM_Upgrade_Incremental_MessageTemplates($version);
+    $messageObj->replaceTokenInPrintLabel($old, $new);
+    return TRUE;
+  }
+
+  /**
+   * Updated a message token within greeting options.
+   *
+   * @param CRM_Queue_TaskContext $ctx
+   * @param string $old
+   * @param string $new
+   * @param $version
+   *
+   * @return bool
+   */
+  public static function updateGreetingOptions($ctx, string $old, string $new, $version):bool {
+    $messageObj = new CRM_Upgrade_Incremental_MessageTemplates($version);
+    $messageObj->replaceTokenInGreetingOptions($old, $new);
     return TRUE;
   }
 

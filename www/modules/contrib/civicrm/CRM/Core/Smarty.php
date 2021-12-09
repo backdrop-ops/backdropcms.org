@@ -95,13 +95,7 @@ class CRM_Core_Smarty extends Smarty {
       exit();
     }
 
-    //Check for safe mode CRM-2207
-    if (ini_get('safe_mode')) {
-      $this->use_sub_dirs = FALSE;
-    }
-    else {
-      $this->use_sub_dirs = TRUE;
-    }
+    $this->use_sub_dirs = TRUE;
 
     $customPluginsDir = NULL;
     if (isset($config->customPHPPathDir)) {
@@ -191,6 +185,19 @@ class CRM_Core_Smarty extends Smarty {
       $this->security = $old_security;
     }
     return $output;
+  }
+
+  /**
+   * Ensure these variables are set to make it easier to access them without e-notice.
+   *
+   * @param array $variables
+   */
+  public function ensureVariablesAreAssigned(array $variables): void {
+    foreach ($variables as $variable) {
+      if (!isset($this->get_template_vars()[$variable])) {
+        $this->assign($variable);
+      }
+    }
   }
 
   /**

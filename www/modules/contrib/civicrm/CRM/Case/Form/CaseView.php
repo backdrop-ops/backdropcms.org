@@ -46,7 +46,7 @@ class CRM_Case_Form_CaseView extends CRM_Core_Form {
       }
       $this->assign('relatedCases', $relatedCases);
       $this->assign('showRelatedCases', TRUE);
-      CRM_Utils_System::setTitle(ts('Related Cases'));
+      $this->setTitle(ts('Related Cases'));
       return;
     }
 
@@ -103,7 +103,7 @@ class CRM_Case_Form_CaseView extends CRM_Core_Form {
     $displayName = CRM_Contact_BAO_Contact::displayName($this->_contactID);
     $this->assign('displayName', $displayName);
 
-    CRM_Utils_System::setTitle($displayName . ' - ' . $caseType);
+    $this->setTitle($displayName . ' - ' . $caseType);
 
     $recentOther = [];
     if (CRM_Core_Permission::checkActionPermission('CiviCase', CRM_Core_Action::DELETE)) {
@@ -251,7 +251,7 @@ class CRM_Case_Form_CaseView extends CRM_Core_Form {
     $activityLinks = ['' => ts('Add Activity')];
     foreach ($aTypes as $type => $label) {
       if ($type == $emailActivityType) {
-        $url = CRM_Utils_System::url('civicrm/activity/email/add',
+        $url = CRM_Utils_System::url('civicrm/case/email/add',
           "action=add&context=standalone&reset=1&caseid={$this->_caseID}&atype=$type",
           FALSE, NULL, FALSE
         );

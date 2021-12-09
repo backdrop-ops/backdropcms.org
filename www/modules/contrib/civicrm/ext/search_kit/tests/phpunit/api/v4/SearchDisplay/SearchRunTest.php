@@ -4,6 +4,7 @@ namespace api\v4\SearchDisplay;
 use Civi\API\Exception\UnauthorizedException;
 use Civi\Api4\Contact;
 use Civi\Api4\ContactType;
+use Civi\Api4\Email;
 use Civi\Api4\SavedSearch;
 use Civi\Api4\SearchDisplay;
 use Civi\Api4\UFMatch;
@@ -41,7 +42,7 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
       ['first_name' => 'One', 'last_name' => $lastName, 'contact_sub_type' => ['Tester', 'Bot']],
       ['first_name' => 'Two', 'last_name' => $lastName, 'contact_sub_type' => ['Tester']],
       ['first_name' => 'Three', 'last_name' => $lastName, 'contact_sub_type' => ['Bot']],
-      ['first_name' => 'Four', 'last_name' => $lastName],
+      ['first_name' => 'Four', 'middle_name' => 'None', 'last_name' => $lastName],
     ];
     Contact::save(FALSE)->setRecords($sampleData)->execute();
 
@@ -52,7 +53,7 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
         'api_entity' => 'Contact',
         'api_params' => [
           'version' => 4,
-          'select' => ['id', 'first_name', 'last_name', 'contact_sub_type:label'],
+          'select' => ['id', 'first_name', 'middle_name', 'last_name', 'contact_sub_type:label', 'is_deceased'],
           'where' => [],
         ],
       ],
@@ -87,6 +88,12 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
               'dataType' => 'String',
               'type' => 'field',
             ],
+            [
+              'key' => 'is_deceased',
+              'label' => 'Deceased',
+              'dataType' => 'Boolean',
+              'type' => 'field',
+            ],
           ],
           'sort' => [
             ['id', 'ASC'],
@@ -103,23 +110,43 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
     $params['filters']['first_name'] = ['One', 'Two'];
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(2, $result);
-    $this->assertEquals('One', $result[0]['first_name']);
-    $this->assertEquals('Two', $result[1]['first_name']);
+    $this->assertEquals('One', $result[0]['data']['first_name']);
+    $this->assertEquals('Two', $result[1]['data']['first_name']);
+    $count = civicrm_api4('SearchDisplay', 'run', ['return' => 'row_count'] + $params);
+    $this->assertCount(2, $count);
 
-    $params['filters'] = ['id' => ['>' => $result[0]['id'], '<=' => $result[1]['id'] + 1]];
+    // Raw value should be boolean, view value should be string
+    $this->assertEquals(FALSE, $result[0]['data']['is_deceased']);
+    $this->assertEquals(ts('No'), $result[0]['columns'][4]['val']);
+
+    $params['filters'] = ['last_name' => $lastName, 'id' => ['>' => $result[0]['data']['id'], '<=' => $result[1]['data']['id'] + 1]];
     $params['sort'] = [['first_name', 'ASC']];
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(2, $result);
-    $this->assertEquals('Three', $result[0]['first_name']);
-    $this->assertEquals('Two', $result[1]['first_name']);
+    $this->assertEquals('Three', $result[0]['data']['first_name']);
+    $this->assertEquals('Two', $result[1]['data']['first_name']);
+    $count = civicrm_api4('SearchDisplay', 'run', ['return' => 'row_count'] + $params);
+    $this->assertCount(2, $count);
 
-    $params['filters'] = ['contact_sub_type:label' => ['Tester', 'Bot']];
+    $params['filters'] = ['last_name' => $lastName, 'contact_sub_type:label' => ['Tester', 'Bot']];
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(3, $result);
+    $count = civicrm_api4('SearchDisplay', 'run', ['return' => 'row_count'] + $params);
+    $this->assertCount(3, $count);
 
-    $params['filters'] = ['contact_sub_type' => ['Tester']];
+    // Comma indicates first_name OR last_name
+    $params['filters'] = ['first_name,last_name' => $lastName, 'contact_sub_type' => ['Tester']];
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(2, $result);
+    $count = civicrm_api4('SearchDisplay', 'run', ['return' => 'row_count'] + $params);
+    $this->assertCount(2, $count);
+
+    // Comma indicates first_name OR middle_name, matches "One" or "None"
+    $params['filters'] = ['first_name,middle_name' => 'one', 'last_name' => $lastName];
+    $result = civicrm_api4('SearchDisplay', 'run', $params);
+    $this->assertCount(2, $result);
+    $count = civicrm_api4('SearchDisplay', 'run', ['return' => 'row_count'] + $params);
+    $this->assertCount(2, $count);
   }
 
   /**
@@ -176,9 +203,9 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
 
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(2, $result);
-    $this->assertNotEmpty($result->first()['display_name']);
+    $this->assertNotEmpty($result->first()['data']['display_name']);
     // Assert that display name was added to the search due to the link token
-    $this->assertNotEmpty($result->first()['sort_name']);
+    $this->assertNotEmpty($result->first()['data']['sort_name']);
 
     // These items are not part of the search, but will be added via links
     $this->assertArrayNotHasKey('contact_type', $result->first());
@@ -195,9 +222,9 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
       ],
     ];
     $result = civicrm_api4('SearchDisplay', 'run', $params);
-    $this->assertEquals('Individual', $result->first()['contact_type']);
-    $this->assertEquals('Unit test', $result->first()['source']);
-    $this->assertEquals($lastName, $result->first()['last_name']);
+    $this->assertEquals('Individual', $result->first()['data']['contact_type']);
+    $this->assertEquals('Unit test', $result->first()['data']['source']);
+    $this->assertEquals($lastName, $result->first()['data']['last_name']);
   }
 
   /**
@@ -294,14 +321,14 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
     $this->cleanupCachedPermissions();
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(1, $result);
-    $this->assertEquals($sampleData['Two'], $result[0]['id']);
+    $this->assertEquals($sampleData['Two'], $result[0]['data']['id']);
 
     $hooks->setHook('civicrm_aclWhereClause', [$this, 'aclWhereGreaterThan']);
     $this->cleanupCachedPermissions();
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(2, $result);
-    $this->assertEquals($sampleData['Three'], $result[0]['id']);
-    $this->assertEquals($sampleData['Four'], $result[1]['id']);
+    $this->assertEquals($sampleData['Three'], $result[0]['data']['id']);
+    $this->assertEquals($sampleData['Four'], $result[1]['data']['id']);
   }
 
   public function testWithACLBypass() {
@@ -464,7 +491,7 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
     }
     $this->assertStringContainsString('failed', $error);
 
-    $config->userPermissionClass->permissions = ['administer CiviCRM data'];
+    $config->userPermissionClass->permissions = ['access CiviCRM', 'administer CiviCRM data'];
 
     // Admins can edit the search and the display
     SavedSearch::update()->addWhere('name', '=', $searchName)
@@ -485,6 +512,210 @@ class SearchRunTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
       $error = $e->getMessage();
     }
     $this->assertStringContainsString('failed', $error);
+  }
+
+  /**
+   * Test running a searchDisplay with random sorting.
+   */
+  public function testSortByRand() {
+    $lastName = uniqid(__FUNCTION__);
+    $sampleData = [
+      ['first_name' => 'One', 'last_name' => $lastName],
+      ['first_name' => 'Two', 'last_name' => $lastName],
+      ['first_name' => 'Three', 'last_name' => $lastName],
+      ['first_name' => 'Four', 'last_name' => $lastName],
+    ];
+    Contact::save(FALSE)->setRecords($sampleData)->execute();
+
+    $params = [
+      'checkPermissions' => FALSE,
+      'return' => 'page:1',
+      'savedSearch' => [
+        'api_entity' => 'Contact',
+        'api_params' => [
+          'version' => 4,
+          'select' => ['id', 'first_name', 'last_name'],
+          'where' => [['last_name', '=', $lastName]],
+        ],
+      ],
+      'display' => [
+        'type' => 'list',
+        'label' => '',
+        'settings' => [
+          'limit' => 20,
+          'pager' => TRUE,
+          'columns' => [
+            [
+              'key' => 'first_name',
+              'label' => 'First Name',
+              'dataType' => 'String',
+              'type' => 'field',
+            ],
+          ],
+          'sort' => [
+            ['RAND()', 'ASC'],
+          ],
+        ],
+      ],
+      'afform' => NULL,
+    ];
+
+    // Without seed, results are returned in unpredictable order
+    // (hard to test this, but we can at least assert we get the correct number of results back)
+    $unseeded = civicrm_api4('SearchDisplay', 'run', $params);
+    $this->assertCount(4, $unseeded);
+
+    // Seed must be an integer
+    $params['seed'] = 'hello';
+    try {
+      civicrm_api4('SearchDisplay', 'run', $params);
+      $this->fail();
+    }
+    catch (\API_Exception $e) {
+    }
+
+    // With a random seed, results should be shuffled in stable order
+    $params['seed'] = 12345678987654321;
+    $seeded = civicrm_api4('SearchDisplay', 'run', $params);
+
+    // Same seed, same order every time
+    for ($i = 0; $i <= 9; ++$i) {
+      $repeat = civicrm_api4('SearchDisplay', 'run', $params);
+      $this->assertEquals($seeded->column('data'), $repeat->column('data'));
+    }
+  }
+
+  /**
+   * Test conditional styles
+   */
+  public function testCssRules() {
+    $lastName = uniqid(__FUNCTION__);
+    $sampleContacts = [
+      ['first_name' => 'Zero', 'last_name' => $lastName, 'is_deceased' => TRUE],
+      ['first_name' => 'One', 'last_name' => $lastName],
+      ['first_name' => 'Two', 'last_name' => $lastName],
+      ['first_name' => 'Three', 'last_name' => $lastName],
+    ];
+    $contacts = Contact::save(FALSE)->setRecords($sampleContacts)->execute();
+    $sampleEmails = [
+      ['contact_id' => $contacts[0]['id'], 'email' => 'abc@123', 'on_hold' => 1],
+      ['contact_id' => $contacts[0]['id'], 'email' => 'def@123', 'on_hold' => 0],
+      ['contact_id' => $contacts[1]['id'], 'email' => 'ghi@123', 'on_hold' => 0],
+      ['contact_id' => $contacts[2]['id'], 'email' => 'jkl@123', 'on_hold' => 2],
+    ];
+    Email::save(FALSE)->setRecords($sampleEmails)->execute();
+
+    $search = [
+      'name' => 'Test',
+      'label' => 'Test Me',
+      'api_entity' => 'Contact',
+      'api_params' => [
+        'version' => 4,
+        'select' => [
+          'id',
+          'display_name',
+          'GROUP_CONCAT(DISTINCT Contact_Email_contact_id_01.email) AS GROUP_CONCAT_Contact_Email_contact_id_01_email',
+        ],
+        'where' => [['last_name', '=', $lastName]],
+        'groupBy' => ['id'],
+        'join' => [
+          [
+            'Email AS Contact_Email_contact_id_01',
+            'LEFT',
+            ['id', '=', 'Contact_Email_contact_id_01.contact_id'],
+          ],
+        ],
+        'having' => [],
+      ],
+      'acl_bypass' => FALSE,
+    ];
+
+    $display = [
+      'type' => 'table',
+      'settings' => [
+        'actions' => TRUE,
+        'limit' => 50,
+        'classes' => ['table', 'table-striped'],
+        'pager' => [
+          'show_count' => TRUE,
+          'expose_limit' => TRUE,
+        ],
+        'columns' => [
+          [
+            'type' => 'field',
+            'key' => 'id',
+            'dataType' => 'Integer',
+            'label' => 'Contact ID',
+            'sortable' => TRUE,
+            'alignment' => 'text-center',
+          ],
+          [
+            'type' => 'field',
+            'key' => 'display_name',
+            'dataType' => 'String',
+            'label' => 'Display Name',
+            'sortable' => TRUE,
+            'link' => [
+              'entity' => 'Contact',
+              'action' => 'view',
+              'target' => '_blank',
+            ],
+            'title' => 'View Contact',
+          ],
+          [
+            'type' => 'field',
+            'key' => 'GROUP_CONCAT_Contact_Email_contact_id_01_email',
+            'dataType' => 'String',
+            'label' => '(List) Contact Emails: Email',
+            'sortable' => TRUE,
+            'alignment' => 'text-right',
+            'cssRules' => [
+              [
+                'bg-danger',
+                'Contact_Email_contact_id_01.on_hold:name',
+                '=',
+                'On Hold Bounce',
+              ],
+              [
+                'bg-warning',
+                'Contact_Email_contact_id_01.on_hold:name',
+                '=',
+                'On Hold Opt Out',
+              ],
+            ],
+            'rewrite' => '',
+            'title' => NULL,
+          ],
+        ],
+        'cssRules' => [
+          ['strikethrough', 'is_deceased', '=', TRUE],
+        ],
+      ],
+    ];
+
+    $result = SearchDisplay::Run(FALSE)
+      ->setSavedSearch($search)
+      ->setDisplay($display)
+      ->setReturn('page:1')
+      ->setSort([['id', 'ASC']])
+      ->execute();
+
+    // Non-conditional style rule
+    $this->assertEquals('text-center', $result[0]['columns'][0]['cssClass']);
+    // First contact is deceased, gets strikethrough class
+    $this->assertEquals('strikethrough', $result[0]['cssClass']);
+    $this->assertNotEquals('strikethrough', $result[1]['cssClass']);
+    // Ensure the view contact link was formed
+    $this->assertStringContainsString('cid=' . $contacts[0]['id'], $result[0]['columns'][1]['links'][0]['url']);
+    $this->assertEquals('_blank', $result[0]['columns'][1]['links'][0]['target']);
+    // 1st column gets static + conditional style
+    $this->assertStringContainsString('text-right', $result[0]['columns'][2]['cssClass']);
+    $this->assertStringContainsString('bg-danger', $result[0]['columns'][2]['cssClass']);
+    // 2nd row gets static style but no conditional styles apply
+    $this->assertEquals('text-right', $result[1]['columns'][2]['cssClass']);
+    // 3rd column gets static + conditional style
+    $this->assertStringContainsString('text-right', $result[2]['columns'][2]['cssClass']);
+    $this->assertStringContainsString('bg-warning', $result[2]['columns'][2]['cssClass']);
   }
 
 }
