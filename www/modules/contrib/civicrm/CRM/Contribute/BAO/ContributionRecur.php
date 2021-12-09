@@ -554,7 +554,11 @@ INNER JOIN civicrm_contribution       con ON ( con.id = mp.contribution_id )
         unset($overrides['financial_type_id']);
       }
       $result = array_merge($templateContribution, $overrides);
-      $result['line_item'][$order->getPriceSetID()] = $lineItems;
+      // Line items aren't always written to a contribution, for mystery reasons.
+      // Checking for their existence prevents $order->getPriceSetID returning NULL.
+      if ($lineItems) {
+        $result['line_item'][$order->getPriceSetID()] = $lineItems;
+      }
       // If the template contribution was made on-behalf then add the
       // relevant values to ensure the activity reflects that.
       $relatedContact = CRM_Contribute_BAO_Contribution::getOnbehalfIds($result['id']);
@@ -630,32 +634,6 @@ INNER JOIN civicrm_contribution       con ON ( con.id = mp.contribution_id )
       if ($fields['frequency_unit'] == '0') {
         $errors['frequency_unit'] = ts('Please select a period (e.g. months, years ...) for how often you want to make this recurring contribution (EXAMPLE: Every 3 MONTHS).');
       }
-    }
-  }
-
-  /**
-   * Send start or end notification for recurring payments.
-   *
-   * @param array $ids
-   * @param CRM_Contribute_BAO_ContributionRecur $recur
-   * @param bool $isFirstOrLastRecurringPayment
-   */
-  public static function sendRecurringStartOrEndNotification($ids, $recur, $isFirstOrLastRecurringPayment) {
-    CRM_Core_Error::deprecatedFunctionWarning('use CRM_Contribute_BAO_ContributionPage::recurringNotify');
-    if ($isFirstOrLastRecurringPayment) {
-      $autoRenewMembership = FALSE;
-      if ($recur->id &&
-        isset($ids['membership']) && $ids['membership']
-      ) {
-        $autoRenewMembership = TRUE;
-      }
-
-      //send recurring Notification email for user
-      CRM_Contribute_BAO_ContributionPage::recurringNotify(
-        $ids['contribution'],
-        $isFirstOrLastRecurringPayment,
-        $recur
-      );
     }
   }
 
@@ -1083,6 +1061,34 @@ INNER JOIN civicrm_contribution       con ON ( con.id = mp.contribution_id )
         return $allProcessors;
     }
     return CRM_Core_PseudoConstant::get(__CLASS__, $fieldName, $params, $context);
+  }
+
+  /**
+   * Get the from address to use for the recurring contribution.
+   *
+   * This uses the contribution page id, if there is one, or the default domain one.
+   *
+   * @param int $id
+   *   Recurring contribution ID.
+   *
+   * @internal
+   *
+   * @return string
+   * @throws \API_Exception
+   * @throws \CRM_Core_Exception
+   */
+  public static function getRecurFromAddress(int $id): string {
+    $details = Contribution::get(FALSE)
+      ->addWhere('contribution_recur_id', '=', $id)
+      ->addWhere('contribution_page_id', 'IS NOT NULL')
+      ->addSelect('contribution_page_id.receipt_from_name', 'contribution_page_id.receipt_from_email')
+      ->addOrderBy('receive_date', 'DESC')
+      ->execute()->first();
+    if (empty($details['contribution_page_id.receipt_from_email'])) {
+      $domainValues = CRM_Core_BAO_Domain::getNameAndEmail();
+      return "$domainValues[0] <$domainValues[1]>";
+    }
+    return '"' . $details['contribution_page_id.receipt_from_name'] . '" <' . $details['contribution_page_id.receipt_from_email'] . '>';
   }
 
 }

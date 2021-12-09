@@ -58,6 +58,7 @@ class Entity extends Generic\AbstractEntity {
             'DAOEntity' => 'DAOEntity',
             'CustomValue' => 'CustomValue',
             'BasicEntity' => 'BasicEntity',
+            'ManagedEntity' => 'ManagedEntity',
             'EntityBridge' => 'EntityBridge',
             'OptionList' => 'OptionList',
           ],
@@ -111,6 +112,11 @@ class Entity extends Generic\AbstractEntity {
           'name' => 'since',
           'data_type' => 'String',
           'description' => 'Version this API entity was added',
+        ],
+        [
+          'name' => 'class',
+          'data_type' => 'String',
+          'description' => 'PHP class name',
         ],
         [
           'name' => 'bridge',

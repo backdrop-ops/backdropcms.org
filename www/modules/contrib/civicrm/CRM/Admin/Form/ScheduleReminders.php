@@ -390,6 +390,7 @@ class CRM_Admin_Form_ScheduleReminders extends CRM_Admin_Form {
       $defaults['is_active'] = 1;
       $defaults['mode'] = 'Email';
       $defaults['record_activity'] = 1;
+      $defaults['start_action_unit'] = 'hour';
     }
     else {
       $defaults = $this->_values;
@@ -695,8 +696,14 @@ class CRM_Admin_Form_ScheduleReminders extends CRM_Admin_Form {
    * @return array
    */
   public function listTokens() {
-    $tokens = CRM_Core_SelectValues::contactTokens();
-    $tokens = array_merge(CRM_Core_SelectValues::activityTokens(), $tokens);
+    $tokenProcessor = new \Civi\Token\TokenProcessor(\Civi::dispatcher(), [
+      'controller' => get_class(),
+      'smarty' => FALSE,
+      'schema' => ['activityId', 'participantId'],
+    ]);
+    $tokens = $tokenProcessor->listTokens();
+
+    $tokens = array_merge(CRM_Core_SelectValues::contactTokens(), $tokens);
     $tokens = array_merge(CRM_Core_SelectValues::eventTokens(), $tokens);
     $tokens = array_merge(CRM_Core_SelectValues::membershipTokens(), $tokens);
     $tokens = array_merge(CRM_Core_SelectValues::contributionTokens(), $tokens);

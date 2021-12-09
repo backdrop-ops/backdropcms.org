@@ -13,6 +13,8 @@
 namespace Civi\Api4\Utils;
 
 use Civi\API\Request;
+use Civi\Api4\Entity;
+use Civi\Api4\Event\CreateApi4RequestEvent;
 use CRM_Core_DAO_AllCoreTables as AllCoreTables;
 
 class CoreUtil {
@@ -28,14 +30,8 @@ class CoreUtil {
     if ($entityName === 'CustomValue' || strpos($entityName, 'Custom_') === 0) {
       return 'CRM_Core_BAO_CustomValue';
     }
-    $dao = self::getInfoItem($entityName, 'dao');
-    if (!$dao) {
-      return NULL;
-    }
-    $bao = str_replace("DAO", "BAO", $dao);
-    // Check if this entity actually has a BAO. Fall back on the DAO if not.
-    $file = strtr($bao, '_', '/') . '.php';
-    return stream_resolve_include_path($file) ? $bao : $dao;
+    $dao = AllCoreTables::getFullName($entityName);
+    return $dao ? AllCoreTables::getBAOClassName($dao) : NULL;
   }
 
   /**
@@ -43,24 +39,42 @@ class CoreUtil {
    * @return string|\Civi\Api4\Generic\AbstractEntity
    */
   public static function getApiClass($entityName) {
-    if (strpos($entityName, 'Custom_') === 0) {
-      $groupName = substr($entityName, 7);
-      return self::isCustomEntity($groupName) ? 'Civi\Api4\CustomValue' : NULL;
-    }
-    // Because "Case" is a reserved php keyword
-    $className = 'Civi\Api4\\' . ($entityName === 'Case' ? 'CiviCase' : $entityName);
-    return class_exists($className) ? $className : NULL;
+    $e = new CreateApi4RequestEvent($entityName);
+    \Civi::dispatcher()->dispatch('civi.api4.createRequest', $e);
+    return $e->className;
   }
 
   /**
-   * Get item from an entity's getInfo array
+   * Get a piece of metadata about an entity
    *
    * @param string $entityName
    * @param string $keyToReturn
    * @return mixed
    */
   public static function getInfoItem(string $entityName, string $keyToReturn) {
-    return self::getApiClass($entityName)::getInfo()[$keyToReturn] ?? NULL;
+    // Because this function might be called thousands of times per request, read directly
+    // from the cache set by Apiv4 Entity.get to avoid the processing overhead of the API wrapper.
+    $cached = \Civi::cache('metadata')->get('api4.entities.info');
+    if ($cached) {
+      $info = $cached[$entityName] ?? NULL;
+    }
+    // If the cache is empty, calling Entity.get will populate it and we'll use it next time.
+    else {
+      $info = Entity::get(FALSE)
+        ->addWhere('name', '=', $entityName)
+        ->addSelect($keyToReturn)
+        ->execute()->first();
+    }
+    return $info ? $info[$keyToReturn] ?? NULL : NULL;
+  }
+
+  /**
+   * Get name of unique identifier, typically "id"
+   * @param string $entityName
+   * @return string
+   */
+  public static function getIdFieldName(string $entityName): string {
+    return self::getInfoItem($entityName, 'primary_key')[0] ?? 'id';
   }
 
   /**
@@ -104,6 +118,8 @@ class CoreUtil {
     $operators[] = 'CONTAINS';
     $operators[] = 'IS EMPTY';
     $operators[] = 'IS NOT EMPTY';
+    $operators[] = 'REGEXP';
+    $operators[] = 'NOT REGEXP';
     return $operators;
   }
 
@@ -152,7 +168,7 @@ class CoreUtil {
    * @return bool
    * @throws \CRM_Core_Exception
    */
-  private static function isCustomEntity($customGroupName) {
+  public static function isCustomEntity($customGroupName) {
     return $customGroupName && \CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $customGroupName, 'is_multiple', 'name');
   }
 
@@ -221,6 +237,19 @@ class CoreUtil {
       return FALSE;
     }
     return static::checkAccessRecord($apiRequest, $record, $userID);
+  }
+
+  /**
+   * @return \Civi\Api4\Service\Schema\SchemaMap
+   */
+  public static function getSchemaMap() {
+    $cache = \Civi::cache('metadata');
+    $schemaMap = $cache->get('api4.schema.map');
+    if (!$schemaMap) {
+      $schemaMap = \Civi::service('schema_map_builder')->build();
+      $cache->set('api4.schema.map', $schemaMap);
+    }
+    return $schemaMap;
   }
 
 }

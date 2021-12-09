@@ -76,7 +76,7 @@
       this.canBeMultiple = function() {
         return this.isSearch() &&
           !_.includes(['Date', 'Timestamp'], ctrl.getDefn().data_type) &&
-          _.includes(['Select', 'EntityRef'], $scope.getProp('input_type'));
+          _.includes(['Select', 'EntityRef', 'ChainSelect'], $scope.getProp('input_type'));
       };
 
       this.getRangeElements = function(type) {
@@ -236,11 +236,13 @@
       };
 
       $scope.defaultValueContains = function(val) {
+        val = '' + val;
         var defaultVal = getSet('afform_default');
         return defaultVal === val || (_.isArray(defaultVal) && _.includes(defaultVal, val));
       };
 
       $scope.toggleDefaultValueItem = function(val) {
+        val = '' + val;
         if (defaultValueShouldBeArray()) {
           if (!_.isArray(getSet('afform_default'))) {
             ctrl.node.defn.afform_default = [];
