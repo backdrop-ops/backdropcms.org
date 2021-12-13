@@ -41,6 +41,8 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "5740f4b1-23ef-4ec8-bb0f-158468cc36a1": {
             "plugin": "borg_blocks:branding",
@@ -192,7 +194,9 @@
                         "description": "",
                         "reusable": true
                     },
-                    "contexts": []
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "f0a1a87f-75fe-4d79-a261-97875c307a34",
                 "style": {

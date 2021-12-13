@@ -22,8 +22,7 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
-            "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d",
-            "b64e5fc1-9702-4d2d-8f5f-95001ebb2064"
+            "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "content": [],
         "half1": [
@@ -151,7 +150,7 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "1.20.1"
+                        "version": "1.20.3"
                     },
                     "contexts": [],
                     "admin_label": "",
@@ -163,35 +162,6 @@
                     "data": {
                         "settings": {
                             "classes": "container"
-                        }
-                    }
-                }
-            }
-        },
-        "b64e5fc1-9702-4d2d-8f5f-95001ebb2064": {
-            "plugin": "block:backdrop_live",
-            "data": {
-                "module": "block",
-                "delta": "backdrop_live",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "backdrop_live",
-                        "description": "Promote Backdrop LIVE",
-                        "reusable": true
-                    },
-                    "contexts": [],
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "b64e5fc1-9702-4d2d-8f5f-95001ebb2064",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
                         }
                     }
                 }

@@ -775,14 +775,43 @@
                 },
                 "filters": {
                     "status": {
-                        "value": 1,
+                        "id": "status",
                         "table": "node",
                         "field": "status",
-                        "id": "status",
+                        "relationship": "recommended_release",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": "1",
+                        "group": 1,
+                        "exposed": false,
                         "expose": {
-                            "operator": false
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": false,
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
                         },
-                        "group": 1
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
                     },
                     "recommended": {
                         "id": "recommended",
