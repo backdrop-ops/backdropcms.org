@@ -15,8 +15,3 @@ ckeditor_stylesheets[] = css/editor.css
 ; menu. Color module provides our defaults, so we just register a dummy setting.
 settings[color] = true
 settings[main_menu_tabs] = no-tabs
-
-; Added by Backdrop CMS packaging script on 2021-08-12
-project = backdrop
-version = 1.19.3
-timestamp = 1628794130
