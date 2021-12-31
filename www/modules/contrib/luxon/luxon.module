@@ -1,0 +1,50 @@
+<?php
+/**
+ * @file
+ * Module provides Javascript library for manipulating and formatting dates and
+ * times.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function luxon_menu() {
+  $items['admin/config/development/luxon'] = array(
+    'title' => 'Luxon',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('luxon_admin_form'),
+    'access arguments' => array('administer site configuration'),
+    'description' => 'Configure Luxon settings.',
+    'file' => 'luxon.admin.inc',
+  );
+  return $items;
+}
+
+
+/**
+ * Implements hook_library_info().
+ */
+function luxon_library_info() {
+  $library = config_get('luxon.settings', 'full_library') ? 'luxon.js' : 'luxon.min.js';
+  $path = backdrop_get_path('module', 'luxon') . '/library/' . $library;
+  return array(
+    'luxon' => array(
+      'title' => t('Luxon'),
+      'website' => 'https://moment.github.io/luxon/index.html',
+      'version' => '1.0',
+      'js' => array($path => array()),
+    ),
+  );
+}
+
+
+/**
+ * Implements hook_config_info().
+ */
+function luxon_config_info() {
+  $prefixes['luxon.settings'] = array(
+    'label' => t('Luxon settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}

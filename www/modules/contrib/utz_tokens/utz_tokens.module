@@ -1,0 +1,556 @@
+<?php
+/**
+ * @file
+ * Create tokens to render a date and/or time in the user's time zone.
+ */
+
+/**
+ * Define detection methods set in configuration.
+ */
+define('UTZ_TOKENS_USER_SERVER', 0);
+define('UTZ_TOKENS_USER_BROWSER', 1);
+define('UTZ_TOKENS_BROWSER_BROWSER', 2);
+
+/**
+ * Implements hook_menu().
+ */
+function utz_tokens_menu() {
+  $items['admin/config/regional/utz-tokens'] = array(
+    'title' => 'User time zone tokens',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('utz_tokens_admin_form'),
+    'access arguments' => array('administer site configuration'),
+    'description' => 'Configure User Time Zone Tokens.',
+    'file' => 'utz_tokens.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_init().
+ */
+function utz_tokens_init() {
+  $timezone_detection = config_get('utz_tokens.settings', 'timezone_detection');
+  if ($timezone_detection) {
+    if (module_exists('luxon')) {
+      backdrop_add_library('luxon', 'luxon');
+      backdrop_add_js(backdrop_get_path('module', 'utz_tokens') . '/js/utz_tokens.js', 'file');
+      backdrop_add_js(array('utz_tokens' => array('timezone_detection' => $timezone_detection)), 'setting');
+    }
+    else {
+      // Fix config setting if Luxon module is missing. This could happen if the
+      // user disabled Luxon after enabling the setting.
+      config_set('utz_tokens.settings', 'timezone_detection', UTZ_TOKENS_USER_SERVER);
+      backdrop_set_message(t('The Luxon module is disabled; detection of browser time zone has been turned off in !link.', array('!link' => l(t('User Time Zone Tokens settings'), 'admin/config/regional/utz-tokens'))), 'warning');
+    }
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function utz_tokens_theme($existing, $type, $theme, $path) {
+  $themes = array(
+    'utz_datetime' => array(
+      'variables' => array(
+        'datetime' => NULL,
+        'format' => NULL,
+      ),
+      'file' => 'utz_tokens.theme.inc',
+    ),
+  );
+  return $themes;
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function utz_tokens_token_info() {
+  $info['types']['utz-datetime'] = array(
+    'name' => t('Date specified'),
+    'description' => t("Tokens that render a specified date and/or time in the user's time zone."),
+  );
+
+  $info['tokens']['utz-datetime']['?|?'] = array(
+    'name' => t('Date/time'),
+    'description' => t("Render a specified date and/or time with a specified format in the user's time zone."),
+  );
+  return $info;
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function utz_tokens_tokens($type, $tokens, array $data = array(), array $options = array()) {
+  $replacements = array();
+  if ($type == 'utz-datetime') {
+    foreach ($tokens as $key => $token) {
+      // Note that we use pipe (|) as second delimiter rather than colon (:)
+      // because both the time string and format string likely contain colons.
+      $ppos = strpos($key, '|');
+      if ($ppos === FALSE) {
+        $replacements[$token] = t('Token error: %token has an invalid format.', array('%token' => $token));
+      }
+      else {
+        $replacements[$token] = theme('utz_datetime', array(
+          'datetime' => trim(substr($key, 0, $ppos)),
+          'format' => substr($key, $ppos + 1),
+        ));
+      }
+    }
+  }
+  return $replacements;
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function utz_tokens_config_info() {
+  $prefixes['utz_tokens.settings'] = array(
+    'label' => t('User Time Zone Tokens settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ *
+ * @see date_field_formatter_info()
+ */
+function utz_tokens_field_formatter_info() {
+  $formatters = array(
+    'utz_date_default' => array(
+      'label' => t('UTZ Date and time'),
+      'field types' => array('date', 'datestamp', 'datetime'),
+      'settings' => array(
+        'fromto' => 'both',
+        'format_type' => 'long',
+        'format_custom' => '',
+        'format_type_end' => 'long',
+        'format_custom_end' => '',
+        'format_type_end_same' => 'long',
+        'format_custom_end_same' => '',
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_to' => '',
+        'show_remaining_days' => FALSE,
+      ),
+    ),
+  );
+  return $formatters;
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ *
+ * @see date_field_formatter_settings_form()
+ */
+function utz_tokens_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $field_name_id = str_replace('_', '-', $field['field_name']);
+  $is_range = $field['settings']['todate'];
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $formatter = $display['type'];
+  $form = array();
+  $date_formats_options = date_format_type_options() + array('custom' => t('Custom'));
+
+  $form['fromto'] = array(
+    '#type' => 'select',
+    '#title' => t('Display:'),
+    '#options' => array(
+      'both' => t('Both start and end dates'),
+      'value' => t('Start date only'),
+      'value2' => t('End date only'),
+    ),
+    '#default_value' => $settings['fromto'],
+    '#access' => $is_range,
+  );
+
+  // If we're on a views admin form, it uses different attributes than the
+  // regular field UI admin form.
+  $args = arg();
+  if (isset($args[2]) && $args[2] == 'views') {
+    $name_prefix = 'options[settings]';
+  }
+  else {
+    $name_prefix = 'fields[' . $field['field_name'] . '][settings_edit_form][settings]';
+  }
+
+  $form['format_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Choose how the date is viewed (or start date for a date range)'),
+    '#description' => t('To add or edit options, visit <a href="@date-time-page">Date and time settings</a>.', array('@date-time-page' => url('admin/config/regional/date-time'))),
+    '#options' => $date_formats_options,
+    '#default_value' => $settings['format_type'],
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'value2'),
+      ),
+      'disabled' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'value2'),
+      ),
+    ),
+  );
+  $form['format_custom'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Custom date format'),
+    '#description' => t('If "Custom", see the <a href="@url" target="_blank">PHP manual</a> for date formats.', array('@url' => 'http://php.net/manual/function.date.php')),
+    '#default_value' => isset($settings['format_custom']) ? $settings['format_custom'] : '',
+    '#states' => array(
+      'visible' => array(
+        ':input[name="' . $name_prefix . '[format_type]"]' => array('value' => 'custom'),
+      ),
+      'enabled' => array(
+        ':input[name="' . $name_prefix . '[format_type]"]' => array('value' => 'custom'),
+      ),
+      'invisible' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'value2'),
+      ),
+      'disabled' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'value2'),
+      ),
+    ),
+  );
+
+  $form['format_type_end'] = array(
+    '#type' => 'select',
+    '#title' => t('Choose how the end date is viewed.'),
+    '#options' => $date_formats_options,
+    '#default_value' => $settings['format_type_end'],
+    '#access' => $is_range,
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'value'),
+      ),
+      'disabled' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'value'),
+      ),
+    ),
+  );
+  $form['format_custom_end'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Custom end date format'),
+    '#default_value' => isset($settings['format_custom_end']) ? $settings['format_custom_end'] : '',
+    '#access' => $is_range,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="' . $name_prefix . '[format_type_end]"]' => array('value' => 'custom'),
+      ),
+      'enabled' => array(
+        ':input[name="' . $name_prefix . '[format_type_end]"]' => array('value' => 'custom'),
+      ),
+      'invisible' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'value'),
+      ),
+      'disabled' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'value'),
+      ),
+    ),
+  );
+
+  $form['format_type_end_same'] = array(
+    '#type' => 'select',
+    '#title' => t('Choose how an end date within 24 hours of the start date is viewed.'),
+    '#description' => t('You may wish to display only time for end dates within 24 hours of the start date.'),
+    '#options' => $date_formats_options,
+    '#default_value' => $settings['format_type_end_same'],
+    '#access' => $is_range,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'both'),
+      ),
+      'enabled' => array(
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'both'),
+      ),
+    ),
+  );
+  $form['format_custom_end_same'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Custom end date format'),
+    '#default_value' => isset($settings['format_custom_end_same']) ? $settings['format_custom_end_same'] : '',
+    '#access' => $is_range,
+    '#states' => array(
+      'visible' => array(
+        ':input[name="' . $name_prefix . '[format_type_end_same]"]' => array('value' => 'custom'),
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'both'),
+      ),
+      'enabled' => array(
+        ':input[name="' . $name_prefix . '[format_type_end_same]"]' => array('value' => 'custom'),
+        ':input[name="' . $name_prefix . '[fromto]"]' => array('value' => 'both'),
+      ),
+    ),
+  );
+
+  // Make the string translatable by keeping it as a whole rather than
+  // translating prefix and suffix separately.
+  list($prefix, $suffix) = explode('@count', t('Show @count value(s)'));
+  $form['multiple_number'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Multiple values:'),
+    '#description' => t('Identify a specific number of values to display, or leave blank to show all values.'),
+    '#size' => 5,
+    '#field_prefix' => $prefix,
+    '#field_suffix' => $suffix,
+    '#default_value' => $settings['multiple_number'],
+    '#access' => ($field['cardinality'] == FIELD_CARDINALITY_UNLIMITED) || ($field['cardinality'] > 1),
+  );
+
+  list($prefix, $suffix) = explode('@isodate', t('starting from @isodate'));
+  $form['multiple_from'] = array(
+    '#type' => 'textfield',
+    '#size' => 15,
+    '#field_prefix' => $prefix,
+    '#field_suffix' => $suffix,
+    '#default_value' => $settings['multiple_from'],
+    '#access' => ($field['cardinality'] == FIELD_CARDINALITY_UNLIMITED) || ($field['cardinality'] > 1),
+  );
+
+  list($prefix, $suffix) = explode('@isodate', t('ending with @isodate'));
+  $form['multiple_to'] = array(
+    '#type' => 'textfield',
+    '#description' => t('Identify specific start and/or end dates in the format YYYY-MM-DDTHH:MM:SS, or leave blank for all available dates.'),
+    '#size' => 15,
+    '#field_prefix' => $prefix,
+    '#field_suffix' => $suffix,
+    '#default_value' => $settings['multiple_to'],
+    '#access' => ($field['cardinality'] == FIELD_CARDINALITY_UNLIMITED) || ($field['cardinality'] > 1),
+  );
+
+  $form['show_remaining_days'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show remaining days'),
+    '#description' => t('List the number of dates that are in the future.'),
+    '#default_value' => $settings['show_remaining_days'],
+  );
+  return $form;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ *
+ * @see date_default_formatter_settings_summary()
+ */
+function utz_tokens_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $is_range = $field['settings']['todate'];
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $formatter = $display['type'];
+  $summary = array();
+
+  if ($is_range) {
+    switch ($settings['fromto']) {
+      case 'both':
+        $summary[] = t('Display date range using:');
+        $summary[] = t('@format for start dates.',array('@format' => _utz_tokens_format_summary($settings['format_type'], $settings['format_custom'])));
+        $summary[] = t('@format_end for end dates.', array('@format_end' => _utz_tokens_format_summary($settings['format_type_end'], $settings['format_custom_end'])));
+        $summary[] = t('@format_end_same for same-day end dates.', array('@format_end_same' => _utz_tokens_format_summary($settings['format_type_end_same'], $settings['format_custom_end_same'])));
+        break;
+
+      case 'value':
+        $summary[] = t('Display dates using @format.', array(
+          '@format' => _utz_tokens_format_summary($settings['format_type'], $settings['format_custom']),
+        ));
+        break;
+
+      case 'value2':
+        $summary[] = t('Display dates using @format.', array(
+          '@format' => _utz_tokens_format_summary($settings['format_type_end'], $settings['format_custom_end']),
+        ));
+        break;
+    }
+  }
+  else {
+    $summary[] = t('Display dates using @format.', array(
+      '@format' => _utz_tokens_format_summary($settings['format_type'], $settings['format_custom']),
+    ));
+  }
+
+  if (array_key_exists('multiple_number', $settings) && !empty($field['cardinality'])) {
+    $summary[] = t('Show @count value(s) starting with @date1, ending with @date2.', array(
+      '@count' => !empty($settings['multiple_number']) ? $settings['multiple_number'] : t('all'),
+      '@date1' => !empty($settings['multiple_from']) ? $settings['multiple_from'] : t('earliest'),
+      '@date2' => !empty($settings['multiple_to']) ? $settings['multiple_to'] : t('latest'),
+    ));
+  }
+
+  if (array_key_exists('show_remaining_days', $settings)) {
+    $summary[] = t('Show remaining days: @value.', array('@value' => ($settings['show_remaining_days'] ? t('yes') : t('no'))));
+  }
+  return implode('<br />', $summary);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ * @see date_field_formatter_view()
+ */
+function utz_tokens_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  // Useful values:
+  // - $entity->date_id
+  //   If set, this will show only an individual date on a field with multiple
+  //   dates. The value should be a string that contains the following values,
+  //   separated with periods:
+  //   - module name of the module adding the item
+  //   - node nid
+  //   - field name
+  //   - delta value of the field to be displayed
+  //   - other information the module's custom theme might need
+  //   Used by the calendar module and available for other uses.
+  //   example: 'date:217:field_date:3:test'
+  // - $entity->date_repeat_show
+  //   If TRUE, tells the theme to show all the computed values of a repeating
+  //   date. If not TRUE or not set, only the start date and the repeat rule
+  //   will be displayed.
+  $is_range = $field['settings']['todate'];
+  $element = array();
+  $num_items = count($items);
+  $settings = $display['settings'];
+  $formatter = $display['type'];
+
+  // See if we are only supposed to display a selected item from multiple value
+  // date fields.
+  $selected_deltas = array();
+  if (!empty($entity->date_id)) {
+    foreach ((array) $entity->date_id as $key => $id) {
+      list($module, $nid, $field_name, $selected_delta, $other) = explode('.', $id . '.');
+      if ($field_name == $field['field_name']) {
+        $selected_deltas[] = $selected_delta;
+      }
+    }
+  }
+
+  // Get format strings to use from the settings.
+  $format = _utz_tokens_format_string($settings['format_type'], $settings['format_custom']);
+  if ($is_range) {
+    $format_end = _utz_tokens_format_string($settings['format_type_end'], $settings['format_custom_end']);
+    $format_end_same = _utz_tokens_format_string($settings['format_type_end_same'], $settings['format_custom_end_same']);
+  }
+
+  $show_remaining_days = $settings['show_remaining_days'];
+  $now = strtotime('now');
+
+  foreach ($items as $delta => $item) {
+    if (!empty($entity->date_id) && !in_array($delta, $selected_deltas)) {
+      continue;
+    }
+    else {
+
+      // Get timestamps for whatever type the date was.
+      switch ($item['date_type']) {
+        case 'datetime': // time string
+        case 'date': // ISO date
+          $datetime_obj = new DateTime($item['value'] . 'UTC');
+          $datetime = $datetime_obj->getTimestamp();
+          if ($is_range) {
+            $datetime_obj = new DateTime($item['value2'] . 'UTC');
+            $datetime2 = $datetime_obj->getTimestamp();
+          }
+          break;
+
+        case 'datestamp': // Unix timestamp
+          $datetime = $item['value'];
+          if ($is_range) {
+            $datetime2 = $item['value2'];
+          }
+          break;
+      }
+
+      $output = '';
+
+      if ($is_range) {
+        switch($settings['fromto']) {
+          case 'both':
+            $output1 = theme('utz_datetime', array(
+              'datetime' => '@' . $datetime,
+              'format' => $format,
+            ));
+            if ($datetime2 == $datetime) {
+              $output = $output1;
+            }
+            else {
+              if ($datetime2 - $datetime < 86400) {
+                $output2 = theme('utz_datetime', array(
+                  'datetime' => '@' . $datetime2,
+                  'format' => $format_end_same,
+                ));
+              }
+              else {
+                $output2 = theme('utz_datetime', array(
+                  'datetime' => '@' . $datetime2,
+                  'format' => $format_end,
+                ));
+              }
+              $output = t('!output1 to !output2', array('!output1' => $output1, '!output2' => $output2));
+            }
+            break;
+
+          case 'value':
+            $output = theme('utz_datetime', array(
+              'datetime' => '@' . $datetime,
+              'format' => $format,
+            ));
+            break;
+
+          case 'value2' :
+            $output = theme('utz_datetime', array(
+              'datetime' => '@' . $datetime2,
+              'format' => $format_end,
+            ));
+            break;
+
+        }
+      }
+      else {
+        $output = theme('utz_datetime', array(
+          'datetime' => '@' . $datetime,
+          'format' => $format,
+        ));
+      }
+
+      // Check remaining days. Show only for future events.
+      if ($show_remaining_days) {
+        $remaining_days = floor(($datetime - $now) / 86400);
+        if ($remaining_days >= 0) {
+          $output .= theme('date_display_remaining', array(
+            'remaining_days' => $remaining_days,
+          ));
+        }
+      }
+
+      if (!empty($output)) {
+        $element[$delta] = array('#markup' => $output);
+      }
+    }
+  }
+  return $element;
+}
+
+/**
+ * Returns a date format summary description from its type or a custom format.
+ */
+function _utz_tokens_format_summary($type, $custom) {
+  $format_types = date_format_type_options();
+  if ($type == 'custom') {
+    $date_str = date_format(date_example_date(), $custom);
+    return t('Custom') . ' (' . $date_str . ')';
+  }
+  elseif (!empty($format_types[$type])) {
+    return $format_types[$type];
+  }
+  return $format_types['long'] . ' ' . t('because no formatter could be found of type %type', array('%type' => $type));
+}
+
+/**
+ * Returns a date format string from its type or a custom format.
+ */
+function _utz_tokens_format_string($type, $custom) {
+  $formats = config_get('system.date', 'formats');
+  if ($type == 'custom') {
+    return $custom;
+  }
+  elseif (!empty($formats[$type])) {
+    return $formats[$type]['pattern'];
+  }
+  return $formats['long']['pattern'];
+}

@@ -1,0 +1,113 @@
+<?php
+
+/**
+ * @file
+ * Additional text filter for token input.
+ */
+
+/**
+ * Implements hook_filter_info().
+ */
+function token_filter_filter_info() {
+  $filters['filter_tokens'] = array(
+    'title' => t('Replace tokens'),
+    'description' => t('The usage of this filter should be restricted to trusted users only as tokens with sensitive data could be exposed.'),
+    'process callback' => '_token_filter_filter_tokens',
+    'tips callback' => '_token_filter_filter_tips',
+    'cache' => FALSE,
+  );
+  return $filters;
+}
+
+/**
+ * Filter process callback for the token text filter.
+ */
+function _token_filter_filter_tokens($text, $filter, $format, $langcode, $cache, $cache_id) {
+  $data = array();
+  $options = array('clear' => TRUE);
+
+  // Attempt to figure out the current context based on the current backtrace.
+  $backtrace = debug_backtrace();
+  array_shift($backtrace); // Pop off this current function in the stack.
+  foreach ($backtrace as $caller) {
+    switch ($caller['function']) {
+      case 'text_field_load':
+      case 'field_default_view':
+        $entity_type = $caller['args'][0];
+        if (is_array($caller['args'][1])) {
+          // $args[1] is plural $entities for 'text_field_load'.
+          $entity = array_values($caller['args'][1])[0];
+        }
+        else {
+          // $args[1] is singular $entity for 'field_default_view'.
+          $entity = $caller['args'][1];
+        }
+        $token_type = _token_filter_get_entity_mapping('entity', $entity_type);
+        $data[$token_type] = $entity;
+        if ($langcode = $caller['args'][4]) {
+          $language_list = language_list();
+          if (!empty($language_list[$langcode])) {
+            $options['language'] = $language_list[$langcode];
+          }
+        }
+        break;
+
+      case '_backdrop_bootstrap_full':
+      case 'menu_execute_active_handler':
+        break 2;
+    }
+  }
+
+  // We can still add the global user as context if we haven't added it already.
+  if (!isset($data['user'])) {
+    global $user;
+    $data['user'] = $user;
+  }
+
+  return token_replace($text, $data, $options);
+}
+
+
+/**
+ * Return an array of entity type to token type mappings.
+ *
+ * Why do we need this? Because when the token API was moved to core we did not
+ * re-use the entity type as the base name for taxonomy terms and vocabulary
+ * tokens.
+ *
+ * This function is the replacement for token_get_entity_mapping() in D7.
+ */
+function _token_filter_get_entity_mapping($value_type = 'token', $value = NULL, $fallback = FALSE) {
+  $mapping = &drupal_static(__FUNCTION__, array());
+
+  if (empty($mapping)) {
+    foreach (entity_get_info() as $entity_type => $info) {
+      $mapping[$entity_type] = !empty($info['token type']) ? $info['token type'] : $entity_type;
+    }
+  }
+  if (!isset($value)) {
+    return $value_type == 'token' ? array_flip($mapping) : $mapping;
+  }
+  elseif ($value_type == 'token') {
+    $return = array_search($value, $mapping);
+    return $return !== FALSE ? $return : ($fallback ? $value : FALSE);
+  }
+  elseif ($value_type == 'entity') {
+    return isset($mapping[$value]) ? $mapping[$value] : ($fallback ? $value : FALSE);
+  }
+}
+
+
+/**
+ * Filter tip callback for the token input filter.
+ */
+function _token_filter_filter_tips($filter, $format, $long = FALSE) {
+  if ($long) {
+    $output = t('Global tokens will be replaced with their respective token values (e.g. [site:name] or [current-page:title]). The following is a list of the tokens that are available:');
+    $output .= theme('token_tree', array('click_insert' => FALSE));
+    return $output;
+  }
+  else {
+    return t('Global tokens will be replaced with their respective token values (e.g. [site:name] or [current-page:title]).');
+  }
+}
