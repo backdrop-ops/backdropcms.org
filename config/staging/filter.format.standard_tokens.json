@@ -1,74 +1,7 @@
 {
-    "_config_name": "filter.format.filtered_html",
-    "format": "filtered_html",
-    "name": "Standard",
-    "cache": true,
-    "status": "1",
-    "weight": "0",
-    "roles": {
-        "authenticated": "authenticated",
-        "4": "4",
-        "3": "3",
-        "anonymous": 0
-    },
-    "filters": {
-        "codefilter": {
-            "status": 1,
-            "weight": -48,
-            "module": "codefilter",
-            "settings": []
-        },
-        "filter_image_caption": {
-            "status": 1,
-            "weight": -46,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_autop": {
-            "status": 1,
-            "weight": -44,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_url": {
-            "status": 1,
-            "weight": -47,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_htmlcorrector": {
-            "status": 1,
-            "weight": -42,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_html_escape": {
-            "status": 0,
-            "weight": -50,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_image_align": {
-            "status": 1,
-            "weight": -45,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_html": {
-            "status": 1,
-            "weight": -49,
-            "settings": {
-                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h1> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th><span>"
-            },
-            "module": "filter"
-        },
-        "filter_tokens": {
-            "status": 0,
-            "weight": -43,
-            "module": "token_filter",
-            "settings": []
-        }
-    },
+    "_config_name": "filter.format.standard_tokens",
+    "format": "standard_tokens",
+    "name": "Standard+Tokens",
     "editor": "ckeditor",
     "editor_settings": {
         "toolbar": [
@@ -77,20 +10,14 @@
                     "name": "Formatting",
                     "items": [
                         "Bold",
-                        "Italic"
-                    ]
-                },
-                {
-                    "name": "Links",
-                    "items": [
-                        "BackdropLink",
-                        "BackdropUnlink"
+                        "Italic",
+                        "Blockquote",
+                        "Format"
                     ]
                 },
                 {
                     "name": "Lists",
                     "items": [
-                        "Blockquote",
                         "BulletedList",
                         "NumberedList"
                     ]
@@ -104,6 +31,13 @@
                     ]
                 },
                 {
+                    "name": "Linking",
+                    "items": [
+                        "BackdropLink",
+                        "BackdropUnlink"
+                    ]
+                },
+                {
                     "name": "Media",
                     "items": [
                         "BackdropImage"
@@ -114,14 +48,6 @@
                     "items": [
                         "Source",
                         "Maximize"
-                    ]
-                },
-                {
-                    "name": "Styles",
-                    "items": [
-                        "Format",
-                        "Styles",
-                        "RemoveFormat"
                     ]
                 }
             ]
@@ -234,5 +160,72 @@
                 ]
             }
         }
-    }
+    },
+    "cache": true,
+    "status": 1,
+    "filters": {
+        "codefilter": {
+            "status": 1,
+            "weight": -48,
+            "module": "codefilter",
+            "settings": []
+        },
+        "filter_image_caption": {
+            "status": 1,
+            "weight": -46,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_autop": {
+            "status": 1,
+            "weight": -44,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_url": {
+            "status": 1,
+            "weight": -47,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_htmlcorrector": {
+            "status": 1,
+            "weight": -42,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html_escape": {
+            "status": 0,
+            "weight": -50,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_image_align": {
+            "status": 1,
+            "weight": -45,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html": {
+            "status": 1,
+            "weight": -49,
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <h3> <h4> <h5> <p> <img> <figure> <figcaption>"
+            },
+            "module": "filter"
+        },
+        "filter_tokens": {
+            "status": 1,
+            "weight": -43,
+            "module": "token_filter",
+            "settings": []
+        }
+    },
+    "roles": {
+        "4": "4",
+        "3": "3",
+        "anonymous": 0,
+        "authenticated": 0
+    },
+    "weight": 0
 }
