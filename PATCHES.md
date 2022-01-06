@@ -13,6 +13,10 @@ borg - decrease header icon font size
   https://github.com/backdrop-contrib/borg/issues/22
   https://github.com/backdrop-contrib/borg/pull/23.patch
 
+borg - showcase styling
+  https://github.com/backdrop-contrib/borg/issues/28
+  https://github.com/backdrop-contrib/borg/pull/29.patch
+
 ---
 
 akismet - prevent PHP fatal when bulk deleting users
