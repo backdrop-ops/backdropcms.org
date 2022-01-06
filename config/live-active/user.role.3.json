@@ -276,6 +276,13 @@
         "administer xmlsitemap",
         "use text format filtered_html",
         "use text format full_html",
-        "protected from spambot scans"
+        "protected from spambot scans",
+        "create terms in development_status",
+        "create terms in feature_type",
+        "create terms in maintenance_status",
+        "create terms in project_tags",
+        "create terms in services",
+        "create terms in tags",
+        "use text format standard_tokens"
     ]
 }
