@@ -11,23 +11,18 @@ require_once BACKDROP_ROOT . '/core/modules/views/tests/views_query.test';
  * Tests the argument_comment_user_uid handler.
  */
 class CommentViewsHandlerArgumentUserUidTest extends ViewsSqlTest {
-
   /**
    * Post comment.
    *
-   * @param object $node
+   * @param $node
    *   Node to post comment on.
-   * @param array $comment
-   *   Comment to save.
+   * @param $comment
+   *   Comment to save
    */
-  public function postComment($node, $comment = array()) {
+  function postComment($node, $comment = array()) {
     $comment += array(
       'uid' => $this->loggedInUser->uid,
       'nid' => $node->nid,
-      'cid' => NULL,
-      // To indicate that a comment does not have a parent comment use the value
-      // zero instead of an empty string.
-      'pid' => 0,
     );
     $comment = entity_create('comment', $comment);
     return comment_save($comment);

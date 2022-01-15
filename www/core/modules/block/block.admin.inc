@@ -19,7 +19,6 @@ function block_admin_list() {
   $rows = array();
   foreach ($custom_blocks_info as $delta => $block_info) {
     $block = block_custom_block_load($delta);
-    $row = array();
     $row[] = theme('label_machine_name__block', array(
       'label' => $block_info['info'],
       'machine_name' => $delta,
@@ -55,7 +54,6 @@ function block_admin_list() {
       '#links' => $links,
     );
     $row[] = array('data' => $operations);
-
     $rows[] = $row;
   }
 
