@@ -41,7 +41,7 @@ class LayoutAccess extends LayoutHandler {
    * @param $contexts
    *   An array containing available contexts.
    * @return string
-   *   The sanitized HTML summary string for this access check.
+   *   The summary string for this access check.
    */
   function summary() {
     return '';

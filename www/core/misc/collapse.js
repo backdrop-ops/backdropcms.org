@@ -7,7 +7,6 @@ Backdrop.toggleFieldset = function (fieldset) {
   var $fieldset = $(fieldset);
   if ($fieldset.is('.collapsed')) {
     var $content = $('> .fieldset-wrapper', fieldset).hide();
-    var insideDialog = Boolean($fieldset.parents('.ui-dialog-content').length);
     $fieldset
       .removeClass('collapsed')
       .find('> legend span.fieldset-legend-prefix').html(Backdrop.t('Hide'));
@@ -15,19 +14,15 @@ Backdrop.toggleFieldset = function (fieldset) {
       duration: 'fast',
       easing: 'linear',
       complete: function () {
-        if (insideDialog === false) {
-          Backdrop.collapseScrollIntoView(fieldset);
-        }
+        Backdrop.collapseScrollIntoView(fieldset);
         $fieldset.trigger({ type: 'collapsed', value: false });
         $(window).triggerHandler('resize');
         Backdrop.optimizedResize.trigger();
         fieldset.animating = false;
       },
       step: function () {
-        // Scroll the fieldset into view unless inside a dialog.
-        if (insideDialog === false) {
-          Backdrop.collapseScrollIntoView(fieldset);
-        }
+        // Scroll the fieldset into view.
+        Backdrop.collapseScrollIntoView(fieldset);
       }
     });
   }

@@ -3,7 +3,7 @@
  *
  * Contains styles only needed for several Project node types.
  *
- * These elements were separated from the components.css file because there is
+ * These elements were separated from the compontents.css file because there is
  * a lot of code in here that's not needed for most of the site.
  ******************************************************************************/
 
@@ -42,7 +42,7 @@ article.node-project .field-name-body br {
 **/
 /* This should add a headline to docs that don't have one */
 .node-project.view-mode-full .field-name-body .field-item > p:first-child:before {
-  content: 'Overview';
+  content: 'Documentation';
   display: block;
   font-size: 1em;
   margin: 2em 0 1em;
@@ -50,10 +50,6 @@ article.node-project .field-name-body br {
   border-top: 2px solid #d4d6d6;
   text-transform: uppercase;
   font-weight: 600;
-}
-/* This adjusts vertical spacing in the right sidebar */
-.block-project-github-project-github .item-list li {
-  margin-top: 20px;
 }
 
 /**

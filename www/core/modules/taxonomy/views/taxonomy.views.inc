@@ -114,15 +114,6 @@ function taxonomy_views_data() {
     ),
   );
 
-  // Aliased path to term.
-  $data['taxonomy_term_data']['term_path'] = array(
-    'title' => t('Path'),
-    'help' => t('The aliased path to this taxonomy term.'),
-    'field' => array(
-      'handler' => 'views_handler_field_term_path',
-    ),
-  );
-
   // taxonomy weight
   $data['taxonomy_term_data']['weight'] = array(
     'title' => t('Weight'),

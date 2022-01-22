@@ -102,9 +102,9 @@ jQuery.fn.fieldUIPopulateOptions = function (options, selected, widgetDefault) {
       // Figure out which value should be selected. The 'selected' param
       // takes precedence.
       var is_selected = (
-        (value == selected) ||
-        (selected == null && text == previousSelectedText) ||
-        (selected == null && value == widgetDefault)
+        (typeof selected != 'undefined' && value == selected) ||
+        (typeof selected == 'undefined' && text == previousSelectedText) ||
+        (typeof selected == 'undefined' && value == widgetDefault)
       );
       html += '<option value="' + value + '"' + (is_selected ? ' selected="selected"' : '') + '>' + text + '</option>';
     });

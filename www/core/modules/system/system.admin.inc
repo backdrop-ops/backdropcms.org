@@ -418,6 +418,8 @@ function system_theme_settings($form, &$form_state, $key) {
     '#type' => 'value',
     '#value' => $key,
   );
+  // Store the form before processing theme settings so we can check for changes.
+  $form_original = $form;
 
   // Create a list which includes the current theme and all its base themes.
   if (isset($themes[$key]->base_themes)) {
@@ -451,12 +453,14 @@ function system_theme_settings($form, &$form_state, $key) {
     )), 'info');
   }
 
-  // Add the submit button.
-  $form['actions'] = array('#type' => 'actions');
-  $form['actions']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save theme settings'),
-  );
+  if ($form_original !== $form) {
+    // If the form was modified, add the submit button.
+    $form['actions'] = array('#type' => 'actions');
+    $form['actions']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Save theme settings'),
+    );
+  }
 
   return $form;
 }

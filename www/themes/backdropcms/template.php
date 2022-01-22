@@ -4,6 +4,15 @@
  * Theme and preprocess functions for the backdropcms theme.
  */
 
+/*******************************************************************************
+ * Alter functions: modify renderable structures before used.
+ ******************************************************************************/
+
+
+/*******************************************************************************
+ * Preprocess functions: prepare variables for templates.
+ ******************************************************************************/
+
 /**
  * Prepares variables for page templates.
  * @see page.tpl.php
@@ -33,4 +42,43 @@ function backdropcms_preprocess_page(&$variables) {
       <!-- End Facebook Pixel Code -->';
     }
   }
+}
+
+/******************************************************************************
+ * Theme function overrides
+ ******************************************************************************/
+
+/**
+ * Overrides theme_menu_link().
+ */
+function backdropcms_menu_link(array $variables) {
+  $element = $variables['element'];
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    $sub_menu = backdrop_render($element['#below']);
+  }
+
+  $menu_name = isset($element['#original_link']['menu_name']) ? $element['#original_link']['menu_name'] : NULL;
+  if ($menu_name === 'main-menu' || $menu_name === 'menu-handbook') {
+    // If this is the handbook link and we're on a book page, set an active class.
+    if ($element['#href'] === 'node/1') {
+      $node = menu_get_object();
+      if (isset($node) && isset($node->type) && $node->type === 'book') {
+        $element['#attributes']['class'][] = 'active';
+      }
+    }
+  }
+
+  if ($menu_name === 'main-menu' && (
+        $element['#href'] == 'https://forum.backdropcms.org' ||
+        $element['#href'] == 'https://docs.backdropcms.org' ||
+        $element['#href'] == 'https://events.backdropcms.org')) {
+    $title = check_plain($element['#title']);
+    $element['#title'] = $title . ' <i class="fa fa-external-link" aria-hidden="true"></i>';
+    $element['#localized_options']['html'] = TRUE;
+  }
+
+  $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+  return '<li' . backdrop_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
 }
