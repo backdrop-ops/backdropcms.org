@@ -219,3 +219,8 @@ name = Node publishing states tests
 description = Tests the new node states for Draft, Publish Now and Schedule Publish Time.
 group = Node
 file = node.test
+
+; Added by Backdrop CMS packaging script on 2022-01-21
+project = backdrop
+version = 1.21.1
+timestamp = 1642810793
