@@ -1,0 +1,41 @@
+{
+    "_config_name": "field.instance.user.user.field_photo",
+    "field_name": "field_photo",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Headshot",
+    "widget": {
+        "weight": "3",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "medium"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "file_directory": "images/profile",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "alt_field": 0,
+        "title_field": 0,
+        "default_image": "public://default_images_0",
+        "user_register_form": 0,
+        "max_dimensions": "350x350",
+        "min_dimensions": ""
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
+        }
+    }
+}

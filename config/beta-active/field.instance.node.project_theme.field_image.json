@@ -1,0 +1,65 @@
+{
+    "_config_name": "field.instance.node.project_theme.field_image",
+    "field_name": "field_image",
+    "entity_type": "node",
+    "bundle": "project_theme",
+    "label": "Screenshot",
+    "widget": {
+        "weight": "7",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "project",
+            "browser_view": "image_library"
+        }
+    },
+    "description": "Include a screenshot of this project in action. The image should be a 4:3 ratio size for best display.",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "file_directory": "theme-screenshots",
+        "file_extensions": "png",
+        "max_filesize": "10MB",
+        "max_dimensions": "2048x1536",
+        "min_dimensions": "292x219",
+        "alt_field": 1,
+        "title_field": 0,
+        "orientate": 0,
+        "default_image": "",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "1",
+            "settings": {
+                "image_style": "project",
+                "image_link": "",
+                "image_float": ""
+            },
+            "module": "image"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
+        },
+        "project_search": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "0",
+            "settings": {
+                "image_style": "project",
+                "image_link": "content",
+                "image_float": ""
+            },
+            "module": "image"
+        }
+    }
+}

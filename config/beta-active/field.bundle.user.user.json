@@ -1,0 +1,34 @@
+{
+    "_config_name": "field.bundle.user.user",
+    "bundle": "user",
+    "entity_type": "user",
+    "view_modes": {
+        "full": {
+            "custom_settings": false
+        }
+    },
+    "extra_fields": {
+        "form": {
+            "redirect": {
+                "weight": "18"
+            },
+            "account": {
+                "weight": "0"
+            },
+            "timezone": {
+                "weight": "17"
+            },
+            "googleanalytics": {
+                "weight": "18"
+            }
+        },
+        "display": {
+            "member_for": {
+                "default": {
+                    "weight": "14",
+                    "visible": false
+                }
+            }
+        }
+    }
+}

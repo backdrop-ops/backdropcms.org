@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.instance.node.event.field_event_offerings",
+    "field_name": "field_event_offerings",
+    "entity_type": "node",
+    "bundle": "event",
+    "label": "Offerings",
+    "widget": {
+        "weight": "6",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": "hallway"
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "list_default",
+            "weight": "4",
+            "settings": [],
+            "module": "list"
+        }
+    }
+}

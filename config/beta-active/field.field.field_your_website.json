@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.field.field_your_website",
+    "field_name": "field_your_website",
+    "type": "link_field",
+    "module": "link",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "attributes": {
+            "target": "default",
+            "class": "",
+            "rel": ""
+        },
+        "url": 0,
+        "title": "optional",
+        "title_value": "",
+        "title_maxlength": 128,
+        "enable_tokens": 1,
+        "display": {
+            "url_cutoff": 80
+        }
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}

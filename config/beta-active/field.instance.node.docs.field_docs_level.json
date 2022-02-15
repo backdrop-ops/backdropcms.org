@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.instance.node.docs.field_docs_level",
+    "field_name": "field_docs_level",
+    "entity_type": "node",
+    "bundle": "docs",
+    "label": "Documentation Level",
+    "widget": {
+        "weight": "1",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": "intro"
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "0",
+            "settings": [],
+            "module": "list"
+        }
+    }
+}

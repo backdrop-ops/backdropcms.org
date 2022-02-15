@@ -1,0 +1,27 @@
+{
+    "_config_name": "metatag.instance.global.frontpage",
+    "module": "metatag",
+    "storage": "overridden",
+    "name": "global.frontpage",
+    "instance": "global:frontpage",
+    "label": "Global: Home page",
+    "disabled": false,
+    "api_version": 1,
+    "config": {
+        "title": {
+            "value": "[site:name] | Free Open Source CMS built in PHP"
+        },
+        "description": {
+            "value": "Backdrop CMS is a simple, lightweight, and easy-to-use Content Management System for building professional websites."
+        },
+        "abstract": {
+            "value": "Backdrop CMS is a simple, lightweight, and easy-to-use Content Management System for building professional websites."
+        },
+        "canonical": {
+            "value": "[site:url]"
+        },
+        "shortlink": {
+            "value": "[site:url]"
+        }
+    }
+}

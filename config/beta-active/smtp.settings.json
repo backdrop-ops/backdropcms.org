@@ -1,0 +1,21 @@
+{
+    "_config_name": "smtp.settings",
+    "smtp_library": "modules/contrib/smtp/smtp.module",
+    "smtp_on": "1",
+    "smtp_queue": 0,
+    "smtp_host": "smtp.sendgrid.net",
+    "smtp_hostbackup": "smtp.sendgrid.net",
+    "smtp_port": "587",
+    "smtp_protocol": "tls",
+    "smtp_username": "apikey",
+    "smtp_password": "",
+    "smtp_from": "no-reply@backdropcms.org",
+    "smtp_fromname": "BackdropCMS.org",
+    "smtp_allowhtml": 0,
+    "smtp_test_address": "",
+    "smtp_debugging": 0,
+    "smtp_previous_mail_system": null,
+    "mail_system": {
+        "default-system": "SmtpMailSystem"
+    }
+}

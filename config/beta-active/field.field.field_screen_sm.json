@@ -1,0 +1,22 @@
+{
+    "_config_name": "field.field.field_screen_sm",
+    "field_name": "field_screen_sm",
+    "type": "image",
+    "translatable": false,
+    "module": "image",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "-1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": {
+        "uri_scheme": "public",
+        "default_image": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}

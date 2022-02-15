@@ -1,0 +1,46 @@
+{
+    "_config_name": "field.instance.node.sa.field_sa_versions",
+    "field_name": "field_sa_versions",
+    "entity_type": "node",
+    "bundle": "sa",
+    "deleted": "0",
+    "label": "Versions affected",
+    "widget": {
+        "weight": "6",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "5",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "6",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": [
+        {
+            "value": "<ul>\r\n\t<li>Backdrop Core 1.20.x versions prior to 1.20.?</li>\r\n\t<li>Backdrop Core 1.19.x versions prior to 1.19.?</li>\r\n</ul>\r\n\r\n<p>Backdrop versions 1.18&nbsp;and prior do not receive security coverage.</p>\r\n",
+            "format": "filtered_html"
+        }
+    ],
+    "default_value_function": null
+}

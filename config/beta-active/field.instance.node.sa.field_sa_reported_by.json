@@ -1,0 +1,45 @@
+{
+    "_config_name": "field.instance.node.sa.field_sa_reported_by",
+    "field_name": "field_sa_reported_by",
+    "entity_type": "node",
+    "bundle": "sa",
+    "deleted": "0",
+    "label": "Reported By",
+    "widget": {
+        "weight": "9",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "8"
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "text_default",
+            "weight": "8",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "10",
+            "settings": []
+        }
+    },
+    "required": 0,
+    "description": "If mirroring a drupal.org SA, copy all 'Reported by' names, then add those who helped with Backdrop.",
+    "default_value": [
+        {
+            "value": "<ul>\r\n\t<li><a href=\"https://github.com/username\">Real Name</a> of the Backdrop CMS Security Team</li>\r\n\t<li><a href=\"https://github.com/username\">Real Name</a></li>\r\n</ul>\r\n",
+            "format": "filtered_html"
+        }
+    ],
+    "default_value_function": null
+}

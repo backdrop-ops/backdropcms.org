@@ -1,0 +1,43 @@
+{
+    "_config_name": "field.instance.node.quote.field_photo",
+    "field_name": "field_photo",
+    "entity_type": "node",
+    "bundle": "quote",
+    "deleted": "0",
+    "label": "Photo",
+    "widget": {
+        "weight": "0",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "thumbnail"
+        }
+    },
+    "settings": {
+        "file_directory": "photos",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "alt_field": 1,
+        "title_field": 0,
+        "default_image": 0,
+        "user_register_form": false,
+        "max_dimensions": "",
+        "min_dimensions": ""
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "image",
+            "weight": "0",
+            "settings": {
+                "image_style": "",
+                "image_link": ""
+            },
+            "module": "image"
+        }
+    },
+    "required": 1,
+    "description": ""
+}

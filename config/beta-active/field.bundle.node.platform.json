@@ -1,0 +1,17 @@
+{
+    "_config_name": "field.bundle.node.platform",
+    "bundle": "platform",
+    "entity_type": "node",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "title": {
+                "weight": "0"
+            },
+            "akismet": {
+                "weight": "7"
+            }
+        },
+        "display": []
+    }
+}

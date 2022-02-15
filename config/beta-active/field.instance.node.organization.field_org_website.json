@@ -1,0 +1,56 @@
+{
+    "_config_name": "field.instance.node.organization.field_org_website",
+    "field_name": "field_org_website",
+    "entity_type": "node",
+    "bundle": "organization",
+    "label": "Website",
+    "widget": {
+        "weight": "3",
+        "type": "link_field",
+        "module": "link",
+        "active": 0,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "validate_url": 1,
+        "url": 0,
+        "title": "optional",
+        "title_value": "",
+        "title_label_use_field_label": 0,
+        "title_maxlength": "128",
+        "enable_tokens": 0,
+        "display": {
+            "url_cutoff": "80"
+        },
+        "attributes": {
+            "target": "_blank",
+            "rel": "nofollow",
+            "configurable_class": 0,
+            "class": "",
+            "configurable_title": 0,
+            "title": ""
+        },
+        "rel_remove": "default",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "link_default",
+            "weight": "1",
+            "settings": [],
+            "module": "link"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "2",
+            "settings": []
+        }
+    }
+}

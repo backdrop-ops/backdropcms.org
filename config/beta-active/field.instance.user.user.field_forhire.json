@@ -1,0 +1,36 @@
+{
+    "_config_name": "field.instance.user.user.field_forhire",
+    "field_name": "field_forhire",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Available for hire",
+    "widget": {
+        "weight": "2",
+        "type": "options_onoff",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "display_label": 1
+        }
+    },
+    "description": "Checking this box will list your information on the <a href=\"/support/services\">service providers</a> page.",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": 0
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": 0
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
+        }
+    }
+}

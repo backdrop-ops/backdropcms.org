@@ -1,0 +1,38 @@
+{
+    "_config_name": "field.instance.node.docs.field_callout",
+    "field_name": "field_callout",
+    "entity_type": "node",
+    "bundle": "docs",
+    "label": "Callout",
+    "widget": {
+        "weight": "3",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "120"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": ""
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "2",
+            "settings": [],
+            "module": "text"
+        }
+    }
+}

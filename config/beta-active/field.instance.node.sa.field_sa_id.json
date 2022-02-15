@@ -1,0 +1,45 @@
+{
+    "_config_name": "field.instance.node.sa.field_sa_id",
+    "field_name": "field_sa_id",
+    "entity_type": "node",
+    "bundle": "sa",
+    "deleted": "0",
+    "label": "Advisory ID",
+    "widget": {
+        "weight": "4",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "60"
+        }
+    },
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "3",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "inline",
+            "type": "text_default",
+            "weight": "4",
+            "settings": [],
+            "module": "text"
+        }
+    },
+    "required": 0,
+    "description": "Either BACKDROP-SA-CORE-YYYY-XXX or BACKDROP-SA-CONTRIB-YYYY-XXX",
+    "default_value": [
+        {
+            "value": "BACKDROP-SA-CORE-2021-0XX"
+        }
+    ],
+    "default_value_function": null
+}

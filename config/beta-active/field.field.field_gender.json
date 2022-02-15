@@ -1,0 +1,28 @@
+{
+    "_config_name": "field.field.field_gender",
+    "field_name": "field_gender",
+    "type": "list_text",
+    "translatable": false,
+    "module": "list",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "-1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "male": "Male",
+            "female": "Female",
+            "bi": "Bigender",
+            "non": "Non-Binary",
+            "other": "Other"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}

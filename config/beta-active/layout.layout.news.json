@@ -1,0 +1,463 @@
+{
+    "_config_name": "layout.layout.news",
+    "path": "news",
+    "name": "news",
+    "title": "News",
+    "description": null,
+    "renderer_name": "standard",
+    "module": null,
+    "weight": 0,
+    "storage": 1,
+    "layout_template": "moscone_flipped",
+    "disabled": false,
+    "settings": {
+        "title": "",
+        "title_display": "default",
+        "title_block": null
+    },
+    "positions": {
+        "header": [
+            "74914ed2-7655-40ad-9900-b106a5b7d481",
+            "e7b7643d-b925-4d01-b836-54f47b917f7f",
+            "703d4639-db2d-4934-8300-eae9f40fb582"
+        ],
+        "top": [],
+        "content": [
+            "70afa89b-8469-4c6b-8801-01932c27a8a3",
+            "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309"
+        ],
+        "sidebar": [
+            "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909",
+            "1c732b6a-9279-45af-b242-666a63fa2848",
+            "1cb8ed0f-b783-4901-9a00-f445fd6db153",
+            "0765a3fa-4353-454d-9301-1c346e550eae",
+            "e161c1f5-be5c-47c4-a723-352567c8870c",
+            "11f77fa6-ce86-4619-9338-56b87d16920f"
+        ],
+        "bottom": [],
+        "footer": [
+            "91be13c7-fc28-4904-ad00-bb7ea3f36b68",
+            "43e431c8-4e4c-4b0a-9740-64ee320ef7e2",
+            "dca8ec3b-4d56-44da-b100-0020d8c86e3c",
+            "9a1ad266-2c94-4b75-9c08-8cb4ac7972fa"
+        ],
+        "title": []
+    },
+    "content": {
+        "74914ed2-7655-40ad-9900-b106a5b7d481": {
+            "plugin": "borg_blocks:branding",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "branding",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "74914ed2-7655-40ad-9900-b106a5b7d481",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "e7b7643d-b925-4d01-b836-54f47b917f7f": {
+            "plugin": "system:user-menu",
+            "data": {
+                "module": "system",
+                "delta": "user-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "user-menu",
+                        "style": "tree",
+                        "level": "1",
+                        "depth": "1",
+                        "expand_all": 0,
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "e7b7643d-b925-4d01-b836-54f47b917f7f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "703d4639-db2d-4934-8300-eae9f40fb582": {
+            "plugin": "system:main-menu",
+            "data": {
+                "module": "system",
+                "delta": "main-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "2",
+                        "toggle": 1
+                    },
+                    "contexts": []
+                },
+                "uuid": "703d4639-db2d-4934-8300-eae9f40fb582",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "70afa89b-8469-4c6b-8801-01932c27a8a3": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<h2>Here you'll find posts&nbsp;about both the software&nbsp;and the Backdrop community.</h2>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "70afa89b-8469-4c6b-8801-01932c27a8a3",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309": {
+            "plugin": "system:main",
+            "data": {
+                "module": "system",
+                "delta": "main",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "dynamic",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309",
+                "style": {
+                    "plugin": "dynamic",
+                    "data": {
+                        "settings": {
+                            "classes": "l-content-wrapper",
+                            "wrapper_tag": "div",
+                            "title_tag": "h2",
+                            "title_classes": "block-title",
+                            "content_tag": "div",
+                            "content_classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909": {
+            "plugin": "block:newsletter_signup",
+            "data": {
+                "module": "block",
+                "delta": "newsletter_signup",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "Newsletter",
+                    "style": "default",
+                    "block_settings": {
+                        "description": "Text and a link to our newsletter signup page",
+                        "delta": "newsletter_signup",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1c732b6a-9279-45af-b242-666a63fa2848": {
+            "plugin": "block:7",
+            "data": {
+                "module": "block",
+                "delta": "7",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "7",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "1c732b6a-9279-45af-b242-666a63fa2848",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1cb8ed0f-b783-4901-9a00-f445fd6db153": {
+            "plugin": "block:meeting_schedule",
+            "data": {
+                "module": "block",
+                "delta": "meeting_schedule",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title": ""
+                },
+                "uuid": "1cb8ed0f-b783-4901-9a00-f445fd6db153",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "0765a3fa-4353-454d-9301-1c346e550eae": {
+            "plugin": "views:backdrop_on_the_web-block_1",
+            "data": {
+                "module": "views",
+                "delta": "backdrop_on_the_web-block_1",
+                "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": true,
+                    "pager_id": "0",
+                    "items_per_page": "25",
+                    "offset": 0,
+                    "path": "news/on-the-web",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
+                },
+                "uuid": "0765a3fa-4353-454d-9301-1c346e550eae",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "e161c1f5-be5c-47c4-a723-352567c8870c": {
+            "plugin": "views:events-block_1",
+            "data": {
+                "module": "views",
+                "delta": "events-block_1",
+                "settings": {
+                    "link_to_view": null,
+                    "more_link": 1,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "100",
+                    "offset": 0,
+                    "path": "news/events",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false
+                },
+                "uuid": "e161c1f5-be5c-47c4-a723-352567c8870c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "11f77fa6-ce86-4619-9338-56b87d16920f": {
+            "plugin": "block:9",
+            "data": {
+                "module": "block",
+                "delta": "9",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "9",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "11f77fa6-ce86-4619-9338-56b87d16920f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "91be13c7-fc28-4904-ad00-bb7ea3f36b68": {
+            "plugin": "system:powered-by",
+            "data": {
+                "module": "system",
+                "delta": "powered-by",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "91be13c7-fc28-4904-ad00-bb7ea3f36b68",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "43e431c8-4e4c-4b0a-9740-64ee320ef7e2": {
+            "plugin": "on_the_web:social_links",
+            "data": {
+                "module": "on_the_web",
+                "delta": "social_links",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "Stay connected",
+                    "style": "default",
+                    "block_settings": {
+                        "services": {
+                            "display": "auto",
+                            "enabled": {
+                                "rss": "rss",
+                                "youtube": "youtube",
+                                "google": "google",
+                                "facebook": "facebook",
+                                "twitter": "twitter"
+                            }
+                        }
+                    },
+                    "contexts": []
+                },
+                "uuid": "43e431c8-4e4c-4b0a-9740-64ee320ef7e2",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "col-sm-6"
+                        }
+                    }
+                }
+            }
+        },
+        "dca8ec3b-4d56-44da-b100-0020d8c86e3c": {
+            "plugin": "block:3",
+            "data": {
+                "module": "block",
+                "delta": "3",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "3",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "dca8ec3b-4d56-44da-b100-0020d8c86e3c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "col-sm-6"
+                        }
+                    }
+                }
+            }
+        },
+        "9a1ad266-2c94-4b75-9c08-8cb4ac7972fa": {
+            "plugin": "menu:menu-footer-menu",
+            "data": {
+                "module": "menu",
+                "delta": "menu-footer-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "menu-footer-menu",
+                        "style": "top_only",
+                        "level": "1",
+                        "depth": "0",
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "9a1ad266-2c94-4b75-9c08-8cb4ac7972fa",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,38 @@
+{
+    "_config_name": "field.instance.node.sa.field_sa_risk",
+    "field_name": "field_sa_risk",
+    "entity_type": "node",
+    "bundle": "sa",
+    "label": "Security risk",
+    "widget": {
+        "weight": "1",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "Copy the risk level from the drupal SA if known, otherwise leave blank.",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "1",
+            "settings": [],
+            "module": "list"
+        },
+        "teaser": {
+            "label": "inline",
+            "type": "list_default",
+            "weight": "1",
+            "settings": [],
+            "module": "list"
+        }
+    }
+}

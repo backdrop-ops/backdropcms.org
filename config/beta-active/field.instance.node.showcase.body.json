@@ -1,0 +1,42 @@
+{
+    "_config_name": "field.instance.node.showcase.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "showcase",
+    "label": "Describe the project in more detail",
+    "widget": {
+        "weight": "6",
+        "type": "text_textarea_with_summary",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "10",
+            "summary_rows": 5
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "display_summary": 0,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "2",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
+        }
+    },
+    "description": "What were its goals?, What were its requirements? What was the outcome?",
+    "required": 1,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null
+}

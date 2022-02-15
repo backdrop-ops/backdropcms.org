@@ -1,0 +1,52 @@
+{
+    "_config_name": "node.type.docs",
+    "type": "docs",
+    "name": "Documentation",
+    "base": "node_content",
+    "module": "node",
+    "description": "Documentation pages are for the User Guide, and should not include code samples, or involve overly technical topics.",
+    "help": "Documentation pages are for the User Guide, and should not include code samples, or involve overly technical topics.  All developer documentation is on the API site.",
+    "modified": true,
+    "disabled": false,
+    "has_title": true,
+    "title_label": "Title",
+    "settings": {
+        "formblock_expose": 0,
+        "formblock_show_help": 0,
+        "menu_options": {
+            "menu-more-developer-resources": "menu-more-developer-resources",
+            "menu-handbook": "menu-handbook",
+            "menu-user-guide": "menu-user-guide",
+            "devel": 0,
+            "menu-footer-menu": 0,
+            "main-menu": 0,
+            "management": 0,
+            "user-menu": 0
+        },
+        "menu_parent": "menu-user-guide:0",
+        "status_default": 1,
+        "promote_enabled": 0,
+        "promote_default": 0,
+        "sticky_enabled": 0,
+        "sticky_default": 0,
+        "revision_enabled": 1,
+        "revision_default": 0,
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": 0,
+        "node_permissions": true,
+        "project_behavior": "none",
+        "project_release_version_format": "!api#major%minor%patch#extra",
+        "project_release_api_versions": [
+            ""
+        ],
+        "project_release_type": "",
+        "hidden_path": 0,
+        "node_preview": "1",
+        "scheduling_enabled": 1,
+        "menu_default": 0,
+        "node_submitted_format": "[node:created:medium] by [node:author]"
+    },
+    "orig_type": "docs",
+    "node_preview": "1"
+}
