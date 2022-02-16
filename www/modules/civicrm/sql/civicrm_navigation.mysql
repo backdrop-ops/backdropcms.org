@@ -91,10 +91,11 @@ VALUES
     ( @domainID, 'civicrm/activity?reset=1&action=add&context=standalone',  'New Activity',           'New Activity',         NULL,               '',             @contactlastID, '1', NULL,  5 ),
     ( @domainID, 'civicrm/activity/email/add?atype=3&action=add&reset=1&context=standalone', 'New Email',   'New Email',      NULL,               '',             @contactlastID, '1', '1',   6 ),
     ( @domainID, 'civicrm/import/contact?reset=1',                          'Import Contacts',        'Import Contacts',      'import contacts',  '',             @contactlastID, '1', NULL,  7 ),
-    ( @domainID, 'civicrm/import/activity?reset=1',                         'Import Activities',      'Import Activities',    'import contacts',  '',             @contactlastID, '1', '1',   8 ),
-    ( @domainID, 'civicrm/group/add?reset=1',                               'New Group',              'New Group',            'edit groups',      '',             @contactlastID, '1', NULL,  9 ),
-    ( @domainID, 'civicrm/group?reset=1',                                   'Manage Groups',          'Manage Groups',        'access CiviCRM',   '',             @contactlastID, '1', '1',   10 ),
-    ( @domainID, 'civicrm/tag?reset=1',                               'Manage Tags', 'Manage Tags (Categories)', 'manage tags', '',     @contactlastID, '1','1', 12 ),
+    ( @domainID, 'civicrm/import/activity?reset=1',                         'Import Activities',      'Import Activities',    'import contacts',  '',             @contactlastID, '1', NULL,   8 ),
+    ( @domainID, 'civicrm/import/custom?reset=1',                         'Import Custom Data',  'Import MultiValued Custom', 'import contacts',  '',             @contactlastID, '1', '1',   9 ),
+    ( @domainID, 'civicrm/group/add?reset=1',                               'New Group',              'New Group',            'edit groups',      '',             @contactlastID, '1', NULL,  10 ),
+    ( @domainID, 'civicrm/group?reset=1',                                   'Manage Groups',          'Manage Groups',        'access CiviCRM',   '',             @contactlastID, '1', '1',   11 ),
+    ( @domainID, 'civicrm/tag?reset=1',                               'Manage Tags', 'Manage Tags (Categories)',              'manage tags',      '',             @contactlastID, '1', '1',   12 ),
     ( @domainID, 'civicrm/contact/deduperules?reset=1',  'Find and Merge Duplicate Contacts', 'Find and Merge Duplicate Contacts', 'administer dedupe rules,merge duplicate contacts', 'OR', @contactlastID, '1', NULL, 13 );
 
 INSERT INTO civicrm_navigation

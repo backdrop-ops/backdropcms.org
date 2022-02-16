@@ -100,6 +100,16 @@ class CRM_Utils_String {
   }
 
   /**
+   * Inverse of above function, converts camelCase to snake_case
+   *
+   * @param string $str
+   * @return string
+   */
+  public static function convertStringToSnakeCase(string $str): string {
+    return strtolower(ltrim(preg_replace('/(?=[A-Z])/', '_$0', $str), '_'));
+  }
+
+  /**
    * Takes a variable name and munges it randomly into another variable name.
    *
    * @param string $name
@@ -1028,7 +1038,9 @@ class CRM_Utils_String {
     $cachingValue = $smarty->caching;
     $smarty->caching = 0;
     $smarty->assign('smartySingleUseString', $templateString);
-    $templateString = $smarty->fetch('string:{eval var=$smartySingleUseString}');
+    // Do not escape the smartySingleUseString as that is our smarty template
+    // and is likely to contain html.
+    $templateString = (string) $smarty->fetch('string:{eval var=$smartySingleUseString|smarty:nodefaults}');
     $smarty->caching = $cachingValue;
     $smarty->assign('smartySingleUseString', NULL);
     return $templateString;

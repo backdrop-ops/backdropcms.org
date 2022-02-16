@@ -765,7 +765,12 @@ VALUES
    (@option_group_id_nuf, '{ts escape="sql"}Participants{/ts}',  'civicrm_participant',  'Participant',  NULL, 0, NULL, 3, NULL, 0, 0, 1, NULL, NULL, NULL),
    (@option_group_id_nuf, '{ts escape="sql"}Contributions{/ts}', 'civicrm_contribution', 'Contribution', NULL, 0, NULL, 4, NULL, 0, 0, 1, NULL, NULL, NULL),
 
+-- Available currencies.
    (@option_group_id_currency, 'USD ($)',      'USD',     'USD',       NULL, 0, 1, 1, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_currency, 'CAD ($)',      'CAD',     'CAD',       NULL, 0, 0, 2, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_currency, 'EUR (€)',      'EUR',     'EUR',       NULL, 0, 0, 3, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_currency, 'GBP (£)',      'GBP',     'GBP',       NULL, 0, 0, 4, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_currency, 'JPY (¥)',      'JPY',     'JPY',       NULL, 0, 0, 5, NULL, 0, 0, 1, NULL, NULL, NULL),
 
 -- event name badges
   (@option_group_id_eventBadge,  '{ts escape="sql"}Name Only{/ts}'     , 1, 'CRM_Event_Badge_Simple'  ,  NULL, 0, 0, 1, '{ts escape="sql"}Simple Event Name Badge{/ts}', 0, 1, 1, NULL, NULL, NULL),
@@ -1680,7 +1685,7 @@ force=[0 or 1] optional-0 update contacts with null value, 1 update all
 limit=Number optional-Limit the number of contacts to update{/ts}', 0),
     ( @domainID, 'Daily' ,  NULL, '{ts escape="sql" skip="true"}Mail Reports{/ts}', '{ts escape="sql" skip="true"}Generates and sends out reports via email{/ts}', 'job', 'mail_report','{ts escape="sql" skip="true"}instanceId=[ID of report instance] required
 format=[csv or print] optional-output CSV or print-friendly HTML, else PDF{/ts}', 0),
-    ( @domainID, 'Daily' ,  NULL, '{ts escape="sql" skip="true"}Send Scheduled Reminders{/ts}', '{ts escape="sql" skip="true"}Sends out scheduled reminders via email{/ts}', 'job', 'send_reminder', NULL, 0),
+    ( @domainID, 'Hourly' ,  NULL, '{ts escape="sql" skip="true"}Send Scheduled Reminders{/ts}', '{ts escape="sql" skip="true"}Sends out scheduled reminders via email{/ts}', 'job', 'send_reminder', NULL, 0),
     ( @domainID, 'Always' , NULL, '{ts escape="sql" skip="true"}Update Participant Statuses{/ts}', '{ts escape="sql" skip="true"}Updates pending event participant statuses based on time{/ts}', 'job', 'process_participant', NULL, 0),
     ( @domainID, 'Daily' , NULL, '{ts escape="sql" skip="true"}Update Membership Statuses{/ts}', '{ts escape="sql" skip="true"}Updates membership statuses. WARNING: Membership renewal reminders have been migrated to the Schedule Reminders functionality, which supports multiple renewal reminders.{/ts}', 'job', 'process_membership',   NULL, 0),
     ( @domainID, 'Always' , NULL, '{ts escape="sql" skip="true"}Process Survey Respondents{/ts}',   '{ts escape="sql" skip="true"}Releases reserved survey respondents when they have been reserved for longer than the Release Frequency days specified for that survey.{/ts}', 'job', 'process_respondent',NULL, 0),

@@ -930,6 +930,7 @@ function civicrm_autoload_info() {
 
     // argument handlers
     'civicrm_plugin_argument_default' => 'modules/views/civicrm/civicrm_plugin_argument_default.inc',
+    'civicrm_plugin_argument_default_civicrm_id' => 'modules/views/civicrm/civicrm_plugin_argument_default_civicrm_id.inc',
     'views_handler_argument_civicrm_day' => 'modules/views/civicrm/views_handler_argument_civicrm_day.inc',
     'views_handler_argument_civicrm_fulldate' => 'modules/views/civicrm/views_handler_argument_civicrm_fulldate.inc',
     'views_handler_argument_civicrm_month' => 'modules/views/civicrm/views_handler_argument_civicrm_month.inc',

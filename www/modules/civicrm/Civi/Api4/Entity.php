@@ -58,9 +58,9 @@ class Entity extends Generic\AbstractEntity {
             'DAOEntity' => 'DAOEntity',
             'CustomValue' => 'CustomValue',
             'BasicEntity' => 'BasicEntity',
+            'SortableEntity' => 'SortableEntity',
             'ManagedEntity' => 'ManagedEntity',
             'EntityBridge' => 'EntityBridge',
-            'OptionList' => 'OptionList',
           ],
         ],
         [
@@ -87,6 +87,10 @@ class Entity extends Generic\AbstractEntity {
         [
           'name' => 'label_field',
           'description' => 'Field to show when displaying a record',
+        ],
+        [
+          'name' => 'order_by',
+          'description' => 'Default column to sort results',
         ],
         [
           'name' => 'searchable',

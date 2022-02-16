@@ -69,26 +69,26 @@ class CRM_Upgrade_Incremental_Base {
   }
 
   /**
-   * Verify DB state.
-   *
-   * @param $errors
-   *
-   * @return bool
-   */
-  public function verifyPreDBstate(&$errors) {
-    return TRUE;
-  }
-
-  /**
    * Compute any messages which should be displayed before upgrade.
    *
-   * Note: This function is called iteratively for each upcoming
-   * revision to the database.
+   * Downstream classes should implement this method to generate their messages.
    *
-   * @param $preUpgradeMessage
+   * This method will be invoked multiple times. Implementations MUST consult the `$rev`
+   * before deciding what messages to add. See the examples linked below.
+   *
+   * @see \CRM_Upgrade_Incremental_php_FourSeven::setPreUpgradeMessage()
+   * @see \CRM_Upgrade_Incremental_php_FiveTwenty::setPreUpgradeMessage()
+   *
+   * @param string $preUpgradeMessage
+   *   Accumulated list of messages. Alterable.
    * @param string $rev
-   *   a version number, e.g. '4.8.alpha1', '4.8.beta3', '4.8.0'.
+   *   The incremental version number. (Called repeatedly, once for each increment.)
+   *
+   *   Ex: Suppose the system upgrades from 5.7.3 to 5.10.0. The method FiveEight::setPreUpgradeMessage()
+   *   will be called for each increment of '5.8.*' ('5.8.alpha1' => '5.8.beta1' =>  '5.8.0').
    * @param null $currentVer
+   *   This is the penultimate version targeted by the upgrader.
+   *   Equivalent to CRM_Utils_System::version().
    */
   public function setPreUpgradeMessage(&$preUpgradeMessage, $rev, $currentVer = NULL) {
   }
@@ -96,10 +96,21 @@ class CRM_Upgrade_Incremental_Base {
   /**
    * Compute any messages which should be displayed after upgrade.
    *
+   * Downstream classes should implement this method to generate their messages.
+   *
+   * This method will be invoked multiple times. Implementations MUST consult the `$rev`
+   * before deciding what messages to add. See the examples linked below.
+   *
+   * @see \CRM_Upgrade_Incremental_php_FourSeven::setPostUpgradeMessage()
+   * @see \CRM_Upgrade_Incremental_php_FiveTwentyOne::setPostUpgradeMessage()
+   *
    * @param string $postUpgradeMessage
-   *   alterable.
+   *   Accumulated list of messages. Alterable.
    * @param string $rev
-   *   an intermediate version; note that setPostUpgradeMessage is called repeatedly with different $revs.
+   *   The incremental version number. (Called repeatedly, once for each increment.)
+   *
+   *   Ex: Suppose the system upgrades from 5.7.3 to 5.10.0. The method FiveEight::setPreUpgradeMessage()
+   *   will be called for each increment of '5.8.*' ('5.8.alpha1' => '5.8.beta1' =>  '5.8.0').
    */
   public function setPostUpgradeMessage(&$postUpgradeMessage, $rev) {
   }
@@ -318,6 +329,61 @@ class CRM_Upgrade_Incremental_Base {
   public static function updateGreetingOptions($ctx, string $old, string $new, $version):bool {
     $messageObj = new CRM_Upgrade_Incremental_MessageTemplates($version);
     $messageObj->replaceTokenInGreetingOptions($old, $new);
+    return TRUE;
+  }
+
+  /**
+   * Updated a currency in civicrm_currency and related configurations
+   *
+   * @param CRM_Queue_TaskContext $ctx
+   * @param string $old_name
+   * @param string $new_name
+   *
+   * @return bool
+   */
+  public static function updateCurrencyName($ctx, string $old_name, string $new_name): bool {
+    CRM_Core_DAO::executeQuery('UPDATE civicrm_currency SET name = %1 WHERE name = %2', [
+      1 => [$new_name, 'String'],
+      2 => [$old_name, 'String'],
+    ]);
+
+    $oid = CRM_Core_DAO::singleValueQuery("SELECT id FROM civicrm_option_group WHERE name = 'currencies_enabled'");
+    if ($oid) {
+      CRM_Core_DAO::executeQuery('UPDATE civicrm_option_value SET value = %1 WHERE value = %2 AND option_group_id = %3', [
+        1 => [$new_name, 'String'],
+        2 => [$old_name, 'String'],
+        3 => [$oid, 'String'],
+      ]);
+    }
+
+    CRM_Core_DAO::executeQuery('UPDATE civicrm_participant SET fee_currency = %1 WHERE fee_currency = %2', [
+      1 => [$new_name, 'String'],
+      2 => [$old_name, 'String'],
+    ]);
+
+    $tables = [
+      'civicrm_contribution',
+      'civicrm_contribution_page',
+      'civicrm_contribution_recur',
+      'civicrm_contribution_soft',
+      'civicrm_event',
+      'civicrm_financial_item',
+      'civicrm_financial_trxn',
+      'civicrm_grant',
+      'civicrm_pcp',
+      'civicrm_pledge_payment',
+      'civicrm_pledge',
+      'civicrm_product',
+    ];
+
+    foreach ($tables as $table) {
+      CRM_Core_DAO::executeQuery('UPDATE %3 SET currency = %1 WHERE currency = %2', [
+        1 => [$new_name, 'String'],
+        2 => [$old_name, 'String'],
+        3 => [$table, 'MysqlColumnNameOrAlias'],
+      ]);
+    }
+
     return TRUE;
   }
 

@@ -14,6 +14,16 @@
  */
 class CRM_Report_Form extends CRM_Core_Form {
   /**
+   * Variables smarty expects to have set.
+   *
+   * We ensure these are assigned (value = NULL) when Smarty is instantiated in
+   * order to avoid e-notices / having to use empty or isset in the template layer.
+   *
+   * @var string[]
+   */
+  public $expectedSmartyVariables = ['pager', 'skip', 'sections', 'grandStat'];
+
+  /**
    * Deprecated constant, Reports should be updated to use the getRowCount function.
    */
   const ROW_COUNT_LIMIT = 50;
@@ -287,10 +297,12 @@ class CRM_Report_Form extends CRM_Core_Form {
    * @var int
    */
   protected $_offsetValue = NULL;
+
   /**
-   * @var null
+   * @var array
    */
-  protected $_sections = NULL;
+  protected $_sections = [];
+
   protected $_autoIncludeIndexedFieldsAsOrderBys = 0;
 
   /**
@@ -528,6 +540,12 @@ class CRM_Report_Form extends CRM_Core_Form {
   public $optimisedForOnlyFullGroupBy = TRUE;
 
   /**
+   * Determines which chart types are supported for this report
+   * @var string[]
+   */
+  protected $_charts = [];
+
+  /**
    * Get the number of rows to show
    * @return int
    */
@@ -605,7 +623,9 @@ class CRM_Report_Form extends CRM_Core_Form {
    */
   public function preProcessCommon() {
     $this->_force = CRM_Utils_Request::retrieve('force', 'Boolean');
-
+    // Ensure smarty variables are assigned here since this function is called from
+    // the report api and the main buildForm is not.
+    self::$_template->ensureVariablesAreAssigned($this->expectedSmartyVariables);
     $this->_dashBoardRowCount = CRM_Utils_Request::retrieve('rowCount', 'Integer');
 
     $this->_section = CRM_Utils_Request::retrieve('section', 'Integer');
@@ -2471,14 +2491,14 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
     if ($pager) {
       $this->setPager();
     }
-
+    $chartEnabled = !empty($this->_params['charts']) && !empty($rows);
+    $this->assign('chartEnabled', $chartEnabled);
     // allow building charts if any
-    if (!empty($this->_params['charts']) && !empty($rows)) {
+    if ($chartEnabled) {
       $this->buildChart($rows);
-      $this->assign('chartEnabled', TRUE);
       $this->_chartId = "{$this->_params['charts']}_" .
         ($this->_id ? $this->_id : substr(get_class($this), 16)) . '_' .
-        session_id();
+        CRM_Core_Config::singleton()->userSystem->getSessionId();
       $this->assign('chartId', $this->_chartId);
     }
 
@@ -2487,6 +2507,12 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
       if (!empty($value['no_display'])) {
         unset($this->_columnHeaders[$key]);
       }
+      foreach (['colspan', 'type'] as $expectedKey) {
+        if (!isset($this->_columnHeaders[$key][$expectedKey])) {
+          // Ensure it is set to prevent smarty notices.
+          $this->_columnHeaders[$key][$expectedKey] = FALSE;
+        }
+      }
     }
 
     // unset columns not to be displayed.
@@ -2494,6 +2520,12 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
       foreach ($this->_noDisplay as $noDisplayField) {
         foreach ($rows as $rowNum => $row) {
           unset($this->_columnHeaders[$noDisplayField]);
+          $expectedKeys = ['class'];
+          foreach ($expectedKeys as $expectedKey) {
+            if (!array_key_exists($expectedKey, $row)) {
+              $rows[$rowNum][$expectedKey] = NULL;
+            }
+          }
         }
       }
     }
@@ -3300,7 +3332,7 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
    * @param array $rows
    */
   public function doTemplateAssignment(&$rows) {
-    $this->assign_by_ref('columnHeaders', $this->_columnHeaders);
+    $this->assign('columnHeaders', $this->_columnHeaders);
     $this->assign_by_ref('rows', $rows);
     $this->assign('statistics', $this->statistics($rows));
   }
@@ -3344,12 +3376,14 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
     $statistics['counts']['rowCount'] = [
       'title' => ts('Row(s) Listed'),
       'value' => $count,
+      'type' => CRM_Utils_Type::T_INT,
     ];
 
     if ($this->_rowsFound && ($this->_rowsFound > $count)) {
       $statistics['counts']['rowsFound'] = [
         'title' => ts('Total Row(s)'),
         'value' => $this->_rowsFound,
+        'type' => CRM_Utils_Type::T_INT,
       ];
     }
   }
@@ -3377,6 +3411,10 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
         'title' => ts('Grouping(s)'),
         'value' => implode(' & ', $combinations),
       ];
+    }
+    else {
+      // prevents an e-notice in statistics.tpl.
+      $statistics['groups'] = [];
     }
   }
 
@@ -3484,6 +3522,10 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
             }
           }
         }
+      }
+      else {
+        // Prevents an e-notice in statistics.tpl.
+        $statistics['filters'] = [];
       }
     }
   }
@@ -3883,7 +3925,7 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
   }
 
   /**
-   * Buld contact acl clause
+   * Build contact acl clause
    * @deprecated in favor of buildPermissionClause
    *
    * Note that if the buildPermissionClause function is called (which most reports do from
@@ -3896,7 +3938,7 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
   }
 
   /**
-   * Build the permision clause for all entities in this report
+   * Build the permission clause for all entities in this report
    */
   public function buildPermissionClause() {
     $ret = [];
@@ -5029,7 +5071,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
   public function setEntityRefDefaults(&$field, $table) {
     $field['attributes'] = $field['attributes'] ? $field['attributes'] : [];
     $field['attributes'] += [
-      'entity' => CRM_Core_DAO_AllCoreTables::getBriefName(CRM_Core_DAO_AllCoreTables::getClassForTable($table)),
+      'entity' => CRM_Core_DAO_AllCoreTables::getEntityNameForTable($table),
       'multiple' => TRUE,
       'placeholder' => ts('- select -'),
     ];
@@ -5384,7 +5426,7 @@ LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_a
    */
   protected function getContactColumns($options = []) {
     $defaultOptions = [
-      'custom_fields' => ['Individual', 'Contact', 'Organization'],
+      'custom_fields' => CRM_Contact_BAO_ContactType::basicTypes(),
       'fields_defaults' => ['display_name', 'id'],
       'order_bys_defaults' => ['sort_name ASC'],
       'contact_type' => NULL,

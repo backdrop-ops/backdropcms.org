@@ -11,10 +11,9 @@
 
     .config(function($routeProvider) {
       $routeProvider.when('/list', {
-        controller: function() {
-          searchEntity = 'SavedSearch';
-        },
-        template: '<crm-search-admin-search-listing></crm-search-admin-search-listing>',
+        controller: 'searchList',
+        reloadOnSearch: false,
+        templateUrl: '~/crmSearchAdmin/searchListing/searchList.html',
       });
       $routeProvider.when('/create/:entity', {
         controller: 'searchCreate',
@@ -43,6 +42,52 @@
           }
         }
       });
+    })
+
+    // Controller for tabbed view of SavedSearches
+    .controller('searchList', function($scope, $timeout, searchMeta, formatForSelect2, dialogService) {
+      var ts = $scope.ts = CRM.ts('org.civicrm.search_kit'),
+        ctrl = $scope.$ctrl = this;
+      searchEntity = 'SavedSearch';
+
+        // Metadata needed for filters
+      this.entitySelect = searchMeta.getPrimaryAndSecondaryEntitySelect();
+      this.modules = _.sortBy(_.transform((CRM.crmSearchAdmin.modules), function(modules, label, key) {
+        modules.push({text: label, id: key});
+      }, []), 'text');
+      this.getTags = function() {
+        return {results: formatForSelect2(CRM.crmSearchAdmin.tags, 'id', 'name', ['color', 'description'])};
+      };
+
+      // Tabs include a rowCount which will be updated by the search controller
+      this.tabs = [
+        {name: 'custom', title: ts('Custom Searches'), icon: 'fa-search-plus', rowCount: null, filters: {has_base: false}},
+        {name: 'packaged', title: ts('Packaged Searches'), icon: 'fa-suitcase', rowCount: null, filters: {has_base: true}}
+      ];
+      $scope.$bindToRoute({
+        expr: '$ctrl.tab',
+        param: 'tab',
+        format: 'raw'
+      });
+      if (!this.tab) {
+        this.tab = this.tabs[0].name;
+      }
+
+      this.openImportDialog = function() {
+        var options = CRM.utils.adjustDialogDefaults({
+          autoOpen: false,
+          title: ts('Import Saved Search')
+        });
+        dialogService.open('crmSearchAdminImport', '~/crmSearchAdmin/searchListing/import.html', {}, options)
+          .then(function() {
+            // Refresh the custom tab by resetting the filters
+            ctrl.tabs[0].filters = {};
+            // Timeout ensures the change gets noticed by the display's $watch
+            $timeout(function() {
+              ctrl.tabs[0].filters = {has_base: false};
+            }, 300);
+          }, _.noop);
+      };
     })
 
     // Controller for creating a new search
@@ -281,7 +326,7 @@
           values = _.merge({
             type: 'field',
             key: info.alias,
-            dataType: (info.fn && info.fn.dataType) || field.data_type
+            dataType: (info.fn && info.fn.data_type) || field.data_type
           }, defaults);
         if (defaults.label === true) {
           values.label = getDefaultLabel(fieldExpr);

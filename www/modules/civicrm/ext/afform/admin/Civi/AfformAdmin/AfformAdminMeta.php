@@ -20,7 +20,7 @@ class AfformAdminMeta {
       ->execute();
     // Pluralize tabs (too bad option groups only store a single label)
     $plurals = [
-      'form' => E::ts('Custom Forms'),
+      'form' => E::ts('Submission Forms'),
       'search' => E::ts('Search Forms'),
       'block' => E::ts('Field Blocks'),
       'system' => E::ts('System Forms'),
@@ -109,7 +109,7 @@ class AfformAdminMeta {
       'select' => ['name', 'label', 'input_type', 'input_attrs', 'required', 'options', 'help_pre', 'help_post', 'serialize', 'data_type', 'fk_entity', 'readonly'],
       'where' => [['input_type', 'IS NOT NULL']],
     ];
-    if (in_array($entityName, ['Individual', 'Household', 'Organization'])) {
+    if (in_array($entityName, \CRM_Contact_BAO_ContactType::basicTypes(TRUE), TRUE)) {
       $params['values']['contact_type'] = $entityName;
       $entityName = 'Contact';
     }

@@ -141,6 +141,11 @@ class CRM_Contact_BAO_Relationship extends CRM_Contact_DAO_Relationship {
   }
 
   /**
+   * Only called from import now... plus one place outside of core & tests.
+   *
+   * @todo - deprecate more aggressively - will involve copying to the import
+   * class, adding a deprecation notice here & removing from tests.
+   *
    * Takes an associative array and creates a relationship object.
    *
    * @deprecated For single creates use the api instead (it's tested).
@@ -979,8 +984,7 @@ WHERE  relationship_type_id = " . CRM_Utils_Type::escape($type, 'Integer');
     $relationship = CRM_Core_DAO::executeQuery($queryString);
     while ($relationship->fetch()) {
       // Check whether the custom field values are identical.
-      $result = self::checkDuplicateCustomFields($params, $relationship->id);
-      if ($result) {
+      if (self::checkDuplicateCustomFields($params['custom'] ?? [], $relationship->id)) {
         return TRUE;
       }
     }
@@ -992,23 +996,27 @@ WHERE  relationship_type_id = " . CRM_Utils_Type::escape($type, 'Integer');
    * the same as the values of the custom fields of the relation with given
    * $relationshipId.
    *
-   * @param array $params (reference) an assoc array of name/value pairs
+   * @param array $params an assoc array of name/value pairs
    * @param int $relationshipId ID of an existing duplicate relation
    *
    * @return boolean true if custom field values are identical
    * @access private
    * @static
    */
-  private static function checkDuplicateCustomFields(&$params, $relationshipId) {
+  private static function checkDuplicateCustomFields($params, $relationshipId) {
     // Get the custom values of the existing relationship.
     $existingValues = CRM_Core_BAO_CustomValueTable::getEntityValues($relationshipId, 'Relationship');
     // Create a similar array for the new relationship.
     $newValues = [];
-    if (isset($params['custom']) && is_array($params['custom'])) {
-      // $params['custom'] seems to be an array. Each value is again an array.
+    if (!is_array($params)) {
+      // No idea when this would happen....
+      CRM_Core_Error::deprecatedWarning('params should be an array');
+    }
+    else {
+      // $params seems to be an array, as it should be. Each value is again an array.
       // This array contains one value (key -1), and this value seems to be
       // an array with the information about the custom value.
-      foreach ($params['custom'] as $value) {
+      foreach ($params as $value) {
         foreach ($value as $customValue) {
           $newValues[$customValue['custom_field_id']] = $customValue['value'];
         }
@@ -1529,7 +1537,7 @@ LEFT JOIN  civicrm_country ON (civicrm_address.country_id = civicrm_country.id)
    * @throws \CRM_Core_Exception
    * @throws \CiviCRM_API3_Exception
    */
-  public static function relatedMemberships($contactId, &$params, $ids, $action = CRM_Core_Action::ADD, $active = TRUE) {
+  public static function relatedMemberships($contactId, $params, $ids, $action = CRM_Core_Action::ADD, $active = TRUE) {
     // Check the end date and set the status of the relationship
     // accordingly.
     $status = self::CURRENT;

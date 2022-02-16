@@ -25,7 +25,7 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
   /**
    * Minimum previous CiviCRM version we can directly upgrade from
    */
-  const MINIMUM_UPGRADABLE_VERSION = '4.5.9';
+  const MINIMUM_UPGRADABLE_VERSION = '4.6.12';
 
   /**
    * @var \CRM_Core_Config
@@ -732,22 +732,6 @@ SET    version = '$version'
     $phpFunctionName = 'upgrade_' . str_replace('.', '_', $rev);
 
     $versionObject = $upgrade->incrementalPhpObject($rev);
-
-    // pre-db check for major release.
-    if ($upgrade->checkVersionRelease($rev, 'alpha1')) {
-      if (!(is_callable([$versionObject, 'verifyPreDBstate']))) {
-        throw new CRM_Core_Exception("verifyPreDBstate method was not found for $rev");
-      }
-
-      $error = NULL;
-      if (!($versionObject->verifyPreDBstate($error))) {
-        if (!isset($error)) {
-          $error = "post-condition failed for current upgrade for $rev";
-        }
-        throw new CRM_Core_Exception($error);
-      }
-
-    }
 
     $upgrade->setSchemaStructureTables($rev);
 

@@ -254,6 +254,36 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
   ];
 
   /**
+   * Variables smarty expects to have set.
+   *
+   * We ensure these are assigned (value = NULL) when Smarty is instantiated in
+   * order to avoid e-notices / having to use empty or isset in the template layer.
+   *
+   * @var string[]
+   */
+  public $expectedSmartyVariables = [
+    // in CMSPrint.tpl
+    'breadcrumb',
+    'pageTitle',
+    'urlIsPublic',
+    'isDeleted',
+    // in 'body.tpl
+    'suppressForm',
+    'beginHookFormElements',
+    // required for footer.tpl
+    'contactId',
+    // required for info.tpl
+    'infoMessage',
+    'infoTitle',
+    'infoType',
+    'infoOptions',
+    // required for attachmentjs.tpl
+    'context',
+    // FormButtons.tpl (adds buttons to forms).
+    'linkButtons',
+  ];
+
+  /**
    * Constructor for the basic form page.
    *
    * We should not use QuickForm directly. This class provides a lot
@@ -298,6 +328,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     if (!isset(self::$_template)) {
       self::$_template = CRM_Core_Smarty::singleton();
     }
+
     // Workaround for CRM-15153 - give each form a reasonably unique css class
     $this->addClass(CRM_Utils_System::getClassName($this));
 
@@ -675,6 +706,12 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     if ($this->submitOnce) {
       $this->setAttribute('data-submit-once', 'true');
     }
+    // Smarty $_template is a static var which persists between tests, so
+    // if something calls clearTemplateVars(), the static still exists but
+    // our ensured variables get blown away, so we need to set them even if
+    // it's already been initialized.
+    self::$_template->ensureVariablesAreAssigned($this->expectedSmartyVariables);
+
   }
 
   /**
@@ -908,7 +945,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
       $params['country'] = $params["country-{$this->_bltID}"] = $params["billing_country-{$this->_bltID}"] = CRM_Core_PseudoConstant::countryIsoCode($params["billing_country_id-{$this->_bltID}"]);
     }
 
-    list($hasAddressField, $addressParams) = CRM_Contribute_BAO_Contribution::getPaymentProcessorReadyAddressParams($params, $this->_bltID);
+    [$hasAddressField, $addressParams] = CRM_Contribute_BAO_Contribution::getPaymentProcessorReadyAddressParams($params, $this->_bltID);
     if ($hasAddressField) {
       $params = array_merge($params, $addressParams);
     }
@@ -1023,6 +1060,52 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
   }
 
   /**
+   * Quick form elements which are conditionally added to the form.
+   *
+   * Elements in this array will be added to the form at the end if not present
+   * so that smarty does not e-notice on things like '{if $form.group}' when
+   * 'group' is not added to the form (e.g when no groups exist).
+   *
+   * @var array
+   */
+  protected $optionalQuickFormElements = [];
+
+  /**
+   * Add an optional element to the optional elements array.
+   *
+   * These elements are assigned as empty (null) variables if
+   * there is no real field - allowing smarty to use them without
+   * notices.
+   *
+   * @param string $elementName
+   */
+  public function addOptionalQuickFormElement(string $elementName): void {
+    $this->optionalQuickFormElements[] = $elementName;
+  }
+
+  /**
+   * Get any quick-form elements that may not be present in the form.
+   *
+   * To make life simpler for smarty we ensure they are set to null
+   * rather than unset. This is done at the last minute when $this
+   * is converted to an array to be assigned to the form.
+   *
+   * @return array
+   */
+  public function getOptionalQuickFormElements(): array {
+    return $this->optionalQuickFormElements;
+  }
+
+  /**
+   * Add an expected smarty variable to the array.
+   *
+   * @param string $elementName
+   */
+  public function addExpectedSmartyVariable(string $elementName): void {
+    $this->expectedSmartyVariables[] = $elementName;
+  }
+
+  /**
    * Render form and return contents.
    *
    * @return string
@@ -1035,6 +1118,11 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     $content['formName'] = $this->getName();
     // CRM-15153
     $content['formClass'] = CRM_Utils_System::getClassName($this);
+    foreach (array_merge($this->getOptionalQuickFormElements(), $this->expectedSmartyVariables) as $string) {
+      if (!array_key_exists($string, $content)) {
+        $content[$string] = NULL;
+      }
+    }
     return $content;
   }
 
@@ -1520,7 +1608,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     }
     // Handle custom field
     if (strpos($name, 'custom_') === 0 && is_numeric($name[7])) {
-      list(, $id) = explode('_', $name);
+      [, $id] = explode('_', $name);
       $label = $props['label'] ?? CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', 'label', $id);
       $gid = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', 'option_group_id', $id);
       if (CRM_Utils_Array::value('context', $props) != 'search') {

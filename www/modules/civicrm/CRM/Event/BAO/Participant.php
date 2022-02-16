@@ -798,7 +798,7 @@ WHERE  civicrm_participant.id = {$participantId}
    *
    * @param array $defaults
    * @param string $property
-   * @param string $lookup
+   * @param string[] $lookup
    * @param bool $reverse
    *
    * @return bool
@@ -1477,7 +1477,7 @@ UPDATE  civicrm_participant
    *
    * @return string
    */
-  public function updateStatusMessage($participantId, $statusChangeTo, $fromStatusId) {
+  public static function updateStatusMessage($participantId, $statusChangeTo, $fromStatusId) {
     $statusMsg = NULL;
     $results = self::transitionParticipants([$participantId],
       $statusChangeTo, $fromStatusId, TRUE
@@ -1596,8 +1596,7 @@ UPDATE  civicrm_participant
    * @param int $newStatusId
    *   New status.
    *
-   * @return bool
-   *   true if allowed
+   * @return array
    */
   public static function getValidAdditionalIds($participantId, $oldStatusId, $newStatusId) {
 

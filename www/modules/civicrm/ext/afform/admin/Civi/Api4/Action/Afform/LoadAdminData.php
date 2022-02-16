@@ -144,7 +144,7 @@ class LoadAdminData extends \Civi\Api4\Generic\AbstractAction {
         $scanBlocks($info['definition']['layout']);
       }
 
-      if (array_intersect($entities, ['Individual', 'Household', 'Organization'])) {
+      if (array_intersect($entities, \CRM_Contact_BAO_ContactType::basicTypes(TRUE))) {
         $entities[] = 'Contact';
       }
 
@@ -187,6 +187,7 @@ class LoadAdminData extends \Civi\Api4\Generic\AbstractAction {
           ->addSelect('*', 'type:name', 'type:icon', 'saved_search_id.name', 'saved_search_id.api_entity', 'saved_search_id.api_params')
           ->execute()->first();
         $display['calc_fields'] = $this->getCalcFields($display['saved_search_id.api_entity'], $display['saved_search_id.api_params']);
+        $display['filters'] = empty($displayTag['filters']) ? NULL : (\CRM_Utils_JS::getRawProps($displayTag['filters']) ?: NULL);
         $info['search_displays'][] = $display;
         if ($newForm) {
           $info['definition']['layout'][0]['#children'][] = $displayTag + ['#tag' => $display['type:name']];
@@ -204,7 +205,7 @@ class LoadAdminData extends \Civi\Api4\Generic\AbstractAction {
 
     // Optimization - since contact fields are a combination of these three,
     // we'll combine them client-side rather than sending them via ajax.
-    elseif (array_intersect($entities, ['Individual', 'Household', 'Organization'])) {
+    elseif (array_intersect($entities, \CRM_Contact_BAO_ContactType::basicTypes(TRUE))) {
       $entities = array_diff($entities, ['Contact']);
     }
 

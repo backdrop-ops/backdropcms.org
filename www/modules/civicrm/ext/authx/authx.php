@@ -39,6 +39,44 @@ Civi::dispatcher()->addListener('civi.invoke.auth', function($e) {
 });
 
 /**
+ * Perform a system login.
+ *
+ * This is useful for backend scripts that need to switch to a specific user.
+ *
+ * As needed, this will update the Civi session and CMS data.
+ *
+ * @param array{flow: ?string, useSession: ?bool, principal: ?array, cred: ?string,} $details
+ *   Describe the authentication process with these properties:
+ *
+ *   - string $flow (default 'script');
+ *     The type of authentication flow being used
+ *     Ex: 'param', 'header', 'auto'
+ *   - bool $useSession (default FALSE)
+ *     If TRUE, then the authentication should be persistent (in a session variable).
+ *     If FALSE, then the authentication should be ephemeral (single page-request).
+ *
+ *   And then ONE of these properties to describe the user/principal:
+ *
+ *   - string $cred
+ *     The credential, as formatted in the 'Authorization' header.
+ *     Ex: 'Bearer 12345', 'Basic ASDFFDSA=='
+ *   - array $principal
+ *     Description of a validated principal.
+ *     Must include 'contactId', 'userId', xor 'user'
+ * @return array{contactId: int, userId: ?int, flow: string, credType: string, useSession: bool}
+ *   An array describing the authenticated session.
+ * @throws \Civi\Authx\AuthxException
+ */
+function authx_login(array $details): array {
+  $defaults = ['flow' => 'script', 'useSession' => FALSE];
+  $details = array_merge($defaults, $details);
+  $auth = new \Civi\Authx\Authenticator();
+  $auth->setRejectMode('exception');
+  $auth->auth(NULL, array_merge($defaults, $details));
+  return \CRM_Core_Session::singleton()->get("authx");
+}
+
+/**
  * @return \Civi\Authx\AuthxInterface
  */
 function _authx_uf() {
@@ -83,15 +121,6 @@ function _authx_reload($route, $queryString) {
  */
 function authx_civicrm_config(&$config) {
   _authx_civix_civicrm_config($config);
-}
-
-/**
- * Implements hook_civicrm_xmlMenu().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_xmlMenu
- */
-function authx_civicrm_xmlMenu(&$files) {
-  _authx_civix_civicrm_xmlMenu($files);
 }
 
 /**
@@ -149,54 +178,6 @@ function authx_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
 }
 
 /**
- * Implements hook_civicrm_managed().
- *
- * Generate a list of entities to create/deactivate/delete when this module
- * is installed, disabled, uninstalled.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed
- */
-function authx_civicrm_managed(&$entities) {
-  _authx_civix_civicrm_managed($entities);
-}
-
-/**
- * Implements hook_civicrm_caseTypes().
- *
- * Generate a list of case-types.
- *
- * Note: This hook only runs in CiviCRM 4.4+.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
- */
-function authx_civicrm_caseTypes(&$caseTypes) {
-  _authx_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
- * Implements hook_civicrm_angularModules().
- *
- * Generate a list of Angular modules.
- *
- * Note: This hook only runs in CiviCRM 4.5+. It may
- * use features only available in v4.6+.
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules
- */
-function authx_civicrm_angularModules(&$angularModules) {
-  _authx_civix_civicrm_angularModules($angularModules);
-}
-
-/**
- * Implements hook_civicrm_alterSettingsFolders().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
- */
-function authx_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _authx_civix_civicrm_alterSettingsFolders($metaDataFolders);
-}
-
-/**
  * Implements hook_civicrm_entityTypes().
  *
  * Declare entity types provided by this module.
@@ -205,13 +186,6 @@ function authx_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  */
 function authx_civicrm_entityTypes(&$entityTypes) {
   _authx_civix_civicrm_entityTypes($entityTypes);
-}
-
-/**
- * Implements hook_civicrm_thems().
- */
-function authx_civicrm_themes(&$themes) {
-  _authx_civix_civicrm_themes($themes);
 }
 
 /**

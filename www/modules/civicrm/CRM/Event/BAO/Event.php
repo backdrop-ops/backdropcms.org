@@ -650,13 +650,12 @@ $event_summary_limit
   }
 
   /**
-   * Get the information to map a event.
+   * Get the information to map an event.
    *
    * @param int $id
    *   For which we want map info.
    *
-   * @return null|string
-   *   title of the event
+   * @return array
    */
   public static function &getMapInfo(&$id) {
 
@@ -1171,7 +1170,7 @@ WHERE civicrm_event.is_active = 1
           'credit_card_number' => CRM_Utils_System::mungeCreditCard(CRM_Utils_Array::value('credit_card_number', $participantParams)),
           'credit_card_exp_date' => CRM_Utils_Date::mysqlToIso(CRM_Utils_Date::format(CRM_Utils_Array::value('credit_card_exp_date', $participantParams))),
           'selfcancelxfer_time' => abs($values['event']['selfcancelxfer_time']),
-          'selfservice_preposition' => $values['event']['selfcancelxfer_time'] < 0 ? 'after' : 'before',
+          'selfservice_preposition' => $values['event']['selfcancelxfer_time'] < 0 ? ts('after') : ts('before'),
           'currency' => $values['event']['currency'] ?? CRM_Core_Config::singleton()->defaultCurrency,
         ]);
 
@@ -1261,7 +1260,7 @@ WHERE civicrm_event.is_active = 1
    * @param int $id
    * @param string $name
    * @param int $cid
-   * @param string $template
+   * @param \CRM_Core_Smarty $template
    * @param int $participantId
    * @param bool $isTest
    * @param bool $returnResults
@@ -1663,7 +1662,7 @@ WHERE  id = $cfID
                   }
                 }
                 elseif ($dao->data_type == 'Float') {
-                  $customVal = (float ) ($params[$name]);
+                  $customVal = (float) ($params[$name]);
                 }
                 elseif ($dao->data_type == 'Date') {
                   //@todo note the currently we are using default date time formatting. Since you can select/set
@@ -2233,7 +2232,7 @@ WHERE  ce.loc_block_id = $locBlockId";
    *
    * @param int $eventId
    *   Event id.
-   * @param sting $extraWhereClause
+   * @param string $extraWhereClause
    *   Extra filter on participants.
    *
    * @return int
@@ -2361,11 +2360,12 @@ LEFT  JOIN  civicrm_price_field_value value ON ( value.id = lineItem.price_field
     // Special logic for fields whose options depend on context or properties
     switch ($fieldName) {
       case 'financial_type_id':
-        // @fixme - this is going to ignore context, better to get conditions, add params, and call PseudoConstant::get
-        // @fixme - https://lab.civicrm.org/dev/core/issues/547 if CiviContribute not enabled this causes an invalid query
-        //   because $relationTypeId is not set in CRM_Financial_BAO_FinancialType::getIncomeFinancialType()
+        // https://lab.civicrm.org/dev/core/issues/547 if CiviContribute not enabled this causes an invalid query
+        // @todo - the component is enabled check should be done within getIncomeFinancialType
+        // It looks to me like test cover was NOT added to cover the change
+        // that added this so we need to assume there is no test cover
         if (array_key_exists('CiviContribute', CRM_Core_Component::getEnabledComponents())) {
-          return CRM_Financial_BAO_FinancialType::getIncomeFinancialType();
+          return CRM_Financial_BAO_FinancialType::getIncomeFinancialType($props['check_permissions'] ?? TRUE);
         }
         return [];
     }

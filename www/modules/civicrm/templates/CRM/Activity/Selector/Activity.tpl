@@ -14,7 +14,7 @@
   <h3 class="crm-table-title">{ts}Activities{/ts}</h3>
   {/if}
 {if $rows}
-  <form title="activity_pager" action="{crmURL}" method="post">
+  <form action="{crmURL}" method="post">
   {include file="CRM/common/pager.tpl" location="top"}
 
   {strip}
@@ -97,9 +97,7 @@
 {else}
 
   <div class="messages status no-popup">
-    {if isset($caseview) and $caseview}
-      {ts}There are no Activities attached to this case record.{/ts}{if $permission EQ 'edit'} {ts}You can go to the Activities tab to create or attach activity records.{/ts}{/if}
-    {elseif $context eq 'home'}
+    {if $context eq 'home'}
       {ts}There are no Activities to display.{/ts}
     {else}
       {ts}There are no Activities to display.{/ts}{if $permission EQ 'edit'} {ts}You can use the links above to schedule or record an activity.{/ts}{/if}

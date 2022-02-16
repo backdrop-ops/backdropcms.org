@@ -55,22 +55,23 @@
       refreshAfterTask: function() {
         this.selectedRows.length = 0;
         this.allRowsSelected = false;
+        this.rowCount = undefined;
         this.runSearch();
       },
 
-      // Overwrite empty onChangeFilters array from searchDisplayBaseTrait
+      // Add onChangeFilters callback (gets merged with others via angular.extend)
       onChangeFilters: [function() {
         // Reset selection when filters are changed
         this.selectedRows.length = 0;
         this.allRowsSelected = false;
       }],
 
-      // Overwrite empty onPostRun array from searchDisplayBaseTrait
+      // Add onPostRun callback (gets merged with others via angular.extend)
       onPostRun: [function(results, status, editedRow) {
         if (editedRow && status === 'success') {
           // If edited row disappears (because edits cause it to not meet search criteria), deselect it
           var index = this.selectedRows.indexOf(editedRow.key);
-          if (index > -1 && !_.findWhere(results, {id: editedRow.key})) {
+          if (index > -1 && !_.findWhere(results, {key: editedRow.key})) {
             this.selectedRows.splice(index, 1);
           }
         }

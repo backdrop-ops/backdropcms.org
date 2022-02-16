@@ -300,9 +300,9 @@ class CRM_Core_DAO extends DB_DataObject {
     $daoName = get_class($this);
     $handled = FALSE;
 
-    if (!$handled && $dbName == 'contact_sub_type') {
-      //coming up with a rule to set this is too complex let's not set it
-      $handled = TRUE;
+    if (in_array($dbName, ['contact_sub_type', 'email_greeting_id', 'postal_greeting_id', 'addressee_id'], TRUE)) {
+      //coming up with a rule to set these is too complex - skip
+      return;
     }
 
     // Pick an option value if needed
@@ -2523,8 +2523,7 @@ SELECT contact_id
   /**
    * Find all records which refer to this entity.
    *
-   * @return array
-   *   Array of objects referencing this
+   * @return CRM_Core_DAO[]
    */
   public function findReferences() {
     $links = self::getReferencesToTable(static::getTableName());
@@ -2547,7 +2546,7 @@ SELECT contact_id
   }
 
   /**
-   * @return array
+   * @return array{name: string, type: string, count: int, table: string|null, key: string|null}[]
    *   each item has keys:
    *   - name: string
    *   - type: string
@@ -2562,7 +2561,7 @@ SELECT contact_id
     foreach ($links as $refSpec) {
       /** @var $refSpec CRM_Core_Reference_Interface */
       $count = $refSpec->getReferenceCount($this);
-      if ($count['count'] != 0) {
+      if (!empty($count['count'])) {
         $counts[] = $count;
       }
     }
@@ -3080,7 +3079,7 @@ SELECT contact_id
         $relatedEntities = $this->buildOptions('entity_table', 'get');
         foreach ((array) $relatedEntities as $table => $ent) {
           if (!empty($ent)) {
-            $ent = CRM_Core_DAO_AllCoreTables::getBriefName(CRM_Core_DAO_AllCoreTables::getClassForTable($table));
+            $ent = CRM_Core_DAO_AllCoreTables::getEntityNameForTable($table);
             $subquery = CRM_Utils_SQL::mergeSubquery($ent);
             if ($subquery) {
               $relatedClauses[] = "(entity_table = '$table' AND entity_id " . implode(' AND entity_id ', $subquery) . ")";

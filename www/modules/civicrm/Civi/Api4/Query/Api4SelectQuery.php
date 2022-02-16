@@ -452,9 +452,13 @@ class Api4SelectQuery {
 
     // For WHERE clause, expr must be the name of a field.
     if ($type === 'WHERE' && !$isExpression) {
-      $field = $this->getField($expr, TRUE);
-      FormattingUtil::formatInputValue($value, $expr, $field, $operator);
-      $fieldAlias = $this->getExpression($expr)->render($this->apiFieldSpec);
+      $expr = $this->getExpression($expr, ['SqlField', 'SqlFunction']);
+      if ($expr->getType() === 'SqlField') {
+        $fieldName = count($expr->getFields()) === 1 ? $expr->getFields()[0] : NULL;
+        $field = $this->getField($fieldName, TRUE);
+        FormattingUtil::formatInputValue($value, $fieldName, $field, $operator);
+      }
+      $fieldAlias = $expr->render($this->apiFieldSpec);
     }
     // For HAVING, expr must be an item in the SELECT clause
     elseif ($type === 'HAVING') {
@@ -500,7 +504,7 @@ class Api4SelectQuery {
       $fieldAlias = $expr->render($this->apiFieldSpec);
       if (is_string($value)) {
         $valExpr = $this->getExpression($value);
-        if ($fieldName && $valExpr->getType() === 'SqlString') {
+        if ($expr->getType() === 'SqlField' && $valExpr->getType() === 'SqlString') {
           $value = $valExpr->getExpr();
           FormattingUtil::formatInputValue($value, $fieldName, $this->apiFieldSpec[$fieldName], $operator);
           return $this->createSQLClause($fieldAlias, $operator, $value, $this->apiFieldSpec[$fieldName], $depth);
@@ -510,7 +514,7 @@ class Api4SelectQuery {
           return sprintf('%s %s %s', $fieldAlias, $operator, $value);
         }
       }
-      elseif ($fieldName) {
+      elseif ($expr->getType() === 'SqlField') {
         $field = $this->getField($fieldName);
         FormattingUtil::formatInputValue($value, $fieldName, $field, $operator);
       }
@@ -592,11 +596,12 @@ class Api4SelectQuery {
 
   /**
    * @param string $expr
+   * @param array $allowedTypes
    * @return SqlExpression
    * @throws \API_Exception
    */
-  protected function getExpression(string $expr) {
-    $sqlExpr = SqlExpression::convert($expr);
+  protected function getExpression(string $expr, $allowedTypes = NULL) {
+    $sqlExpr = SqlExpression::convert($expr, FALSE, $allowedTypes);
     foreach ($sqlExpr->getFields() as $fieldName) {
       $this->getField($fieldName, TRUE);
     }
@@ -675,10 +680,16 @@ class Api4SelectQuery {
       return TRUE;
     }
     if (!isset($this->entityAccess[$entity])) {
-      $this->entityAccess[$entity] = (bool) civicrm_api4($entity, 'getActions', [
-        'where' => [['name', '=', 'get']],
-        'select' => ['name'],
-      ])->first();
+      try {
+        $this->entityAccess[$entity] = (bool) civicrm_api4($entity, 'getActions', [
+          'where' => [['name', '=', 'get']],
+          'select' => ['name'],
+        ])->first();
+      }
+      // Anonymous users might not even be allowed to use 'getActions'
+      catch (UnauthorizedException $e) {
+        $this->entityAccess[$entity] = FALSE;
+      }
     }
     return $this->entityAccess[$entity];
   }
@@ -872,31 +883,28 @@ class Api4SelectQuery {
    * @throws \API_Exception
    */
   private function getBridgeRefs(string $bridgeEntity, string $joinEntity): array {
-    $bridgeFields = CoreUtil::getInfoItem($bridgeEntity, 'bridge') ?? [];
-    // Sanity check - bridge entity should declare exactly 2 FK fields
-    if (count($bridgeFields) !== 2) {
-      throw new \API_Exception("Illegal bridge entity specified: $bridgeEntity. Expected 2 bridge fields, found " . count($bridgeFields));
-    }
+    $bridges = CoreUtil::getInfoItem($bridgeEntity, 'bridge') ?? [];
     /* @var \CRM_Core_DAO $bridgeDAO */
     $bridgeDAO = CoreUtil::getInfoItem($bridgeEntity, 'dao');
+    $bridgeEntityFields = \Civi\API\Request::create($bridgeEntity, 'get', ['version' => 4, 'checkPermissions' => $this->getCheckPermissions()])->entityFields();
     $bridgeTable = $bridgeDAO::getTableName();
 
     // Get the 2 bridge reference columns as CRM_Core_Reference_* objects
-    $joinRef = $baseRef = NULL;
-    foreach ($bridgeDAO::getReferenceColumns() as $ref) {
-      if (array_key_exists($ref->getReferenceKey(), $bridgeFields)) {
-        if (!$joinRef && in_array($joinEntity, $ref->getTargetEntities())) {
-          $joinRef = $ref;
+    $referenceColumns = $bridgeDAO::getReferenceColumns();
+    foreach ($referenceColumns as $joinRef) {
+      $refKey = $joinRef->getReferenceKey();
+      if (array_key_exists($refKey, $bridges) && in_array($joinEntity, $joinRef->getTargetEntities())) {
+        if (!empty($bridgeEntityFields[$refKey]['fk_entity']) && $joinEntity !== $bridgeEntityFields[$refKey]['fk_entity']) {
+          continue;
         }
-        else {
-          $baseRef = $ref;
+        foreach ($bridgeDAO::getReferenceColumns() as $baseRef) {
+          if ($baseRef->getReferenceKey() === $bridges[$refKey]['to']) {
+            return [$bridgeTable, $baseRef, $joinRef];
+          }
         }
       }
     }
-    if (!$joinRef || !$baseRef) {
-      throw new \API_Exception("Unable to join $bridgeEntity to $joinEntity");
-    }
-    return [$bridgeTable, $baseRef, $joinRef];
+    throw new \API_Exception("Unable to join $bridgeEntity to $joinEntity");
   }
 
   /**

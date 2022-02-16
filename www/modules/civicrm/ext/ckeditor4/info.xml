@@ -15,7 +15,7 @@
     <url desc="Licensing">https://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
   <releaseDate>2021-05-23</releaseDate>
-  <version>5.44.0</version>
+  <version>5.46.2</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>5.39</ver>
@@ -24,6 +24,9 @@
   <classloader>
     <psr4 prefix="Civi\" path="Civi"/>
   </classloader>
+  <mixins>
+    <mixin>menu-xml@1.0.0</mixin>
+  </mixins>
   <civix>
     <namespace>CRM/Ckeditor4</namespace>
   </civix>

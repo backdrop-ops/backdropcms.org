@@ -180,7 +180,7 @@ class CRM_Activity_Form_Activity extends CRM_Contact_Form_Task {
       'source_contact_id' => [
         'type' => 'entityRef',
         'label' => ts('Added by'),
-        'required' => FALSE,
+        'required' => TRUE,
       ],
       'target_contact_id' => [
         'type' => 'entityRef',
@@ -462,12 +462,11 @@ class CRM_Activity_Form_Activity extends CRM_Contact_Form_Task {
     CRM_Core_BAO_File::buildAttachment($this, 'civicrm_activity', $this->_activityId, NULL, TRUE);
 
     // figure out the file name for activity type, if any
-    if ($this->_activityTypeId &&
-      $this->_activityTypeFile = CRM_Activity_BAO_Activity::getFileForActivityTypeId($this->_activityTypeId, $this->_crmDir)
-    ) {
-      $this->assign('activityTypeFile', $this->_activityTypeFile);
-      $this->assign('crmDir', $this->_crmDir);
+    if ($this->_activityTypeId) {
+      $this->_activityTypeFile = CRM_Activity_BAO_Activity::getFileForActivityTypeId($this->_activityTypeId, $this->_crmDir);
     }
+    $this->assign('activityTypeFile', $this->_activityTypeFile);
+    $this->assign('crmDir', $this->_crmDir);
 
     $this->setFields();
 
@@ -513,6 +512,19 @@ class CRM_Activity_Form_Activity extends CRM_Contact_Form_Task {
         $this->_values['source_contact']
       );
     }
+  }
+
+  /**
+   * Get any smarty elements that may not be present in the form.
+   *
+   * To make life simpler for smarty we ensure they are set to null
+   * rather than unset. This is done at the last minute when $this
+   * is converted to an array to be assigned to the form.
+   *
+   * @return array
+   */
+  public function getOptionalQuickFormElements(): array {
+    return ['separation', 'tag'];
   }
 
   /**

@@ -40,34 +40,29 @@
         this.groupExists = !!this.savedSearch.groups.length;
 
         if (!this.savedSearch.id) {
+          var defaults = {
+            version: 4,
+            select: getDefaultSelect(),
+            orderBy: {},
+            where: [],
+          };
+          _.each(['groupBy', 'join', 'having'], function(param) {
+            if (ctrl.paramExists(param)) {
+              defaults[param] = [];
+            }
+          });
+
           $scope.$bindToRoute({
             param: 'params',
             expr: '$ctrl.savedSearch.api_params',
             deep: true,
-            default: {
-              version: 4,
-              select: getDefaultSelect(),
-              orderBy: {},
-              where: [],
-            }
+            default: defaults
           });
         }
 
         $scope.mainEntitySelect = searchMeta.getPrimaryAndSecondaryEntitySelect();
 
         $scope.$watchCollection('$ctrl.savedSearch.api_params.select', onChangeSelect);
-
-        if (this.paramExists('groupBy')) {
-          this.savedSearch.api_params.groupBy = this.savedSearch.api_params.groupBy || [];
-        }
-
-        if (this.paramExists('join')) {
-          this.savedSearch.api_params.join = this.savedSearch.api_params.join || [];
-        }
-
-        if (this.paramExists('having')) {
-          this.savedSearch.api_params.having = this.savedSearch.api_params.having || [];
-        }
 
         $scope.$watch('$ctrl.savedSearch', onChangeAnything, true);
 
@@ -429,7 +424,7 @@
       // Is a column eligible to use an aggregate function?
       this.canAggregate = function(col) {
         // If the query does not use grouping, never
-        if (!ctrl.savedSearch.api_params.groupBy.length) {
+        if (!ctrl.savedSearch.api_params.groupBy || !ctrl.savedSearch.api_params.groupBy.length) {
           return false;
         }
         var arg = _.findWhere(searchMeta.parseExpr(col).args, {type: 'field'}) || {};

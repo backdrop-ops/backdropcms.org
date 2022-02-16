@@ -414,7 +414,7 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
       }
     }
 
-    $contactTypes = ['Individual', 'Household', 'Organization'];
+    $contactTypes = CRM_Contact_BAO_ContactType::basicTypes(TRUE);
     $subTypes = CRM_Contact_BAO_ContactType::subTypes();
 
     $profileTypeComponent = array_intersect($components, $profileTypes);
@@ -675,41 +675,6 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Check for mix profiles groups (eg: individual + other contact types)
-   *
-   * @param $ctype
-   *
-   * @return bool
-   *   true for mix profile group else false
-   */
-  public static function checkProfileGroupType($ctype) {
-    $ufGroup = new CRM_Core_DAO_UFGroup();
-
-    $query = "
-SELECT ufg.id as id
-  FROM civicrm_uf_group as ufg, civicrm_uf_join as ufj
- WHERE ufg.id = ufj.uf_group_id
-   AND ufj.module = 'User Registration'
-   AND ufg.is_active = 1 ";
-
-    $ufGroup = CRM_Core_DAO::executeQuery($query);
-
-    $fields = [];
-    $validProfiles = ['Individual', 'Organization', 'Household', 'Contribution'];
-    while ($ufGroup->fetch()) {
-      $profileType = self::getProfileType($ufGroup->id);
-      if (in_array($profileType, $validProfiles)) {
-        continue;
-      }
-      elseif ($profileType) {
-        return FALSE;
-      }
-    }
-
-    return TRUE;
-  }
-
-  /**
    * Check for searchable or in selector field for given profile.
    *
    * @param int $profileID
@@ -772,11 +737,13 @@ SELECT  id
    * @param array $profileFilter
    *   Filter to apply to profile fields - expected usage is to only fill based on.
    *   the bottom profile per CRM-13726
+   * @param array $paymentProcessorBillingFields
+   *   Array of billing fields required by the payment processor.
    *
    * @return bool
    *   Can the address block be hidden safe in the knowledge all fields are elsewhere collected (see CRM-15118)
    */
-  public static function assignAddressField($key, &$profileAddressFields, $profileFilter) {
+  public static function assignAddressField($key, &$profileAddressFields, $profileFilter, $paymentProcessorBillingFields = NULL) {
     $billing_id = CRM_Core_BAO_LocationType::getBilling();
     list($prefixName, $index) = CRM_Utils_System::explode('-', $key, 2);
 
@@ -790,17 +757,22 @@ SELECT  id
       ]
     ));
     //check for valid fields ( fields that are present in billing block )
-    $validBillingFields = [
-      'first_name',
-      'middle_name',
-      'last_name',
-      'street_address',
-      'supplemental_address_1',
-      'city',
-      'state_province',
-      'postal_code',
-      'country',
-    ];
+    if (!empty($paymentProcessorBillingFields)) {
+      $validBillingFields = $paymentProcessorBillingFields;
+    }
+    else {
+      $validBillingFields = [
+        'first_name',
+        'middle_name',
+        'last_name',
+        'street_address',
+        'supplemental_address_1',
+        'city',
+        'state_province',
+        'postal_code',
+        'country',
+      ];
+    }
     $requiredBillingFields = array_diff($validBillingFields, ['middle_name', 'supplemental_address_1']);
     $validProfileFields = [];
     $requiredProfileFields = [];
@@ -835,8 +807,10 @@ SELECT  id
     }
 
     $potentiallyMissingRequiredFields = array_diff($requiredBillingFields, $requiredProfileFields);
+    $billingProfileIsHideable = empty($potentiallyMissingRequiredFields);
     CRM_Core_Resources::singleton()
-      ->addSetting(['billing' => ['billingProfileIsHideable' => empty($potentiallyMissingRequiredFields)]]);
+      ->addSetting(['billing' => ['billingProfileIsHideable' => $billingProfileIsHideable]]);
+    return $billingProfileIsHideable;
   }
 
   /**

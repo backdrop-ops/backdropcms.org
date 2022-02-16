@@ -36,6 +36,18 @@
       afforms[afform.type].push(afform);
     }, {});
 
+    // Load aggregated submission stats for each form
+    crmApi4('AfformSubmission', 'get', {
+      select: ['afform_name', 'MAX(submission_date) AS last_submission', 'COUNT(id) AS submission_count'],
+      groupBy: ['afform_name']
+    }).then(function(submissions) {
+      _.each(submissions, function(submission) {
+        var afform = _.findWhere(afforms, {name: submission.afform_name}) || {};
+        afform.last_submission = CRM.utils.formatDate(submission.last_submission);
+        afform.submission_count = submission.submission_count;
+      });
+    });
+
     // Change sort field/direction when clicking a column header
     this.sortBy = function(col) {
       ctrl.sortDir = ctrl.sortField === col ? !ctrl.sortDir : false;
@@ -45,9 +57,12 @@
     $scope.$bindToRoute({
       expr: '$ctrl.tab',
       param: 'tab',
-      format: 'raw',
-      default: ctrl.tabs[0].name
+      format: 'raw'
     });
+
+    if (!ctrl.tab) {
+      ctrl.tab = ctrl.tabs[0].name;
+    }
 
     this.createLinks = function() {
       ctrl.searchCreateLinks = '';
@@ -126,7 +141,7 @@
         if (afform.has_base) {
           apiOps.push(['Afform', 'get', {
             where: [['name', '=', afform.name]],
-            select: ['name', 'title', 'type', 'is_public', 'server_route', 'has_local', 'has_base']
+            select: ['name', 'title', 'type', 'is_public', 'server_route', 'has_local', 'has_base', 'base_module', 'base_module:label']
           }, 0]);
         }
         var apiCall = crmStatus(

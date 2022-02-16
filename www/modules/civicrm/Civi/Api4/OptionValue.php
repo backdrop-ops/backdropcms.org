@@ -14,11 +14,13 @@ namespace Civi\Api4;
  * OptionValue entity.
  *
  * @see \Civi\Api4\OptionGroup
- * @searchable none
+ * @searchable secondary
+ * @orderBy weight
  * @since 5.19
  * @package Civi\Api4
  */
 class OptionValue extends Generic\DAOEntity {
-  use Generic\Traits\OptionList;
+  use Generic\Traits\ManagedEntity;
+  use Generic\Traits\SortableEntity;
 
 }

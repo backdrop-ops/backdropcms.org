@@ -27,11 +27,14 @@ class CRM_Contact_BAO_Contact_Utils {
    *   Contact id.
    * @param bool $addProfileOverlay
    *   If profile overlay class should be added.
+   * @param string $contactUrl
+   *   URL to the contact page. Defaults to civicrm/contact/view
    *
    * @return string
    * @throws \CRM_Core_Exception
    */
-  public static function getImage($contactType, $urlOnly = FALSE, $contactId = NULL, $addProfileOverlay = TRUE) {
+  public static function getImage($contactType, $urlOnly = FALSE, $contactId = NULL, $addProfileOverlay = TRUE, $contactUrl = NULL) {
+
     static $imageInfo = [];
 
     $contactType = CRM_Utils_Array::explodePadded($contactType);
@@ -79,11 +82,14 @@ class CRM_Contact_BAO_Contact_Utils {
         $summaryOverlayProfileId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFGroup', 'summary_overlay', 'id', 'name');
       }
 
+      $contactURL = $contactUrl ?: CRM_Utils_System::url('civicrm/contact/view',
+        "reset=1&cid={$contactId}"
+      );
       $profileURL = CRM_Utils_System::url('civicrm/profile/view',
         "reset=1&gid={$summaryOverlayProfileId}&id={$contactId}&snippet=4&is_show_email_task=1"
       );
 
-      $imageInfo[$contactType]['summary-link'] = '<a href="' . $profileURL . '" class="crm-summary-link">' . $imageInfo[$contactType]['image'] . '</a>';
+      $imageInfo[$contactType]['summary-link'] = '<a href="' . $contactURL . '" data-tooltip-url="' . $profileURL . '" class="crm-summary-link">' . $imageInfo[$contactType]['image'] . '</a>';
     }
     else {
       $imageInfo[$contactType]['summary-link'] = $imageInfo[$contactType]['image'];
@@ -269,7 +275,6 @@ WHERE  id IN ( $idString )
     }
 
     if ($organization && is_numeric($organization)) {
-      $cid = ['contact' => $contactID];
 
       // get the relationship type id of "Employee of"
       $relTypeId = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_RelationshipType', 'Employee of', 'id', 'name_a_b');
@@ -283,8 +288,8 @@ WHERE  id IN ( $idString )
         'relationship_type_id' => $relTypeId . '_a_b',
         'contact_check' => [$organization => TRUE],
       ];
-      list($valid, $invalid, $duplicate, $saved, $relationshipIds)
-        = CRM_Contact_BAO_Relationship::legacyCreateMultiple($relationshipParams, $cid);
+      [$valid, $invalid, $duplicate, $saved, $relationshipIds]
+        = self::legacyCreateMultiple($relationshipParams, $contactID);
 
       // In case we change employer, clean previous employer related records.
       if (!$previousEmployerID && !$newContact) {
@@ -306,6 +311,89 @@ WHERE  id IN ( $idString )
   }
 
   /**
+   * Previously shared function in need of cleanup.
+   *
+   * Takes an associative array and creates a relationship object.
+   *
+   * @deprecated For single creates use the api instead (it's tested).
+   * For multiple a new variant of this function needs to be written and migrated to as this is a bit
+   * nasty
+   *
+   * @param array $params
+   *   (reference ) an assoc array of name/value pairs.
+   * @param int $contactID
+   *
+   * @return array
+   * @throws \CRM_Core_Exception
+   * @throws \CiviCRM_API3_Exception
+   */
+  private static function legacyCreateMultiple(&$params, int $contactID) {
+    $valid = $invalid = $duplicate = $saved = 0;
+    $relationships = $relationshipIds = [];
+    $ids = ['contact' => $contactID];
+    $relationshipId = NULL;
+
+    //CRM-9015 - the hooks are called here & in add (since add doesn't call create)
+    // but in future should be tidied per ticket
+    $hook = 'create';
+    // @todo pre hook is called from add - remove it from here
+    CRM_Utils_Hook::pre($hook, 'Relationship', $relationshipId, $params);
+
+    if (!$relationshipId) {
+      // creating a new relationship
+      $dataExists = CRM_Contact_BAO_Relationship::dataExists($params);
+      if (!$dataExists) {
+        return [FALSE, TRUE, FALSE, FALSE, NULL];
+      }
+      $relationshipIds = [];
+      foreach ($params['contact_check'] as $key => $value) {
+        // check if the relationship is valid between contacts.
+        // step 1: check if the relationship is valid if not valid skip and keep the count
+        // step 2: check the if two contacts already have a relationship if yes skip and keep the count
+        // step 3: if valid relationship then add the relation and keep the count
+
+        // step 1
+        $contactFields = CRM_Contact_BAO_Relationship::setContactABFromIDs($params, $ids, $key);
+        $errors = CRM_Contact_BAO_Relationship::checkValidRelationship($contactFields, $ids, $key);
+        if ($errors) {
+          $invalid++;
+          continue;
+        }
+
+        //CRM-16978:check duplicate relationship as per case id.
+        if ($caseId = CRM_Utils_Array::value('case_id', $params)) {
+          $contactFields['case_id'] = $caseId;
+        }
+        if (
+          CRM_Contact_BAO_Relationship::checkDuplicateRelationship(
+            $contactFields,
+            CRM_Utils_Array::value('contact', $ids),
+            // step 2
+            $key
+          )
+        ) {
+          $duplicate++;
+          continue;
+        }
+
+        $singleInstanceParams = array_merge($params, $contactFields);
+        $relationship = CRM_Contact_BAO_Relationship::add($singleInstanceParams);
+        $relationshipIds[] = $relationship->id;
+        $relationships[$relationship->id] = $relationship;
+        $valid++;
+      }
+      // editing the relationship
+    }
+
+    // do not add to recent items for import, CRM-4399
+    if (!(!empty($params['skipRecentView']) || $invalid || $duplicate)) {
+      CRM_Contact_BAO_Relationship::addRecent($params, $relationship);
+    }
+
+    return [$valid, $invalid, $duplicate, $saved, $relationshipIds, $relationships];
+  }
+
+  /**
    * Create related memberships for current employer.
    *
    * @param int $contactID
@@ -322,7 +410,7 @@ WHERE  id IN ( $idString )
    * @throws CiviCRM_API3_Exception
    * @throws \CRM_Core_Exception
    */
-  public static function currentEmployerRelatedMembership($contactID, $employerID, $relationshipParams, $duplicate = FALSE, $previousEmpID = NULL) {
+  private static function currentEmployerRelatedMembership($contactID, $employerID, $relationshipParams, $duplicate = FALSE, $previousEmpID = NULL) {
     $ids = [];
     $action = CRM_Core_Action::ADD;
 

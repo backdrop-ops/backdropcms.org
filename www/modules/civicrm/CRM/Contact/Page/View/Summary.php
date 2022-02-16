@@ -110,10 +110,10 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
       ->addScriptFile('civicrm', 'templates/CRM/Contact/Page/View/Summary.js', 2, 'html-header')
       ->addStyleFile('civicrm', 'css/contactSummary.css', 2, 'html-header')
       ->addScriptFile('civicrm', 'templates/CRM/common/TabHeader.js', 1, 'html-header')
-      ->addSetting(array(
-        'summaryPrint' => array('mode' => $this->_print),
-        'tabSettings' => array('active' => CRM_Utils_Request::retrieve('selectedChild', 'Alphanumeric', $this, FALSE, 'summary')),
-      ));
+      ->addSetting([
+        'summaryPrint' => ['mode' => $this->_print],
+        'tabSettings' => ['active' => CRM_Utils_Request::retrieve('selectedChild', 'Alphanumeric', $this, FALSE, 'summary')],
+      ]);
     $this->assign('summaryPrint', $this->_print);
     $session = CRM_Core_Session::singleton();
     $url = CRM_Utils_System::url('civicrm/contact/view', 'reset=1&cid=' . $this->_contactId);
@@ -121,7 +121,30 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
     $this->assignFieldMetadataToTemplate('Contact');
 
     $params = [];
-    $defaults = [];
+    $defaults = [
+      // Set empty default values for these - they will be overwritten when the contact is
+      // loaded in CRM_Contact_BAO_Contact::retrieve if there are real values
+      // but since we are not using apiV4 they will be left unset if empty.
+      // However, the wind up assigned as smarty variables so we ensure they are set to prevent e-notices
+      // used by ContactInfo.tpl
+      'job_title' => '',
+      'current_employer_id' => '',
+      'nick_name' => '',
+      'legal_name' => '',
+      'source' => '',
+      'sic_code' => '',
+      'external_identifier' => '',
+      // for CommunicationPreferences.tpl
+      'postal_greeting_custom' => '',
+      'email_greeting_custom' => '',
+      'addressee_custom' => '',
+      'communication_style_display' => '',
+      // for Demographics.tpl
+      'age' => ['y' => '', 'm' => ''],
+      'birth_date' => '',
+      // for Website.tpl (the others don't seem to enotice for some reason).
+      'website' => [],
+    ];
 
     $params['id'] = $params['contact_id'] = $this->_contactId;
     $params['noRelationships'] = $params['noNotes'] = $params['noGroups'] = TRUE;
@@ -130,34 +153,34 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
     $mailingBackend = Civi::settings()->get('mailing_backend');
     $this->assign('mailingOutboundOption', $mailingBackend['outBound_option']);
 
-    $communicationType = array(
-      'phone' => array(
+    $communicationType = [
+      'phone' => [
         'type' => 'phoneType',
         'id' => 'phone_type',
         'daoName' => 'CRM_Core_DAO_Phone',
         'fieldName' => 'phone_type_id',
-      ),
-      'im' => array(
+      ],
+      'im' => [
         'type' => 'IMProvider',
         'id' => 'provider',
         'daoName' => 'CRM_Core_DAO_IM',
         'fieldName' => 'provider_id',
-      ),
-      'website' => array(
+      ],
+      'website' => [
         'type' => 'websiteType',
         'id' => 'website_type',
         'daoName' => 'CRM_Core_DAO_Website',
         'fieldName' => 'website_type_id',
-      ),
-      'address' => array('skip' => TRUE, 'customData' => 1),
-      'email' => array('skip' => TRUE),
-      'openid' => array('skip' => TRUE),
-    );
+      ],
+      'address' => ['skip' => TRUE, 'customData' => 1],
+      'email' => ['skip' => TRUE],
+      'openid' => ['skip' => TRUE],
+    ];
 
     foreach ($communicationType as $key => $value) {
       if (!empty($defaults[$key])) {
         foreach ($defaults[$key] as & $val) {
-          CRM_Utils_Array::lookupValue($val, 'location_type', CRM_Core_PseudoConstant::get('CRM_Core_DAO_Address', 'location_type_id', array('labelColumn' => 'display_name')), FALSE);
+          CRM_Utils_Array::lookupValue($val, 'location_type', CRM_Core_PseudoConstant::get('CRM_Core_DAO_Address', 'location_type_id', ['labelColumn' => 'display_name']), FALSE);
           if (empty($value['skip'])) {
             $daoName = $value['daoName'];
             $pseudoConst = $daoName::buildOptions($value['fieldName'], 'get');
@@ -183,9 +206,7 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
       }
     }
 
-    if (!empty($defaults['gender_id'])) {
-      $defaults['gender_display'] = CRM_Core_PseudoConstant::getLabel('CRM_Contact_DAO_Contact', 'gender_id', $defaults['gender_id']);
-    }
+    $defaults['gender_display'] = CRM_Core_PseudoConstant::getLabel('CRM_Contact_DAO_Contact', 'gender_id', $defaults['gender_id'] ?? NULL);
 
     $communicationStyle = CRM_Core_PseudoConstant::get('CRM_Contact_DAO_Contact', 'communication_style_id');
     if (!empty($communicationStyle)) {
@@ -203,10 +224,8 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
     $defaults['contact_type_label'] = CRM_Contact_BAO_ContactType::contactTypePairs(TRUE, $contactType, ', ');
 
     // get contact tags
-    $contactTags = CRM_Core_BAO_EntityTag::getContactTags($this->_contactId);
-
-    if (!empty($contactTags)) {
-      $defaults['contactTag'] = $contactTags;
+    $defaults['contactTag'] = CRM_Core_BAO_EntityTag::getContactTags($this->_contactId);
+    if (!empty($defaults['contactTag'])) {
       $defaults['allTags'] = CRM_Core_BAO_Tag::getTagsUsedFor('civicrm_contact', FALSE);
     }
 
@@ -231,10 +250,10 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
       if (!empty($addressValue['master_id']) &&
         !$shareAddressContactNames[$addressValue['master_id']]['is_deleted']
       ) {
-        $sharedAddresses[$key]['shared_address_display'] = array(
+        $sharedAddresses[$key]['shared_address_display'] = [
           'address' => $addressValue['display'],
           'name' => $shareAddressContactNames[$addressValue['master_id']]['name'],
-        );
+        ];
       }
     }
     $this->assign('sharedAddresses', $sharedAddresses);
@@ -247,7 +266,6 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
       }
     }
 
-    $defaults['external_identifier'] = $contact->external_identifier;
     $this->assign($defaults);
 
     // FIXME: when we sort out TZ isssues with DATETIME/TIMESTAMP, we can skip next query
@@ -435,10 +453,17 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
     $context = ['contact_id' => $this->_contactId];
     CRM_Utils_Hook::tabset('civicrm/contact/view', $allTabs, $context);
 
-    // Get tab counts last to avoid wasting time; if a tab was removed by hook, the count isn't needed.
+    $expectedKeys = ['count', 'class', 'template', 'hideCount', 'icon'];
+
     foreach ($allTabs as &$tab) {
+      // Ensure tab has all expected keys
+      $tab += array_fill_keys($expectedKeys, NULL);
+      // Get tab counts last to avoid wasting time; if a tab was removed by hook, the count isn't needed.
       if (!isset($tab['count']) && isset($getCountParams[$tab['id']])) {
-        $tab['count'] = call_user_func_array(['CRM_Contact_BAO_Contact', 'getCountComponent'], $getCountParams[$tab['id']]);
+        $tab['count'] = call_user_func_array([
+          'CRM_Contact_BAO_Contact',
+          'getCountComponent',
+        ], $getCountParams[$tab['id']]);
       }
     }
 

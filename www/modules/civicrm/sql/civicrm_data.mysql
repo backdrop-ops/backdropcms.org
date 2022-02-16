@@ -2783,8 +2783,8 @@ INSERT INTO civicrm_state_province (id, country_id, abbreviation, name) VALUES
 (4062, 1170, "CAT", "Catanduanes"),
 (4063, 1170, "CAV", "Cavite"),
 (4064, 1170, "CEB", "Cebu"),
-(4065, 1170, "COM", "Compostela Valley"),
-(4066, 1170, "DAV", "Davao"),
+(4065, 1170, "COM", "Davao de Oro"),
+(4066, 1170, "DAV", "Davao del Norte"),
 (4067, 1170, "DAS", "Davao del Sur"),
 (4068, 1170, "DAO", "Davao Oriental"),
 (4069, 1170, "EAS", "Eastern Samar"),
@@ -2794,7 +2794,7 @@ INSERT INTO civicrm_state_province (id, country_id, abbreviation, name) VALUES
 (4073, 1170, "ILS", "Ilocos Sur"),
 (4074, 1170, "ILI", "Iloilo"),
 (4075, 1170, "ISA", "Isabela"),
-(4076, 1170, "KAL", "Kalinga-Apayso"),
+(4076, 1170, "KAL", "Kalinga"),
 (4077, 1170, "LAG", "Laguna"),
 (4078, 1170, "LAN", "Lanao del Norte"),
 (4079, 1170, "LAS", "Lanao del Sur"),
@@ -2810,7 +2810,7 @@ INSERT INTO civicrm_state_province (id, country_id, abbreviation, name) VALUES
 (4089, 1170, "MOU", "Mountain Province"),
 (4090, 1170, "NEC", "Negroe Occidental"),
 (4091, 1170, "NER", "Negros Oriental"),
-(4092, 1170, "NCO", "North Cotabato"),
+(4092, 1170, "NCO", "Cotabato"),
 (4093, 1170, "NSA", "Northern Samar"),
 (4094, 1170, "NUE", "Nueva Ecija"),
 (4095, 1170, "NUV", "Nueva Vizcaya"),
@@ -4421,7 +4421,13 @@ INSERT INTO civicrm_state_province (id, country_id, abbreviation, name) VALUES
 (NULL, 1226, "WRX", "Wrexham"),
 
 -- Add missing state for South Korea
-(NULL, 1115, "50", "Sejong");
+(NULL, 1115, "50", "Sejong"),
+
+-- Add missing province for Philippines
+(NULL, 1170, "DIN", "Dinagat Islands"),
+
+-- Add missing state for Colombia
+(NULL, 1048, "HUI", "Huila");
 -- +--------------------------------------------------------------------+
 -- | Copyright CiviCRM LLC. All rights reserved.                        |
 -- |                                                                    |
@@ -4474,7 +4480,7 @@ INSERT INTO civicrm_currency (id, name, symbol, numeric_code, full_name) VALUES
 ( 37, "BSD",  "$", "044", "Bahamian Dollar"),
 ( 38, "BTN", NULL, "064", "Bhutan Ngultrum"),
 ( 39, "BWP",  "P", "072", "Botswana Pula"),
-( 40, "BYR", "p.", "974", "Belarussian Rouble"),
+( 40, "BYN", "p.", "974", "Belarussian Rouble"),
 ( 41, "BZD","BZ$", "084", "Belize Dollar"),
 ( 42, "CDF", NULL, "976", "Franc Congolais"),
 ( 43, "CHE", NULL, "947", "WIR Euro"),
@@ -4501,7 +4507,7 @@ INSERT INTO civicrm_currency (id, name, symbol, numeric_code, full_name) VALUES
 ( 65, "FJD",  "$", "242", "Fiji Dollar"),
 ( 66, "FKP",  "£", "238", "Falkland Islands Pound"),
 ( 67, "GEL", NULL, "981", "Georgian Lari"),
-( 68, "GHC",  "¢", "288", "Ghanaian Cedi"),
+( 68, "GHS",  "¢", "288", "Ghanaian Cedi"),
 ( 69, "GIP",  "£", "292", "Gibraltar Pound"),
 ( 70, "GMD", NULL, "270", "Gambian Dalasi"),
 ( 71, "GNF", NULL, "324", "Guinea Franc"),
@@ -5375,7 +5381,12 @@ VALUES
    (@option_group_id_nuf, 'Participants',  'civicrm_participant',  'Participant',  NULL, 0, NULL, 3, NULL, 0, 0, 1, NULL, NULL, NULL),
    (@option_group_id_nuf, 'Contributions', 'civicrm_contribution', 'Contribution', NULL, 0, NULL, 4, NULL, 0, 0, 1, NULL, NULL, NULL),
 
+-- Available currencies.
    (@option_group_id_currency, 'USD ($)',      'USD',     'USD',       NULL, 0, 1, 1, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_currency, 'CAD ($)',      'CAD',     'CAD',       NULL, 0, 0, 2, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_currency, 'EUR (€)',      'EUR',     'EUR',       NULL, 0, 0, 3, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_currency, 'GBP (£)',      'GBP',     'GBP',       NULL, 0, 0, 4, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_currency, 'JPY (¥)',      'JPY',     'JPY',       NULL, 0, 0, 5, NULL, 0, 0, 1, NULL, NULL, NULL),
 
 -- event name badges
   (@option_group_id_eventBadge,  'Name Only'     , 1, 'CRM_Event_Badge_Simple'  ,  NULL, 0, 0, 1, 'Simple Event Name Badge', 0, 1, 1, NULL, NULL, NULL),
@@ -7082,9 +7093,9 @@ INSERT INTO civicrm_msg_template
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset ||  $priceset == 0 || $value != \'\'}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}% : {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}% : {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if} : {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm} : {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -7286,10 +7297,10 @@ INSERT INTO civicrm_msg_template
       {foreach from=$dataArray item=value key=priceset}
         <tr>
         {if $priceset ||  $priceset == 0 || $value != \'\'}
-          <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+          <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
           <td>&nbsp;{$value|crmMoney:$currency}</td>
         {else}
-          <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+          <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
           <td>&nbsp;{$value|crmMoney:$currency}</td>
         {/if}
         </tr>
@@ -7528,9 +7539,9 @@ INSERT INTO civicrm_msg_template
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset ||  $priceset == 0 || $value != \'\'}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}% : {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}% : {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if} : {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm} : {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -7732,10 +7743,10 @@ INSERT INTO civicrm_msg_template
       {foreach from=$dataArray item=value key=priceset}
         <tr>
         {if $priceset ||  $priceset == 0 || $value != \'\'}
-          <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+          <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
           <td>&nbsp;{$value|crmMoney:$currency}</td>
         {else}
-          <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+          <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
           <td>&nbsp;{$value|crmMoney:$currency}</td>
         {/if}
         </tr>
@@ -7944,7 +7955,7 @@ INSERT INTO civicrm_msg_template
 {if $is_pay_later}
 
 ===========================================================
-{if isset($pay_later_receipt)}{$pay_later_receipt}{/if}
+{$pay_later_receipt}
 ===========================================================
 {/if}
 
@@ -7977,9 +7988,9 @@ INSERT INTO civicrm_msg_template
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -8261,10 +8272,10 @@ INSERT INTO civicrm_msg_template
         {foreach from=$dataArray item=value key=priceset}
          <tr>
           {if $priceset || $priceset == 0}
-           <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+           <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
           {else}
-           <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+           <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
           {/if}
          </tr>
@@ -8629,7 +8640,7 @@ INSERT INTO civicrm_msg_template
 {if $is_pay_later}
 
 ===========================================================
-{if isset($pay_later_receipt)}{$pay_later_receipt}{/if}
+{$pay_later_receipt}
 ===========================================================
 {/if}
 
@@ -8662,9 +8673,9 @@ INSERT INTO civicrm_msg_template
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -8946,10 +8957,10 @@ INSERT INTO civicrm_msg_template
         {foreach from=$dataArray item=value key=priceset}
          <tr>
           {if $priceset || $priceset == 0}
-           <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+           <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
           {else}
-           <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+           <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
           {/if}
          </tr>
@@ -9398,7 +9409,7 @@ INSERT INTO civicrm_msg_template
                 <th style="text-align:left;font-weight:bold;width:100%"><font size="1">{ts}Description{/ts}</font></th>
                 <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{ts}Quantity{/ts}</font></th>
                 <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{ts}Unit Price{/ts}</font></th>
-                <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{if isset($taxTerm)}{$taxTerm}{/if}</font></th>
+                <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{$taxTerm}</font></th>
                 <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{ts 1=$currency}Amount %1{/ts}</font></th>
               </tr>
               {foreach from=$lineItem item=value key=priceset name=taxpricevalue}
@@ -9422,7 +9433,7 @@ INSERT INTO civicrm_msg_template
                   {if $value.tax_amount != \'\'}
                     <td style="text-align:right;"><font size="1">{if isset($value.tax_rate)}{$value.tax_rate}%{/if}</font></td>
                   {else}
-                    <td style="text-align:right;"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm}-{/ts}{/if}</font></td>
+                    <td style="text-align:right;"><font size="1">{if $taxTerm}{ts 1=$taxTerm}-{/ts}{/if}</font></td>
                   {/if}
                   <td style="text-align:right;"><font size="1">{$value.subTotal|crmMoney:$currency}</font></td>
                 </tr>
@@ -9437,10 +9448,10 @@ INSERT INTO civicrm_msg_template
                 <tr>
                   <td colspan="3"></td>
                     {if $priceset}
-                      <td style="text-align:right;white-space: nowrap"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm 2=$priceset}TOTAL %1 %2%{/ts}{/if}</font></td>
+                      <td style="text-align:right;white-space: nowrap"><font size="1">{if $taxTerm}{ts 1=$taxTerm 2=$priceset}TOTAL %1 %2%{/ts}{/if}</font></td>
                       <td style="text-align:right"><font size="1" align="right">{$value|crmMoney:$currency}</font> </td>
                     {elseif $priceset == 0}
-                      <td style="text-align:right;white-space: nowrap"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm}TOTAL %1{/ts}{/if}</font></td>
+                      <td style="text-align:right;white-space: nowrap"><font size="1">{if $taxTerm}{ts 1=$taxTerm}TOTAL %1{/ts}{/if}</font></td>
                       <td style="text-align:right"><font size="1" align="right">{$value|crmMoney:$currency}</font> </td>
                     {/if}
                 </tr>
@@ -9625,7 +9636,7 @@ INSERT INTO civicrm_msg_template
                 <th style="padding-right:28px;text-align:left;font-weight:bold;width:200px;"><font size="1">{ts}Description{/ts}</font></th>
                 <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{ts}Quantity{/ts}</font></th>
                 <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{ts}Unit Price{/ts}</font></th>
-                <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{if isset($taxTerm)}{$taxTerm}{/if}</font></th>
+                <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{$taxTerm}</font></th>
                 <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{ts 1=$currency}Amount %1{/ts}</font></th>
               </tr>
               {foreach from=$lineItem item=value key=priceset name=pricevalue}
@@ -9652,7 +9663,7 @@ INSERT INTO civicrm_msg_template
                   {if $value.tax_amount != \'\'}
                     <td style="padding-left:28px;text-align:right;"><font size="1">{if isset($value.tax_rate)}{$value.tax_rate}%{/if}</font></td>
                   {else}
-                    <td style="padding-left:28px;text-align:right"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm}No %1{/ts}{/if}</font></td>
+                    <td style="padding-left:28px;text-align:right"><font size="1">{if $taxTerm}{ts 1=$taxTerm}No %1{/ts}{/if}</font></td>
                   {/if}
                   <td style="padding-left:28px;text-align:right;"><font size="1">{$value.subTotal|crmMoney:$currency}</font></td>
                 </tr>
@@ -9668,10 +9679,10 @@ INSERT INTO civicrm_msg_template
                 <tr>
                   <td colspan="3"></td>
                   {if $priceset}
-                    <td style="padding-left:28px;text-align:right;"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm 2=$priceset}TOTAL %1 %2%{/ts}{/if}</font></td>
+                    <td style="padding-left:28px;text-align:right;"><font size="1">{if $taxTerm}{ts 1=$taxTerm 2=$priceset}TOTAL %1 %2%{/ts}{/if}</font></td>
                     <td style="padding-left:28px;text-align:right;"><font size="1" align="right">{$value|crmMoney:$currency}</font> </td>
                   {elseif $priceset == 0}
-                    <td style="padding-left:28px;text-align:right;"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm}TOTAL NO %1{/ts}{/if}</font></td>
+                    <td style="padding-left:28px;text-align:right;"><font size="1">{if $taxTerm}{ts 1=$taxTerm}TOTAL NO %1{/ts}{/if}</font></td>
                     <td style="padding-left:28px;text-align:right;"><font size="1" align="right">{$value|crmMoney:$currency}</font> </td>
                   {/if}
                 </tr>
@@ -9843,7 +9854,7 @@ INSERT INTO civicrm_msg_template
                 <th style="text-align:left;font-weight:bold;width:100%"><font size="1">{ts}Description{/ts}</font></th>
                 <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{ts}Quantity{/ts}</font></th>
                 <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{ts}Unit Price{/ts}</font></th>
-                <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{if isset($taxTerm)}{$taxTerm}{/if}</font></th>
+                <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{$taxTerm}</font></th>
                 <th style="text-align:right;font-weight:bold;white-space: nowrap"><font size="1">{ts 1=$currency}Amount %1{/ts}</font></th>
               </tr>
               {foreach from=$lineItem item=value key=priceset name=taxpricevalue}
@@ -9867,7 +9878,7 @@ INSERT INTO civicrm_msg_template
                   {if $value.tax_amount != \'\'}
                     <td style="text-align:right;"><font size="1">{if isset($value.tax_rate)}{$value.tax_rate}%{/if}</font></td>
                   {else}
-                    <td style="text-align:right;"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm}-{/ts}{/if}</font></td>
+                    <td style="text-align:right;"><font size="1">{if $taxTerm}{ts 1=$taxTerm}-{/ts}{/if}</font></td>
                   {/if}
                   <td style="text-align:right;"><font size="1">{$value.subTotal|crmMoney:$currency}</font></td>
                 </tr>
@@ -9882,10 +9893,10 @@ INSERT INTO civicrm_msg_template
                 <tr>
                   <td colspan="3"></td>
                     {if $priceset}
-                      <td style="text-align:right;white-space: nowrap"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm 2=$priceset}TOTAL %1 %2%{/ts}{/if}</font></td>
+                      <td style="text-align:right;white-space: nowrap"><font size="1">{if $taxTerm}{ts 1=$taxTerm 2=$priceset}TOTAL %1 %2%{/ts}{/if}</font></td>
                       <td style="text-align:right"><font size="1" align="right">{$value|crmMoney:$currency}</font> </td>
                     {elseif $priceset == 0}
-                      <td style="text-align:right;white-space: nowrap"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm}TOTAL %1{/ts}{/if}</font></td>
+                      <td style="text-align:right;white-space: nowrap"><font size="1">{if $taxTerm}{ts 1=$taxTerm}TOTAL %1{/ts}{/if}</font></td>
                       <td style="text-align:right"><font size="1" align="right">{$value|crmMoney:$currency}</font> </td>
                     {/if}
                 </tr>
@@ -10070,7 +10081,7 @@ INSERT INTO civicrm_msg_template
                 <th style="padding-right:28px;text-align:left;font-weight:bold;width:200px;"><font size="1">{ts}Description{/ts}</font></th>
                 <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{ts}Quantity{/ts}</font></th>
                 <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{ts}Unit Price{/ts}</font></th>
-                <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{if isset($taxTerm)}{$taxTerm}{/if}</font></th>
+                <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{$taxTerm}</font></th>
                 <th style="padding-left:28px;text-align:right;font-weight:bold;"><font size="1">{ts 1=$currency}Amount %1{/ts}</font></th>
               </tr>
               {foreach from=$lineItem item=value key=priceset name=pricevalue}
@@ -10097,7 +10108,7 @@ INSERT INTO civicrm_msg_template
                   {if $value.tax_amount != \'\'}
                     <td style="padding-left:28px;text-align:right;"><font size="1">{if isset($value.tax_rate)}{$value.tax_rate}%{/if}</font></td>
                   {else}
-                    <td style="padding-left:28px;text-align:right"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm}No %1{/ts}{/if}</font></td>
+                    <td style="padding-left:28px;text-align:right"><font size="1">{if $taxTerm}{ts 1=$taxTerm}No %1{/ts}{/if}</font></td>
                   {/if}
                   <td style="padding-left:28px;text-align:right;"><font size="1">{$value.subTotal|crmMoney:$currency}</font></td>
                 </tr>
@@ -10113,10 +10124,10 @@ INSERT INTO civicrm_msg_template
                 <tr>
                   <td colspan="3"></td>
                   {if $priceset}
-                    <td style="padding-left:28px;text-align:right;"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm 2=$priceset}TOTAL %1 %2%{/ts}{/if}</font></td>
+                    <td style="padding-left:28px;text-align:right;"><font size="1">{if $taxTerm}{ts 1=$taxTerm 2=$priceset}TOTAL %1 %2%{/ts}{/if}</font></td>
                     <td style="padding-left:28px;text-align:right;"><font size="1" align="right">{$value|crmMoney:$currency}</font> </td>
                   {elseif $priceset == 0}
-                    <td style="padding-left:28px;text-align:right;"><font size="1">{if isset($taxTerm)}{ts 1=$taxTerm}TOTAL NO %1{/ts}{/if}</font></td>
+                    <td style="padding-left:28px;text-align:right;"><font size="1">{if $taxTerm}{ts 1=$taxTerm}TOTAL NO %1{/ts}{/if}</font></td>
                     <td style="padding-left:28px;text-align:right;"><font size="1" align="right">{$value|crmMoney:$currency}</font> </td>
                   {/if}
                 </tr>
@@ -12662,9 +12673,9 @@ INSERT INTO civicrm_msg_template
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -13054,10 +13065,10 @@ INSERT INTO civicrm_msg_template
         {foreach from=$dataArray item=value key=priceset}
           <tr>
            {if $priceset || $priceset == 0}
-            <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+            <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
             <td>&nbsp;{$value|crmMoney:$currency}</td>
            {else}
-            <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+            <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
             <td>&nbsp;{$value|crmMoney:$currency}</td>
            {/if}
           </tr>
@@ -13466,9 +13477,9 @@ INSERT INTO civicrm_msg_template
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -13858,10 +13869,10 @@ INSERT INTO civicrm_msg_template
         {foreach from=$dataArray item=value key=priceset}
           <tr>
            {if $priceset || $priceset == 0}
-            <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+            <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
             <td>&nbsp;{$value|crmMoney:$currency}</td>
            {else}
-            <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+            <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
             <td>&nbsp;{$value|crmMoney:$currency}</td>
            {/if}
           </tr>
@@ -14292,9 +14303,9 @@ You were registered by: {$payer.name}
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -14703,10 +14714,10 @@ You were registered by: {$payer.name}
         {foreach from=$dataArray item=value key=priceset}
          <tr>
           {if $priceset || $priceset == 0}
-           <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+           <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
           {else}
-           <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+           <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
           {/if}
          </tr>
@@ -15072,9 +15083,9 @@ You were registered by: {$payer.name}
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -15483,10 +15494,10 @@ You were registered by: {$payer.name}
         {foreach from=$dataArray item=value key=priceset}
          <tr>
           {if $priceset || $priceset == 0}
-           <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+           <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
           {else}
-           <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+           <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
           {/if}
          </tr>
@@ -18003,9 +18014,9 @@ or want to inquire about reinstating your registration for this event.{/ts}</p>
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"} %: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"} %: {$value|crmMoney:$currency}
 {elseif  $priceset == 0}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -18219,10 +18230,10 @@ or want to inquire about reinstating your registration for this event.{/ts}</p>
                   {foreach from=$dataArray item=value key=priceset}
                     <tr>
                       {if $priceset}
-                        <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+                        <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
                         <td>&nbsp;{$value|crmMoney:$currency}</td>
                       {elseif  $priceset == 0}
-                        <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+                        <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
                         <td>&nbsp;{$value|crmMoney:$currency}</td>
                       {/if}
                     </tr>
@@ -18417,9 +18428,9 @@ or want to inquire about reinstating your registration for this event.{/ts}</p>
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"} %: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"} %: {$value|crmMoney:$currency}
 {elseif  $priceset == 0}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -18633,10 +18644,10 @@ or want to inquire about reinstating your registration for this event.{/ts}</p>
                   {foreach from=$dataArray item=value key=priceset}
                     <tr>
                       {if $priceset}
-                        <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+                        <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
                         <td>&nbsp;{$value|crmMoney:$currency}</td>
                       {elseif  $priceset == 0}
-                        <td>&nbsp;{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+                        <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
                         <td>&nbsp;{$value|crmMoney:$currency}</td>
                       {/if}
                     </tr>
@@ -18851,9 +18862,9 @@ or want to inquire about reinstating your registration for this event.{/ts}</p>
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -19235,10 +19246,10 @@ or want to inquire about reinstating your registration for this event.{/ts}</p>
         {foreach from=$dataArray item=value key=priceset}
          <tr>
          {if $priceset || $priceset == 0}
-           <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+           <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
          {else}
-           <td>&nbsp;{ts}NO{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+           <td>&nbsp;{ts}NO{/ts} {$taxTerm}</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
          {/if}
          </tr>
@@ -19645,9 +19656,9 @@ or want to inquire about reinstating your registration for this event.{/ts}</p>
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
-{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
+{$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
 {else}
-{ts}No{/ts} {if isset($taxTerm)}{$taxTerm}{/if}: {$value|crmMoney:$currency}
+{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -20029,10 +20040,10 @@ or want to inquire about reinstating your registration for this event.{/ts}</p>
         {foreach from=$dataArray item=value key=priceset}
          <tr>
          {if $priceset || $priceset == 0}
-           <td>&nbsp;{if isset($taxTerm)}{$taxTerm}{/if} {$priceset|string_format:"%.2f"}%</td>
+           <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
          {else}
-           <td>&nbsp;{ts}NO{/ts} {if isset($taxTerm)}{$taxTerm}{/if}</td>
+           <td>&nbsp;{ts}NO{/ts} {$taxTerm}</td>
            <td>&nbsp;{$value|crmMoney:$currency}</td>
          {/if}
          </tr>
@@ -22925,7 +22936,7 @@ VALUES
     ( @domainID, 'Daily' ,  NULL, 'Geocode and Parse Addresses',  'Retrieves geocodes (lat and long) and / or parses street addresses (populates street number, street name, etc.)', 'job', 'geocode', 'geocoding=[1 or 0] required\nparse=[1 or 0] required\nstart=[contact ID] optional-begin with this contact ID\nend=[contact ID] optional-process contacts with IDs less than this\nthrottle=[1 or 0] optional-1 adds five second sleep', 0),
     ( @domainID, 'Daily' ,  NULL, 'Update Greetings and Addressees','Goes through contact records and updates email and postal greetings, or addressee value', 'job', 'update_greeting','ct=[Individual or Household or Organization] required\ngt=[email_greeting or postal_greeting or addressee] required\nforce=[0 or 1] optional-0 update contacts with null value, 1 update all\nlimit=Number optional-Limit the number of contacts to update', 0),
     ( @domainID, 'Daily' ,  NULL, 'Mail Reports', 'Generates and sends out reports via email', 'job', 'mail_report','instanceId=[ID of report instance] required\nformat=[csv or print] optional-output CSV or print-friendly HTML, else PDF', 0),
-    ( @domainID, 'Daily' ,  NULL, 'Send Scheduled Reminders', 'Sends out scheduled reminders via email', 'job', 'send_reminder', NULL, 0),
+    ( @domainID, 'Hourly' ,  NULL, 'Send Scheduled Reminders', 'Sends out scheduled reminders via email', 'job', 'send_reminder', NULL, 0),
     ( @domainID, 'Always' , NULL, 'Update Participant Statuses', 'Updates pending event participant statuses based on time', 'job', 'process_participant', NULL, 0),
     ( @domainID, 'Daily' , NULL, 'Update Membership Statuses', 'Updates membership statuses. WARNING: Membership renewal reminders have been migrated to the Schedule Reminders functionality, which supports multiple renewal reminders.', 'job', 'process_membership',   NULL, 0),
     ( @domainID, 'Always' , NULL, 'Process Survey Respondents',   'Releases reserved survey respondents when they have been reserved for longer than the Release Frequency days specified for that survey.', 'job', 'process_respondent',NULL, 0),
@@ -23138,10 +23149,11 @@ VALUES
     ( @domainID, 'civicrm/activity?reset=1&action=add&context=standalone',  'New Activity',           'New Activity',         NULL,               '',             @contactlastID, '1', NULL,  5 ),
     ( @domainID, 'civicrm/activity/email/add?atype=3&action=add&reset=1&context=standalone', 'New Email',   'New Email',      NULL,               '',             @contactlastID, '1', '1',   6 ),
     ( @domainID, 'civicrm/import/contact?reset=1',                          'Import Contacts',        'Import Contacts',      'import contacts',  '',             @contactlastID, '1', NULL,  7 ),
-    ( @domainID, 'civicrm/import/activity?reset=1',                         'Import Activities',      'Import Activities',    'import contacts',  '',             @contactlastID, '1', '1',   8 ),
-    ( @domainID, 'civicrm/group/add?reset=1',                               'New Group',              'New Group',            'edit groups',      '',             @contactlastID, '1', NULL,  9 ),
-    ( @domainID, 'civicrm/group?reset=1',                                   'Manage Groups',          'Manage Groups',        'access CiviCRM',   '',             @contactlastID, '1', '1',   10 ),
-    ( @domainID, 'civicrm/tag?reset=1',                               'Manage Tags', 'Manage Tags (Categories)', 'manage tags', '',     @contactlastID, '1','1', 12 ),
+    ( @domainID, 'civicrm/import/activity?reset=1',                         'Import Activities',      'Import Activities',    'import contacts',  '',             @contactlastID, '1', NULL,   8 ),
+    ( @domainID, 'civicrm/import/custom?reset=1',                         'Import Custom Data',  'Import MultiValued Custom', 'import contacts',  '',             @contactlastID, '1', '1',   9 ),
+    ( @domainID, 'civicrm/group/add?reset=1',                               'New Group',              'New Group',            'edit groups',      '',             @contactlastID, '1', NULL,  10 ),
+    ( @domainID, 'civicrm/group?reset=1',                                   'Manage Groups',          'Manage Groups',        'access CiviCRM',   '',             @contactlastID, '1', '1',   11 ),
+    ( @domainID, 'civicrm/tag?reset=1',                               'Manage Tags', 'Manage Tags (Categories)',              'manage tags',      '',             @contactlastID, '1', '1',   12 ),
     ( @domainID, 'civicrm/contact/deduperules?reset=1',  'Find and Merge Duplicate Contacts', 'Find and Merge Duplicate Contacts', 'administer dedupe rules,merge duplicate contacts', 'OR', @contactlastID, '1', NULL, 13 );
 
 INSERT INTO civicrm_navigation
@@ -23847,4 +23859,4 @@ INSERT INTO `civicrm_report_instance`
     ( `domain_id`, `title`, `report_id`, `description`, `permission`, `form_values`)
 VALUES
     (  @domainID, 'Survey Details', 'survey/detail', 'Detailed report for canvassing, phone-banking, walk lists or other surveys.', 'access CiviReport', 'a:39:{s:6:"fields";a:2:{s:9:"sort_name";s:1:"1";s:6:"result";s:1:"1";}s:22:"assignee_contact_id_op";s:2:"eq";s:25:"assignee_contact_id_value";s:0:"";s:12:"sort_name_op";s:3:"has";s:15:"sort_name_value";s:0:"";s:17:"street_number_min";s:0:"";s:17:"street_number_max";s:0:"";s:16:"street_number_op";s:3:"lte";s:19:"street_number_value";s:0:"";s:14:"street_name_op";s:3:"has";s:17:"street_name_value";s:0:"";s:15:"postal_code_min";s:0:"";s:15:"postal_code_max";s:0:"";s:14:"postal_code_op";s:3:"lte";s:17:"postal_code_value";s:0:"";s:7:"city_op";s:3:"has";s:10:"city_value";s:0:"";s:20:"state_province_id_op";s:2:"in";s:23:"state_province_id_value";a:0:{}s:13:"country_id_op";s:2:"in";s:16:"country_id_value";a:0:{}s:12:"survey_id_op";s:2:"in";s:15:"survey_id_value";a:0:{}s:12:"status_id_op";s:2:"eq";s:15:"status_id_value";s:1:"1";s:11:"custom_1_op";s:2:"in";s:14:"custom_1_value";a:0:{}s:11:"custom_2_op";s:2:"in";s:14:"custom_2_value";a:0:{}s:17:"custom_3_relative";s:1:"0";s:13:"custom_3_from";s:0:"";s:11:"custom_3_to";s:0:"";s:11:"description";s:75:"Detailed report for canvassing, phone-banking, walk lists or other surveys.";s:13:"email_subject";s:0:"";s:8:"email_to";s:0:"";s:8:"email_cc";s:0:"";s:10:"permission";s:17:"access CiviReport";s:6:"groups";s:0:"";s:9:"domain_id";i:1;}');
-UPDATE civicrm_domain SET version = '5.44.0';
+UPDATE civicrm_domain SET version = '5.46.2';

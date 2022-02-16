@@ -34,14 +34,14 @@
     },
     controller: function($scope, $timeout, searchMeta) {
       var ts = $scope.ts = CRM.ts('org.civicrm.search_kit'),
-        ctrl = this,
-        afforms;
+        ctrl = this;
 
       this.isSuperAdmin = CRM.checkPerm('all CiviCRM permissions and ACLs');
       this.aclBypassHelp = ts('Only users with "all CiviCRM permissions and ACLs" can disable permission checks.');
 
       this.preview = this.stale = false;
 
+      // Extra (non-field) colum types
       this.colTypes = {
         links: {
           label: ts('Links'),
@@ -126,10 +126,18 @@
       };
 
       this.getColLabel = function(col) {
-        if (col.type === 'field') {
+        if (col.type === 'field' || col.type === 'image') {
           return ctrl.getFieldLabel(col.key);
         }
         return ctrl.colTypes[col.type].label;
+      };
+
+      this.toggleEmptyVal = function(col) {
+        if (col.empty_value) {
+          delete col.empty_value;
+        } else {
+          col.empty_value = ts('None');
+        }
       };
 
       this.toggleRewrite = function(col) {
@@ -142,14 +150,22 @@
       };
 
       this.toggleImage = function(col) {
-        if (col.image) {
+        if (col.type === 'image') {
           delete col.image;
+          col.type = 'field';
         } else {
           col.image = {
             alt: this.getColLabel(col)
           };
           delete col.editable;
+          col.type = 'image';
         }
+      };
+
+      this.canBeImage = function(col) {
+        var expr = ctrl.getExprFromSelect(col.key),
+          info = searchMeta.parseExpr(expr);
+        return info.args[0] && info.args[0].field && info.args[0].field.input_type === 'File';
       };
 
       this.toggleEditable = function(col) {
@@ -163,25 +179,29 @@
       this.canBeEditable = function(col) {
         var expr = ctrl.getExprFromSelect(col.key),
           info = searchMeta.parseExpr(expr);
-        return !col.image && !col.rewrite && !col.link && !info.fn && info.args[0] && info.args[0].field && !info.args[0].field.readonly;
+        return !col.rewrite && !col.link && !info.fn && info.args[0] && info.args[0].field && !info.args[0].field.readonly;
       };
 
       // Checks if a column contains a sortable value
       // Must be a real sql expression (not a pseudo-field like `result_row_num`)
       this.canBeSortable = function(col) {
+        // Column-header sorting is incompatible with draggable sorting
+        if (ctrl.display.settings.draggable) {
+          return false;
+        }
         var expr = ctrl.getExprFromSelect(col.key),
           info = searchMeta.parseExpr(expr),
           arg = (info && info.args && _.findWhere(info.args, {type: 'field'})) || {};
         return arg.field && arg.field.type !== 'Pseudo';
       };
 
-      // Aggregate functions (COUNT, AVG, MAX) cannot display as links, except for GROUP_CONCAT
+      // Aggregate functions (COUNT, AVG, MAX) cannot autogenerate links, except for GROUP_CONCAT
       // which gets special treatment in APIv4 to convert it to an array.
-      this.canBeLink = function(col) {
-        var expr = ctrl.getExprFromSelect(col.key),
+      function canUseLinks(colKey) {
+        var expr = ctrl.getExprFromSelect(colKey),
           info = searchMeta.parseExpr(expr);
         return !info.fn || info.fn.category !== 'aggregate' || info.fn.name === 'GROUP_CONCAT';
-      };
+      }
 
       var linkProps = ['path', 'entity', 'action', 'join', 'target'];
 
@@ -217,10 +237,13 @@
 
       this.getLinks = function(columnKey) {
         if (!ctrl.links) {
-          ctrl.links = {'*': ctrl.crmSearchAdmin.buildLinks()};
+          ctrl.links = {'*': ctrl.crmSearchAdmin.buildLinks(), '0': []};
         }
         if (!columnKey) {
           return ctrl.links['*'];
+        }
+        if (!canUseLinks(columnKey)) {
+          return ctrl.links['0'];
         }
         var expr = ctrl.getExprFromSelect(columnKey),
           info = searchMeta.parseExpr(expr),

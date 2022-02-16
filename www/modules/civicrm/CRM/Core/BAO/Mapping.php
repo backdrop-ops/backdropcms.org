@@ -14,7 +14,7 @@
  * @package CRM
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
-class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping {
+class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping implements \Civi\Test\HookInterface {
 
   /**
    * Class constructor.
@@ -649,6 +649,11 @@ class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping {
             $relationships
           );
         }
+        if (!empty($fields[$contactType]['state_province']) && empty($fields[$contactType]['state_province_name'])) {
+          $fields[$contactType]['state_province_name'] = $fields[$contactType]['state_province'];
+          $fields[$contactType]['state_province_name']['title'] = ts('State/Province Name');
+          $fields[$contactType]['state_province']['title'] = ts('State/Province Abbreviation');
+        }
       }
     }
 
@@ -1009,11 +1014,11 @@ class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping {
       return $fields;
     }
 
-    $types = ['Individual', 'Organization', 'Household'];
+    $types = CRM_Contact_BAO_ContactType::basicTypes(TRUE);
     foreach ($params['mapper'] as $key => $value) {
       $contactType = NULL;
       foreach ($value as $k => $v) {
-        if (in_array($v[0], $types)) {
+        if (in_array($v[0], $types, TRUE)) {
           if ($contactType && $contactType != $v[0]) {
             throw new CRM_Core_Exception(ts("Cannot have two clauses with different types: %1, %2",
               [1 => $contactType, 2 => $v[0]]
@@ -1209,6 +1214,20 @@ class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping {
     $mappingField = new CRM_Core_DAO_MappingField();
     $mappingField->name = $fieldName;
     $mappingField->delete();
+  }
+
+  /**
+   * Callback for hook_civicrm_pre().
+   * @param \Civi\Core\Event\PreEvent $event
+   * @throws CRM_Core_Exception
+   */
+  public static function on_hook_civicrm_pre(\Civi\Core\Event\PreEvent $event) {
+    if ($event->action === 'delete' && $event->entity === 'RelationshipType') {
+      // CRM-3323 - Delete mappingField records when deleting relationship type
+      \Civi\Api4\MappingField::delete(FALSE)
+        ->addWhere('relationship_type_id', '=', $event->id)
+        ->execute();
+    }
   }
 
 }

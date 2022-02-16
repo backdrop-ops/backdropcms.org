@@ -995,7 +995,7 @@ ORDER BY   civicrm_email.is_bulkmail DESC
    * @param bool $isForward
    *   Is this mailing compose for forward?.
    * @param string $fromEmail
-   *   Email address of who is forwardinf it.
+   *   Email address of who is forwarding it.
    *
    * @param null $replyToEmail
    *
@@ -2061,7 +2061,7 @@ ORDER BY   civicrm_email.is_bulkmail DESC
         'clicks' => $mailing->clicks,
         'unique' => $mailing->unique_clicks,
         'rate' => !empty($report['event_totals']['delivered']) ? (100.0 * $mailing->unique_clicks) / $report['event_totals']['delivered'] : 0,
-        'report' => CRM_Report_Utils_Report::getNextUrl('mailing/clicks', "reset=1&mailing_id_value={$mailing_id}&url_value={$mailing->url}", FALSE, TRUE),
+        'report' => CRM_Report_Utils_Report::getNextUrl('mailing/clicks', "reset=1&mailing_id_value={$mailing_id}&url_value=" . rawurlencode($mailing->url), FALSE, TRUE),
       ];
     }
 
@@ -2289,7 +2289,7 @@ LEFT JOIN civicrm_mailing_group g ON g.mailing_id   = m.id
    * @param int $offset
    *   The row number to start from.
    * @param int $rowCount
-   *   The nmber of rows to return.
+   *   The number of rows to return.
    * @param string $sort
    *   The sql string that describes the sort order.
    *
