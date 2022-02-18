@@ -22,6 +22,7 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
+            "e66902ae-5fac-47b7-8500-b84bff8c4dd9",
             "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "content": [],
@@ -140,6 +141,35 @@
                 }
             }
         },
+        "e66902ae-5fac-47b7-8500-b84bff8c4dd9": {
+            "plugin": "block:backdrop_live",
+            "data": {
+                "module": "block",
+                "delta": "backdrop_live",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "backdrop_live",
+                        "description": "Promote Backdrop LIVE",
+                        "reusable": true
+                    },
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "e66902ae-5fac-47b7-8500-b84bff8c4dd9",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d": {
             "plugin": "borg_blocks:tagline",
             "data": {
@@ -150,7 +180,7 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "1.21.1"
+                        "version": "1.21.2"
                     },
                     "contexts": [],
                     "admin_label": "",
