@@ -62,11 +62,6 @@
   .block-borg-blocks-tagline h2 {
     margin: 0 0 1em 0;
   }
-  .block-borg-blocks-tagline .block-content {
-    background: transparent url('../images/screens.png') bottom center no-repeat;
-    background-size: 720px;
-    padding-bottom: 300px;
-  }
   .block-borg-blocks-tagline .tagline-section {
     display: inline-block;
     padding: 0 15px;
@@ -78,10 +73,6 @@
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
   .block-borg-blocks-tagline {
     padding-bottom: 30px;
-  }
-  .block-borg-blocks-tagline .block-content {
-    background-size: 920px;
-    padding-bottom: 400px;
   }
   .block-borg-blocks-tagline a.button {
     font-size: 1.5rem; /* 24px */
