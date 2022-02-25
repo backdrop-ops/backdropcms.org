@@ -30,6 +30,27 @@
       <div class="l-top-inner">
         <?php print $content['top']; ?>
       </div>
+      <?php if (!empty($content['top1']) || !empty($content['top2']) || !empty($content['top3'])): ?>
+      <div class="l-top-inner-below container container-fluid">
+        <div class="row">
+          <?php if (!empty($content['top1'])): ?>
+            <div class="<?php print implode(' ', $top_column_classes); ?>">
+              <?php print $content['top1']; ?>
+            </div>
+          <?php endif; ?>
+          <?php if (!empty($content['top2'])): ?>
+            <div class="<?php print implode(' ', $top_column_classes); ?>">
+              <?php print $content['top2']; ?>
+            </div>
+          <?php endif; ?>
+          <?php if (!empty($content['top3'])): ?>
+            <div class="<?php print implode(' ', $top_column_classes); ?>">
+              <?php print $content['top3']; ?>
+            </div>
+          <?php endif; ?>
+        </div>
+      </div>
+      <?php endif; ?>
     </div>
   <?php endif; ?>
 
