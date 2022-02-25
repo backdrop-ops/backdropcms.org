@@ -10,7 +10,7 @@
  ******************************************************************************/
 .block-borg-blocks-tagline {
   text-align: center;
-  padding-top: 30px;
+  padding: 30px 0;
 }
 .block-borg-blocks-tagline h2 {
   font-weight: 300;
@@ -82,6 +82,105 @@
     font-size: 1.125rem; /* 18px */
   }
 }
+
+/*******************************************************************************
+* Home page blocks: Top Inner Below
+*******************************************************************************/
+
+.l-top-inner-below {
+  padding-bottom: 300px;
+}
+
+.l-top-inner-below .block {
+  color: #000000;
+  padding: 30px 15px;
+  margin-bottom: 30px;
+}
+
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .l-top-inner-below .block {
+    padding: 30px;
+    margin-bottom: 60px;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-top-inner-below .block {
+    padding: 30px 15px;
+    margin-bottom: 0;
+  }
+  body.front .l-top .l-top-inner-below h2 {
+    font-size: 1.625rem;
+    line-height: 1.33em;
+    margin-top: .33em;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .l-top-inner-below .block {
+    padding: 30px;
+  }
+}
+
+/*******************************************************************************
+ * Cut corner and border effect.
+ ******************************************************************************/
+
+ .l-top-inner-below .l-top-col .cut-corner {
+   background-repeat: no-repeat;
+   background-image:
+     linear-gradient(#5fb5c1, #5fb5c1),
+     linear-gradient(#5fb5c1, #5fb5c1),
+     linear-gradient(#5fb5c1, #5fb5c1),
+     linear-gradient(#5fb5c1, #5fb5c1),
+     linear-gradient(#5fb5c1, #5fb5c1),
+     linear-gradient(#5fb5c1, #5fb5c1),
+     linear-gradient(to top left, transparent calc(50% - 1.5px), #5fb5c1 calc(50% - 1.5px), #5fb5c1 calc(50% + 1.5px), white calc(50% + 1.5px)),
+     linear-gradient(white, white),
+     linear-gradient(white, white);
+   background-size:
+     3px 100%,
+     3px 100%,
+     100% 3px,
+     100% 3px,
+     52px 3px,
+     3px 52px,
+     50px 50px,
+     100% 100%,
+     100% 100%;
+   background-position:
+     0% 0%, /* right border */
+     100% -50px, /* left border */
+     -50px 100%, /* bottom border */
+     0% 0%,  /* top border */
+     100% calc(100% - 50px), /* icon top border */
+     calc(100% - 50px) 100%, /* icon left border */
+     100% 100%,
+     -50px 100%,
+     100% -50px;
+ }
+ .l-top-inner-below .l-top-col:nth-child(2) .cut-corner {
+   background-image:
+     linear-gradient(#8d76bc, #8d76bc),
+     linear-gradient(#8d76bc, #8d76bc),
+     linear-gradient(#8d76bc, #8d76bc),
+     linear-gradient(#8d76bc, #8d76bc),
+     linear-gradient(#8d76bc, #8d76bc),
+     linear-gradient(#8d76bc, #8d76bc),
+     linear-gradient(to top left, transparent calc(50% - 1.5px), #8d76bc calc(50% - 1.5px), #8d76bc calc(50% + 1.5px), white calc(50% + 1.5px)),
+     linear-gradient(white, white),
+     linear-gradient(white, white);
+ }
+ .l-top-inner-below .l-top-col:last-child .cut-corner {
+   background-image:
+     linear-gradient(#b74ac1, #b74ac1),
+     linear-gradient(#b74ac1, #b74ac1),
+     linear-gradient(#b74ac1, #b74ac1),
+     linear-gradient(#b74ac1, #b74ac1),
+     linear-gradient(#b74ac1, #b74ac1),
+     linear-gradient(#b74ac1, #b74ac1),
+     linear-gradient(to top left, transparent calc(50% - 1.5px), #b74ac1 calc(50% - 1.5px), #b74ac1 calc(50% + 1.5px), white calc(50% + 1.5px)),
+     linear-gradient(white, white),
+     linear-gradient(white, white);
+ }
 
 
 /*******************************************************************************
