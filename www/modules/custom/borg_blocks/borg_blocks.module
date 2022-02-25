@@ -112,8 +112,8 @@ function borg_blocks_tagline($settings) {
   $download_link = l($dl_text, $dl_url, array('attributes' => $dl_attributes, 'html' => TRUE));
 
   //$output  = '<h1 class="page-title">Backdrop CMS</h1>';
-  $output  = '<h2>The free and Open Source CMS<br/>';
-  $output .= '<span>that helps you build websites for businesses and non-profits.</span></h2>';
+  $output  = '<h1>Backdrop CMS</h1>';
+  $output .= '<h2>Put your content center stage.</h2>';
 
   $output .= '<div class="tagline-section section-demo">';
   $output .=   $demo_link;
