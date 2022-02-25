@@ -1,0 +1,427 @@
+/*******************************************************************************
+ * components-blocks.css
+ *
+ * Contains styles for blocks components.
+ ******************************************************************************/
+
+/*******************************************************************************
+* Leadership listings (pmc, committers, bug squad, etc)
+*******************************************************************************/
+ul.leadership {
+  padding-left: 0;
+}
+ul.leadership li {
+  display: block;
+  line-height: 100px;
+  margin: .5em 0;
+}
+ul.leadership img {
+  float: left;
+  margin-right: 15px;
+  width: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #fff;
+}
+@media (min-width: 62em) { /* 992px */
+  ul.pmc li,
+  ul.bug-squad li {
+    display: inline-block;
+    width: 49%;
+  }
+}
+
+/*******************************************************************************
+ * Paypal buttons
+ ******************************************************************************/
+input[type=image] {
+  border: 0;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+/*******************************************************************************
+ * Release Cycle (/releases)
+ ******************************************************************************/
+.version-number {
+  font-size: 2rem; /* 32px */
+  margin: 0 auto;
+  text-align: center;
+}
+.version-number span {
+  display: inline-block;
+  width: 28%;
+}
+.version-explaination {
+  margin: 0 auto;
+  text-align: center;
+}
+.version-explaination span {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  width: 29%;
+}
+
+/*******************************************************************************
+ * Backdrop books
+ ******************************************************************************/
+.backdrop-books,
+.block-block-books {
+  margin-top: 50px;
+}
+.block-block-books .block-title,
+.backdrop-books .block-title {
+  text-align: left;
+}
+.block-block-books a,
+.backdrop-books a {
+  display: block;
+}
+.block-block-books figure,
+.backdrop-books figure {
+  max-width: 200px;
+  vertical-align: top;
+}
+.block-block-books .block-content p,
+.backdrop-books .block-content p {
+  display: none;
+}
+.block-block-books img,
+.backdrop-books img {
+  margin: 10px auto 0 auto;
+}
+
+main.col-md-8 .block-block-books figure,
+main.col-md-8 .backdrop-books figure {
+  display: inline-block;
+}
+.l-sidebar .block-block-books figure,
+.l-sidebar .backdrop-books figure {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/*******************************************************************************
+ * Resrouces block
+ ******************************************************************************/
+.block-block-resources ul {
+  padding: 0;
+}
+.block-block-resources li {
+  list-style: none;
+  position: relative;
+  padding-left: 38px;
+}
+.block-block-resources a {
+  display: block;
+  line-height: 1.5em;
+}
+.block-block-resources i.fa {
+  font-size: 1.5em; /* relative size */
+  position: absolute;
+  left: 0;
+}
+
+/*******************************************************************************
+ * Download Backdrop Block
+ ******************************************************************************/
+.block-block-2 {
+  margin-bottom: 20px;
+  font-weight: 300;
+  letter-spacing: .03em;
+  text-align: center;
+}
+@media (min-width: 48em) { /*768px */
+  .block-block-2 {
+    float: left;
+    margin-right: 25px;
+    text-align: left;
+  }
+}
+
+/*******************************************************************************
+ * Try Backdrop Block
+ ******************************************************************************/
+.block-block-1 {
+  margin-bottom: 20px;
+  font-weight: 300;
+  letter-spacing: .03em;
+  text-align: center;
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-block-1 {
+    float: left;
+    margin-right: 25px;
+  }
+}
+
+/*******************************************************************************
+ * borg_project_metrics block
+ ******************************************************************************/
+div.block-borg-project-metrics-backdrop-project-metrics {
+  background-color: #F7F7F7;
+  padding: 30px 0;
+  border-top: 3px solid #E8E6E5;
+  border-bottom: 3px solid #E8E6E5;
+  margin-bottom: 0;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div {
+  min-height: 88px;
+  text-align: center;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+  max-width: 80px;
+}
+.block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+  font-size: 1rem; /* 26px */
+}
+.block-borg-project-metrics-backdrop-project-metrics .join-the-fun {
+  text-align: center;
+}
+.block-borg-project-metrics-backdrop-project-metrics .join-the-fun p {
+  margin: .5em auto 1em auto;
+}
+.block-borg-project-metrics-backdrop-project-metrics .github-img {
+  max-width: 16px;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  div.block-borg-project-metrics-backdrop-project-metrics {
+    padding: 45px 0;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div img {
+    max-width: 66px;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+    font-size: 1.25rem; /* 20px */
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  div.block-borg-project-metrics-backdrop-project-metrics {
+    padding: 60px 0;
+  }
+  .block-borg-project-metrics-backdrop-project-metrics .project-metrics div p {
+    font-size: 1.5rem; /* 24px */
+  }
+}
+
+
+/*******************************************************************************
+ * Custom RSS feed icon.
+ ******************************************************************************/
+.block-borg-blocks-rss {
+  text-align: center;
+}
+.block-borg-blocks-rss a:hover {
+  color: #000;
+}
+
+/*******************************************************************************
+ * Upgrade from Drupal block
+ ******************************************************************************/
+.block-borg-blocks-upgrade {
+  padding-top: 15px;
+  text-align: center;
+}
+.block-borg-blocks-upgrade a.icon:hover {
+  color: #007CBA;
+}
+.block-borg-blocks-upgrade a.icon img {
+  max-width: 50px;
+  margin-top: 1.5em;
+}
+.block-borg-blocks-upgrade h3 {
+  font-weight: normal;
+  margin: 1em 0;
+}
+.block-borg-blocks-upgrade h3 a {
+  color: #fff;
+}
+.block-borg-blocks-upgrade h3 a:hover {
+  text-decoration: underline;
+}
+.block-borg-blocks-upgrade p {
+  text-align: center;
+}
+.upgrade-cta {
+  margin-top: 30px;
+  padding: 5px 0;
+  color: #000;
+  text-align: left;
+  background-color: #F7F7F7;
+  border-top: 3px solid #E8E6E5;
+  border-bottom: 3px solid #E8E6E5;
+}
+
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .block-borg-blocks-upgrade {
+
+  }
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .block-borg-blocks-upgrade {
+    padding-top: 30px;
+  }
+  .block-borg-blocks-upgrade img.icon {
+    margin-top: 2.5em;
+  }
+  .block-borg-blocks-upgrade h3 {
+    font-size: 1.75em;
+    margin: .5em 0;
+  }
+  .block-borg-blocks-upgrade p {
+    font-size: 1.25em;
+  }
+  .upgrade-cta {
+    margin-top: 345px;
+    padding: 10px 0;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-borg-blocks-upgrade {
+    padding-top: 45px;
+  }
+  .block-borg-blocks-upgrade h3 {
+    font-size: 1.5rem;
+  }
+  .block-borg-blocks-upgrade p {
+    font-size: 1em;
+  }
+  .upgrade-cta {
+    margin-top: 60px;
+    padding: 15px 0;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .block-borg-blocks-upgrade h3 {
+    font-size: 1.75em;
+  }
+  .block-borg-blocks-upgrade p {
+    font-size: 1.25em;
+  }
+}
+
+/*******************************************************************************
+ * Showcase block
+ ******************************************************************************/
+div.block-views-showcase-block-1 {
+  margin-top: 30px;
+  margin-bottom: 0px;
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-views-showcase-block-1 h2 {
+    margin-bottom: 0;
+  }
+  .block-views-showcase-block-1 .view-showcase .row {
+    padding-bottom: 40px;
+  }
+}
+
+/*******************************************************************************
+ * Show your support form block.
+ ******************************************************************************/
+.block-formblock-supporter form {
+  max-width: 670px;
+  text-align: left;
+  margin: 0 auto;
+}
+.block-formblock-supporter label {
+  font-weight: normal;
+  color: #444b53;
+}
+.block-formblock-supporter .form-text {
+  font-size: 2rem; /* 32px */
+  width: 100%;
+}
+
+/* File upload widget gets pretty complicated. */
+.block-formblock-supporter .form-managed-file {
+  border: 2px solid #E8E6E5;
+  background: white;
+  padding: 8px 4px;
+  height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.block-formblock-supporter .image-widget-data {
+  float: none;
+  position: relative;
+}
+.block-formblock-supporter .image-widget-data span {
+  display: none;
+}
+.block-formblock-supporter .image-widget-data:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.block-formblock-supporter .image-preview {
+  max-height: 30px;
+  max-width: 30px;
+  overflow: hidden;
+  padding: 0 12px 0 0;
+}
+.block-formblock-supporter .image-preview img {
+  width: 100%;
+  height: auto;
+}
+.block-formblock-supporter .form-file {
+  font-size: 1rem; /* 16px */
+  color: #7D7D7D;
+  border: none;
+  vertical-align: middle;
+  width: 100%;
+  position: absolute;
+  margin: -12px; /* Negative .image-preview padding. */
+}
+.block-formblock-supporter .form-managed-file .form-submit {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  margin: -12px; /* Negative .image-preview padding. */
+  padding: 17px 30px;
+  float: right;
+  font-size: 1rem; /* 16px */
+  border: none;
+  border-left: 2px solid #444b53;
+  vertical-align: middle;
+  position: relative;
+  text-transform: uppercase;
+  z-index: 2;
+}
+/* End file upload widget. */
+
+.block-formblock-supporter .description {
+  display: none;
+}
+.block-formblock-supporter .form-item .form-item {
+  margin: 0;
+}
+.block-formblock-supporter .form-actions {
+  text-align: right;
+}
+.block-formblock-supporter .form-actions .form-submit {
+  font-size: 1rem; /* 16px */
+  margin: 1em 0;
+}
+.block-formblock-supporter .form-actions a {
+  display: none;
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-formblock-supporter {
+    padding-left: 15px;
+  }
+  .block-formblock-supporter .image-widget-data span {
+    display: inline;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .block-formblock-supporter {
+    padding-left: 30px;
+  }
+}
