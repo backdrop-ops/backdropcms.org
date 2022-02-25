@@ -16,8 +16,10 @@
   margin: 0;
 }
 .block-borg-blocks-tagline h2 {
-  font-weight: 300;
   margin: 0 0 .5em 0;
+}
+.block-borg-blocks-tagline p {
+  font-size: 1.66rem;
 }
 .block-borg-blocks-tagline .tagline-section {
   text-align: left;
@@ -91,7 +93,6 @@
 *******************************************************************************/
 
 .l-top-inner-below {
-  padding-bottom: 300px;
 }
 
 .l-top-inner-below .block {
@@ -127,7 +128,8 @@
  * Cut corner and border effect.
  ******************************************************************************/
 
- .l-top-inner-below .l-top-col .cut-corner {
+ .l-top-inner-below .l-top-col .block {
+   padding-bottom: 65px;
    background-repeat: no-repeat;
    background-image:
      linear-gradient(#5fb5c1, #5fb5c1),
@@ -160,7 +162,7 @@
      -50px 100%,
      100% -50px;
  }
- .l-top-inner-below .l-top-col:nth-child(2) .cut-corner {
+ .l-top-inner-below .l-top-col:nth-child(2) .block {
    background-image:
      linear-gradient(#8d76bc, #8d76bc),
      linear-gradient(#8d76bc, #8d76bc),
@@ -172,7 +174,7 @@
      linear-gradient(white, white),
      linear-gradient(white, white);
  }
- .l-top-inner-below .l-top-col:last-child .cut-corner {
+ .l-top-inner-below .l-top-col:last-child .block {
    background-image:
      linear-gradient(#b74ac1, #b74ac1),
      linear-gradient(#b74ac1, #b74ac1),
