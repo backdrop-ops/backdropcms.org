@@ -27,11 +27,17 @@
 
   <?php if (!empty($content['top'])): ?>
     <div class="l-top">
-      <div class="l-top-inner">
+      <div class="l-top-inner <?php print $spacer_class?>">
         <?php print $content['top']; ?>
       </div>
+    </div>
+  <?php endif; ?>
+
+  <?php if (!empty($content['bottom'])): ?>
+    <div class="l-bottom">
+
       <?php if (!empty($content['top1']) || !empty($content['top2']) || !empty($content['top3'])): ?>
-      <div class="l-top-inner-below container container-fluid">
+      <div class="l-cut-cormers container container-fluid">
         <div class="row">
           <?php if (!empty($content['top1'])): ?>
             <div class="<?php print implode(' ', $top_column_classes); ?>">
@@ -51,11 +57,7 @@
         </div>
       </div>
       <?php endif; ?>
-    </div>
-  <?php endif; ?>
 
-  <?php if (!empty($content['bottom'])): ?>
-    <div class="l-bottom">
       <?php print $content['bottom']; ?>
     </div>
   <?php endif; ?>

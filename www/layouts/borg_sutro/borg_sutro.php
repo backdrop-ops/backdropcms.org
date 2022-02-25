@@ -5,7 +5,8 @@
  */
 
 function template_preprocess_layout__borg_sutro(&$variables) {
-  $variables['top_column_classes'] = array('l-top-col');
+  $variables['top_column_classes'] = array('l-col');
+  $variables['spacer_class'] = '';
 
   // Count the top regions.
   $top_region_count = 0;
@@ -20,6 +21,7 @@ function template_preprocess_layout__borg_sutro(&$variables) {
   }
 
   if ($top_region_count) {
+    $variables['spacer_class'] = 'l-space-below';
     switch ($top_region_count) {
       case 1:
         $variables['top_column_classes'][] = 'col-md-12';
