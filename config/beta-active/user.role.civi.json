@@ -1,0 +1,10 @@
+{
+    "_config_name": "user.role.civi",
+    "name": "civi",
+    "label": "Civi Admin",
+    "weight": "3",
+    "permissions": [
+        "access administration bar",
+        "access administration pages"
+    ]
+}
