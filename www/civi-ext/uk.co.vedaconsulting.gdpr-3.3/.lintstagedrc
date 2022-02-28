@@ -1,0 +1,6 @@
+{
+  "*.scss": [
+    "stylelint --fix",
+    "git add"
+  ]
+}
