@@ -9,9 +9,7 @@ Text module -- formatted text fields should not lock when empty due to access.
 Patches to Backdrop Contrib:
 ============================
 
-borg - decrease header icon font size
-  https://github.com/backdrop-contrib/borg/issues/22
-  https://github.com/backdrop-contrib/borg/pull/23.patch
+borg theme: none.
 
 ---
 

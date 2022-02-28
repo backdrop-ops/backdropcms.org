@@ -6,5 +6,6 @@ description = This website has been asymiliated. This is a sub-theme of Borg.
 backdrop = 1.x
 base theme = borg
 
+stylesheets[screen][] = css/components-blocks.css
 stylesheets[screen][] = css/borg-components.css
 stylesheets[screen][] = css/components-demos.css

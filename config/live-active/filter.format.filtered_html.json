@@ -15,10 +15,8 @@
         "codefilter": {
             "status": 1,
             "weight": -48,
-            "settings": {
-                "nowrap_expand": 0
-            },
-            "module": "codefilter"
+            "module": "codefilter",
+            "settings": []
         },
         "filter_image_caption": {
             "status": 1,
@@ -35,14 +33,12 @@
         "filter_url": {
             "status": 1,
             "weight": -47,
-            "settings": {
-                "filter_url_length": "72"
-            },
-            "module": "filter"
+            "module": "filter",
+            "settings": []
         },
         "filter_htmlcorrector": {
             "status": 1,
-            "weight": -43,
+            "weight": -42,
             "module": "filter",
             "settings": []
         },
@@ -62,11 +58,15 @@
             "status": 1,
             "weight": -49,
             "settings": {
-                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h1> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th><span>",
-                "filter_html_help": 1,
-                "filter_html_nofollow": 0
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h1> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th><span>"
             },
             "module": "filter"
+        },
+        "filter_tokens": {
+            "status": 0,
+            "weight": -43,
+            "module": "token_filter",
+            "settings": []
         }
     },
     "editor": "ckeditor",
@@ -128,6 +128,7 @@
         ],
         "image_upload": {
             "status": 1,
+            "orientate": 0,
             "scheme": "public",
             "directory": "inline-images",
             "max_size": "",
@@ -135,6 +136,13 @@
                 "width": "",
                 "height": ""
             }
+        },
+        "file_upload": {
+            "status": 0,
+            "scheme": "public",
+            "directory": "inline-files",
+            "max_size": "",
+            "file_extensions": "txt pdf"
         },
         "plugins": {
             "style": {

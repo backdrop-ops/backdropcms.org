@@ -103,11 +103,6 @@ body.front .page-title {
   margin-bottom: 30px;
 }
 
-body.front .node-page h1,
-body.front .node-page h2,
-body.front .node-page h3 {
-  text-align: center;
-}
 body.front .node-page ul {
   -webkit-column-count: 2;
   -moz-column-count: 2;
@@ -119,7 +114,6 @@ body.front .node-page ul {
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   body.front .node-page {
     margin: 0 auto 80px auto;
-    text-align: center;
     padding-right: 15px;
   }
 }

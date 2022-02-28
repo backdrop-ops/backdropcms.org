@@ -23,7 +23,7 @@
     "preprocess_css": 1,
     "preprocess_js": 1,
     "cron_threshold_warning": 172800,
-    "cron_safe_threshold": 10800,
+    "cron_safe_threshold": "3600",
     "cron_max_threshold": 10800,
     "cron_threshold_error": 1209600,
     "site_name": "Backdrop CMS",
@@ -107,5 +107,6 @@
         "site_slogan",
         "maintenance_mode_message"
     ],
-    "block_interest_cohort": 1
+    "block_interest_cohort": 1,
+    "messages_dismissible": 1
 }

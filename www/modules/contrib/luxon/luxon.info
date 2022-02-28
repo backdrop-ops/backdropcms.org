@@ -1,0 +1,11 @@
+name = Luxon
+description = Provides tools to manipulate and format dates and times in Javascript.
+package = Date/Time
+configure = admin/config/development/luxon
+backdrop = 1.x
+type = module
+
+; Added by Backdrop CMS packaging script on 2021-06-06
+project = luxon
+version = 1.x-1.0.0
+timestamp = 1623005593

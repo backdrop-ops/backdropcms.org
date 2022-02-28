@@ -112,8 +112,9 @@ function borg_blocks_tagline($settings) {
   $download_link = l($dl_text, $dl_url, array('attributes' => $dl_attributes, 'html' => TRUE));
 
   //$output  = '<h1 class="page-title">Backdrop CMS</h1>';
-  $output  = '<h2>The free and Open Source CMS<br/>';
-  $output .= '<span>that helps you build websites for businesses and non-profits.</span></h2>';
+  $output  = '<h1>Backdrop CMS</h1>';
+  $output .= '<h2>Put your content center stage.</h2>';
+  //$output .= '<p>Backdrop is the free and Open Source Content Management System<br>that helps you build modern, comprehensive websites for businesses and non-profits.</p>';
 
   $output .= '<div class="tagline-section section-demo">';
   $output .=   $demo_link;
@@ -145,11 +146,11 @@ function borg_blocks_upgrade($settings) {
   $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" />';
   $included_modules_icon_link = l($included_modules_icon, 'node/1683', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $top_modules = l(t('94% of top modules ready'), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
+  $top_modules = l(t('96% of top modules ready'), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
   $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" />';
   $top_modules_icon_link = l($top_modules_icon, 'node/2255', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $total_addons = l(t('750+ total add-ons'), 'node/1686');
+  $total_addons = l(t('900+ total add-ons'), 'node/1686');
   $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" />';
   $total_addons_icon_link = l($total_addons_icon, 'node/1686', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 

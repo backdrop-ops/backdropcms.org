@@ -364,7 +364,6 @@ article footer .submitted {
   padding: 10px 0;
 }
 article footer .user-picture {
-  float: left;
   margin-right: 15px;
 }
 article footer .user-picture img img {
@@ -405,10 +404,16 @@ article footer .arrow-down:after {
   }
   article footer .submitted {
     padding: 0;
-    line-height: 40px;
   }
+  article footer.has-picture {
+    display: table;
+    min-height: 100px;
+  }
+  article footer.has-picture .user-picture,
   article footer.has-picture .submitted {
-    line-height: 100px;
+    display: table-cell;
+    vertical-align: middle;
+    min-height: 80px;
   }
   article footer .arrow-down {
     display: block;
@@ -418,6 +423,9 @@ article footer .arrow-down:after {
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   article.view-mode-full footer {
     margin-bottom: 50px;
+  }
+  article footer p.submitted {
+    font-size: 1.125rem; /* relative size: 18px; */
   }
 }
 
@@ -454,6 +462,7 @@ article.comment footer a.permalink {
 *******************************************************************************/
 article .content .field-name-field-tags {
   padding: 0;
+  margin-bottom: 0;
 }
 
 .field-name-field-tags {
@@ -624,6 +633,9 @@ a.feed-icon {
 }
 .block-on-the-web-social-links a i {
   color: #007CBA;
+}
+.l-footer .block-on-the-web-social-links a i {
+  text-align: left;
 }
 .block-on-the-web-social-links a i:first-child {
   margin-left: 0;
@@ -817,6 +829,10 @@ body.user-form .page-title {
 /*******************************************************************************
  * Login form
 *******************************************************************************/
+#user-login .help p {
+  font-size: 1.5rem; /* 24px */
+  text-align: center;
+}
 #user-login .form-item {
   padding: 15px 0;
   margin: 0;
@@ -830,23 +846,24 @@ body.user-form .page-title {
 #user-login .form-required {
   display: none;
 }
-#user-login .form-item input {
-  width: 100%;
-}
 #user-login small {
   margin: 0 10px;
   display: block;
   padding-top: 10px;
 }
 
-@media (min-width: 34em) { /* 544px */
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   #user-login {
-    max-width: 560px;
+    max-width: 600px;
     margin: 0 auto 10em auto;
     text-align: left;
   }
   #user-login .form-item {
+    padding: 20px 0;
     display: flex;
+  }
+  #user-login .password-toggle {
+    top: -1.5em;
   }
   #user-login .form-item label {
     text-align: right;
@@ -859,6 +876,7 @@ body.user-form .page-title {
   }
   #user-login .form-item input {
     width: 390px;
+    flex: 1;
   }
   #user-login small {
     display: inline;
@@ -892,33 +910,26 @@ body.user-form .page-title {
   max-width: 600px;
   margin: 0 auto;
 }
-#user-register-form .form-item {
-  padding: 15px 0;
-  display: flex;
-}
-#user-register-form .field-type-text-long .form-item,
-#user-register-form .form-type-checkbox .form-item {
-  /* undo flex */
-  display: block;
-  padding-bottom: 0;
+#user-register-form .help p {
+  font-size: 1.5rem; /* 24px */
 }
 #user-register-form fieldset .form-item {
   padding: 5px 0;
   margin-bottom: .5em;
 }
 #user-register-form .form-item label {
-  width: 180px;
   padding-right: 15px;
-  display: inline-block;
+  line-height: 2.2em;
 }
-#user-register-form .field-type-text-long label,
-#user-register-form .form-type-checkbox label {
+#user-register-form .field-type-text-long label {
   width: auto;
+}
+#user-register-form .form-type-checkbox label {
+  line-height: 1.25em;
 }
 #user-register-form .form-item input[type="text"],
 #user-register-form .form-item input[type="email"] {
   width: 100%;
-  flex: 1;
 }
 #user-register-form #edit-contact {
   margin: 30px 0;
@@ -950,14 +961,30 @@ body.user-form .page-title {
   color: #666;
 }
 
-@media (max-width: 580px) {
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   #user-register-form .form-item {
-    display: block;
+    display: flex;
     padding: 10px 0;
     margin: 0;
   }
-  #user-register-form .form-item label {
+  #user-register-form .field-type-text-long .form-item,
+  #user-register-form .form-type-checkbox .form-item {
+    /* undo flex */
     display: block;
+    padding-bottom: 0;
+  }
+  #user-register-form .form-item label {
+    width: 130px;
+  }
+  #user-register-form .form-type-checkbox label {
+    width: auto;
+  }
+  #user-register-form .form-item input[type="text"],
+  #user-register-form .form-item input[type="email"] {
+    flex: 1;
+  }
+  #user-register-form #edit-contact .form-item input {
+    flex: none;
   }
 }
 

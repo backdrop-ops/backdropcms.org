@@ -1,0 +1,231 @@
+{
+    "_config_name": "filter.format.standard_tokens",
+    "format": "standard_tokens",
+    "name": "Standard+Tokens",
+    "editor": "ckeditor",
+    "editor_settings": {
+        "toolbar": [
+            [
+                {
+                    "name": "Formatting",
+                    "items": [
+                        "Bold",
+                        "Italic",
+                        "Blockquote",
+                        "Format"
+                    ]
+                },
+                {
+                    "name": "Lists",
+                    "items": [
+                        "BulletedList",
+                        "NumberedList"
+                    ]
+                },
+                {
+                    "name": "Alignment",
+                    "items": [
+                        "JustifyLeft",
+                        "JustifyCenter",
+                        "JustifyRight"
+                    ]
+                },
+                {
+                    "name": "Linking",
+                    "items": [
+                        "BackdropLink",
+                        "BackdropUnlink"
+                    ]
+                },
+                {
+                    "name": "Media",
+                    "items": [
+                        "BackdropImage"
+                    ]
+                },
+                {
+                    "name": "Tools",
+                    "items": [
+                        "Source",
+                        "Maximize"
+                    ]
+                }
+            ]
+        ],
+        "image_upload": {
+            "status": 1,
+            "orientate": 0,
+            "scheme": "public",
+            "directory": "inline-images",
+            "max_size": "",
+            "max_dimensions": {
+                "width": "",
+                "height": ""
+            }
+        },
+        "file_upload": {
+            "status": 0,
+            "scheme": "public",
+            "directory": "inline-files",
+            "max_size": "",
+            "file_extensions": "txt pdf"
+        },
+        "plugins": {
+            "style": {
+                "style_list": [
+                    {
+                        "name": "Link",
+                        "element": "span",
+                        "attributes": {
+                            "class": "link"
+                        }
+                    },
+                    {
+                        "name": "Navigation",
+                        "element": "span",
+                        "attributes": {
+                            "class": "navigation"
+                        }
+                    },
+                    {
+                        "name": "Button (primary)",
+                        "element": "span",
+                        "attributes": {
+                            "class": "button"
+                        }
+                    },
+                    {
+                        "name": "Button (secondary)",
+                        "element": "span",
+                        "attributes": {
+                            "class": "button-secondary"
+                        }
+                    },
+                    {
+                        "name": "Drop Button",
+                        "element": "span",
+                        "attributes": {
+                            "class": "dropbutton"
+                        }
+                    },
+                    {
+                        "name": "Local Navigation (tab)",
+                        "element": "span",
+                        "attributes": {
+                            "class": "local-tab"
+                        }
+                    },
+                    {
+                        "name": "Vertical tab",
+                        "element": "span",
+                        "attributes": {
+                            "class": "vartical-tab "
+                        }
+                    },
+                    {
+                        "name": "Select Option",
+                        "element": "span",
+                        "attributes": {
+                            "class": "select-option"
+                        }
+                    },
+                    {
+                        "name": "Table Header",
+                        "element": "span",
+                        "attributes": {
+                            "class": "table-header"
+                        }
+                    },
+                    {
+                        "name": "Monospace",
+                        "element": "span",
+                        "attributes": {
+                            "class": "monospace"
+                        }
+                    },
+                    {
+                        "name": "Call-Out",
+                        "element": "span",
+                        "attributes": {
+                            "class": "callout"
+                        }
+                    },
+                    {
+                        "name": "Example",
+                        "element": "span",
+                        "attributes": {
+                            "class": "example"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "cache": true,
+    "status": 1,
+    "filters": {
+        "codefilter": {
+            "status": 1,
+            "weight": -48,
+            "module": "codefilter",
+            "settings": []
+        },
+        "filter_image_caption": {
+            "status": 1,
+            "weight": -46,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_autop": {
+            "status": 1,
+            "weight": -44,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_url": {
+            "status": 1,
+            "weight": -47,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_htmlcorrector": {
+            "status": 1,
+            "weight": -42,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html_escape": {
+            "status": 0,
+            "weight": -50,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_image_align": {
+            "status": 1,
+            "weight": -45,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html": {
+            "status": 1,
+            "weight": -49,
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <h3> <h4> <h5> <p> <img> <figure> <figcaption>"
+            },
+            "module": "filter"
+        },
+        "filter_tokens": {
+            "status": 1,
+            "weight": -43,
+            "module": "token_filter",
+            "settings": []
+        }
+    },
+    "roles": {
+        "4": "4",
+        "3": "3",
+        "anonymous": 0,
+        "authenticated": 0
+    },
+    "weight": 0
+}

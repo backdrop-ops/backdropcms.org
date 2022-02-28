@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Installation/uninstallation/migration functions.
+ */
+
+/**
+ * Replace config variable.
+ */
+function utz_tokens_update_1000() {
+  $config = config('utz_tokens.settings');
+  $detect_anonymous = $config->get('detect_anonymous');
+  $config->clear('detect_anonymous');
+  $config->set('timezone_detection', $detect_anonymous ? '1' : '0');
+  $config->save();
+}

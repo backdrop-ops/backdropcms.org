@@ -34,6 +34,12 @@ description = Test node preview functionality.
 group = Node
 file = node.test
 
+[NodeLayoutPreviewTestCase]
+name = Node layout preview test
+description = Tests that the correct layout is used for node previews.
+group = Node
+file = node.test
+
 [NodeCreationTestCase]
 name = Node creation
 description = Create a node and test saving it.
@@ -214,7 +220,7 @@ description = Tests the new node states for Draft, Publish Now and Schedule Publ
 group = Node
 file = node.test
 
-; Added by Backdrop CMS packaging script on 2021-08-12
+; Added by Backdrop CMS packaging script on 2022-02-16
 project = backdrop
-version = 1.19.3
-timestamp = 1628794130
+version = 1.21.2
+timestamp = 1645040702

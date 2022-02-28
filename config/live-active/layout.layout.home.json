@@ -22,8 +22,8 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
-            "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d",
-            "b64e5fc1-9702-4d2d-8f5f-95001ebb2064"
+            "e66902ae-5fac-47b7-8500-b84bff8c4dd9",
+            "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "content": [],
         "half1": [
@@ -141,34 +141,7 @@
                 }
             }
         },
-        "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d": {
-            "plugin": "borg_blocks:tagline",
-            "data": {
-                "module": "borg_blocks",
-                "delta": "tagline",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "version": "1.20.1"
-                    },
-                    "contexts": [],
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": "container"
-                        }
-                    }
-                }
-            }
-        },
-        "b64e5fc1-9702-4d2d-8f5f-95001ebb2064": {
+        "e66902ae-5fac-47b7-8500-b84bff8c4dd9": {
             "plugin": "block:backdrop_live",
             "data": {
                 "module": "block",
@@ -186,12 +159,39 @@
                     "admin_label": "",
                     "admin_description": ""
                 },
-                "uuid": "b64e5fc1-9702-4d2d-8f5f-95001ebb2064",
+                "uuid": "e66902ae-5fac-47b7-8500-b84bff8c4dd9",
                 "style": {
                     "plugin": "default",
                     "data": {
                         "settings": {
                             "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d": {
+            "plugin": "borg_blocks:tagline",
+            "data": {
+                "module": "borg_blocks",
+                "delta": "tagline",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "version": "1.21.2"
+                    },
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "container"
                         }
                     }
                 }

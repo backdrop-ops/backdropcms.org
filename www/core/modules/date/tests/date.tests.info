@@ -10,6 +10,12 @@ description = Test date field settings and Start/End date interaction.
 group = Date
 file = date_field.test
 
+[DateFieldTokenTestCase]
+name = Date Field Token
+description = Test the date field token replacements.
+group = Date
+file = date_field.test
+
 [DateTimezoneTestCase]
 name = Date Timezone & Granularity
 description = Test combinations of date field timezone handling and granularity.
@@ -40,7 +46,7 @@ description = Test date theme functions.
 group = Date
 file = date_themes.test
 
-; Added by Backdrop CMS packaging script on 2021-08-12
+; Added by Backdrop CMS packaging script on 2022-02-16
 project = backdrop
-version = 1.19.3
-timestamp = 1628794130
+version = 1.21.2
+timestamp = 1645040702
