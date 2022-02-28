@@ -23,3 +23,9 @@ vendor
 
 # Ignore local settings files
 *.settings.local.php
+
+# Ignore local civi settings
+www/civicrm.settings.php
+www/civicrm.settings.php.example
+
+
