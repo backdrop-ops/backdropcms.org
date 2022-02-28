@@ -1,0 +1,30 @@
+site_name: GDPR
+repo_url: https://github.com/veda-consulting/uk.co.vedaconsulting.gdpr
+theme: 
+ name: material
+markdown_extensions:
+  - attr_list
+  - admonition
+  - def_list
+  - codehilite:
+      guess_lang: false
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tilde
+  - pymdownx.betterem
+  - pymdownx.mark
+  - pymdownx.magiclink
+nav:
+- Introduction: index.md
+- Overview: overview.md
+- Installation: installation.md
+- Configuration: configuration.md
+- Identifying Inactive Contacts: identifying-inactive-contacts.md
+- Communication Preferences: communication-preferences.md
+- Data Policy: data-policy.md
+- Membership Terms and Conditions: membership-terms-and-conditions.md
+- Events Terms and Conditions: events-terms-and-conditions.md
+- Right to be forgotten: right-to-be-forgotten.md
+

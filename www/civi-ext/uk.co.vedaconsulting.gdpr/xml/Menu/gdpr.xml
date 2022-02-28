@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/gdpr/view/tab</path>
+    <page_callback>CRM_Gdpr_Page_Tab</page_callback>
+    <title>GDPR Tab</title>
+    <access_arguments>access GDPR</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/gdpr/dashboard</path>
+    <page_callback>CRM_Gdpr_Page_Dashboard</page_callback>
+    <title>GDPR - Dashboard</title>
+    <access_arguments>access GDPR</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/gdpr/activitycontact</path>
+    <page_callback>CRM_Gdpr_Form_Activitycontact</page_callback>
+    <title>GDPR - Contacts without Activities</title>
+    <access_arguments>access GDPR</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/ajax/gdpractivitycontactlist</path>
+    <page_callback>CRM_Gdpr_Page_AJAX::getGdprActivityContactList</page_callback>
+    <access_arguments>access GDPR</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/gdpr/settings</path>
+    <page_callback>CRM_Gdpr_Form_Settings</page_callback>
+    <title>GDPR Settings</title>
+    <access_arguments>administer GDPR</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/gdpr/forgetme</path>
+    <path_arguments>cid=%%cid%%</path_arguments>
+    <page_callback>CRM_Gdpr_Form_Forgetme</page_callback>
+    <title>Forgetme</title>
+    <access_arguments>forget contact</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/gdpr/export</path>
+    <path_arguments>cid=%%cid%%</path_arguments>
+    <page_callback>CRM_Gdpr_Form_Export</page_callback>
+    <title>Export</title>
+    <access_arguments>forget contact</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/terms/accept</path>
+    <page_callback>CRM_Gdpr_Form_SLAAccept</page_callback>
+    <title>SLAAccept</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/event/manage/terms_conditions</path>
+    <page_callback>CRM_Gdpr_Form_ManageEvent_TermsAndConditions</page_callback>
+    <title>ManageEvent_TermsAndConditions</title>
+    <adminGroup>CiviEvent</adminGroup>
+  </item>
+  <item>
+    <path>civicrm/gdpr/comms-prefs/settings</path>
+    <page_callback>CRM_Gdpr_Form_CommunicationsPreferences</page_callback>
+    <title>CommunicationsPreferences</title>
+    <access_arguments>administer GDPR</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/gdpr/comms-prefs/update</path>
+    <page_callback>CRM_Gdpr_Form_UpdatePreference</page_callback>
+    <title>UpdatePreference</title>
+    <is_public>true</is_public>
+    <access_callback>1</access_callback>
+    <weight>0</weight>
+  </item>
+  <item>
+    <path>civicrm/admin/contribute/terms_conditions</path>
+    <page_callback>CRM_Gdpr_Form_ContributionPage_TermsAndConditions</page_callback>
+    <title>ContributionPage_TermsAndConditions</title>
+    <adminGroup>CiviContribute</adminGroup>
+  </item>
+</menu>

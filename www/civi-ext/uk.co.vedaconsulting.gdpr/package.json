@@ -1,0 +1,23 @@
+{
+  "name": "uk.co.vedaconsulting.gdpr",
+  "version": "1.0.0",
+  "description": "CiviCRM GDPR extension by Veda Consulting",
+  "engines": {
+    "node": ">=12",
+    "npm": ">=7"
+  },
+  "devDependencies": {
+    "civicrm-scssroot": "github:totten/civicrm-scssroot",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.0.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "sass": "^1.35.1",
+    "stylelint": "^13.13.1",
+    "stylelint-config-sass-guidelines": "^8.0.0",
+    "stylelint-order": "^4.1.0",
+    "stylelint-scss": "^3.19.0"
+  }
+}
