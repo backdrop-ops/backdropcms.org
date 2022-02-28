@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/sendgrid</path>
+    <page_callback>CRM_Sendgrid_Form_SendGrid</page_callback>
+    <title>SendGrid Event Notification Processor</title>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/sendgrid/webhook</path>
+    <page_callback>CRM_Sendgrid_Page_Webhook</page_callback>
+    <title>Webhook</title>
+    <access_callback>1</access_callback>
+  </item>
+</menu>
