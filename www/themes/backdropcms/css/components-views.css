@@ -1,0 +1,521 @@
+/*******************************************************************************
+ * components-views.css
+ *
+ * Contains styles for views components.
+ ******************************************************************************/
+
+/*******************************************************************************
+ * Quotes view.
+ ******************************************************************************/
+#block-views-quotes-block {
+  clear: both;
+  padding-top: 100px;
+}
+.view-quotes {
+  padding: 50px 0;
+  background-color: #F7F7F7;
+  margin-left: -500px;
+  margin-right: -500px;
+  padding: 50px 500px;
+  border-top: 2px solid #E8E6E5;
+  border-bottom: 2px solid #E8E6E5;
+}
+.view-quotes img {
+  float: left;
+  margin-right: 15px;
+}
+.view-quotes blockquote {
+  margin-left: 125px;
+  font-size: 1.25rem; /* 20px */
+}
+.view-quotes .views-field-title {
+  clear: left;
+}
+.view-quotes .subtext {
+  margin: 5px 0;
+}
+.view-quotes .views-field-title {
+  margin-top: 5px;
+}
+
+/*******************************************************************************
+ * Projects view
+ ******************************************************************************/
+.view-modules ol {
+  margin-left: 0                                                  ;
+  list-style-type: none;
+}
+
+/*******************************************************************************
+ * Supporters view. Block.
+ ******************************************************************************/
+.block-views-supporters-block {
+  margin: 80px 0;
+}
+.block-views-supporters-block h2 {
+  text-align: center;
+  margin-bottom: 2em;
+}
+.view-supporters {
+  text-align: center;
+}
+.view-supporters .view-content {
+  display: inline-block;
+  width: auto;
+  margin: 0 auto;
+  min-height: 150px;
+}
+.view-supporters .views-row {
+  float: left;
+  display: inline-block;
+  width: 50px;
+  margin: 0 15px;
+  min-height: 150px;
+  font-size: 0.75rem; /* 12px */
+}
+@media all and (min-width: 600px) {
+  .view-supporters .views-row {
+    width: 72px;
+  }
+}
+.view-supporters .views-field-title {
+  margin: 0 -10px;
+}
+.views-field-field-logo a {
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  margin: 0 auto;
+}
+.views-field-field-logo img {
+  display: inline-block;
+  vertical-align: middle;
+  max-height: 100%;
+}
+.views-field-field-logo .helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+/*******************************************************************************
+ * Supporters Homepage view. Block.
+ ******************************************************************************/
+.view-supporters-home .views-field-field-logo {
+  position: relative;
+  min-height: 80px;
+  margin-bottom: 5px;
+}
+.view-supporters-home img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (min-width: 26em) { /* 416px @ 16px font size */
+  .view-supporters-home .views-field-field-logo {
+    min-height: 100px;
+  }
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .view-supporters-home .views-field-field-logo {
+    margin-bottom: 10px;
+  }
+}
+
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .view-supporters-home .views-field-field-logo {
+    margin-bottom: 15px;
+  }
+}
+
+/*******************************************************************************
+ * Releases views
+ ******************************************************************************/
+.view-project-releases-by-project .view-empty {
+  margin: 1em 0;
+  font-size: 1.25em; /* 20px */
+}
+.view-project-releases-by-project .views-row {
+  padding: 28px 0;
+  border-top: 1px solid #d4d4d6;
+}
+
+/*******************************************************************************
+ * Latest News View
+ ******************************************************************************/
+.block-views-news-block h3 {
+  margin: 1em 0 .5em;
+  font-weight: 500;
+}
+.block-views-news-block h3 strong {
+  font-weight: inherit;
+}
+.block-views-news-block h3 a {
+  text-decoration: underline;
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-views-news-block .views-field-view-node {
+    text-align: right;
+    margin-right: 30px;
+  }
+  .block-views-news-block .views-field-view-node a {
+    display: inline-block;
+  }
+  .block-views-news-block .views-field-view-node a:hover {
+    text-decoration: underline;
+  }
+  .block-views-news-block .feed-icon {
+    text-align: right;
+    position: relative;
+    top: -10px;
+  }
+  .block-views-news-block .feed-icon a:hover {
+    color: #000;
+  }
+}
+
+/*******************************************************************************
+ * Service providers listings
+ ******************************************************************************/
+
+.view-providers .view-header h3 {
+  text-align: center;
+  margin-bottom: 2.25em;
+}
+.view-providers .view-content {
+  padding-top: 15px;
+}
+.view-providers .views-row {
+  padding-bottom: 15px;
+  border-bottom: 2px solid #E8E6E5;
+  margin-bottom: 15px;
+}
+.view-providers .views-row:last-child {
+  border-bottom: 0;
+}
+.view-providers table {
+  width: 100%;
+}
+.view-providers table td {
+  padding: 5px 0;
+}
+.view-providers table .views-field {
+  margin-left: auto;
+}
+.view-providers table .views-field-field-logo {
+  float: none;
+  margin-bottom: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+.view-providers h4 {
+  margin: 0;
+}
+.view-providers .view-footer {
+  background-color:  #f7f7f7;
+  padding: 15px;
+  margin-top: 15px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.view-providers .view-footer p {
+  margin: 0;
+  text-align: center;
+  color: #444b53;
+  font-size: 1rem; /* 16px */
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .view-providers table td {
+    padding: 15px 0;
+  }
+  .view-providers h4 {
+    margin-top: 1em;
+  }
+  .view-providers .view-footer {
+    margin-top: 30px;
+  }
+}
+
+/*******************************************************************************
+ * Service providers listing - blocks
+ ******************************************************************************/
+.block-views-providers-block-2 .view-providers,
+.block-views-providers-block-3 .view-providers {
+  margin-bottom: 100px;
+  border: 2px solid #E8E6E5;
+  border-radius: 4px;
+}
+
+/*******************************************************************************
+ * Contractors listing
+ ******************************************************************************/
+.block-views-contractors-block {
+  text-align: center;
+  margin-bottom: 50px;
+}
+.block-views-contractors-block h2.block-title {
+  font-size: 1.75rem; /* 28px */
+  margin-top: 57px;
+}
+.block-views-contractors-block .view-contractors {
+  padding-left: 0;
+  padding-right: 0;
+}
+.contractor {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.view-contractors .views-field-field-name {
+  font-size: 1.25rem; /*20px */
+}
+.view-contractors .views-field-field-photo {
+  min-height: 100px;
+}
+.view-contractors .views-field-field-photo img {
+ border-radius: 50%;
+}
+.view-contractors .attachment .views-field-field-photo {
+  min-height: 0;
+}
+
+/*******************************************************************************
+ * View: Backdrop mentions
+ ******************************************************************************/
+.view-backdrop-on-the-web h3 {
+  margin-bottom: .33em;
+}
+
+/*******************************************************************************
+ * Showcase view
+ ******************************************************************************/
+.view-showcase .col,
+.view-showcase .views-row {
+  padding-bottom: 15px;
+}
+.view-showcase .col-inner,
+.view-showcase .fields {
+  background-color: #fff;
+  border: 2px solid #EDEFF0;
+  border-radius: 4px;
+  padding-bottom: 15px;
+}
+.view-showcase .views-field {
+  padding-bottom: 10px;
+  padding-right: .9375rem;
+  padding-left: .9375rem;
+}
+.view-showcase .views-field-field-screen-lg {
+  padding-right: 0;
+  padding-left: 0;
+}
+.view-showcase .views-field-field-screen-lg img {
+  width: 100%;
+  height: auto;
+}
+.view-showcase .views-field-title {
+  font-size: 1.25rem; /* 20px */
+}
+.view-showcase .views-field-field-audience {
+  color: #7D7D7D;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .view-showcase .col,
+  .view-showcase .views-row {
+    padding-bottom: 30px;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .view-showcase.view-display-id-page .view-content {
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    column-gap: 1.875rem;
+    -moz-column-gap: 1.875rem;
+    -webkit-column-gap: 1.875rem;
+  }
+  .view-showcase.view-display-id-page .views-row {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+  }
+  .view-showcase .row {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  .view-showcase .col {
+    padding-bottom: 0px;
+  }
+  .view-showcase .col:first-child {
+    padding-left: 0;
+  }
+  .view-showcase .col:last-child {
+    padding-right: 0;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .view-showcase.view-display-id-page .view-content {
+    column-gap: 3.75rem;
+    -moz-column-gap: 3.75rem;
+    -webkit-column-gap: 3.75rem;
+  }
+  .view-showcase .views-row {
+    padding-bottom: 60px;
+  }
+  .view-showcase .views-row:last-child {
+    padding-bottom: 0;
+  }
+  .view-showcase .row {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+  .view-showcase .col:first-child .col-inner {
+    margin-right: .9375rem;
+  }
+  .view-showcase .col:last-child .col-inner {
+    margin-left: .9375rem;
+  }
+}
+
+/*******************************************************************************
+ * Showcase - block
+ ******************************************************************************/
+.block-views-showcase-block-1 {
+  padding: 30px;
+}
+.block-views-showcase-block-1 h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.block-views-showcase-block-1 .view-showcase .view-header {
+  text-align: right;
+  font-size: 1.25rem; /* 20px */
+  padding-bottom: 10px;
+}
+.block-views-showcase-block-1 .view-showcase .view-header p {
+  margin: 0;
+}
+.block-views-showcase-block-1 .view-showcase .col-inner {
+  background-color: transparent;
+  border: 0;
+  padding-bottom: 15px;
+}
+.block-views-showcase-block-1 .views-field-title {
+  padding-left: 0;
+  font-size: 1rem; /* 16px */
+}
+.block-views-showcase-block-1 .views-field-title a {
+  color: #fff;
+}
+
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .block-views-showcase-block-1 h2 {
+    padding-left: 30px;
+  }
+  .block-views-showcase-block-1 .view-showcase .view-header {
+    padding-right: 15px;
+  }
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .block-views-showcase-block-1 .view-showcase .view-header {
+    font-size: 1.5rem; /* 24px */
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-views-showcase-block-1 h2 {
+    padding-left: 15px;
+  }
+  .block-views-showcase-block-1 .view-showcase .view-header {
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+}
+
+/*******************************************************************************
+** Showcase - block featured
+*******************************************************************************/
+.block-views-showcase-block-2 .views-field {
+  padding-left: 0;
+  padding-right: 0;
+}
+.block-views-showcase-block-2 .views-field-field-screen-lg {
+  /* @see borg-componens.css ~line 135 for .l-cut-cormers .block */
+    /* allow for 3px border */
+  margin-top: -27px;
+  margin-left: -27px;
+  margin-right: -27px;
+}
+.block-views-showcase-block-2 .views-field-nothing {
+  text-transform: uppercase;
+}
+.block-views-showcase-block-2 .views-field-title {
+  /* @see borg-componens.css ~line 164 for .l-cut-cormers h2 */
+    /* allow for 3px border */
+  font-size: 2rem;
+  font-weight: bolder;
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-views-showcase-block-2 .views-field-field-screen-lg {
+    /* @see borg-componens.css ~line 158 for .l-cut-cormers .block */
+      /* allow for 3px border */
+    margin-top: -27px;
+    margin-left: -12px;
+    margin-right: -12px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .block-views-showcase-block-2 .views-field-field-screen-lg {
+    /* @see borg-componens.css ~line 165 for .l-cut-cormers .block */
+      /* allow for 3px border */
+    margin-top: -27px;
+    margin-left: -27px;
+    margin-right: -27px;
+  }
+}
+
+/*******************************************************************************
+ * Platforms view
+ ******************************************************************************/
+.view-platforms .views-row {
+  padding-bottom: 30px;
+}
+.view-platforms .row {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.view-platforms .col-md-5 {
+  text-align: center;
+}
+.view-platforms .top-bar {
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+.view-platforms h3 {
+  margin: 1.5em 0; /* 24px */
+}
+.view-platforms .view-header h2 {
+  font-weight: 300; /* Light */
+  color: #5A5D5E;
+}
+
+/*******************************************************************************
+ * Mentions sidebar block
+ ******************************************************************************/
+.block-views-backdrop-on-the-web-block-1 li {
+  margin-bottom: .75em;
+}
+
+/*******************************************************************************
+ * Events sidebar block
+ ******************************************************************************/
+.block-views-events-block-1 .more-link {
+  margin-top: 1.5em;
+}
+.view-events .item-list {
+  margin-top: 15px;
+}

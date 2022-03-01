@@ -8,6 +8,7 @@
  * - Moved top region to above title, outside .l-wrapper.
  * - Moved bottom region to above footer, outside .l-wrapper.
  * - Added a div with the "row" class to both header and footer.
+ * - Added a dynamic row of 2-3 blocks below the hero.
  */
 ?>
 <div class="layout--borg-sutro <?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
@@ -27,17 +28,17 @@
 
   <?php if (!empty($content['top'])): ?>
     <div class="l-top">
-      <div class="l-top-inner <?php print $spacer_class?>">
+      <div class="l-top-inner <?php print $corner_spacer_class; ?>">
         <?php print $content['top']; ?>
       </div>
     </div>
   <?php endif; ?>
 
-  <?php if (!empty($content['bottom'])): ?>
+  <?php if (!empty($content['bottom']) || !empty($content['top1']) || !empty($content['top2']) || !empty($content['top3'])): ?>
     <div class="l-bottom">
 
       <?php if (!empty($content['top1']) || !empty($content['top2']) || !empty($content['top3'])): ?>
-      <div class="l-cut-cormers container container-fluid">
+      <div class="l-cut-cormers container container-fluid <?php print $corner_container_class; ?>">
         <div class="row">
           <?php if (!empty($content['top1'])): ?>
             <div class="<?php print implode(' ', $top_column_classes); ?>">

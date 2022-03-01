@@ -15,10 +15,14 @@
 .block-borg-blocks-tagline h1 {
   margin: 1rem 0;
   font-size: 2.66rem;
+  font-weight: normal;
+  color: #000;
 }
 body.front .block-borg-blocks-tagline h2 {
   margin: 0 0 1em 0;
   line-height: 1.125em;
+  font-weight: 300;
+  color: #000;
 }
 .block-borg-blocks-tagline p {
   font-size: 1.66rem;
@@ -33,7 +37,6 @@ body.front .block-borg-blocks-tagline h2 {
   background-color: rgba(255, 255, 255, .3);
   text-transform: none;
   border: 2px solid #000;
-  color: #000;
   margin: 10px 5px 5px 0;
 }
 .block-borg-blocks-tagline a.button:hover {
@@ -81,6 +84,13 @@ body.front .block-borg-blocks-tagline h2 {
   .block-borg-blocks-tagline {
     padding-bottom: 30px;
   }
+  .block-borg-blocks-tagline h1 {
+    font-size: 4.25rem;
+    margin: 1rem 0 .75rem 0;
+  }
+  .block-borg-blocks-tagline h2 {
+    font-size: 3rem;
+  }
   .block-borg-blocks-tagline a.button {
     font-size: 1.5rem; /* 24px */
   }
@@ -97,6 +107,12 @@ body.front .block-borg-blocks-tagline h2 {
 .l-space-below {
   margin-bottom: 100px;
 }
+.l-space-below-2 {
+  margin-bottom: 150px;
+}
+.l-space-below-3 {
+  margin-bottom: 200px;
+}
 
 /*******************************************************************************
 * Home page blocks: Top Inner Below
@@ -105,13 +121,33 @@ body.front .block-borg-blocks-tagline h2 {
 .l-cut-cormers {
   position: relative;
   top: -100px;
+  margin-bottom: -100px;
 }
+.l-cut-cormers-2 {
+  top: -150px;
+  margin-bottom: -150px;
+}
+.l-cut-cormers-3 {
+  top: -200px;
+  margin-bottom: -200px;
+}
+
 .l-cut-cormers .block {
   color: #000000;
   padding: 30px 15px;
 }
 .l-cut-cormers .block p:last-child {
   margin-bottom: 0;
+}
+.l-cut-cormers h2 {
+  margin: 0;
+  line-height: 1;
+}
+.l-cut-cormers h2.block-title {
+  text-transform: uppercase;
+  font-size: 1.125rem;
+  font-weight: normal;
+  margin: .5em 0;
 }
 
 @media (min-width: 25em) { /* 400px @ 16px font size */
@@ -125,15 +161,17 @@ body.front .block-borg-blocks-tagline h2 {
     padding: 30px 15px;
     margin-bottom: 0;
   }
-  body.front .l-cut-cormers h2 {
-    font-size: 1.625rem;
-    line-height: 1.33em;
-    margin-top: .33em;
+  .l-cut-cormers h2 {
+    font-size: 2rem;
+    font-weight: bolder;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
   .l-cut-cormers .block {
     padding: 30px;
+  }
+  .l-cut-cormers h2 {
+    line-height: 1.5;
   }
 }
 
