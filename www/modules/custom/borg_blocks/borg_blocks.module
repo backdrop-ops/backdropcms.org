@@ -140,7 +140,7 @@ function borg_blocks_tagline($settings) {
 
 function borg_blocks_upgrade($settings) {
   $path = backdrop_get_path('module', 'borg_blocks');
-  $button = l(t('Upgrade from Drupal'), 'https://backdropcms.org/upgrade-from-drupal', array('attributes' => array('class' => array('button'))));
+  $button = l(t('Upgrade from Drupal'), 'https://docs.backdropcms.org/documentation/upgrading-from-drupal-7-overview', array('attributes' => array('class' => array('button'))));
 
   $included_modules = l(t('70+ included modules'), 'https://docs.backdropcms.org/documentation/features-added-to-core');
   $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" />';
