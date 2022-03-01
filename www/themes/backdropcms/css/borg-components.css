@@ -107,6 +107,12 @@ body.front .block-borg-blocks-tagline h2 {
 .l-space-below {
   margin-bottom: 100px;
 }
+.l-space-below-2 {
+  margin-bottom: 150px;
+}
+.l-space-below-3 {
+  margin-bottom: 200px;
+}
 
 /*******************************************************************************
 * Home page blocks: Top Inner Below
@@ -115,13 +121,29 @@ body.front .block-borg-blocks-tagline h2 {
 .l-cut-cormers {
   position: relative;
   top: -100px;
+  margin-bottom: -100px;
 }
+.l-cut-cormers-2 {
+  top: -150px;
+  margin-bottom: -150px;
+}
+.l-cut-cormers-3 {
+  top: -200px;
+  margin-bottom: -200px;
+}
+
 .l-cut-cormers .block {
   color: #000000;
   padding: 30px 15px;
 }
 .l-cut-cormers .block p:last-child {
   margin-bottom: 0;
+}
+.l-cut-cormers h2.block-title {
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  font-weight: normal;
+  margin: .5em 0;
 }
 
 @media (min-width: 25em) { /* 400px @ 16px font size */
@@ -134,11 +156,6 @@ body.front .block-borg-blocks-tagline h2 {
   .l-cut-cormers .block {
     padding: 30px 15px;
     margin-bottom: 0;
-  }
-  body.front .l-cut-cormers h2 {
-    font-size: 1.625rem;
-    line-height: 1.33em;
-    margin-top: .33em;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
