@@ -15,10 +15,14 @@
 .block-borg-blocks-tagline h1 {
   margin: 1rem 0;
   font-size: 2.66rem;
+  font-weight: normal;
+  color: #000;
 }
 body.front .block-borg-blocks-tagline h2 {
   margin: 0 0 1em 0;
   line-height: 1.125em;
+  font-weight: 300;
+  color: #000;
 }
 .block-borg-blocks-tagline p {
   font-size: 1.66rem;
@@ -33,7 +37,6 @@ body.front .block-borg-blocks-tagline h2 {
   background-color: rgba(255, 255, 255, .3);
   text-transform: none;
   border: 2px solid #000;
-  color: #000;
   margin: 10px 5px 5px 0;
 }
 .block-borg-blocks-tagline a.button:hover {
@@ -82,9 +85,11 @@ body.front .block-borg-blocks-tagline h2 {
     padding-bottom: 30px;
   }
   .block-borg-blocks-tagline h1 {
-    font-weight: 300;
-    font-size: 4.5rem;
-    margin: 1rem 0 .5rem 0;
+    font-size: 4.25rem;
+    margin: 1rem 0 .75rem 0;
+  }
+  .block-borg-blocks-tagline h2 {
+    font-size: 3rem;
   }
   .block-borg-blocks-tagline a.button {
     font-size: 1.5rem; /* 24px */
