@@ -81,6 +81,11 @@ body.front .block-borg-blocks-tagline h2 {
   .block-borg-blocks-tagline {
     padding-bottom: 30px;
   }
+  .block-borg-blocks-tagline h1 {
+    font-weight: 300;
+    font-size: 4.5rem;
+    margin: 1rem 0 .5rem 0;
+  }
   .block-borg-blocks-tagline a.button {
     font-size: 1.5rem; /* 24px */
   }
