@@ -139,9 +139,13 @@ body.front .block-borg-blocks-tagline h2 {
 .l-cut-cormers .block p:last-child {
   margin-bottom: 0;
 }
+.l-cut-cormers h2 {
+  margin: 0;
+  line-height: 1;
+}
 .l-cut-cormers h2.block-title {
   text-transform: uppercase;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: normal;
   margin: .5em 0;
 }
@@ -157,10 +161,17 @@ body.front .block-borg-blocks-tagline h2 {
     padding: 30px 15px;
     margin-bottom: 0;
   }
+  .l-cut-cormers h2 {
+    font-size: 2rem;
+    font-weight: bolder;
+  }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
   .l-cut-cormers .block {
     padding: 30px;
+  }
+  .l-cut-cormers h2 {
+    line-height: 1.5;
   }
 }
 
