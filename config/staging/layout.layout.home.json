@@ -25,12 +25,14 @@
             "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "top1": [
-            "af96a11b-a617-457e-8e00-e6a56cf0f640"
-        ],
-        "top2": [
             "e66902ae-5fac-47b7-8500-b84bff8c4dd9"
         ],
-        "top3": [],
+        "top2": [
+            "231ef900-0d0f-4d58-a43f-636a2b11e958"
+        ],
+        "top3": [
+            "af96a11b-a617-457e-8e00-e6a56cf0f640"
+        ],
         "content": [],
         "half1": [
             "712c691e-6273-4634-8000-d97d82d86e88"
@@ -174,33 +176,6 @@
                 }
             }
         },
-        "af96a11b-a617-457e-8e00-e6a56cf0f640": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "What is Backdrop CMS?",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>Backdrop is a free and Open Source Content Management System<span> that helps you build modern, comprehensive websites for businesses and non-profits.</span></p>\r\n",
-                    "format": "filtered_html",
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "af96a11b-a617-457e-8e00-e6a56cf0f640",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "e66902ae-5fac-47b7-8500-b84bff8c4dd9": {
             "plugin": "block:backdrop_live",
             "data": {
@@ -220,6 +195,69 @@
                     "admin_description": ""
                 },
                 "uuid": "e66902ae-5fac-47b7-8500-b84bff8c4dd9",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "231ef900-0d0f-4d58-a43f-636a2b11e958": {
+            "plugin": "views:showcase-block_2",
+            "data": {
+                "module": "views",
+                "delta": "showcase-block_2",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "1",
+                    "offset": 0,
+                    "path": "showcase",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "231ef900-0d0f-4d58-a43f-636a2b11e958",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "af96a11b-a617-457e-8e00-e6a56cf0f640": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "What is Backdrop CMS?",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>Backdrop is a free and Open Source Content Management System that helps you build modern, comprehensive websites for businesses and non-profits.</p>\r\n\r\n<p>Backdrop is the Drupal fork: it has many of the same features you'll find in Drupal 8 and Drupal 9, but without the expensive learning curve.</p>\r\n",
+                    "format": "filtered_html",
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "af96a11b-a617-457e-8e00-e6a56cf0f640",
                 "style": {
                     "plugin": "default",
                     "data": {
