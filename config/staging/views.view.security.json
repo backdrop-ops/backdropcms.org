@@ -970,7 +970,7 @@
                 "pager": {
                     "type": "some",
                     "options": {
-                        "items_per_page": "3",
+                        "items_per_page": "5",
                         "offset": "0"
                     }
                 },
@@ -1294,7 +1294,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "Versions affected",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
                             "alter_text": 0,
                             "text": "",
