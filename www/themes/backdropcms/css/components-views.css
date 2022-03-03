@@ -382,7 +382,7 @@
 }
 
 /*******************************************************************************
- * Showcase - block
+ * Showcase - block featured bottom
  ******************************************************************************/
 .block-views-showcase-block-1 {
   padding: 30px;
@@ -436,13 +436,14 @@
 }
 
 /*******************************************************************************
-** Showcase - block featured
+** Showcase - block featured top
 *******************************************************************************/
 .block-views-showcase-block-2 .views-field {
   padding-left: 0;
   padding-right: 0;
 }
-.block-views-showcase-block-2 .views-field-field-screen-lg {
+.block-views-showcase-block-2 .views-field-field-screen-lg,
+.block-views-showcase-block-2 .views-field-field-header-photo {
   /* @see borg-componens.css ~line 135 for .l-cut-cormers .block */
     /* allow for 3px border */
   margin-top: -27px;
@@ -460,7 +461,8 @@
 }
 
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .block-views-showcase-block-2 .views-field-field-screen-lg {
+  .block-views-showcase-block-2 .views-field-field-screen-lg,
+  .block-views-showcase-block-2 .views-field-field-header-photo {
     /* @see borg-componens.css ~line 158 for .l-cut-cormers .block */
       /* allow for 3px border */
     margin-top: -27px;
@@ -469,7 +471,8 @@
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .block-views-showcase-block-2 .views-field-field-screen-lg {
+  .block-views-showcase-block-2 .views-field-field-screen-lg,
+  .block-views-showcase-block-2 .views-field-field-header-photo {
     /* @see borg-componens.css ~line 165 for .l-cut-cormers .block */
       /* allow for 3px border */
     margin-top: -27px;
