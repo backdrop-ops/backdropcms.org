@@ -450,8 +450,8 @@
   /* @see borg-componens.css ~line 135 for .l-cut-cormers .block */
     /* allow for 3px border */
   margin-top: -27px;
-  margin-left: -27px;
-  margin-right: -27px;
+  margin-left: -12px;
+  margin-right: -12px;
 }
 .block-views-showcase-block-2 .views-field-nothing {
   text-transform: uppercase;
@@ -463,10 +463,20 @@
   font-weight: bolder;
 }
 
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .block-views-showcase-block-2 .views-field-field-screen-lg,
+  .block-views-showcase-block-2 .views-field-field-header-photo {
+    /* @see borg-componens.css ~line 153 for .l-cut-cormers .block */
+      /* allow for 3px border */
+    margin-top: -27px;
+    margin-left: -27px;
+    margin-right: -27px;
+  }
+}
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .block-views-showcase-block-2 .views-field-field-screen-lg,
   .block-views-showcase-block-2 .views-field-field-header-photo {
-    /* @see borg-componens.css ~line 158 for .l-cut-cormers .block */
+    /* @see borg-componens.css ~line 159 for .l-cut-cormers .block */
       /* allow for 3px border */
     margin-top: -27px;
     margin-left: -12px;
