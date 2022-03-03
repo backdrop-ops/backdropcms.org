@@ -153,7 +153,6 @@ body.front .block-borg-blocks-tagline h2 {
 @media (min-width: 25em) { /* 400px @ 16px font size */
   .l-cut-cormers .block {
     padding: 30px;
-    margin-bottom: 60px;
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
@@ -162,8 +161,8 @@ body.front .block-borg-blocks-tagline h2 {
     margin-bottom: 0;
   }
   .l-cut-cormers h2 {
-    font-size: 2rem;
-    font-weight: bolder;
+    font-size: 1.5rem;
+    line-height: 1.5;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
@@ -171,7 +170,12 @@ body.front .block-borg-blocks-tagline h2 {
     padding: 30px;
   }
   .l-cut-cormers h2 {
-    line-height: 1.5;
+    font-size: 1.75rem;
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .l-cut-cormers h2 {
+    font-size: 2rem;
   }
 }
 
@@ -180,10 +184,9 @@ body.front .block-borg-blocks-tagline h2 {
 *******************************************************************************/
 
 .l-cut-cormers .l-col {
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 .l-cut-cormers .l-col .block {
-  height: 80%;
   padding-bottom: 65px;
   background-repeat: no-repeat;
   background-image:
@@ -245,6 +248,9 @@ body.front .block-borg-blocks-tagline h2 {
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .l-cut-cormers .l-col {
     margin-bottom: 0;
+  }
+  .l-cut-cormers .l-col .block {
+    height: 80%;
   }
 }
 
