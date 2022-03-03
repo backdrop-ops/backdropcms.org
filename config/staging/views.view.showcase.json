@@ -298,6 +298,93 @@
                         "field": "type",
                         "value": {
                             "showcase": "showcase"
+                        },
+                        "group": 1
+                    },
+                    "field_screen_lg_fid": {
+                        "id": "field_screen_lg_fid",
+                        "table": "field_data_field_screen_lg",
+                        "field": "field_screen_lg_fid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "not empty",
+                        "value": {
+                            "min": "",
+                            "max": "",
+                            "value": ""
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "field_header_photo_fid": {
+                        "id": "field_header_photo_fid",
+                        "table": "field_data_field_header_photo",
+                        "field": "field_header_photo_fid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "not empty",
+                        "value": {
+                            "min": "",
+                            "max": "",
+                            "value": ""
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
                         }
                     }
                 },
@@ -343,7 +430,13 @@
                     "hide_empty": 0
                 },
                 "css_class": "",
-                "header": []
+                "header": [],
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
             }
         },
         "page": {
@@ -1428,7 +1521,9 @@
                     "pager_options": false,
                     "fields": false,
                     "header": false,
-                    "title": false
+                    "title": false,
+                    "filters": true,
+                    "filter_groups": true
                 },
                 "style_options": {
                     "grouping": [],
@@ -1452,73 +1547,6 @@
                 },
                 "pager_options": null,
                 "fields": {
-                    "field_screen_lg": {
-                        "id": "field_screen_lg",
-                        "table": "field_data_field_screen_lg",
-                        "field": "field_screen_lg",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "exclude": 0,
-                        "alter": {
-                            "alter_text": 0,
-                            "text": "",
-                            "make_link": 0,
-                            "path": "",
-                            "absolute": 0,
-                            "external": 0,
-                            "replace_spaces": 0,
-                            "path_case": "none",
-                            "trim_whitespace": 0,
-                            "alt": "",
-                            "rel": "",
-                            "link_class": "",
-                            "prefix": "",
-                            "suffix": "",
-                            "target": "",
-                            "nl2br": 0,
-                            "max_length": "",
-                            "word_boundary": 1,
-                            "ellipsis": 1,
-                            "more_link": 0,
-                            "more_link_text": "",
-                            "more_link_path": "",
-                            "strip_tags": 0,
-                            "trim": 0,
-                            "preserve_tags": "",
-                            "html": 0
-                        },
-                        "element_type": "",
-                        "element_class": "",
-                        "element_label_type": "",
-                        "element_label_class": "",
-                        "element_label_colon": false,
-                        "element_wrapper_type": "",
-                        "element_wrapper_class": "",
-                        "element_default_classes": 1,
-                        "empty": "",
-                        "hide_empty": 0,
-                        "empty_zero": 0,
-                        "hide_alter_empty": 1,
-                        "click_sort_column": "fid",
-                        "type": "image",
-                        "settings": {
-                            "image_style": "showcase_preview_512x512",
-                            "image_link": "content",
-                            "image_float": ""
-                        },
-                        "group_column": "",
-                        "group_columns": [],
-                        "group_rows": 1,
-                        "delta_limit": "1",
-                        "delta_offset": "0",
-                        "delta_reversed": 0,
-                        "delta_first_last": 0,
-                        "multi_type": "separator",
-                        "separator": ", ",
-                        "field_api_classes": 0
-                    },
                     "field_header_photo": {
                         "id": "field_header_photo",
                         "table": "field_data_field_header_photo",
@@ -1527,7 +1555,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 1,
+                        "exclude": 0,
                         "alter": {
                             "alter_text": 0,
                             "text": "",
