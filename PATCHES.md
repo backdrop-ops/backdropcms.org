@@ -25,6 +25,10 @@ colorbox - Remove dependance on libraries API
   https://github.com/backdrop-contrib/colorbox/issues/9
   https://github.com/backdrop-contrib/colorbox/pull/10.patch
 
+markdown - PHP notice
+  https://github.com/backdrop-contrib/markdown/issues/4
+  https://github.com/backdrop-contrib/markdown/pull/7.patch
+
 restrict_abusive_words - prevent PHP notice
   https://github.com/backdrop-contrib/restrict_abusive_words/issues/1
   fix committed to -dev
