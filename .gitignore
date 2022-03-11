@@ -15,17 +15,11 @@ modules/contrib/devel
 *.tar
 *.tar.gz
 
-# Ignore libs.
-vendor
-
 # Ignore env vars.
 .env
 
-# Ignore local settings files
-*.settings.local.php
+# Ignore local Backdrop settings files
+settings.local.php
 
-# Ignore local civi settings
-www/civicrm.settings.php
-www/civicrm.settings.php.example
-
-
+# Ignore CiviCRM settings
+civicrm.settings.php
