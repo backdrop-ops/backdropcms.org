@@ -71,7 +71,7 @@ $settings['tugboat_access_token'] = '';
 
 // MailChimp credentials.
 $settings['mailchimp_key'] = '';
-$settings['mailchimp_borg_list'] = '104813';
+$settings['mailchimp_borg_list'] = '';
 
 // SMTP Credentials.
 $config['smtp.settings']['smtp_password'] = '';
