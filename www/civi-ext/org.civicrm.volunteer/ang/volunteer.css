@@ -1,0 +1,153 @@
+/*
+ * Gives the wrapper a minimum height so that, when empty, the progress spinner
+ * is visible. (See the related run block in the Angular module.)
+ */
+#crm-main-content-wrapper {
+  min-height: 3em;
+}
+
+.crm-vol-half-responsive {
+  box-sizing: border-box;
+  width: 49%;
+  display: inline-block;
+}
+.crm-vol-half-responsive.crm-vol-opp-search {
+  float: left;
+}
+.crm-vol-half-responsive.crm-vol-opp-cart {
+  float: right;
+}
+
+@media (max-width: 1000px) {
+  .crm-vol-half-responsive {
+    width: 100%;
+    float: none;
+  }
+
+  .crm-vol-opp-cart {
+    margin-top: 2em;
+  }
+}
+
+.crm-vol-opp-results span.beneficiary {
+  display: block;
+}
+
+.crm-vol-opp-cart table .icon,
+.crm-vol-opp-results table .icon
+{
+  cursor: pointer;
+}
+
+.crm-vol-opp-results {
+  margin-top: 2em;
+}
+
+.crm-profile-selector-container .crm-button-remove-profile {
+  position: absolute;
+}
+
+.crm-container fieldset.crm-vol-ui-fieldset, fieldset.crm-vol-ui-fieldset {
+  border: 1px solid #aaa;
+}
+
+.crm-button-remove-profile {
+  display: inline-block;
+  float: left;
+}
+
+#org_civicrm_volunteer-sign-up-profiles .crm-profile-selector-container select {
+  margin-bottom: 10px;
+}
+
+#org_civicrm_volunteer-sign-up-profiles .crm-profile-selector-container hr {
+  clear: both;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#org_civicrm_volunteer-sign-up-profiles .crm-profile-selector-container:only-child .crm-button-remove-profile {
+  display: none;
+}
+
+.crm-vol-extra-top {
+  margin-top: 15px;
+}
+#crm-vol-location-block {
+  width: 90%;
+}
+#crm-vol-location-block .crm-accordion-body {
+  padding: 10px;
+}
+.crm-vol-search fieldset {
+  padding: 2px 5px;
+}
+
+#crm-vol-project-list a {
+  cursor: pointer;
+}
+
+span.crm-button-text {
+  padding: 2px 7px 2px 20px;
+}
+
+.crm-vol-project .select2-choice {
+  min-height: 26px;
+}
+
+.crm-vol-opp-cart .ui-widget-content {
+  padding: 20px;
+}
+
+.crm-vol-opp-cart .crm-vol-opp-cart-message {
+  padding: 20px 0px;
+}
+
+.crm-vol-opp-cart-show-contents {
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.crm-vol-half-responsive.crm-vol-opp-cart.floating_cart {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  min-width: 200px;
+  width: 20%;
+  -webkit-transition: width 1s, -webkit-transform 1s;
+  transition: width 1s, transform 1s;
+  border-radius: 4px;
+  -webkit-box-shadow: -1px 1px 3px 0px rgba(0,0,0,0.45);
+  -moz-box-shadow: -1px 1px 3px 0px rgba(0,0,0,0.45);
+  box-shadow: -1px 1px 3px 0px rgba(0,0,0,0.45);
+}
+
+.crm-vol-half-responsive.crm-vol-opp-cart.floating_cart h2 {
+  display: none;
+}
+
+.crm-vol-half-responsive.crm-vol-opp-cart.floating_cart.contents_visible {
+  width: 50%;
+}
+
+.crm-container .crm-button.crm-vol-opp-cart-sign-up {
+  font-size: 1.25rem;
+}
+
+.crm-vol-opp-cart-large-indicator {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px auto;
+}
+
+.crm-vol-opp-cart-transfer {
+  border: 1px solid rgba(255, 255, 0, 0.5);
+  border-radius: 4px;
+  background: rgba(255, 255, 0, 0.1);
+}
+
+#crm-vol-form-textarea-wrapper {
+  clear: left;
+}
