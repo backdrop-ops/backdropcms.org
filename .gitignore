@@ -18,8 +18,8 @@ modules/contrib/devel
 # Ignore env vars.
 .env
 
-# Ignore local Backdrop settings files
+# Ignore local Backdrop settings
 settings.local.php
 
-# Ignore CiviCRM settings
-civicrm.settings.php
+# Ignore local CiviCRM settings
+civicrm.settings.local.php
