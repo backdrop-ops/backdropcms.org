@@ -18,8 +18,7 @@ modules/contrib/devel
 # Ignore env vars.
 .env
 
-# Ignore local Backdrop settings
-settings.local.php
-
 # Ignore local CiviCRM settings
 civicrm.settings.local.php
+
+# Note that Backdrop's settings.local.php is .gitignored at www/.gitignore.
