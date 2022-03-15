@@ -44,6 +44,12 @@
                 "image_load": "auto"
             },
             "module": "image"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "6",
+            "settings": []
         }
     }
 }
