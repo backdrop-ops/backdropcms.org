@@ -90,15 +90,8 @@
                             "fail": "empty"
                         },
                         "validate_options": {
-                            "vocabularies": {
-                                "tags": "tags",
-                                "project_tags": "project_tags",
-                                "services": "services",
-                                "feature_type": "feature_type",
-                                "development_status": "development_status",
-                                "maintenance_status": "maintenance_status"
-                            },
                             "type": "tid",
+                            "vocabularies": [],
                             "transform": 0
                         },
                         "depth": "0",

@@ -1,0 +1,20 @@
+{
+    "_config_name": "field.bundle.taxonomy_term.organization",
+    "bundle": "organization",
+    "entity_type": "taxonomy_term",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "metatags": {
+                "weight": "3"
+            },
+            "name": {
+                "weight": "0"
+            },
+            "description": {
+                "weight": "2"
+            }
+        },
+        "display": []
+    }
+}

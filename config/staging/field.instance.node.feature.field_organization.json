@@ -1,0 +1,30 @@
+{
+    "_config_name": "field.instance.node.feature.field_organization",
+    "field_name": "field_organization",
+    "entity_type": "node",
+    "bundle": "feature",
+    "label": "Organization",
+    "widget": {
+        "weight": "3",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "6",
+            "settings": []
+        }
+    }
+}

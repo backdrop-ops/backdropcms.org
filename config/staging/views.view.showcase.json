@@ -300,92 +300,6 @@
                             "showcase": "showcase"
                         },
                         "group": 1
-                    },
-                    "field_screen_lg_fid": {
-                        "id": "field_screen_lg_fid",
-                        "table": "field_data_field_screen_lg",
-                        "field": "field_screen_lg_fid",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "not empty",
-                        "value": {
-                            "min": "",
-                            "max": "",
-                            "value": ""
-                        },
-                        "group": 1,
-                        "exposed": false,
-                        "expose": {
-                            "operator_id": false,
-                            "label": "",
-                            "description": "",
-                            "use_operator": false,
-                            "operator": "",
-                            "identifier": "",
-                            "required": false,
-                            "remember": false,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated"
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
-                    },
-                    "field_header_photo_fid": {
-                        "id": "field_header_photo_fid",
-                        "table": "field_data_field_header_photo",
-                        "field": "field_header_photo_fid",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "not empty",
-                        "value": {
-                            "min": "",
-                            "max": "",
-                            "value": ""
-                        },
-                        "group": 1,
-                        "exposed": false,
-                        "expose": {
-                            "operator_id": false,
-                            "label": "",
-                            "description": "",
-                            "use_operator": false,
-                            "operator": "",
-                            "identifier": "",
-                            "required": false,
-                            "remember": false,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated"
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
                     }
                 },
                 "sorts": {
@@ -1335,7 +1249,9 @@
                     "pager": false,
                     "pager_options": false,
                     "fields": false,
-                    "header": false
+                    "header": false,
+                    "filters": false,
+                    "filter_groups": false
                 },
                 "style_options": {
                     "grouping": [],
@@ -1500,7 +1416,77 @@
                         "tokenize": 0
                     }
                 },
-                "display_description": ""
+                "display_description": "",
+                "filters": {
+                    "status": {
+                        "value": 1,
+                        "table": "node",
+                        "field": "status",
+                        "id": "status",
+                        "expose": {
+                            "operator": false
+                        },
+                        "group": 1
+                    },
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "showcase": "showcase"
+                        },
+                        "group": 1
+                    },
+                    "field_screen_lg_fid": {
+                        "id": "field_screen_lg_fid",
+                        "table": "field_data_field_screen_lg",
+                        "field": "field_screen_lg_fid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "not empty",
+                        "value": {
+                            "min": "",
+                            "max": "",
+                            "value": ""
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
             }
         },
         "block_2": {
@@ -1522,8 +1508,8 @@
                     "fields": false,
                     "header": false,
                     "title": false,
-                    "filters": true,
-                    "filter_groups": true
+                    "filters": false,
+                    "filter_groups": false
                 },
                 "style_options": {
                     "grouping": [],
@@ -1720,7 +1706,77 @@
                 "block_description": "Featured Showcase",
                 "header": [],
                 "display_description": "",
-                "title": ""
+                "title": "",
+                "filters": {
+                    "status": {
+                        "value": 1,
+                        "table": "node",
+                        "field": "status",
+                        "id": "status",
+                        "expose": {
+                            "operator": false
+                        },
+                        "group": 1
+                    },
+                    "type": {
+                        "id": "type",
+                        "table": "node",
+                        "field": "type",
+                        "value": {
+                            "showcase": "showcase"
+                        },
+                        "group": 1
+                    },
+                    "field_header_photo_fid": {
+                        "id": "field_header_photo_fid",
+                        "table": "field_data_field_header_photo",
+                        "field": "field_header_photo_fid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "not empty",
+                        "value": {
+                            "min": "",
+                            "max": "",
+                            "value": ""
+                        },
+                        "group": 1,
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    }
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
             }
         }
     }

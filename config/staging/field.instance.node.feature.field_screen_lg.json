@@ -5,13 +5,14 @@
     "bundle": "feature",
     "label": "Screenshot (desktop)",
     "widget": {
-        "weight": "6",
+        "weight": "7",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "thumbnail"
+            "preview_image_style": "thumbnail",
+            "browser_view": "image_library"
         }
     },
     "description": "",
@@ -28,7 +29,8 @@
         "default_image": "",
         "user_register_form": false,
         "max_dimensions": "",
-        "min_dimensions": ""
+        "min_dimensions": "",
+        "orientate": 0
     },
     "display": {
         "default": {
@@ -38,7 +40,8 @@
             "settings": {
                 "image_style": "",
                 "image_link": "",
-                "image_float": ""
+                "image_float": "",
+                "image_load": "auto"
             },
             "module": "image"
         }
