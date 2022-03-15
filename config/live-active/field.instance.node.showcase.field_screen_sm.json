@@ -5,13 +5,14 @@
     "bundle": "showcase",
     "label": "Screenshot (phone)",
     "widget": {
-        "weight": "11",
+        "weight": "12",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "phone"
+            "preview_image_style": "phone",
+            "browser_view": "image_library"
         }
     },
     "description": "Images should be exactly 320px wide by 542px tall.",
@@ -28,13 +29,14 @@
         "alt_field": 1,
         "title_field": 0,
         "default_image": "",
-        "user_register_form": false
+        "user_register_form": false,
+        "orientate": 0
     },
     "display": {
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "8",
+            "weight": "9",
             "settings": []
         },
         "teaser": {
