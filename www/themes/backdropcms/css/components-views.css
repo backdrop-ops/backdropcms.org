@@ -13,12 +13,6 @@
 }
 .view-quotes {
   padding: 50px 0;
-  background-color: #F7F7F7;
-  margin-left: -500px;
-  margin-right: -500px;
-  padding: 50px 500px;
-  border-top: 2px solid #E8E6E5;
-  border-bottom: 2px solid #E8E6E5;
 }
 .view-quotes img {
   float: left;
@@ -532,6 +526,28 @@
 .view-platforms .view-header h2 {
   font-weight: 300; /* Light */
   color: #5A5D5E;
+}
+
+/*******************************************************************************
+** taxonomy term description view
+*******************************************************************************/
+.view-term {
+  margin-bottom: 30px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .view-term {
+    margin-bottom: 45px;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .view-term {
+    margin-bottom: 60px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .view-term {
+    margin-bottom: 90px;
+  }
 }
 
 /*******************************************************************************

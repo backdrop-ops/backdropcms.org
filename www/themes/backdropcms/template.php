@@ -44,6 +44,20 @@ function backdropcms_preprocess_page(&$variables) {
   }
 }
 
+/**
+ * Preare varibles for node.tpl.php.
+ */
+function backdropcms_preprocess_node(&$variables) {
+  if ($variables['type'] == 'feature') {
+    $variables['icon_class'] = '';
+    $node = $variables['node'];
+    if (property_exists($node, 'field_icon_class') && !empty($node->field_icon_class)) {
+      $class = $node->field_icon_class[LANGUAGE_NONE][0]['safe_value'];
+      $variables['icon_class'] = $class;
+    }
+  }
+}
+
 /******************************************************************************
  * Theme function overrides
  ******************************************************************************/
