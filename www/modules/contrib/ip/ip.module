@@ -1,0 +1,253 @@
+<?php
+/**
+ * @file
+ * IP Address Manager module.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function ip_permission() {
+  return array(
+    'manage ip addresses' => array(
+      'title' => t('Manage IP addresses'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function ip_user_login(&$edit, $account) {
+  ip_tracker_user_save($account->uid);
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function ip_user_insert($account) {
+  global $user;
+  // Track anonymous registration (Do not track administration account creation).
+  if (empty($user->uid) || $user->uid == $account->uid) {
+    ip_tracker_user_save($account->uid);
+  }
+}
+
+/**
+ * Save a record into the ip_tracker table.
+ * @NOTE: Maybe you want to check the user uid vs $uid before calling this function.
+ */
+function ip_tracker_user_save($uid) {
+  $iplong = ip2long(ip_address());
+
+  // DEBUGGING on local dev system
+//   if (ip_address() == '::1') {
+//     $iplong = 1;
+//   }
+
+  if (!empty($iplong)) {
+    // Check to see if a row exists for this uid/ip combination.
+    $sql = "SELECT visits FROM {ip_tracker} WHERE uid = :uid AND ip = :ip";
+    $args = array(
+      ':uid' => $uid,
+      ':ip' => $iplong,
+    );
+    $visits = db_query($sql, $args)->fetchField();
+
+    if ($visits) {
+      // Update.
+      return db_update('ip_tracker')
+        ->fields(
+          array(
+        'visits' => $visits + 1,
+        'last_visit' => REQUEST_TIME,
+      )
+        )
+        ->condition('uid', $uid)
+        ->condition('ip', $iplong)
+        ->execute();
+    }
+    else {
+      // Insert.
+      return db_insert('ip_tracker')
+        ->fields(
+          array(
+        'uid' => $uid,
+        'ip' => $iplong,
+        'visits' => 1,
+        'first_visit' => REQUEST_TIME,
+        'last_visit' => REQUEST_TIME,
+      )
+        )
+        ->execute();
+    }
+  }
+}
+
+/**
+ * Remove records in the ip_tracker table for a certain user.
+ */
+function ip_tracker_user_remove($uid) {
+  return db_delete('ip_tracker')
+    ->condition('uid', $uid)
+    ->execute();
+}
+
+/**
+ * Get the records from the tracker for a user.
+ */
+function ip_tracker_user_records($uid) {
+  $sql = "SELECT * FROM {ip_tracker} WHERE uid = :uid";
+  $args = array(':uid' => $uid);
+  $result = db_query($sql, $args);
+  $rows = array();
+  foreach ($result as $row) {
+    $row->ip = long2ip($row->ip);
+    $rows[] = $row;
+  }
+  return $rows;
+}
+
+/**
+ * Get the records from the tracker for an IP.
+ */
+function ip_tracker_ip_records($ip) {
+  $sql = "SELECT * FROM {ip_tracker}";
+  $args = array();
+  if (!empty($ip)) {
+    $sql .= " WHERE ip = :ip";
+    $args[':ip'] = ip2long($ip);
+  }
+  $result = db_query($sql, $args);
+  $rows = array();
+  foreach ($result as $row) {
+    $row->ip = long2ip($row->ip);
+    $rows[] = $row;
+  }
+  return $rows;
+}
+
+/**
+ * Count how many users have been tracked against an IP.
+ */
+function ip_tracker_ip_user_count($ip) {
+  $sql = "SELECT COUNT(uid) FROM {ip_tracker} WHERE ip = :ip";
+  $args = array(':ip' => ip2long($ip));
+  $count = db_query($sql, $args)->fetchField();
+  return $count;
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function ip_node_insert($node) {
+  ip_posts_insert('node', $node->nid);
+}
+
+/**
+ * Implements hook_comment_insert().
+ */
+function ip_comment_insert($comment) {
+  ip_posts_insert('comment', $comment->cid);
+}
+
+/**
+ * Insert a record into the ip_posts table.
+ */
+function ip_posts_insert($type, $id, $ip_address = NULL) {
+  $ip_address = is_null($ip_address)?ip_address() : $ip_address;
+  $iplong = ip2long($ip_address);
+  if (!empty($iplong)) {
+    return db_insert('ip_posts')
+      ->fields(
+        array(
+      'type' => $type,
+      'id' => $id,
+      'ip' => $iplong,
+    )
+      )
+      ->execute();
+  }
+}
+
+/**
+ * Loads a record into the ip_posts table.
+ */
+function ip_posts_load($type, $id) {
+  return db_query('SELECT * FROM {ip_posts} WHERE type = :type AND id = :id',
+      array(
+    'type' => $type,
+    'id' => $id,
+  )
+    )
+    ->fetch();
+}
+
+/**
+ * Handle backlog of comments.
+ */
+function ip_backlog_comments() {
+  if (module_exists('comment')) {
+    $result = db_query_range(
+      "SELECT c.cid AS cid, c.hostname AS hostname" .
+      " FROM {comment} c" .
+      " LEFT JOIN {ip_posts} i" .
+      " ON i.type = 'comment'" .
+      " AND (c.cid = i.id OR i.id IS NULL)" .
+      " WHERE i.id IS NULL" .
+      " ORDER BY c.cid DESC",
+      0,
+      50
+    );
+    foreach ($result as $row) {
+      ip_posts_insert('comment', $row->cid, $row->hostname);
+    }
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function ip_views_api() {
+  return array(
+    'api' => '3.0',
+    'path' => backdrop_get_path('module', 'ip') . '/views',
+  );
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function ip_config_info() {
+  $prefixes['ip.settings'] = array(
+    'label' => t('IP Address Manager settings'),
+    'group' => t('Configuration'),
+  );
+  $prefixes['views.view.ip_tracker'] = array(
+    'label' => t('IP Address for all users'),
+    'group' => t('Views'),
+  );
+  $prefixes['views.view.ip_tracker_user'] = array(
+    'label' => t('IP Address by user'),
+    'group' => t('Views'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function ip_autoload_info() {
+  return array(
+    'Ip2LongArgument' => 'src/Plugin/views/argument/Ip2LongArgument.php',
+    'IpUserCountField' => 'src/Plugin/views/field/IpUserCountField.php',
+    'Long2IpField' => 'src/Plugin/views/field/Long2IpField.php',
+    'Ip2LongFilter' => 'src/Plugin/views/filter/Ip2LongFilter.php',
+  );
+}
+
+// @todo duplicate finder.
+// @todo attach our module's data to nodes/comments ?
+// @todo delete from posts table when object (node/comment) is deleted.
+// @todo something like hook_user_operations, but hook_ip_operations
+// @todo handle deleting of comments and nodes.
