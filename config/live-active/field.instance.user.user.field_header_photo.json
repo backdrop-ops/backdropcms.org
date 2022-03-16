@@ -3,14 +3,15 @@
     "field_name": "field_header_photo",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Banner Image",
+    "label": "Banner image",
     "widget": {
-        "weight": "4",
+        "weight": "8",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
+            "browser_view": "image_library",
             "preview_image_style": "header_preview"
         }
     },
@@ -27,6 +28,7 @@
         "min_dimensions": "",
         "alt_field": 0,
         "title_field": 0,
+        "orientate": 0,
         "user_register_form": 0,
         "default_image": ""
     },
@@ -34,7 +36,7 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "15",
+            "weight": "16",
             "settings": []
         }
     }
