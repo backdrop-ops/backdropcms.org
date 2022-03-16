@@ -33,7 +33,8 @@
         "half1": [],
         "half2": [],
         "below": [
-            "f1b585e6-eb53-4f5e-be01-1b5a990b038d"
+            "f1b585e6-eb53-4f5e-be01-1b5a990b038d",
+            "103b80fe-8b02-4da7-bd00-ac6f804e2678"
         ],
         "below1": [],
         "below2": [],
@@ -244,6 +245,31 @@
                     "admin_description": ""
                 },
                 "uuid": "f1b585e6-eb53-4f5e-be01-1b5a990b038d",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "dark"
+                        }
+                    }
+                }
+            }
+        },
+        "103b80fe-8b02-4da7-bd00-ac6f804e2678": {
+            "plugin": "borg_project_metrics:backdrop_project_metrics",
+            "data": {
+                "module": "borg_project_metrics",
+                "delta": "backdrop_project_metrics",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "103b80fe-8b02-4da7-bd00-ac6f804e2678",
                 "style": {
                     "plugin": "default",
                     "data": {
