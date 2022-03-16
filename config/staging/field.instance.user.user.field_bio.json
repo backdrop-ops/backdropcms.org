@@ -3,9 +3,9 @@
     "field_name": "field_bio",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Biography (visible on your public profile)",
+    "label": "Biography",
     "widget": {
-        "weight": "7",
+        "weight": "4",
         "type": "text_textarea",
         "module": "text",
         "active": 1,
@@ -13,7 +13,7 @@
             "rows": "10"
         }
     },
-    "description": "",
+    "description": "Give some description about yourself. This will be visible on your public profile.",
     "required": 1,
     "deleted": 0,
     "default_value": [

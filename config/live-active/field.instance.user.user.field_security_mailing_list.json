@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Receive BackdropCMS.org security announcements for core and contrib projects",
     "widget": {
-        "weight": "16",
+        "weight": "5",
         "type": "options_onoff",
         "module": "options",
         "active": 1,
@@ -29,7 +29,7 @@
         "default": {
             "label": "above",
             "type": "hidden",
-            "weight": "16",
+            "weight": "17",
             "settings": []
         }
     }

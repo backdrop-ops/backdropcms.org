@@ -1,0 +1,160 @@
+{
+    "_config_name": "views.view.ip_tracker_user",
+    "name": "ip_tracker_user",
+    "description": "IP addresses by user",
+    "tag": "admin, ip",
+    "base_table": "ip_tracker",
+    "core": "7",
+    "human_name": "IP addresses by user",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "User IP addresses",
+                "use_more_always": false,
+                "access": {
+                    "type": "perm",
+                    "perm": "manage ip addresses"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "50"
+                    }
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "columns": {
+                        "ip": "ip",
+                        "visits": "visits",
+                        "first_visit": "first_visit",
+                        "last_visit": "last_visit",
+                        "user_count": "user_count"
+                    },
+                    "default": "-1",
+                    "info": {
+                        "ip": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "visits": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "first_visit": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "last_visit": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "user_count": {
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    }
+                },
+                "relationships": {
+                    "uid": {
+                        "id": "uid",
+                        "table": "ip_tracker",
+                        "field": "uid",
+                        "label": "USER"
+                    }
+                },
+                "fields": {
+                    "ip": {
+                        "id": "ip",
+                        "table": "ip_tracker",
+                        "field": "ip"
+                    },
+                    "visits": {
+                        "id": "visits",
+                        "table": "ip_tracker",
+                        "field": "visits"
+                    },
+                    "first_visit": {
+                        "id": "first_visit",
+                        "table": "ip_tracker",
+                        "field": "first_visit",
+                        "date_format": "long"
+                    },
+                    "last_visit": {
+                        "id": "last_visit",
+                        "table": "ip_tracker",
+                        "field": "last_visit",
+                        "date_format": "long"
+                    },
+                    "user_count": {
+                        "id": "user_count",
+                        "table": "ip_tracker",
+                        "field": "user_count",
+                        "element_label_colon": false
+                    }
+                },
+                "arguments": {
+                    "uid": {
+                        "id": "uid",
+                        "table": "users",
+                        "field": "uid",
+                        "relationship": "uid",
+                        "default_action": "not found",
+                        "default_argument_type": "fixed",
+                        "summary": {
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "summary_options": {
+                            "items_per_page": "25"
+                        }
+                    }
+                }
+            }
+        },
+        "page": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "user/%/ip",
+                "menu": {
+                    "type": "tab",
+                    "title": "IP",
+                    "description": "User IP addresses",
+                    "weight": "2",
+                    "name": "user-menu",
+                    "context": 0,
+                    "context_only_inline": 0
+                }
+            }
+        }
+    }
+}
