@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @file
+ * Tests for the Ban IP module.
+ */
+
+
+class BanIPAddressBlockingTestCase extends BackdropWebTestCase {
+  protected $blocking_user;
+
+  /**
+   * Implement setUp().
+   */
+  function setUp() {
+    parent::setUp('ban_ip');
+
+    // Create user.
+    $this->blocking_user = $this->backdropCreateUser(array('block IP addresses'));
+    $this->backdropLogin($this->blocking_user);
+  }
+
+  /**
+   * Test a variety of user input to confirm correct validation and saving of data.
+   */
+  function testIPAddressValidation() {
+    $this->backdropGet('admin/config/people/ip-blocking');
+
+    // Block a valid IP address.
+    $edit = array();
+    $edit['ip'] = '1.2.3.3';
+    $this->backdropPost('admin/config/people/ip-blocking', $edit, t('Add'));
+    $ip = db_query("SELECT iid from {blocked_ips} WHERE ip = :ip", array(':ip' => $edit['ip']))->fetchField();
+    $this->assertTrue($ip, t('IP address found in database.'));
+    $this->assertRaw(t('The IP address %ip has been blocked.', array('%ip' => $edit['ip'])), t('IP address was blocked.'));
+
+    // Try to block an IP address that's already blocked.
+    $edit = array();
+    $edit['ip'] = '1.2.3.3';
+    $this->backdropPost('admin/config/people/ip-blocking', $edit, t('Add'));
+    $this->assertText(t('This IP address is already blocked.'));
+
+    // Try to block a reserved IP address.
+    $edit = array();
+    $edit['ip'] = '255.255.255.255';
+    $this->backdropPost('admin/config/people/ip-blocking', $edit, t('Add'));
+    $this->assertText(t('Enter a valid IP address.'));
+
+    // Try to block a reserved IP address.
+    $edit = array();
+    $edit['ip'] = 'test.example.com';
+    $this->backdropPost('admin/config/people/ip-blocking', $edit, t('Add'));
+    $this->assertText(t('Enter a valid IP address.'));
+
+    // Submit an empty form.
+    $edit = array();
+    $edit['ip'] = '';
+    $this->backdropPost('admin/config/people/ip-blocking', $edit, t('Add'));
+    $this->assertText(t('Enter a valid IP address.'));
+
+    // Pass an IP address as a URL parameter and submit it.
+    $submit_ip = '1.2.3.4';
+    $this->backdropPost('admin/config/people/ip-blocking/' . $submit_ip, NULL, t('Add'));
+    $ip = db_query("SELECT iid from {blocked_ips} WHERE ip = :ip", array(':ip' => $submit_ip))->fetchField();
+    $this->assertTrue($ip, t('IP address found in database'));
+    $this->assertRaw(t('The IP address %ip has been blocked.', array('%ip' => $submit_ip)), t('IP address was blocked.'));
+
+  }
+
+  /**
+   * Test duplicate IP addresses are not present in the 'blocked_ips' table.
+   */
+  function testDuplicateIpAddress() {
+    backdrop_static_reset('ip_address');
+    $submit_ip = $_SERVER['REMOTE_ADDR'] = '192.168.1.1';
+    ban_ip_block_ip_action();
+    ban_ip_block_ip_action();
+    $ip_count = db_query("SELECT iid from {blocked_ips} WHERE ip = :ip", array(':ip' => $submit_ip))->rowCount();
+    $this->assertEqual('1', $ip_count);
+    backdrop_static_reset('ip_address');
+    $submit_ip = $_SERVER['REMOTE_ADDR'] = ' ';
+    ban_ip_block_ip_action();
+    ban_ip_block_ip_action();
+    ban_ip_block_ip_action();
+    $ip_count = db_query("SELECT iid from {blocked_ips} WHERE ip = :ip", array(':ip' => $submit_ip))->rowCount();
+    $this->assertEqual('1', $ip_count);
+  }
+}
+
