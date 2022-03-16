@@ -1,0 +1,246 @@
+<?php
+/**
+* @file
+* Block site vistors by IP address.
+*
+*/
+
+
+/**
+ * Implements hook_boot().
+ */
+function ban_ip_boot() {
+  ban_ip_block_denied(ip_address());
+}
+
+/**
+ * Implements hook_permission().
+ */
+function ban_ip_permission() {
+  return array(
+    'block IP addresses' => array(
+      'title' => t('Block IP addresses'),
+      'description' => t('Block site vistors by IP address.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function ban_ip_menu() {
+  // IP address blocking.
+  $items['admin/config/people/ip-blocking'] = array(
+    'title' => 'IP address blocking',
+    'description' => 'Manage blocked IP addresses.',
+    'page callback' => 'ban_ip_ip_blocking',
+    'access arguments' => array('block IP addresses'),
+    'weight' => 10,
+  );
+  $items['admin/config/people/ip-blocking/delete/%blocked_ip'] = array(
+    'title' => 'Delete IP address',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ban_ip_ip_blocking_delete', 5),
+    'access arguments' => array('block IP addresses'),
+  );
+  return $items;
+}
+
+/**
+ * Retrieve a blocked IP address from the database.
+ *
+ * @param $iid integer
+ *   The ID of the blocked IP address to retrieve.
+ *
+ * @return
+ *   The blocked IP address from the database as an array.
+ */
+function blocked_ip_load($iid) {
+  return db_query("SELECT * FROM {blocked_ips} WHERE iid = :iid", array(':iid' => $iid))->fetchAssoc();
+}
+
+/**
+ * Blocks the current user's IP address.
+ *
+ * @ingroup actions
+ */
+function ban_ip_block_ip_action() {
+  $ip = ip_address();
+  db_merge('blocked_ips')
+    ->key(array('ip' => $ip))
+    ->fields(array('ip' => $ip))
+    ->execute();
+  watchdog('action', 'Banned IP address %ip', array('%ip' => $ip));
+}
+
+/**
+ * Menu callback. Display blocked IP addresses.
+ *
+ * @param $default_ip
+ *   Optional IP address to be passed on to backdrop_get_form() for
+ *   use as the default value of the IP address form field.
+ */
+function ban_ip_ip_blocking($default_ip = '') {
+  $settings_blocking_ips = settings_get('blocked_ips');
+  $rows = array();
+  if (isset($settings_blocking_ips)) {
+    $header = array(t('Blocked IP addresses'));
+    $build['ip_blocking_help'] = array(
+      '#type' => 'help',
+      '#markup' => t('IP blocking through the settings.php has been enabled. To allow blocking via this user interface, delete the "blocked_ips" array in settings.php'),
+      '#weight' => -21,
+    );
+    foreach ($settings_blocking_ips as $ip) {
+      $rows[] = array(
+        $ip,
+      );
+    }
+  }
+  else {
+    $header = array(t('Blocked IP addresses'), t('Operations'));
+    $result = db_query('SELECT * FROM {blocked_ips}');
+    foreach ($result as $ip) {
+      $rows[] = array(
+        $ip->ip,
+        l(t('delete'), "admin/config/people/ip-blocking/delete/$ip->iid"),
+      );
+    }
+
+    $build['ban_ip_ip_blocking_form'] = backdrop_get_form('ban_ip_ip_blocking_form', $default_ip);
+  }
+
+  $build['ban_ip_ip_blocking_table'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('No blocked IP addresses available.'),
+  );
+
+  return $build;
+}
+
+/**
+ * Define the form for blocking IP addresses.
+ *
+ * @ingroup forms
+ * @see ban_ip_ip_blocking_form_validate()
+ * @see ban_ip_ip_blocking_form_submit()
+ */
+function ban_ip_ip_blocking_form($form, $form_state, $default_ip) {
+  $form['ip'] = array(
+    '#title' => t('IP address'),
+    '#type' => 'textfield',
+    '#size' => 48,
+    '#maxlength' => 40,
+    '#default_value' => $default_ip,
+    '#description' => t('Enter a valid IP address.'),
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add'),
+  );
+  $form['#submit'][] = 'ban_ip_ip_blocking_form_submit';
+  $form['#validate'][] = 'ban_ip_ip_blocking_form_validate';
+  return $form;
+}
+
+function ban_ip_ip_blocking_form_validate($form, &$form_state) {
+  $ip = trim($form_state['values']['ip']);
+  if (db_query("SELECT * FROM {blocked_ips} WHERE ip = :ip", array(':ip' => $ip))->fetchField()) {
+    form_set_error('ip', t('This IP address is already blocked.'));
+  }
+  elseif ($ip == ip_address()) {
+    //form_set_error('ip', t('You may not block your own IP address.'));
+  }
+  elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) == FALSE) {
+    form_set_error('ip', t('Enter a valid IP address.'));
+  }
+}
+
+function ban_ip_ip_blocking_form_submit($form, &$form_state) {
+  $ip = trim($form_state['values']['ip']);
+  db_insert('blocked_ips')
+    ->fields(array('ip' => $ip))
+    ->execute();
+  backdrop_set_message(t('The IP address %ip has been blocked.', array('%ip' => $ip)));
+  $form_state['redirect'] = 'admin/config/people/ip-blocking';
+  return;
+}
+
+/**
+ * IP deletion confirm page.
+ *
+ * @see ban_ip_ip_blocking_delete_submit()
+ */
+function ban_ip_ip_blocking_delete($form, &$form_state, $iid) {
+  $form['blocked_ip'] = array(
+    '#type' => 'value',
+    '#value' => $iid,
+  );
+  return confirm_form($form, t('Are you sure you want to delete %ip?', array('%ip' => $iid['ip'])), 'admin/config/people/ip-blocking', t('This action cannot be undone.'), t('Delete'), t('Cancel'));
+}
+
+/**
+ * Process ban_ip_ip_blocking_delete form submissions.
+ */
+function ban_ip_ip_blocking_delete_submit($form, &$form_state) {
+  $blocked_ip = $form_state['values']['blocked_ip'];
+  db_delete('blocked_ips')
+    ->condition('iid', $blocked_ip['iid'])
+    ->execute();
+  watchdog('user', 'Deleted %ip', array('%ip' => $blocked_ip['ip']));
+  backdrop_set_message(t('The IP address %ip was deleted.', array('%ip' => $blocked_ip['ip'])));
+  $form_state['redirect'] = 'admin/config/people/ip-blocking';
+}
+
+/**
+ * Checks to see if an IP address has been blocked.
+ *
+ * Blocked IP addresses are stored in the database by default. However for
+ * performance reasons we allow an override in settings.php. This allows us
+ * to avoid querying the database at this critical stage of the bootstrap if
+ * an administrative interface for IP address blocking is not required.
+ *
+ * @param $ip
+ *   IP address to check.
+ *
+ * @return bool
+ *   TRUE if access is denied, FALSE if access is allowed.
+ */
+function ban_ip_denied($ip) {
+  // Because this function is called on every page request, we first check
+  // for an array of IP addresses in settings.php before querying the
+  // database.
+  $blocked_ips = settings_get('blocked_ips');
+  $denied = FALSE;
+  if (isset($blocked_ips) && is_array($blocked_ips)) {
+    $denied = in_array($ip, $blocked_ips);
+  }
+  // Only check if database.inc is loaded already. If
+  // $conf['page_cache_without_database'] = TRUE; is set in settings.php,
+  // then the database won't be loaded here so the IPs in the database
+  // won't be denied. However the user asked explicitly not to use the
+  // database and also in this case it's quite likely that the user relies
+  // on higher performance solutions like a firewall.
+  elseif (class_exists('Database', FALSE)) {
+    $denied = (bool)db_query("SELECT 1 FROM {blocked_ips} WHERE ip = :ip", array(':ip' => $ip))->fetchField();
+  }
+
+  return $denied;
+}
+
+/**
+ * Handles denied users.
+ *
+ * @param $ip
+ *   IP address to check. Prints a message and exits if access is denied.
+ */
+function ban_ip_block_denied($ip) {
+  // Deny access to blocked IP addresses - t() is not yet available.
+  if (ban_ip_denied($ip)) {
+    header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+    print 'Sorry, ' . check_plain(ip_address()) . ' has been banned.';
+    exit();
+  }
+}
