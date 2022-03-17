@@ -98,9 +98,14 @@ body.front .l-content {
 }
 
 body.front .page-title {
-  font-size: 400%;
-  padding-bottom: 18px;
+  font-size: 250%;
   margin-bottom: 30px;
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  body.front .page-title {
+    font-size: 400%;
+    padding-bottom: 18px;
+  }
 }
 
 body.front .node-page ul {
