@@ -51,7 +51,8 @@ article.node-post.view-mode-teaser {
 /*******************************************************************************
  * Node: Security Advisory
  ******************************************************************************/
-.node-sa .field-name-field-sa-solution .field-label {
+.node-sa .field-name-field-sa-solution .field-label,
+.node-sa .field-name-body .field-label {
   margin-bottom: 10px;
   font-size: 1.333rem;
 }
