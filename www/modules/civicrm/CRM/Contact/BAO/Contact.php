@@ -82,13 +82,6 @@ class CRM_Contact_BAO_Contact extends CRM_Contact_DAO_Contact implements Civi\Te
   public static $_exportableFields = NULL;
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Takes an associative array and creates a contact object.
    *
    * The function extracts all the params it needs to initialize the create a
@@ -206,7 +199,7 @@ class CRM_Contact_BAO_Contact extends CRM_Contact_DAO_Contact implements Civi\Te
       $newEmployer = !empty($params['employer_id']) ? $params['employer_id'] : $params['current_employer'] ?? NULL;
 
       $newContact = empty($params['contact_id']);
-      if ($newEmployer) {
+      if (!CRM_Utils_System::isNull($newEmployer)) {
         CRM_Contact_BAO_Contact_Utils::createCurrentEmployerRelationship($contact->id, $newEmployer, $employerId, $newContact);
       }
       elseif ($employerId) {
@@ -240,7 +233,7 @@ class CRM_Contact_BAO_Contact extends CRM_Contact_DAO_Contact implements Civi\Te
    * @param bool $skipDelete
    *   Unclear parameter, passed to website create
    *
-   * @return CRM_Contact_BAO_Contact|CRM_Core_Error
+   * @return CRM_Contact_BAO_Contact|CRM_Core_Error|NULL
    *   Created or updated contribution object. We are deprecating returning an error in
    *   favour of exceptions
    *
@@ -510,6 +503,10 @@ class CRM_Contact_BAO_Contact extends CRM_Contact_DAO_Contact implements Civi\Te
     $missingGreetingParams = [];
 
     foreach ($allGreetingParams as $greetingIndex => $greetingParam) {
+      // An empty string means NULL
+      if (($params[$greetingParam] ?? NULL) === '') {
+        $params[$greetingParam] = 'null';
+      }
       if (empty($params[$greetingParam])) {
         $missingGreetingParams[$greetingIndex] = $greetingParam;
       }
@@ -557,7 +554,7 @@ class CRM_Contact_BAO_Contact extends CRM_Contact_DAO_Contact implements Civi\Te
    * @param bool $includeTypeInReturnParameters
    *   Should type be part of the returned array?
    *
-   * @return array
+   * @return array|null
    *   the displayName and contactImage for this contact
    */
   public static function getDisplayAndImage($id, $includeTypeInReturnParameters = FALSE) {
@@ -1774,7 +1771,7 @@ WHERE     civicrm_contact.id = " . CRM_Utils_Type::escape($id, 'Integer');
    *
    * This is for the query to use, create the right sql.
    *
-   * @param $fields
+   * @param array $fields
    * @param int $contactId
    *   Contact id.
    *
@@ -1847,16 +1844,16 @@ WHERE     civicrm_contact.id = " . CRM_Utils_Type::escape($id, 'Integer');
    *
    * $params int     $contactId contact_id
    * $params boolean $isPrimaryExist if true, return primary contact location type otherwise null
-   * $params boolean $skipDefaultPriamry if true, return primary contact location type otherwise null
+   * $params boolean $skipDefaultPrimary if true, return primary contact location type otherwise null
    *
    * @param int $contactId
-   * @param bool $skipDefaultPriamry
-   * @param null $block
+   * @param bool $skipDefaultPrimary
+   * @param string|null $block
    *
-   * @return int
+   * @return int|NULL
    *   $locationType location_type_id
    */
-  public static function getPrimaryLocationType($contactId, $skipDefaultPriamry = FALSE, $block = NULL) {
+  public static function getPrimaryLocationType($contactId, $skipDefaultPrimary = FALSE, $block = NULL) {
     if ($block) {
       $entityBlock = ['contact_id' => $contactId];
       $blocks = CRM_Core_BAO_Location::getValues($entityBlock);
@@ -1898,7 +1895,7 @@ WHERE  civicrm_contact.id = %1 ";
     if (isset($locationType)) {
       return $locationType;
     }
-    elseif ($skipDefaultPriamry) {
+    elseif ($skipDefaultPrimary) {
       // if there is no primary contact location then return null
       return NULL;
     }
@@ -2113,10 +2110,10 @@ ORDER BY civicrm_email.is_primary DESC";
    * Format profile contact parameters.
    *
    * @param array $params
-   * @param $fields
-   * @param int $contactID
-   * @param int $ufGroupId
-   * @param null $ctype
+   * @param array $fields
+   * @param int|null $contactID
+   * @param int|null $ufGroupId
+   * @param string|null $ctype
    * @param bool $skipCustom
    *
    * @return array
@@ -2694,21 +2691,24 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
   }
 
   /**
-   * Given the component name and returns the count of participation of contact.
+   * Provides counts for the contact summary tabs.
    *
-   * @param string $component
-   *   Input component name.
+   * @param string $type
+   *   Type of record to count.
    * @param int $contactId
    *   Input contact id.
-   * @param string $tableName
-   *   Optional tableName if component is custom group.
+   * @param string|null $tableName
+   *   Deprecated - do not use
    *
-   * @return int
+   * @return int|false
    *   total number in database
    */
-  public static function getCountComponent($component, $contactId, $tableName = NULL) {
-    $object = NULL;
-    switch ($component) {
+  public static function getCountComponent(string $type, int $contactId, ?string $tableName = NULL) {
+    if ($tableName) {
+      // TODO: Fix LineItemEditor extension to not use this function, then enable warning
+      // CRM_Core_Error::deprecatedWarning('Deprecated argument $tableName passed to ' . __CLASS__ . '::' . __FUNCTION__);
+    }
+    switch ($type) {
       case 'tag':
         return CRM_Core_BAO_EntityTag::getContactTags($contactId, TRUE);
 
@@ -2722,7 +2722,6 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
         return $result;
 
       case 'group':
-
         return CRM_Contact_BAO_GroupContact::getContactGroup($contactId, "Added", NULL, TRUE, FALSE, FALSE, TRUE, NULL, TRUE);
 
       case 'log':
@@ -2735,13 +2734,13 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
         return CRM_Core_BAO_Note::getContactNoteCount($contactId);
 
       case 'contribution':
-        if (array_key_exists('CiviContribute', CRM_Core_Component::getEnabledComponents())) {
+        if (CRM_Core_Component::isEnabled('CiviContribute')) {
           return CRM_Contribute_BAO_Contribution::contributionCount($contactId);
         }
         return FALSE;
 
       case 'membership':
-        if (array_key_exists('CiviMember', CRM_Core_Component::getEnabledComponents())) {
+        if (CRM_Core_Component::isEnabled('CiviMember')) {
           return CRM_Member_BAO_Membership::getContactMembershipCount((int) $contactId, TRUE);
         }
         return FALSE;
@@ -2754,9 +2753,6 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
 
       case 'case':
         return CRM_Case_BAO_Case::caseCount($contactId);
-
-      case 'grant':
-        return CRM_Grant_BAO_Grant::getContactGrantCount($contactId);
 
       case 'activity':
         $input = [
@@ -2772,14 +2768,12 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
         return CRM_Mailing_BAO_Mailing::getContactMailingsCount($params);
 
       default:
-        $custom = explode('_', $component);
-        if ($custom['0'] = 'custom') {
-          if (!$tableName) {
-            $tableName = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $custom['1'], 'table_name');
-          }
-          $queryString = "SELECT count(id) FROM {$tableName} WHERE entity_id = {$contactId}";
-          return CRM_Core_DAO::singleValueQuery($queryString);
+        if (!$tableName) {
+          $custom = explode('_', $type);
+          $tableName = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $custom[1], 'table_name');
         }
+        $queryString = "SELECT count(id) FROM $tableName WHERE entity_id = $contactId";
+        return (int) CRM_Core_DAO::singleValueQuery($queryString);
     }
   }
 
@@ -2846,7 +2840,7 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
         'CRM_Contact_BAO_Contact'
       );
       $emailGreetingString = CRM_Core_DAO::escapeString(CRM_Utils_String::stripSpaces($emailGreetingString));
-      $updateQueryString[] = " email_greeting_display = '{$emailGreetingString}'";
+      $updateQueryString[] = " email_greeting_display = '$emailGreetingString'";
     }
 
     if ($postalGreetingString) {
@@ -2856,7 +2850,7 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
         'CRM_Contact_BAO_Contact'
       );
       $postalGreetingString = CRM_Core_DAO::escapeString(CRM_Utils_String::stripSpaces($postalGreetingString));
-      $updateQueryString[] = " postal_greeting_display = '{$postalGreetingString}'";
+      $updateQueryString[] = " postal_greeting_display = '$postalGreetingString'";
     }
 
     if ($addresseeString) {
@@ -2866,12 +2860,12 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
         'CRM_Contact_BAO_Contact'
       );
       $addresseeString = CRM_Core_DAO::escapeString(CRM_Utils_String::stripSpaces($addresseeString));
-      $updateQueryString[] = " addressee_display = '{$addresseeString}'";
+      $updateQueryString[] = " addressee_display = '$addresseeString'";
     }
 
     if (!empty($updateQueryString)) {
       $updateQueryString = implode(',', $updateQueryString);
-      $queryString = "UPDATE civicrm_contact SET {$updateQueryString} WHERE id = {$contact->id}";
+      $queryString = "UPDATE civicrm_contact SET $updateQueryString WHERE id = {$contact->id}";
       CRM_Core_DAO::executeQuery($queryString);
     }
   }
@@ -3138,7 +3132,7 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
         'class' => 'dashboard',
         // NOTE: As an alternative you can also build url on CMS specific way
         //  as CRM_Core_Config::singleton()->userSystem->getUserRecordUrl($contactId)
-        'href' => CRM_Utils_System::url('civicrm/user', "reset=1&id={$contactId}"),
+        'href' => CRM_Utils_System::url('civicrm/user', "reset=1&id=$contactId"),
         'icon' => 'crm-i fa-tachometer',
       ];
     }
@@ -3274,7 +3268,7 @@ LEFT JOIN civicrm_email    ON ( civicrm_contact.id = civicrm_email.contact_id )
     $componentName = $menuOptions['component'] ?? NULL;
 
     // if component action - make sure component is enable.
-    if ($componentName && !in_array($componentName, CRM_Core_Config::singleton()->enableComponents)) {
+    if ($componentName && !CRM_Core_Component::isEnabled($componentName)) {
       return FALSE;
     }
 
@@ -3377,8 +3371,8 @@ LEFT JOIN civicrm_address ON ( civicrm_address.contact_id = civicrm_contact.id )
   /**
    * Get a list of triggers for the contact table.
    *
-   * @param $info
-   * @param null $tableName
+   * @param array $info
+   * @param string|null $tableName
    *
    * @see http://issues.civicrm.org/jira/browse/CRM-10554
    *
@@ -3532,18 +3526,18 @@ LEFT JOIN civicrm_address ON ( civicrm_address.contact_id = civicrm_contact.id )
    */
   private static function getTemplateForGreeting(string $greetingType, CRM_Contact_DAO_Contact $contact): string {
     $customFieldName = $greetingType . '_custom';
-    if (!CRM_Utils_System::isNull($contact->{$customFieldName})) {
-      return $contact->{$customFieldName};
+    if (!CRM_Utils_System::isNull($contact->$customFieldName)) {
+      return $contact->$customFieldName;
     }
     $idField = $greetingType . '_id';
-    if (!is_numeric($contact->{$idField})) {
+    if (!is_numeric($contact->$idField)) {
       return '';
     }
     $filter = [
       'contact_type' => $contact->contact_type,
       'greeting_type' => $greetingType,
     ];
-    return CRM_Core_PseudoConstant::greeting($filter)[$contact->{$idField}] ?? '';
+    return CRM_Core_PseudoConstant::greeting($filter)[$contact->$idField] ?? '';
   }
 
   /**
@@ -3646,7 +3640,7 @@ LEFT JOIN civicrm_address ON ( civicrm_address.contact_id = civicrm_contact.id )
    * @param array $appendProfiles
    *   Name of profile(s) to append to each link.
    *
-   * @return array
+   * @return array|false
    */
   public static function getEntityRefCreateLinks($appendProfiles = []) {
     // You'd think that "create contacts" would be the permission to check,

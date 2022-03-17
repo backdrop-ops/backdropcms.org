@@ -102,7 +102,7 @@ class CRM_Dedupe_Merger {
         'rel_table_custom_groups' => [
           'title' => ts('Custom Groups'),
           'tables' => ['civicrm_custom_group'],
-          'url' => CRM_Utils_System::url('civicrm/admin/custom/group', 'reset=1'),
+          'url' => CRM_Utils_System::url('civicrm/admin/custom/group'),
         ],
         'rel_table_uf_groups' => [
           'title' => ts('Profiles'),
@@ -607,7 +607,7 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
     foreach ($sqls as $sql) {
       CRM_Core_DAO::executeQuery($sql, [], TRUE, NULL, TRUE);
     }
-    CRM_Dedupe_Merger::addMembershipToRealtedContacts($mainId);
+    CRM_Dedupe_Merger::addMembershipToRelatedContacts($mainId);
   }
 
   /**
@@ -1093,7 +1093,7 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
    *
    * @param bool $checkPermissions
    *   Respect logged in user permissions.
-   * @param bool|NULL $reloadCacheIfEmpty
+   * @param bool|null $reloadCacheIfEmpty
    *  If not set explicitly this is calculated but it is preferred that it be set
    *  per comments on isSelected above.
    *
@@ -1917,7 +1917,7 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
    * @throws \CRM_Core_Exception
    * @throws \CiviCRM_API3_Exception
    */
-  public static function addMembershipToRealtedContacts($contactID) {
+  public static function addMembershipToRelatedContacts($contactID) {
     $dao = new CRM_Member_DAO_Membership();
     $dao->contact_id = $contactID;
     $dao->is_test = 0;
@@ -2625,7 +2625,7 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
   /**
    * Build up the location block for the contact in dedupe-screen display format.
    *
-   * @param integer $cid
+   * @param int $cid
    * @param array $blockInfo
    * @param string $blockName
    *

@@ -331,7 +331,7 @@ abstract class CRM_Utils_Hook {
    *   The type of operation being performed.
    * @param string $objectName
    *   The name of the object.
-   * @param int $id
+   * @param int|null $id
    *   The object id if available.
    * @param array $params
    *   The parameters used for object creation / editing.
@@ -2361,12 +2361,12 @@ abstract class CRM_Utils_Hook {
    * Issue CRM-14276
    * Add a hook for altering the display name
    *
-   * hook_civicrm_contact_get_displayname(&$display_name, $objContact)
+   * hook_civicrm_contact_get_displayname(&$display_name, $contactId, $dao)
    *
    * @param string $displayName
    * @param int $contactId
-   * @param object $dao
-   *   The contact object.
+   * @param CRM_Core_DAO $dao
+   *   A DAO object containing contact fields + primary email field as "email".
    *
    * @return mixed
    */
@@ -2589,11 +2589,8 @@ abstract class CRM_Utils_Hook {
    * inserted in civicrm_financial_trxn table
    *
    * @param array $deferredRevenues
-   *
-   * @param array $contributionDetails
-   *
+   * @param CRM_Contribute_BAO_Contribution $contributionDetails
    * @param bool $update
-   *
    * @param string $context
    *
    * @return mixed

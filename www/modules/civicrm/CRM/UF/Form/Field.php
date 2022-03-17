@@ -464,17 +464,6 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
 
     $this->addFormRule(['CRM_UF_Form_Field', 'formRule'], $this);
 
-    // if view mode pls freeze it with the done button.
-    if ($this->_action & CRM_Core_Action::VIEW) {
-      $this->freeze();
-      $this->addElement('xbutton', 'done', ts('Done'),
-        [
-          'type' => 'button',
-          'onclick' => "location.href='civicrm/admin/uf/group/field?reset=1&action=browse&gid=" . $this->_gid . "'",
-        ]
-      );
-    }
-
     $this->setDefaults($defaults);
   }
 
@@ -728,7 +717,7 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
    *   Posted values of the form.
    *
    * @param $files
-   * @param $self
+   * @param self $self
    *
    * @return array
    *   list of errors to be posted back to the form

@@ -32,13 +32,6 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType im
   public static $_statusACLFt = [];
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Fetch object based on array of properties.
    *
    * @param array $params
@@ -350,46 +343,30 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType im
   /**
    * Function to build a permissioned sql where clause based on available financial types.
    *
-   * @param array $whereClauses
-   *   (reference ) an array of clauses
    * @param string $component
    *   the type of component
-   * @param string $alias
-   *   the alias to use
    *
+   * @return string $clauses
    */
-  public static function buildPermissionedClause(&$whereClauses, $component = NULL, $alias = NULL) {
+  public static function buildPermissionedClause(string $component): string {
+    $clauses = [];
     // @todo the relevant addSelectWhere clause should be called.
     if (!self::isACLFinancialTypeStatus()) {
-      return FALSE;
+      return '';
     }
-    if (is_array($whereClauses)) {
-      $types = self::getAllEnabledAvailableFinancialTypes();
+    if ($component === 'contribution') {
+      $clauses = CRM_Contribute_BAO_Contribution::getSelectWhereClause();
+    }
+    if ($component === 'membership') {
+      self::getAvailableMembershipTypes($types, CRM_Core_Action::VIEW);
+      $types = array_keys($types);
       if (empty($types)) {
-        $whereClauses[] = ' ' . $alias . '.financial_type_id IN (0)';
+        $types = [0];
       }
-      else {
-        $whereClauses[] = ' ' . $alias . '.financial_type_id IN (' . implode(',', array_keys($types)) . ')';
-      }
+      $clauses[] = ' civicrm_membership.membership_type_id IN (' . implode(',', $types) . ')';
+
     }
-    else {
-      if ($component == 'contribution') {
-        $types = self::getAllEnabledAvailableFinancialTypes();
-        $column = "financial_type_id";
-      }
-      if ($component == 'membership') {
-        self::getAvailableMembershipTypes($types, CRM_Core_Action::VIEW);
-        $column = "membership_type_id";
-      }
-      if (!empty($whereClauses)) {
-        $whereClauses .= ' AND ';
-      }
-      if (empty($types)) {
-        $whereClauses .= " civicrm_{$component}.{$column} IN (0)";
-        return;
-      }
-      $whereClauses .= " civicrm_{$component}.{$column} IN (" . implode(',', array_keys($types)) . ")";
-    }
+    return implode(' AND ', $clauses);
   }
 
   /**

@@ -75,13 +75,10 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
   }
 
   /**
-   * Takes an associative array and creates a custom field object.
+   * Deprecated in favor of writeRecords & APIv4
    *
-   * This function is invoked from within the web form layer and also from the api layer
-   *
+   * @deprecated
    * @param array $params
-   *   (reference) an assoc array of name/value pairs.
-   *
    * @return CRM_Core_DAO_CustomField
    */
   public static function create($params) {
@@ -330,7 +327,7 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
       $checkPermission = CRM_Core_Permission::EDIT;
     }
     if (empty($customDataType)) {
-      $customDataType = ['Contact', 'Individual', 'Organization', 'Household'];
+      $customDataType = array_merge(['Contact'], CRM_Contact_BAO_ContactType::basicTypes());
     }
     if ($customDataType === 'ANY') {
       // NULL should have been respected but the line above broke that.
@@ -2031,14 +2028,13 @@ WHERE  id IN ( %1, %2 )
         )
       ) {
         // first create an option group for this custom group
-        $optionGroup = new CRM_Core_DAO_OptionGroup();
-        $optionGroup->name = "{$params['column_name']}_" . date('YmdHis');
-        $optionGroup->title = $params['label'];
-        $optionGroup->is_active = 1;
-        // Don't set reserved as it's not a built-in option group and may be useful for other custom fields.
-        $optionGroup->is_reserved = 0;
-        $optionGroup->data_type = $dataType;
-        $optionGroup->save();
+        $customGroupTitle = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $params['custom_group_id'], 'title');
+        $optionGroup = CRM_Core_DAO_OptionGroup::writeRecord([
+          'title' => "$customGroupTitle :: {$params['label']}",
+          // Don't set reserved as it's not a built-in option group and may be useful for other custom fields.
+          'is_reserved' => 0,
+          'data_type' => $dataType,
+        ]);
         $params['option_group_id'] = $optionGroup->id;
         if (!empty($params['option_value']) && is_array($params['option_value'])) {
           foreach ($params['option_value'] as $k => $v) {
@@ -2711,12 +2707,16 @@ WHERE cf.id = %1 AND cg.is_multiple = 1";
   }
 
   /**
+   * Prepare params for the create operation.
+   *
    * @param CRM_Core_DAO_CustomField $field
-   * @param 'add|modify|delete' $operation
+   * @param string $operation
+   *   add|modify|delete
    *
    * @return array
+   * @throws \CRM_Core_Exception
    */
-  protected static function prepareCreateParams($field, $operation) {
+  protected static function prepareCreateParams($field, $operation): array {
     $tableName = CRM_Core_DAO::getFieldValue(
       'CRM_Core_DAO_CustomGroup',
       $field->custom_group_id,

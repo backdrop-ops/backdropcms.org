@@ -65,11 +65,6 @@ class CRM_Campaign_BAO_Campaign extends CRM_Campaign_DAO_Campaign {
       }
     }
 
-    //store custom data
-    if (!empty($params['custom']) && is_array($params['custom'])) {
-      CRM_Core_BAO_CustomValueTable::store($params['custom'], 'civicrm_campaign', $campaign->id);
-    }
-
     return $campaign;
   }
 
@@ -299,7 +294,7 @@ Order By  camp.title";
    * @return bool
    */
   public static function isCampaignEnable(): bool {
-    return in_array('CiviCampaign', CRM_Core_Config::singleton()->enableComponents, TRUE);
+    return CRM_Core_Component::isEnabled('CiviCampaign');
   }
 
   /**

@@ -266,7 +266,7 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
 
     $this->_fromEmails = CRM_Core_BAO_Email::getFromEmail();
 
-    if (in_array('CiviPledge', CRM_Core_Config::singleton()->enableComponents) && !$this->_formType) {
+    if (CRM_Core_Component::isEnabled('CiviPledge') && !$this->_formType) {
       $this->preProcessPledge();
     }
 
@@ -515,11 +515,6 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
     // & if true it will be overwritten.
     $this->assign('payNow', FALSE);
     $buildRecurBlock = FALSE;
-
-    // display tax amount on edit contribution page
-    if ($invoicing && $this->_action & CRM_Core_Action::UPDATE && isset($this->_values['tax_amount'])) {
-      $this->assign('totalTaxAmount', $this->_values['tax_amount']);
-    }
 
     if (empty($this->_lineItems) &&
       ($this->_priceSetId || !empty($_POST['price_set_id']))
@@ -855,7 +850,7 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
    *   The input form values.
    * @param array $files
    *   The uploaded files if any.
-   * @param $self
+   * @param self $self
    *
    * @return bool|array
    *   true if no errors, else array of errors

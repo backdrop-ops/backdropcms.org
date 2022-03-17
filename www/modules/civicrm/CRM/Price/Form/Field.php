@@ -257,7 +257,7 @@ class CRM_Price_Form_Field extends CRM_Core_Form {
     }
 
     // form fields of Custom Option rows
-    $_showHide = new CRM_Core_ShowHideBlocks('', '');
+    $_showHide = new CRM_Core_ShowHideBlocks();
 
     for ($i = 1; $i <= self::NUM_OPTION; $i++) {
 
@@ -427,20 +427,6 @@ class CRM_Price_Form_Field extends CRM_Core_Form {
       }
     }
 
-    //avoid the same price field label in Within PriceSet
-    $priceFieldLabel = new CRM_Price_DAO_PriceField();
-    $priceFieldLabel->label = $fields['label'];
-    $priceFieldLabel->price_set_id = $form->_sid;
-
-    $dupeLabel = FALSE;
-    if ($priceFieldLabel->find(TRUE) && $form->getEntityId() != $priceFieldLabel->id) {
-      $dupeLabel = TRUE;
-    }
-
-    if ($dupeLabel) {
-      $errors['label'] = ts('Name already exists in Database.');
-    }
-
     if ((is_numeric(CRM_Utils_Array::value('count', $fields)) &&
         empty($fields['count'])
       ) &&
@@ -454,7 +440,7 @@ class CRM_Price_Form_Field extends CRM_Core_Form {
         $countemptyrows = 0;
         $publicOptionCount = $_flagOption = $_rowError = 0;
 
-        $_showHide = new CRM_Core_ShowHideBlocks('', '');
+        $_showHide = new CRM_Core_ShowHideBlocks();
         $visibilityOptions = CRM_Price_BAO_PriceFieldValue::buildOptions('visibility_id', 'validate');
 
         for ($index = 1; $index <= self::NUM_OPTION; $index++) {

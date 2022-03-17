@@ -17,13 +17,6 @@
 class CRM_Badge_BAO_Layout extends CRM_Core_DAO_PrintLabel {
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Retrieve DB object based on input parameters.
    *
    * It also stores all the retrieved values in the default array.
@@ -152,7 +145,7 @@ class CRM_Badge_BAO_Layout extends CRM_Core_DAO_PrintLabel {
   /**
    * Decode encoded data and return as an array.
    *
-   * @param json $jsonData
+   * @param string $jsonData
    *   Json object.
    *
    * @return array

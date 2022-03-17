@@ -15,23 +15,35 @@ Other resources for identifying changes are:
     * https://github.com/civicrm/civicrm-joomla
     * https://github.com/civicrm/civicrm-wordpress
 
-## CiviCRM 5.46.2
+## CiviCRM 5.47.2
 
-Released February 10, 2022
+Released March 16, 2022
 
-- **[Synopsis](release-notes/5.46.2.md#synopsis)**
-- **[Bugs resolved](release-notes/5.46.2.md#bugs)**
-- **[Credits](release-notes/5.46.2.md#credits)**
-- **[Feedback](release-notes/5.46.2.md#feedback)**
+- **[Synopsis](release-notes/5.47.2.md#synopsis)**
+- **[Security advisories](release-notes/5.47.2.md#security)**
+- **[Bugs resolved](release-notes/5.47.2.md#bugs)**
+- **[Credits](release-notes/5.47.2.md#credits)**
+- **[Feedback](release-notes/5.47.2.md#feedback)**
 
-## CiviCRM 5.46.1
+## CiviCRM 5.47.1
 
-Released February 9, 2022
+Released March 9, 2022
 
-- **[Synopsis](release-notes/5.46.1.md#synopsis)**
-- **[Bugs resolved](release-notes/5.46.1.md#bugs)**
-- **[Credits](release-notes/5.46.1.md#credits)**
-- **[Feedback](release-notes/5.46.1.md#feedback)**
+- **[Synopsis](release-notes/5.47.1.md#synopsis)**
+- **[Bugs resolved](release-notes/5.47.1.md#bugs)**
+- **[Credits](release-notes/5.47.1.md#credits)**
+- **[Feedback](release-notes/5.47.1.md#feedback)**
+
+## CiviCRM 5.47.0
+
+Released March 4, 2022
+
+- **[Synopsis](release-notes/5.47.0.md#synopsis)**
+- **[Features](release-notes/5.47.0.md#features)**
+- **[Bugs resolved](release-notes/5.47.0.md#bugs)**
+- **[Miscellany](release-notes/5.47.0.md#misc)**
+- **[Credits](release-notes/5.47.0.md#credits)**
+- **[Feedback](release-notes/5.47.0.md#feedback)**
 
 ## CiviCRM 5.46.0
 
@@ -43,15 +55,6 @@ Released February 3, 2022
 - **[Miscellany](release-notes/5.46.0.md#misc)**
 - **[Credits](release-notes/5.46.0.md#credits)**
 - **[Feedback](release-notes/5.46.0.md#feedback)**
-
-## CiviCRM 5.45.3
-
-Released February 3, 2022
-
-- **[Synopsis](release-notes/5.45.3.md#synopsis)**
-- **[Bugs resolved](release-notes/5.45.3.md#bugs)**
-- **[Credits](release-notes/5.45.3.md#credits)**
-- **[Feedback](release-notes/5.45.3.md#feedback)**
 
 ## CiviCRM 5.45.2
 

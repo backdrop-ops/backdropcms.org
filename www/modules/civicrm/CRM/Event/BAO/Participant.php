@@ -45,12 +45,6 @@ class CRM_Event_BAO_Participant extends CRM_Event_DAO_Participant {
   ];
 
   /**
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Takes an associative array and creates a participant object.
    *
    * the function extract all the params it needs to initialize the create a
@@ -1397,6 +1391,9 @@ UPDATE  civicrm_participant
     ) {
       return $mailSent;
     }
+
+    CRM_Event_BAO_Event::setOutputTimeZone($eventDetails);
+
     $toEmail = $contactDetails['email'] ?? NULL;
     if ($toEmail) {
 

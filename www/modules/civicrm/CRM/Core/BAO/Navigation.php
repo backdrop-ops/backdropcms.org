@@ -20,13 +20,6 @@ class CRM_Core_BAO_Navigation extends CRM_Core_DAO_Navigation {
   const CACHE_KEY_STRLEN = 8;
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Update the is_active flag in the db.
    *
    * @param int $id
@@ -42,12 +35,11 @@ class CRM_Core_BAO_Navigation extends CRM_Core_DAO_Navigation {
   }
 
   /**
-   * Add/update navigation record.
+   * Deprecated in favor of APIv4
    *
+   * @deprecated
    * @param array $params Submitted values
-   *
    * @return CRM_Core_DAO_Navigation
-   *   navigation object
    */
   public static function add(&$params) {
     $navigation = new CRM_Core_DAO_Navigation();
@@ -376,9 +368,7 @@ FROM civicrm_navigation WHERE domain_id = $domainID";
         $componentName = CRM_Core_Permission::getComponentName($key);
 
         if ($componentName) {
-          if (!in_array($componentName, CRM_Core_Config::singleton()->enableComponents) ||
-            !CRM_Core_Permission::check($key)
-          ) {
+          if (!CRM_Core_Component::isEnabled($componentName) || !CRM_Core_Permission::check($key)) {
             $showItem = FALSE;
             if ($operator == 'AND') {
               return FALSE;
@@ -702,7 +692,7 @@ FROM civicrm_navigation WHERE domain_id = $domainID";
    * care about output params appended.
    *
    * @param string $url
-   * @param array $url_params
+   * @param string $url_params
    *
    * @param int|null $parent_id
    *   Optionally restrict to one parent.

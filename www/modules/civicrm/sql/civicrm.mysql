@@ -121,9 +121,9 @@ DROP TABLE IF EXISTS `civicrm_cache`;
 DROP TABLE IF EXISTS `civicrm_cxn`;
 DROP TABLE IF EXISTS `civicrm_pcp`;
 DROP TABLE IF EXISTS `civicrm_queue_item`;
+DROP TABLE IF EXISTS `civicrm_queue`;
 DROP TABLE IF EXISTS `civicrm_pledge_block`;
 DROP TABLE IF EXISTS `civicrm_tell_friend`;
-DROP TABLE IF EXISTS `civicrm_grant`;
 DROP TABLE IF EXISTS `civicrm_case_type`;
 DROP TABLE IF EXISTS `civicrm_dedupe_exception`;
 DROP TABLE IF EXISTS `civicrm_dedupe_rule`;
@@ -1218,37 +1218,6 @@ ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMA
 
 -- /*******************************************************
 -- *
--- * civicrm_grant
--- *
--- * This table stores information about grants given to a contact.
--- *
--- *******************************************************/
-CREATE TABLE `civicrm_grant` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique Grant id',
-  `contact_id` int unsigned NOT NULL COMMENT 'Contact ID of contact record given grant belongs to.',
-  `application_received_date` date COMMENT 'Date on which grant application was received by donor.',
-  `decision_date` date COMMENT 'Date on which grant decision was made.',
-  `money_transfer_date` date COMMENT 'Date on which grant money transfer was made.',
-  `grant_due_date` date COMMENT 'Date on which grant report is due.',
-  `grant_report_received` tinyint COMMENT 'Yes/No field stating whether grant report was received by donor.',
-  `grant_type_id` int unsigned NOT NULL COMMENT 'Type of grant. Implicit FK to civicrm_option_value in grant_type option_group.',
-  `amount_total` decimal(20,2) NOT NULL COMMENT 'Requested grant amount, in default currency.',
-  `amount_requested` decimal(20,2) COMMENT 'Requested grant amount, in original currency (optional).',
-  `amount_granted` decimal(20,2) COMMENT 'Granted amount, in default currency.',
-  `currency` varchar(3) NOT NULL COMMENT '3 character string, value from config setting or input via user.',
-  `rationale` text COMMENT 'Grant rationale.',
-  `status_id` int unsigned NOT NULL COMMENT 'ID of Grant status.',
-  `financial_type_id` int unsigned DEFAULT NULL COMMENT 'FK to Financial Type.',
-  PRIMARY KEY (`id`),
-  INDEX `index_grant_type_id`(grant_type_id),
-  INDEX `index_status_id`(status_id),
-  CONSTRAINT FK_civicrm_grant_contact_id FOREIGN KEY (`contact_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE CASCADE,
-  CONSTRAINT FK_civicrm_grant_financial_type_id FOREIGN KEY (`financial_type_id`) REFERENCES `civicrm_financial_type`(`id`) ON DELETE SET NULL
-)
-ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
--- /*******************************************************
--- *
 -- * civicrm_tell_friend
 -- *
 -- *******************************************************/
@@ -1286,6 +1255,23 @@ CREATE TABLE `civicrm_pledge_block` (
   `is_pledge_start_date_editable` tinyint NOT NULL DEFAULT 0 COMMENT 'If true - recurring start date is editable.',
   PRIMARY KEY (`id`),
   INDEX `index_entity`(entity_table, entity_id)
+)
+ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+-- /*******************************************************
+-- *
+-- * civicrm_queue
+-- *
+-- * Stores a list of persistent queues
+-- *
+-- *******************************************************/
+CREATE TABLE `civicrm_queue` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL COMMENT 'Name of the queue',
+  `type` varchar(64) NOT NULL COMMENT 'Type of the queue',
+  `is_autorun` tinyint COMMENT 'Should the standard background attempt to autorun tasks in this queue?',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `UI_name`(name)
 )
 ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -1435,7 +1421,7 @@ CREATE TABLE `civicrm_custom_group` (
   `icon` varchar(255) DEFAULT NULL COMMENT 'crm-i icon class',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `UI_title_extends`(title, extends),
-  UNIQUE INDEX `UI_name_extends`(name, extends),
+  UNIQUE INDEX `UI_name`(name),
   CONSTRAINT FK_civicrm_custom_group_created_id FOREIGN KEY (`created_id`) REFERENCES `civicrm_contact`(`id`) ON DELETE SET NULL
 )
 ENGINE=InnoDB DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -1760,9 +1746,9 @@ CREATE TABLE `civicrm_navigation` (
   `permission` varchar(255) COMMENT 'Permission(s) needed to access menu item',
   `permission_operator` varchar(3) COMMENT 'Operator to use if item has more than one permission',
   `parent_id` int unsigned COMMENT 'Parent navigation item, used for grouping',
-  `is_active` tinyint COMMENT 'Is this navigation item active?',
+  `is_active` tinyint NOT NULL DEFAULT 1 COMMENT 'Is this navigation item active?',
   `has_separator` tinyint DEFAULT 0 COMMENT 'Place a separator either before or after this menu item.',
-  `weight` int COMMENT 'Ordering of the navigation items in various blocks.',
+  `weight` int NOT NULL DEFAULT 0 COMMENT 'Ordering of the navigation items in various blocks.',
   PRIMARY KEY (`id`),
   CONSTRAINT FK_civicrm_navigation_domain_id FOREIGN KEY (`domain_id`) REFERENCES `civicrm_domain`(`id`),
   CONSTRAINT FK_civicrm_navigation_parent_id FOREIGN KEY (`parent_id`) REFERENCES `civicrm_navigation`(`id`) ON DELETE CASCADE
@@ -2994,6 +2980,8 @@ CREATE TABLE `civicrm_relationship` (
   `is_permission_a_b` int unsigned NOT NULL DEFAULT 0 COMMENT 'Permission that Contact A has to view/update Contact B',
   `is_permission_b_a` int unsigned NOT NULL DEFAULT 0 COMMENT 'Permission that Contact B has to view/update Contact A',
   `case_id` int unsigned DEFAULT NULL COMMENT 'FK to civicrm_case',
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Relationship created date.',
+  `modified_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Relationship last modified.',
   PRIMARY KEY (`id`),
   CONSTRAINT FK_civicrm_relationship_contact_id_a FOREIGN KEY (`contact_id_a`) REFERENCES `civicrm_contact`(`id`) ON DELETE CASCADE,
   CONSTRAINT FK_civicrm_relationship_contact_id_b FOREIGN KEY (`contact_id_b`) REFERENCES `civicrm_contact`(`id`) ON DELETE CASCADE,
@@ -3920,12 +3908,12 @@ CREATE TABLE `civicrm_event` (
   `event_type_id` int unsigned DEFAULT 0 COMMENT 'Event Type ID.Implicit FK to civicrm_option_value where option_group = event_type.',
   `participant_listing_id` int unsigned DEFAULT NULL COMMENT 'Should we expose the participant list? Implicit FK to civicrm_option_value where option_group = participant_listing.',
   `is_public` tinyint DEFAULT 1 COMMENT 'Public events will be included in the iCal feeds. Access to private event information may be limited using ACLs.',
-  `start_date` datetime COMMENT 'Date and time that event starts.',
-  `end_date` datetime COMMENT 'Date and time that event ends. May be NULL if no defined end date/time',
+  `start_date` timestamp NULL DEFAULT NULL COMMENT 'Date and time that event starts.',
+  `end_date` timestamp NULL DEFAULT NULL COMMENT 'Date and time that event ends. May be NULL if no defined end date/time',
   `is_online_registration` tinyint DEFAULT 0 COMMENT 'If true, include registration link on Event Info page.',
   `registration_link_text` varchar(255) COMMENT 'Text for link to Event Registration form which is displayed on Event Information screen when is_online_registration is true.',
-  `registration_start_date` datetime COMMENT 'Date and time that online registration starts.',
-  `registration_end_date` datetime COMMENT 'Date and time that online registration ends.',
+  `registration_start_date` timestamp NULL DEFAULT NULL COMMENT 'Date and time that online registration starts.',
+  `registration_end_date` timestamp NULL DEFAULT NULL COMMENT 'Date and time that online registration ends.',
   `max_participants` int unsigned DEFAULT NULL COMMENT 'Maximum number of registered participants to allow. After max is reached, a custom Event Full message is displayed. If NULL, allow unlimited number of participants.',
   `event_full_text` text COMMENT 'Message to display on Event Information page and INSTEAD OF Event Registration form if maximum participants are signed up. Can include email address/info about getting on a waiting list, etc. Text and html allowed.',
   `is_monetary` tinyint DEFAULT 0 COMMENT 'If true, one or more fee amounts must be set and a Payment Processor must be configured for Online Event Registration.',
@@ -3982,6 +3970,7 @@ CREATE TABLE `civicrm_event` (
   `slot_label_id` int unsigned DEFAULT NULL COMMENT 'Subevent slot label. Implicit FK to civicrm_option_value where option_group = conference_slot.',
   `dedupe_rule_group_id` int unsigned DEFAULT NULL COMMENT 'Rule to use when matching registrations for this event',
   `is_billing_required` tinyint DEFAULT 0 COMMENT 'if true than billing block is required this event',
+  `event_tz` text DEFAULT NULL COMMENT 'Event\'s native time zone',
   PRIMARY KEY (`id`),
   INDEX `index_event_type_id`(event_type_id),
   INDEX `index_participant_listing_id`(participant_listing_id),

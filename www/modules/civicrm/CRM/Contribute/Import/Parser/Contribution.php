@@ -607,14 +607,12 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
    * convert it into the same format that we use in QF and BAO object
    *
    * @param array $params
-   *   Associative array of property name/value.
-   *                             pairs to insert in new contact.
+   *   Associative array of property name/value
+   *   pairs to insert in new contact.
    * @param array $values
    *   The reformatted properties that we can use internally.
-   *                            '
-   *
    * @param bool $create
-   * @param null $onDuplicate
+   * @param int $onDuplicate
    *
    * @return array|CRM_Error
    */
@@ -956,6 +954,13 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
           else {
             return civicrm_api3_create_error('Contribution and Pledge Payment amount mismatch for this record. Contribution row was skipped.');
           }
+          break;
+
+        case 'contribution_campaign_id':
+          if (empty(CRM_Core_DAO::getFieldValue('CRM_Campaign_DAO_Campaign', $params['contribution_campaign_id']))) {
+            return civicrm_api3_create_error('Invalid Campaign ID provided. Contribution row was skipped.');
+          }
+          $values['contribution_campaign_id'] = $params['contribution_campaign_id'];
           break;
 
         default:

@@ -1,4 +1,3 @@
-
 #bootstrap-theme .crm-search-criteria-column {
   min-width: 500px;
 }
@@ -34,11 +33,8 @@
   cursor: not-allowed;
 }
 
-#bootstrap-theme.crm-search input.ng-invalid {
-  border-color: #8A1F11;
-}
 #bootstrap-theme.crm-search input.ng-invalid::placeholder {
-  color: #8A1F11;
+  color: #8a1f11;
 }
 
 #bootstrap-theme.crm-search ul.nav-stacked li {

@@ -19,7 +19,7 @@ class CRM_Core_I18n {
   /**
    * Constants for communication preferences.
    *
-   * @var int
+   * @var string
    */
   const NONE = 'none', AUTO = 'auto';
 
@@ -237,6 +237,28 @@ class CRM_Core_I18n {
     }
 
     return $justEnabled ? $enabled : $all;
+  }
+
+  /**
+   * Get the options available for format locale.
+   *
+   * Note the pseudoconstant can't be used as the key is the name not the value.
+   *
+   * @return array
+   */
+  public static function getFormatLocales(): array {
+    $values = CRM_Core_OptionValue::getValues(['name' => 'languages'], $optionValues, 'label', TRUE);
+    $return = [];
+    $return[NULL] = ts('Inherit from language');
+    foreach ($values as $value) {
+      $return[$value['name']] = $value['label'];
+    }
+    // Sorry not sorry.
+    // Hacking in for now since the is probably the most important use-case for
+    // money formatting in an English speaking non-US locale based on any reasonable
+    // metric.
+    $return['en_NZ'] = ts('English (New Zealand)');
+    return $return;
   }
 
   /**
@@ -532,7 +554,7 @@ class CRM_Core_I18n {
   /**
    * Binds a gettext domain, wrapper over bindtextdomain().
    *
-   * @param $key
+   * @param string $key
    *   Key of the extension (can be 'civicrm', or 'org.example.foo').
    *
    * @return Bool
@@ -610,7 +632,7 @@ class CRM_Core_I18n {
   /**
    * Is the language written "right-to-left"?
    *
-   * @param $language
+   * @param string $language
    *   Language (for example 'en_US', or 'fr_CA').
    *
    * @return bool
@@ -637,7 +659,7 @@ class CRM_Core_I18n {
   /**
    * Change the processing language without changing the current user language
    *
-   * @param $locale
+   * @param string $locale
    *   Locale (for example 'en_US', or 'fr_CA').
    *   True if the domain was changed for an extension.
    */

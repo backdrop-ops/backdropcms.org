@@ -21,30 +21,6 @@
 class CRM_Contact_BAO_SavedSearch extends CRM_Contact_DAO_SavedSearch {
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
-   * Query the db for all saved searches.
-   *
-   * @return array
-   *   contains the search name as value and and id as key
-   */
-  public function getAll() {
-    $savedSearch = new CRM_Contact_DAO_SavedSearch();
-    $savedSearch->selectAdd();
-    $savedSearch->selectAdd('id, name');
-    $savedSearch->find();
-    while ($savedSearch->fetch()) {
-      $aSavedSearch[$savedSearch->id] = $savedSearch->name;
-    }
-    return $aSavedSearch;
-  }
-
-  /**
    * Retrieve DB object based on input parameters.
    *
    * It also stores all the retrieved values in the default array.
@@ -281,57 +257,16 @@ WHERE  $where";
   }
 
   /**
-   * Get from where email (whatever that means!).
+   * Deprecated function, gets a value from Group entity
    *
+   * @deprecated
    * @param int $id
-   *
-   * @return array
-   */
-  public static function fromWhereEmail($id) {
-    $params = self::getSearchParams($id);
-
-    if ($params) {
-      if (!empty($params['customSearchID'])) {
-        return CRM_Contact_BAO_SearchCustom::fromWhereEmail(NULL, $id);
-      }
-      else {
-        $tables = $whereTables = ['civicrm_contact' => 1, 'civicrm_email' => 1];
-        $where = CRM_Contact_BAO_SavedSearch::whereClause($id, $tables, $whereTables);
-        $from = CRM_Contact_BAO_Query::fromClause($whereTables);
-        return [$from, $where];
-      }
-    }
-    else {
-      // fix for CRM-7240
-      $from = "
-FROM      civicrm_contact contact_a
-LEFT JOIN civicrm_email ON (contact_a.id = civicrm_email.contact_id AND civicrm_email.is_primary = 1)
-";
-      $where = " ( 1 ) ";
-      $tables['civicrm_contact'] = $whereTables['civicrm_contact'] = 1;
-      $tables['civicrm_email'] = $whereTables['civicrm_email'] = 1;
-      return [$from, $where];
-    }
-  }
-
-  /**
-   * Given an id, get the name of the saved search.
-   *
-   * @param int $id
-   *   The id of the saved search.
-   *
    * @param string $value
    *
-   * @return string
-   *   the name of the saved search
+   * @return string|null
    */
   public static function getName($id, $value = 'name') {
-    $group = new CRM_Contact_DAO_Group();
-    $group->saved_search_id = $id;
-    if ($group->find(TRUE)) {
-      return $group->$value;
-    }
-    return NULL;
+    return parent::getFieldValue('CRM_Contact_DAO_Group', $id, $value, 'saved_search_id');
   }
 
   /**
@@ -342,19 +277,6 @@ LEFT JOIN civicrm_email ON (contact_a.id = civicrm_email.contact_id AND civicrm_
    * @return \CRM_Contact_DAO_SavedSearch
    */
   public static function create(&$params) {
-    // Auto-create unique name from label if supplied
-    if (empty($params['id']) && empty($params['name']) && !empty($params['label'])) {
-      $name = CRM_Utils_String::munge($params['label']);
-      $existing = Civi\Api4\SavedSearch::get(FALSE)
-        ->addWhere('name', 'LIKE', $name . '%')
-        ->addSelect('name')
-        ->execute()->column('name');
-      $suffix = '';
-      while (in_array($name . $suffix, $existing)) {
-        $suffix = '_' . (1 + str_replace('_', '', $suffix));
-      }
-      $params['name'] = $name . $suffix;
-    }
     $loggedInContactID = CRM_Core_Session::getLoggedInContactID();
     if ($loggedInContactID) {
       if (empty($params['id'])) {

@@ -42,7 +42,7 @@
 ==========================================================={if !empty($pricesetFieldsCount) }===================={/if}
 
 {$event.event_title}
-{$event.event_start_date|crmDate}{if $event.event_end_date}-{if $event.event_end_date|date_format:"%Y%m%d" == $event.event_start_date|date_format:"%Y%m%d"}{$event.event_end_date|crmDate:0:1}{else}{$event.event_end_date|crmDate}{/if}{/if}
+{$event.event_start_date|crmDate}{if $event.event_end_date}-{if $event.event_end_date|date_format:"%Y%m%d" == $event.event_start_date|date_format:"%Y%m%d"}{$event.event_end_date|crmDate:0:1}{else}{$event.event_end_date|crmDate}{/if}{/if} {$event.event_tz}
 
 {if !empty($event.participant_role) and $event.participant_role neq 'Attendee' and empty($defaultRole)}
 {ts}Participant Role{/ts}: {$event.participant_role}
@@ -113,7 +113,7 @@
 
 {foreach from=$value item=line}
 {if !empty($pricesetFieldsCount) }{capture assign=ts_participant_count}{$line.participant_count}{/capture}{/if}
-{capture assign=ts_item}{if $line.html_type eq 'Text'}{$line.label}{else}{$line.field_title} - {$line.label}{/if} {if $line.description} {$line.description}{/if}{/capture}{$ts_item|truncate:30:"..."|string_format:"%-30s"} {$line.qty|string_format:"%5s"} {$line.unit_price|crmMoney|string_format:"%10s"} {if !empty($dataArray)} {$line.unit_price*$line.qty|crmMoney:$currency|string_format:"%10s"} {if isset($line.tax_rate) and ($line.tax_rate != "" || $line.tax_amount != "")}  {$line.tax_rate|string_format:"%.2f"} %  {$line.tax_amount|crmMoney:$currency|string_format:"%10s"} {else}                  {/if}  {/if}  {$line.line_total+$line.tax_amount|crmMoney|string_format:"%10s"} {if !empty($ts_participant_count)}{$ts_participant_count|string_format:"%10s"}{/if}
+{capture assign=ts_item}{if $line.html_type eq 'Text'}{$line.label}{else}{$line.field_title} - {$line.label}{/if} {if $line.description} {$line.description}{/if}{/capture}{$ts_item|truncate:30:"..."|string_format:"%-30s"} {$line.qty|string_format:"%5s"} {$line.unit_price|crmMoney|string_format:"%10s"} {if !empty($dataArray)} {$line.unit_price*$line.qty|crmMoney:$currency|string_format:"%10s"} {if $line.tax_rate || $line.tax_amount != ""}  {$line.tax_rate|string_format:"%.2f"} %  {$line.tax_amount|crmMoney:$currency|string_format:"%10s"} {else}                  {/if}  {/if}  {$line.line_total+$line.tax_amount|crmMoney|string_format:"%10s"} {if !empty($ts_participant_count)}{$ts_participant_count|string_format:"%10s"}{/if}
 {/foreach}
 {/if}
 {/foreach}

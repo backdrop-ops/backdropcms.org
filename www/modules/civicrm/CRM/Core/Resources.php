@@ -496,27 +496,16 @@ class CRM_Core_Resources implements CRM_Core_Resources_CollectionAdderInterface 
    *
    * @return array
    */
-  public static function getEntityRefMetadata() {
+  protected static function getEntityRefMetadata() {
     $data = [
       'filters' => [],
       'links' => [],
     ];
-    $config = CRM_Core_Config::singleton();
-
-    $disabledComponents = [];
-    $dao = CRM_Core_DAO::executeQuery("SELECT name, namespace FROM civicrm_component");
-    while ($dao->fetch()) {
-      if (!in_array($dao->name, $config->enableComponents)) {
-        $disabledComponents[$dao->name] = $dao->namespace;
-      }
-    }
 
     foreach (CRM_Core_DAO_AllCoreTables::daoToClass() as $entity => $daoName) {
       // Skip DAOs of disabled components
-      foreach ($disabledComponents as $nameSpace) {
-        if (strpos($daoName, $nameSpace) === 0) {
-          continue 2;
-        }
+      if (defined("$daoName::COMPONENT") && !CRM_Core_Component::isEnabled($daoName::COMPONENT)) {
+        continue;
       }
       $baoName = str_replace('_DAO_', '_BAO_', $daoName);
       if (class_exists($baoName)) {
@@ -580,7 +569,7 @@ class CRM_Core_Resources implements CRM_Core_Resources_CollectionAdderInterface 
   }
 
   /**
-   * @param string|NULL $region
+   * @param string|null $region
    *   Optional request for a specific region. If NULL/omitted, use global default.
    * @return \CRM_Core_Region
    */

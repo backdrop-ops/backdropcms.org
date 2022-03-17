@@ -17,13 +17,6 @@
 class CRM_Mailing_Event_BAO_Queue extends CRM_Mailing_Event_DAO_Queue {
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Queue a new recipient.
    *
    * @param array $params
@@ -47,7 +40,7 @@ class CRM_Mailing_Event_BAO_Queue extends CRM_Mailing_Event_DAO_Queue {
    *
    * @param array $params
    *
-   * @return int
+   * @return string
    *   The hash
    */
   public static function hash($params) {

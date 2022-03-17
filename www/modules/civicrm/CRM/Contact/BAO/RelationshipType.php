@@ -9,19 +9,16 @@
  +--------------------------------------------------------------------+
  */
 
+use Civi\Api4\Relationship;
+use Civi\Api4\RelationshipType;
+use Civi\Core\Event\PreEvent;
+
 /**
  *
  * @package CRM
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
 class CRM_Contact_BAO_RelationshipType extends CRM_Contact_DAO_RelationshipType implements \Civi\Test\HookInterface {
-
-  /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
 
   /**
    * Fetch object based on array of properties.
@@ -115,16 +112,46 @@ class CRM_Contact_BAO_RelationshipType extends CRM_Contact_DAO_RelationshipType 
 
   /**
    * Callback for hook_civicrm_pre().
+   *
    * @param \Civi\Core\Event\PreEvent $event
-   * @throws CRM_Core_Exception
+   *
+   * @throws \API_Exception
+   * @throws \Civi\API\Exception\UnauthorizedException
    */
-  public static function self_hook_civicrm_pre(\Civi\Core\Event\PreEvent $event) {
+  public static function self_hook_civicrm_pre(PreEvent $event): void {
     if ($event->action === 'delete') {
       // need to delete all option value field before deleting group
-      \Civi\Api4\Relationship::delete(FALSE)
+      Relationship::delete(FALSE)
         ->addWhere('relationship_type_id', '=', $event->id)
         ->execute();
     }
+  }
+
+  /**
+   * Get the id of the employee relationship, checking it is valid.
+   *
+   * @return int|string
+   *
+   * @throws \CRM_Core_Exception
+   */
+  public static function getEmployeeRelationshipTypeID(): int {
+    try {
+      if (!Civi::cache('metadata')->has(__CLASS__ . __FUNCTION__)) {
+        $relationship = RelationshipType::get(FALSE)
+          ->addWhere('name_a_b', '=', 'Employee of')
+          ->addWhere('contact_type_a', '=', 'Individual')
+          ->addWhere('contact_type_b', '=', 'Organization')
+          ->addSelect('id')->execute()->first();
+        if (empty($relationship)) {
+          throw new API_Exception('no valid relationship');
+        }
+        Civi::cache('metadata')->set(__CLASS__ . __FUNCTION__, $relationship['id']);
+      }
+    }
+    catch (API_Exception $e) {
+      throw new CRM_Core_Exception(ts("You seem to have deleted the relationship type 'Employee of'"));
+    }
+    return Civi::cache('metadata')->get(__CLASS__ . __FUNCTION__);
   }
 
 }

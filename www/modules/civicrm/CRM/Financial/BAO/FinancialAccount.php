@@ -17,13 +17,6 @@
 class CRM_Financial_BAO_FinancialAccount extends CRM_Financial_DAO_FinancialAccount implements \Civi\Test\HookInterface {
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Fetch object based on array of properties.
    *
    * @param array $params
@@ -281,7 +274,7 @@ WHERE cft.id = %1
   /**
    * Get Financial Account type relations.
    *
-   * @param $flip bool
+   * @param bool $flip
    *
    * @return array
    *

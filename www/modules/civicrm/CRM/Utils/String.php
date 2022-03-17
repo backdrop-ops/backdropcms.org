@@ -43,12 +43,14 @@ class CRM_Utils_String {
   public static function titleToVar($title, $maxLength = 31) {
     $variable = self::munge($title, '_', $maxLength);
 
+    // FIXME: nothing below this line makes sense. The above call to self::munge will always
+    // return a safe string of the correct length, so why are we now checking if it's a safe
+    // string of the correct length?
     if (CRM_Utils_Rule::title($variable, $maxLength)) {
       return $variable;
     }
 
-    // if longer than the maxLength lets just return a substr of the
-    // md5 to prevent errors downstream
+    // FIXME: When would this ever be reachable?
     return substr(md5($title), 0, $maxLength);
   }
 
@@ -420,7 +422,7 @@ class CRM_Utils_String {
    * @param string $str
    *   The string to be translated.
    *
-   * @return bool
+   * @return string|false
    */
   public static function strtoboolstr($str) {
     if (!is_scalar($str)) {
@@ -690,10 +692,10 @@ class CRM_Utils_String {
    * "admin foo" => array(NULL,"admin foo")
    * "cms:admin foo" => array("cms", "admin foo")
    *
-   * @param $delim
+   * @param string $delim
    * @param string $string
    *   E.g. "view all contacts". Syntax: "[prefix:]name".
-   * @param null $defaultPrefix
+   * @param string|null $defaultPrefix
    *
    * @return array
    *   (0 => string|NULL $prefix, 1 => string $value)
@@ -951,7 +953,7 @@ class CRM_Utils_String {
    * safe, standard data interchange formats such as JSON rather than PHP's
    * serialization format when dealing with user input.
    *
-   * @param string|NULL $string
+   * @param string|null $string
    *
    * @return mixed
    */

@@ -39,8 +39,7 @@ class CRM_Upgrade_Incremental_php_FiveTwenty extends CRM_Upgrade_Incremental_Bas
         ]);
       }
 
-      $config = CRM_Core_Config::singleton();
-      if (in_array('CiviCase', $config->enableComponents)) {
+      if (CRM_Core_Component::isEnabled('CiviCase')) {
         // Do dry-run to get warning messages.
         $messages = self::_changeCaseTypeLabelToName(TRUE);
         foreach ($messages as $message) {
@@ -62,8 +61,7 @@ class CRM_Upgrade_Incremental_php_FiveTwenty extends CRM_Upgrade_Incremental_Bas
       "tinyint(4) DEFAULT '0' COMMENT 'Shows this is a template for recurring contributions.'", FALSE, '5.20.alpha1');
     $this->addTask('Add order_reference field to civicrm_financial_trxn', 'addColumn', 'civicrm_financial_trxn', 'order_reference',
       "varchar(255) COMMENT 'Payment Processor external order reference'", FALSE, '5.20.alpha1');
-    $config = CRM_Core_Config::singleton();
-    if (in_array('CiviCase', $config->enableComponents)) {
+    if (CRM_Core_Component::isEnabled('CiviCase')) {
       $this->addTask('Change direction of autoassignees in case type xml', 'changeCaseTypeAutoassignee');
       $this->addTask('Change labels back to names in case type xml', 'changeCaseTypeLabelToName');
     }
@@ -118,8 +116,8 @@ class CRM_Upgrade_Incremental_php_FiveTwenty extends CRM_Upgrade_Incremental_Bas
   /**
    * Process a single case type
    *
-   * @param $caseTypeId int
-   * @param $definition string
+   * @param int $caseTypeId
+   * @param string $definition
    *   xml string
    */
   public static function processCaseTypeAutoassignee($caseTypeId, $definition) {
@@ -160,7 +158,7 @@ class CRM_Upgrade_Incremental_php_FiveTwenty extends CRM_Upgrade_Incremental_Bas
    * we're using this we don't care too much about the edge case where name
    * might not also be bidirectional.
    *
-   * @param $relationshipTypeId int
+   * @param int $relationshipTypeId
    *
    * @return bool
    */
@@ -190,7 +188,7 @@ class CRM_Upgrade_Incremental_php_FiveTwenty extends CRM_Upgrade_Incremental_Bas
    * ONLY for ones using database storage - don't want to "fork" case types
    * that aren't currently forked.
    *
-   * @param $isDryRun bool
+   * @param bool $isDryRun
    *   If TRUE then don't actually change anything just report warnings.
    *
    * @return array List of warning messages.
@@ -213,9 +211,9 @@ class CRM_Upgrade_Incremental_php_FiveTwenty extends CRM_Upgrade_Incremental_Bas
   /**
    * Process a single case type for _changeCaseTypeLabelToName()
    *
-   * @param $isDryRun bool
+   * @param bool $isDryRun
    *   If TRUE then don't actually change anything just report warnings.
-   * @param $caseTypeId int
+   * @param int $caseTypeId
    */
   private static function _processCaseTypeLabelName($isDryRun, $caseTypeId) {
     $messages = [];
@@ -326,9 +324,9 @@ class CRM_Upgrade_Incremental_php_FiveTwenty extends CRM_Upgrade_Incremental_Bas
    * If it's unidirectional, we can't convert it if there's an edge case
    * where there's another type that has the same label.
    *
-   * @param $relationshipType array
-   * @param $caseTypeName string
-   * @param $xmlRoleName string
+   * @param array $relationshipType
+   * @param string $caseTypeName
+   * @param string $xmlRoleName
    *
    * @return string|NULL
    */

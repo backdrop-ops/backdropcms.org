@@ -581,7 +581,11 @@ class CRM_Contact_BAO_Query {
     }
     if (isset($component) && !$this->_skipPermission) {
       // Unit test coverage in api_v3_FinancialTypeACLTest::testGetACLContribution.
-      CRM_Financial_BAO_FinancialType::buildPermissionedClause($this->_whereClause, $component);
+      $clauses = CRM_Financial_BAO_FinancialType::buildPermissionedClause($component);
+      if (!empty($this->_whereClause) && !empty($clauses)) {
+        $this->_whereClause .= ' AND ';
+      }
+      $this->_whereClause .= $clauses;
     }
 
     $this->_fromClause = self::fromClause($this->_tables, NULL, NULL, $this->_primaryLocation, $this->_mode, $apiEntity);
@@ -2038,7 +2042,7 @@ class CRM_Contact_BAO_Query {
    * @return string
    * @throws \CRM_Core_Exception
    */
-  public function whereClause($isForcePrimaryEmailOnly = NULL) {
+  public function whereClause($isForcePrimaryEmailOnly = NULL): string {
     $this->_where[0] = [];
     $this->_qill[0] = [];
 
@@ -2539,7 +2543,7 @@ class CRM_Contact_BAO_Query {
    *   Search on primary location. See note below.
    * @param int $mode
    *   Determines search mode based on bitwise MODE_* constants.
-   * @param string|NULL $apiEntity
+   * @param string|null $apiEntity
    *   Determines search mode based on entity by string.
    *
    * The $primaryLocation flag only seems to be used when
@@ -4869,16 +4873,15 @@ civicrm_relationship.start_date > {$today}
   }
 
   /**
-   * Include Select columns in groupBy clause.
+   * Include select columns in groupBy clause.
    *
    * @param array $selectClauses
-   * @param array $groupBy - Columns already included in GROUP By clause.
+   * @param array|string|null $groupBy - Columns already included in GROUP By clause.
    *
    * @return string
    */
   public static function getGroupByFromSelectColumns($selectClauses, $groupBy = NULL) {
     $groupBy = (array) $groupBy;
-    $mysqlVersion = CRM_Core_DAO::singleValueQuery('SELECT VERSION()');
     $sqlMode = CRM_Core_DAO::singleValueQuery('SELECT @@sql_mode');
 
     //return if ONLY_FULL_GROUP_BY is not enabled.
@@ -4948,7 +4951,7 @@ civicrm_relationship.start_date > {$today}
    *
    * @param bool $skipOrderAndLimit
    *
-   * @return CRM_Core_DAO
+   * @return string|null|CRM_Core_DAO
    */
   public function searchQuery(
     $offset = 0, $rowCount = 0, $sort = NULL,
@@ -5700,7 +5703,6 @@ civicrm_relationship.start_date > {$today}
       ts('Activities') => 'civicrm_activity',
       ts('Pledges') => 'civicrm_pledge',
       ts('Cases') => 'civicrm_case',
-      ts('Grants') => 'civicrm_grant',
       ts('Address Fields') => 'civicrm_address',
       ts('Notes') => 'civicrm_note',
       ts('Change Log') => 'civicrm_log',

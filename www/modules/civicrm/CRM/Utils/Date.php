@@ -267,7 +267,7 @@ class CRM_Utils_Date {
   }
 
   /**
-   * @param $string
+   * @param string $string
    *
    * @return int
    */
@@ -540,8 +540,6 @@ class CRM_Utils_Date {
    */
   public static function convertToDefaultDate(&$params, $dateType, $dateParam) {
     $now = getdate();
-    $cen = substr($now['year'], 0, 2);
-    $prevCen = $cen - 1;
 
     $value = NULL;
     if (!empty($params[$dateParam])) {
@@ -693,15 +691,15 @@ class CRM_Utils_Date {
     $month = ($month < 10) ? "0" . "$month" : $month;
     $day = ($day < 10) ? "0" . "$day" : $day;
 
-    $year = (int ) $year;
-    // simple heuristic to determine what century to use
-    // 00 - 20 is always 2000 - 2020
-    // 21 - 99 is always 1921 - 1999
-    if ($year < 21) {
-      $year = (strlen($year) == 1) ? $cen . '0' . $year : $cen . $year;
-    }
-    elseif ($year < 100) {
-      $year = $prevCen . $year;
+    $year = (int) $year;
+    if ($year < 100) {
+      $year = substr($now['year'], 0, 2) * 100 + $year;
+      if ($year > ($now['year'] + 5)) {
+        $year = $year - 100;
+      }
+      elseif ($year <= ($now['year'] - 95)) {
+        $year = $year + 100;
+      }
     }
 
     if ($params[$dateParam]) {
@@ -715,21 +713,9 @@ class CRM_Utils_Date {
   }
 
   /**
-   * @param $date
-   *
-   * @return bool
-   */
-  public static function isDate(&$date) {
-    if (CRM_Utils_System::isNull($date)) {
-      return FALSE;
-    }
-    return TRUE;
-  }
-
-  /**
    * Translate a TTL to a concrete expiration time.
    *
-   * @param NULL|int|DateInterval $ttl
+   * @param null|int|DateInterval $ttl
    * @param int $default
    *   The value to use if $ttl is not specified (NULL).
    * @return int
@@ -755,7 +741,7 @@ class CRM_Utils_Date {
   /**
    * Normalize a TTL.
    *
-   * @param NULL|int|DateInterval $ttl
+   * @param null|int|DateInterval $ttl
    * @param int $default
    *   The value to use if $ttl is not specified (NULL).
    * @return int
@@ -778,7 +764,7 @@ class CRM_Utils_Date {
   }
 
   /**
-   * @param null $timeStamp
+   * @param int|false|null $timeStamp
    *
    * @return bool|string
    */
@@ -913,7 +899,7 @@ class CRM_Utils_Date {
    * @param date $targetDate
    *   Target Date. (show age on specific date)
    *
-   * @return int
+   * @return array
    *   array $results contains years or months
    */
   public static function calculateAge($birthDate, $targetDate = NULL) {
@@ -2227,6 +2213,74 @@ class CRM_Utils_Date {
     $systemTimeZone = new DateTimeZone(CRM_Core_Config::singleton()->userSystem->getTimeZoneString());
     $dateObject->setTimezone($systemTimeZone);
     return $dateObject->format($format);
+  }
+
+  /**
+   * Convert a date string between time zones
+   *
+   * @param string $date - date string using $format
+   * @param string $tz_to - new time zone for date
+   * @param string $tz_from - current time zone for date
+   * @param string $format - format string specification as per DateTime::createFromFormat; defaults to 'Y-m-d H:i:s'
+   *
+   * @throws \CRM_Core_Exception
+   *
+   * @return string;
+   */
+  public static function convertTimeZone(string $date, string $tz_to = NULL, string $tz_from = NULL, $format = NULL) {
+    if (!$tz_from) {
+      $tz_from = CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
+    }
+    if (!$tz_to) {
+      $tz_to = CRM_Core_Config::singleton()->userSystem->getTimeZoneString();
+    }
+
+    // Return early if both timezones are the same.
+    if ($tz_from == $tz_to) {
+      return $date;
+    }
+
+    $tz_from = new DateTimeZone($tz_from);
+    $tz_to = new DateTimeZone($tz_to);
+
+    if (is_null($format)) {
+      // Detect "mysql" format dates and adjust format accordingly
+      $format = preg_match('/^(\d{4})(\d{2}){0,5}$/', $date, $m) ? 'YmdHis' : 'Y-m-d H:i:s';
+    }
+
+    try {
+      $date_object = DateTime::createFromFormat('!' . $format, $date, $tz_from);
+      $dt_errors = DateTime::getLastErrors();
+
+      if (!$date_object) {
+        Civi::log()->warning(ts('Attempted to convert time zone with incorrect date format %1', ['%1' => $date]));
+
+        $dt_errors = DateTime::getLastErrors();
+
+        $date_object = new DateTime($date, $tz_from);
+      }
+      elseif ($dt_errors['warning_count'] && array_intersect($dt_errors['warnings'], ['The parsed date was invalid'])) {
+        throw new Exception('The parsed date was invalid');
+      }
+
+      $date_object->setTimezone($tz_to);
+
+      return $date_object->format($format);
+    }
+    catch (Exception $e) {
+      if ($dt_errors['error_count'] || $dt_errors['warning_count']) {
+        throw new CRM_Core_Exception(ts(
+          'Failed to parse date with %1 errors and %2 warnings',
+          [
+            '%1' => $dt_errors['error_count'],
+            '%2' => $dt_errors['warning_count'],
+          ]
+        ), 0, ['format' => $format, 'date' => $date] + $dt_errors);
+      }
+      else {
+        throw $e;
+      }
+    }
   }
 
 }
