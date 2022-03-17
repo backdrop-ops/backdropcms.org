@@ -30,11 +30,11 @@
         "teaser": {
             "label": "hidden",
             "type": "text_summary_or_trimmed",
+            "weight": "1",
             "settings": {
                 "trim_length": 600
             },
-            "module": "text",
-            "weight": 0
+            "module": "text"
         }
     },
     "description": "",
