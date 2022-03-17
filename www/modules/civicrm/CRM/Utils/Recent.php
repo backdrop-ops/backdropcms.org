@@ -24,7 +24,14 @@ class CRM_Utils_Recent {
    *
    * @var string
    */
-  const MAX_ITEMS = 30, STORE_NAME = 'CRM_Utils_Recent';
+  const STORE_NAME = 'CRM_Utils_Recent';
+
+  /**
+   * Max number of recent items to store
+   *
+   * @var int
+   */
+  const MAX_ITEMS = 30;
 
   /**
    * The list of recently viewed items.
@@ -76,7 +83,7 @@ class CRM_Utils_Recent {
    *   The link for the above title.
    * @param string $id
    *   Object id.
-   * @param $type
+   * @param string $type
    * @param int $contactId
    * @param string $contactName
    * @param array $others

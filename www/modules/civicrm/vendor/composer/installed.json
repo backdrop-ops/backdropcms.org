@@ -40,7 +40,11 @@
                 "email": "adrien.ricartnoblet@gmail.com"
             }
         ],
-        "description": "PHP mime type and extension mapping library: compatible with Symfony, powered by jshttp/mime-db"
+        "description": "PHP mime type and extension mapping library: compatible with Symfony, powered by jshttp/mime-db",
+        "support": {
+            "issues": "https://github.com/adrienrn/php-mimetyper/issues",
+            "source": "https://github.com/adrienrn/php-mimetyper/tree/0.2.2"
+        }
     },
     {
         "name": "brick/math",
@@ -88,7 +92,11 @@
             "bignum",
             "brick",
             "math"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/brick/math/issues",
+            "source": "https://github.com/brick/math/tree/0.9.2"
+        }
     },
     {
         "name": "brick/money",
@@ -205,7 +213,11 @@
             "psr16",
             "psr6",
             "test"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/php-cache/integration-tests/issues",
+            "source": "https://github.com/php-cache/integration-tests/tree/0.17.0"
+        }
     },
     {
         "name": "cache/tag-interop",
@@ -262,7 +274,11 @@
             "psr",
             "psr6",
             "tag"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/php-cache/tag-interop/issues",
+            "source": "https://github.com/php-cache/tag-interop/tree/master"
+        }
     },
     {
         "name": "civicrm/civicrm-cxn-rpc",
@@ -301,7 +317,11 @@
                 "email": "totten@civicrm.org"
             }
         ],
-        "description": "RPC library for CiviConnect"
+        "description": "RPC library for CiviConnect",
+        "support": {
+            "issues": "https://github.com/civicrm/civicrm-cxn-rpc/issues",
+            "source": "https://github.com/civicrm/civicrm-cxn-rpc/tree/v0.20.12.01"
+        }
     },
     {
         "name": "civicrm/composer-compile-lib",
@@ -366,7 +386,11 @@
                 "email": "info@civicrm.org"
             }
         ],
-        "description": "Small library of compilation helpers"
+        "description": "Small library of compilation helpers",
+        "support": {
+            "issues": "https://github.com/civicrm/composer-compile-lib/issues",
+            "source": "https://github.com/civicrm/composer-compile-lib/tree/v0.3"
+        }
     },
     {
         "name": "civicrm/composer-compile-plugin",
@@ -413,7 +437,11 @@
                 "email": "info@civicrm.org"
             }
         ],
-        "description": "Define a 'compile' event for all packages in the dependency-graph"
+        "description": "Define a 'compile' event for all packages in the dependency-graph",
+        "support": {
+            "issues": "https://github.com/civicrm/composer-compile-plugin/issues",
+            "source": "https://github.com/civicrm/composer-compile-plugin/tree/v0.15"
+        }
     },
     {
         "name": "civicrm/composer-downloads-plugin",
@@ -466,7 +494,10 @@
                 "email": "totten@civicrm.org"
             }
         ],
-        "description": "Composer plugin for downloading additional files within any composer package."
+        "description": "Composer plugin for downloading additional files within any composer package.",
+        "support": {
+            "source": "https://github.com/civicrm/composer-downloads-plugin/tree/v3.0.1"
+        }
     },
     {
         "name": "cweagans/composer-patches",
@@ -512,7 +543,11 @@
                 "email": "me@cweagans.net"
             }
         ],
-        "description": "Provides a way to patch Composer packages."
+        "description": "Provides a way to patch Composer packages.",
+        "support": {
+            "issues": "https://github.com/cweagans/composer-patches/issues",
+            "source": "https://github.com/cweagans/composer-patches/tree/1.7.0"
+        }
     },
     {
         "name": "dflydev/apache-mime-types",
@@ -569,7 +604,11 @@
             "apache",
             "mime",
             "mimetypes"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/dflydev/dflydev-apache-mime-types/issues",
+            "source": "https://github.com/dflydev/dflydev-apache-mime-types/tree/v1.0.1"
+        }
     },
     {
         "name": "dompdf/dompdf",
@@ -690,7 +729,10 @@
             }
         ],
         "description": "phpQuery is a server-side, chainable, CSS3 selector driven Document Object Model (DOM) API based on jQuery JavaScript Library",
-        "homepage": "http://code.google.com/p/phpquery/"
+        "homepage": "http://code.google.com/p/phpquery/",
+        "support": {
+            "source": "https://github.com/electrolinux/phpquery/tree/0.9.6"
+        }
     },
     {
         "name": "ezyang/htmlpurifier",
@@ -717,12 +759,12 @@
         "type": "library",
         "installation-source": "dist",
         "autoload": {
-            "psr-0": {
-                "HTMLPurifier": "library/"
-            },
             "files": [
                 "library/HTMLPurifier.composer.php"
             ],
+            "psr-0": {
+                "HTMLPurifier": "library/"
+            },
             "exclude-from-classmap": [
                 "/library/HTMLPurifier/Language/"
             ]
@@ -798,7 +840,11 @@
         "keywords": [
             "jwt",
             "php"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/firebase/php-jwt/issues",
+            "source": "https://github.com/firebase/php-jwt/tree/v5.2.1"
+        }
     },
     {
         "name": "guzzlehttp/guzzle",
@@ -839,12 +885,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "GuzzleHttp\\": "src/"
-            },
             "files": [
                 "src/functions_include.php"
-            ]
+            ],
+            "psr-4": {
+                "GuzzleHttp\\": "src/"
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -867,7 +913,11 @@
             "http client",
             "rest",
             "web service"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/guzzle/guzzle/issues",
+            "source": "https://github.com/guzzle/guzzle/tree/6.5"
+        }
     },
     {
         "name": "guzzlehttp/promises",
@@ -899,12 +949,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "GuzzleHttp\\Promise\\": "src/"
-            },
             "files": [
                 "src/functions_include.php"
-            ]
+            ],
+            "psr-4": {
+                "GuzzleHttp\\Promise\\": "src/"
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -920,7 +970,11 @@
         "description": "Guzzle promises library",
         "keywords": [
             "promise"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/guzzle/promises/issues",
+            "source": "https://github.com/guzzle/promises/tree/master"
+        }
     },
     {
         "name": "guzzlehttp/psr7",
@@ -961,12 +1015,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "GuzzleHttp\\Psr7\\": "src/"
-            },
             "files": [
                 "src/functions_include.php"
-            ]
+            ],
+            "psr-4": {
+                "GuzzleHttp\\Psr7\\": "src/"
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -993,7 +1047,11 @@
             "stream",
             "uri",
             "url"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/guzzle/psr7/issues",
+            "source": "https://github.com/guzzle/psr7/tree/1.6.1"
+        }
     },
     {
         "name": "laminas/laminas-escaper",
@@ -1149,12 +1207,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "League\\Csv\\": "src"
-            },
             "files": [
                 "src/functions_include.php"
-            ]
+            ],
+            "psr-4": {
+                "League\\Csv\\": "src"
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -1177,7 +1235,14 @@
             "import",
             "read",
             "write"
-        ]
+        ],
+        "support": {
+            "docs": "https://csv.thephpleague.com",
+            "forum": "https://groups.google.com/forum/#!forum/thephpleague",
+            "issues": "https://github.com/thephpleague/csv/issues",
+            "rss": "https://github.com/thephpleague/csv/releases.atom",
+            "source": "https://github.com/thephpleague/csv"
+        }
     },
     {
         "name": "league/oauth2-client",
@@ -1245,7 +1310,11 @@
             "oauth",
             "oauth2",
             "single sign on"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/thephpleague/oauth2-client/issues",
+            "source": "https://github.com/thephpleague/oauth2-client/tree/2.6.0"
+        }
     },
     {
         "name": "league/oauth2-google",
@@ -1298,7 +1367,11 @@
             "google",
             "oauth",
             "oauth2"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/thephpleague/oauth2-google/issues",
+            "source": "https://github.com/thephpleague/oauth2-google/tree/3.0.3"
+        }
     },
     {
         "name": "maennchen/zipstream-php",
@@ -1414,7 +1487,11 @@
             "dependency resolving",
             "topological sort",
             "topsort"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/marcj/topsort.php/issues",
+            "source": "https://github.com/marcj/topsort.php/tree/1.1.0"
+        }
     },
     {
         "name": "markbaker/complex",
@@ -1444,9 +1521,6 @@
         "type": "library",
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "Complex\\": "classes/src/"
-            },
             "files": [
                 "classes/src/functions/abs.php",
                 "classes/src/functions/acos.php",
@@ -1490,7 +1564,10 @@
                 "classes/src/operations/multiply.php",
                 "classes/src/operations/divideby.php",
                 "classes/src/operations/divideinto.php"
-            ]
+            ],
+            "psr-4": {
+                "Complex\\": "classes/src/"
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -1545,9 +1622,6 @@
         "type": "library",
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "Matrix\\": "classes/src/"
-            },
             "files": [
                 "classes/src/Functions/adjoint.php",
                 "classes/src/Functions/antidiagonal.php",
@@ -1565,7 +1639,10 @@
                 "classes/src/Operations/multiply.php",
                 "classes/src/Operations/divideby.php",
                 "classes/src/Operations/divideinto.php"
-            ]
+            ],
+            "psr-4": {
+                "Matrix\\": "classes/src/"
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -1676,7 +1753,11 @@
                 "name": "Jay padaliya"
             }
         ],
-        "description": "CSS Autoprefixer written in pure PHP."
+        "description": "CSS Autoprefixer written in pure PHP.",
+        "support": {
+            "issues": "https://github.com/padaliyajay/php-autoprefixer/issues",
+            "source": "https://github.com/padaliyajay/php-autoprefixer/tree/1.3"
+        }
     },
     {
         "name": "paragonie/random_compat",
@@ -1723,7 +1804,12 @@
             "polyfill",
             "pseudorandom",
             "random"
-        ]
+        ],
+        "support": {
+            "email": "info@paragonie.com",
+            "issues": "https://github.com/paragonie/random_compat/issues",
+            "source": "https://github.com/paragonie/random_compat"
+        }
     },
     {
         "name": "pear/auth_sasl",
@@ -1778,7 +1864,11 @@
                 "role": "Lead"
             }
         ],
-        "description": "Abstraction of various SASL mechanism responses"
+        "description": "Abstraction of various SASL mechanism responses",
+        "support": {
+            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Auth_SASL",
+            "source": "https://github.com/pear/Auth_SASL"
+        }
     },
     {
         "name": "pear/console_getopt",
@@ -1827,7 +1917,11 @@
                 "role": "Developer"
             }
         ],
-        "description": "More info available on: http://pear.php.net/package/Console_Getopt"
+        "description": "More info available on: http://pear.php.net/package/Console_Getopt",
+        "support": {
+            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Console_Getopt",
+            "source": "https://github.com/pear/Console_Getopt"
+        }
     },
     {
         "name": "pear/db",
@@ -2020,7 +2114,11 @@
             }
         ],
         "description": "Class that provides multiple interfaces for sending emails.",
-        "homepage": "http://pear.php.net/package/Mail"
+        "homepage": "http://pear.php.net/package/Mail",
+        "support": {
+            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Mail",
+            "source": "https://github.com/pear/Mail"
+        }
     },
     {
         "name": "pear/mail_mime",
@@ -2073,7 +2171,11 @@
             }
         ],
         "description": "Mail_Mime provides classes to create MIME messages",
-        "homepage": "http://pear.php.net/package/Mail_Mime"
+        "homepage": "http://pear.php.net/package/Mail_Mime",
+        "support": {
+            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Mail_Mime",
+            "source": "https://github.com/pear/Mail_Mime"
+        }
     },
     {
         "name": "pear/net_smtp",
@@ -2140,7 +2242,11 @@
             "email",
             "mail",
             "smtp"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/pear/Net_SMTP/issues",
+            "source": "https://github.com/pear/Net_SMTP"
+        }
     },
     {
         "name": "pear/net_socket",
@@ -2195,7 +2301,11 @@
                 "role": "Lead"
             }
         ],
-        "description": "More info available on: http://pear.php.net/package/Net_Socket"
+        "description": "More info available on: http://pear.php.net/package/Net_Socket",
+        "support": {
+            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Net_Socket",
+            "source": "https://github.com/pear/Net_Socket"
+        }
     },
     {
         "name": "pear/pear-core-minimal",
@@ -2241,7 +2351,11 @@
                 "role": "Lead"
             }
         ],
-        "description": "Minimal set of PEAR core files to be used as composer dependency"
+        "description": "Minimal set of PEAR core files to be used as composer dependency",
+        "support": {
+            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=PEAR",
+            "source": "https://github.com/pear/pear-core-minimal"
+        }
     },
     {
         "name": "pear/pear_exception",
@@ -2298,7 +2412,11 @@
         "homepage": "https://github.com/pear/PEAR_Exception",
         "keywords": [
             "exception"
-        ]
+        ],
+        "support": {
+            "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=PEAR_Exception",
+            "source": "https://github.com/pear/PEAR_Exception"
+        }
     },
     {
         "name": "pear/validate_finance_creditcard",
@@ -2387,7 +2505,11 @@
             }
         ],
         "description": "A library to read, parse, export and make subsets of different types of font files.",
-        "homepage": "https://github.com/PhenX/php-font-lib"
+        "homepage": "https://github.com/PhenX/php-font-lib",
+        "support": {
+            "issues": "https://github.com/PhenX/php-font-lib/issues",
+            "source": "https://github.com/PhenX/php-font-lib/tree/0.5.2"
+        }
     },
     {
         "name": "phenx/php-svg-lib",
@@ -2429,7 +2551,11 @@
             }
         ],
         "description": "A library to read, parse and export to PDF SVG files.",
-        "homepage": "https://github.com/PhenX/php-svg-lib"
+        "homepage": "https://github.com/PhenX/php-svg-lib",
+        "support": {
+            "issues": "https://github.com/PhenX/php-svg-lib/issues",
+            "source": "https://github.com/PhenX/php-svg-lib/tree/master"
+        }
     },
     {
         "name": "phpoffice/phpspreadsheet",
@@ -2742,7 +2868,11 @@
             "twofish",
             "x.509",
             "x509"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/phpseclib/phpseclib/issues",
+            "source": "https://github.com/phpseclib/phpseclib/tree/2.0.31"
+        }
     },
     {
         "name": "psr/cache",
@@ -2790,7 +2920,10 @@
             "cache",
             "psr",
             "psr-6"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/php-fig/cache/tree/master"
+        }
     },
     {
         "name": "psr/container",
@@ -2841,7 +2974,11 @@
             "container-interface",
             "container-interop",
             "psr"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/php-fig/container/issues",
+            "source": "https://github.com/php-fig/container/tree/master"
+        }
     },
     {
         "name": "psr/http-client",
@@ -3004,7 +3141,10 @@
             "psr-7",
             "request",
             "response"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/php-fig/http-message/tree/master"
+        }
     },
     {
         "name": "psr/log",
@@ -3053,7 +3193,10 @@
             "log",
             "psr",
             "psr-3"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/php-fig/log/tree/1.1.3"
+        }
     },
     {
         "name": "psr/simple-cache",
@@ -3103,7 +3246,10 @@
             "psr",
             "psr-16",
             "simple-cache"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/php-fig/simple-cache/tree/master"
+        }
     },
     {
         "name": "ralouphie/getallheaders",
@@ -3145,7 +3291,11 @@
                 "email": "ralph.khattar@gmail.com"
             }
         ],
-        "description": "A polyfill for getallheaders."
+        "description": "A polyfill for getallheaders.",
+        "support": {
+            "issues": "https://github.com/ralouphie/getallheaders/issues",
+            "source": "https://github.com/ralouphie/getallheaders/tree/develop"
+        }
     },
     {
         "name": "sabberworm/php-css-parser",
@@ -3192,7 +3342,11 @@
             "css",
             "parser",
             "stylesheet"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/sabberworm/PHP-CSS-Parser/issues",
+            "source": "https://github.com/sabberworm/PHP-CSS-Parser/tree/8.3.1"
+        }
     },
     {
         "name": "scssphp/scssphp",
@@ -3256,7 +3410,11 @@
             "sass",
             "scss",
             "stylesheet"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/scssphp/scssphp/issues",
+            "source": "https://github.com/scssphp/scssphp/tree/1.2.1"
+        }
     },
     {
         "name": "symfony/config",
@@ -3586,12 +3744,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Ctype\\": ""
-            },
             "files": [
                 "bootstrap.php"
-            ]
+            ],
+            "psr-4": {
+                "Symfony\\Polyfill\\Ctype\\": ""
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -3614,7 +3772,10 @@
             "ctype",
             "polyfill",
             "portable"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/symfony/polyfill-ctype/tree/v1.17.0"
+        }
     },
     {
         "name": "symfony/polyfill-iconv",
@@ -3646,12 +3807,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Iconv\\": ""
-            },
             "files": [
                 "bootstrap.php"
-            ]
+            ],
+            "psr-4": {
+                "Symfony\\Polyfill\\Iconv\\": ""
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -3675,7 +3836,10 @@
             "polyfill",
             "portable",
             "shim"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/symfony/polyfill-iconv/tree/v1.17.0"
+        }
     },
     {
         "name": "symfony/polyfill-intl-idn",
@@ -3709,12 +3873,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Intl\\Idn\\": ""
-            },
             "files": [
                 "bootstrap.php"
-            ]
+            ],
+            "psr-4": {
+                "Symfony\\Polyfill\\Intl\\Idn\\": ""
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -3739,7 +3903,10 @@
             "polyfill",
             "portable",
             "shim"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/symfony/polyfill-intl-idn/tree/master"
+        }
     },
     {
         "name": "symfony/polyfill-mbstring",
@@ -3771,12 +3938,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Mbstring\\": ""
-            },
             "files": [
                 "bootstrap.php"
-            ]
+            ],
+            "psr-4": {
+                "Symfony\\Polyfill\\Mbstring\\": ""
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -3800,7 +3967,10 @@
             "polyfill",
             "portable",
             "shim"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.17.0"
+        }
     },
     {
         "name": "symfony/polyfill-php72",
@@ -3829,12 +3999,12 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Php72\\": ""
-            },
             "files": [
                 "bootstrap.php"
-            ]
+            ],
+            "psr-4": {
+                "Symfony\\Polyfill\\Php72\\": ""
+            }
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -3857,7 +4027,10 @@
             "polyfill",
             "portable",
             "shim"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/symfony/polyfill-php72/tree/master"
+        }
     },
     {
         "name": "symfony/process",
@@ -4078,7 +4251,11 @@
         "license": [
             "MIT"
         ],
-        "description": "Parser for .gitignore (and sparse-checkout, and anything else using the same format) files"
+        "description": "Parser for .gitignore (and sparse-checkout, and anything else using the same format) files",
+        "support": {
+            "issues": "https://github.com/TOGoS/PHPGitIgnore/issues",
+            "source": "https://github.com/TOGoS/PHPGitIgnore/tree/master"
+        }
     },
     {
         "name": "totten/ca-config",
@@ -4117,7 +4294,11 @@
             }
         ],
         "description": "Default configuration for certificate authorities",
-        "homepage": "https://github.com/totten/ca_config"
+        "homepage": "https://github.com/totten/ca_config",
+        "support": {
+            "issues": "https://github.com/totten/ca_config/issues",
+            "source": "https://github.com/totten/ca_config/tree/master"
+        }
     },
     {
         "name": "totten/lurkerlite",
@@ -4179,7 +4360,10 @@
             "filesystem",
             "resource",
             "watching"
-        ]
+        ],
+        "support": {
+            "source": "https://github.com/totten/Lurker/tree/1.3.0"
+        }
     },
     {
         "name": "tplaner/when",
@@ -4275,7 +4459,11 @@
             "cssmin",
             "minify",
             "yui"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port/issues",
+            "source": "https://github.com/tubalmartin/YUI-CSS-compressor-PHP-port"
+        }
     },
     {
         "name": "typo3/phar-stream-wrapper",
@@ -4327,7 +4515,11 @@
             "php",
             "security",
             "stream-wrapper"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/TYPO3/phar-stream-wrapper/issues",
+            "source": "https://github.com/TYPO3/phar-stream-wrapper/tree/master"
+        }
     },
     {
         "name": "xkerman/restricted-unserialize",
@@ -4380,7 +4572,11 @@
             "PHP Object Injection",
             "deserialize",
             "unserialize"
-        ]
+        ],
+        "support": {
+            "issues": "https://github.com/xKerman/restricted-unserialize/issues",
+            "source": "https://github.com/xKerman/restricted-unserialize/tree/1.1.12"
+        }
     },
     {
         "name": "zetacomponents/base",
@@ -4446,7 +4642,11 @@
             }
         ],
         "description": "The Base package provides the basic infrastructure that all packages rely on. Therefore every component relies on this package.",
-        "homepage": "https://github.com/zetacomponents"
+        "homepage": "https://github.com/zetacomponents",
+        "support": {
+            "issues": "https://github.com/zetacomponents/Base/issues",
+            "source": "https://github.com/zetacomponents/Base/tree/1.9.1"
+        }
     },
     {
         "name": "zetacomponents/mail",
@@ -4530,6 +4730,10 @@
             }
         ],
         "description": "The component allows you construct and/or parse Mail messages conforming to  the mail standard. It has support for attachments, multipart messages and HTML  mail. It also interfaces with SMTP to send mail or IMAP, POP3 or mbox to  retrieve e-mail.",
-        "homepage": "https://github.com/zetacomponents"
+        "homepage": "https://github.com/zetacomponents",
+        "support": {
+            "issues": "https://github.com/zetacomponents/Mail/issues",
+            "source": "https://github.com/zetacomponents/Mail/tree/1.9.2"
+        }
     }
 ]

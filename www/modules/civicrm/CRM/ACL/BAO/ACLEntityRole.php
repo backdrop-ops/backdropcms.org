@@ -35,7 +35,7 @@ class CRM_ACL_BAO_ACLEntityRole extends CRM_ACL_DAO_ACLEntityRole {
   /**
    * @param array $params
    *
-   * @return CRM_ACL_DAO_EntityRole
+   * @return CRM_ACL_BAO_ACLEntityRole
    */
   public static function create(&$params) {
     return self::writeRecord($params);
@@ -43,7 +43,7 @@ class CRM_ACL_BAO_ACLEntityRole extends CRM_ACL_DAO_ACLEntityRole {
 
   /**
    * @param array $params
-   * @param $defaults
+   * @param array $defaults
    */
   public static function retrieve(&$params, &$defaults) {
     CRM_Core_DAO::commonRetrieve(__CLASS__, $params, $defaults);

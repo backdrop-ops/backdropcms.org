@@ -415,10 +415,10 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
 
       // use either the contribution or membership receipt, based on whether it’s a membership-related contrib or not
       $sendTemplateParams = [
-        'groupName' => !empty($values['isMembership']) ? 'msg_tpl_workflow_membership' : 'msg_tpl_workflow_contribution',
-        'valueName' => !empty($values['isMembership']) ? 'membership_online_receipt' : 'contribution_online_receipt',
+        'workflow' => !empty($values['isMembership']) ? 'membership_online_receipt' : 'contribution_online_receipt',
         'contactId' => $contactID,
         'tplParams' => $tplParams,
+        'tokenContext' => $tplParams['contributionID'] ? ['contributionId' => (int) $tplParams['contributionID'], 'contactId' => $contactID] : ['contactId' => $contactID],
         'isTest' => $isTest,
         'PDFFilename' => 'receipt.pdf',
       ];
@@ -820,7 +820,7 @@ LEFT JOIN  civicrm_premiums            ON ( civicrm_premiums.entity_id = civicrm
         // @todo - the component is enabled check should be done within getIncomeFinancialType
         // It looks to me like test cover was NOT added to cover the change
         // that added this so we need to assume there is no test cover
-        if (array_key_exists('CiviContribute', CRM_Core_Component::getEnabledComponents())) {
+        if (CRM_Core_Component::isEnabled('CiviContribute')) {
           // if check_permission has been passed in (not Null) then restrict.
           return CRM_Financial_BAO_FinancialType::getIncomeFinancialType($props['check_permissions'] ?? TRUE);
         }

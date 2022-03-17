@@ -94,19 +94,8 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
       throw new UnauthorizedException('Access denied');
     }
     $this->loadSavedSearch();
-    if (is_string($this->display)) {
-      $this->display = SearchDisplay::get(FALSE)
-        ->setSelect(['*', 'type:name'])
-        ->addWhere('name', '=', $this->display)
-        ->addWhere('saved_search_id', '=', $this->savedSearch['id'])
-        ->execute()->single();
-    }
-    elseif (is_null($this->display)) {
-      $this->display = SearchDisplay::getDefault(FALSE)
-        ->addSelect('*', 'type:name')
-        ->setSavedSearch($this->savedSearch)
-        ->execute()->first();
-    }
+    $this->loadSearchDisplay();
+
     // Displays with acl_bypass must be embedded on an afform which the user has access to
     if (
       $this->checkPermissions && !empty($this->display['acl_bypass']) &&
@@ -203,8 +192,8 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
   }
 
   /**
-   * @param $column
-   * @param $data
+   * @param array $column
+   * @param array $data
    * @return array{val: mixed, links: array, edit: array, label: string, title: string, image: array, cssClass: string}
    */
   private function formatColumn($column, $data) {
@@ -217,7 +206,7 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
           $out['val'] = $this->replaceTokens($column['empty_value'], $data, 'view');
         }
         elseif ($column['rewrite']) {
-          $out['val'] = $this->replaceTokens($column['rewrite'], $data, 'view');
+          $out['val'] = $this->rewrite($column, $data);
         }
         else {
           $out['val'] = $this->formatViewValue($column['key'], $rawValue);
@@ -276,6 +265,23 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
   }
 
   /**
+   * Rewrite field value, subtituting tokens and evaluating smarty tags
+   *
+   * @param array $column
+   * @param array $data
+   * @return string
+   */
+  private function rewrite(array $column, array $data): string {
+    $output = $this->replaceTokens($column['rewrite'], $data, 'view');
+    // Cheap strpos to skip Smarty processing if not needed
+    if (strpos($output, '{') !== FALSE) {
+      $smarty = \CRM_Core_Smarty::singleton();
+      $output = $smarty->fetchWith("string:$output", []);
+    }
+    return $output;
+  }
+
+  /**
    * Evaluates conditional style rules
    *
    * Rules are in the format ['css class', 'field_name', 'OPERATOR', 'value']
@@ -306,10 +312,8 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
    */
   protected function getCssRuleCondition($clause) {
     $fieldKey = $clause[1] ?? NULL;
-    // For fields used in group by, add aggregation and change operator from = to CONTAINS
-    // FIXME: This assumes the operator is always set to '=', which so far is all the admin UI supports.
-    // That's only a safe assumption as long as the admin UI doesn't have an operator selector.
-    // @see ang/crmSearchAdmin/displays/common/searchAdminCssRules.html
+    // For fields used in group by, add aggregation and change operator to CONTAINS
+    // NOTE: This doesn't support any other operators for aggregated fields.
     if ($fieldKey && $this->canAggregate($fieldKey)) {
       $clause[2] = 'CONTAINS';
       $fieldKey = 'GROUP_CONCAT_' . str_replace(['.', ':'], '_', $clause[1]);
@@ -373,6 +377,9 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
       $out['text'] = $this->replaceTokens($column['text'], $data, 'view');
     }
     foreach ($column['links'] as $item) {
+      if (!$this->checkLinkCondition($item, $data)) {
+        continue;
+      }
       $path = $this->replaceTokens($this->getLinkPath($item, $data), $data, 'url');
       if ($path) {
         $link = [
@@ -388,6 +395,30 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
       }
     }
     return $out;
+  }
+
+  /**
+   * Check if a link should be shown based on its conditions.
+   *
+   * Given a link, check if it is set to be displayed conditionally.
+   * If so, evaluate the condition, else return TRUE.
+   *
+   * @param array $item
+   * @param array $data
+   * @return bool
+   */
+  private function checkLinkCondition(array $item, array $data): bool {
+    if (empty($item['condition'][0]) || empty($item['condition'][1])) {
+      return TRUE;
+    }
+    $op = $item['condition'][1];
+    if ($item['condition'][0] === 'check user permission') {
+      if (!empty($item['condition'][2]) && !\CRM_Core_Permission::check($item['condition'][2])) {
+        return $op !== '=';
+      }
+      return TRUE;
+    }
+    return ArrayQueryActionTrait::filterCompare($data, $item['condition']);
   }
 
   /**
@@ -483,7 +514,7 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
 
   /**
    * @param $key
-   * @return array{entity: string, input_type: string, data_type: string, options: bool, serialize: bool, fk_entity: string, value_key: string, value_path: string, id_key: string, id_path: string}|null
+   * @return array{entity: string, input_type: string, data_type: string, options: bool, serialize: bool, nullable: bool, fk_entity: string, value_key: string, value_path: string, id_key: string, id_path: string}|null
    */
   private function getEditableInfo($key) {
     [$key] = explode(':', $key);
@@ -506,6 +537,7 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
         'data_type' => $field['data_type'],
         'options' => !empty($field['options']),
         'serialize' => !empty($field['serialize']),
+        'nullable' => !empty($field['nullable']),
         'fk_entity' => $field['fk_entity'],
         'value_key' => $field['name'],
         'value_path' => $key,
@@ -545,7 +577,7 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
    * @return string
    */
   private function replaceTokens($tokenExpr, $data, $format, $index = 0) {
-    if ($tokenExpr) {
+    if (strpos($tokenExpr, '[') !== FALSE) {
       foreach ($this->getTokens($tokenExpr) as $token) {
         $val = $data[$token] ?? NULL;
         if (isset($val) && $format === 'view') {
@@ -999,6 +1031,27 @@ abstract class AbstractRunAction extends \Civi\Api4\Generic\AbstractAction {
           $this->filterLabels[] = $record[$labelField];
         }
       }
+    }
+  }
+
+  /**
+   * Loads display if not already an array
+   */
+  private function loadSearchDisplay(): void {
+    // Display name given
+    if (is_string($this->display)) {
+      $this->display = SearchDisplay::get(FALSE)
+        ->setSelect(['*', 'type:name'])
+        ->addWhere('name', '=', $this->display)
+        ->addWhere('saved_search_id', '=', $this->savedSearch['id'])
+        ->execute()->single();
+    }
+    // Null given - use default display
+    elseif (is_null($this->display)) {
+      $this->display = SearchDisplay::getDefault(FALSE)
+        ->addSelect('*', 'type:name')
+        ->setSavedSearch($this->savedSearch)
+        ->execute()->first();
     }
   }
 

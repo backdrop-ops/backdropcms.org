@@ -64,7 +64,7 @@
      <tr>
       <td colspan="2" {$valueStyle}>
        {$event.event_title}<br />
-       {$event.event_start_date|date_format:"%A"} {$event.event_start_date|crmDate}{if $event.event_end_date}-{if $event.event_end_date|date_format:"%Y%m%d" == $event.event_start_date|date_format:"%Y%m%d"}{$event.event_end_date|crmDate:0:1}{else}{$event.event_end_date|date_format:"%A"} {$event.event_end_date|crmDate}{/if}{/if}
+       {$event.event_start_date|date_format:"%A"} {$event.event_start_date|crmDate}{if $event.event_end_date}-{if $event.event_end_date|date_format:"%Y%m%d" == $event.event_start_date|date_format:"%Y%m%d"}{$event.event_end_date|crmDate:0:1}{else}{$event.event_end_date|date_format:"%A"} {$event.event_end_date|crmDate}{/if}{/if} {$event.event_tz}
       </td>
      </tr>
 
@@ -224,7 +224,7 @@
                <td {$tdStyle}>
                 {$line.unit_price*$line.qty|crmMoney}
                </td>
-               {if isset($line.tax_rate) and ($line.tax_rate != "" || $line.tax_amount != "")}
+               {if $line.tax_rate || $line.tax_amount != ""}
                 <td {$tdStyle}>
                  {$line.tax_rate|string_format:"%.2f"}%
                 </td>

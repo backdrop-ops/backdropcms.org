@@ -11,10 +11,10 @@
   <title>Custom Field Group</title>
   <labelField>title</labelField>
   <paths>
-    <add>civicrm/admin/custom/group?action=add&amp;reset=1</add>
-    <update>civicrm/admin/custom/group?action=update&amp;reset=1&amp;id=[id]</update>
-    <preview>civicrm/admin/custom/group?action=preview&amp;reset=1&amp;id=[id]</preview>
-    <delete>civicrm/admin/custom/group?action=delete&amp;reset=1&amp;id=[id]</delete>
+    <add>civicrm/admin/custom/group/edit?action=add&amp;reset=1</add>
+    <update>civicrm/admin/custom/group/edit?action=update&amp;reset=1&amp;id=[id]</update>
+    <preview>civicrm/admin/custom/group/preview?reset=1&amp;gid=[id]</preview>
+    <delete>civicrm/admin/custom/group/delete?reset=1&amp;id=[id]</delete>
   </paths>
   <field>
     <name>id</name>
@@ -198,11 +198,10 @@
     <add>2.1</add>
   </index>
   <index>
-    <name>UI_name_extends</name>
+    <name>UI_name</name>
     <fieldName>name</fieldName>
-    <fieldName>extends</fieldName>
     <unique>true</unique>
-    <add>2.1</add>
+    <add>5.47</add>
   </index>
   <field>
     <name>created_id</name>

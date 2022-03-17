@@ -85,15 +85,15 @@ class CRM_Core_BAO_File extends CRM_Core_DAO_File {
   }
 
   /**
-   * @param $data
+   * @param string $data
    * @param int $fileTypeID
-   * @param $entityTable
+   * @param string $entityTable
    * @param int $entityID
-   * @param $entitySubtype
+   * @param string|false $entitySubtype
    * @param bool $overwrite
    * @param null|array $fileParams
    * @param string $uploadName
-   * @param null $mimeType
+   * @param string $mimeType
    *
    * @throws Exception
    */
@@ -102,7 +102,7 @@ class CRM_Core_BAO_File extends CRM_Core_DAO_File {
     $fileTypeID,
     $entityTable,
     $entityID,
-    $entitySubtype,
+    $entitySubtype = FALSE,
     $overwrite = TRUE,
     $fileParams = NULL,
     $uploadName = 'uploadFile',
@@ -496,8 +496,9 @@ AND       CEF.entity_id    = %2";
   }
 
   /**
-   * Return a clean url string and the number of attachment for a
-   * given entityTable, entityID
+   * Return a HTML string, separated by $separator,
+   * where each item is an anchor link to the file,
+   * with the filename as the link text.
    *
    * @param string $entityTable
    *   The entityTable to which the file is attached.
@@ -506,8 +507,8 @@ AND       CEF.entity_id    = %2";
    * @param string $separator
    *   The string separator where to implode the urls.
    *
-   * @return array
-   *   An array with 2 elements. The string and the number of attachments
+   * @return string|null
+   *   HTML list of attachment links, or null if no attachments
    */
   public static function attachmentInfo($entityTable, $entityID, $separator = '<br />') {
     if (!$entityID) {

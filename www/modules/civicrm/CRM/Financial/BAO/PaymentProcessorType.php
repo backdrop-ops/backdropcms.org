@@ -23,13 +23,6 @@ class CRM_Financial_BAO_PaymentProcessorType extends CRM_Financial_DAO_PaymentPr
   public static $_defaultPaymentProcessorType = NULL;
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Fetch object based on array of properties.
    *
    * @param array $params
@@ -191,7 +184,7 @@ WHERE pp.payment_processor_type_id = ppt.id AND ppt.id = %1";
   }
 
   /**
-   * @param $attr
+   * @param string $attr
    *
    * @return array
    */

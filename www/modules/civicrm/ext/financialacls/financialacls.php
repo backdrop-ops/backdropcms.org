@@ -139,6 +139,7 @@ function financialacls_civicrm_selectWhereClause($entity, &$clauses) {
     case 'LineItem':
     case 'MembershipType':
     case 'ContributionRecur':
+    case 'Contribution':
       $clauses['financial_type_id'] = _financialacls_civicrm_get_type_clause();
       break;
 
@@ -396,6 +397,18 @@ function financialacls_toggle() {
 //function financialacls_civicrm_preProcess($formName, &$form) {
 //
 //}
+
+/**
+ * Require financial acl permissions for financial screens.
+ *
+ * @param array $menu
+ */
+function financialacls_civicrm_alterMenu(array &$menu): void {
+  if (!financialacls_is_acl_limiting_enabled()) {
+    return;
+  }
+  $menu['civicrm/admin/financial/financialType']['access_arguments'] = [['administer CiviCRM Financial Types']];
+}
 
 /**
  * Implements hook_civicrm_navigationMenu().

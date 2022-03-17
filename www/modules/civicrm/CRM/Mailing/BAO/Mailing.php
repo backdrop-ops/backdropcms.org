@@ -51,13 +51,13 @@ class CRM_Mailing_BAO_Mailing extends CRM_Mailing_DAO_Mailing {
 
   /**
    * The header associated with this mailing.
-   * @var string
+   * @var CRM_Mailing_BAO_MailingComponent
    */
   private $header = NULL;
 
   /**
    * The footer associated with this mailing.
-   * @var string
+   * @var CRM_Mailing_BAO_MailingComponent
    */
   private $footer = NULL;
 
@@ -78,13 +78,6 @@ class CRM_Mailing_BAO_Mailing extends CRM_Mailing_DAO_Mailing {
    * @var int
    */
   private $_domain = NULL;
-
-  /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
 
   /**
    * @deprecated
@@ -2691,7 +2684,8 @@ WHERE  civicrm_mailing_job.id = %1
   }
 
   /**
-   * @param null $mode
+   * @param string|null $mode
+   *   Either 'sms' or null
    *
    * @return bool
    * @throws Exception

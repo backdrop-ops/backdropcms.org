@@ -144,6 +144,14 @@ class CRM_Report_Form_Contribute_Repeat extends CRM_Report_Form {
             'no_repeat' => TRUE,
           ),
         ),
+        'filters' => [
+          'on_hold' => [
+            'title' => ts('On Hold'),
+            'type' => CRM_Utils_Type::T_INT,
+            'operatorType' => CRM_Report_Form::OP_MULTISELECT,
+            'options' => ['' => ts('Any')] + CRM_Core_PseudoConstant::emailOnHoldOptions(),
+          ],
+        ],
         'grouping' => 'contact-fields',
       ),
       'civicrm_phone' => array(
@@ -602,7 +610,7 @@ LEFT JOIN $this->tempTableRepeat2 {$this->_aliases['civicrm_contribution']}2
 
     foreach ($checkDate as $date_range => $range_data) {
       foreach ($range_data as $key => $value) {
-        if (CRM_Utils_Date::isDate($value)) {
+        if (!CRM_Utils_System::isNull($value)) {
           $errorCount[$date_range][$key]['valid'] = 'true';
           $errorCount[$date_range][$key]['is_empty'] = 'false';
         }
@@ -664,7 +672,7 @@ LEFT JOIN $this->tempTableRepeat2 {$this->_aliases['civicrm_contribution']}2
   }
 
   /**
-   * @param $rows
+   * @param array $rows
    *
    * @return array
    */

@@ -77,13 +77,6 @@ class CRM_Contribute_BAO_Contribution extends CRM_Contribute_DAO_Contribution {
   public $trxn_result_code;
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Takes an associative array and creates a contribution object.
    *
    * the function extract all the params it needs to initialize the create a
@@ -512,6 +505,7 @@ class CRM_Contribute_BAO_Contribution extends CRM_Contribute_DAO_Contribution {
     CRM_Contribute_BAO_ContributionSoft::processSoftContribution($params, $contribution);
 
     if (!empty($params['id']) && !empty($params['contribution_status_id'])
+      && CRM_Core_Component::isEnabled('CiviPledge')
     ) {
       self::disconnectPledgePaymentsIfCancelled((int) $params['id'], CRM_Core_PseudoConstant::getName('CRM_Contribute_BAO_Contribution', 'contribution_status_id', $params['contribution_status_id']));
     }
@@ -1164,34 +1158,7 @@ class CRM_Contribute_BAO_Contribution extends CRM_Contribute_DAO_Contribution {
   }
 
   /**
-   * @inheritDoc
-   */
-  public function addSelectWhereClause() {
-    $whereClauses = parent::addSelectWhereClause();
-    if ($whereClauses !== []) {
-      // In this case permisssions have been applied & we assume the
-      // financialaclreport is applying these
-      // https://github.com/JMAConsulting/biz.jmaconsulting.financialaclreport/blob/master/financialaclreport.php#L107
-      return $whereClauses;
-    }
-
-    if (!CRM_Financial_BAO_FinancialType::isACLFinancialTypeStatus()) {
-      return $whereClauses;
-    }
-    $types = CRM_Financial_BAO_FinancialType::getAllEnabledAvailableFinancialTypes();
-    if (empty($types)) {
-      $whereClauses['financial_type_id'] = 'IN (0)';
-    }
-    else {
-      $whereClauses['financial_type_id'] = [
-        'IN (' . implode(',', array_keys($types)) . ')',
-      ];
-    }
-    return $whereClauses;
-  }
-
-  /**
-   * @param null $status
+   * @param string $status
    * @param null $startDate
    * @param null $endDate
    *
@@ -2594,6 +2561,8 @@ INNER JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_ac
       $values['event'] = [];
 
       CRM_Event_BAO_Event::retrieve($eventParams, $values['event']);
+
+      CRM_Event_BAO_Event::setOutputTimeZone($values['event']);
 
       //get location details
       $locationParams = [
@@ -4757,6 +4726,9 @@ LIMIT 1;";
     $values = ['event' => []];
 
     CRM_Event_BAO_Event::retrieve($eventParams, $values['event']);
+
+    CRM_Event_BAO_Event::setOutputTimeZone($values['event']);
+
     // add custom fields for event
     $eventGroupTree = CRM_Core_BAO_CustomGroup::getTree('Event', NULL, $eventID);
 

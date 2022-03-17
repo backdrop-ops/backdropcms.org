@@ -114,6 +114,18 @@ function civicrm_drush_command() {
     'aliases' => array('ceui'),
   );
 
+  $items['civicrm-pipe'] = [
+    'description' => 'Start a Civi::pipe session (JSON-RPC 2.0)',
+    'examples' => [
+      'drush civicrm-pipe' => 'Begin a session with default flags',
+      'drush civicrm-pipe vt' => 'Begin a session with connection flags (ex: version, trusted)',
+      'drush civicrm-pipe vu' => 'Begin a session with connection flags (ex: version, untrusted)',
+    ],
+    'arguments' => [
+      'connection-flags' => 'List of connection flags (https://docs.civicrm.org/dev/en/latest/framework/pipe#flags)',
+    ],
+    'aliases' => ['cvpipe'],
+  ];
   $items['civicrm-upgrade-db'] = array(
     'description' => "Execute the civicrm/upgrade?reset=1 process from the command line.",
     'aliases' => array('cvupdb'),
@@ -371,7 +383,7 @@ function _civicrm_install_db($dbuser, $dbpass, $dbhost, $dbname,
 
   if ($loadGeneratedData) {
     drush_log(dt("Loading in generated data .."));
-    civicrm_source($dsn, $sqlPath . DIRECTORY_SEPARATOR . 'civicrm_generated.mysql', TRUE);
+    civicrm_source($dsn, $sqlPath . DIRECTORY_SEPARATOR . 'civicrm_generated.mysql');
   }
   else {
     // testing the translated sql files availability
@@ -508,6 +520,9 @@ function _civicrm_generate_settings_file($dbuser, $dbpass, $dbhost, $dbname, $mo
     'CMSdbPass' => $db_spec['password'],
     'CMSdbHost' => $db_spec['host'],
     'CMSdbName' => $db_spec['database'],
+    // These two are only filled in when using the newer civicrm-setup.
+    'dbSSL' => '',
+    'CMSdbSSL' => '',
     'siteKey' => preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(37))),
     'credKeys' => 'aes-cbc:hkdf-sha256:' . preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(37))),
     'signKeys' => 'jwt-hs256:hkdf-sha256:' . preg_replace(';[^a-zA-Z0-9];', '', base64_encode(random_bytes(37))),
@@ -1573,6 +1588,26 @@ function drush_civicrm_api() {
 
     default:
       return drush_set_error('CIVICRM_UNKNOWN_FORMAT', dt('Unknown format: @format', array('@format' => $format)));
+  }
+}
+
+/**
+ * (Drush callback)
+ *
+ * Implementation of command 'civicrm-pipe'
+ */
+function drush_civicrm_pipe(?string $connection_flags = NULL) {
+  if (!civicrm_initialize()) {
+    return drush_set_error('CIVICRM_UNINSTALLED', dt('CiviCRM is not setup.'));
+  }
+  if (!is_callable(['Civi', 'pipe'])) {
+    return drush_set_error('CIVICRM_PIPE_UNSUPPORTED', dt('This version of CiviCRM does not include Civi::pipe() support.'));
+  }
+  if (!empty($connection_flags)) {
+    Civi::pipe($connection_flags);
+  }
+  else {
+    Civi::pipe();
   }
 }
 

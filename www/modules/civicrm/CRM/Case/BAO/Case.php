@@ -29,20 +29,12 @@ class CRM_Case_BAO_Case extends CRM_Case_DAO_Case {
   public static $_exportableFields = NULL;
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Is CiviCase enabled?
    *
    * @return bool
    */
   public static function enabled() {
-    $config = CRM_Core_Config::singleton();
-    return in_array('CiviCase', $config->enableComponents);
+    return CRM_Core_Component::isEnabled('CiviCase');
   }
 
   /**
@@ -55,7 +47,7 @@ class CRM_Case_BAO_Case extends CRM_Case_DAO_Case {
    * @param array $params
    *   (reference ) an assoc array of name/value pairs.
    *
-   * @return CRM_Case_BAO_Case
+   * @return CRM_Case_DAO_Case
    */
   public static function add(&$params) {
     $caseDAO = new CRM_Case_DAO_Case();
@@ -72,7 +64,7 @@ class CRM_Case_BAO_Case extends CRM_Case_DAO_Case {
    * @param array $params
    *   (reference) an assoc array of name/value pairs.
    *
-   * @return CRM_Case_BAO_Case
+   * @return CRM_Case_DAO_Case
    */
   public static function &create(&$params) {
     // CRM-20958 - These fields are managed by MySQL triggers. Watch out for clients resaving stale timestamps.
@@ -224,7 +216,7 @@ WHERE civicrm_case.id = %1";
   }
 
   /**
-   * @param $id
+   * @param int $id
    * @return bool
    */
   public static function del($id) {
@@ -1125,8 +1117,8 @@ SELECT civicrm_case.id, case_status.label AS case_status, status_id, civicrm_cas
   /**
    * Helper function to generate a formatted contact link/name for display in the Case activities tab
    *
-   * @param $contactId
-   * @param $contactName
+   * @param int $contactId
+   * @param string $contactName
    *
    * @return string
    */
@@ -1522,16 +1514,16 @@ HERESQL;
   }
 
   /**
-   * @param $groupInfo
+   * @param array $groupInfo
    * @param null $sort
-   * @param null $showLinks
+   * @param bool $showLinks
    * @param bool $returnOnlyCount
    * @param int $offset
    * @param int $rowCount
    *
    * @return array
    */
-  public static function getGlobalContacts(&$groupInfo, $sort = NULL, $showLinks = NULL, $returnOnlyCount = FALSE, $offset = 0, $rowCount = 25) {
+  public static function getGlobalContacts(&$groupInfo, $sort = NULL, $showLinks = FALSE, $returnOnlyCount = FALSE, $offset = 0, $rowCount = 25) {
     $globalContacts = [];
 
     $settingsProcessor = new CRM_Case_XMLProcessor_Settings();

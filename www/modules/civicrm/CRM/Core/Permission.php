@@ -255,7 +255,7 @@ class CRM_Core_Permission {
 
   /**
    * @param int $type
-   * @param null $prefix
+   * @param string|null $prefix
    * @param bool $reset
    *
    * @return string
@@ -335,7 +335,7 @@ class CRM_Core_Permission {
 
   /**
    * @param int $type
-   * @param null $prefix
+   * @param string $prefix
    * @param bool $returnUFGroupIds
    *
    * @return array|string
@@ -423,9 +423,7 @@ class CRM_Core_Permission {
    *   Access to specified $module is granted.
    */
   public static function access($module, $checkPermission = TRUE, $requireAllCasesPermOnCiviCase = FALSE) {
-    $config = CRM_Core_Config::singleton();
-
-    if (!in_array($module, $config->enableComponents)) {
+    if (!CRM_Core_Component::isEnabled($module)) {
       return FALSE;
     }
 
@@ -751,6 +749,14 @@ class CRM_Core_Permission {
       ],
       'administer reserved tags' => [
         $prefix . ts('administer reserved tags'),
+      ],
+      'administer queues' => [
+        $prefix . ts('administer queues'),
+        ts('Initialize, browse, and cancel background processing queues'),
+        // At time of writing, we have specifically omitted the ability to edit fine-grained
+        // data about specific queue-tasks. Tasks are usually defined as PHP callables...
+        // and one should hesitate before allowing open-ended edits of PHP callables.
+        // However, it seems fine for web-admins to browse and cancel these things.
       ],
       'administer dedupe rules' => [
         $prefix . ts('administer dedupe rules'),

@@ -23,13 +23,6 @@ require_once 'Mail/mime.php';
 class CRM_Mailing_Event_BAO_Unsubscribe extends CRM_Mailing_Event_DAO_Unsubscribe {
 
   /**
-   * Class constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Unsubscribe a contact from the domain.
    *
    * @param int $job_id
@@ -300,9 +293,9 @@ WHERE  email = %2
    * Send a response email informing the contact of the groups from which he.
    * has been unsubscribed.
    *
-   * @param string $queue_id
+   * @param int $queue_id
    *   The queue event ID.
-   * @param array $groups
+   * @param array|null $groups
    *   List of group IDs.
    * @param bool $is_domain
    *   Is this domain-level?.
