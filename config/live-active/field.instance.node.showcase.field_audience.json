@@ -32,10 +32,9 @@
         },
         "teaser": {
             "label": "hidden",
-            "type": "list_default",
+            "type": "hidden",
             "weight": "2",
-            "settings": [],
-            "module": "list"
+            "settings": []
         }
     }
 }

@@ -36,6 +36,12 @@
                 "youtube_iv_load_policy": 0
             },
             "module": "youtube"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "7",
+            "settings": []
         }
     }
 }
