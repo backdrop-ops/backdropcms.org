@@ -7,17 +7,21 @@
     "cache": true,
     "status": 1,
     "filters": {
-        "codefilter": {
-            "status": 1,
-            "weight": -46,
-            "module": "codefilter",
-            "settings": []
-        },
-        "filter_image_caption": {
-            "status": 1,
-            "weight": -44,
+        "filter_html_escape": {
+            "status": 0,
+            "weight": -50,
             "module": "filter",
             "settings": []
+        },
+        "filter_html": {
+            "status": 0,
+            "weight": -49,
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <h3> <h4> <h5> <p> <img> <figure> <figcaption>",
+                "filter_html_help": 1,
+                "filter_html_nofollow": 0
+            },
+            "module": "filter"
         },
         "filter_autop": {
             "status": 0,
@@ -25,21 +29,31 @@
             "module": "filter",
             "settings": []
         },
+        "filter_markdown": {
+            "status": 1,
+            "weight": -47,
+            "module": "markdown",
+            "settings": []
+        },
+        "codefilter": {
+            "status": 1,
+            "weight": -46,
+            "module": "codefilter",
+            "settings": {
+                "nowrap_expand": false
+            }
+        },
         "filter_url": {
             "status": 1,
             "weight": -45,
             "module": "filter",
-            "settings": []
+            "settings": {
+                "filter_url_length": 72
+            }
         },
-        "filter_htmlcorrector": {
+        "filter_image_caption": {
             "status": 1,
-            "weight": -42,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_html_escape": {
-            "status": 0,
-            "weight": -50,
+            "weight": -44,
             "module": "filter",
             "settings": []
         },
@@ -49,18 +63,10 @@
             "module": "filter",
             "settings": []
         },
-        "filter_html": {
-            "status": 0,
-            "weight": -49,
-            "settings": {
-                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd> <h3> <h4> <h5> <p> <img> <figure> <figcaption>"
-            },
-            "module": "filter"
-        },
-        "filter_markdown": {
+        "filter_htmlcorrector": {
             "status": 1,
-            "weight": -47,
-            "module": "markdown",
+            "weight": -42,
+            "module": "filter",
             "settings": []
         }
     },
@@ -70,5 +76,5 @@
         "anonymous": 0,
         "authenticated": 0
     },
-    "weight": 0
+    "weight": "-9"
 }
