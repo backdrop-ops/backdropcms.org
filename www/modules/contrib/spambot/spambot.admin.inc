@@ -165,7 +165,7 @@ function spambot_settings_form() {
 
   // Get scan status.
   $suffix = '';
-  if ($last_uid = $config->get('spambot_last_checked_uid')) {
+  if ($last_uid = state_get('spambot_last_checked_uid')) {
     $num_checked = db_select('users', 'u')
       ->fields('u', array('uid'))
       ->condition('u.uid', 1, '>')
@@ -317,5 +317,17 @@ function spambot_settings_form() {
     '#default_value' => $config->get('spambot_cache_expire_false'),
   );
 
+  $form['#submit'][] = 'spambot_settings_form_submit';
+
   return system_settings_form($form);
+}
+
+/**
+ * Submit handler for spambot_settings_form().
+ */
+function spambot_settings_form_submit($form, &$form_state) {
+  $last_checked_uid = $form_state['values']['spambot_last_checked_uid'];
+  state_set('spambot_last_checked_uid', $last_checked_uid);
+  // Prevent this value from saving in config.
+  unset($form_state['values']['spambot_last_checked_uid']);
 }

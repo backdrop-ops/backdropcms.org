@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Install and update hooks for Spambot module.
@@ -40,6 +39,13 @@ function spambot_schema() {
   $schema['cache_spambot']['description'] = 'Cache table for the Spambot module to store responses from www.stopforumspam.com';
 
   return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function spambot_uninstall() {
+  state_del('spambot_last_checked_uid');
 }
 
 /**
@@ -96,8 +102,9 @@ function spambot_update_1000() {
 }
 
 /**
- * Implements hook_install().
+ * Implements hook_update_N(). Move last checked timestap to state system.
  */
-function spambot_install() {
-  // Dynamically generated variable data was detected.
+function spambot_update_1001() {
+  $last_chceked = config_get('spambot.settings', 'spambot_last_checked_uid');
+  state_set('spambot_last_checked_uid', $last_chceked);
 }
