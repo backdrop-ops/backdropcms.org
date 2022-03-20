@@ -87,7 +87,7 @@ function spambot_config_info() {
 function spambot_form_user_register_form_alter(&$form, &$form_state) {
   if (config_get('spambot.settings', 'spambot_user_register_protect')) {
     spambot_add_form_protection(
-      $form, 
+      $form,
       array(
       'mail' => 'mail',
       'name' => 'name',
@@ -145,7 +145,7 @@ function spambot_node_delete($node) {
 function spambot_cron() {
   $config = config('spambot.settings');
   if ($limit = $config->get('spambot_cron_user_limit')) {
-    $last_uid = $config->get('spambot_last_checked_uid');
+    $last_uid = state_get('spambot_last_checked_uid');
     if ($last_uid < 1) {
       // Skip scanning the anonymous and superadmin users.
       $last_uid = 1;
@@ -217,11 +217,11 @@ function spambot_cron() {
           spambot_delete_nodes_and_comments($account->uid, $action_nodes);
 
           // Mark this uid as successfully checked.
-          config_set('spambot.settings', 'spambot_last_checked_uid', $account->uid);
+          state_set('spambot_last_checked_uid', $account->uid);
         }
         elseif ($result == 0) {
           // Mark this uid as successfully checked.
-          config_set('spambot.settings', 'spambot_last_checked_uid', $account->uid);
+          state_set('spambot_last_checked_uid', $account->uid);
         }
         elseif ($result < 0) {
           // Error contacting service, so pause processing.

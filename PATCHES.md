@@ -32,3 +32,7 @@ markdown - PHP notice
 restrict_abusive_words - prevent PHP notice
   https://github.com/backdrop-contrib/restrict_abusive_words/issues/1
   fix committed to -dev
+
+spambot - move last checked uid to state
+  https://github.com/backdrop-contrib/spambot/issues/4
+  https://github.com/backdrop-contrib/spambot/pull/5.patch
