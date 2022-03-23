@@ -277,5 +277,6 @@ body.front .block-borg-blocks-tagline h2 {
 @media screen {
   #user-register-form #edit-field-interest .form-item label {
     width: 100%;
+    line-height: 1.5;
   }
 }
