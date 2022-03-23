@@ -270,3 +270,12 @@ body.front .block-borg-blocks-tagline h2 {
   padding: 2em 0 3em;
   width: 100%;
 }
+
+/*******************************************************************************
+ * User registration form — make honeypot field label full width.
+ ******************************************************************************/
+@media screen {
+  #user-register-form #edit-field-interest .form-item label {
+    width: 100%;
+  }
+}

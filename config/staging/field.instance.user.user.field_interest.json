@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.user.user.field_interest",
+    "field_name": "field_interest",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "What is your favorite feature of Backdrop, or what aspect of Backdrop are you most interested in?",
+    "widget": {
+        "weight": "3",
+        "type": "text_textarea",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "5"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": 1
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
+        }
+    }
+}
