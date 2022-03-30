@@ -26,7 +26,9 @@
             "b7e50626-7671-4a7d-a152-8254e0bc8d6e",
             "e17d6e59-ed54-46b7-802d-4597262df9d1"
         ],
-        "sidebar": [],
+        "sidebar": [
+            "c8c97f4f-a733-453f-9c0e-1427e4e505bc"
+        ],
         "bottom": [],
         "footer": [
             "c7ccbbc8-88b7-4bb9-b602-2aa0cd8ffba2",
@@ -162,6 +164,35 @@
                     "contexts": []
                 },
                 "uuid": "e17d6e59-ed54-46b7-802d-4597262df9d1",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "c8c97f4f-a733-453f-9c0e-1427e4e505bc": {
+            "plugin": "block:reporting_security_issues",
+            "data": {
+                "module": "block",
+                "delta": "reporting_security_issues",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "reporting_security_issues",
+                        "description": "Reporting Security Issues",
+                        "reusable": true
+                    },
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "c8c97f4f-a733-453f-9c0e-1427e4e505bc",
                 "style": {
                     "plugin": "default",
                     "data": {

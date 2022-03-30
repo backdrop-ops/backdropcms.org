@@ -28,7 +28,7 @@
         ],
         "sidebar": [
             "1fc6a52c-afe7-49a5-985f-959d35e18eae",
-            "c450fed4-eeab-41a8-8500-b94f7d16e48d"
+            "9e447c04-55ec-4876-8c00-c2b844dba08d"
         ],
         "bottom": [],
         "footer": [
@@ -39,6 +39,8 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "5322189b-2dbc-49d7-b731-498dde5cae54": {
             "plugin": "borg_blocks:branding",
@@ -204,17 +206,17 @@
                 }
             }
         },
-        "c450fed4-eeab-41a8-8500-b94f7d16e48d": {
-            "plugin": "views:security-block_2",
+        "9e447c04-55ec-4876-8c00-c2b844dba08d": {
+            "plugin": "views:security-block_1",
             "data": {
                 "module": "views",
-                "delta": "security-block_2",
+                "delta": "security-block_1",
                 "settings": {
                     "link_to_view": 0,
                     "more_link": 1,
                     "use_pager": false,
                     "pager_id": 0,
-                    "items_per_page": "3",
+                    "items_per_page": "6",
                     "offset": 0,
                     "path": "security/advisories",
                     "fields_override": null,
@@ -225,9 +227,11 @@
                     "contexts": [],
                     "allowed": [],
                     "path_override": false,
-                    "exposed": []
+                    "exposed": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "c450fed4-eeab-41a8-8500-b94f7d16e48d",
+                "uuid": "9e447c04-55ec-4876-8c00-c2b844dba08d",
                 "style": {
                     "plugin": "default",
                     "data": {
