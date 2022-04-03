@@ -1,0 +1,378 @@
+<?php
+/**
+ * @file ip_blocking.module
+ */
+define('ANTISCAN_MODULE_UID', 10001); // "user" ID for Antiscan module
+
+/**
+ * Implements hook_config_info().
+ */
+function ip_blocking_config_info() {
+  $prefixes['ip_blocking.settings'] = array(
+    'label' => t('IP address blocking'),
+    'group' => t('Configuration'),
+  );
+  
+  return $prefixes;
+}
+
+/**
+ * Implements hook_permission().
+ *
+ */
+function ip_blocking_permission() {
+  return array(
+    'block IP addresses' => array(
+      'title' => t('Administer IP address blocking')
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ *
+ */
+function ip_blocking_menu() {
+  $items = array();
+
+  $items['admin/config/people/ip-blocking'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => 'IP address blocking',
+    'description' => 'Manage blocked IP addresses.',
+    'page callback' => 'ip_blocking',
+    'access arguments' => array('block IP addresses'),
+    'file' => 'ip_blocking.admin.inc',
+  );
+  
+  $items['admin/config/people/ip-blocking/main'] = array(
+    'title' => 'Main',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 1,
+  );
+  
+  $items['admin/config/people/ip-blocking/settings'] = array(
+    'title' => 'Settings',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ip_blocking_settings_form'),
+    'file' => 'ip_blocking.admin.inc',
+    'access arguments' => array('block IP addresses'),
+    'weight' => 2,
+  );
+  
+  
+  $items['admin/config/people/ip-blocking/unblock/%blocked_ip'] = array(
+    'title' => 'Unblock IP address',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ip_blocking_unblock', 5),
+    'access arguments' => array('block IP addresses'),
+    'file' => 'ip_blocking.admin.inc',
+  );
+
+  // Confirmation form to block an IP address from dblog event page.
+  // The first argument is the IP address, the second is a dblog message.
+  $items['ip_blocking/event/block/%/%'] = array(
+    'title' => 'Block an IP address',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ip_blocking_confirm_blocking', 3, 4),
+    'access arguments' => array('block IP addresses'),
+    'type' => MENU_CALLBACK,
+  );
+
+  // Confirmation form to unblock an IP address from dblog event page.
+  // The first argument is the IP address, the second is a dblog message (ignored).
+  $items['ip_blocking/event/unblock/%/%'] = array(
+    'title' => 'Unblock an IP address',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ip_blocking_confirm_unblocking', 3),
+    'access arguments' => array('block IP addresses'),
+    'type' => MENU_CALLBACK,
+  );
+  
+  return $items;
+}
+
+/**
+ * Implements hook_boot().
+ *
+ */
+function ip_blocking_boot() {
+
+  $ip = check_plain(ip_address());
+  
+  // Deny access to blocked IP address.
+  if (ip_is_denied($ip)) {
+    $config      = config('ip_blocking.settings');
+    $log_enabled = $config->get('log_enabled');
+    $return_404  = $config->get('return_404');
+    $request     = htmlspecialchars($_SERVER['REQUEST_URI']);
+    $ua_string   = isset($_SERVER['HTTP_USER_AGENT']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT']) : '';
+    
+    if($return_404) {
+      header($_SERVER['SERVER_PROTOCOL'] . ' 404  Not Found');
+    }
+    else {
+      header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+      print 'Sorry, IP address ' . $ip . ' has been banned.';
+    }
+    
+    if($log_enabled) {
+      blocked_ip_log($ip, $request, $ua_string);
+    }
+
+    exit();
+  }
+}
+
+/**
+ * Checks to see if an IP address has been blocked.
+ *
+ * Blocked IP addresses are stored in the database only.
+ * @param $ip IP address to check.
+ *
+ * @return bool TRUE if access is denied, FALSE if access is allowed.
+ */
+function ip_is_denied($ip) {
+  $denied = FALSE;
+  
+  if (class_exists('Database', FALSE)) {
+    $denied = (bool)db_query("SELECT 1 FROM {blocked_ips} WHERE ip = :ip", array(':ip' => $ip))->fetchField();
+  }
+  
+  return $denied;
+}
+
+/**
+ * Retrieve a blocked IP address from the database (used on admin page).
+ *
+ * @param $iid integer The ID of the blocked IP address to retrieve.
+ *
+ * @return The blocked IP address from the database as an array.
+ */
+function blocked_ip_load($iid) {
+  return db_query("SELECT * FROM {blocked_ips} WHERE iid = :iid", array(':iid' => $iid))->fetchAssoc();
+}
+
+/**
+ * Log access attempt
+ * 
+ * @param string $ip
+ */
+function blocked_ip_log($ip, $request, $ua_string) {
+  $watchdog_message = 'Access attempt from blocked IP: ' . $ip . '; request: ' . $request . '; User-Agent: ' . $ua_string;
+  watchdog(
+    'ip_blocking',
+    $watchdog_message,
+    NULL,
+    WATCHDOG_WARNING
+  );
+}
+
+/**
+ * Implements hook_preprocess_block().
+ * Add link to "Operations" cell on dblog event page.
+ */
+function ip_blocking_preprocess_block(&$variables) {
+  if (arg(0) == 'admin' && arg(1) == 'reports' && arg(2) == 'event') {
+    
+    if (isset($variables['content']['dblog_table'])) {
+      $rows     = $variables['content']['dblog_table']['#rows'];
+      $type     = $rows[0][1];
+      $message  = strip_tags($rows[5][1]);
+      $ip       = $rows[7][1];
+      $types    = array('access denied', 'antiscan', 'ip_blocking', 'login_allowlist', 'page not found', 'system', 'user', 'php');
+
+      if (in_array($type, $types)) {
+        $link = ip_blocking_build_operations_link($ip, urlencode($message));
+        $variables['content']['dblog_table']['#rows'][8][1] .= $link;
+      }
+    }
+  }
+}
+
+/**
+ * Build link to be used as "Operations" option for dblog event
+ * 
+ * @param string $ip
+ * @param string $message
+ * @return string
+ */
+function ip_blocking_build_operations_link($ip, $message) {
+  $link = '';
+  if (user_access('block IP addresses')) {
+    // Show the links for valid IP address only and not for the current user's IP.
+    if (ip_blocking_check_ip($ip)) {
+      $destination = backdrop_get_destination();
+
+      // If the IP is already blocked, display an unblock link or vice versa.
+      if (ip_is_denied($ip)) {
+        $link = t('IP blocked') . ' - '; 
+        $action = 'unblock';
+      }
+      else {
+        $action = 'block';
+      }
+
+      // Attribute for styling link.
+      $html_attributes = array(
+        'style' => 'text-transform:capitalize',
+      );
+
+      $link .= l(t('@action @ip', array('@action' => $action, '@ip' => $ip)),
+        "ip_blocking/event/$action/$ip/$message",
+        array('query' => $destination, 'attributes' => $html_attributes));
+    }
+  }
+  return $link;
+}
+
+
+/**
+ * Check IP is valid and not the current user's IP address.
+ * @param string $ip
+ * @return boolean TRUE if $ip is valid IP address and not the current user's IP address, FALSE otherwise.
+ */
+function ip_blocking_check_ip($ip) {
+  return (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_RES_RANGE) !== FALSE) && ($ip !== ip_address());
+}
+
+/**
+ * Confirmation form for the block an IP address from the "Operation" link.
+ * 
+ * @param array $form
+ * @param array &$form_state
+ * @param string $ip
+ * $paran string $reason
+ */
+function ip_blocking_confirm_blocking(array $form, array &$form_state, $ip, $reason) {
+  // Redirect the user in case of cancel.
+  $destination = backdrop_get_destination();
+
+  // Add the IP address and reason to ban as an internal form value.
+  $form['blocked_ip'] = array(
+    '#type' => 'value',
+    '#value' => $ip,
+  );
+  $form['reason'] = array(
+    '#type' => 'value',
+    '#value' => $reason,
+  );
+
+  return confirm_form($form, t('Are you sure you want to block %ip?',
+    array('%ip' => $ip)),
+    $destination,
+    '', t('Block'), t('Cancel'));
+}
+
+/**
+ * Form submission callback for ip_blocking_confirm_blocking().
+ *
+ * @param array $form
+ * @param array &$form_state
+ */
+function ip_blocking_confirm_blocking_submit(array $form, array &$form_state) {
+  $ip     = $form_state['values']['blocked_ip'];
+  $reason = $form_state['values']['reason'];
+
+  if (ip_blocking_check_ip($ip)) {
+    ip_blocking_block_ip($ip, $reason);
+    backdrop_set_message(t('The IP address %ip has been blocked.', array('%ip' => $ip)));
+  }
+  else {
+    backdrop_set_message(t('Unable to block the IP address %ip because it is not valid, or it is your current IP address.'), 
+      array('%ip' => $ip), 'error');
+  }
+}
+
+/**
+ * Block an IP address from the "Operation" link.
+ *
+ * @param string $ip IP address to block.
+ */
+function ip_blocking_block_ip($ip, $reason) {
+  global $user;
+  $uid         = $user->uid;
+  $config      = config('ip_blocking.settings');
+  $log_enabled = $config->get('log_enabled');
+  $reason_dec  = 'Request: ' . urldecode($reason); 
+
+  // Insert the record to DB.
+  db_insert('blocked_ips')
+    ->fields(array('ip' => $ip, 'reason' => $reason_dec, 'time' => time(), 'uid' => $uid))
+    ->execute();
+  
+  if ($log_enabled) {
+    watchdog(
+      'ip_blocking', 
+      'IP %ip blocked. %reason.', 
+      array('%ip' => $ip, '%reason' => $reason_dec),
+      WATCHDOG_WARNING
+    );
+  }
+}
+
+/**
+ * Confirmation form for unblock an IP address from the "Operation" link.
+ *
+ * @param array $form
+ * @param array &$form_state
+ * @param string $ip
+ */
+function ip_blocking_confirm_unblocking($form, &$form_state, $ip) {
+  //Redirect the user if they hit cancel.
+  $destination = backdrop_get_destination();
+  // Add the IP address to unban as an internal form value.
+  $form['blocked_ip'] = array(
+    '#type' => 'value',
+    '#value' => $ip,
+  );
+
+  return confirm_form($form, t('Are you sure you want to unblock %ip?',
+    array('%ip' => $ip)),
+    $destination,
+    '', t('Unblock'), t('Cancel'));
+}
+
+/**
+ * Form submission callback for ip_blocking_confirm_unblocking().
+ *
+ * @param array $form
+ * @param array &$form_state
+ */
+function ip_blocking_confirm_unblocking_submit(array $form, array &$form_state) {
+  $ip = $form_state['values']['blocked_ip'];
+
+  if (ip_blocking_check_ip($ip)) {
+    ip_blocking_unblock_ip($ip);
+    backdrop_set_message(t('The IP address %ip has been unblocked.', array(
+      '%ip' => $ip,
+    )));
+  }
+  else {
+    backdrop_set_message(t('Unable to unblock the IP address %ip because it is not valid.'), array(
+      '%ip' => $ip,
+    ), 'error');
+  }
+}
+
+/**
+ * Unblock an IP address.
+ * Used to manually unblock IP via dblog event "Operation" link.
+ * @param string $ip IP address to unblock.
+ */
+function ip_blocking_unblock_ip($ip) {
+  $config      = config('ip_blocking.settings');
+  $log_enabled = $config->get('log_enabled');
+  
+  // Delete the record from DB.
+  db_delete('blocked_ips')->condition('ip', $ip)->execute();
+
+  if ($log_enabled) {
+    watchdog(
+      'ip_blocking', 
+      'IP %ip unblocked.', 
+      array('%ip' => $ip),
+      WATCHDOG_WARNING
+    );
+  }
+}

@@ -1,0 +1,151 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the IP address blocking module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function ip_blocking_requirements($phase) {
+  $requirements = array();
+  
+  $t = get_t();
+
+  if ($phase == 'install') {
+    if (module_exists('ban_ip')) {
+      $requirements['ban_ip']['description'] = $t('Please uninstall module "Ban IP" then try again.');
+      $requirements['ban_ip']['severity'] = REQUIREMENT_ERROR;
+    }
+    
+    if (db_table_exists('blocked_ips')) {
+      db_rename_table('blocked_ips', 'blocked_ips_d7');
+      
+      $requirements['table_exists'] = array(
+        'title' => $t('DB table already exists'),
+        'description' => $t('DB table named "blocked_ips" already exists.'),
+        'value' => $t('An existing table named "blocked_ips" has been renamed to "blocked_ips_d7"'),
+        'severity' => REQUIREMENT_WARNING,
+      );
+    }
+  }
+
+  if ($phase == 'runtime') {
+    $result = db_query('SELECT iid FROM {blocked_ips}');
+    $count = $result->rowCount();
+    
+    if ($count > 0) {
+      $url = url('admin/config/people/ip-blocking');
+      $requirements['ip_blocking'] = array(
+        'title' => t('IP address blocking'),
+        'value' => t('@count IP-address(es) blocked. <a href="@url">Manage blocked IPs</a>',
+        array('@count' => $count, '@url' => $url)),
+        'severity' => REQUIREMENT_INFO,
+      );
+    } 
+    
+    if (db_table_exists('blocked_ips_d7')) {
+      $requirements['blocked_ips_d7'] = array(
+        'title' => $t('Database orphaned table'),
+        'value' => $t("A table named 'blocked_ips_d7' inherited from Drupal 7 can be safely deleted if you don't need data from this table."),
+        'severity' => REQUIREMENT_INFO,
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_schema().
+ */
+function ip_blocking_schema() {
+  $schema = array();
+  
+  $schema['blocked_ips'] = array(
+    'description' => 'Stores blocked IP addresses.',
+    'fields' => array(
+      'iid' => array(
+        'description' => 'Primary Key: unique ID for IP addresses.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'ip' => array(
+        'description' => 'IP address',
+        'type' => 'varchar',
+        'length' => 40,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'reason' => array(
+        'description' => 'Reason of blocking.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => FALSE,
+      ),
+      'uid' => array(
+        'description' => 'User identifier.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'time' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unix timestamp of when IP blocked.',
+      ),
+    ),
+    'indexes' => array(
+      'ip' => array('ip'),
+    ),
+    'primary key' => array('iid'),
+  );
+  
+  return $schema;
+}
+ 
+/**
+ *  Add new fields to database.
+ */
+function ip_blocking_update_1000() {
+  $fields = array(
+    'reason' => array(
+      'description' => 'Reason of blocking.',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => FALSE,
+    ),
+    'uid' => array(
+      'description' => 'User identifier.',
+      'type' => 'int',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'time' => array(
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => 'Unix timestamp of when IP blocked.',
+    ),
+  );
+  
+  foreach($fields as $field_name => $schema) {
+    if (!db_field_exists('blocked_ips', $field_name)) {
+      db_add_field('blocked_ips', $field_name, $schema);
+    }
+  }
+}
+
+/**
+ *  Add and init new variable.
+ */
+function ip_blocking_update_1001() {
+  $config = config('ip_blocking.settings');
+  $config->set('return_404', 0);
+  $config->save();  
+}

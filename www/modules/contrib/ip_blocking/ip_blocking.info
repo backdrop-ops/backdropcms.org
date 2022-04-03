@@ -1,0 +1,12 @@
+name = IP address blocking
+description = Enables blocking of IP addresses.
+package = Spam control
+backdrop = 1.x
+type = module
+configure = admin/config/people/ip-blocking
+version = 1.0.9
+
+; Added by Backdrop CMS packaging script on 2021-10-10
+project = ip_blocking
+version = 1.x-1.0.9
+timestamp = 1633888107
