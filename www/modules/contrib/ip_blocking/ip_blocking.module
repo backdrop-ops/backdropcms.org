@@ -12,7 +12,7 @@ function ip_blocking_config_info() {
     'label' => t('IP address blocking'),
     'group' => t('Configuration'),
   );
-  
+
   return $prefixes;
 }
 
@@ -43,13 +43,13 @@ function ip_blocking_menu() {
     'access arguments' => array('block IP addresses'),
     'file' => 'ip_blocking.admin.inc',
   );
-  
+
   $items['admin/config/people/ip-blocking/main'] = array(
     'title' => 'Main',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 1,
   );
-  
+
   $items['admin/config/people/ip-blocking/settings'] = array(
     'title' => 'Settings',
     'type' => MENU_LOCAL_TASK,
@@ -59,8 +59,7 @@ function ip_blocking_menu() {
     'access arguments' => array('block IP addresses'),
     'weight' => 2,
   );
-  
-  
+
   $items['admin/config/people/ip-blocking/unblock/%blocked_ip'] = array(
     'title' => 'Unblock IP address',
     'page callback' => 'backdrop_get_form',
@@ -88,7 +87,7 @@ function ip_blocking_menu() {
     'access arguments' => array('block IP addresses'),
     'type' => MENU_CALLBACK,
   );
-  
+
   return $items;
 }
 
@@ -99,7 +98,7 @@ function ip_blocking_menu() {
 function ip_blocking_boot() {
 
   $ip = check_plain(ip_address());
-  
+
   // Deny access to blocked IP address.
   if (ip_is_denied($ip)) {
     $config      = config('ip_blocking.settings');
@@ -107,7 +106,7 @@ function ip_blocking_boot() {
     $return_404  = $config->get('return_404');
     $request     = htmlspecialchars($_SERVER['REQUEST_URI']);
     $ua_string   = isset($_SERVER['HTTP_USER_AGENT']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT']) : '';
-    
+
     if($return_404) {
       header($_SERVER['SERVER_PROTOCOL'] . ' 404  Not Found');
     }
@@ -115,12 +114,141 @@ function ip_blocking_boot() {
       header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
       print 'Sorry, IP address ' . $ip . ' has been banned.';
     }
-    
+
     if($log_enabled) {
       blocked_ip_log($ip, $request, $ua_string);
     }
 
     exit();
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for 'user_cancel_confirm_form' form.
+ */
+function ip_blocking_form_user_cancel_confirm_form_alter(&$form, &$form_state, $form_id) {
+  if (!module_exists('ip')) {
+    return;
+  }
+  if (!isset($form['description']['#weight'])) {
+    $form['description']['#weight'] = 90;
+  }
+  $form['ip_blocking'] = array(
+    '#tree' => TRUE,
+    '#weight' => 80,
+  );
+  $form['ip_blocking']['ip_blocking_user_cancel'] = array(
+    '#type' => 'checkbox',
+    '#title' => t("Block this user's IP address(es)."),
+    '#default_value' => state_get('ip_blocking_user_cancel'),
+  );
+  $form['#submit'][] = 'ip_blocking_form_user_cancel_confirm_form_submit';
+}
+
+/**
+ * Submission function for blocking the IP address of a cancelled user.
+ */
+function ip_blocking_form_user_cancel_confirm_form_submit($form, &$form_state) {
+  $block_ip = $form_state['values']['ip_blocking']['ip_blocking_user_cancel'];
+  state_set('ip_blocking_user_cancel', $block_ip);
+  if (!$block_ip) {
+    return;
+  }
+  $account = $form_state['values']['_account'];
+  $ips = array();
+  $already_blocked = array();
+  $long_ips = db_query('
+    SELECT ip
+    FROM {ip_tracker}
+    WHERE uid = :uid
+    ', array(':uid' => $account->uid))
+    ->fetchCol();
+  foreach ($long_ips as $long_ip) {
+    $ip = long2ip($long_ip);
+    if (!ip_is_denied($ip)) {
+      ip_blocking_block_ip($ip, t("@name's IP blocked via account cancellation.", array('@name' => $account->name)));
+      $ips[] = $ip;
+    }
+    else {
+      $already_blocked[] = $ip;
+    }
+  }
+  if (!empty($ips)) {
+    backdrop_set_message(format_plural(
+      count($ips),
+      "@name's IP address has been blocked: @ips",
+      "@name's IP addresses have been blocked: @ips",
+      array('@name' => $account->name, '@ips' => implode(', ', $ips))));
+  }
+  else {
+    backdrop_set_message(t("@name had no IP addresses to be blocked.", array('@name' => $account->name)));
+  }
+  if (!empty($already_blocked)) {
+    backdrop_set_message(t("These IP addresses were already blocked:") . theme('item_list', array('items' => $already_blocked)));
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for 'user_multiple_cancel_confirm' form.
+ */
+function ip_blocking_form_user_multiple_cancel_confirm_alter(&$form, &$form_state, $form_id) {
+  if (!module_exists('ip')) {
+    return;
+  }
+  if (!isset($form['description']['#weight'])) {
+    $form['description']['#weight'] = 90;
+  }
+  $form['ip_blocking'] = array(
+    '#tree' => TRUE,
+    '#weight' => 80,
+  );
+  $form['ip_blocking']['ip_blocking_user_multiple_cancel'] = array(
+    '#type' => 'checkbox',
+    '#title' => t("Block cancelled users' IP addresses."),
+    '#default_value' => state_get('ip_blocking_user_multiple_cancel'),
+  );
+  $form['#submit'][] = 'ip_blocking_form_user_multiple_cancel_submit';
+}
+
+/**
+ * Submission function for blocking the IP address of multiple cancelled users.
+ */
+function ip_blocking_form_user_multiple_cancel_submit($form, &$form_state) {
+  $block_ip = $form_state['values']['ip_blocking']['ip_blocking_user_multiple_cancel'];
+  state_set('ip_blocking_user_multiple_cancel', $block_ip);
+  if (!$block_ip) {
+    return;
+  }
+  $accounts = $form_state['accounts'];
+  $blocked_info = array();
+  $already_blocked = array();
+  foreach ($accounts as $uid => &$account) {
+    $ips = array();
+    $long_ips = db_query('
+      SELECT ip
+      FROM {ip_tracker}
+      WHERE uid = :uid
+      ', array(':uid' => $uid))
+      ->fetchCol();
+    foreach ($long_ips as $long_ip) {
+      $ip = long2ip($long_ip);
+      if (!ip_is_denied($ip)) {
+        ip_blocking_block_ip($ip, t("@name's IP blocked via multiple account cancellation.", array('@name' => $account->name)));
+        $ips[] = $ip;
+      }
+      else {
+        $already_blocked[] = check_plain($account->name) . ': ' . $ip;
+      }
+    }
+    if (!empty($ips)) {
+      $blocked_info[] = check_plain($account->name) . ': ' . implode(', ', $ips);
+    }
+  }
+  if (!empty($blocked_info)) {
+    backdrop_set_message(t("These users' IP addresses have been blocked:") . theme('item_list', array('items' => $blocked_info)));
+  }
+  if (!empty($already_blocked)) {
+    backdrop_set_message(t("These users' IP addresses were already blocked:") . theme('item_list', array('items' => $already_blocked)));
   }
 }
 
@@ -134,11 +262,11 @@ function ip_blocking_boot() {
  */
 function ip_is_denied($ip) {
   $denied = FALSE;
-  
+
   if (class_exists('Database', FALSE)) {
     $denied = (bool)db_query("SELECT 1 FROM {blocked_ips} WHERE ip = :ip", array(':ip' => $ip))->fetchField();
   }
-  
+
   return $denied;
 }
 
@@ -155,7 +283,7 @@ function blocked_ip_load($iid) {
 
 /**
  * Log access attempt
- * 
+ *
  * @param string $ip
  */
 function blocked_ip_log($ip, $request, $ua_string) {
@@ -174,7 +302,7 @@ function blocked_ip_log($ip, $request, $ua_string) {
  */
 function ip_blocking_preprocess_block(&$variables) {
   if (arg(0) == 'admin' && arg(1) == 'reports' && arg(2) == 'event') {
-    
+
     if (isset($variables['content']['dblog_table'])) {
       $rows     = $variables['content']['dblog_table']['#rows'];
       $type     = $rows[0][1];
@@ -192,7 +320,7 @@ function ip_blocking_preprocess_block(&$variables) {
 
 /**
  * Build link to be used as "Operations" option for dblog event
- * 
+ *
  * @param string $ip
  * @param string $message
  * @return string
@@ -206,7 +334,7 @@ function ip_blocking_build_operations_link($ip, $message) {
 
       // If the IP is already blocked, display an unblock link or vice versa.
       if (ip_is_denied($ip)) {
-        $link = t('IP blocked') . ' - '; 
+        $link = t('IP blocked') . ' - ';
         $action = 'unblock';
       }
       else {
@@ -238,7 +366,7 @@ function ip_blocking_check_ip($ip) {
 
 /**
  * Confirmation form for the block an IP address from the "Operation" link.
- * 
+ *
  * @param array $form
  * @param array &$form_state
  * @param string $ip
@@ -279,7 +407,7 @@ function ip_blocking_confirm_blocking_submit(array $form, array &$form_state) {
     backdrop_set_message(t('The IP address %ip has been blocked.', array('%ip' => $ip)));
   }
   else {
-    backdrop_set_message(t('Unable to block the IP address %ip because it is not valid, or it is your current IP address.'), 
+    backdrop_set_message(t('Unable to block the IP address %ip because it is not valid, or it is your current IP address.'),
       array('%ip' => $ip), 'error');
   }
 }
@@ -294,17 +422,17 @@ function ip_blocking_block_ip($ip, $reason) {
   $uid         = $user->uid;
   $config      = config('ip_blocking.settings');
   $log_enabled = $config->get('log_enabled');
-  $reason_dec  = 'Request: ' . urldecode($reason); 
+  $reason_dec  = 'Request: ' . urldecode($reason);
 
   // Insert the record to DB.
   db_insert('blocked_ips')
     ->fields(array('ip' => $ip, 'reason' => $reason_dec, 'time' => time(), 'uid' => $uid))
     ->execute();
-  
+
   if ($log_enabled) {
     watchdog(
-      'ip_blocking', 
-      'IP %ip blocked. %reason.', 
+      'ip_blocking',
+      'IP %ip blocked. %reason.',
       array('%ip' => $ip, '%reason' => $reason_dec),
       WATCHDOG_WARNING
     );
@@ -363,14 +491,14 @@ function ip_blocking_confirm_unblocking_submit(array $form, array &$form_state) 
 function ip_blocking_unblock_ip($ip) {
   $config      = config('ip_blocking.settings');
   $log_enabled = $config->get('log_enabled');
-  
+
   // Delete the record from DB.
   db_delete('blocked_ips')->condition('ip', $ip)->execute();
 
   if ($log_enabled) {
     watchdog(
-      'ip_blocking', 
-      'IP %ip unblocked.', 
+      'ip_blocking',
+      'IP %ip unblocked.',
       array('%ip' => $ip),
       WATCHDOG_WARNING
     );

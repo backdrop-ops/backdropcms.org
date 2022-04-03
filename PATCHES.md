@@ -25,6 +25,10 @@ colorbox - Remove dependance on libraries API
   https://github.com/backdrop-contrib/colorbox/issues/9
   https://github.com/backdrop-contrib/colorbox/pull/10.patch
 
+ip_blocking - Add integration with IP Address Manager
+  https://github.com/backdrop-contrib/ip_blocking/issues/12
+  https://github.com/backdrop-contrib/ip_blocking/pull/13.patch
+
 markdown - PHP notice
   https://github.com/backdrop-contrib/markdown/issues/4
   https://github.com/backdrop-contrib/markdown/pull/7.patch
