@@ -69,20 +69,19 @@
     </p>
 
     <figure class="borg-demo-tugboat-information">
-      <a href="https://tugboat.qa" target="_blank">
+      <a href="https://tugboatqa.com" target="_blank">
         <?php print theme('image', array(
           'path' => backdrop_get_path('module', 'borg_tugboat') . '/images/tugboat-logo.png',
           'alt' => t('Tugboat QA Logo'),
-          'width' => 800,
-          'height' => 300,
+          'width' => 300,
+          'height' => 80,
           'attributes' => array('class' => array('tugboat-logo')),
         )); ?>
       </a>
       <figcaption>
-        <?php print t('Backdrop CMS demo sandboxes are provided by
-        <a href="http://tugboat.qa">Tugboat.qa</a>, a service that can create
-        on-demand site previews for pull requests. To learn more about Tugboat,
-        visit <a href="https://tugboat.qa">https://tugboat.qa</a>.'); ?>
+        <?php print t('Backdrop CMS demo sandboxes are provided by <a href="http://tugboatqa.com" target="_blank">TugboatQA.com</a>,
+        a service that can create on-demand site previews for pull requests. To learn more about Tugboat,
+        visit <a href="https://tugboatqa.com" target="_blank">https://tugboatqa.com</a>.'); ?>
       </figcaption>
     </figure>
 
