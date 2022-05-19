@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Integrates with Tugboat.qa to allow creating on-the-fly preview sites.
+ * Integrates with TugboatQA.com to allow creating on-the-fly preview sites.
  */
 
-define('TUGBOAT_API_URL', 'https://api.tugboat.qa/v3');
+define('TUGBOAT_API_URL', 'https://api.tugboatqa.com/v3');
 
 /**
  * Implements hook_config_info().
@@ -28,7 +28,7 @@ function tugboat_menu() {
   return array(
     'admin/config/services/tugboat' => array(
       'title' => 'Tugboat',
-      'description' => 'Configure Tugboat.qa integration.',
+      'description' => 'Configure TugboatQA.com integration.',
       'page callback' => 'backdrop_get_form',
       'page arguments' => array('tugboat_admin_settings'),
       'access arguments' => array('administer tugboat settings'),

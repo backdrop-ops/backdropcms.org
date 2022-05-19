@@ -1,19 +1,19 @@
 Tugboat
 =======
 
-[Tugboat.qa](https://tugboat.qa/) is a service that allows for the deployment of
+[TugboatQA.com](https://tugboatqa.com/) is a service that allows for the deployment of
 preview websites, generally for testing and quality assurance during
 development. This module provides integration with Tugboat to allow creating
 on-the-fly sites with the push of a button.
 
 This module was originally built as a custom module for BackdropCMS.org where it
 was used to allow people to demo a Backdrop site quickly and easily. It has been
-re-written to use Tugboat's new [API](https://api.tugboat.qa/) and to be more
+re-written to use Tugboat's new [API](https://api.tugboatqa.com/) and to be more
 generic (removing some of the Backdrop-specific wording, etc.).
 
-To use this module, you'll need a Tugboat.qa account and a Git repository that
+To use this module, you'll need a TugboatQA.com account and a Git repository that
 will be used to create the preview sites. See the
-[Tugboat documentation](https://docs.tugboat.qa/setting-up-tugboat/) for more
+[Tugboat documentation](https://docs.tugboatqa.com/setting-up-tugboat/) for more
 details.
 
 Installation
@@ -41,6 +41,7 @@ Current Maintainers
 -------------------
 
 - [Peter Anderson](https://github.com/BWPanda)
+- [Nate Lampton](https://github.com/quicksketch)
 
 Credits
 -------
