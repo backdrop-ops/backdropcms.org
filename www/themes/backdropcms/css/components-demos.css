@@ -47,6 +47,10 @@ body.demo h1.page-title {
   border: 1px solid #7D7D7D;
   padding: 24px;
   margin: 2em auto;
+  text-align: center;
+}
+.borg-demo-done-page .borg-demo-tugboat-information figcaption {
+  text-align: left;
 }
 .borg-demo-done-page .tugboat-logo {
   max-width: 300px;
