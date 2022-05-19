@@ -13,4 +13,13 @@
 
   <?php print render($form); ?>
   <p><?php print t("Creating a new sandbox may take a moment."); ?></p>
+
+  <hr>
+
+  <p><?php print t("Or try out the very latest changes with our:"); ?></p>
+  <p><?php print l(t('Dev preview'), 'demo/dev', array(
+    'attributes' => array(
+      'class' => array('button'),
+    ),
+  )); ?></p>
 </div>

@@ -27,6 +27,11 @@ body.demo h1.page-title {
 .borg-demo-create-page .ajax-progress-throbber {
   display: block;
 }
+hr {
+  border: none;
+  border-top: 1px solid #cccccc;
+  margin: 3em 0;
+}
 
 /*******************************************************************************
  * Demo fully created (done) page.
