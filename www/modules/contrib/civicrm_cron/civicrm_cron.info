@@ -1,0 +1,15 @@
+name = CiviCRM Cron
+description = Uses Backdrop's cron to call CiviCRM's cron.
+package = CiviCRM-Contrib
+dependencies[] = civicrm
+
+backdrop = 1.x
+type = module
+
+configure = admin/config/civicrm/civicrm-cron
+
+
+; Added by Backdrop CMS packaging script on 2020-12-03
+project = civicrm_cron
+version = 1.x-2.0.2
+timestamp = 1607022104
