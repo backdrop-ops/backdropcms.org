@@ -3,9 +3,9 @@
     "field_name": "field_irc",
     "entity_type": "user",
     "bundle": "user",
-    "label": "IRC Handle",
+    "label": "IRC handle",
     "widget": {
-        "weight": "9",
+        "weight": "12",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -26,7 +26,7 @@
         "default": {
             "label": "inline",
             "type": "hidden",
-            "weight": "7",
+            "weight": "8",
             "settings": []
         }
     }

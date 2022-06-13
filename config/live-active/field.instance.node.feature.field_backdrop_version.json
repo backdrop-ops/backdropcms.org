@@ -5,7 +5,7 @@
     "bundle": "feature",
     "label": "Backdrop version",
     "widget": {
-        "weight": "3",
+        "weight": "5",
         "type": "options_select",
         "module": "options",
         "active": 1,
@@ -30,6 +30,12 @@
             "weight": "4",
             "settings": [],
             "module": "list"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "2",
+            "settings": []
         }
     }
 }

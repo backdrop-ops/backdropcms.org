@@ -55,6 +55,15 @@ function borg_cleanup_form_user_pass_alter(&$form, &$form_state) {
 function borg_cleanup_form_user_register_form_alter(&$form, &$form_state) {
   $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you request to receive a new password.');
   unset($form['account']['pass']['#description']);
+
+  // Require the interest field on user registration form, even though it's not
+  // required in general (for backward compatibility with accounts created prior
+  // to this field).
+  if (isset($form['field_interest'])) {
+    $form['field_interest'][LANGUAGE_NONE]['#required'] = TRUE;
+    $form['field_interest'][LANGUAGE_NONE][0]['#required'] = TRUE;
+    $form['field_interest'][LANGUAGE_NONE][0]['value']['#required'] = TRUE;
+  }
 }
 
 /**

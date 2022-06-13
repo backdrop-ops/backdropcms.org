@@ -16,7 +16,7 @@ a.logo {
   float: left;
   width: 40px;
   box-sizing: border-box;
-  margin-left: 15px;
+  margin: 0 15px;
 }
 .site-slogan {
   display: none;
@@ -974,7 +974,7 @@ body.user-form .page-title {
     padding-bottom: 0;
   }
   #user-register-form .form-item label {
-    width: 130px;
+    width: 150px;
   }
   #user-register-form .form-type-checkbox label {
     width: auto;

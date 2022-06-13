@@ -1,10 +1,10 @@
 type = module
 name = Tugboat
-description = Integrates with Tugboat.qa to allow creating on-the-fly preview sites.
+description = Integrates with TugboatQA.com to allow creating on-the-fly preview sites.
 backdrop = 1.x
 configure = admin/config/services/tugboat
 
-; Added by Backdrop CMS packaging script on 2020-11-05
+; Added by Backdrop CMS packaging script on 2022-05-16
 project = tugboat
-version = 1.x-1.0.5
-timestamp = 1604642288
+version = 1.x-1.0.6
+timestamp = 1652703325

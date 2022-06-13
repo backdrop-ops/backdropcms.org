@@ -6,7 +6,13 @@ description = This website has been asymiliated. This is a sub-theme of Borg.
 backdrop = 1.x
 base theme = borg
 
-stylesheets[screen][] = css/components-blocks.css
+
+; These files override those from the borg theme.
+stylesheets[screen][] = css/layout-pages.css
+stylesheets[screen][] = css/components-nodes.css
 stylesheets[screen][] = css/components-views.css
+stylesheets[screen][] = css/components-blocks.css
+
+; These are files unique to this site.
 stylesheets[screen][] = css/borg-components.css
 stylesheets[screen][] = css/components-demos.css

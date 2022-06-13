@@ -7,7 +7,7 @@
 /**
  * The current system version.
  */
-define('BACKDROP_VERSION', '1.21.2');
+define('BACKDROP_VERSION', '1.21.4');
 
 /**
  * Core API compatibility.
@@ -817,6 +817,19 @@ function backdrop_is_apache() {
 function backdrop_is_nginx() {
   $server_software = $_SERVER['SERVER_SOFTWARE'];
   return (bool) preg_match("/nginx/i", $server_software);
+}
+
+/**
+ * Checks whether Backdrop is running under LiteSpeed.
+ *
+ * @return bool
+ *   TRUE if Backdrop is running under LiteSpeed, FALSE if not.
+ *
+ * @since 1.21.4
+ */
+function backdrop_is_litespeed() {
+  $server_software = $_SERVER['SERVER_SOFTWARE'];
+  return (bool) preg_match("/litespeed/i", $server_software);
 }
 
 /**
@@ -3116,6 +3129,10 @@ function _backdrop_bootstrap_page_cache() {
       // Flushing for PHP-FPM based installations.
       if (function_exists('fastcgi_finish_request')) {
         fastcgi_finish_request();
+      }
+      // Flushing for LiteSpeed servers.
+      elseif (function_exists('litespeed_finish_request')) {
+        litespeed_finish_request();
       }
       // Flushing for Apache mod_php installations.
       else {

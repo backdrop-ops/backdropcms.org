@@ -5,13 +5,14 @@
     "bundle": "user",
     "label": "Headshot",
     "widget": {
-        "weight": "3",
+        "weight": "7",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "medium"
+            "preview_image_style": "medium",
+            "browser_view": "image_library"
         }
     },
     "description": "",
@@ -28,13 +29,14 @@
         "default_image": "public://default_images_0",
         "user_register_form": 0,
         "max_dimensions": "350x350",
-        "min_dimensions": ""
+        "min_dimensions": "",
+        "orientate": 0
     },
     "display": {
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "5",
+            "weight": "6",
             "settings": []
         }
     }

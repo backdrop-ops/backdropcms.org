@@ -3,9 +3,9 @@ recipe: backdrop
 env_file:
   - .env
 config:
-  php: '7.2'
+  php: '7.4'
   webroot: www
-  backdrush: 1.x-1.x
+  backdrush: '1.x-1.x'
   xdebug: true
 services:
   database:
@@ -33,7 +33,8 @@ tooling:
     cmd:
       - php /app/scripts/pull-db-files.php --files
       - tar -xzf backdropcmsorg-files-latest.tar.gz
-      - rm -r www/files/ && mv files/ www/
+      - rm -r www/files/ || true
+      - mv files/ www/
       - rm -f backdropcmsorg-files-latest.tar.gz
   phpcs:
     service: appserver

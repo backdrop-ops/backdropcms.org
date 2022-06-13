@@ -1,0 +1,40 @@
+<?php
+/**
+ * @file
+ * Copy Blocksmodule.
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function copy_blocks_block_info() {
+  $blocks = array();
+  $blocks['region_copy'] = array(
+    'info' => t('Copy region'),
+    'description' => t('Copies an entire region and all the regions blocks into a block.'),
+    'class' => 'BlockRegionCopy',
+  );
+  $blocks['block_copy'] = array(
+    'info' => t('Copy block'),
+    'description' => t('Creates a copy of an existing block.'),
+    'class' => 'BlockCopy',
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function copy_blocks_autoload_info() {
+  return array(
+    'BlockRegionCopy' => 'block.region_copy.inc',
+    'BlockCopy' => 'block.block_copy.inc',
+  );
+}
+/**
+ * AJAX callback to update the style settings within the block configure form.
+ */
+function copy_blocks_ajax_select($form, &$form_state) {
+  return $form['layout_blocks_wrapper'];
+}

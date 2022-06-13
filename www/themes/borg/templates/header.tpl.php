@@ -19,14 +19,16 @@
  * - $menu: The menu for the header (if any), as an HTML string.
  */
 ?>
-<?php if ($site_name): ?>
-  <a class="site-name" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
+<a class="site-name wordmark" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span>backdrop</span></a>
+
+<?php if ($logo): ?>
+  <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" class="logo">
+    <?php print $logo; ?>
+  </a>
 <?php endif; ?>
 
-<?php if ($inverse_logo): ?>
-  <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" class="logo">
-    <?php print $inverse_logo; ?>
-  </a>
+<?php if ($site_name): ?>
+  <a class="site-name" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
 <?php endif; ?>
 
 <?php if ($site_slogan): ?>

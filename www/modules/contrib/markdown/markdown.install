@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the markdown module.
+ *
+ * @ingroup markdown
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function markdown_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    module_load_include('php', 'markdown', 'includes/Markdown.inc');
+
+    $requirements['markdown_lib_version'] = array(
+      'title' => $t('Markdown library version'),
+      'value' => l($t('@version', array('@version' => \Michelf\Markdown::MARKDOWNLIB_VERSION)), 'http://michelf.com/projects/php-markdown/'),
+      'severity' => REQUIREMENT_INFO,
+    );
+  }
+
+  return $requirements;
+}

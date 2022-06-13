@@ -5,13 +5,14 @@
     "bundle": "showcase",
     "label": "Screenshot (desktop)",
     "widget": {
-        "weight": "9",
+        "weight": "10",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "showcase_preview_512x512"
+            "preview_image_style": "showcase_preview_512x512",
+            "browser_view": "image_library"
         }
     },
     "description": "",
@@ -35,7 +36,7 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "6",
+            "weight": "7",
             "settings": []
         },
         "teaser": {
@@ -45,7 +46,8 @@
             "settings": {
                 "image_style": "showcase_preview_512x512",
                 "image_link": "content",
-                "image_float": ""
+                "image_float": "",
+                "image_load": "auto"
             },
             "module": "image"
         }

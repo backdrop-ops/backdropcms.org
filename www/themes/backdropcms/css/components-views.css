@@ -13,12 +13,6 @@
 }
 .view-quotes {
   padding: 50px 0;
-  background-color: #F7F7F7;
-  margin-left: -500px;
-  margin-right: -500px;
-  padding: 50px 500px;
-  border-top: 2px solid #E8E6E5;
-  border-bottom: 2px solid #E8E6E5;
 }
 .view-quotes img {
   float: left;
@@ -382,16 +376,19 @@
 }
 
 /*******************************************************************************
- * Showcase - block
+ * Showcase - block featured bottom
  ******************************************************************************/
-.block-views-showcase-block-1 {
+.block-views-showcase-block-1,
+.block-views-showcase-block-3 {
   padding: 30px;
 }
-.block-views-showcase-block-1 h2 {
+.block-views-showcase-block-1 h2,
+.block-views-showcase-block-3 h2 {
   margin-top: 0;
   margin-bottom: 0;
 }
-.block-views-showcase-block-1 .view-showcase .view-header {
+.block-views-showcase-block-1 .view-showcase .view-header,
+.block-views-showcase-block-3 .view-showcase .view-header {
   text-align: right;
   font-size: 1.25rem; /* 20px */
   padding-bottom: 10px;
@@ -399,55 +396,67 @@
 .block-views-showcase-block-1 .view-showcase .view-header p {
   margin: 0;
 }
-.block-views-showcase-block-1 .view-showcase .col-inner {
+.block-views-showcase-block-1 .view-showcase .col-inner,
+.block-views-showcase-block-3 .view-showcase .col-inner {
   background-color: transparent;
   border: 0;
   padding-bottom: 15px;
 }
-.block-views-showcase-block-1 .views-field-title {
+.block-views-showcase-block-1 .views-field-title,
+.block-views-showcase-block-3 .views-field-title {
   padding-left: 0;
   font-size: 1rem; /* 16px */
 }
-.block-views-showcase-block-1 .views-field-title a {
+.block-views-showcase-block-1 .views-field-title a,
+.block-views-showcase-block-3 .views-field-title a {
   color: #fff;
 }
 
 @media (min-width: 25em) { /* 400px @ 16px font size */
-  .block-views-showcase-block-1 h2 {
+  .block-views-showcase-block-1 h2,
+  .block-views-showcase-block-3 h2 {
     padding-left: 30px;
   }
-  .block-views-showcase-block-1 .view-showcase .view-header {
+  .block-views-showcase-block-1 .view-showcase .view-header,
+  .block-views-showcase-block-3 .view-showcase .view-header {
     padding-right: 15px;
   }
 }
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  .block-views-showcase-block-1 .view-showcase .view-header {
+  .block-views-showcase-block-1 .view-showcase .view-header,
+  .block-views-showcase-block-3 .view-showcase .view-header {
     font-size: 1.5rem; /* 24px */
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .block-views-showcase-block-1 h2 {
+  .block-views-showcase-block-1 h2,
+  .block-views-showcase-block-3 h2 {
     padding-left: 15px;
   }
-  .block-views-showcase-block-1 .view-showcase .view-header {
+  .block-views-showcase-block-1 .view-showcase .view-header,
+  .block-views-showcase-block-3 .view-showcase .view-header {
     padding-right: 0;
     padding-bottom: 0;
   }
 }
 
 /*******************************************************************************
-** Showcase - block featured
+** Showcase - block featured top
 *******************************************************************************/
 .block-views-showcase-block-2 .views-field {
   padding-left: 0;
   padding-right: 0;
 }
-.block-views-showcase-block-2 .views-field-field-screen-lg {
+.block-views-showcase-block-2 .views-field-title a {
+  color: #000;
+}
+.block-views-showcase-block-2 .views-field-field-screen-lg,
+.block-views-showcase-block-2 .views-field-field-header-photo {
   /* @see borg-componens.css ~line 135 for .l-cut-cormers .block */
     /* allow for 3px border */
   margin-top: -27px;
-  margin-left: -27px;
-  margin-right: -27px;
+  margin-left: -12px;
+  margin-right: -12px;
 }
 .block-views-showcase-block-2 .views-field-nothing {
   text-transform: uppercase;
@@ -459,22 +468,49 @@
   font-weight: bolder;
 }
 
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .block-views-showcase-block-2 .views-field-field-screen-lg,
+  .block-views-showcase-block-2 .views-field-field-header-photo {
+    /* @see borg-componens.css ~line 153 for .l-cut-cormers .block */
+      /* allow for 3px border */
+    margin-top: -27px;
+    margin-left: -27px;
+    margin-right: -27px;
+  }
+}
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .block-views-showcase-block-2 .views-field-field-screen-lg {
-    /* @see borg-componens.css ~line 158 for .l-cut-cormers .block */
+  .block-views-showcase-block-2 .views-field-field-screen-lg,
+  .block-views-showcase-block-2 .views-field-field-header-photo {
+    /* @see borg-componens.css ~line 159 for .l-cut-cormers .block */
       /* allow for 3px border */
     margin-top: -27px;
     margin-left: -12px;
     margin-right: -12px;
   }
+  .block-views-showcase-block-2 .views-field-title {
+    /* @see borg-componens.css ~line 164 for .l-cut-cormers h2 */
+    font-size: 1.5rem;
+    line-height: 1.5;
+  }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .block-views-showcase-block-2 .views-field-field-screen-lg {
+  .block-views-showcase-block-2 .views-field-field-screen-lg,
+  .block-views-showcase-block-2 .views-field-field-header-photo {
     /* @see borg-componens.css ~line 165 for .l-cut-cormers .block */
       /* allow for 3px border */
     margin-top: -27px;
     margin-left: -27px;
     margin-right: -27px;
+  }
+  .block-views-showcase-block-2 .views-field-title {
+    /* @see borg-componens.css ~line 173 for .l-cut-cormers h2 */
+    font-size: 1.75rem;
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .block-views-showcase-block-2 .views-field-title {
+    /* @see borg-componens.css ~line 173 for .l-cut-cormers h2 */
+    font-size: 2rem;
   }
 }
 
@@ -501,6 +537,28 @@
 .view-platforms .view-header h2 {
   font-weight: 300; /* Light */
   color: #5A5D5E;
+}
+
+/*******************************************************************************
+** taxonomy term description view
+*******************************************************************************/
+.view-term {
+  margin-bottom: 30px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .view-term {
+    margin-bottom: 45px;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .view-term {
+    margin-bottom: 60px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .view-term {
+    margin-bottom: 90px;
+  }
 }
 
 /*******************************************************************************

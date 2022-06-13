@@ -16,16 +16,25 @@
                 "weight": "0"
             },
             "timezone": {
-                "weight": "17"
+                "weight": "19"
             },
             "googleanalytics": {
-                "weight": "18"
+                "weight": "20"
+            },
+            "akismet": {
+                "weight": "22"
+            },
+            "metatags": {
+                "weight": "21"
+            },
+            "account_settings": {
+                "weight": "1"
             }
         },
         "display": {
             "member_for": {
                 "default": {
-                    "weight": "14",
+                    "weight": "15",
                     "visible": false
                 }
             }
