@@ -436,6 +436,6 @@ function purge_users_get_users_list($form_state) {
     $blocked_users = purge_users_blocked_user_ids($param, $user_roles, $enable_blocked);
   }
   // Merge results to create an array of user ids to purge.
-  $users = array_merge($never_loggedin_users, $not_loggedin_users, $inactive_users, $blocked_users);
+  $users = array_unique(array_merge($never_loggedin_users, $not_loggedin_users, $inactive_users, $blocked_users));
   return $users;
 }
