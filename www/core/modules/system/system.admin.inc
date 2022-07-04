@@ -786,7 +786,10 @@ function _system_modules_build_row($info, $extra) {
   $form['#requires'] = $extra['requires'];
   $form['#required_by'] = $extra['required_by'];
   $form['#required_by_distribution'] = $extra['required_by_distribution'];
-
+  if (!empty($info['project'])) {
+    $form['#project'] = $info['project'];
+  }
+  
   // Check the compatibilities.
   $compatible = TRUE;
   $status_short = '';
@@ -1428,7 +1431,7 @@ function system_site_information_settings_validate($form, &$form_state) {
 
   // Get the normal path of the home page.
   form_set_value($form['front_page']['site_frontpage'], backdrop_get_normal_path($form_state['values']['site_frontpage']), $form_state);
-  
+
   // Validate home page path.
   if (!backdrop_valid_path($form_state['values']['site_frontpage'])) {
     form_set_error('site_frontpage', t("The path '%path' is either invalid or you do not have access to it.", array('%path' => $form_state['values']['site_frontpage'])));

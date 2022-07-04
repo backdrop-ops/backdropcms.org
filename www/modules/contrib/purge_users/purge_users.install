@@ -1,0 +1,48 @@
+<?php
+/**
+ * @file
+ * Install, uninstall, and update hooks for purge_users.
+ */
+
+/**
+ * Migrate purge_users variables to config.
+ */
+function purge_users_update_1000() {
+  $config = config('purge_users.settings');
+  $config->set('purge_users_purge_on_cron', update_variable_get('purge_users_purge_on_cron', ''));
+  $config->set('purge_users_roles', update_variable_get('purge_users_roles', array()));
+  $config->set('purge_users_enabled_never_loggedin_users', update_variable_get('purge_users_enabled_never_loggedin_users', ''));
+  $config->set('purge_users_enabled_loggedin_users', update_variable_get('purge_users_enabled_loggedin_users', ''));
+  $config->set('purge_users_enabled_inactive_users', update_variable_get('purge_users_enabled_inactive_users', ''));
+  $config->set('purge_users_enabled_blocked_users', update_variable_get('purge_users_enabled_blocked_users', ''));
+  $config->set('purge_users_user_never_lastlogin_value', update_variable_get('purge_users_user_never_lastlogin_value', ''));
+  $config->set('purge_users_user_never_lastlogin_period', update_variable_get('purge_users_user_never_lastlogin_period', ''));
+  $config->set('purge_users_user_lastlogin_value', update_variable_get('purge_users_user_lastlogin_value', ''));
+  $config->set('purge_users_user_lastlogin_period', update_variable_get('purge_users_user_lastlogin_period', ''));
+  $config->set('purge_users_user_inactive_value', update_variable_get('purge_users_user_inactive_value', ''));
+  $config->set('purge_users_user_inactive_period', update_variable_get('purge_users_user_inactive_period', ''));
+  $config->set('purge_users_user_blocked_value', update_variable_get('purge_users_user_blocked_value', ''));
+  $config->set('purge_users_user_blocked_period', update_variable_get('purge_users_user_blocked_period', ''));
+  $config->set('purge_users_inactive_user_notify_text', update_variable_get('purge_users_inactive_user_notify_text', ''));
+  $config->set('purge_users_cancel_method', update_variable_get('purge_users_cancel_method', 'user_cancel_reassign'));
+  $config->set('purge_users_send_email_notification', update_variable_get('purge_users_send_email_notification', ''));
+  $config->save();
+
+  update_variable_del('purge_users_purge_on_cron');
+  update_variable_del('purge_users_roles');
+  update_variable_del('purge_users_enabled_never_loggedin_users');
+  update_variable_del('purge_users_enabled_loggedin_users');
+  update_variable_del('purge_users_enabled_inactive_users');
+  update_variable_del('purge_users_enabled_blocked_users');
+  update_variable_del('purge_users_user_never_lastlogin_value');
+  update_variable_del('purge_users_user_never_lastlogin_period');
+  update_variable_del('purge_users_user_lastlogin_value');
+  update_variable_del('purge_users_user_lastlogin_period');
+  update_variable_del('purge_users_user_inactive_value');
+  update_variable_del('purge_users_user_inactive_period');
+  update_variable_del('purge_users_user_blocked_value');
+  update_variable_del('purge_users_user_blocked_period');
+  update_variable_del('purge_users_inactive_user_notify_text');
+  update_variable_del('purge_users_cancel_method');
+  update_variable_del('purge_users_send_email_notification');
+}

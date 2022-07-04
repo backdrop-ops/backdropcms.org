@@ -1,0 +1,20 @@
+{
+    "_config_name": "purge_users.settings",
+    "purge_users_purge_on_cron": 0,
+    "purge_users_roles": [],
+    "purge_users_enabled_never_loggedin_users": 0,
+    "purge_users_enabled_loggedin_users": 0,
+    "purge_users_enabled_inactive_users": 0,
+    "purge_users_enabled_blocked_users": 0,
+    "purge_users_user_never_lastlogin_value": "",
+    "purge_users_user_never_lastlogin_period": "days",
+    "purge_users_user_lastlogin_value": "",
+    "purge_users_user_lastlogin_period": "days",
+    "purge_users_user_inactive_value": "",
+    "purge_users_user_inactive_period": "days",
+    "purge_users_user_blocked_value": "",
+    "purge_users_user_blocked_period": "days",
+    "purge_users_inactive_user_notify_text": "Dear User, \n\nYour account has been deleted due the website’s policy to automatically remove users who match certain criteria. If you have concerns regarding the deletion, please talk to the administrator of the website. \n\nThank you",
+    "purge_users_cancel_method": "user_cancel_reassign",
+    "purge_users_send_email_notification": 0
+}

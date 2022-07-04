@@ -5,7 +5,7 @@
     "tag": "default",
     "disabled": false,
     "base_table": "users",
-    "human_name": "spam",
+    "human_name": "Spam check",
     "core": "1.18.1",
     "display": {
         "default": {
@@ -105,6 +105,7 @@
                         "hide_alter_empty": 1,
                         "include_exclude": "include",
                         "selected_actions": {
+                            "user_block_user_action": "user_block_user_action",
                             "user_cancel_user_action": "user_cancel_user_action"
                         }
                     },

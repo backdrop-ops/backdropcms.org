@@ -22,6 +22,7 @@ stylesheets[all][] = css/component/admin-tabs.css
 stylesheets[all][] = css/component/breadcrumb.css
 stylesheets[all][] = css/component/pager.css
 stylesheets[all][] = css/component/hero.css
+stylesheets[all][] = css/component/cards.css
 stylesheets[all][] = css/component/teasers.css
 stylesheets[all][] = css/component/comment.css
 stylesheets[all][] = css/component/caption.css
@@ -45,7 +46,7 @@ scripts[] = js/script.js
 ; menu. Color module provides our defaults, so we just register a dummy setting.
 settings[color] = true
 
-; Added by Backdrop CMS packaging script on 2022-03-16
+; Added by Backdrop CMS packaging script on 2022-05-15
 project = backdrop
-version = 1.21.4
-timestamp = 1647469614
+version = 1.22.0
+timestamp = 1652672169

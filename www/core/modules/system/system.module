@@ -161,6 +161,7 @@ function system_permission() {
     'administer site configuration' => array(
       'title' => t('Administer site configuration'),
       'restrict access' => TRUE,
+      'warning' => t('Provides access to a variety of settings/functionality that should generally be restricted to site administrators.'),
     ),
     'administer themes' => array(
       'title' => t('Administer themes'),
@@ -168,6 +169,7 @@ function system_permission() {
     'administer software updates' => array(
       'title' => t('Administer software updates'),
       'restrict access' => TRUE,
+      'warning' => t('Run database updates for Backdrop projects.'),
     ),
     'access administration pages' => array(
       'title' => t('Use the administration pages'),
@@ -2907,8 +2909,17 @@ function system_get_info($type, $name = NULL) {
  *   An associative array of module information.
  */
 function _system_rebuild_module_data() {
-  // Find modules
-  $modules = backdrop_system_listing('/^' . BACKDROP_PHP_FUNCTION_PATTERN . '\.module$/', 'modules', 'name', 0);
+  // Find module files, recording multiples if they exist.
+  $files = backdrop_system_listing('/^' . BACKDROP_PHP_FUNCTION_PATTERN . '\.module$/', 'modules', 'uri', 0);
+  $modules = array();
+  foreach ($files as $file) {
+    if (!isset($modules[$file->name])) {
+      $modules[$file->name] = $file;
+    }
+    // Modules found later in the search take precedence, but record all found.
+    $modules[$file->name]->uri = $file->uri;
+    $modules[$file->name]->all_uris[] = $file->uri;
+  }
 
   // Include the installation profile in modules that are loaded.
   $profile = backdrop_get_profile();
@@ -4399,7 +4410,7 @@ function system_admin_paths() {
  *   'first_setting' => array(
  *     '#type' => 'textfield',
  *     '#title' => t('First Setting'),
- *     '#default_setting' => $settings_config->get('first_setting'),
+ *     '#default_value' => $primary_config->get('first_setting'),
  *   ),
  *   'second_setting' => array( ... ),
  *
@@ -4413,7 +4424,7 @@ function system_admin_paths() {
  *
  *     'bonus_three' => array(
  *       '#type' => 'textfield',
- *       '#default_setting' => $tertiary_config->get('bonus_three'),
+ *       '#default_value' => $tertiary_config->get('bonus_three'),
  *       '#config' => 'mymodule.third',
  *     ),
  *   ),
