@@ -1,0 +1,441 @@
+<?php
+/**
+ * @file
+ * Auto Purge Users module file.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function purge_users_menu() {
+  $items = array();
+  $items['admin/config/people/purge-rule'] = array(
+    'title' => 'Auto purge users',
+    'description' => 'Configure purge users.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('purge_users_config_form'),
+    'access arguments' => array('administer users'),
+    'file' => 'purge_users.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function purge_users_config_info() {
+  $prefixes['purge_users.settings'] = array(
+    'label' => t('Auto Purge Users settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function purge_users_cron() {
+  $config = config('purge_users.settings');
+  if ($config->get('purge_users_purge_on_cron') == 1) {
+
+    // Get configuration settings.
+    $user_roles = array_filter($config->get('purge_users_roles'));
+    $never_enable_loggedin = $config->get('purge_users_enabled_never_loggedin_users');
+    $enable_loggedin = $config->get('purge_users_enabled_loggedin_users');
+    $enable_inactive = $config->get('purge_users_enabled_inactive_users');
+    $enable_blocked = $config->get('purge_users_enabled_blocked_users');
+    $param = array(
+      'never_login_value' => $config->get('purge_users_user_never_lastlogin_value'),
+      'never_login_period' => $config->get('purge_users_user_never_lastlogin_period'),
+      'login_value' => $config->get('purge_users_user_lastlogin_value'),
+      'login_period' => $config->get('purge_users_user_lastlogin_period'),
+      'inactive_value' => $config->get('purge_users_user_inactive_value'),
+      'inactive_period' => $config->get('purge_users_user_inactive_period'),
+      'blocked_value' => $config->get('purge_users_user_blocked_value'),
+      'blocked_period' => $config->get('purge_users_user_blocked_period'),
+    );
+
+    // Get user ids to purge.
+    $never_loggedin_users = array();
+    $not_loggedin_users = array();
+    $inactive_users = array();
+    $blocked_users = array();
+    // Get users who have never logged in at all.
+    if ($never_enable_loggedin == 1) {
+      $never_loggedin_users = purge_users_never_loggedin_user_ids($param, $user_roles);
+    }
+    // Get users who have not logged in at all.
+    if ($enable_loggedin == 1) {
+      $not_loggedin_users = purge_users_not_loggedin_user_ids($param, $user_roles);
+    }
+    // Get users who didn't activate their account.
+    if ($enable_inactive == 1) {
+      $inactive_users = purge_users_inactive_user_ids($param, $user_roles);
+    }
+    // Get the users who are blocked.
+    if ($enable_blocked == 1) {
+      $blocked_users = purge_users_blocked_user_ids($param, $user_roles);
+    }
+    // Merge results to create an array of user ids to purge.
+    $result = array_merge($never_loggedin_users, $not_loggedin_users);
+    $result = array_unique($result);
+    // Add items to queue.
+    $queue = BackdropQueue::get('purge_users');
+    // Process the queue till it is empty.
+    if ($queue->numberOfItems() == 0) {
+      foreach ($result as $user_id) {
+        $queue->createItem($user_id);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_mail().
+ */
+function purge_users_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'delete_users':
+      $message['subject'] = $params['subject'];
+      $message['body'][] = $params['body'];
+      break;
+  }
+}
+
+/**
+ * Send notification email.
+ *
+ * @param mixed $account
+ *   User object.
+ */
+function purge_users_send_notification($account) {
+  $message = config_get('purge_users.settings', 'purge_users_inactive_user_notify_text');
+
+  // Call token replace on the text args into the second parameter.
+  $message = token_replace($message, array('user' => $account));
+  $params = array(
+    'subject' => t('Your account is deleted.'),
+    'body' => check_markup($message, 'plain_text'),
+  );
+  $from = config_get('system.core', 'site_mail');
+  // Send the notification email.
+  backdrop_mail('purge_users', 'delete_users', $account->mail, user_preferred_language($account), $params, $from, TRUE);
+}
+
+/**
+ * Get user IDs for user accounts that have never logged in.
+ *
+ * @param array $param
+ *   Form parameters.
+ * @param array $user_roles
+ *   Selected user roles.
+ *
+ * @return mixed
+ *   Users ids.
+ */
+function purge_users_never_loggedin_user_ids(array $param, array $user_roles = array()) {
+  $query = purge_users_build_query($user_roles);
+  if (!empty($param['never_login_value'])) {
+    $created_date = strtotime('-' . $param['never_login_value'] . ' ' . $param['never_login_period']);
+    $query->condition('u.created', $created_date, '<');
+    $query->condition('u.login', 0);
+  }
+  $uids = $query->execute()->fetchCol();
+  return $uids;
+}
+
+/**
+ * Get user IDs for user accounts that have logged in, but not recently.
+ *
+ * @param array $param
+ *   Form parameters.
+ * @param array $user_roles
+ *   Selected user roles.
+ *
+ * @return mixed
+ *   Users ids.
+ */
+function purge_users_not_loggedin_user_ids(array $param, array $user_roles = array()) {
+  $query = purge_users_build_query($user_roles);
+  if (!empty($param['login_value'])) {
+    $login_date = strtotime('-' . $param['login_value'] . ' ' . $param['login_period']);
+    $query->condition('u.login', $login_date, '<');
+    $query->condition('u.login', 0, '!=');
+  }
+  $uids = $query->execute()->fetchCol();
+  return $uids;
+}
+
+/**
+ * Get user IDs for user accounts that have not logged in and are blocked.
+ *
+ * @param array $param
+ *   Form parameters.
+ * @param array $user_roles
+ *   Selected users roles.
+ *
+ * @return mixed
+ *   Inactive user ids.
+ */
+function purge_users_inactive_user_ids(array $param, array $user_roles = array()) {
+  $query = purge_users_build_query($user_roles);
+  if (!empty($param['inactive_value'])) {
+    $inactive_date = strtotime('-' . $param['inactive_value'] . ' ' . $param['inactive_period']);
+    $query->condition('u.created', $inactive_date, '<');
+    $query->condition('u.login', 0);
+    $query->condition('u.status', 0);
+  }
+  $uids = $query->execute()->fetchCol();
+  return $uids;
+}
+
+/**
+ * Get user IDs for user accounts that have logged in but are blocked.
+ *
+ * @param array $param
+ *   Form parameters.
+ * @param array $user_roles
+ *   Selected users roles.
+ *
+ * @return mixed
+ *   Blocked user ids.
+ */
+function purge_users_blocked_user_ids(array $param, array $user_roles = array()) {
+  $query = purge_users_build_query($user_roles);
+  if (!empty($param['blocked_value'])) {
+    $block_date = strtotime('-' . $param['blocked_value'] . ' ' . $param['blocked_period']);
+    $query->condition('u.created', $block_date, '<');
+    $query->condition('u.login', $block_date, '<');
+    $query->condition('u.login', 0, '!=');
+    $query->condition('u.status', 0);
+  }
+  $uids = $query->execute()->fetchCol();
+  return $uids;
+}
+
+/**
+ * Build the basic query to find users, possibly limited by role.
+ */
+function purge_users_build_query(array $user_roles) {
+  $query = db_select('users', 'u');
+  $query->leftjoin('users_roles', 'ur', 'ur.uid = u.uid');
+  $query->fields('u', array('uid'));
+  $query->condition('u.uid', 1, '>');
+  if (!in_array(BACKDROP_AUTHENTICATED_ROLE, $user_roles)) {
+    $query->condition('ur.role', $user_roles, 'IN');
+  }
+  return $query;
+}
+
+/**
+ * Implements hook_cron_queue_info().
+ */
+function purge_users_cron_queue_info() {
+  $queues['purge_users'] = array(
+    'worker callback' => 'purge_users_worker',
+    'time' => 60,
+  );
+  return $queues;
+}
+
+/**
+ * Cron queue worker callback function.
+ *
+ * @param mixed $data
+ *   User account.
+ */
+function purge_users_worker($data) {
+  $config = config('purge_users.settings');
+  $account = user_load($data);
+  $method = $config->get('purge_users_cancel_method');
+  // Modules use hook_user_delete() to respond to deletion.
+  if ($method == 'user_cancel_delete') {
+    // Do heavy lifting here. Delete users and send an notification email.
+    if ($config->get('purge_users_send_email_notification') == 1) {
+      purge_users_send_notification($account);
+    }
+    // Perform user deletion operation.
+    user_delete($account->uid);
+  }
+  else {
+    user_cancel(array(), $account->uid, 'user_cancel_reassign');
+    // user_cancel() initiates a batch process. Run it manually.
+    $batch = &batch_get();
+    $batch['progressive'] = FALSE;
+    batch_process();
+  }
+  // Log an entry to watchdog.
+  watchdog('Purge users', 'User %user purged.', array('%user' => $account->name), WATCHDOG_NOTICE);
+}
+
+/**
+ * Mass cancel user account confirmation form.
+ */
+function purge_users_multiple_cancel_confirm($form, &$form_state, $uids, $cancel_method) {
+
+  // The list of user IDs could be really huge (too large to pass as a form
+  // value), so we'll store it temporarily in the db to be fetched upon
+  // confirmation submission.
+  state_set('purge_users_uids', $uids);
+
+  $uids_to_report = array_slice($uids, 0, 25);
+  $accounts_to_report = user_load_multiple($uids_to_report);
+  foreach ($accounts_to_report as $uid => $account) {
+    $items[] = check_plain($account->name) . ' &lt;' . $account->mail . '&gt;';
+  }
+  if (count($uids_to_report) < count($uids)) {
+    $items[] = t('...and @num more.', array('@num' => count($uids) - count($uids_to_report)));
+  }
+  $form['accounts'] = array(
+    '#markup' => theme('item_list', array('items' => $items)),
+  );
+
+  $form['purge_users_cancel_method'] = array(
+    '#type' => 'hidden',
+    '#value' => $cancel_method,
+  );
+  $form['#submit'][] = 'purge_users_multiple_cancel_confirm_submit';
+  return confirm_form($form,
+    t('Are you sure you want to purge these user accounts?'),
+    'admin/config/people/purge-rule', t('This action cannot be undone.'),
+    t('Purge accounts'), t('Cancel'));
+}
+
+/**
+ * Submit handler for mass-account cancellation confirmation form.
+ *
+ * @see purge_users_multiple_cancel_confirm()
+ * @see purge_users_multiple_cancel_confirm_submit()
+ */
+function purge_users_multiple_cancel_confirm_submit($form, &$form_state) {
+  if ($form_state['values']['confirm']) {
+    // Initialize a batch operation.
+    $batch = array(
+      'operations' => array(),
+      'finished' => 'purge_users_batch_completed',
+      'title' => t('Delete user accounts'),
+      'init_message' => t('Delete user accounts operation is starting...'),
+      'progress_message' => t('Processed @current out of @total.'),
+      'error_message' => t('Delete user accounts operation has encountered an error.'),
+    );
+
+    // Get the stored list of uids to purge from state (then clear state,
+    // because we no longer need that list).
+    $uids = state_get('purge_users_uids');
+    state_del('purge_users_uids');
+    $accounts = user_load_multiple($uids);
+
+    foreach ($accounts as $uid => $account) {
+      $method = $form_state['values']['purge_users_cancel_method'];
+      $batch['operations'][] = array(
+        'purge_users_batch_process',
+        array($account, $method),
+      );
+    }
+    // Batch set.
+    batch_set($batch);
+    batch_process('admin/config/people/purge-rule');
+  }
+  $form_state['redirect'] = 'admin/config/people/purge-rule';
+}
+
+/**
+ * The batch processor for purging multiple users.
+ */
+function purge_users_batch_process($account, $method, &$context) {
+  if (!isset($context['results']['purged'])) {
+    $context['results']['purged'] = 0;
+  }
+
+  // Modules use hook_user_delete() to respond to deletion.
+  if ($method != 'user_cancel_delete') {
+    // Allow modules to add further sets to this batch.
+    module_invoke_all('user_cancel', array(), $account, $method);
+  }
+  // Log an entry to watchdog.
+  watchdog('Purge users', 'User account %user purged.', array('%user' => $account->name), WATCHDOG_NOTICE);
+  // Do heavy lifting here. Delete users and send an notification email.
+  if (config_get('purge_users.settings', 'purge_users_send_email_notification') == 1) {
+    purge_users_send_notification($account);
+  }
+  // Perform user deletion operation.
+  user_delete($account->uid);
+
+  // Display a progress message...
+  $context['message'] = "Now processing $account->name ...";
+  // Update our progress information.
+  $context['results']['purged']++;
+}
+
+/**
+ * The batch finish handler.
+ */
+function purge_users_batch_completed($success, $results, $operations) {
+  if ($success) {
+    $purged = isset($results['purged']) ? $results['purged'] : 0;
+    $message = format_plural($purged, '@count user account has been purged.', '@count user accounts have been purged.', array('@count' => $purged));
+    backdrop_set_message($message);
+  }
+  else {
+    $error_operation = reset($operations);
+    $message = t('An error occurred while processing %error_operation with arguments: @arguments', array(
+      '%error_operation' => $error_operation[0],
+      '@arguments' => print_r($error_operation[1], TRUE),
+    ));
+    backdrop_set_message($message, 'error');
+  }
+}
+
+/**
+ * Get user ids to cancel.
+ *
+ * @param mixed $form_state
+ *   Purge users setting form data.
+ *
+ * @return array
+ *   User ids to be processed.
+ */
+function purge_users_get_users_list($form_state) {
+  // Collect configuration values.
+  $enable_blocked = $form_state['values']['purge_users_enabled_blocked_users'];
+  $user_roles = array_filter($form_state['values']['purge_users_roles']);
+  $enable_loggedin = $form_state['values']['purge_users_enabled_loggedin_users'];
+  $enable_inactive = $form_state['values']['purge_users_enabled_inactive_users'];
+  $never_enable_loggedin = $form_state['values']['purge_users_enabled_never_loggedin_users'];
+
+  $param = array(
+    'never_login_value' => $form_state['values']['purge_users_user_never_lastlogin_value'],
+    'never_login_period' => $form_state['values']['purge_users_user_never_lastlogin_period'],
+    'login_value' => $form_state['values']['purge_users_user_lastlogin_value'],
+    'login_period' => $form_state['values']['purge_users_user_lastlogin_period'],
+    'inactive_value' => $form_state['values']['purge_users_user_inactive_value'],
+    'inactive_period' => $form_state['values']['purge_users_user_inactive_period'],
+    'blocked_value' => $form_state['values']['purge_users_user_blocked_value'],
+    'blocked_period' => $form_state['values']['purge_users_user_blocked_period'],
+  );
+
+  // Get users ids to process.
+  $never_loggedin_users = array();
+  $not_loggedin_users = array();
+  $inactive_users = array();
+  $blocked_users = array();
+  // Get users who have never logged in at all.
+  if ($never_enable_loggedin == 1) {
+    $never_loggedin_users = purge_users_never_loggedin_user_ids($param, $user_roles, $never_enable_loggedin);
+  }
+  // Get users who have not logged in at all.
+  if ($enable_loggedin == 1) {
+    $not_loggedin_users = purge_users_not_loggedin_user_ids($param, $user_roles, $enable_loggedin);
+  }
+  // Get users who didn't activate their account.
+  if ($enable_inactive == 1) {
+    $inactive_users = purge_users_inactive_user_ids($param, $user_roles, $enable_inactive);
+  }
+  // Get the users who are blocked.
+  if ($enable_blocked == 1) {
+    $blocked_users = purge_users_blocked_user_ids($param, $user_roles, $enable_blocked);
+  }
+  // Merge results to create an array of user ids to purge.
+  $users = array_unique(array_merge($never_loggedin_users, $not_loggedin_users, $inactive_users, $blocked_users));
+  return $users;
+}

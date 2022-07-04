@@ -1,0 +1,25 @@
+/* CSS for the configuration form */
+
+#purge-users-config-form .purge-interval-selector .form-item {
+  float: left;
+}
+
+#purge-users-config-form .form-type-textfield {
+  width: 90px;
+}
+
+#purge-users-config-form .form-type-textfield input {
+  width: 70px;
+}
+
+#purge-users-config-form #edit-actions {
+  display: inline-block;
+  float: left;
+  margin-top: 0;
+}
+
+.confirmation #edit-actions {
+  display: block !important;
+  float: none !important;
+  margin-top: initial;
+}
