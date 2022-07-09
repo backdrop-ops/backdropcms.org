@@ -77,7 +77,7 @@ function purge_users_cron() {
       $blocked_users = purge_users_blocked_user_ids($param, $user_roles);
     }
     // Merge results to create an array of user ids to purge.
-    $result = array_merge($never_loggedin_users, $not_loggedin_users);
+    $result = array_merge($never_loggedin_users, $not_loggedin_users, $inactive_users, $blocked_users);
     $result = array_unique($result);
     // Add items to queue.
     $queue = BackdropQueue::get('purge_users');
