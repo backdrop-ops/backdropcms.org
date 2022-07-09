@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the civicrm_cron module.
+ *
+ */
+
+
+/**
+ * Implements hook_update_N().
+ */
+function civicrm_cron_update_1000() {
+  $config = config('civicrm_cron.settings');
+  $config->set('civicrm_cron_sitekey', update_variable_get('civicrm_cron_sitekey', ''));
+  $config->set('civicrm_cron_username', update_variable_get('civicrm_cron_username', ''));
+  $config->set('civicrm_cron_password', update_variable_get('civicrm_cron_password', ''));
+  update_variable_del('civicrm_cron_sitekey');
+  update_variable_del('civicrm_cron_username');
+  update_variable_del('civicrm_cron_password');
+}
