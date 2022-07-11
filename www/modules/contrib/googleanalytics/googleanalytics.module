@@ -107,12 +107,15 @@ function googleanalytics_preprocess_layout() {
   // 2. Track page views based on visibility value.
   // 3. Check if we should track the currently active user's role.
   // 4. Ignore pages visibility filter for 404 or 403 status codes.
-  if (preg_match('/^UA-\d+-\d+$/', $id) && (_googleanalytics_visibility_pages() || in_array($status, $trackable_status_codes)) && _googleanalytics_visibility_user($user)) {
+  if (_google_analytics_valid_property_id($id) && (_googleanalytics_visibility_pages() || in_array($status, $trackable_status_codes)) && _googleanalytics_visibility_user($user)) {
+
+    $id_list = array_filter(array_map("trim", explode(",", $id)));
+
     $debug = $config->get('debug');
     $url_custom = '';
 
     // Add link tracking.
-    $link_settings = array();
+    $link_settings = array('account' => $id_list);
     if ($track_outbound = $config->get('trackoutbound')) {
       $link_settings['trackOutbound'] = $track_outbound;
     }
@@ -164,7 +167,11 @@ function googleanalytics_preprocess_layout() {
         if (in_array($type, $message_types)) {
           foreach ($messages as $message) {
             // @todo: Track as exceptions?
-            $message_events .= 'ga("send", "event", ' . backdrop_json_encode(t('Messages')) . ', ' . backdrop_json_encode($status_heading[$type]) . ', ' . backdrop_json_encode(strip_tags($message)) . ');';
+            $event = array();
+            $event['event_category'] = t('Messages');
+            $event['event_label'] = strip_tags((string) $message);
+            $message_events .= 'gtag("event", ' . backdrop_json_encode($status_heading[$type]) . ', ' . backdrop_json_encode($event) . ');';
+            //$message_events .= 'ga("send", "event", ' . backdrop_json_encode(t('Messages')) . ', ' . backdrop_json_encode($status_heading[$type]) . ', ' . backdrop_json_encode(strip_tags($message)) . ');';
           }
         }
       }
@@ -207,12 +214,13 @@ function googleanalytics_preprocess_layout() {
     // URLs to protect are:
     // - user/password?name=username
     // - user/password?name=foo@example.com
-    if (arg(0) == 'user' && arg(1) == 'password' && array_key_exists('name', drupal_get_query_parameters())) {
+    if (arg(0) == 'user' && arg(1) == 'password' && array_key_exists('name', backdrop_get_query_parameters())) {
       $url_custom = '"' . $base_path . 'user/password"';
     }
 
     // Add custom dimensions and metrics.
-    $custom_var = '';
+    $custom_map = array();
+    $custom_vars = array();
     foreach (array('dimension', 'metric') as $googleanalytics_custom_type) {
       $googleanalytics_custom_vars = $config->get('custom_' . $googleanalytics_custom_type);
       // Are there dimensions or metrics configured?
@@ -245,44 +253,34 @@ function googleanalytics_preprocess_layout() {
             settype($googleanalytics_custom_var['value'], 'float');
           };
 
-          // Add variables to tracker.
-          $custom_var .= 'ga("set", ' . backdrop_json_encode($googleanalytics_custom_type . $googleanalytics_custom_var['index']) . ', ' . backdrop_json_encode($googleanalytics_custom_var['value']) . ');';
+          // Build the arrays of values.
+          $custom_map['custom_map'][$googleanalytics_custom_type . $googleanalytics_custom_var['index']] = $googleanalytics_custom_var['name'];
+          $custom_vars[$googleanalytics_custom_var['name']] = $googleanalytics_custom_var['value'];
         }
       }
     }
 
+    $custom_var = '';
+    if (!empty($custom_map)) {
+      // Add custom variables to tracker.
+      foreach ($id_list as $id) {
+        $custom_var .= 'gtag("config", ' . backdrop_json_encode($id) . ', ' . backdrop_json_encode($custom_map) . ');';
+      }
+      $custom_var .= 'gtag("event", "custom", ' . backdrop_json_encode($custom_vars) . ');';
+    };
+    
     // Build tracker code.
-    $script = '(function(i,s,o,g,r,a,m){';
-    $script .= 'i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){';
-    $script .= '(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),';
-    $script .= 'm=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)';
-    $script .= '})(window,document,"script",';
-
-    // Which version of the tracking library should be used?
-    $library_tracker_url = 'https://www.google-analytics.com/' . ($debug ? 'analytics_debug.js' : 'analytics.js');
-
-    // Should a local cached copy of analytics.js be used?
-    if ($config->get('cache') && $url = _googleanalytics_cache($library_tracker_url)) {
-      // A dummy query-string is added to filenames, to gain control over
-      // browser-caching. The string changes on every update or full cache
-      // flush, forcing browsers to load a new copy of the files, as the
-      // URL changed.
-      $query_string = '?' . state_get('css_js_query_string', '0');
-
-      $script .= '"' . $url . $query_string . '"';
-    }
-    else {
-      $script .= '"' . $library_tracker_url . '"';
-    }
-    $script .= ',"ga");';
+    $script = 'window.dataLayer = window.dataLayer || [];';
+    $script .= 'function gtag(){dataLayer.push(arguments)};';
+    $script .= 'gtag("js", new Date());';
 
     // Add any custom code snippets if specified.
     $codesnippet_create = $config->get('codesnippet_create');
     $codesnippet_before = $config->get('codesnippet_before');
     $codesnippet_after = $config->get('codesnippet_after');
 
-    // Build the create only fields list.
-    $create_only_fields = array('cookieDomain' => 'auto');
+    // Build the arguments fields list.
+    // https://developers.google.com/analytics/devguides/collection/gtagjs/sending-data
     $create_only_fields = array_merge($create_only_fields, $codesnippet_create);
 
     // Domain tracking type.
@@ -293,12 +291,15 @@ function googleanalytics_preprocess_layout() {
     // Per RFC 2109, cookie domains must contain at least one dot other than the
     // first. For hosts such as 'localhost' or IP Addresses we don't set a cookie domain.
     if ($domain_mode == 1 && count(explode('.', $cookie_domain)) > 2 && !is_numeric(str_replace('.', '', $cookie_domain))) {
-      $create_only_fields = array_merge($create_only_fields, array('cookieDomain' => $cookie_domain));
+      $create_only_fields = array_merge($create_only_fields, array('cookie_domain' => $cookie_domain));
       $googleanalytics_adsense_script .= 'window.google_analytics_domain_name = ' . backdrop_json_encode($cookie_domain) . ';';
     }
     elseif ($domain_mode == 2) {
-      // Cross Domain tracking. 'autoLinker' need to be enabled in 'create'.
-      $create_only_fields = array_merge($create_only_fields, array('allowLinker' => TRUE));
+      // Cross Domain tracking
+      // https://developers.google.com/analytics/devguides/collection/gtagjs/cross-domain
+      $create_only_fields['linker'] = array(
+        'domains' => $link_settings['trackCrossDomains'],
+      );
       $googleanalytics_adsense_script .= 'window.google_analytics_domain_name = "none";';
     }
 
@@ -309,50 +310,48 @@ function googleanalytics_preprocess_layout() {
 
     // Track logged in users across all devices.
     if ($config->get('trackuserid') && user_is_logged_in()) {
-      $create_only_fields['userId'] = google_analytics_user_id_hash($user->uid);
+      $create_only_fields['user_id'] = google_analytics_user_id_hash($user->uid);
     }
 
-    // Create a tracker.
-    $script .= 'ga("create", ' . backdrop_json_encode($id) . ', ' . backdrop_json_encode($create_only_fields) .');';
-
-    // Prepare Adsense tracking.
-    $googleanalytics_adsense_script .= 'window.google_analytics_uacct = ' . backdrop_json_encode($id) . ';';
+    if (variable_get('googleanalytics_tracker_anonymizeip', 1)) {
+      $create_only_fields['anonymize_ip'] = TRUE;
+    }
+    
+    if (!empty($url_custom)) {
+      $create_only_fields['page_path'] = 'PLACEHOLDER_URL_CUSTOM';
+    }
 
     // Add enhanced link attribution after 'create', but before 'pageview' send.
-    // @see https://support.google.com/analytics/answer/2558867
+    // @see https://developers.google.com/analytics/devguides/collection/gtagjs/enhanced-link-attribution
     if ($config->get('tracklinkid')) {
-      $script .= 'ga("require", "linkid", "linkid.js");';
+      $create_only_fields['link_attribution'] = TRUE;
     }
 
     // Add display features after 'create', but before 'pageview' send.
-    // @see https://support.google.com/analytics/answer/2444872
+    // @see https://developers.google.com/analytics/devguides/collection/gtagjs/display-features
     if ($config->get('trackdoubleclick')) {
-      $script .= 'ga("require", "displayfeatures");';
+      $create_only_fields['allow_ad_personalization_signals'] = FALSE;
     }
 
-    // Domain tracking type.
-    if ($domain_mode == 2) {
-      // Cross Domain tracking
-      // https://developers.google.com/analytics/devguides/collection/upgrade/reference/gajs-analyticsjs#cross-domain
-      $script .= 'ga("require", "linker");';
-      $script .= 'ga("linker:autoLink", ' . backdrop_json_encode($link_settings['trackCrossDomains']) . ');';
-    }
-
-    if ($config->get('tracker_anonymizeip')) {
-      $script .= 'ga("set", "anonymizeIp", true);';
-    }
-
-    if (!empty($custom_var)) {
-      $script .= $custom_var;
-    }
+    // Convert array to JSON format.
+    $arguments_json = backdrop_json_encode($create_only_fields);
+    // backdrop_json_encode() cannot convert every data type properly.
+    $arguments_json = str_replace('"PLACEHOLDER_URL_CUSTOM"', $url_custom, $arguments_json);
+    
+    // Create a tracker.
     if (!empty($codesnippet_before)) {
       $script .= $codesnippet_before;
     }
-    if (!empty($url_custom)) {
-      $script .= 'ga("set", "page", ' . $url_custom . ');';
+    foreach ($id_list as $id) {
+      $script .= 'gtag("config", ' . backdrop_json_encode($id) . ', ' . $arguments_json . ');';
     }
-    $script .= 'ga("send", "pageview");';
 
+    // Prepare Adsense tracking.
+    $googleanalytics_adsense_script .= 'window.google_analytics_uacct = ' . backdrop_json_encode($id_list[0]) . ';';
+  
+    if (!empty($custom_var)) {
+      $script .= $custom_var;
+    }
     if (!empty($message_events)) {
       $script .= $message_events;
     }
@@ -364,9 +363,30 @@ function googleanalytics_preprocess_layout() {
       // Custom tracking. Prepend before all other JavaScript.
       // @TODO: https://support.google.com/adsense/answer/98142
       // sounds like it could be appended to $script.
-      backdrop_add_js($googleanalytics_adsense_script, array('type' => 'inline', 'group' => JS_LIBRARY-1, 'requires_jquery' => FALSE));
+      $script = $googleanalytics_adsense_script . $script;
     }
 
+    // Prepend tracking library directly before script code.
+    if ($debug) {
+      // Debug script has highest priority to load.
+      // @FIXME: Cannot find the debug URL!???
+      $library = 'https://www.googletagmanager.com/gtag/js?id=' . $id_list[0];
+    }
+    elseif (variable_get('googleanalytics_cache', 0) && $url = _googleanalytics_cache('https://www.googletagmanager.com/gtag/js')) {
+      // Should a local cached copy of gtag.js be used?
+      $query_string = '?' . variable_get('css_js_query_string', '0');
+      $library = $url . $query_string;
+    }
+    else {
+      // Fallback to default.
+      $library = 'https://www.googletagmanager.com/gtag/js?id=' . $id_list[0];
+    }
+
+    $options = array(
+      'type' => 'external',
+      'async' => TRUE,
+    );
+    backdrop_add_js($library, $options);
     backdrop_add_js($script, array('scope' => 'header', 'type' => 'inline', 'requires_jquery' => FALSE));
   }
 }
@@ -484,8 +504,8 @@ function googleanalytics_preprocess_search_results(&$variables) {
     // There is no search result $variable available that hold the number of items
     // found. But the pager item mumber can tell the number of search results.
     global $pager_total_items;
-
-    backdrop_add_js('window.googleanalytics_search_results = ' . intval($pager_total_items[0]) . ';', array('type' => 'inline', 'group' => JS_LIBRARY-1, 'requires_jquery' => FALSE));
+    $results = isset($pager_total_items[0]) ? $pager_total_items[0] : 0;
+    backdrop_add_js('window.googleanalytics_search_results = ' . intval($results) . ';', array('type' => 'inline', 'group' => JS_LIBRARY-1, 'requires_jquery' => FALSE));
   }
 }
 
@@ -715,4 +735,17 @@ function _googleanalytics_visibility_header($account) {
   }
 
   return TRUE;
+}
+
+/**
+ * Validate Google Analytics property IDs.
+ *
+ * @param string $property_id
+ *   Property ID to validate.
+ * @return int|bool
+ *   Whether property ID is valid.
+ */
+function _google_analytics_valid_property_id($property_id) {
+  $regex = '/^(?:(UA|G|AW|DC)-[\w-]+)(?:,\s*(?:(UA|G|AW|DC)-[\w-]+))*$/';
+  return !empty($property_id) && preg_match($regex, $property_id);
 }

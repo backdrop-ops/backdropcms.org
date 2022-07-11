@@ -10,6 +10,7 @@
  * Remove cache directory if module is disabled (or uninstalled).
  */
 function googleanalytics_disable() {
+  module_load_include('module', 'googleanalytics');
   googleanalytics_clear_js_cache();
 }
 
@@ -23,7 +24,7 @@ function googleanalytics_requirements($phase) {
   if ($phase == 'runtime') {
     // Raise warning if Google user account has not been set yet.
     $ga_config = config('googleanalytics.settings');
-    if (!preg_match('/^UA-\d+-\d+$/', $ga_config->get('account'))) {
+    if (!_google_analytics_valid_property_id($ga_config->get('account'))) {
       $requirements['googleanalytics_account'] = array(
         'title' => $t('Google Analytics module'),
         'description' => $t('Google Analytics module has not been configured yet. Please configure its settings from the <a href="@url">Google Analytics settings page</a>.', array('@url' => url('admin/config/system/googleanalytics'))),

@@ -23,43 +23,40 @@ $(document).ready(function() {
         // Is download tracking activated and the file extension configured for download tracking?
         else if (Backdrop.settings.googleanalytics.trackDownload && Backdrop.googleanalytics.isDownload(this.href)) {
           // Download link clicked.
-          ga("send", {
-            "hitType": "event",
-            "eventCategory": "Downloads",
-            "eventAction": Backdrop.googleanalytics.getDownloadExtension(this.href).toUpperCase(),
-            "eventLabel": Backdrop.googleanalytics.getPageUrl(this.href),
-            "transport": "beacon"
+          gtag('event', Backdrop.googleanalytics.getDownloadExtension(this.href).toUpperCase(), {
+            event_category: 'Downloads',
+            event_label: Backdrop.googleanalytics.getPageUrl(this.href),
+            transport_type: 'beacon'
           });
         }
         else if (Backdrop.googleanalytics.isInternalSpecial(this.href)) {
           // Keep the internal URL for Google Analytics website overlay intact.
-          ga("send", {
-            "hitType": "pageview",
-            "page": Backdrop.googleanalytics.getPageUrl(this.href),
-            "transport": "beacon"
+          // @todo: May require tracking ID
+          var target = this;
+          $.each(backdropSettings.google_analytics.account, function () {
+            gtag('config', this, {
+              page_path: Backdrop.googleanalytics.getPageUrl(target.href),
+              transport_type: 'beacon'
+            });
           });
         }
       }
       else {
         if (Backdrop.settings.googleanalytics.trackMailto && $(this).is("a[href^='mailto:'],area[href^='mailto:']")) {
           // Mailto link clicked.
-          ga("send", {
-            "hitType": "event",
-            "eventCategory": "Mails",
-            "eventAction": "Click",
-            "eventLabel": this.href.substring(7),
-            "transport": "beacon"
+          gtag('event', 'Click', {
+            event_category: 'Mails',
+            event_label: this.href.substring(7),
+            transport_type: 'beacon'
           });
         }
         else if (Backdrop.settings.googleanalytics.trackOutbound && this.href.match(/^\w+:\/\//i)) {
           if (Backdrop.settings.googleanalytics.trackDomainMode !== 2 || (Backdrop.settings.googleanalytics.trackDomainMode === 2 && !Backdrop.googleanalytics.isCrossDomain(this.hostname, Backdrop.settings.googleanalytics.trackCrossDomains))) {
             // External link clicked / No top-level cross domain clicked.
-            ga("send", {
-              "hitType": "event",
-              "eventCategory": "Outbound links",
-              "eventAction": "Click",
-              "eventLabel": this.href,
-              "transport": "beacon"
+            gtag('event', 'Click', {
+              event_category: 'Outbound links',
+              event_label: this.href,
+              transport_type: 'beacon'
             });
           }
         }
@@ -70,9 +67,10 @@ $(document).ready(function() {
   // Track hash changes as unique pageviews, if this option has been enabled.
   if (Backdrop.settings.googleanalytics.trackUrlFragments) {
     window.onhashchange = function() {
-      ga("send", {
-        "hitType": "pageview",
-        "page": location.pathname + location.search + location.hash
+      $.each(backdropSettings.google_analytics.account, function () {
+        gtag('config', this, {
+          page_path: location.pathname + location.search + location.hash
+        });
       });
     };
   }
@@ -83,9 +81,10 @@ $(document).ready(function() {
     $(document).bind("cbox_complete", function () {
       var href = $.colorbox.element().attr("href");
       if (href) {
-        ga("send", {
-          "hitType": "pageview",
-          "page": Backdrop.googleanalytics.getPageUrl(href)
+        $.each(backdropSettings.google_analytics.account, function () {
+          gtag('config', this, {
+            page_path: Backdrop.googleanalytics.getPageUrl(href)
+          });
         });
       }
     });

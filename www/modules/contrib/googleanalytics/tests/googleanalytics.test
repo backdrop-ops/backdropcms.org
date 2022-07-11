@@ -4,6 +4,7 @@
  * Test file for Google Analytics module.
  */
 class GoogleAnalyticsBasicTest extends BackdropWebTestCase {
+  protected $profile = 'standard';
 
   /**
    * User without permissions to edit snippets.
@@ -48,7 +49,7 @@ class GoogleAnalyticsBasicTest extends BackdropWebTestCase {
     // Check for account code validation.
     $edit['googleanalytics_account'] = $this->randomName(2);
     $this->backdropPost('admin/config/system/googleanalytics', $edit, t('Save configuration'));
-    $this->assertRaw(t('A valid Google Analytics Web Property ID is case sensitive and formatted like UA-xxxxxxx-yy.'), '[testGoogleAnalyticsConfiguration]: Invalid Web Property ID number validated.');
+    $this->assertRaw(t('A valid Web Property ID is case sensitive and formatted like UA-xxxxxxx-yy, G-XXXXXXX, DC-XXXXXXX, or AW-XXXXXXX.'), '[testGoogleAnalyticsConfiguration]: Invalid Web Property ID number validated.');
 
     // User should have access to code snippets.
     $this->assertFieldByName('googleanalytics_codesnippet_create');
@@ -96,16 +97,15 @@ class GoogleAnalyticsBasicTest extends BackdropWebTestCase {
     $this->assertNoRaw($ua_code, '[testGoogleAnalyticsPageVisibility]: Tracking code is not displayed on admin page.');
     $this->backdropGet('admin/config/system/googleanalytics');
     // Checking for tracking code URI here, as $ua_code is displayed in the form.
-    $this->assertNoRaw('https://www.google-analytics.com/analytics.js', '[testGoogleAnalyticsPageVisibility]: Tracking code is not displayed on admin subpage.');
+    $this->assertNoRaw('https://www.googletagmanager.com/gtag/js?id=', '[testGoogleAnalyticsPageVisibility]: Tracking code is not displayed on admin subpage.');
 
     // Test whether tracking code display is properly flipped.
     config_set('googleanalytics.settings', 'visibility_pages', 1);
     $this->backdropGet('admin');
     $this->assertRaw($ua_code, '[testGoogleAnalyticsPageVisibility]: Tracking code is displayed on admin page.');
     $this->backdropGet('admin/config/system/googleanalytics');
-
     // Checking for tracking code URI here, as $ua_code is displayed in the form.
-    $this->assertRaw('https://www.google-analytics.com/analytics.js', '[testGoogleAnalyticsPageVisibility]: Tracking code is displayed on admin subpage.');
+    $this->assertRaw('https://www.googletagmanager.com/gtag/js?id=', '[testGoogleAnalyticsPageVisibility]: Tracking code is displayed on admin subpage.');
     $this->backdropGet('');
     $this->assertNoRaw($ua_code, '[testGoogleAnalyticsPageVisibility]: Tracking code is NOT displayed on front page.');
 
@@ -133,20 +133,21 @@ class GoogleAnalyticsBasicTest extends BackdropWebTestCase {
     config_set('googleanalytics.settings', 'privacy_donottrack', 1);
     // Enable system internal page cache for anonymous users.
     config_set('system.core', 'cache', 1);
-    // DNT headers will fail to disable embedding of tracking code with cache set.
-    $this->backdropGet('home', array(), array('DNT: 1'));
-    $this->assertRaw('ga("send", "pageview");', '[testGoogleAnalyticsDNTVisibility]: DNT header sent from client, but page caching is enabled, so tracker cannot be removed.');
+    // Test whether DNT headers will fail to disable embedding of tracking code.
+    $this->assertRaw('gtag("config", "' . $ua_code . '",', '[testGoogleAnalyticsDNTVisibility]: DNT header send from client, but page caching is enabled and tracker cannot removed.');
+    $this->backdropGet('', array(), array('DNT: 1'));
+    $this->assertRaw('gtag("config", "' . $ua_code . '",', '[testGoogleAnalyticsDNTVisibility]: Tracking is enabled without DNT header.');
     // DNT works only with system internal page cache for anonymous users disabled.
     config_set('system.core', 'cache', 0);
     $this->backdropGet('');
     $this->assertRaw('ga("send", "pageview");', '[testGoogleAnalyticsDNTVisibility]: Tracking is enabled without DNT header.');
     // Test whether DNT header is able to remove the tracking code.
     $this->backdropGet('', array(), array('DNT: 1'));
-    $this->assertNoRaw('ga("send", "pageview");', '[testGoogleAnalyticsDNTVisibility]: DNT header received from client. Tracking has been disabled by browser.');
+    $this->assertNoRaw('gtag("config", "' . $ua_code . '",', '[testGoogleAnalyticsDNTVisibility]: DNT header received from client. Tracking has been disabled by browser.');
     // Disable DNT feature and see if tracker is still embedded.
     config_set('googleanalytics.settings', 'privacy_donottrack', 0);
     $this->backdropGet('', array(), array('DNT: 1'));
-    $this->assertRaw('ga("send", "pageview");', '[testGoogleAnalyticsDNTVisibility]: DNT feature is disabled, DNT header from browser has been ignored.');
+    $this->assertRaw('gtag("config", "' . $ua_code . '",', '[testGoogleAnalyticsDNTVisibility]: DNT feature is disabled, DNT header from browser has been ignored.');
   }
 
   function testGoogleAnalyticsTrackingCode() {
@@ -159,76 +160,74 @@ class GoogleAnalyticsBasicTest extends BackdropWebTestCase {
     config_set('googleanalytics.settings', 'roles', array());
 
     /* Sample JS code as added to page:
-    <script type="text/javascript" src="/sites/all/modules/google_analytics/googleanalytics.js?w"></script>
+    <script type="text/javascript" src="/sites/all/modules/google_analytics/google_analytics.js?w"></script>
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-123456-7"></script>
     <script>
-    (function(q,u,i,c,k){window['GoogleAnalyticsObject']=q;
-    window[q]=window[q]||function(){(window[q].q=window[q].q||[]).push(arguments)},
-    window[q].l=1*new Date();c=i.createElement(u),k=i.getElementsByTagName(u)[0];
-    c.async=true;c.src='https://www.google-analytics.com/analytics.js';
-    k.parentNode.insertBefore(c,k)})('ga','script',document);
-    ga('create', 'UA-123456-7');
-    ga('send', 'pageview');
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments)};
+    gtag('js', new Date());
+    gtag('config', 'UA-123456-7');
     </script>
-    <!-- End Google Analytics -->
     */
 
     // Test whether tracking code uses latest JS.
     config_set('googleanalytics.settings', 'cache', 0);
     $this->backdropGet('');
-    $this->assertRaw('https://www.google-analytics.com/analytics.js', '[testGoogleAnalyticsTrackingCode]: Latest tracking code used.');
+    $this->assertRaw('https://www.googletagmanager.com/gtag/js', '[testGoogleAnalyticsTrackingCode]: Latest tracking code used.');
 
     // Test whether anonymize visitors IP address feature has been enabled.
     config_set('googleanalytics.settings', 'tracker_anonymizeip', 0);
     $this->backdropGet('');
-    $this->assertNoRaw('ga("set", "anonymizeIp", true);', '[testGoogleAnalyticsTrackingCode]: Anonymize visitors IP address not found on frontpage.');
+    $this->assertNoRaw('"anonymize_ip":true', '[testGoogleAnalyticsTrackingCode]: Anonymize visitors IP address not found on frontpage.');
     // Enable anonymizing of IP addresses.
     config_set('googleanalytics.settings', 'tracker_anonymizeip', 1);
     $this->backdropGet('');
-    $this->assertRaw('ga("set", "anonymizeIp", true);', '[testGoogleAnalyticsTrackingCode]: Anonymize visitors IP address found on frontpage.');
+    $this->assertRaw('"anonymize_ip":true', '[testGoogleAnalyticsTrackingCode]: Anonymize visitors IP address found on frontpage.');
 
     // Test if track Enhanced Link Attribution is enabled.
     config_set('googleanalytics.settings', 'tracklinkid', 1);
     $this->backdropGet('');
-    $this->assertRaw('ga("require", "linkid", "linkid.js");', '[testGoogleAnalyticsTrackingCode]: Tracking code for Enhanced Link Attribution is enabled.');
+    $this->assertNoRaw('"link_attribution":true', '[testGoogleAnalyticsTrackingCode]: Tracking code for Enhanced Link Attribution is not enabled.');
 
     // Test if track Enhanced Link Attribution is disabled.
     config_set('googleanalytics.settings', 'tracklinkid', 0);
     $this->backdropGet('');
-    $this->assertNoRaw('ga("require", "linkid", "linkid.js");', '[testGoogleAnalyticsTrackingCode]: Tracking code for Enhanced Link Attribution is not enabled.');
+    $this->assertNoRaw('"link_attribution":true', '[testGoogleAnalyticsTrackingCode]: Tracking code for Enhanced Link Attribution is not enabled.');
 
     // Test if tracking of User ID is enabled.
     config_set('googleanalytics.settings', 'trackuserid', 1);
     $this->backdropGet('');
-    $this->assertRaw(', {"cookieDomain":"auto","userId":"', '[testGoogleAnalyticsTrackingCode]: Tracking code for User ID is enabled.');
+    $this->assertRaw('"user_id":"', '[testGoogleAnalyticsTrackingCode]: Tracking code for User ID is enabled.');
 
     // Test if tracking of User ID is disabled.
     config_set('googleanalytics.settings', 'trackuserid', 0);
     $this->backdropGet('');
-    $this->assertNoRaw(', {"cookieDomain":"auto","userId":"', '[testGoogleAnalyticsTrackingCode]: Tracking code for User ID is disabled.');
+    $this->assertNoRaw('"user_id":"', '[testGoogleAnalyticsTrackingCode]: Tracking code for User ID is disabled.');
 
     // Test if tracking of url fragments is enabled.
     config_set('googleanalytics.settings', 'trackurlfragments', 1);
     $this->backdropGet('');
-    $this->assertRaw('ga("set", "page", location.pathname + location.search + location.hash);', '[testGoogleAnalyticsTrackingCode]: Tracking code for url fragments is enabled.');
+    $this->assertRaw('"page_path":location.pathname + location.search + location.hash});', '[testGoogleAnalyticsTrackingCode]: Tracking code for url fragments is enabled.');
 
     // Test if tracking of url fragments is disabled.
     config_set('googleanalytics.settings', 'trackurlfragments', 0);
     $this->backdropGet('');
-    $this->assertNoRaw('ga("set", "page", location.pathname + location.search + location.hash);', '[testGoogleAnalyticsTrackingCode]: Tracking code for url fragments is not enabled.');
+    $this->assertNoRaw('"page_path":location.pathname + location.search + location.hash});', '[testGoogleAnalyticsTrackingCode]: Tracking code for url fragments is not enabled.');
 
     // Test if track display features is enabled.
     config_set('googleanalytics.settings', 'trackdoubleclick', 1);
     $this->backdropGet('');
-    $this->assertRaw('ga("require", "displayfeatures");', '[testGoogleAnalyticsTrackingCode]: Tracking code for display features is enabled.');
+    $this->assertRaw('"allow_ad_personalization_signals":false', '[testGoogleAnalyticsTrackingCode]: Tracking code for display features is enabled.');
 
     // Test if track display features is disabled.
     config_set('googleanalytics.settings', 'trackdoubleclick', 0);
     $this->backdropGet('');
-    $this->assertNoRaw('ga("require", "displayfeatures");', '[testGoogleAnalyticsTrackingCode]: Tracking code for display features is not enabled.');
+    $this->assertNoRaw('"allow_ad_personalization_signals":false', '[testGoogleAnalyticsTrackingCode]: Tracking code for display features is not enabled.');
 
     // Test whether single domain tracking is active.
     $this->backdropGet('');
-    $this->assertRaw('{"cookieDomain":"auto"}', '[testGoogleAnalyticsTrackingCode]: Single domain tracking is active.');
+    $this->assertRaw('{"groups":"default"}', '[testGoogleAnalyticsTrackingCode]: Single domain tracking is active.');
 
     // Enable "One domain with multiple subdomains".
     config_set('googleanalytics.settings', 'domain_mode', 1);
@@ -249,9 +248,8 @@ class GoogleAnalyticsBasicTest extends BackdropWebTestCase {
     config_set('googleanalytics.settings', 'domain_mode', 2);
     config_set('googleanalytics.settings', 'cross_domains', "www.example.com\nwww.example.net");
     $this->backdropGet('');
-    $this->assertRaw('ga("create", "' . $ua_code . '", {"cookieDomain":"auto","allowLinker":true', '[testGoogleAnalyticsTrackingCode]: "allowLinker" has been found. Cross domain tracking is active.');
-    $this->assertRaw('ga("require", "linker");', '[testGoogleAnalyticsTrackingCode]: Require linker has been found. Cross domain tracking is active.');
-    $this->assertRaw('ga("linker:autoLink", ["www.example.com","www.example.net"]);', '[testGoogleAnalyticsTrackingCode]: "linker:autoLink" has been found. Cross domain tracking is active.');
+    $this->assertRaw('gtag("config", "' . $ua_code . '", {"groups":"default","linker":', '[testGoogleAnalyticsTrackingCode]: "allowLinker" has been found. Cross domain tracking is active.');
+    $this->assertRaw('gtag("config", "' . $ua_code . '", {"groups":"default","linker":{"domains":["www.example.com","www.example.net"]}});', '[testGoogleAnalyticsTrackingCode]: "linker:autoLink" has been found. Cross domain tracking is active.');
     $this->assertRaw('"trackDomainMode":2,', '[testGoogleAnalyticsTrackingCode]: Domain mode value is of type integer.');
     $this->assertRaw('"trackCrossDomains":["www.example.com","www.example.net"]', '[testGoogleAnalyticsTrackingCode]: Cross domain tracking with www.example.com and www.example.net is active.');
     config_set('googleanalytics.settings', 'domain_mode', 0);
@@ -261,6 +259,9 @@ class GoogleAnalyticsBasicTest extends BackdropWebTestCase {
     $this->backdropGet('');
     $this->assertRaw('https://www.google-analytics.com/analytics_debug.js', '[testGoogleAnalyticsTrackingCode]: Google debugging script has been enabled.');
 
+    // @FIXME
+    //$this->assertRaw('https://www.google-analytics.com/analytics_debug.js');
+
     // Check if text and link is shown on 'Status Reports' page.
     // Requires 'administer site configuration' permission.
     $this->backdropGet('admin/reports/status');
@@ -269,23 +270,24 @@ class GoogleAnalyticsBasicTest extends BackdropWebTestCase {
     // Test whether debugging script has been disabled.
     config_set('googleanalytics.settings', 'debug', 0);
     $this->backdropGet('');
-    $this->assertRaw('https://www.google-analytics.com/analytics.js', '[testGoogleAnalyticsTrackingCode]: Google debugging script has been disabled.');
+    $this->assertRaw('https://www.googletagmanager.com/gtag/js?id=', '[testGoogleAnalyticsTrackingCode]: Google debugging script has been disabled.');
 
     // Test whether the CREATE and BEFORE and AFTER code is added to the tracker.
     $codesnippet_create = array(
-      'cookieDomain' => 'foo.example.com',
-      'cookieName' => 'myNewName',
-      'cookieExpires' => 20000,
-      'allowAnchor' => TRUE,
-      'sampleRate' => 4.3,
+      'cookie_domain' => 'foo.example.com',
+      'cookie_name' => 'myNewName',
+      'cookie_expires' => 20000,
+      'sample_rate' => 4.3,
     );
     config_set('googleanalytics.settings', 'codesnippet_create', $codesnippet_create);
-    config_set('googleanalytics.settings', 'codesnippet_before', 'ga("set", "forceSSL", true);');
-    config_set('googleanalytics.settings', 'codesnippet_after', 'ga("create", "UA-123456-3", {"name": "newTracker"});ga("newTracker.send", "pageview");');
+    config_set('googleanalytics.settings', 'codesnippet_before', 'gtag("set", {"currency":"USD"});');
+    config_set('googleanalytics.settings', 'codesnippet_after', 'gtag("config", "UA-123456-3", {"groups":"default"});if(1 == 1 && 2 < 3 && 2 > 1){console.log("Google Analytics: Custom condition works.");}');
+
     $this->backdropGet('');
-    $this->assertRaw('ga("create", "' . $ua_code . '", {"cookieDomain":"foo.example.com","cookieName":"myNewName","cookieExpires":20000,"allowAnchor":true,"sampleRate":4.3});', '[testGoogleAnalyticsTrackingCode]: Create only fields have been found.');
-    $this->assertRaw('ga("set", "forceSSL", true);', '[testGoogleAnalyticsTrackingCode]: Before codesnippet will force http pages to also send all beacons using https.');
-    $this->assertRaw('ga("create", "UA-123456-3", {"name": "newTracker"});', '[testGoogleAnalyticsTrackingCode]: After codesnippet with "newTracker" tracker has been found.');
+    $this->assertRaw('gtag("config", "' . $ua_code . '", {"groups":"default","cookie_domain":"foo.example.com","cookie_name":"myNewName","cookie_expires":20000,"sample_rate":4.3});', '[testGoogleAnalyticsTrackingCode]: Create only fields have been found.');
+    $this->assertRaw('gtag("set", {"currency":"USD"});', '[testGoogleAnalyticsTrackingCode]: Before codesnippet will force http pages to also send all beacons using https.');
+    $this->assertRaw('gtag("config", "UA-123456-3", {"groups":"default"});', '[testGoogleAnalyticsTrackingCode]: After codesnippet with "newTracker" tracker has been found.');
+    $this->assertRaw('if(1 == 1 && 2 < 3 && 2 > 1){console.log("Google Analytics: Custom condition works.");}', '[testGoogleAnalyticsTrackingCode]: After codesnippet with "newTracker" tracker has been found.');
   }
 }
 
@@ -311,31 +313,42 @@ class GoogleAnalyticsCustomDimensionsAndMetricsTest extends BackdropWebTestCase 
     $googleanalytics_custom_dimension = array(
       1 => array(
         'index' => 1,
+        'name' => 'foo1',
         'value' => 'Bar 1',
       ),
       2 => array(
         'index' => 2,
+        'name' => 'foo2',
         'value' => 'Bar 2',
       ),
       3 => array(
         'index' => 3,
+        'name' => 'foo3',
         'value' => 'Bar 3',
       ),
       4 => array(
         'index' => 4,
+        'name' => 'foo4',
         'value' => 'Bar 4',
       ),
       5 => array(
         'index' => 5,
+        'name' => 'foo5',
         'value' => 'Bar 5',
       ),
     );
     config_set('googleanalytics.settings', 'custom_dimension', $googleanalytics_custom_dimension);
     $this->backdropGet('');
 
+    $custom_map = array();
+    $custom_vars = array();
     foreach ($googleanalytics_custom_dimension as $dimension) {
-      $this->assertRaw('ga("set", ' . backdrop_json_encode('dimension' . $dimension['index']) . ', ' . backdrop_json_encode($dimension['value']) . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Dimension #' . $dimension['index'] . ' is shown.');
+      $custom_map['custom_map']['dimension' . $dimension['index']] = $dimension['name'];
+      $custom_vars[$dimension['name']] = $dimension['value'];
     }
+    $this->assertRaw('gtag("config", ' . backdrop_json_encode($ua_code) . ', ' . backdrop_json_encode($custom_map) . ');');
+    $this->assertRaw('gtag("event", "custom", ' . backdrop_json_encode($custom_vars) . ');');
+
 
     // Test whether tokens are replaced in custom dimension values.
     $site_slogan = $this->randomName(16);
@@ -344,19 +357,23 @@ class GoogleAnalyticsCustomDimensionsAndMetricsTest extends BackdropWebTestCase 
     $googleanalytics_custom_dimension = array(
       1 => array(
         'index' => 1,
+        'name' => 'site_slogan',
         'value' => 'Value: [site:slogan]',
       ),
       2 => array(
         'index' => 2,
+        'name' => 'machine_name',
         'value' => $this->randomName(16),
       ),
       3 => array(
         'index' => 3,
+        'name' => 'foo3',
         'value' => '',
       ),
       // #2300701: Custom dimensions and custom metrics not outputed on zero value.
       4 => array(
         'index' => 4,
+        'name' => 'bar4',
         'value' => '0',
       ),
     );
@@ -364,10 +381,14 @@ class GoogleAnalyticsCustomDimensionsAndMetricsTest extends BackdropWebTestCase 
     $this->verbose('<pre>' . print_r($googleanalytics_custom_dimension, TRUE) . '</pre>');
 
     $this->backdropGet('');
-    $this->assertRaw('ga("set", ' . backdrop_json_encode('dimension1') . ', ' . backdrop_json_encode("Value: $site_slogan") . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Tokens have been replaced in dimension value.');
-    $this->assertRaw('ga("set", ' . backdrop_json_encode('dimension2') . ', ' . backdrop_json_encode($googleanalytics_custom_dimension['2']['value']) . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Random value is shown.');
-    $this->assertNoRaw('ga("set", ' . backdrop_json_encode('dimension3') . ', ' . backdrop_json_encode('') . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Empty value is not shown.');
-    $this->assertRaw('ga("set", ' . backdrop_json_encode('dimension4') . ', ' . backdrop_json_encode('0') . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Value 0 is shown.');
+    $this->assertRaw(backdrop_json_encode('dimension1') . ':' . backdrop_json_encode($googleanalytics_custom_dimension['1']['name']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Tokens have been replaced in dimension name.');
+    $this->assertRaw(backdrop_json_encode($googleanalytics_custom_dimension['1']['name']) . ':' . backdrop_json_encode("Value: $site_slogan"), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Tokens have been replaced in dimension value.');
+    $this->assertRaw(backdrop_json_encode('dimension2') . ':' . backdrop_json_encode($googleanalytics_custom_dimension['2']['name']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Random machine_name is shown.');
+    $this->assertRaw(backdrop_json_encode($googleanalytics_custom_dimension['2']['name']) . ':' . backdrop_json_encode($googleanalytics_custom_dimension['2']['value']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Random machine_name value is shown.');
+    $this->assertNoRaw(backdrop_json_encode('dimension3') . ':' . backdrop_json_encode($googleanalytics_custom_dimension['3']['name']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Empty value name is not shown.');
+    $this->assertNoRaw(backdrop_json_encode($googleanalytics_custom_dimension['3']['name']) . ':' . backdrop_json_encode(''), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Empty value is not shown.');
+    $this->assertRaw(backdrop_json_encode('dimension4') . ':' . backdrop_json_encode($googleanalytics_custom_dimension['4']['name']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Value 0 name is shown.');
+    $this->assertRaw(backdrop_json_encode($googleanalytics_custom_dimension['4']['name']) . ':' . backdrop_json_encode('0'), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Value 0 is shown.');
   }
 
   function testGoogleAnalyticsCustomMetrics() {
@@ -378,22 +399,27 @@ class GoogleAnalyticsCustomDimensionsAndMetricsTest extends BackdropWebTestCase 
     $googleanalytics_custom_metric = array(
       1 => array(
         'index' => 1,
+        'name' => 'foo1',
         'value' => '6',
       ),
       2 => array(
         'index' => 2,
+        'name' => 'foo2',
         'value' => '8000',
       ),
       3 => array(
         'index' => 3,
+        'name' => 'foo3',
         'value' => '7.8654',
       ),
       4 => array(
         'index' => 4,
+        'name' => 'foo4',
         'value' => '1123.4',
       ),
       5 => array(
         'index' => 5,
+        'name' => 'foo5',
         'value' => '5,67',
       ),
     );
@@ -401,27 +427,36 @@ class GoogleAnalyticsCustomDimensionsAndMetricsTest extends BackdropWebTestCase 
     config_set('googleanalytics.settings', 'custom_metric', $googleanalytics_custom_metric);
     $this->backdropGet('');
 
+    $custom_map = array();
+    $custom_vars = array();
     foreach ($googleanalytics_custom_metric as $metric) {
-      $this->assertRaw('ga("set", ' . backdrop_json_encode('metric' . $metric['index']) . ', ' . backdrop_json_encode((float) $metric['value']) . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Metric #' . $metric['index'] . ' is shown.');
+      $custom_map['custom_map']['metric' . $metric['index']] = $metric['name'];
+      $custom_vars[$metric['name']] = (float) $metric['value'];
     }
+    $this->assertRaw('gtag("config", ' . backdrop_json_encode($ua_code) . ', ' . backdrop_json_encode($custom_map) . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Metric config is shown.');
+    $this->assertRaw('gtag("event", "custom", ' . backdrop_json_encode($custom_vars) . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Metric event is shown.');
 
     // Test whether tokens are replaced in custom metric values.
     $googleanalytics_custom_metric = array(
       1 => array(
         'index' => 1,
+        'name' => 'bar1',
         'value' => '[current-user:roles:count]',
       ),
       2 => array(
         'index' => 2,
+        'name' => 'bar2',
         'value' => mt_rand(),
       ),
       3 => array(
         'index' => 3,
+        'name' => 'bar3',
         'value' => '',
       ),
       // #2300701: Custom dimensions and custom metrics not outputed on zero value.
       4 => array(
         'index' => 4,
+        'name' => 'bar4',
         'value' => '0',
       ),
     );
@@ -429,10 +464,14 @@ class GoogleAnalyticsCustomDimensionsAndMetricsTest extends BackdropWebTestCase 
     $this->verbose('<pre>' . print_r($googleanalytics_custom_metric, TRUE) . '</pre>');
 
     $this->backdropGet('');
-    $this->assertRaw('ga("set", ' . backdrop_json_encode('metric1') . ', ', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Tokens have been replaced in metric value.');
-    $this->assertRaw('ga("set", ' . backdrop_json_encode('metric2') . ', ' . backdrop_json_encode($googleanalytics_custom_metric['2']['value']) . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Random value is shown.');
-    $this->assertNoRaw('ga("set", ' . backdrop_json_encode('metric3') . ', ' . backdrop_json_encode('') . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Empty value is not shown.');
-    $this->assertRaw('ga("set", ' . backdrop_json_encode('metric4') . ', ' . backdrop_json_encode(0) . ');', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Value 0 is shown.');
+        $this->assertRaw(backdrop_json_encode('metric1') . ':' . backdrop_json_encode($googleanalytics_custom_metric['1']['name']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Tokens have been replaced in metric value.');
+    $this->assertRaw(backdrop_json_encode($googleanalytics_custom_metric['1']['name']) . ':', '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Tokens have been replaced in metric value.');
+    $this->assertRaw(backdrop_json_encode('metric2') . ':' . backdrop_json_encode($googleanalytics_custom_metric['2']['name']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Random value is shown.');
+    $this->assertRaw(backdrop_json_encode($googleanalytics_custom_metric['2']['name']) . ':' . backdrop_json_encode($googleanalytics_custom_metric['2']['value']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Random value is shown.');
+    $this->assertNoRaw(backdrop_json_encode('metric3') . ':' . backdrop_json_encode($googleanalytics_custom_metric['3']['name']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Empty value is not shown.');
+    $this->assertNoRaw(backdrop_json_encode($googleanalytics_custom_metric['3']['name']) . ':' . backdrop_json_encode(''), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Empty value is not shown.');
+    $this->assertRaw(backdrop_json_encode('metric4') . ':' . backdrop_json_encode($googleanalytics_custom_metric['4']['name']), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Value 0 is shown.');
+    $this->assertRaw(backdrop_json_encode($googleanalytics_custom_metric['4']['name']) . ':' . backdrop_json_encode(0), '[testGoogleAnalyticsCustomDimensionsAndMetrics]: Value 0 is shown.');
   }
 
   /**
@@ -484,15 +523,16 @@ class GoogleAnalyticsCustomUrls extends BackdropWebTestCase {
     $base_path = base_path();
     $ua_code = 'UA-123456-4';
     config_set('googleanalytics.settings', 'account', $ua_code);
+    config_set('googleanalytics.settings', 'tracker_anonymizeip', 0);
 
     $this->backdropGet('user/password', array('query' => array('name' => 'foo')));
-    $this->assertRaw('ga("set", "page", "' . $base_path . 'user/password"');
+    $this->assertRaw('gtag("config", ' . backdrop_json_encode($ua_code) . ', {"groups":"default","page_path":"' . $base_path . 'user/password"});');
 
     $this->backdropGet('user/password', array('query' => array('name' => 'foo@example.com')));
-    $this->assertRaw('ga("set", "page", "' . $base_path . 'user/password"');
+    $this->assertRaw('gtag("config", ' . backdrop_json_encode($ua_code) . ', {"groups":"default","page_path":"' . $base_path . 'user/password"});');
 
     $this->backdropGet('user/password');
-    $this->assertNoRaw('ga("set", "page",', '[testGoogleAnalyticsCustomUrls]: Custom url not set.');
+    $this->assertNoRaw('"page_path":"' . $base_path . 'user/password"});');
   }
 }
 
@@ -518,8 +558,8 @@ class GoogleAnalyticsStatusMessagesTest extends BackdropWebTestCase {
     config_set('googleanalytics.settings', 'trackmessages', array('error' => 'error'));
 
     $this->backdropPost('user/login', array(), t('Log in'));
-    $this->assertRaw('ga("send", "event", "Messages", "Error message", "Username or email field is required.");', '[testGoogleAnalyticsStatusMessages]: Event message "Username field is required." is shown.');
-    $this->assertRaw('ga("send", "event", "Messages", "Error message", "Password field is required.");', '[testGoogleAnalyticsStatusMessages]: Event message "Password field is required." is shown.');
+    $this->assertRaw('gtag("event", "Error message", {"event_category":"Messages","event_label":"Username field is required."});', '[testGoogleAnalyticsStatusMessages]: Event message "Username field is required." is shown.');
+    $this->assertRaw('gtag("event", "Error message", {"event_category":"Messages","event_label":"Password field is required."});', '[testGoogleAnalyticsStatusMessages]: Event message "Password field is required." is shown.');
 
     // @todo: investigate why backdrop_set_message() fails.
     //backdrop_set_message('Example status message.', 'status');
@@ -648,6 +688,7 @@ class GoogleAnalyticsSearchTest extends BackdropWebTestCase {
 
     // Enable site search support.
     config_set('googleanalytics.settings', 'site_search', 1);
+    config_set('googleanalytics.settings', 'tracker_anonymizeip', 0);
 
     // Search for random string.
     $search = array();
@@ -661,7 +702,7 @@ class GoogleAnalyticsSearchTest extends BackdropWebTestCase {
 
     // Fire a search, it's expected to get 0 results.
     $this->backdropPost('search/node', $search, t('Search'));
-    $this->assertRaw('ga("set", "page", (window.googleanalytics_search_results) ?', '[testGoogleAnalyticsSearch]: Search results tracker is displayed.');
+    $this->assertRaw('gtag("config", ' . backdrop_json_encode($ua_code) . ', {"groups":"default","page_path":(window.googleanalytics_search_results) ?', '[testGoogleAnalyticsSearch]: Search results tracker is displayed.');
     $this->assertRaw('window.googleanalytics_search_results = 0;', '[testGoogleAnalyticsSearch]: Search yielded no results.');
 
     // Save the node.
@@ -672,7 +713,7 @@ class GoogleAnalyticsSearchTest extends BackdropWebTestCase {
     $this->cronRun();
 
     $this->backdropPost('search/node', $search, t('Search'));
-    $this->assertRaw('ga("set", "page", (window.googleanalytics_search_results) ?', '[testGoogleAnalyticsSearch]: Search results tracker is displayed.');
+    $this->assertRaw('gtag("config", ' . backdrop_json_encode($ua_code) . ', {"groups":"default","page_path":(window.googleanalytics_search_results) ?', '[testGoogleAnalyticsSearch]: Search results tracker is displayed.');
     $this->assertRaw('window.googleanalytics_search_results = 1;', '[testGoogleAnalyticsSearch]: One search result found.');
 
     $this->backdropPost('node/add/page', $edit, t('Save'));
@@ -682,7 +723,7 @@ class GoogleAnalyticsSearchTest extends BackdropWebTestCase {
     $this->cronRun();
 
     $this->backdropPost('search/node', $search, t('Search'));
-    $this->assertRaw('ga("set", "page", (window.googleanalytics_search_results) ?', '[testGoogleAnalyticsSearch]: Search results tracker is displayed.');
+    $this->assertRaw('gtag("config", ' . backdrop_json_encode($ua_code) . ', {"groups":"default","page_path":(window.googleanalytics_search_results) ?', '[testGoogleAnalyticsSearch]: Search results tracker is displayed.');
     $this->assertRaw('window.googleanalytics_search_results = 2;', '[testGoogleAnalyticsSearch]: Two search results found.');
   }
 
