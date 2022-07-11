@@ -281,7 +281,7 @@ function googleanalytics_preprocess_layout() {
 
     // Build the arguments fields list.
     // https://developers.google.com/analytics/devguides/collection/gtagjs/sending-data
-    $create_only_fields = array_merge($create_only_fields, $codesnippet_create);
+    $create_only_fields = $codesnippet_create;
 
     // Domain tracking type.
     global $cookie_domain;
