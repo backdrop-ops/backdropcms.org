@@ -1,0 +1,13 @@
+name = Auto Purge Users
+description = Purge inactive user accounts after a set interval.
+backdrop = 1.x
+type = module
+package = "User Management"
+tags[] = "User Management"
+
+configure = admin/config/people/purge-rule
+
+; Added by Backdrop CMS packaging script on 2022-07-09
+project = purge_users
+version = 1.x-2.1.0-alpha3
+timestamp = 1657399571
