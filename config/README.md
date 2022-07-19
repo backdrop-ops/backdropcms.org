@@ -47,7 +47,7 @@ Once they do match, you can proceed as follows.
    this via the UI at `/admin/config/development/configuration`, or with Drush
    via `drush bcim`.
 
-5. Perform a git checkout` on the staging directory.
+5. Perform a `git checkout` on the staging directory.
 
 ### Make your changes
 
