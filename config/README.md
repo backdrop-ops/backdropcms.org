@@ -64,7 +64,7 @@ environment.
 
    Perform a `git checkout` on any changes you do **not** want to deploy.
 
-5. Commit the config changes.
+5. Commit the config changes in `staging`.
 
 6. Push your changes, create a PR, etc.
 
