@@ -42,7 +42,7 @@ environment.
    this via the UI at `/admin/config/development/configuration`, or with Drush
    via `drush bcim`.
 
-5. Perform a `git checkout` on the staging directory.
+5. Perform a `git checkout` on the staging directory (or, set the `$config['system.core']['config_sync_clear_staging'] = 1;` variable in your local copy of `settings.php`).
 
 ### Make your changes
 
