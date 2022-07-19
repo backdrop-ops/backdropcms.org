@@ -15,9 +15,9 @@ Any changes made in the live site should be copied into `config/staging` and add
 
 Load your local version of backdropcms.org. Do a `git pull` to bring it up to date.
 
-Make your local changes (e.g., by loading an updated version of Backdrop core.)
+Make your local changes (e.g., by loading an updated version of Backdrop core or modules.)
 
-Check the PATCHES.md file. If there are any patches, apply them to your local instance, e.g., by
+If you have updated core or modules, check the PATCHES.md file. If there are any patches, apply them to your local instance, e.g., by
 
 * Downloading and saving the patch file locally (e.g., `NNN.patch`);
 * Apply it locally:
