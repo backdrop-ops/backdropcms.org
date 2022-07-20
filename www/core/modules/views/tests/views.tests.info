@@ -148,6 +148,12 @@ description = Test the core views_handler_field handler.
 group = Views Handlers
 file = handlers/views_handler_field.test
 
+[ViewsHandlerFieldBulkFormTest]
+name = Field: Bulk form
+description = Test the core views_handler_field_bulk_form.
+group = Views Handlers
+file = handlers/views_handler_field_bulk_form.test
+
 [ViewsHandlerFilterMultipleTest]
 name = Filter: Multiple conditions
 description = Tests multiple filters on a single display.
@@ -334,7 +340,7 @@ description = 'Tests the pluggable translations'
 group = Views
 file = views_translatable.test
 
-; Added by Backdrop CMS packaging script on 2022-05-15
+; Added by Backdrop CMS packaging script on 2022-07-20
 project = backdrop
-version = 1.22.0
-timestamp = 1652672169
+version = 1.22.1
+timestamp = 1658358969
