@@ -9,7 +9,7 @@
     "weight": 0,
     "storage": 1,
     "layout_template": "borg_sutro",
-    "disabled": false,
+    "disabled": true,
     "settings": {
         "title": "",
         "title_display": "default",
@@ -53,6 +53,7 @@
         "65ee1b60-7409-4706-9600-d2b5f20bedfc": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -76,6 +77,7 @@
         "7900c93e-9fa0-44e0-8208-8a2b13d709fe": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -106,6 +108,7 @@
         "0d217585-4b70-4399-b400-fe63912ee4eb": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -135,6 +138,7 @@
         "8d4a2efb-97a7-4b6d-9500-0afdd06cebe3": {
             "plugin": "views:term-block",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "term-block",
                 "settings": {
@@ -171,6 +175,7 @@
         "1a0d455c-538f-4636-b700-d69cc80f9b5a": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -199,6 +204,7 @@
         "3db2ab97-8ace-4646-8400-f52ffad82f57": {
             "plugin": "borg_blocks:rss",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "rss",
                 "settings": {
@@ -222,6 +228,7 @@
         "f1b585e6-eb53-4f5e-be01-1b5a990b038d": {
             "plugin": "views:showcase-block_3",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "showcase-block_3",
                 "settings": {
@@ -258,6 +265,7 @@
         "103b80fe-8b02-4da7-bd00-ac6f804e2678": {
             "plugin": "borg_project_metrics:backdrop_project_metrics",
             "data": {
+                "status": 1,
                 "module": "borg_project_metrics",
                 "delta": "backdrop_project_metrics",
                 "settings": {
@@ -283,6 +291,7 @@
         "5863acb9-9b46-42e1-bf0f-15e0373370ff": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -306,6 +315,7 @@
         "29cbdbe0-3ec3-4aa3-b432-50ad3d7acb70": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -340,6 +350,7 @@
         "33586f25-4a06-4ef6-a904-4fa6a6500bcd": {
             "plugin": "block:3",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -378,6 +389,7 @@
         "c564c591-21f6-49a7-9600-a8d3a47d5103": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {
@@ -404,5 +416,18 @@
                 }
             }
         }
-    }
+    },
+    "conditions": [
+        {
+            "plugin": "taxonomy_term_vocabulary",
+            "data": {
+                "settings": {
+                    "bundles": [
+                        "organization"
+                    ],
+                    "load_condition_nojs": "Load condition"
+                }
+            }
+        }
+    ]
 }
