@@ -329,21 +329,8 @@ class CRM_Utils_String {
    * @return bool
    */
   public static function isUtf8($str) {
-    if (!function_exists(mb_detect_encoding)) {
-      // eliminate all white space from the string
-      $str = preg_replace('/\s+/', '', $str);
-
-      // pattern stolen from the php.net function documentation for
-      // utf8decode();
-      // comment by JF Sebastian, 30-Mar-2005
-      return preg_match('/^([\x00-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xec][\x80-\xbf]{2}|\xed[\x80-\x9f][\x80-\xbf]|[\xee-\xef][\x80-\xbf]{2}|f0[\x90-\xbf][\x80-\xbf]{2}|[\xf1-\xf3][\x80-\xbf]{3}|\xf4[\x80-\x8f][\x80-\xbf]{2})*$/', $str);
-      // ||
-      // iconv('ISO-8859-1', 'UTF-8', $str);
-    }
-    else {
-      $enc = mb_detect_encoding($str, ['UTF-8'], TRUE);
-      return ($enc !== FALSE);
-    }
+    $enc = mb_detect_encoding($str, ['UTF-8'], TRUE);
+    return ($enc !== FALSE);
   }
 
   /**
@@ -450,10 +437,9 @@ class CRM_Utils_String {
    *   the converted string
    */
   public static function htmlToText($html) {
-    require_once 'html2text/rcube_html2text.php';
     $token_html = preg_replace('!\{([a-z_.]+)\}!i', 'token:{$1}', $html);
-    $converter = new rcube_html2text($token_html);
-    $token_text = $converter->get_text();
+    $converter = new \Html2Text\Html2Text($token_html, ['do_links' => 'table', 'width' => 75]);
+    $token_text = $converter->getText();
     $text = preg_replace('!token\:\{([a-z_.]+)\}!i', '{$1}', $token_text);
     return $text;
   }
@@ -891,7 +877,7 @@ class CRM_Utils_String {
     if ($fragment === '') {
       return TRUE;
     }
-    $len = strlen($fragment);
+    $len = strlen($fragment ?? '');
     return substr($string, 0, $len) === $fragment;
   }
 
@@ -908,7 +894,7 @@ class CRM_Utils_String {
     if ($fragment === '') {
       return TRUE;
     }
-    $len = strlen($fragment);
+    $len = strlen($fragment ?? '');
     return substr($string, -1 * $len) === $fragment;
   }
 

@@ -280,7 +280,10 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       $this->setFormAmountFields($this->_params['priceSetId']);
     }
 
-    $this->_params['tax_amount'] = $this->get('tax_amount');
+    if (!empty($this->get('tax_amount'))) {
+      CRM_Core_Error::deprecatedWarning('tax_amount should be not passed in');
+      $this->_params['tax_amount'] = $this->get('tax_amount');
+    }
     $this->_useForMember = $this->get('useForMember');
 
     CRM_Contribute_Form_AbstractEditPayment::formatCreditCardDetails($this->_params);
@@ -487,21 +490,23 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       $this->buildCustom($this->_values['honoree_profile_id'], 'honoreeProfileFields', TRUE, 'honor', $fieldTypes);
     }
     $this->assign('receiptFromEmail', $this->_values['receipt_from_email'] ?? NULL);
-    $amount_block_is_active = $this->get('amount_block_is_active');
-    $this->assign('amount_block_is_active', $amount_block_is_active);
+    $this->assign('amount_block_is_active', $this->isFormSupportsNonMembershipContributions());
 
     // Make a copy of line items array to use for display only
     $tplLineItems = $this->_lineItem;
     if (CRM_Invoicing_Utils::isInvoicingEnabled()) {
-      // @todo $params seems like exactly the wrong place to get totalTaxAmount from
-      // this is a calculated variable so we it should be transparent how we
-      // calculated it rather than coming from 'params'
-      $this->assign('totalTaxAmount', $params['tax_amount']);
+      $taxAmount = 0;
+      foreach ($tplLineItems ?? [] as $lineItems) {
+        foreach ($lineItems as $lineItem) {
+          $taxAmount += (float) ($lineItem['tax_amount'] ?? 0);
+        }
+      }
+
+      $this->assign('totalTaxAmount', $taxAmount);
+      $this->assign('taxTerm', CRM_Invoicing_Utils::getTaxTerm());
     }
-    $this->assignLineItemsToTemplate($tplLineItems);
 
     $isDisplayLineItems = $this->_priceSetId && !CRM_Core_DAO::getFieldValue('CRM_Price_DAO_PriceSet', $this->_priceSetId, 'is_quick_config');
-
     $this->assign('isDisplayLineItems', $isDisplayLineItems);
 
     if (!$isDisplayLineItems) {
@@ -509,6 +514,9 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       // whereas isDisplayLineItems is specific & clear.
       $this->assign('is_quick_config', 1);
       $this->_params['is_quick_config'] = 1;
+    }
+    else {
+      $this->assignLineItemsToTemplate($tplLineItems);
     }
 
     if (!empty($params['selectProduct']) && $params['selectProduct'] !== 'no_thanks') {
@@ -566,8 +574,6 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
     $this->assign('priceSetID', $this->_priceSetId);
 
     // The concept of contributeMode is deprecated.
-    // the is_monetary concept probably should be too as it can be calculated from
-    // the existence of 'amount' & seems fragile.
     if ($this->_contributeMode === 'notify' ||
       $this->_amount <= 0.0 || $this->_params['is_pay_later']
     ) {
@@ -1120,12 +1126,13 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
         }
         $smarty = CRM_Core_Smarty::singleton();
         $smarty->assign('dataArray', $dataArray);
-        $smarty->assign('totalTaxAmount', $params['tax_amount'] ?? NULL);
       }
 
       // lets store it in the form variable so postProcess hook can get to this and use it
       $form->_contributionID = $contribution->id;
     }
+    // @fixme: This is assigned to the smarty template for the receipt. It's value should be calculated and not taken from $params.
+    $form->assign('totalTaxAmount', $params['tax_amount'] ?? NULL);
 
     // process soft credit / pcp params first
     CRM_Contribute_BAO_ContributionSoft::formatSoftCreditParams($params, $form);
@@ -1231,9 +1238,8 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
     $recurParams['contribution_status_id'] = CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_Contribution', 'contribution_status_id', 'Pending');
     $recurParams['payment_processor_id'] = $params['payment_processor_id'] ?? NULL;
     $recurParams['is_email_receipt'] = (bool) ($params['is_email_receipt'] ?? FALSE);
-    // we need to add a unique trxn_id to avoid a unique key error
-    // in paypal IPN we reset this when paypal sends us the real trxn id, CRM-2991
-    $recurParams['trxn_id'] = $params['trxn_id'] ?? $params['invoiceID'];
+    // We set trxn_id=invoiceID specifically for paypal IPN. It is reset this when paypal sends us the real trxn id, CRM-2991
+    $recurParams['processor_id'] = $recurParams['trxn_id'] = ($params['trxn_id'] ?? $params['invoiceID']);
     $recurParams['financial_type_id'] = $contributionType->id;
 
     $campaignId = $params['campaign_id'] ?? $form->_values['campaign_id'] ?? NULL;
@@ -1323,7 +1329,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
         \Civi\Api4\Relationship::create(FALSE)
           ->addValue('contact_id_a', $contactID)
           ->addValue('contact_id_b', $orgID)
-          ->addValue('relationship_type_id', $relTypeId = CRM_Contact_BAO_RelationshipType::getEmployeeRelationshipTypeID())
+          ->addValue('relationship_type_id', CRM_Contact_BAO_RelationshipType::getEmployeeRelationshipTypeID())
           ->addValue('is_permission_a_b:name', 'View and update')
           ->execute();
       }
@@ -1387,22 +1393,27 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
    */
   public static function processPcp(&$page, $params): array {
     $params['pcp_made_through_id'] = $page->_pcpId;
-    $page->assign('pcpBlock', TRUE);
-    if (!empty($params['pcp_display_in_roll']) && empty($params['pcp_roll_nickname'])) {
-      $params['pcp_roll_nickname'] = ts('Anonymous');
-      $params['pcp_is_anonymous'] = 1;
-    }
-    else {
-      $params['pcp_is_anonymous'] = 0;
-    }
-    foreach ([
-      'pcp_display_in_roll',
-      'pcp_is_anonymous',
-      'pcp_roll_nickname',
-      'pcp_personal_note',
-    ] as $val) {
-      if (!empty($params[$val])) {
-        $page->assign($val, $params[$val]);
+
+    $page->assign('pcpBlock', FALSE);
+    // display honor roll data only if it's enabled for the PCP page
+    if (!empty($page->_pcpInfo['is_honor_roll'])) {
+      $page->assign('pcpBlock', TRUE);
+      if (!empty($params['pcp_display_in_roll']) && empty($params['pcp_roll_nickname'])) {
+        $params['pcp_roll_nickname'] = ts('Anonymous');
+        $params['pcp_is_anonymous'] = 1;
+      }
+      else {
+        $params['pcp_is_anonymous'] = 0;
+      }
+      foreach ([
+        'pcp_display_in_roll',
+        'pcp_is_anonymous',
+        'pcp_roll_nickname',
+        'pcp_personal_note',
+      ] as $val) {
+        if (!empty($params[$val])) {
+          $page->assign($val, $params[$val]);
+        }
       }
     }
 
@@ -1415,12 +1426,11 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
    * @param array $membershipParams
    * @param int $contactID
    * @param array $customFieldsFormatted
-   * @param array $fieldTypes
    * @param array $premiumParams
    * @param array $membershipLineItems
    *   Line items specifically relating to memberships.
    */
-  protected function processMembership($membershipParams, $contactID, $customFieldsFormatted, $fieldTypes, $premiumParams,
+  protected function processMembership($membershipParams, $contactID, $customFieldsFormatted, $premiumParams,
                                 $membershipLineItems): void {
 
     $membershipTypeIDs = (array) $membershipParams['selectMembership'];
@@ -1438,9 +1448,9 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       //enabled and contribution amount is not selected. fix for CRM-3010
       $isPaidMembership = TRUE;
     }
-    $isProcessSeparateMembershipTransaction = $this->isSeparateMembershipTransaction($this->_id, $this->_values['amount_block_is_active']);
+    $isProcessSeparateMembershipTransaction = $this->isSeparateMembershipTransaction($this->_id);
 
-    if ($this->_values['amount_block_is_active']) {
+    if ($this->isFormSupportsNonMembershipContributions()) {
       $financialTypeID = $this->_values['financial_type_id'];
     }
     else {
@@ -1451,7 +1461,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       $membershipParams['contribution_source'] = $this->_params['membership_source'];
     }
 
-    $this->postProcessMembership($membershipParams, $contactID, $premiumParams, $customFieldsFormatted, $fieldTypes, $membershipType, $membershipTypeIDs, $isPaidMembership, $this->_membershipId, $isProcessSeparateMembershipTransaction, $financialTypeID,
+    $this->postProcessMembership($membershipParams, $contactID, $premiumParams, $customFieldsFormatted, $membershipType, $membershipTypeIDs, $isPaidMembership, $this->_membershipId, $isProcessSeparateMembershipTransaction, $financialTypeID,
       $membershipLineItems);
 
     $this->assign('membership_assign', TRUE);
@@ -1468,7 +1478,6 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
    *
    * @param array $premiumParams
    * @param null $customFieldsFormatted
-   * @param null $includeFieldTypes
    *
    * @param array $membershipDetails
    *
@@ -1489,7 +1498,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
    */
   protected function postProcessMembership(
     $membershipParams, $contactID, $premiumParams,
-    $customFieldsFormatted, $includeFieldTypes, $membershipDetails, $membershipTypeIDs, $isPaidMembership, $membershipID,
+    $customFieldsFormatted, $membershipDetails, $membershipTypeIDs, $isPaidMembership, $membershipID,
     $isProcessSeparateMembershipTransaction, $financialTypeID, $unprocessedLineItems) {
     // Assign $this to $form while we eliminate it.
     $form = $this;
@@ -1545,7 +1554,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
         if (empty($form->_params['auto_renew']) && !empty($membershipParams['is_recur'])) {
           unset($membershipParams['is_recur']);
         }
-        [$membershipContribution, $secondPaymentResult] = $this->processSecondaryFinancialTransaction($contactID, $form, array_merge($membershipParams, ['skipLineItem' => 1]),
+        [$membershipContribution, $secondPaymentResult] = $this->processSecondaryFinancialTransaction($contactID, array_merge($membershipParams, ['skipLineItem' => 1]),
           $isTest, $unprocessedLineItems, $membershipDetails['minimum_fee'] ?? 0, $membershipDetails['financial_type_id'] ?? NULL);
         $paymentResults[] = ['contribution_id' => $membershipContribution->id, 'result' => $secondPaymentResult];
         $totalAmount = $membershipContribution->total_amount;
@@ -1705,7 +1714,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       // If this is a single membership-related contribution, it won't have
       // be performed yet, so do it now.
       if ($isPaidMembership && !$isProcessSeparateMembershipTransaction) {
-        $paymentActionResult = $payment->doPayment($paymentParams, 'contribute');
+        $paymentActionResult = $payment->doPayment($paymentParams);
         $paymentResults[] = ['contribution_id' => $paymentResult['contribution']->id, 'result' => $paymentActionResult];
       }
       // Do not send an email if Recurring transaction is done via Direct Mode
@@ -1713,7 +1722,26 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       foreach ($paymentResults as $result) {
         //CRM-18211: Fix situation where second contribution doesn't exist because it is optional.
         if ($result['contribution_id']) {
-          $this->completeTransaction($result['result'], $result['contribution_id']);
+          if (($result['result']['payment_status_id'] ?? NULL) == 1) {
+            try {
+              civicrm_api3('contribution', 'completetransaction', [
+                'id' => $result['contribution_id'],
+                'trxn_id' => $result['result']['trxn_id'] ?? NULL,
+                'payment_processor_id' => $result['result']['payment_processor_id'] ?? $this->_paymentProcessor['id'],
+                'is_transactional' => FALSE,
+                'fee_amount' => $result['result']['fee_amount'] ?? NULL,
+                'receive_date' => $result['result']['receive_date'] ?? NULL,
+                'card_type_id' => $result['result']['card_type_id'] ?? NULL,
+                'pan_truncation' => $result['result']['pan_truncation'] ?? NULL,
+              ]);
+            }
+            catch (CiviCRM_API3_Exception $e) {
+              if ($e->getErrorCode() != 'contribution_completed') {
+                \Civi::log()->error('CRM_Contribute_Form_Contribution_Confirm::completeTransaction CiviCRM_API3_Exception: ' . $e->getMessage());
+                throw new CRM_Core_Exception('Failed to update contribution in database');
+              }
+            }
+          }
         }
       }
       return;
@@ -1738,8 +1766,19 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
           $paymentProcessorIDs = explode(CRM_Core_DAO::VALUE_SEPARATOR, $this->_values['payment_processor'] ?? NULL);
           $this->_paymentProcessor['id'] = $paymentProcessorIDs[0];
         }
-        $result = ['payment_status_id' => 1, 'contribution' => $membershipContribution];
-        $this->completeTransaction($result, $result['contribution']->id);
+        try {
+          civicrm_api3('contribution', 'completetransaction', [
+            'id' => $membershipContribution->id,
+            'payment_processor_id' => $this->_paymentProcessor['id'],
+            'is_transactional' => FALSE,
+          ]);
+        }
+        catch (CiviCRM_API3_Exception $e) {
+          if ($e->getErrorCode() != 'contribution_completed') {
+            \Civi::log()->error('CRM_Contribute_Form_Contribution_Confirm::completeTransaction CiviCRM_API3_Exception: ' . $e->getMessage());
+            throw new CRM_Core_Exception('Failed to update contribution in database');
+          }
+        }
       }
       // return as completeTransaction() already sends the receipt mail.
       return;
@@ -1748,7 +1787,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
     CRM_Contribute_BAO_ContributionPage::sendMail($contactID,
       $emailValues,
       $isTest, FALSE,
-      $includeFieldTypes
+      ['Contact', 'Organization', 'Membership']
     );
   }
 
@@ -1772,19 +1811,20 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
    * Where a second separate financial transaction is supported we will process it here.
    *
    * @param int $contactID
-   * @param CRM_Contribute_Form_Contribution_Confirm $form
    * @param array $tempParams
    * @param bool $isTest
    * @param array $lineItems
    * @param $minimumFee
    * @param int $financialTypeID
    *
-   * @throws CRM_Core_Exception
-   * @throws Exception
-   * @return CRM_Contribute_BAO_Contribution
+   * @return array []
+   *
+   * @throws \CRM_Core_Exception
+   * @throws \CiviCRM_API3_Exception
+   * @throws \Civi\Payment\Exception\PaymentProcessorException
    */
-  protected function processSecondaryFinancialTransaction($contactID, &$form, $tempParams, $isTest, $lineItems, $minimumFee,
-                                                   $financialTypeID) {
+  private function processSecondaryFinancialTransaction($contactID, $tempParams, $isTest, $lineItems, $minimumFee,
+                                                   $financialTypeID): array {
     $financialType = new CRM_Financial_DAO_FinancialType();
     $financialType->id = $financialTypeID;
     $financialType->find(TRUE);
@@ -1794,46 +1834,46 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
 
     //assign receive date when separate membership payment
     //and contribution amount not selected.
-    if ($form->_amount == 0) {
+    if ($this->_amount == 0) {
       $now = date('YmdHis');
-      $form->_params['receive_date'] = $now;
+      $this->_params['receive_date'] = $now;
       $receiveDate = CRM_Utils_Date::mysqlToIso($now);
-      $form->set('params', $form->_params);
-      $form->assign('receive_date', $receiveDate);
+      $this->set('params', $this->_params);
+      $this->assign('receive_date', $receiveDate);
     }
 
-    $form->set('membership_amount', $minimumFee);
-    $form->assign('membership_amount', $minimumFee);
+    $this->set('membership_amount', $minimumFee);
+    $this->assign('membership_amount', $minimumFee);
 
     //set this variable as we are not creating pledge for
     //separate membership payment contribution.
     //so for differentiating membership contribution from
     //main contribution.
-    $form->_params['separate_membership_payment'] = 1;
+    $this->_params['separate_membership_payment'] = 1;
     $contributionParams = [
       'contact_id' => $contactID,
       'line_item' => $lineItems,
       'is_test' => $isTest,
-      'campaign_id' => $tempParams['campaign_id'] ?? $form->_values['campaign_id'] ?? NULL,
-      'contribution_page_id' => $form->_id,
+      'campaign_id' => $tempParams['campaign_id'] ?? $this->_values['campaign_id'] ?? NULL,
+      'contribution_page_id' => $this->_id,
       'source' => $tempParams['source'] ?? $tempParams['description'] ?? NULL,
     ];
-    $isMonetary = !empty($form->_values['is_monetary']);
+    $isMonetary = !empty($this->_values['is_monetary']);
     if ($isMonetary) {
       if (empty($paymentParams['is_pay_later'])) {
-        $contributionParams['payment_instrument_id'] = $form->_paymentProcessor['payment_instrument_id'];
+        $contributionParams['payment_instrument_id'] = $this->_paymentProcessor['payment_instrument_id'];
       }
     }
 
     // CRM-19792 : set necessary fields for payment processor
-    CRM_Core_Payment_Form::mapParams($form->_bltID, $form->_params, $tempParams, TRUE);
+    CRM_Core_Payment_Form::mapParams($this->_bltID, $this->_params, $tempParams, TRUE);
 
     $membershipContribution = $this->processFormContribution(
       $tempParams,
       $tempParams,
       $contributionParams,
       $financialType,
-      $form->_bltID,
+      $this->_bltID,
       $isRecur
     );
 
@@ -1851,18 +1891,18 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
     $tempParams['trxn_id'] = $membershipContribution->trxn_id;
     $tempParams['contributionID'] = $membershipContribution->id;
 
-    if ($form->_values['is_monetary'] && !$form->_params['is_pay_later'] && $minimumFee > 0.0) {
+    if ($this->_values['is_monetary'] && !$this->_params['is_pay_later'] && $minimumFee > 0.0) {
       // At the moment our tests are calling this form in a way that leaves 'object' empty. For
       // now we compensate here.
-      if (empty($form->_paymentProcessor['object'])) {
+      if (empty($this->_paymentProcessor['object'])) {
         $payment = Civi\Payment\System::singleton()->getByProcessor($this->_paymentProcessor);
       }
       else {
-        $payment = $form->_paymentProcessor['object'];
+        $payment = $this->_paymentProcessor['object'];
       }
-      $result = $payment->doPayment($tempParams, 'contribute');
-      $form->set('membership_trx_id', $result['trxn_id']);
-      $form->assign('membership_trx_id', $result['trxn_id']);
+      $result = $payment->doPayment($tempParams);
+      $this->set('membership_trx_id', $result['trxn_id']);
+      $this->assign('membership_trx_id', $result['trxn_id']);
     }
 
     return [$membershipContribution, $result];
@@ -1876,13 +1916,12 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
    * transaction AND a membership transaction AND the payment processor supports double financial transactions (ie. NOT doTransferCheckout style)
    *
    * @param int $formID
-   * @param bool $amountBlockActiveOnForm
    *
    * @return bool
    */
-  public function isSeparateMembershipTransaction($formID, $amountBlockActiveOnForm) {
+  protected function isSeparateMembershipTransaction($formID): bool {
     $memBlockDetails = CRM_Member_BAO_Membership::getMembershipBlock($formID);
-    if (!empty($memBlockDetails['is_separate_payment']) && $amountBlockActiveOnForm) {
+    if (!empty($memBlockDetails['is_separate_payment']) && $this->isFormSupportsNonMembershipContributions()) {
       return TRUE;
     }
     return FALSE;
@@ -2367,7 +2406,26 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       }
       if (!empty($result['contribution'])) {
         // It seems this line is hit when there is a zero dollar transaction & in tests, not sure when else.
-        $this->completeTransaction($result, $result['contribution']->id);
+        if (($result['payment_status_id'] ?? NULL) == 1) {
+          try {
+            civicrm_api3('contribution', 'completetransaction', [
+              'id' => $result['contribution']->id,
+              'trxn_id' => $result['trxn_id'] ?? NULL,
+              'payment_processor_id' => $result['payment_processor_id'] ?? $this->_paymentProcessor['id'],
+              'is_transactional' => FALSE,
+              'fee_amount' => $result['fee_amount'] ?? NULL,
+              'receive_date' => $result['receive_date'] ?? NULL,
+              'card_type_id' => $result['card_type_id'] ?? NULL,
+              'pan_truncation' => $result['pan_truncation'] ?? NULL,
+            ]);
+          }
+          catch (CiviCRM_API3_Exception $e) {
+            if ($e->getErrorCode() != 'contribution_completed') {
+              \Civi::log()->error('CRM_Contribute_Form_Contribution_Confirm::completeTransaction CiviCRM_API3_Exception: ' . $e->getMessage());
+              throw new CRM_Core_Exception('Failed to update contribution in database');
+            }
+          }
+        }
       }
       return $result;
     }
@@ -2471,7 +2529,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       $this->_params['campaign_id'] = $membershipParams['onbehalf']['member_campaign_id'];
     }
 
-    $customFieldsFormatted = $fieldTypes = [];
+    $customFieldsFormatted = [];
     if (!empty($membershipParams['onbehalf']) &&
       is_array($membershipParams['onbehalf'])
     ) {
@@ -2488,14 +2546,13 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
           );
         }
       }
-      $fieldTypes = ['Contact', 'Organization', 'Membership'];
     }
 
     $membershipParams = $this->getMembershipParamsFromPriceSet($membershipParams);
     if (!empty($membershipParams['selectMembership'])) {
       // CRM-12233
       $membershipLineItems = $formLineItems;
-      if ($this->_separateMembershipPayment && $this->_values['amount_block_is_active']) {
+      if ($this->_separateMembershipPayment && $this->isFormSupportsNonMembershipContributions()) {
         $membershipLineItems = [];
         foreach ($this->_values['fee'] as $key => $feeValues) {
           if ($feeValues['name'] == 'membership_amount') {
@@ -2507,7 +2564,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
         }
       }
       try {
-        $this->processMembership($membershipParams, $contactID, $customFieldsFormatted, $fieldTypes, $premiumParams, $membershipLineItems);
+        $this->processMembership($membershipParams, $contactID, $customFieldsFormatted, $premiumParams, $membershipLineItems);
       }
       catch (\Civi\Payment\Exception\PaymentProcessorException $e) {
         CRM_Core_Session::singleton()->setStatus($e->getMessage());
@@ -2539,6 +2596,8 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
    *
    * Completing will trigger update of related entities and emails.
    *
+   * @deprecated
+   *
    * @param array $result
    * @param int $contributionID
    *
@@ -2546,6 +2605,7 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
    * @throws \Exception
    */
   protected function completeTransaction($result, $contributionID) {
+    CRM_Core_Error::deprecatedWarning('Use API3 Payment.create');
     if (($result['payment_status_id'] ?? NULL) == 1) {
       try {
         civicrm_api3('contribution', 'completetransaction', [
@@ -2753,13 +2813,9 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
           }
           $result = $payment->doPayment($paymentParams);
           $form->_params = array_merge($form->_params, $result);
-          $form->assign('trxn_id', CRM_Utils_Array::value('trxn_id', $result));
-          if (!empty($result['trxn_id'])) {
-            $contribution->trxn_id = $result['trxn_id'];
-          }
-          if (!empty($result['payment_status_id'])) {
-            $contribution->payment_status_id = $result['payment_status_id'];
-          }
+          $form->assign('trxn_id', $result['trxn_id'] ?? '');
+          $contribution->trxn_id = $result['trxn_id'] ?? $contribution->trxn_id ?? '';
+          $contribution->payment_status_id = $result['payment_status_id'];
           $result['contribution'] = $contribution;
           if ($result['payment_status_id'] == CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_Contribution', 'contribution_status_id', 'Pending')
             && $payment->isSendReceiptForPending()) {

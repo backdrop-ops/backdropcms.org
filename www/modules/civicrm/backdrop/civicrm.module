@@ -172,15 +172,19 @@ function civicrm_menu_alter(&$items) {
 /**
  * Implements hook_layout_access_info().
  *
- * Adding a CiviCRM checksum visibility condition.
+ * Adding a CiviCRM checksum visibility condition and a URL condition that
+ * considers the query parameters in the URL.
  */
 function civicrm_layout_access_info() {
-  $info = array(
-    'civicrm_checksum' => array(
-      'title' => t('CiviCRM checksum'),
-      'description' => t('Has the page been loaded with a valid CiviCRM checksum?'),
-      'class' => 'CivicrmChecksumLayoutAccess',
-    ),
+  $info['civicrm_checksum'] = array(
+    'title' => t('CiviCRM checksum'),
+    'description' => t('Has the page been loaded with a valid CiviCRM checksum?'),
+    'class' => 'CivicrmChecksumLayoutAccess',
+  );
+  $info['civicrm_urls'] = array(
+    'title' => t('CiviCRM URL path and query'),
+    'description' => t('Control access by the path and query parameters of the current CiviCRM page.'),
+    'class' => 'CivicrmUrlLayoutAccess',
   );
   return $info;
 }
@@ -940,6 +944,7 @@ function civicrm_autoload_info() {
 
     // layout visibility conditions handlers
     'CivicrmChecksumLayoutAccess' => 'modules/layouts/plugins/access/civicrm_checksum_layout_access.inc',
+    'CivicrmUrlLayoutAccess' => 'modules/layouts/plugins/access/civicrm_url_layout_access.inc',
 
     // Views plugins are mapped in hook_views_plugins() in civicrm.views.inc.
   );

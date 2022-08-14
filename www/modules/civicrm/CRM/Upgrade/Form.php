@@ -263,15 +263,6 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
   }
 
   /**
-   * @param $query
-   *
-   * @return Object
-   */
-  public function runQuery($query) {
-    return CRM_Core_DAO::executeQuery($query);
-  }
-
-  /**
    * @param $version
    *
    * @return Object
@@ -283,7 +274,7 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
 UPDATE civicrm_domain
 SET    version = '$version'
 ";
-    return $this->runQuery($query);
+    return CRM_Core_DAO::executeQuery($query);
   }
 
   /**
@@ -451,7 +442,7 @@ SET    version = '$version'
         [
           1 => CRM_Upgrade_Incremental_General::MIN_INSTALL_MYSQL_VER,
           2 => CRM_Utils_SQL::getDatabaseVersion(),
-          3 => '10.1',
+          3 => CRM_Upgrade_Incremental_General::MIN_INSTALL_MARIADB_VER,
           4 => $latestVer,
         ]);
     }
@@ -536,6 +527,15 @@ SET    version = '$version'
     );
     $queue->createItem($task, ['weight' => 0]);
 
+    if (empty(CRM_Upgrade_Snapshot::getActivationIssues())) {
+      $task = new CRM_Queue_Task(
+        ['CRM_Upgrade_Snapshot', 'cleanupTask'],
+        ['civicrm'],
+        "Cleanup old upgrade snapshots"
+      );
+      $queue->createItem($task, ['weight' => 0]);
+    }
+
     $task = new CRM_Queue_Task(
       ['CRM_Upgrade_Form', 'disableOldExtensions'],
       [$postUpgradeMessageFile],
@@ -598,6 +598,13 @@ SET    version = '$version'
       "Finish core DB updates $latestVer"
     );
     $queue->createItem($task, ['weight' => 1000]);
+
+    $task = new CRM_Queue_Task(
+      ['CRM_Upgrade_Form', 'doFinalMessages'],
+      [$currentVer, $latestVer, $postUpgradeMessageFile],
+      'Generate final messages'
+    );
+    $queue->createItem($task, ['weight' => 3000]);
 
     return $queue;
   }
@@ -754,6 +761,7 @@ SET    version = '$version'
       $versionObject->$phpFunctionName($rev, $originalVer, $latestVer);
     }
     else {
+      $ctx->log->info("Upgrade DB to $rev: SQL");
       $upgrade->processSQL($rev);
     }
 
@@ -815,8 +823,9 @@ SET    version = '$version'
     $config = CRM_Core_Config::singleton();
     $config->userSystem->flush();
 
-    CRM_Core_Invoke::rebuildMenuAndCaches(FALSE, TRUE);
+    CRM_Core_Invoke::rebuildMenuAndCaches(FALSE, FALSE);
     // NOTE: triggerRebuild is FALSE becaues it will run again in a moment (via fixSchemaDifferences).
+    // sessionReset is FALSE because upgrade status/postUpgradeMessages are needed by the Page. We reset later in doFinish().
 
     $versionCheck = new CRM_Utils_VersionCheck();
     $versionCheck->flushCache();
@@ -831,6 +840,34 @@ SET    version = '$version'
   }
 
   /**
+   * Generate any standard post-upgrade messages (which are not version-specific).
+   *
+   * @param \CRM_Queue_TaskContext $ctx
+   * @param string $originalVer
+   *   the original revision.
+   * @param string $latestVer
+   *   the target (final) revision.
+   * @param string $postUpgradeMessageFile
+   *   path of a modifiable file which lists the post-upgrade messages.
+   *
+   * @return bool
+   */
+  public static function doFinalMessages(CRM_Queue_TaskContext $ctx, $originalVer, $latestVer, $postUpgradeMessageFile): bool {
+    // NOTE: This step should be automated circa 5.53.
+    $originalMajorMinor = array_slice(explode('.', $originalVer), 0, 2);
+    $latestMajorMinor = array_slice(explode('.', $latestVer), 0, 2);
+    if ($originalMajorMinor !== $latestMajorMinor) {
+      file_put_contents($postUpgradeMessageFile,
+        '<br/><br/>' . ts('<strong>WARNING</strong>: Core extensions may also require database updates. Please <a %1>execute extension updates</a> immediately.', [
+          1 => sprintf('href="%s" target="_blank" ', CRM_Utils_System::url('civicrm/admin/extensions/upgrade', 'reset=1', TRUE)),
+        ]),
+        FILE_APPEND
+      );
+    }
+    return TRUE;
+  }
+
+  /**
    * After finishing the queue, the upgrade-runner calls `doFinish()`.
    *
    * This is called by all upgrade-runners (inside or outside of `civicrm-core.git`).
@@ -840,6 +877,8 @@ SET    version = '$version'
    * @return bool
    */
   public static function doFinish(): bool {
+    $session = CRM_Core_Session::singleton();
+    $session->reset(2);
     return TRUE;
   }
 

@@ -5,7 +5,7 @@
 {if $is_pay_later}
 
 ===========================================================
-{if isset($pay_later_receipt)}{$pay_later_receipt}{/if}
+{$pay_later_receipt}
 ===========================================================
 {/if}
 
@@ -83,7 +83,7 @@
 --------------------------------------------------------------------------------------------------
 {/if}
 
-{if isset($totalTaxAmount)}
+{if $totalTaxAmount}
 {ts}Total Tax Amount{/ts}: {$totalTaxAmount|crmMoney:$currency}
 {/if}
 

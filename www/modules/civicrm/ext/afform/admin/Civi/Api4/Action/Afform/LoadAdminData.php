@@ -110,7 +110,7 @@ class LoadAdminData extends \Civi\Api4\Generic\AbstractAction {
       $joins = array_column(\CRM_Utils_Array::findAll($layout, 'af-join'), 'af-join');
       $entities = array_unique(array_merge($entities, $joins));
       $blockTags = array_unique(array_column(\CRM_Utils_Array::findAll($layout, function($el) use ($allAfforms) {
-        return in_array($el['#tag'], $allAfforms);
+        return isset($el['#tag']) && in_array($el['#tag'], $allAfforms);
       }), '#tag'));
       foreach ($blockTags as $blockTag) {
         if (!isset($info['blocks'][$blockTag])) {
@@ -135,7 +135,7 @@ class LoadAdminData extends \Civi\Api4\Generic\AbstractAction {
     if ($info['definition']['type'] === 'form') {
       if ($newForm) {
         $entities[] = $this->entity;
-        $defaultEntity = AfformAdminMeta::getAfformEntity($this->entity);
+        $defaultEntity = AfformAdminMeta::getMetadata()['entities'][$this->entity] ?? [];
         if (!empty($defaultEntity['boilerplate'])) {
           $scanBlocks($defaultEntity['boilerplate']);
         }
@@ -153,8 +153,8 @@ class LoadAdminData extends \Civi\Api4\Generic\AbstractAction {
     }
 
     if ($info['definition']['type'] === 'block') {
-      $blockEntity = $info['definition']['join_entity'] ?? $info['definition']['entity_type'];
-      if ($blockEntity !== '*') {
+      $blockEntity = $info['definition']['join_entity'] ?? $info['definition']['entity_type'] ?? NULL;
+      if ($blockEntity) {
         $entities[] = $blockEntity;
       }
       $scanBlocks($info['definition']['layout']);
@@ -184,7 +184,7 @@ class LoadAdminData extends \Civi\Api4\Generic\AbstractAction {
             ->setSavedSearch($displayTag['search-name']);
         }
         $display = $displayGet
-          ->addSelect('*', 'type:name', 'type:icon', 'saved_search_id.name', 'saved_search_id.api_entity', 'saved_search_id.api_params')
+          ->addSelect('*', 'type:name', 'type:icon', 'saved_search_id.name', 'saved_search_id.label', 'saved_search_id.api_entity', 'saved_search_id.api_params')
           ->execute()->first();
         $display['calc_fields'] = $this->getCalcFields($display['saved_search_id.api_entity'], $display['saved_search_id.api_params']);
         $display['filters'] = empty($displayTag['filters']) ? NULL : (\CRM_Utils_JS::getRawProps($displayTag['filters']) ?: NULL);
@@ -313,6 +313,10 @@ class LoadAdminData extends \Civi\Api4\Generic\AbstractAction {
       ],
       [
         'name' => 'blocks',
+        'data_type' => 'Array',
+      ],
+      [
+        'name' => 'entities',
         'data_type' => 'Array',
       ],
       [

@@ -14,27 +14,23 @@
  * @package CRM
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
-class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping implements \Civi\Test\HookInterface {
+class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping implements \Civi\Core\HookInterface {
 
   /**
-   * Fetch object based on array of properties.
+   * Retrieve DB object and copy to defaults array.
    *
    * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
+   *   Array of criteria values.
    * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   *   Array to be populated with found values.
    *
-   * @return object
-   *   CRM_Core_DAO_Mapping object on success, otherwise NULL
+   * @return self|null
+   *   The DAO object, if found.
+   *
+   * @deprecated
    */
-  public static function retrieve(&$params, &$defaults) {
-    $mapping = new CRM_Core_DAO_Mapping();
-    $mapping->copyValues($params);
-    if ($mapping->find(TRUE)) {
-      CRM_Core_DAO::storeValues($mapping, $defaults);
-      return $mapping;
-    }
-    return NULL;
+  public static function retrieve($params, &$defaults) {
+    return self::commonRetrieve(self::class, $params, $defaults);
   }
 
   /**
@@ -201,7 +197,7 @@ class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping implements \Civi\Test\Ho
         $mappingOperator[$mapping->grouping][$mapping->column_number] = $mapping->operator;
       }
 
-      if (!empty($mapping->value)) {
+      if (isset($mapping->value)) {
         $mappingValue[$mapping->grouping][$mapping->column_number] = $mapping->value;
       }
     }
@@ -615,7 +611,10 @@ class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping implements \Civi\Test\Ho
       else {
         $contactFields = CRM_Contact_BAO_Contact::exportableFields($contactType, FALSE, TRUE);
       }
-      $contactFields = array_merge($contactFields, CRM_Contact_BAO_Query_Hook::singleton()->getFields());
+      // It's unclear when we would want this but.... see
+      // https://lab.civicrm.org/dev/core/-/issues/3069 for when we don't....
+      $contactFields = array_merge($contactFields, CRM_Contact_BAO_Query_Hook::singleton()
+        ->getContactFields());
 
       // Exclude the address options disabled in the Address Settings
       $fields[$contactType] = CRM_Core_BAO_Address::validateAddressOptions($contactFields);
@@ -939,7 +938,7 @@ class CRM_Core_BAO_Mapping extends CRM_Core_DAO_Mapping implements \Civi\Test\Ho
           $defaults["operator[$x][$i]"] = $mappingOperator[$x][$i] ?? NULL;
         }
 
-        if (CRM_Utils_Array::value($i, CRM_Utils_Array::value($x, $mappingValue))) {
+        if (isset($mappingValue[$x][$i])) {
           $defaults["value[$x][$i]"] = $mappingValue[$x][$i] ?? NULL;
         }
       }

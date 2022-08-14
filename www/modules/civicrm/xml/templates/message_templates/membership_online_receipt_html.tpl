@@ -26,7 +26,7 @@
     {/if}
 
     {if $is_pay_later}
-     <p>{if isset($pay_later_receipt)}{$pay_later_receipt}{/if}</p> {* FIXME: this might be text rather than HTML *}
+     <p>{$pay_later_receipt}</p> {* FIXME: this might be text rather than HTML *}
     {/if}
 
    </td>
@@ -227,7 +227,7 @@
         {/foreach}
        {/if}
        {/if}
-       {if isset($totalTaxAmount)}
+       {if $totalTaxAmount}
         <tr>
          <td {$labelStyle}>
           {ts}Total Tax Amount{/ts}

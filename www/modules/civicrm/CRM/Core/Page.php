@@ -129,6 +129,9 @@ class CRM_Core_Page {
     // Required for footer.tpl,
     // See ExampleHookTest:testPageOutput.
     'footer_status_severity',
+    // in 'body.tpl
+    'suppressForm',
+    'beginHookFormElements',
   ];
 
   /**
@@ -195,6 +198,8 @@ class CRM_Core_Page {
 
     $pageTemplateFile = $this->getHookedTemplateFileName();
     self::$_template->assign('tplFile', $pageTemplateFile);
+
+    self::$_template->addExpectedTabHeaderKeys();
 
     // invoke the pagRun hook, CRM-3906
     CRM_Utils_Hook::pageRun($this);
@@ -512,6 +517,27 @@ class CRM_Core_Page {
     }
 
     return "<i$attribString></i>$sr";
+  }
+
+  /**
+   * Add an expected smarty variable to the array.
+   *
+   * @param string $elementName
+   */
+  public function addExpectedSmartyVariable(string $elementName): void {
+    $this->expectedSmartyVariables[] = $elementName;
+  }
+
+  /**
+   * Add an expected smarty variable to the array.
+   *
+   * @param array $elementNames
+   */
+  public function addExpectedSmartyVariables(array $elementNames): void {
+    foreach ($elementNames as $elementName) {
+      // Duplicates don't actually matter....
+      $this->addExpectedSmartyVariable($elementName);
+    }
   }
 
 }
