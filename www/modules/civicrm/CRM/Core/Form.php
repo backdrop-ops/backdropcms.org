@@ -611,11 +611,11 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
   /**
    * This virtual function is used to set the default values of various form elements.
    *
-   * @return array|NULL
+   * @return array
    *   reference to the array of default values
    */
   public function setDefaultValues() {
-    return NULL;
+    return [];
   }
 
   /**
@@ -719,7 +719,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     // our ensured variables get blown away, so we need to set them even if
     // it's already been initialized.
     self::$_template->ensureVariablesAreAssigned($this->expectedSmartyVariables);
-
+    self::$_template->addExpectedTabHeaderKeys();
   }
 
   /**
@@ -1111,6 +1111,18 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    */
   public function addExpectedSmartyVariable(string $elementName): void {
     $this->expectedSmartyVariables[] = $elementName;
+  }
+
+  /**
+   * Add an expected smarty variable to the array.
+   *
+   * @param array $elementNames
+   */
+  public function addExpectedSmartyVariables(array $elementNames): void {
+    foreach ($elementNames as $elementName) {
+      // Duplicates don't actually matter....
+      $this->addExpectedSmartyVariable($elementName);
+    }
   }
 
   /**

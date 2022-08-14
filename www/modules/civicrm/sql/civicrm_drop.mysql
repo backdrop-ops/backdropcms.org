@@ -95,6 +95,7 @@ DROP TABLE IF EXISTS `civicrm_setting`;
 DROP TABLE IF EXISTS `civicrm_website`;
 DROP TABLE IF EXISTS `civicrm_openid`;
 DROP TABLE IF EXISTS `civicrm_timezone`;
+DROP TABLE IF EXISTS `civicrm_user_job`;
 DROP TABLE IF EXISTS `civicrm_uf_match`;
 DROP TABLE IF EXISTS `civicrm_tag`;
 DROP TABLE IF EXISTS `civicrm_state_province`;

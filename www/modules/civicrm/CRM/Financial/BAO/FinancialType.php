@@ -17,7 +17,7 @@ use Civi\Api4\EntityFinancialAccount;
  * @package CRM
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
-class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType implements \Civi\Test\HookInterface {
+class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType implements \Civi\Core\HookInterface {
 
   /**
    * Static cache holder of available financial types for this session
@@ -32,23 +32,20 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType im
   public static $_statusACLFt = [];
 
   /**
-   * Fetch object based on array of properties.
+   * Retrieve DB object and copy to defaults array.
    *
    * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
+   *   Array of criteria values.
    * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   *   Array to be populated with found values.
    *
-   * @return CRM_Financial_DAO_FinancialType
+   * @return self|null
+   *   The DAO object, if found.
+   *
+   * @deprecated
    */
-  public static function retrieve(&$params, &$defaults) {
-    $financialType = new CRM_Financial_DAO_FinancialType();
-    $financialType->copyValues($params);
-    if ($financialType->find(TRUE)) {
-      CRM_Core_DAO::storeValues($financialType, $defaults);
-      return $financialType;
-    }
-    return NULL;
+  public static function retrieve($params, &$defaults) {
+    return self::commonRetrieve(self::class, $params, $defaults);
   }
 
   /**
@@ -299,7 +296,7 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType im
    */
   public static function getAvailableMembershipTypes(&$membershipTypes = NULL, $action = CRM_Core_Action::VIEW) {
     if (empty($membershipTypes)) {
-      $membershipTypes = CRM_Member_PseudoConstant::membershipType();
+      $membershipTypes = CRM_Member_BAO_Membership::buildOptions('membership_type_id');
     }
     if (!self::isACLFinancialTypeStatus()) {
       return $membershipTypes;
@@ -346,27 +343,21 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType im
    * @param string $component
    *   the type of component
    *
+   * @deprecated
+   *
    * @return string $clauses
    */
   public static function buildPermissionedClause(string $component): string {
-    $clauses = [];
-    // @todo the relevant addSelectWhere clause should be called.
-    if (!self::isACLFinancialTypeStatus()) {
-      return '';
-    }
+    CRM_Core_Error::deprecatedFunctionWarning('no alternative');
+    // There are no non-test usages of this function (including in a universe
+    // search).
     if ($component === 'contribution') {
       $clauses = CRM_Contribute_BAO_Contribution::getSelectWhereClause();
     }
     if ($component === 'membership') {
-      self::getAvailableMembershipTypes($types, CRM_Core_Action::VIEW);
-      $types = array_keys($types);
-      if (empty($types)) {
-        $types = [0];
-      }
-      $clauses[] = ' civicrm_membership.membership_type_id IN (' . implode(',', $types) . ')';
-
+      $clauses = CRM_Member_BAO_Membership::getSelectWhereClause();
     }
-    return implode(' AND ', $clauses);
+    return 'AND ' . implode(' AND ', $clauses);
   }
 
   /**

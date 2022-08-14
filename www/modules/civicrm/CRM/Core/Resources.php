@@ -167,7 +167,7 @@ class CRM_Core_Resources implements CRM_Core_Resources_CollectionAdderInterface 
    * @see CRM_Core_Resources_CollectionTrait::findCreateSettingSnippet()
    */
   public function &findCreateSettingSnippet($options = []): array {
-    $options = CRM_Core_Resources_CollectionAdderTrait::mergeSettingOptions($options, [
+    $options = self::mergeSettingOptions($options, [
       'region' => NULL,
     ]);
     return $this->getSettingRegion($options['region'])->findCreateSettingSnippet($options);
@@ -307,7 +307,7 @@ class CRM_Core_Resources implements CRM_Core_Resources_CollectionAdderInterface 
    *   List of matching files, relative to the extension base dir.
    * @see glob()
    */
-  public function glob($ext, $patterns, $flags = NULL) {
+  public function glob($ext, $patterns, $flags = 0) {
     $path = $this->getPath($ext);
     $patterns = (array) $patterns;
     $files = [];

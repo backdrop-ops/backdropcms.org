@@ -177,7 +177,7 @@ class BasicGetFieldsAction extends BasicGetAction {
       if (!is_array($option)) {
         $option = [
           'id' => $id,
-          'name' => $option,
+          'name' => $id,
           'label' => $option,
         ];
       }
@@ -340,6 +340,7 @@ class BasicGetFieldsAction extends BasicGetAction {
           'Radio' => ts('Radio Buttons'),
           'Select' => ts('Select'),
           'Text' => ts('Text'),
+          'Location' => ts('Address Location'),
         ],
       ],
       [

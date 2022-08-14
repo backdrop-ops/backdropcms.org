@@ -193,13 +193,11 @@ class CRM_Member_BAO_Membership extends CRM_Member_DAO_Membership {
    * @param array $values
    *   Output values of the object.
    * @param bool $active
-   *   Do you want only active memberships to.
-   *                        be returned
+   *   Return only memberships with an 'is_current_member' status.
    *
-   * @return CRM_Member_BAO_Membership|null
-   *   The found object or null
+   * @return CRM_Member_BAO_Membership[]|null
    */
-  public static function &getValues(&$params, &$values, $active = FALSE) {
+  public static function getValues($params, &$values, $active = FALSE) {
     if (empty($params)) {
       return NULL;
     }
@@ -644,7 +642,6 @@ INNER JOIN  civicrm_membership_type type ON ( type.id = membership.membership_ty
 
     $transaction = new CRM_Core_Transaction();
 
-    $results = NULL;
     //delete activity record
     $activityTypes = CRM_Core_PseudoConstant::activityType(TRUE, FALSE, FALSE, 'name');
 
@@ -685,11 +682,11 @@ INNER JOIN  civicrm_membership_type type ON ( type.id = membership.membership_ty
    * @param int $ownerMembershipId
    * @param int $contactId
    *
-   * @return null
+   * @return void
    */
   public static function deleteRelatedMemberships($ownerMembershipId, $contactId = NULL) {
     if (!$ownerMembershipId && !$contactId) {
-      return FALSE;
+      return;
     }
 
     $membership = new CRM_Member_DAO_Membership();
@@ -715,7 +712,7 @@ INNER JOIN  civicrm_membership_type type ON ( type.id = membership.membership_ty
    * @param string $status
    *   Active or inactive.
    *
-   * @return array
+   * @return array|null
    *   array of memberships based on status
    */
   public static function activeMembers($memberships, $status = 'active') {
@@ -2188,13 +2185,12 @@ INNER JOIN  civicrm_contact contact ON ( contact.id = membership.contact_id AND 
    * @param bool $all
    *   if more than one payment associated with membership id need to be returned.
    *
-   * @return int|int[]
+   * @return int|int[]|null
    *   contribution id
    * @todo we should get this off the line item
    *
    */
   public static function getMembershipContributionId($membershipId, $all = FALSE) {
-
     $membershipPayment = new CRM_Member_DAO_MembershipPayment();
     $membershipPayment->membership_id = $membershipId;
     if ($all && $membershipPayment->find()) {
@@ -2293,8 +2289,6 @@ WHERE {$whereClause}";
      AND {$membershipStatusClause}
      AND civicrm_membership.owner_membership_id IS NULL ";
 
-    $allMembershipTypes = CRM_Member_BAO_MembershipType::getAllMembershipTypes();
-
     $dao2 = CRM_Core_DAO::executeQuery($query, $queryParams);
 
     while ($dao2->fetch()) {
@@ -2302,12 +2296,10 @@ WHERE {$whereClause}";
 
       // CRM-7248: added excludeIsAdmin param to the following fn call to prevent moving to admin statuses
       //get the membership status as per id.
-      $newStatus = civicrm_api3('membership_status', 'calc',
-        [
-          'membership_id' => $dao2->membership_id,
-          'ignore_admin_only' => TRUE,
-        ], TRUE
-      );
+      $newStatus = civicrm_api3('membership_status', 'calc', [
+        'membership_id' => $dao2->membership_id,
+        'ignore_admin_only' => TRUE,
+      ]);
       $statusId = $newStatus['id'] ?? NULL;
 
       //process only when status change.
@@ -2370,8 +2362,7 @@ WHERE {$whereClause}";
   }
 
   /**
-   * Returns the membership types for a particular contact
-   * who has lifetime membership without end date.
+   * Returns the membership types for a contact, optionally filtering to lifetime memberships only.
    *
    * @param int $contactID
    * @param bool $isTest
@@ -2379,33 +2370,26 @@ WHERE {$whereClause}";
    *
    * @return array
    */
-  public static function getAllContactMembership($contactID, $isTest = FALSE, $onlyLifeTime = FALSE) {
+  public static function getAllContactMembership($contactID, $isTest = FALSE, $onlyLifeTime = FALSE) : array {
     $contactMembershipType = [];
     if (!$contactID) {
       return $contactMembershipType;
     }
 
-    $dao = new CRM_Member_DAO_Membership();
-    $dao->contact_id = $contactID;
-    $pendingStatusId = array_search('Pending', CRM_Member_PseudoConstant::membershipStatus());
-    $dao->whereAdd("status_id != $pendingStatusId");
-
-    if ($isTest) {
-      $dao->is_test = $isTest;
-    }
-    else {
-      $dao->whereAdd('is_test IS NULL OR is_test = 0');
-    }
+    $membershipQuery = \Civi\Api4\Membership::get(FALSE)
+      ->addWhere('contact_id', '=', $contactID)
+      ->addWhere('status_id:name', '<>', 'Pending')
+      ->addWhere('is_test', '=', $isTest)
+      //CRM-4297
+      ->addOrderBy('end_date', 'DESC');
 
     if ($onlyLifeTime) {
-      $dao->whereAdd('end_date IS NULL');
+      // membership#14 - use duration_unit for calculating lifetime, not join/end date.
+      $membershipQuery->addWhere('membership_type_id.duration_unit', '=', 'lifetime');
     }
-
-    $dao->find();
-    while ($dao->fetch()) {
-      $membership = [];
-      CRM_Core_DAO::storeValues($dao, $membership);
-      $contactMembershipType[$dao->membership_type_id] = $membership;
+    $memberships = $membershipQuery->execute();
+    foreach ($memberships as $membership) {
+      $contactMembershipType[$membership['membership_type_id']] = $membership;
     }
     return $contactMembershipType;
   }

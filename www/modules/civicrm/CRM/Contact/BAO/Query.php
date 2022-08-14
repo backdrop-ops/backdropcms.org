@@ -581,11 +581,16 @@ class CRM_Contact_BAO_Query {
     }
     if (isset($component) && !$this->_skipPermission) {
       // Unit test coverage in api_v3_FinancialTypeACLTest::testGetACLContribution.
-      $clauses = CRM_Financial_BAO_FinancialType::buildPermissionedClause($component);
-      if (!empty($this->_whereClause) && !empty($clauses)) {
-        $this->_whereClause .= ' AND ';
+      $clauses = [];
+      if ($component === 'contribution') {
+        $clauses = CRM_Contribute_BAO_Contribution::getSelectWhereClause();
       }
-      $this->_whereClause .= $clauses;
+      if ($component === 'membership') {
+        $clauses = CRM_Member_BAO_Membership::getSelectWhereClause();
+      }
+      if ($clauses) {
+        $this->_whereClause .= ' AND ' . implode(' AND ', $clauses);
+      }
     }
 
     $this->_fromClause = self::fromClause($this->_tables, NULL, NULL, $this->_primaryLocation, $this->_mode, $apiEntity);
@@ -2112,7 +2117,7 @@ class CRM_Contact_BAO_Query {
       }
     }
 
-    return implode(' AND ', $andClauses);
+    return $andClauses ? implode(' AND ', $andClauses) : ' 1 ';
   }
 
   /**
@@ -4757,19 +4762,20 @@ civicrm_relationship.start_date > {$today}
    * @param $fieldName
    *
    * @return bool
-   * @throws \CiviCRM_API3_Exception
+   * @throws Exception
    */
   public static function isCustomDateField($fieldName) {
     if (($customFieldID = CRM_Core_BAO_CustomField::getKeyID($fieldName)) == FALSE) {
       return FALSE;
     }
     try {
-      $customFieldDataType = civicrm_api3('CustomField', 'getvalue', ['id' => $customFieldID, 'return' => 'data_type']);
+      $customFieldData = CRM_Core_BAO_CustomField::getFieldObject($customFieldID);
+      $customFieldDataType = $customFieldData->data_type;
       if ('Date' == $customFieldDataType) {
         return TRUE;
       }
     }
-    catch (CiviCRM_API3_Exception $e) {
+    catch (Exception $e) {
     }
     return FALSE;
   }
@@ -6303,15 +6309,13 @@ AND   displayRelType.is_active = 1
   public static function getWildCardedValue($wildcard, $op, $value) {
     if ($wildcard && $op === 'LIKE') {
       if (CRM_Core_Config::singleton()->includeWildCardInName && (substr($value, 0, 1) != '%')) {
-        return "%$value%";
+        $value = "%$value";
       }
-      else {
-        return "$value%";
+      if (substr($value, -1, 1) != '%') {
+        $value = "$value%";
       }
     }
-    else {
-      return "$value";
-    }
+    return "$value";
   }
 
   /**

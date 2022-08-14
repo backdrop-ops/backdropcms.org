@@ -16,8 +16,9 @@
 
       this.searchDisplayPath = CRM.url('civicrm/search');
       this.afformPath = CRM.url('civicrm/admin/afform');
-      this.afformEnabled = CRM.crmSearchAdmin.afformEnabled;
-      this.afformAdminEnabled = CRM.crmSearchAdmin.afformAdminEnabled;
+      this.afformEnabled = 'org.civicrm.afform' in CRM.crmSearchAdmin.modules;
+      this.afformAdminEnabled = (CRM.checkPerm('administer CiviCRM') || CRM.checkPerm('administer afform')) &&
+        'org.civicrm.afform_admin' in CRM.crmSearchAdmin.modules;
 
       this.apiEntity = 'SavedSearch';
       this.search = {
@@ -64,15 +65,32 @@
         this.initializeDisplay($scope, $element);
         // Keep tab counts up-to-date - put rowCount in current tab if there are no other filters
         $scope.$watch('$ctrl.rowCount', function(val) {
-          if (typeof val === 'number' && angular.equals(['has_base'], _.keys(ctrl.filters))) {
+          if (typeof val === 'number' && angular.equals(['has_base'], getActiveFilters())) {
             ctrl.tabCount = val;
           }
         });
+        // Customize the noResultsText
+        $scope.$watch('$ctrl.filters', function() {
+          ctrl.settings.noResultsText = (angular.equals(['has_base'], getActiveFilters())) ?
+            ts('Welcome to Search Kit. Click the New Search button above to start composing your first search.') :
+            ts('No Saved Searches match filter criteria.');
+        }, true);
       };
+
+      // Get the names of in-use filters
+      function getActiveFilters() {
+        return _.keys(_.pick(ctrl.filters, function(val) {
+          return val !== null && (_.includes(['boolean', 'number'], typeof val) || val.length);
+        }));
+      }
 
       this.onPostRun.push(function(result) {
         _.each(result, function(row) {
           row.permissionToEdit = CRM.checkPerm('all CiviCRM permissions and ACLs') || !_.includes(row.data.display_acl_bypass, true);
+          // If main entity doesn't exist, no can edit
+          if (!row.data['api_entity:label']) {
+            row.permissionToEdit = false;
+          }
           // Saves rendering cycles to not show an empty menu of search displays
           if (!row.data.display_name) {
             row.openDisplayMenu = false;
@@ -173,10 +191,14 @@
               searchMeta.fieldToColumn('label', {
                 label: true,
                 title: ts('Edit Label'),
-                editable: {entity: 'SavedSearch', id: 'id', name: 'label', value: 'label'}
+                editable: true
               }),
               searchMeta.fieldToColumn('api_entity:label', {
                 label: ts('For'),
+                empty_value: ts('Missing'),
+                cssRules: [
+                  ['font-italic', 'api_entity:label', 'IS EMPTY']
+                ]
               }),
               {
                 type: 'include',

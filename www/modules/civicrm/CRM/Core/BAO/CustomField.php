@@ -35,18 +35,66 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
    */
   public static function dataType() {
     return [
-      'String' => ts('Alphanumeric'),
-      'Int' => ts('Integer'),
-      'Float' => ts('Number'),
-      'Money' => ts('Money'),
-      'Memo' => ts('Note'),
-      'Date' => ts('Date'),
-      'Boolean' => ts('Yes or No'),
-      'StateProvince' => ts('State/Province'),
-      'Country' => ts('Country'),
-      'File' => ts('File'),
-      'Link' => ts('Link'),
-      'ContactReference' => ts('Contact Reference'),
+      [
+        'id' => 'String',
+        'name' => 'Alphanumeric',
+        'label' => ts('Alphanumeric'),
+      ],
+      [
+        'id' => 'Int',
+        'name' => 'Integer',
+        'label' => ts('Integer'),
+      ],
+      [
+        'id' => 'Float',
+        'name' => 'Number',
+        'label' => ts('Number'),
+      ],
+      [
+        'id' => 'Money',
+        'name' => 'Money',
+        'label' => ts('Money'),
+      ],
+      [
+        'id' => 'Memo',
+        'name' => 'Note',
+        'label' => ts('Note'),
+      ],
+      [
+        'id' => 'Date',
+        'name' => 'Date',
+        'label' => ts('Date'),
+      ],
+      [
+        'id' => 'Boolean',
+        'name' => 'Yes or No',
+        'label' => ts('Yes or No'),
+      ],
+      [
+        'id' => 'StateProvince',
+        'name' => 'State/Province',
+        'label' => ts('State/Province'),
+      ],
+      [
+        'id' => 'Country',
+        'name' => 'Country',
+        'label' => ts('Country'),
+      ],
+      [
+        'id' => 'File',
+        'name' => 'File',
+        'label' => ts('File'),
+      ],
+      [
+        'id' => 'Link',
+        'name' => 'Link',
+        'label' => ts('Link'),
+      ],
+      [
+        'id' => 'ContactReference',
+        'name' => 'Contact Reference',
+        'label' => ts('Contact Reference'),
+      ],
     ];
   }
 
@@ -184,17 +232,20 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
   }
 
   /**
-   * Fetch object based on array of properties.
+   * Retrieve DB object and copy to defaults array.
    *
    * @param array $params
-   *   An assoc array of name/value pairs.
+   *   Array of criteria values.
    * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   *   Array to be populated with found values.
    *
-   * @return CRM_Core_DAO_CustomField
+   * @return self|null
+   *   The DAO object, if found.
+   *
+   * @deprecated
    */
   public static function retrieve($params, &$defaults) {
-    return CRM_Core_DAO::commonRetrieve('CRM_Core_DAO_CustomField', $params, $defaults);
+    return self::commonRetrieve(self::class, $params, $defaults);
   }
 
   /**
@@ -504,7 +555,7 @@ class CRM_Core_BAO_CustomField extends CRM_Core_DAO_CustomField {
 
         $fields = [];
         while (($dao->fetch()) != NULL) {
-          $regexp = preg_replace('/[.,;:!?]/', '', NULL);
+          $regexp = preg_replace('/[.,;:!?]/', '', '');
           $fields[$dao->id]['id'] = $dao->id;
           $fields[$dao->id]['label'] = $dao->label;
           // This seems broken, but not in a new way.
@@ -2061,7 +2112,7 @@ WHERE  id IN ( %1, %2 )
         //don't insert only value separator as default value, CRM-4579
         $defaultValue = self::getOptionGroupDefault($params['option_group_id'], !empty($params['serialize']));
 
-        if (!CRM_Utils_System::isNull(explode(CRM_Core_DAO::VALUE_SEPARATOR, $defaultValue))) {
+        if ($defaultValue !== NULL && !CRM_Utils_System::isNull(explode(CRM_Core_DAO::VALUE_SEPARATOR, $defaultValue))) {
           $params['default_value'] = $defaultValue;
         }
       }

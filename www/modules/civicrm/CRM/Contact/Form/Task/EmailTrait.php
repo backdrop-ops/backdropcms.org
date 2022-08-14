@@ -118,7 +118,8 @@ trait CRM_Contact_Form_Task_EmailTrait {
    * @throws \CRM_Core_Exception
    * @throws \API_Exception
    */
-  protected function traitPreProcess() {
+  protected function traitPreProcess(): void {
+    $this->addExpectedSmartyVariable('rows');
     if ($this->isSearchContext()) {
       // Currently only the contact email form is callable outside search context.
       parent::preProcess();
@@ -192,7 +193,7 @@ trait CRM_Contact_Form_Task_EmailTrait {
       // get the details for all selected contacts ( to, cc and bcc contacts )
       $allContactDetails = civicrm_api3('Contact', 'get', [
         'id' => ['IN' => $this->_allContactIds],
-        'return' => ['sort_name', 'email', 'do_not_email', 'is_deceased', 'on_hold', 'display_name', 'preferred_mail_format'],
+        'return' => ['sort_name', 'email', 'do_not_email', 'is_deceased', 'on_hold', 'display_name'],
         'options' => ['limit' => 0],
       ])['values'];
 

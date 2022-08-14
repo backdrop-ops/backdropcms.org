@@ -18,26 +18,23 @@ use Civi\Core\Event\PreEvent;
  * @package CRM
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
-class CRM_Contact_BAO_RelationshipType extends CRM_Contact_DAO_RelationshipType implements \Civi\Test\HookInterface {
+class CRM_Contact_BAO_RelationshipType extends CRM_Contact_DAO_RelationshipType implements \Civi\Core\HookInterface {
 
   /**
-   * Fetch object based on array of properties.
+   * Retrieve DB object and copy to defaults array.
    *
    * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
+   *   Array of criteria values.
    * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   *   Array to be populated with found values.
    *
-   * @return CRM_Contact_BAO_RelationshipType
+   * @return self|null
+   *   The DAO object, if found.
+   *
+   * @deprecated
    */
-  public static function retrieve(&$params, &$defaults) {
-    $relationshipType = new CRM_Contact_DAO_RelationshipType();
-    $relationshipType->copyValues($params);
-    if ($relationshipType->find(TRUE)) {
-      CRM_Core_DAO::storeValues($relationshipType, $defaults);
-      return $relationshipType;
-    }
-    return NULL;
+  public static function retrieve($params, &$defaults) {
+    return self::commonRetrieve(self::class, $params, $defaults);
   }
 
   /**
@@ -129,6 +126,8 @@ class CRM_Contact_BAO_RelationshipType extends CRM_Contact_DAO_RelationshipType 
 
   /**
    * Get the id of the employee relationship, checking it is valid.
+   * We check that contact_type_a is Individual, but not contact_type_b because there's
+   * nowhere in the code that requires it to be Organization.
    *
    * @return int|string
    *
@@ -140,7 +139,6 @@ class CRM_Contact_BAO_RelationshipType extends CRM_Contact_DAO_RelationshipType 
         $relationship = RelationshipType::get(FALSE)
           ->addWhere('name_a_b', '=', 'Employee of')
           ->addWhere('contact_type_a', '=', 'Individual')
-          ->addWhere('contact_type_b', '=', 'Organization')
           ->addSelect('id')->execute()->first();
         if (empty($relationship)) {
           throw new API_Exception('no valid relationship');

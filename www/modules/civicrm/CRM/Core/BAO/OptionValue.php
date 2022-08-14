@@ -90,23 +90,20 @@ class CRM_Core_BAO_OptionValue extends CRM_Core_DAO_OptionValue {
   }
 
   /**
-   * Fetch object based on array of properties.
+   * Retrieve DB object and copy to defaults array.
    *
    * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
+   *   Array of criteria values.
    * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   *   Array to be populated with found values.
    *
-   * @return CRM_Core_BAO_OptionValue
+   * @return self|null
+   *   The DAO object, if found.
+   *
+   * @deprecated
    */
-  public static function retrieve(&$params, &$defaults) {
-    $optionValue = new CRM_Core_DAO_OptionValue();
-    $optionValue->copyValues($params);
-    if ($optionValue->find(TRUE)) {
-      CRM_Core_DAO::storeValues($optionValue, $defaults);
-      return $optionValue;
-    }
-    return NULL;
+  public static function retrieve($params, &$defaults) {
+    return self::commonRetrieve(self::class, $params, $defaults);
   }
 
   /**
@@ -157,6 +154,9 @@ class CRM_Core_BAO_OptionValue extends CRM_Core_DAO_OptionValue {
     $groupName = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup',
       $params['option_group_id'], 'name', 'id'
     );
+
+    $op = $id ? 'edit' : 'create';
+    CRM_Utils_Hook::pre($op, 'OptionValue', $id, $params);
 
     // action is taken depending upon the mode
     $optionValue = new CRM_Core_DAO_OptionValue();
@@ -220,6 +220,8 @@ class CRM_Core_BAO_OptionValue extends CRM_Core_DAO_OptionValue {
     $optionValue->id = $id;
     $optionValue->save();
     CRM_Core_PseudoConstant::flush();
+
+    CRM_Utils_Hook::post($op, 'OptionValue', $id, $optionValue);
 
     // Create relationship for payment instrument options
     if (!empty($params['financial_account_id'])) {
