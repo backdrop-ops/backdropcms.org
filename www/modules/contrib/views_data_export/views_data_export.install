@@ -1,0 +1,187 @@
+<?php
+
+/**
+ * Implementation of hook_schema()
+ */
+function views_data_export_schema() {
+  $schema = array();
+
+  $schema['views_data_export'] = array(
+    'description' => t('Keep track of currently executing exports.'),
+    'fields' => array(
+      'eid' => array(
+        'description' => 'Unique id for each on-going export.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'view_name' => array(
+        'type' => 'varchar',
+        'length' => '128',
+        'default' => '',
+        'not null' => TRUE,
+        'description' => 'The unique name of the view. This is the primary field views are loaded from, and is used so that views may be internal and not necessarily in the database. May only be alphanumeric characters plus underscores.',
+      ),
+      'view_display_id' => array(
+        'type' => 'varchar',
+        'length' => '64',
+        'default' => '',
+        'not null' => TRUE,
+        'description' => 'The unique name of the view. This is the primary field views are loaded from, and is used so that views may be internal and not necessarily in the database. May only be alphanumeric characters plus underscores.',
+      ),
+      'time_stamp' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The time this export started',
+      ),
+      'fid' => array(
+        'description' => 'Files ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+      'batch_state' => array(
+        'type' => 'varchar',
+        'length' => '32',
+        'default' => 'init',
+        'not null' => TRUE,
+        'description' => 'The current state of the batch.',
+      ),
+      'sandbox' => array(
+        'type' => 'blob',
+        'not null' => FALSE,
+        'size' => 'big',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('eid'),
+  );
+
+  $schema['views_data_export_object_cache'] = array(
+    'description' => 'A modified version of the views_object_cache that ignores session id.',
+    'fields' => array(
+      'eid' => array(
+        'type' => 'varchar',
+        'length' => '64',
+        'description' => 'The export ID this view equates too.',
+      ),
+      'updated' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The time this cache was created or updated.',
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'size' => 'big',
+        'description' => 'Serialized data being stored.',
+        'serialize' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'eid' => array('eid'),
+      'updated' => array('updated'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_uninstall()
+ */
+function views_data_export_uninstall() {
+  // Clean up any tables we may have left around.
+  module_load_include('module', 'views_data_export');
+  views_data_export_garbage_collect(0, -1);
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function views_data_export_requirements($phase) {
+  $requirements = array();
+
+  // Ensure translations don't break at install time
+  $t = get_t();
+
+  switch ($phase) {
+    case 'runtime':
+
+      $requirements['views_data_export_temp'] = array(
+        'title' => t('Views Data Export temporary directory'),
+        'severity' => REQUIREMENT_OK,
+        'value' => t('Exists'),
+      );
+
+      $path = config_get('views_data_export.settings', 'directory');
+      if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
+        $requirements['views_data_export_temp']['description'] = t('The Views Data Export temporary directory, %path could not be created due to a misconfigured directory. Please ensure that the temporary directory is correctly configured and that the webserver has permission to create directories.', array('%path' => file_uri_target($path)));
+        $requirements['views_data_export_temp']['severity'] = REQUIREMENT_ERROR;
+        $requirements['views_data_export_temp']['value'] = t('Unable to create');
+      }
+
+      $db_type = Database::getConnection()->databaseType();
+      switch ($db_type) {
+        case 'mysql':
+          // Check the max allowed packet size.
+          try {
+            $max_allowed_packet = db_query('SHOW VARIABLES WHERE variable_name = :name', array(':name' => 'max_allowed_packet'))->fetchField(1);
+          }
+          catch (Exception $e) {
+            $max_allowed_packet = NULL;
+          }
+          if (is_numeric($max_allowed_packet)) {
+            if ($max_allowed_packet < (16 * 1024 * 1024)) {
+              $requirements['views_data_export'] = array(
+                'title' => $t('MySQL - max allowed packet'),
+                'value' => format_size($max_allowed_packet),
+                'description' => $t("Your MySQL 'max_allowed_packet' setting may be too low for Views data export to function correctly, Backdrop's requirements recommend setting it to at least 16M. See: !link", array('!link' => l('https://backdropcms.org/requirements', 'https://backdropcms.org/requirements'))),
+                'severity' => REQUIREMENT_WARNING,
+              );
+            }
+          }
+          break;
+      }
+      break;
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function views_data_export_update_last_removed() {
+  return 7301;
+}
+
+/**
+ * @defgroup updates-7.x-to-1.x Updates from 7.x to 1.x
+ * @{
+ * Update functions from Drupal 7.x to Backdrop CMS 1.x.
+ */
+
+ /**
+  * Moves views_data_export settings from variables to config.
+  */
+ function views_data_export_update_1000() {
+   // Migrate variables to config.
+   $config = config('views_data_export.settings');
+   $config->set('gc_expires', update_variable_get('views_data_export_gc_expires', BACKDROP_MAXIMUM_TEMP_FILE_AGE));
+   $config->set('directory', update_variable_get('views_data_export_directory', 'temporary://views_plugin_display'));
+   $config->set('gc_chunk', update_variable_get('views_data_export_gc_chunk', 30));
+   $config->save();
+
+   // Delete variables.
+   update_variable_del('views_data_export_gc_expires');
+   update_variable_del('views_data_export_directory');
+   update_variable_del('views_data_export_gc_chunk');
+ }
+
+ /*
+  * @} End of "defgroup updates-7.x-to-1.x"
+  * The next series of updates should start at 2000.
+  */
