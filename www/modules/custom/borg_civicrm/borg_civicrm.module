@@ -1,0 +1,24 @@
+<?php
+/**
+ * @file
+ * Integration between BackdropCMS.org and CiviCRM.
+ */
+
+/**
+ * Implements hook_admin_paths().
+ */
+function borg_civicrm_admin_paths() {
+  // The CiviCRM profile edit page should be rendered in the front-end theme.
+  return array(
+    'user/*/edit/name_and_address' => FALSE,
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function borg_civicrm_menu_alter(&$items) {
+  // Make the CiviCRM profile edit page a sub-tab of the main user edit page.
+  $items['user/%user/edit/main'] = $items['user/%user/edit'];
+  $items['user/%user/edit/main']['type'] = MENU_DEFAULT_LOCAL_TASK;
+}
