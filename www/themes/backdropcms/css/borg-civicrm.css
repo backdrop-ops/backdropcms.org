@@ -1,0 +1,23 @@
+/*******************************************************************************
+ * borg-civicrm.css
+ *
+ * Contains styles for CiviCRM integration on the backdropcms.org site.
+ ******************************************************************************/
+
+/* User account display page */
+article.profile .crm-container {
+  margin-bottom: 1em;
+}
+article.profile .crm-container .crm-section {
+  margin-bottom: 0;
+}
+article.profile .crm-container .crm-section .label {
+  font-weight: bold;
+}
+article.profile .crm-container .crm-section .content {
+  padding-bottom: 5px;
+}
+article.profile #user-page-contact,
+article.profile #user-page-dashboard {
+  margin-bottom: 5px;
+}
