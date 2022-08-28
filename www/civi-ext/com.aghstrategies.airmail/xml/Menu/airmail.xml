@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/airmail/webhook</path>
+    <page_callback>CRM_Airmail_Page_Webhook</page_callback>
+    <title>Webhook</title>
+    <access_callback>1</access_callback>
+  </item>
+  <item>
+    <path>civicrm/airmail/settings</path>
+    <page_callback>CRM_Airmail_Form_Airmail_Settings</page_callback>
+    <title>Airmail SMTP Event Notification Processor Settings</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/deletemyemail</path>
+    <page_callback>CRM_Airmail_Form_DeleteMyEmail</page_callback>
+    <title>Delete my email</title>
+    <access_callback>1</access_callback>
+  </item>
+</menu>

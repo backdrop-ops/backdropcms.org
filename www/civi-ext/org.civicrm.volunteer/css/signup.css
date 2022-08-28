@@ -1,7 +1,0 @@
-/** Keeps the help text/project description wrapper from screwing up the UI on signup **/
-
-.vol-project-description-wrapper,
-.vol-role-description-wrapper
- {
-  display: none;
-}
