@@ -8,9 +8,10 @@
  * Implements hook_admin_paths().
  */
 function borg_civicrm_admin_paths() {
-  // The CiviCRM profile edit page should be rendered in the front-end theme.
+  // The CiviCRM profile edit pages should be rendered in the front-end theme.
   return array(
     'user/*/edit/name_and_address' => FALSE,
+    'user/*/edit/Mailings_16' => FALSE,
   );
 }
 
@@ -21,4 +22,21 @@ function borg_civicrm_menu_alter(&$items) {
   // Make the CiviCRM profile edit page a sub-tab of the main user edit page.
   $items['user/%user/edit/main'] = $items['user/%user/edit'];
   $items['user/%user/edit/main']['type'] = MENU_DEFAULT_LOCAL_TASK;
+  $items['user/%user/edit/main']['title'] = t('Settings');
+
+  // Change the Mailings tab weight so it comes last in the row of sub-tabs.
+  $items['user/%user/edit/Mailings_16']['weight']++;
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * Make sure our hook_menu_alter() runs after CiviCRM's.
+ */
+function borg_civicrm_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'menu_alter') {
+    $group = $implementations['borg_civicrm'];
+    unset($implementations['borg_civicrm']);
+    $implementations['borg_civicrm'] = $group;
+  }
 }

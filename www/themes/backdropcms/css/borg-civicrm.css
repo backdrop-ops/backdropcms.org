@@ -21,3 +21,16 @@ article.profile #user-page-contact,
 article.profile #user-page-dashboard {
   margin-bottom: 5px;
 }
+
+/* User account edit page sub-tabs (CiviCRM Profiles) */
+/* Name and address */
+form.civicrm-profile-form #edit-name-and-address--3 #crm-container {
+  font-size: 18px;
+}
+/* Mailings */
+form.civicrm-profile-form #edit-mailings--3 > label {
+  display: none;
+}
+form.civicrm-profile-form #edit-mailings--3 .crm-container table {
+  font-size: 18px;
+}
