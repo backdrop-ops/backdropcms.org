@@ -247,6 +247,10 @@ function purge_users_cron_queue_info() {
 function purge_users_worker($data) {
   $config = config('purge_users.settings');
   $account = user_load($data);
+  if (empty($account)) {
+    watchdog('purge users', 'Attempted to purge user with uid=%data but there was no such user.', array('%data' => $data), WATCHDOG_WARNING);
+    return;
+  }
   $method = $config->get('purge_users_cancel_method');
   // Modules use hook_user_delete() to respond to deletion.
   if ($method == 'user_cancel_delete') {
@@ -265,7 +269,7 @@ function purge_users_worker($data) {
     batch_process();
   }
   // Log an entry to watchdog.
-  watchdog('Purge users', 'User %user purged.', array('%user' => $account->name), WATCHDOG_NOTICE);
+  watchdog('purge users', 'User %user purged.', array('%user' => $account->name), WATCHDOG_NOTICE);
 }
 
 /**
@@ -353,7 +357,7 @@ function purge_users_batch_process($account, $method, &$context) {
     module_invoke_all('user_cancel', array(), $account, $method);
   }
   // Log an entry to watchdog.
-  watchdog('Purge users', 'User account %user purged.', array('%user' => $account->name), WATCHDOG_NOTICE);
+  watchdog('purge users', 'User account %user purged.', array('%user' => $account->name), WATCHDOG_NOTICE);
   // Do heavy lifting here. Delete users and send an notification email.
   if (config_get('purge_users.settings', 'purge_users_send_email_notification') == 1) {
     purge_users_send_notification($account);
