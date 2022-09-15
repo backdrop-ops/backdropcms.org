@@ -17,7 +17,7 @@ server. All changes that need to be made to configuration should be added from
 the live server and then copied and committed to the `staging` directory, so it can be
 safely deployed to any environment.
 
-## Making config changes in a commit/PR
+## Making config changes in a commit/PR from a local development environment
 
 ### Setup
 
