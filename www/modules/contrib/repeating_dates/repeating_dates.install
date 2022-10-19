@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions.
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function repeating_dates_field_schema($field) {
+  $db_columns = array();
+  $db_columns['dtstart'] = array(
+    'type' => 'int',
+    'not null' => FALSE,
+    'description' => 'The start date of the range',
+  );
+  $db_columns['dtend'] = array(
+    'type' => 'int',
+    'not null' => FALSE,
+    'description' => 'The end date of the range',
+  );
+  $db_columns['rrule'] = array(
+    'type' => 'text',
+    'not null' => FALSE,
+    'description' => 'The ical rules for recurrences',
+  );
+
+  return array('columns' => $db_columns);
+}
