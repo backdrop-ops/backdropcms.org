@@ -1,0 +1,116 @@
+.field-widget-repeating-date-widget .rd-group {
+  display: flex;
+}
+.field-widget-repeating-date-widget .rd-group > div {
+  margin-right: 1em;/* LTR */
+  margin-top: 0;
+}
+[dir="rtl"] .field-widget-repeating-date-widget .rd-group > div {
+  margin-right: 0;
+  margin-left: 1em;
+}
+.field-widget-repeating-date-widget .field-suffix {
+  display: inline;
+}
+.field-widget-repeating-date-widget .form-checkboxes {
+  display: flex;
+}
+.field-widget-repeating-date-widget .form-checkboxes > div {
+  position: relative;
+  width: 2.8em;
+  height: 2.8em;
+  margin: 0 -1px 0 0 !important;/* Basis requires the important */
+  padding: 0;
+}
+.field-widget-repeating-date-widget .form-checkboxes input {
+  margin: 0 !important;
+}
+.field-widget-repeating-date-widget .form-checkboxes .form-item label {
+  position: absolute;
+  line-height: 2.8em;
+  text-align: center;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: 0;
+  background-color: #f4f4f4;
+  color: #666;
+  border: 1px solid #ccc;
+  text-decoration: line-through;
+  font-size: 1em;
+}
+.field-widget-repeating-date-widget .form-checkboxes label:hover {
+  background-color: #fbfbfb;
+}
+.field-widget-repeating-date-widget .form-checkboxes input:checked + label {
+  background-color: #fff;
+  color: #000;
+  text-decoration: none;
+  box-shadow: 0 4px 0 -1px #000;
+}
+@media (min-width: 480px) {
+  .field-widget-repeating-date-widget .form-radios > div {
+    display: inline-block;
+    margin: 0 .2em 0;
+  }
+}
+.field-widget-repeating-date-widget .frequency-select {
+  float: left;/* LTR */
+  margin-right: 1em;
+}
+[dir="rtl"] .field-widget-repeating-date-widget .frequency-select {
+  float: right;
+  margin-right: 0;
+  margin-left: 1em;
+}
+.field-widget-repeating-date-widget .form-item {
+  clear: both;
+}
+.field-widget-repeating-date-widget .form-item.form-type-number {
+  clear: none;
+}
+.field-widget-repeating-date-widget .form-item label {
+  display: block;
+  margin: 0 0 5px;
+  font-size: 1em !important;/* Seven requires the important */
+}
+.field-widget-repeating-date-widget input[type="date"] {
+  min-width: 10em;
+  height: 2.687em;
+}
+.field-widget-repeating-date-widget input[type="time"] {
+  min-width: 6em;
+  height: 2.687em;
+}
+.field-widget-repeating-date-widget select {
+  height: 2.687em;
+}
+.field-widget-repeating-date-widget .form-radios {
+  border-bottom: 1px solid #ccc;
+}
+.field-widget-repeating-date-widget .form-radios .form-item {
+  position: relative;
+  padding: 0;
+}
+.field-widget-repeating-date-widget .form-radios input {
+  position: absolute;
+  z-index: -1;/* @todo a11y? */
+}
+.field-widget-repeating-date-widget .form-radios label {
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 4px 15px;
+  margin: 0 0 -1px;
+}
+.field-widget-repeating-date-widget .form-radios label:hover {
+  background: #fbfbfb;
+}
+.field-widget-repeating-date-widget .form-radios input:checked + label {
+  background: #fff;
+  border-bottom-color: #fff;
+}
+.field-widget-repeating-date-widget .fieldset-description,
+.field-widget-repeating-date-widget .details-content-wrapper {
+  padding: 0 0 .5em;
+}

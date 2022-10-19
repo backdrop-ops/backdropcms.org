@@ -1,0 +1,13 @@
+name = Repeating Dates
+description = Provides a field type for dates with repeat rules.
+type = module
+backdrop = 1.x
+package = Fields
+tags[] = Fields
+
+dependencies[] = field
+
+; Added by Backdrop CMS packaging script on 2022-07-31
+project = repeating_dates
+version = 1.x-1.0.1
+timestamp = 1659335198
