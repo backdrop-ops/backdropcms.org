@@ -851,6 +851,45 @@
                             "default_group_multiple": [],
                             "group_items": []
                         }
+                    },
+                    "supported": {
+                        "id": "supported",
+                        "table": "project_release_supported_versions",
+                        "field": "supported",
+                        "relationship": "project_release_supported_versions",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": "1",
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
                     }
                 },
                 "defaults": {
