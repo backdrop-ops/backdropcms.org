@@ -1,0 +1,45 @@
+/* stylelint-disable max-nesting-depth, selector-max-compound-selectors, selector-no-qualifying-type, selector-max-id */
+
+.page-civicrm-gdpr-settings {
+  .crm-gdpr-settings-form-block {
+    @include block-form();
+
+    #help,
+    .help {
+      margin-left: $crm-standard-gap;
+      margin-right: $crm-standard-gap;
+    }
+  }
+}
+
+.page-civicrm-gdpr-dashboard {
+  .crm-gdpr-dashboard-search-form-block {
+    @include block-form();
+
+    padding-left: $crm-standard-gap !important;
+    padding-right: $crm-standard-gap !important;
+  }
+
+  .crm-gdpr-dashboard-activities-list-form-block {
+    table.selector {
+      @include table-selector();
+    }
+  }
+}
+
+// @TODO This selector may not be too stable because
+// it does not identify the exact table explicitly.
+// However, this should not be a problem, because we
+// are including this style on a GDPR page only,
+// not globally on the whole site.
+table.selector#SummaryTable {
+  @include table-selector();
+}
+
+// @TODO this is an adhoc, this should be fixed globally
+#GroupSubscriptionListTable_wrapper {
+  .dataTables_length {
+    padding-left: $crm-standard-gap;
+    padding-top: $crm-standard-gap / 2;
+  }
+}

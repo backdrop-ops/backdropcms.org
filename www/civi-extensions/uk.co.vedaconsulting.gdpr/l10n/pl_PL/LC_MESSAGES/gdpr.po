@@ -1,0 +1,834 @@
+# Copyright CiviCRM LLC (c) 2004-2015
+# This file is distributed under the same license as the CiviCRM package.
+# If you contribute heavily to a translation and deem your work copyrightable,
+# make sure you license it to CiviCRM LLC under Academic Free License 3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: gdpr\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcin Lewandowski <lewandowski.marcin@staroflife.pl>\n"
+"Language-Team: CiviCRM Translators <civicrm-translators@lists.civicrm.org>\n"
+"Language: pl_PL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.7\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+#: CRM/Gdpr/Form/UpdatePreference.php
+msgid "Communication Preferences"
+msgstr "Preferencje komunikacji"
+
+# Poetycko :D
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid ""
+"We want to ensure we are only sending you information that is of interest to "
+"you, in a way you are happy to receive."
+msgstr ""
+"Chcemy mieć pewność, że przesyłamy Ci tylko te informacje, które Cię "
+"interesują, w sposób, który sprawi Tobie największą przyjemność."
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid "Please tell us how you would like us to keep in touch."
+msgstr "Powiedz nam, jak chcesz, abyśmy pozostali w kontakcie."
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid "Interest groups"
+msgstr "Grupy zainteresowań"
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid ""
+"We want to continue to keep you informed about our work. Opt-in to the "
+"groups that interest you."
+msgstr ""
+"Chcemy nadal informować Cię o naszej pracy. Dopisz się do grup, które Ciebie "
+"interesują."
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid "Your communications preferences have been updated. Thank you."
+msgstr "Twoje preferencje komunikacji zostały zaktualizowane. Dziękujemy."
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid "Email"
+msgstr "E-mail"
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid "Phone"
+msgstr "Telefon"
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid "Post"
+msgstr "Listownie"
+
+#: CRM/Gdpr/CommunicationsPreferences/Utils.php
+msgid "SMS"
+msgstr "SMS"
+
+#: CRM/Gdpr/Form/Activitycontact.php CRM/Gdpr/Form/Search/ActivityContact.php
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Contact Name"
+msgstr "Nazwa kontaktu"
+
+#: CRM/Gdpr/Form/Activitycontact.php templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid "Search"
+msgstr "Szukaj"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php CRM/Gdpr/Page/Tab.php
+msgid "Communications Preferences"
+msgstr "Preferencje komunikacji"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php CRM/Gdpr/Form/Settings.php
+msgid "Page title"
+msgstr "Tytuł strony"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php CRM/Gdpr/Form/Settings.php
+msgid "Introduction"
+msgstr "Wprowadzenie"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Include Profile"
+msgstr "Dołącz profil"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid ""
+"Include a profile so the user can identify and check their details are up-to-"
+"date. It should  include a primary email address field."
+msgstr ""
+"Dołącz profil, aby użytkownik mógł zidentyfikować i sprawdzić, czy jego dane "
+"są aktualne. Powinien zawierać główne pole adresu e-mail."
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Use as the mailing subscribe page"
+msgstr "Użyj jako strony subskrypcji mailingowej"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid ""
+"Check to use the Communications Preferences page instead of the default "
+"Mailing Subscribe page."
+msgstr ""
+"Zaznacz, aby użyć strony Preferencje komunikacji zamiast domyślnej strony "
+"subskrypcji mailingów."
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Enable Channels"
+msgstr "Włącz kanały"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Users can opt-in to these channels"
+msgstr "Użytkownicy mogą włączyć te kanały"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Allow users to opt-in to mailing groups."
+msgstr "Zezwalaj użytkownikom na włączanie grup mailingowych."
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Heading for the groups section"
+msgstr "Nagłówek sekcji grup"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Introduction or description for this section."
+msgstr "Wprowadzenie lub opis tej sekcji."
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Enable"
+msgstr "Włącz"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Weight"
+msgstr "Waga"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "On completion"
+msgstr "Ukończone"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Redirect to another page"
+msgstr "Powróć do poprzedniej strony"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Display a message on the form page."
+msgstr "Wyświetla wiadomość na stronie formularza."
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Completion page"
+msgstr "Strona po ukończeniu"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid ""
+"Add the a URL for a page to redirect the user after they complete the form. "
+"The page should already exist. The URL may be absolute (http://example.com/"
+"thank-you) or relative (thank-you), with no leading forward slash. Leave "
+"blank to redirect to the front page."
+msgstr ""
+"Dodaj adres URL strony, aby przekierować użytkownika po wypełnieniu "
+"formularza. Strona powinna już istnieć. Adres URL może być bezwzględny "
+"(http://example.com/thank-you) lub względny (thank-you), bez wiodącego "
+"ukośnika. Pozostaw puste, aby przekierować na pierwszą stronę."
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Completion message"
+msgstr "Komunikat po ukończeniu"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "A message to display to the user after the form is submitted. "
+msgstr ""
+"Wiadomość do wyświetlenia po wypełnieniu formularza przez użytkownika. "
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php CRM/Gdpr/Form/Settings.php
+#: CRM/Gdpr/Form/UpdatePreference.php
+msgid "Save"
+msgstr "Zapisz"
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid "Invalid URL."
+msgstr "Nieprawidłowy URL."
+
+#: CRM/Gdpr/Form/CommunicationsPreferences.php
+msgid ""
+"The completion URL does not belong to a valid page. Please check that an "
+"anonymous in user can access it."
+msgstr ""
+"Adres URL strony po wypełnieniu formularza nie wskazuje prawidłowej strony. "
+"Sprawdź, czy anonimowy użytkownik ma do niej dostęp."
+
+#: CRM/Gdpr/Form/ContributionPage/TermsAndConditions.php
+msgid "Terms & Conditions information has been saved."
+msgstr "Informacje o Warunkach zostały zapisane."
+
+#: CRM/Gdpr/Form/ContributionPage/TermsAndConditions.php
+msgid "Saved"
+msgstr "Zapisano"
+
+#: CRM/Gdpr/Form/Forgetme.php templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Forget me"
+msgstr "Zapomnij mnie"
+
+#: CRM/Gdpr/Form/Forgetme.php
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: CRM/Gdpr/Form/Forgetme.php
+msgid "Something went wrong. Please contact Admin."
+msgstr "Coś poszło nie tak. Proszę abyś skontaktował się z administratorem."
+
+# Weryfikacja na produkcji.
+#: CRM/Gdpr/Form/Forgetme.php
+msgid "Record not Deleted cleanly"
+msgstr "Rekord nie został wyczyszczony"
+
+#: CRM/Gdpr/Form/Forgetme.php
+msgid "Contact has been made anonymous."
+msgstr "Kontakt został zanonimizowany."
+
+#: CRM/Gdpr/Form/Forgetme.php
+msgid "Forget successful"
+msgstr "Zapomnij mnie - przeprowadzono prawidłowo"
+
+#: CRM/Gdpr/Form/Forgetme.php
+msgid "Records has not been cleared."
+msgstr "Rekordy nie zostały wyczyszczone."
+
+#: CRM/Gdpr/Form/Forgetme.php
+msgid "Record not Deleted cleanly. Please contact admin!"
+msgstr "Rekord nie został wyczyszczony. Skontaktuj się z administratorem!"
+
+#: CRM/Gdpr/Form/Forgetme.php
+msgid "GDPR - Contact has been made anonymous"
+msgstr "Kontakt został zanonimizowany"
+
+#: CRM/Gdpr/Form/SLAAccept.php
+msgid "Submit"
+msgstr "Wyślij"
+
+#: CRM/Gdpr/Form/SLAAccept.php
+msgid "This field is required."
+msgstr "To pole jest wymagane."
+
+#: CRM/Gdpr/Form/Search/ActivityContact.php
+msgid "GDPR - Contacts without Activities"
+msgstr "GDPR - kontakty bez aktywności"
+
+#: CRM/Gdpr/Form/Search/ActivityContact.php
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "Contact Id"
+msgstr "ID kontaktu"
+
+#: CRM/Gdpr/Form/Search/ActivityContact.php
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "Contact Type"
+msgstr "Rodzaj kontaktu"
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "Search Group Subscription by Date Range"
+msgstr "Wyszukaj subskrypcję grup według zakresu dat"
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "Name"
+msgstr "Nazwa"
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "- any contact type -"
+msgstr "- każdy typ kontaktu -"
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "is..."
+msgstr "jest..."
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "- select group -"
+msgstr "- wybierz grupy -"
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "in..."
+msgstr "w..."
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "Group Status"
+msgstr "Status grupy"
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "From"
+msgstr "Od"
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php templates/CRM/Gdpr/Page/Tab.tpl
+msgid "Status"
+msgstr "Status"
+
+#: CRM/Gdpr/Form/Search/GroupcontactDetails.php
+msgid "Subscription Date"
+msgstr "Data subskrypcji"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "GDPR - Settings"
+msgstr "GDPR - ustawienia"
+
+#: CRM/Gdpr/Form/Settings.php templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Point of Contact"
+msgstr "Punkt kontaktowy"
+
+#: CRM/Gdpr/Form/Settings.php templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid "Activity Types"
+msgstr "Rodzaje aktywności"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "- select -"
+msgstr "- wybierz -"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Contact Types"
+msgstr "Rodzaje kontaktów"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Forgetme contact name"
+msgstr "Nazwa użytkownika - ZAPOMNIJ MNIE"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Custom groups"
+msgstr "Grupy pól dodatkowych"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Forgetme e-mail"
+msgstr "Zanonimizowany e-mail"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Email the Point of Contact / DPO?"
+msgstr "E-mail do punktu kontaktowego / IODO?"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Email Subject"
+msgstr "Temat e-mail"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Period"
+msgstr "Okres"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Acceptance period (months)"
+msgstr "Okres akceptacji (miesiące)"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Data Policy file"
+msgstr "Plik polityki ochrony prywatności"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "This is a new version of the document."
+msgstr "To jest nowa wersja dokumentu."
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Link Label"
+msgstr "Etykieta linku"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Checkbox text"
+msgstr "Tekst pola wyboru"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Introductory text"
+msgstr "Tekst wprowadzenia"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Enable Terms and Conditions for every event"
+msgstr "Włącz Warunki dla każdego wydarzenia"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Enable Terms and Conditions for every Contribution Page"
+msgstr "Warunki: Wydarzenia i Strony Transakcyjne"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Checkbox Position"
+msgstr "Pozycja pola wyboru"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Top profile"
+msgstr "Góra profilu"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Bottom profile"
+msgstr "Dół profilu"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Top of form"
+msgstr "Góra formularza"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Bottom of form"
+msgstr "Dół formularza"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Default Terms and Conditions"
+msgstr "Domyślne Warunki"
+
+#: CRM/Gdpr/Form/Settings.php templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Data Policy"
+msgstr "Polityka ochrony prywatności"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "I accept the Data Policy."
+msgstr "Akceptuję Politykę Ochrony Prywatności."
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Terms &amp; Conditions"
+msgstr "Warunki"
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "I accept the Terms &amp; Conditions for this event."
+msgstr "Akceptuję Warunki dla tego wydarzenia."
+
+#: CRM/Gdpr/Form/Settings.php
+msgid "Please read and accept the Terms &amp; Conditions and Data Policy."
+msgstr ""
+"Proszę przeczytać i zaakceptować Warunki i Politykę Ochrony Prywatności."
+
+#: CRM/Gdpr/Form/UpdatePreference.php
+msgid "--Select--"
+msgstr "- wybierz -"
+
+# do weryfikacji na produkcji.
+#: CRM/Gdpr/Form/UpdatePreference.php
+#, fuzzy
+#| msgid "I have read and agree to the <a href='%1' target='_blank'>%2</a>"
+msgid "<a href='%1' target='_blank'>%2</a>"
+msgstr "Zapoznałem/am się i akceptuję<a href='%1' target='_blank'>%2</a>"
+
+#: CRM/Gdpr/Form/UpdatePreference.php
+msgid "Communication Preferences updated"
+msgstr "Preferencje komunikacyjne zaktualizowane"
+
+#: CRM/Gdpr/Page/Dashboard.php
+msgid "Please add GDPR settings"
+msgstr "Proszę zaktualizować ustawienia GDPR"
+
+#: CRM/Gdpr/Page/Tab.php
+msgid "Data Policy acceptance."
+msgstr "Akceptacja Polityki Ochrony Prywatności."
+
+#: CRM/Gdpr/Page/Tab.php
+msgid "Not yet accepted by the contact."
+msgstr "Jeszcze nie zaakceptowane przez ten kontakt."
+
+#: CRM/Gdpr/Page/Tab.php
+msgid "Not yet updated by the contact."
+msgstr "Jeszcze nie zaktualizowane przez ten kontakt."
+
+#: CRM/Gdpr/Upgrader/Base.php
+msgid "Upgrade %1 to revision %2"
+msgstr "Zaktualizuj %1 do wersji %2"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Complete OR partial contact name."
+msgstr "Pełna lub częściowa nazwa kontaktu."
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Contact ID"
+msgstr "ID kontaktu"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Last Activity Date"
+msgstr "Data ostatniej aktywności"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "No matching data found for your search criteria."
+msgstr "Nie znaleziono żadnych danych dla kryteriów wyszukiwania."
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+#, fuzzy
+msgid "You do not have any Open Data Entry Batches."
+msgstr "Nie masz żadnych partii danych otwartych."
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "No Data Entry Batches have been created for this site."
+msgstr "Nie masz żadnych danych z otwartymi."
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Processing..."
+msgstr "Przetwarzanie..."
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Show _MENU_ entries"
+msgstr "Pokaż_encje_MENU"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "Pokazuje od _START_ do _END_ z _TOTAL_ wpisów"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Wyświetlane od 0 do 0 z 0 pozycji"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "(filtered from _MAX_ total entries)"
+msgstr "(filtrowane z _MAX_ wszystkich wpisów)"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Search:"
+msgstr "Szukaj:"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "First"
+msgstr "Pierwsza"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Previous"
+msgstr "Poprzedni"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Next"
+msgstr "Następny"
+
+#: templates/CRM/Gdpr/Form/Activitycontact.tpl
+msgid "Last"
+msgstr "Ostatnia"
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Channels"
+msgstr "Kanały"
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Configure which channels to show on the page."
+msgstr "Konfiguruj, które kanały są pokazywane na stronie."
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Subscriptions to Groups"
+msgstr "Subskrypcje do grup"
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid ""
+"Configure which public groups the user can join on the page. You can "
+"optionally alter the group title and description. (For example to add more "
+"details on the content, message frequency etc.)."
+msgstr ""
+"Skonfiguruj grupy publiczne, do których użytkownik może dołączyć na stronie. "
+"Możesz opcjonalnie zmienić tytuł i opis grupy. (Na przykład, aby dodać "
+"więcej szczegółów na temat zawartości, częstotliwości wiadomości itp.)."
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+#: templates/CRM/Gdpr/Page/Tab.tpl
+msgid "Group"
+msgstr "Grupa"
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Add"
+msgstr "Dodaj"
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Title"
+msgstr "Tytuł"
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Description"
+msgstr "Opis"
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Channel"
+msgstr "Kanał"
+
+#: templates/CRM/Gdpr/Form/CommunicationsPreferences.tpl
+msgid "Completion"
+msgstr "Ukończone"
+
+#: templates/CRM/Gdpr/Form/Forgetme.tpl
+msgid ""
+"WARNING: 'Forget me' process will make the contact record totally "
+"unidentified by removing any related data and entity links."
+msgstr ""
+"OSTRZEŻENIE: Proces \"ZAPOMNIJ MNIE\" sprawi, że dane kontaktowe będą "
+"całkowicie nieidentyfikowalne oraz usunięte zostaną dane powiązane."
+
+#: templates/CRM/Gdpr/Form/Forgetme.tpl
+msgid "This action cannot be undone."
+msgstr "To działanie nie może być cofnięte."
+
+#: templates/CRM/Gdpr/Form/Forgetme.tpl
+msgid ""
+" Please Note, this action will not remove Instant Messenger details for the "
+"contact. if any Instant Messenger details remains in the contact record, "
+"Please delete them manually.. "
+msgstr ""
+" Uwaga: ta czynność nie usunie danych komunikatorów dla kontaktu. Jeżeli "
+"pozostaną w rekordzie dane komunikatorów kontaktu, usuń je ręcznie. "
+
+#: templates/CRM/Gdpr/Form/Forgetme.tpl
+msgid "Please make sure you are on the right contact record to perform this."
+msgstr "Upewnij się, że wybrałeś odpowiedni kontakt do tej czynności."
+
+#: templates/CRM/Gdpr/Form/Forgetme.tpl
+msgid "Click 'Forget me' if you want to continue."
+msgstr "Kliknij 'ZAPOMNIJ MNIE' aby kontynuować."
+
+#: templates/CRM/Gdpr/Form/Search/GroupcontactDetails.tpl
+msgid "Edit Search Criteria"
+msgstr "Edytuj kryteria wyszukiwania"
+
+#: templates/CRM/Gdpr/Form/Search/GroupcontactDetails.tpl
+msgid "Subscription Date "
+msgstr "Data subskrypcji "
+
+#: templates/CRM/Gdpr/Form/Search/GroupcontactDetails.tpl
+msgid "Search results listings."
+msgstr "Lista wyników wyszukiwania."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"Set your organisation's point of contact for data protection compliance."
+msgstr ""
+"Ustaw punkt kontaktowy organizacji w celu zapewnienia zgodności z ochroną "
+"danych."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"Add the person designated to be responsible for data protection compliance, "
+"such as the data protection officer (DPO)."
+msgstr ""
+"Należy dodać osobę wyznaczoną jako odpowiedzialną za zgodność z ochroną "
+"danych, taką jak Inspektor ochrony danych (DPO)."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Activity types"
+msgstr "Rodzaje aktywności"
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"Set activity types to check for contacts that have not had any activity for "
+"a set period."
+msgstr ""
+"Ustaw typy aktywności, aby sprawdzać kontakty, które nie miały żadnej "
+"aktywności przez określony czas."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Check only these contact types who have not had any activity."
+msgstr "Sprawdź tylko te typy kontaktów, które nie miały żadnej aktywności."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Check for contacts who have not had any activity of these types."
+msgstr "Sprawdź kontakty, które nie miały żadnej aktywności tego typu."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Settings related to 'Forget me' process."
+msgstr "Ustawienia związane z procesem \"ZAPOMNIJ MNIE\"."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Name to be used for contacts that have been made anonymous."
+msgstr "Nazwa używana dla kontaktów zanonimizowanych."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"When field is empty, then each email will be deleted. "
+"When field is not empty, then each email will be updated with this value."
+msgstr ""
+"Jeśli pole pozostanie puste, wówczas każdy email zostanie skasowany. "
+"Jeśli pole zostanie wypełnione, wówczas każdy email zostanie zaktualizowany."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "You can include %RANDOM% in order to have randomized email."
+msgstr "Możesz użyć ciągu %RANDOM% aby dodać losowy ciąg w treści emaila."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Send Email notification to Data protection officer"
+msgstr "Wyślij powiadomienie do Inspektora Ochrony Danych"
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"Optionally, you can specify the Email subject here. Default subject is "
+"'%Contact Id% has been Anonmized'"
+msgstr ""
+"Opcjonalnie możesz tutaj określić temat wiadomości e-mail. Domyślnie jest to "
+"'%Contact Id% został zanonimizowany'"
+
+# do weryfikacji na produkcji - Warunki?!?!
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"Settings related to sitewise agreements such as Data Policy or Terms and "
+"Conditions.\n"
+"     These settings will apply in the Communications Preferences page and "
+"when Terms and Conditions are used with Events.\n"
+"    "
+msgstr ""
+"Ustawienia związane z umowami ramowymi, takimi jak Polityka Ochrony "
+"Prywatności lub Warunki.\n"
+"      Ustawienia te będą obowiązywać na stronie Preferencje Komunikacji oraz "
+"w przypadku korzystania z Warunków wykorzystywanych w wydarzeniach\n"
+"  "
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Number of months since contact accepted until they are due to renew."
+msgstr ""
+"Liczba miesięcy od daty zaakceptowania przez kontakt do czasu odnowienia."
+
+# "warunki" do weryfikacji na produkcji.
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Pdf document with the Policy/Terms."
+msgstr "Dokument PDF zawierający Warunki."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"Check this if the document has changed substantially and contacts need to "
+"renew their agreement."
+msgstr ""
+"Zaznacz, jeżeli dokument znacząco różni się od poprzedniej wersji, a "
+"kontakty muszą odnowić zgodę."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid " Text to use for the link. Usually the document title."
+msgstr " Tekst do wykorzystania dla linku. Zwykle tytuł dokumentu."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid " Text for the checkbox. An acceptance statement."
+msgstr " Tekst pola wyboru. Oświadczenie o zaakceptowaniu."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "The title for the user-facing page with the acceptance form."
+msgstr "Tytuł strony skierowanej do użytkownika z formularzem akceptacji."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid "Terms &amp; Conditions: Events and Contribution Pages"
+msgstr "Warunki: Wydarzenia i Strony Transakcyjne"
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"Set defaults for Terms &amp Conditions. You can override these in the "
+"settings for individual Events and Contribution Pages."
+msgstr ""
+"Ustaw wartości domyślne dla Warunków. Możesz je zastąpić w ustawieniach "
+"poszczególnych wydarzeń i stron transakcyjnych."
+
+#: templates/CRM/Gdpr/Form/Settings.tpl
+msgid ""
+"Data from selected custom groups to be deleted during 'Forget me' process. "
+"Leave empty if you do not want any custom groups to be deleted."
+msgstr ""
+"Dane kontaktu należące do wybranych grup pól dodatkowych zostaną skasowane. "
+"Pozostaw puste pole jeśli nie chcesz wprowadzać żadnych zmian do wartości "
+"pól dodatkowych."
+
+#: templates/CRM/Gdpr/Page/ContactSummary.tpl
+msgid "GDPR Status"
+msgstr "Status RODO"
+
+#: templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid "Contacts who have not had any activity for %1 days"
+msgstr "Kontakty, które nie miały żadnej aktywności przez %1 dni"
+
+#: templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid "No. of Contacts"
+msgstr "Liczba kontaktów"
+
+#: templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid "(Excluding contacts who clicked through links in emails)"
+msgstr "(Z wyjątkiem kontaktów, które kliknęły linki w wiadomościach e-mail)"
+
+# Trudny wyraz do przełożenia na PL, do weryfikacji przy prodzie.
+#: templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid "Click-throughs"
+msgstr "Kliknięci"
+
+#: templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid ""
+"(Contacts who have not had any activity, but clicked through links in emails)"
+msgstr ""
+"(Kontakty, które nie miały żadnej aktywności, ale kliknęły linki w "
+"wiadomościach e-mail)"
+
+#: templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid "GDPR Settings"
+msgstr "Ustawienia GDPR"
+
+#: templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid "Click <a href=\"%1\">here</a> to update GDPR settings."
+msgstr "Kliknij <a href=\"%1\">tutaj</a> aby zaktualizować ustawienia GDPR."
+
+#: templates/CRM/Gdpr/Page/Dashboard.tpl
+msgid ""
+"Click <a href=\"%1\">here</a> to update Communications Preferences settings."
+msgstr ""
+"Kliknij <a href=\"%1\">tutaj</a> aby zaktualizować ustawienia Preferencji "
+"Komunikacji."
+
+#: templates/CRM/Gdpr/Page/Tab.tpl
+msgid "Forget Me"
+msgstr "ZAPOMNIJ MNIE"
+
+#: templates/CRM/Gdpr/Page/Tab.tpl
+msgid "Summary"
+msgstr "Podsumowanie"
+
+#: templates/CRM/Gdpr/Page/Tab.tpl
+msgid "Subject"
+msgstr "Temat"
+
+#: templates/CRM/Gdpr/Page/Tab.tpl
+msgid "Date"
+msgstr "Data"
+
+#: templates/CRM/Gdpr/Page/Tab.tpl
+msgid "Group Subscription Log"
+msgstr "Dziennik subskrybcji grup"
+
+#: templates/CRM/Gdpr/Page/Tab.tpl
+msgid "No group subscription have been recorded for this contact."
+msgstr "Kontakt nie został zapisany do żadnej z grup subskrypcji."
+
+#~ msgid "Unknown"
+#~ msgstr "Nieznany"
+
+#~ msgid "GDPR"
+#~ msgstr "GDPR"
+
+#~ msgid "Communication Preferences URL"
+#~ msgstr "URL preferencji komunikacji"
+
+#~ msgid "Communication Preferences Link"
+#~ msgstr "Link do preferencji komunikacji"
+
+#~ msgid ""
+#~ "Configure the display of the <a href=\"/civicrm/gdpr/comms-prefs/update\" "
+#~ "target=\"blank\">Communications Preferences page</a>."
+#~ msgstr ""
+#~ "Skonfiguruj wyświetlanie <a href=\"/civicrm/gdpr/comms-prefs/update\" "
+#~ "target=\"blank\"> strony Preferencje Komunikacji </a>."
+
+#~ msgid "Set your organisation's point of contact."
+#~ msgstr "Ustaw Punkt Kontaktowy w Twojej organizacji."

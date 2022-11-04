@@ -1,0 +1,89 @@
+{
+    "_config_name": "layout.layout.civicrm_admin_default",
+    "path": "civicrm",
+    "name": "civicrm_admin_default",
+    "title": "Default CiviCRM Layout",
+    "description": null,
+    "module": "civicrmtheme",
+    "weight": 1,
+    "storage": 4,
+    "layout_template": "boxton",
+    "disabled": false,
+    "settings": {
+        "title": "",
+        "title_display": "none",
+        "title_block": null
+    },
+    "positions": {
+        "header": [
+            "55f542fe-0763-453b-ba3e-62677ea559e5"
+        ],
+        "top": [],
+        "content": [
+            "default"
+        ],
+        "bottom": [],
+        "footer": []
+    },
+    "content": {
+        "55f542fe-0763-453b-ba3e-62677ea559e5": {
+            "plugin": "system:breadcrumb",
+            "data": {
+                "module": "system",
+                "delta": "breadcrumb",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "55f542fe-0763-453b-ba3e-62677ea559e5",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "default": {
+            "plugin": "system:main",
+            "data": {
+                "module": "system",
+                "delta": "main",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "default",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "conditions": [
+        {
+            "plugin": "civicrm",
+            "data": {
+                "settings": {
+                    "civicrm": [
+                        "admin"
+                    ],
+                    "load_condition_nojs": "Load condition"
+                }
+            }
+        }
+    ]
+}
