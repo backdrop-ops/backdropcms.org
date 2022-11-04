@@ -1,0 +1,11 @@
+name = CiviMember Roles Sync
+description = Synchronize CiviCRM Contacts with Membership Status to a specified Backdrop Role both automatically and manually.
+version = 1.x-5.55.0
+backdrop = 1.x
+type = module
+package = CiviCRM
+project = civicrm
+
+dependencies[] = civicrm
+
+configure = admin/config/civicrm/civicrm_member_roles

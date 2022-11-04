@@ -1,0 +1,16 @@
+/**
+  * Backdrop CSS which is needed on non-CiviCRM pages, too.
+  */
+
+/* Override Backdrop's CSS for CRM-provided UI. */
+#crm-container .ui-state-default, 
+#crm-container .ui-widget-content .ui-state-default, 
+#crm-container .ui-widget-header .ui-state-default {
+  background: #e6e6e6 url(/modules/civicrm/bower_components/jquery-ui/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+}
+
+/* Backdrop main navigation icon. */
+#admin-bar #admin-bar-menu > li > .dropdown > li > a.civicrm {
+  background: transparent url(../i/logo_sm.png) 5% center no-repeat;
+  background-size: 16px;
+}

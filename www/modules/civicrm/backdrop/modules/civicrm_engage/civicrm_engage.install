@@ -1,0 +1,61 @@
+<?php
+/*
+ +--------------------------------------------------------------------+
+ | Copyright CiviCRM LLC. All rights reserved.                        |
+ |                                                                    |
+ | This work is published under the GNU AGPLv3 license with some      |
+ | permitted exceptions and without any warranty. For full license    |
+ | and copyright information, see https://civicrm.org/licensing       |
+ +--------------------------------------------------------------------+
+ */
+
+/**
+ *
+ * @package CRM
+ * @copyright CiviCRM LLC https://civicrm.org/licensing
+ * $Id$
+ *
+ */
+
+/**
+ * Implements hook_enable().
+ */
+function civicrm_engage_enable() {
+  db_query("UPDATE {system} SET weight = 110 WHERE name = 'civicrm_engage'");
+  $url = url('admin/config/civicrm/civicrm_engage');
+  backdrop_set_message(t('CiviCRM Engage must be <a href="@url">configured</a> before it will work properly.', array('@url' => $url)));
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function civicrm_engage_update_last_removed() {
+  return 7001;
+}
+
+/**
+ * Move civicrm_engage settings from variables to config.
+ */
+function civicrm_engage_update_1000() {
+  // Migrate variables to config.
+  $config = config('civicrm_engage.settings');
+  $config->set('civicrm_engage_no_canvass_period', update_variable_get('civicrm_engage_no_canvas_period', 0));
+  $config->set("civicrm_engage_no_canvass_text", update_variable_get('civicrm_engage_no_canvass_text', "Do Not Canvass"));
+  $config->set('civicrm_engage_groupbreak_odd_even', update_variable_get('civicrm_engage_groupbreak_odd_even', 1));
+  $config->set('civicrm_engage_groupbreak_street', update_variable_get('civicrm_engage_groupbreak_street', 1));
+  $config->set('civicrm_engage_groupbreak_city', update_variable_get('civicrm_engage_groupbreak_city', 1));
+  $config->set('civicrm_engage_groupbreak_zip', update_variable_get('civicrm_engage_groupbreak_zip', 1));
+  $config->set('civicrm_engage_lines_per_group', update_variable_get('civicrm_engage_lines_per_group', 6));
+  $config->set('civicrm_engage_group_per_page', update_variable_get('civicrm_engage_group_per_page', 1));
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('civicrm_engage_no_canvas_period');
+  update_variable_del('civicrm_engage_no_canvass_text');
+  update_variable_del('civicrm_engage_groupbreak_odd_even');
+  update_variable_del('civicrm_engage_groupbreak_street');
+  update_variable_del('civicrm_engage_groupbreak_city');
+  update_variable_del('civicrm_engage_groupbreak_zip');
+  update_variable_del('civicrm_engage_lines_per_group');
+  update_variable_del('civicrm_engage_group_per_page');
+}

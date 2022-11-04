@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * Copyright (C) 2010 Neil Goodman
+ * @license GNU General Public License version 2 or later
+ *
+ * @file
+ * Install CiviMember Role Sync database table and provide hook_uninstall.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function civicrm_member_roles_install() {
+  $t = get_t();
+  $here = l($t('here'), 'admin/config/civicrm/civicrm_member_roles');
+  backdrop_set_message($t('CiviCRM Member Roles Sync installed. You will need to specify sync rules !1.', array('!1' => $here)));
+}
+
+/**
+ * Implements hook_enable().
+ */
+function civicrm_member_roles_enable() {
+  db_query("UPDATE {system} SET weight = 110 WHERE name = 'civicrm_member_roles'");
+}
+
+/**
+ * Implements hook_schema().
+ */
+function civicrm_member_roles_schema() {
+  $schema['civicrm_member_roles_rules'] = array(
+    'fields' => array(
+      'rule_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'role_name' => array(
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'type_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'status_codes' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('rule_id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Migrate settings from Drupal to Backdrop.
+ */
+function civicrm_member_roles_update_1000() {
+  $config = config('civicrm_member_roles.settings');
+  $config->set('civicrm_member_roles_sync_method', update_variable_get('civicrm_member_roles_sync_method', 0));
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('civicrm_member_roles_sync_method');
+}
+
+/**
+ * Change role_id to role_name.
+ */
+function civicrm_member_roles_update_1001() {
+  if (db_table_exists('civicrm_member_roles_rules') && db_field_exists('civicrm_member_roles_rules', 'rid')) {
+    $new_field = array(
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => TRUE,
+      'default' => '',
+    );
+
+    db_change_field('civicrm_member_roles_rules', 'rid', 'role_name', $new_field);
+  }
+}
+
+/**
+ * Translate the old integer-based data format for synchronization settings to
+ * the array-based format which supports multiple sync options.
+ */
+function civicrm_member_roles_update_1002() {
+  // Get the current sync method and see if a format update is needed.
+  $config = config('civicrm_member_roles.settings');
+  $sync_method = $config->get('civicrm_member_roles_sync_method');
+  if (in_array($sync_method, array(0, 1, 2, 3))) {
+    // Translate the old value to the new.
+    switch ($sync_method) {
+      case '0':
+        $config->set('civicrm_member_roles_sync_method', array('login'));
+        break;
+
+      case '1':
+        $config->set('civicrm_member_roles_sync_method', array('cron'));
+        break;
+
+      case '2':
+        $config->set('civicrm_member_roles_sync_method', array());
+        break;
+
+      case '3':
+        $config->set('civicrm_member_roles_sync_method', array('update'));
+        break;
+    }
+    $config->save();
+  }
+}
+
+/**
+ * Set default cron limit.
+ */
+function civicrm_member_roles_update_1003() {
+  $config = config('civicrm_member_roles.settings');
+  if ($config->get('civicrm_member_roles_cron_limit') == NULL) {
+    $config->set('civicrm_member_roles_cron_limit', 150);
+    $config->save();
+  }
+}

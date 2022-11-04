@@ -1,0 +1,61 @@
+/*******************************************************************************
+ * borg-civicrm.css
+ *
+ * Contains styles for CiviCRM integration on the backdropcms.org site.
+ ******************************************************************************/
+
+/* User account display page */
+article.profile .crm-container {
+  margin-bottom: 1em;
+}
+article.profile .crm-container .crm-section {
+  margin-bottom: 0;
+}
+article.profile .crm-container .crm-section .label {
+  font-weight: bold;
+}
+article.profile .crm-container .crm-section .content {
+  padding-bottom: 5px;
+}
+article.profile #user-page-contact,
+article.profile #user-page-dashboard {
+  margin-bottom: 5px;
+}
+
+/* User account edit page sub-tabs (CiviCRM Profiles) */
+/* Name and address sub-tab */
+form.civicrm-profile-form #edit-name-and-address--3 #crm-container {
+  font-size: 18px;
+}
+/* Subscriptions sub-tab */
+form.civicrm-profile-form #edit-mailings--3 > label {
+  display: none;
+}
+form.civicrm-profile-form #edit-mailings--3 .crm-container table {
+  font-size: 18px;
+}
+
+/* User registration page */
+#user-register-form .crm-container fieldset legend {
+  font-size: 24px;
+  font-weight: normal;
+}
+#user-register-form #crm-container .crm-section .content {
+  margin-left: 1em;
+}
+#user-register-form #crm-container .crm-section .label {
+  width: 25%;
+}
+#user-register-form #edit-civicrm-profile-register.form-item {
+  display: block;
+}
+#user-register-form #edit-civicrm-profile-register.form-item label {
+  font-size: 20.25px;
+  font-weight: 700;
+}
+#user-register-form .form-item #crm-container div.description {
+  display: block;
+}
+#user-register-form .crm-container table {
+  font-size: 20.25px;
+}

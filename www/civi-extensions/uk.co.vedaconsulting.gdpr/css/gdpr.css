@@ -1,0 +1,63 @@
+form#EventInfo .custom-group-Event_terms_and_conditions {
+  display: none;
+}
+.event-info td[id^="Event_terms_and_conditions_"] {
+ display: none;
+}
+
+.crm-gdpr-terms-conditions div.label {
+  height: 2em;
+}
+
+/* MV Gdpr Communication preference CSS */
+.comm-pref-block .crm-form-select {
+	width: 15%;
+}
+.groups-fieldset .content label{
+	margin-left: 15px;
+	margin-bottom: 15px;
+}
+.group-channel-div label {
+  font-weight: bold;
+}
+.group-description {
+	display: inline-block;
+	margin: 1em 1em 1em 2.3em;
+}
+.group-channel-matrix {
+	display: inline-block;
+	padding-top: 10px;	
+	padding-right: 10px;
+	font-size: small;
+}
+.groups-fieldset .crm-error{
+	display: none;
+}
+.groups-fieldset .crm-error-label{
+	display: unset;
+}	
+/* END */
+
+
+.crm-gdpr-dashboard-settings-form-block div#help ul li {
+	background-image: unset;
+}
+
+.crm-grouo-subscription-list-form-block .in_active_groups td{
+	color: red;
+}
+.crm-grouo-subscription-list-form-block .list_public_group_div {
+	padding: 10px 5px 10px 10px;
+}
+
+#gdpr-status-list {
+	border: 1px solid #999;
+    padding: 10px;
+    margin-bottom: 1em;
+    border-radius: 4px;
+}
+#gdpr-status-list .gdpr-severity-error {
+	background-color: #E43D2B;
+	color:white;
+	opacity: .85;
+}
