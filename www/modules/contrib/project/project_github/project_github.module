@@ -27,24 +27,26 @@ function project_github_githubapi_payload($event_name, $record, $repo) {
       }
     break;
     case 'release':
-      $errors = array();
-      $project_node_result = NULL;
-      $package_result = _project_github_create_package($errors, $payload);
-      if ($package_result) {
-        $project_node_result = _project_github_create_project($errors, $payload);
+      if ($payload['action'] === 'published') {
+        $errors = [];
+        $project_node_result = NULL;
+        $package_result = _project_github_create_package($errors, $payload);
+        if ($package_result) {
+          $project_node_result = _project_github_create_project($errors, $payload);
+        }
+        // If a project node was created or already exists, create the release with
+        // package created above.
+        if ($project_node_result) {
+          $release_node_result = _project_github_create_project_release($errors, $payload);
+        }
+        // For better reporting for project authors who may not have access to the
+        // group-wide web hook settings, attempt to upload a report of the failures
+        // to the release as an asset.
+        if (!empty($errors)) {
+          _project_github_upload_error_log($errors, $payload);
+        }
       }
-      // If a project node was created or already exists, create the release with
-      // package created above.
-      if ($project_node_result) {
-        $release_node_result = _project_github_create_project_release($errors, $payload);
-      }
-      // For better reporting for project authors who may not have access to the
-      // group-wide web hook settings, attempt to upload a report of the failures
-      // to the release as an asset.
-      if (!empty($errors)) {
-        _project_github_upload_error_log($errors, $payload);
-      }
-    break;
+      break;
 
   }
 }
