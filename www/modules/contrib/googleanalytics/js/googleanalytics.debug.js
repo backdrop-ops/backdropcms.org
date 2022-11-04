@@ -27,21 +27,18 @@ $(document).ready(function() {
         else if (Backdrop.settings.googleanalytics.trackDownload && Backdrop.googleanalytics.isDownload(this.href)) {
           // Download link clicked.
           console.info("Download url '%s' has been found. Tracked download as extension '%s'.", Backdrop.googleanalytics.getPageUrl(this.href), Backdrop.googleanalytics.getDownloadExtension(this.href).toUpperCase());
-          ga("send", {
-            "hitType": "event",
-            "eventCategory": "Downloads",
-            "eventAction": Backdrop.googleanalytics.getDownloadExtension(this.href).toUpperCase(),
-            "eventLabel": Backdrop.googleanalytics.getPageUrl(this.href),
-            "transport": "beacon"
+          gtag('event', Backdrop.googleanalytics.getDownloadExtension(this.href).toUpperCase(), {
+            event_category: 'Downloads',
+            event_label: Backdrop.googleanalytics.getPageUrl(this.href),
+            transport_type: 'beacon'
           });
         }
         else if (Backdrop.googleanalytics.isInternalSpecial(this.href)) {
           // Keep the internal URL for Google Analytics website overlay intact.
           console.info("Click on internal special link '%s' has been tracked.", Backdrop.googleanalytics.getPageUrl(this.href));
-          ga("send", {
-            "hitType": "pageview",
-            "page": Backdrop.googleanalytics.getPageUrl(this.href),
-            "transport": "beacon"
+          gtag('config', backdropSettings.google_analytics.account, {
+            page_path: Backdrop.googleanalytics.getPageUrl(this.href),
+            transport_type: 'beacon'
           });
         }
         else {
@@ -53,24 +50,20 @@ $(document).ready(function() {
         if (Backdrop.settings.googleanalytics.trackMailto && $(this).is("a[href^='mailto:'],area[href^='mailto:']")) {
           // Mailto link clicked.
           console.info("Click on e-mail '%s' has been tracked.", this.href.substring(7));
-          ga("send", {
-            "hitType": "event",
-            "eventCategory": "Mails",
-            "eventAction": "Click",
-            "eventLabel": this.href.substring(7),
-            "transport": "beacon"
+          gtag('event', 'Click', {
+            event_category: 'Mails',
+            event_label: this.href.substring(7),
+            transport_type: 'beacon',
           });
         }
         else if (Backdrop.settings.googleanalytics.trackOutbound && this.href.match(/^\w+:\/\//i)) {
           if (Backdrop.settings.googleanalytics.trackDomainMode !== 2 || (Backdrop.settings.googleanalytics.trackDomainMode === 2 && !Backdrop.googleanalytics.isCrossDomain(this.hostname, Backdrop.settings.googleanalytics.trackCrossDomains))) {
             // External link clicked / No top-level cross domain clicked.
             console.info("Outbound link '%s' has been tracked.", this.href);
-            ga("send", {
-              "hitType": "event",
-              "eventCategory": "Outbound links",
-              "eventAction": "Click",
-              "eventLabel": this.href,
-              "transport": "beacon"
+            gtag('event', 'Click', {
+              event_category: 'Outbound links',
+              event_label: this.href,
+              transport_type: 'beacon',
             });
           }
           else {
@@ -87,9 +80,8 @@ $(document).ready(function() {
   if (Backdrop.settings.googleanalytics.trackUrlFragments) {
     window.onhashchange = function() {
       console.info("Track URL '%s' as pageview. Hash '%s' has changed.", location.pathname + location.search + location.hash, location.hash);
-      ga("send", {
-        "hitType": "pageview",
-        "page": location.pathname + location.search + location.hash
+      gtag('config', backdropSettings.google_analytics.account, {
+        page_path: location.pathname + location.search + location.hash
       });
     };
   }
@@ -101,9 +93,8 @@ $(document).ready(function() {
       var href = $.colorbox.element().attr("href");
       if (href) {
         console.info("Colorbox transition to url '%s' has been tracked.", Backdrop.googleanalytics.getPageUrl(href));
-        ga("send", {
-          "hitType": "pageview",
-          "page": Backdrop.googleanalytics.getPageUrl(href)
+        gtag('config', backdropSettings.google_analytics.account, {
+          page_path: Backdrop.googleanalytics.getPageUrl(href)
         });
       }
     });

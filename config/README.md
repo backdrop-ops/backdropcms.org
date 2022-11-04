@@ -10,7 +10,7 @@ in version control).
 
 ## Rule #1
 
-**Never commit anything into the `live-active` directory from a local instance!**
+**Never commit anything into the `live-active` directory (unless you are on the live server)**
 
 'Live' config will only ever be added and committed to directly from the live
 server. All changes that need to be made to configuration should be added from
@@ -47,7 +47,7 @@ Once they do match, you can proceed as follows.
    this via the UI at `/admin/config/development/configuration`, or with Drush
    via `drush bcim`.
 
-5. Perform a `git checkout` on the staging directory.
+5. Perform a `git checkout` on the staging directory (or, set the `$config['system.core']['config_sync_clear_staging'] = 1;` variable in your local copy of `settings.php`).
 
 ### Make your changes
 

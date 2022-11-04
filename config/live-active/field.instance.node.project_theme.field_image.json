@@ -40,7 +40,8 @@
             "settings": {
                 "image_style": "project",
                 "image_link": "",
-                "image_float": ""
+                "image_float": "",
+                "image_load": "auto"
             },
             "module": "image"
         },
@@ -57,7 +58,8 @@
             "settings": {
                 "image_style": "project",
                 "image_link": "content",
-                "image_float": ""
+                "image_float": "",
+                "image_load": "auto"
             },
             "module": "image"
         }

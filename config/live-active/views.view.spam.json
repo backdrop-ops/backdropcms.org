@@ -577,6 +577,21 @@
                     "groups": {
                         "1": "AND"
                     }
+                },
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 0,
+                        "content": "<!-- Adjust the column widths for better readability on large screens -->\r\n<style>\r\n@media (min-width: 1200px) {\r\n  .view-spam .views-field-field-interest,\r\n  .view-spam .views-field-field-bio {\r\n    min-width: 240px;\r\n  }\r\n}\r\n</style>",
+                        "format": "full_html",
+                        "tokenize": 0
+                    }
                 }
             }
         },

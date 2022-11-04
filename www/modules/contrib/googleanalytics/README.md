@@ -38,7 +38,7 @@ Manual JS debugging
 
 For manual debugging of the JS code you are able to create a test node. This
 is the example HTML code for this test node. You need to enable debugging mode
-in your Drupal configuration of Google Analytics settings to see verbose
+in your Backdrop configuration of Google Analytics settings to see verbose
 messages in your browsers JS console.
 
 Title: Google Analytics test page

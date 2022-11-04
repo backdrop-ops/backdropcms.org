@@ -28,6 +28,7 @@
             "3d0062a8-2b60-4f9b-b100-c4670df4251f"
         ],
         "sidebar": [
+            "65796ea7-4fa0-4cd0-9d00-e11124b61e86",
             "40b01f71-f22e-4cff-b500-ffd2f131c057"
         ],
         "bottom": [],
@@ -45,6 +46,7 @@
         "b7e62930-439e-4df2-8500-0a4d5b5a681c": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -68,6 +70,7 @@
         "ab5d4a3a-ff1c-4f6c-ae06-6a807188533a": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -98,6 +101,7 @@
         "1c92f3f7-5bee-4326-9a03-3dc73ea7ef66": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -127,6 +131,7 @@
         "738ae993-a0d3-4873-b724-360d408ee4cd": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -155,6 +160,7 @@
         "86d0cc7a-e4c5-4965-9f47-71f57d732ca1": {
             "plugin": "borg_blocks:rss",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "rss",
                 "settings": {
@@ -178,6 +184,7 @@
         "3d0062a8-2b60-4f9b-b100-c4670df4251f": {
             "plugin": "block:security_email_list",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "security_email_list",
                 "settings": {
@@ -202,9 +209,38 @@
                 }
             }
         },
+        "65796ea7-4fa0-4cd0-9d00-e11124b61e86": {
+            "plugin": "book:navigation",
+            "data": {
+                "status": 1,
+                "module": "book",
+                "delta": "navigation",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "About",
+                    "style": "default",
+                    "block_settings": {
+                        "book_mode": "book pages"
+                    },
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "65796ea7-4fa0-4cd0-9d00-e11124b61e86",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "40b01f71-f22e-4cff-b500-ffd2f131c057": {
             "plugin": "views:security-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "security-block_1",
                 "settings": {
@@ -239,6 +275,7 @@
         "92b01486-0db3-4967-9b00-d106b27099cf": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -262,6 +299,7 @@
         "601fd8c6-3a6e-4f6b-b701-1be0d326d11b": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -296,6 +334,7 @@
         "cd924445-f6d1-4d01-af01-1cc38031f72f": {
             "plugin": "block:3",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -334,6 +373,7 @@
         "88ade636-d45e-4934-b056-86abe82eacd3": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

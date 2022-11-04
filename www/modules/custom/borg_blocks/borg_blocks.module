@@ -159,7 +159,7 @@ function borg_blocks_upgrade($settings) {
   $output .= '    <div class="col-md-4 column">';
   $output .=        $included_modules_icon_link;
   $output .= '      <h3>' . $included_modules . '</h3>';
-  $output .= '      <p>' . t('More than than 70 Drupal modules have been merged into Backdrop core.') . '</p>';
+  $output .= '      <p>' . t('More than 70 Drupal modules have been merged into Backdrop core.') . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $top_modules_icon_link;
