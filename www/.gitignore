@@ -1,4 +1,4 @@
-# Ignore this file so it can be changed 
+# Ignore this file so it can be changed
 .gitignore
 
 # Ignore the ssl .well-known
@@ -7,6 +7,8 @@
 # Ignore configuration files that may contain sensitive information.
 settings.local.php
 sites/*/settings.local.php
+civicrm.settings.local.php
+sites/*/civicrm.settings.local.php
 
 # Ignore paths that contain user-generated content.
 files
