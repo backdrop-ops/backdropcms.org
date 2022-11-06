@@ -22,7 +22,7 @@ function borg_civicrm_menu_alter(&$items) {
   // Make the CiviCRM profile edit page a sub-tab of the main user edit page.
   $items['user/%user/edit/main'] = $items['user/%user/edit'];
   $items['user/%user/edit/main']['type'] = MENU_DEFAULT_LOCAL_TASK;
-  $items['user/%user/edit/main']['title'] = t('Settings');
+  $items['user/%user/edit/main']['title'] = t('Account Information');
 
   // Change the Subscriptions weight so it comes last in the row of sub-tabs.
   $items['user/%user/edit/Subscriptions_14']['weight']++;
