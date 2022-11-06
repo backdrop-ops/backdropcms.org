@@ -1,0 +1,46 @@
+[ViewsDataExportAccessTest]
+name = Access to temp files
+description = Check access to created export files.
+group = Views Data Export
+file = access.test
+
+[ViewsDataExportGarbageCollectionTest]
+name = Garbage collection
+description = Checks garbage collection of batched exports.
+group = Views Data Export
+file = garbagecollection.test
+
+[CSVExportViewsDataExportTests]
+name = CSV Export
+description = Various tests for exporting to CSV.
+group = Views Data Export
+file = csv_export.test
+
+[DOCExportViewsDataExportTests]
+name = DOC Export
+description = Various tests for exporting to DOC.
+group = Views Data Export
+file = doc_export.test
+
+[TXTExportViewsDataExportTests]
+name = TXT Export
+description = Various tests for exporting to TXT.
+group = Views Data Export
+file = txt_export.test
+
+[XLSExportViewsDataExportTests]
+name = XLS Export
+description = Various tests for exporting to XLS.
+group = Views Data Export
+file = xls_export.test
+
+[XMLExportViewsDataExportTests]
+name = XML Export
+description = Various tests for exporting to XML.
+group = Views Data Export
+file = xml_export.test
+
+; Added by Backdrop CMS packaging script on 2020-10-07
+project = views_data_export
+version = 1.x-3.2.0
+timestamp = 1602100178

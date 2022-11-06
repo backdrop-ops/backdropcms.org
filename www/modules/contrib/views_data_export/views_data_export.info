@@ -1,0 +1,12 @@
+name = Views Data Export
+description = "Plugin to export views data into various file formats"
+package = Views
+backdrop = 1.x
+type = module
+
+dependencies[] = views
+
+; Added by Backdrop CMS packaging script on 2020-10-07
+project = views_data_export
+version = 1.x-3.2.0
+timestamp = 1602100178
