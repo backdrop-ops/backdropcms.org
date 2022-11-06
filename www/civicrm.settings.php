@@ -85,7 +85,6 @@ $civicrm_paths['civicrm.files']['path'] = '/home/backdrop/repo/www/files/civicrm
 
 // This declaration appears to be necessary for various bee (Backdrop Console)
 // commands to work, specifically pm-enable and pm-disable.
-global $civicrm_paths;
 $civicrm_paths['cms.root']['path'] = $cms_root;
 
 /**
