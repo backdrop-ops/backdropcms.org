@@ -279,4 +279,8 @@ body.front .block-borg-blocks-tagline h2 {
     width: 100%;
     line-height: 1.5;
   }
+  #user-register-form .field-name-field-interest .form-item div.description {
+    /* override borg theme's hiding of description items on user register form */
+    display: block;
+  }
 }
