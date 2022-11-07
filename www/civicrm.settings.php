@@ -187,7 +187,7 @@ if (!defined('CIVICRM_LOGGING_DSN')) {
 
 $civicrm_root = $cms_root . '/modules/civicrm/';
 if (!defined('CIVICRM_TEMPLATE_COMPILEDIR')) {
-  define( 'CIVICRM_TEMPLATE_COMPILEDIR', $cms_root . '/files/civicrm/templates_c');
+  define( 'CIVICRM_TEMPLATE_COMPILEDIR', $cms_root . '/files/civicrm/templates_c/');
 }
 
 /**
