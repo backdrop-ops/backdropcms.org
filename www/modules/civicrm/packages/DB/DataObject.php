@@ -691,7 +691,7 @@ class DB_DataObject extends DB_DataObject_Overload
         }
 
         if ($cond === false) {
-            $r = isset($this->_query['condition']) ? $this->_query['condition'] : null;
+            $r = isset($this->_query['condition']) ? $this->_query['condition'] : '';
             $_query['condition'] = '';
             $this->_query = $_query;
             return preg_replace('/^\s+WHERE\s+/','',$r);

@@ -319,12 +319,6 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
       $this->buildComponentForm($this->_id, $this);
     }
 
-    if (\Civi::settings()->get('forceRecaptcha')) {
-      if (!$this->_userID) {
-        CRM_Utils_ReCAPTCHA::enableCaptchaOnForm($this);
-      }
-    }
-
     // Build payment processor form
     CRM_Core_Payment_ProcessorForm::buildQuickForm($this);
 
@@ -538,7 +532,6 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
    * @return bool
    *   Is this a separate membership payment
    *
-   * @throws \CiviCRM_API3_Exception
    * @throws \CRM_Core_Exception
    */
   private function buildMembershipBlock($cid, $selectedMembershipTypeID = NULL, $isTest = NULL) {
@@ -1236,7 +1229,7 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
    * @param array $params
    *   Submitted values.
    *
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public function submit($params) {
     //carry campaign from profile.
@@ -1531,7 +1524,7 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
    *
    * @param array $params
    *
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public function testSubmit($params) {
     $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -1545,7 +1538,7 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
    * @param array $params
    *
    * @return mixed
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   protected function hasSeparateMembershipPaymentAmount($params) {
     return $this->_separateMembershipPayment && (int) CRM_Member_BAO_MembershipType::getMembershipType($params['selectMembership'])['minimum_fee'];

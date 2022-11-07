@@ -126,7 +126,7 @@
       };
 
       this.getColLabel = function(col) {
-        if (col.type === 'field' || col.type === 'image') {
+        if (col.type === 'field' || col.type === 'image' || col.type === 'html') {
           return ctrl.getFieldLabel(col.key);
         }
         return ctrl.colTypes[col.type].label;
@@ -159,6 +159,17 @@
           };
           delete col.editable;
           col.type = 'image';
+        }
+      };
+
+      this.toggleHtml = function(col) {
+        if (col.type === 'html') {
+          col.type = 'field';
+        } else {
+          delete col.editable;
+          delete col.link;
+          delete col.icons;
+          col.type = 'html';
         }
       };
 
@@ -258,6 +269,25 @@
         searchMeta.pickIcon().then(function(icon) {
           model[key] = icon;
         });
+      };
+
+      this.toggleAddButton = function() {
+        if (ctrl.display.settings.addButton && ctrl.display.settings.addButton.path) {
+          delete ctrl.display.settings.addButton;
+        } else {
+          var entity = searchMeta.getBaseEntity();
+          ctrl.display.settings.addButton = {
+            path: entity.addPath || 'civicrm/',
+            text: ts('Add %1', {1: entity.title}),
+            icon: 'fa-plus'
+          };
+        }
+      };
+
+      this.onChangeAddButtonPath = function() {
+        if (!ctrl.display.settings.addButton.path) {
+          delete ctrl.display.settings.addButton;
+        }
       };
 
       // Helper function to sort active from hidden columns and initialize each column with defaults

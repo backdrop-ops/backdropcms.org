@@ -263,7 +263,7 @@
               disabled: alias in existingJoins
             };
           if (alias in existingJoins) {
-            opt.children = addEntityJoins(join.entity, (stack ? stack + '_' : '') + alias, baseEntity);
+            opt.children = addEntityJoins(join.entity, alias, baseEntity);
           }
           collection.push(opt);
         }
@@ -471,7 +471,7 @@
       };
 
       function getFieldsForJoin(joinEntity) {
-        return {results: ctrl.getAllFields(':name', ['Field'], null, joinEntity)};
+        return {results: ctrl.getAllFields(':name', ['Field', 'Extra'], null, joinEntity)};
       }
 
       // @return {function}
@@ -511,7 +511,7 @@
           // Add extra searchable fields from bridge entity
           if (join && join.bridge) {
             formatFields(_.filter(searchMeta.getEntity(join.bridge).fields, function(field) {
-              return (field.name !== 'id' && field.name !== 'entity_id' && field.name !== 'entity_table' && !field.fk_entity);
+              return (field.name !== 'id' && field.name !== 'entity_id' && field.name !== 'entity_table' && field.fk_entity !== entityName);
             }), result, prefix);
           }
 

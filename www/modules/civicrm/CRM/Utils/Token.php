@@ -1350,7 +1350,6 @@ class CRM_Utils_Token {
       return;
     }
     // check if there are any tokens
-    $greetingTokens = self::getTokens($tokenString);
     $context = $contactId ? ['contactId' => $contactId] : [];
     if ($contactDetails) {
       $context['contact'] = isset($contactDetails[0]) ? reset($contactDetails[0]) : $contactDetails;
@@ -1596,7 +1595,7 @@ class CRM_Utils_Token {
    * @param array $knownTokens
    * @param bool $escapeSmarty
    * @return string
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public static function replaceCaseTokens($caseId, $str, $knownTokens = NULL, $escapeSmarty = FALSE): string {
     if (strpos($str, '{case.') === FALSE) {
@@ -1618,7 +1617,7 @@ class CRM_Utils_Token {
    * @param string $token
    * @param array $entityArray
    * @return string
-   * @throws \CiviCRM_API3_Exception
+   * @throws \CRM_Core_Exception
    */
   public static function getApiTokenReplacement($entity, $token, $entityArray) {
     if (!isset($entityArray[$token])) {
@@ -1771,7 +1770,7 @@ class CRM_Utils_Token {
           ]);
           $value = CRM_Utils_Money::format($value, NULL, NULL, TRUE);
         }
-        catch (CiviCRM_API3_Exception $e) {
+        catch (CRM_Core_Exception $e) {
           // we can anticipate we will get an error if the minimum fee is set to 'NULL' because of the way the
           // api handles NULL (4.4)
           $value = 0;

@@ -34,7 +34,7 @@ INSERT INTO `civicrm_dashboard`
 -- event badge
 INSERT INTO civicrm_print_label (title, name, description, label_format_name, label_type_id, is_default, is_reserved, is_active, data)
 VALUES
-('Annual Conference Hanging Badge (Avery 5395)', 'Annual_Conference_Hanging_Badge', 'For our annual conference', 'Avery 5395', 1, 1, 1, 1, '{literal}{"title":"Annual Conference Hanging Badge (Avery 5395)","label_format_name":"Avery 5395","description":"For our annual conference","token":{"1":"{event.title}","2":"{contact.display_name}","3":"{contact.current_employer}","4":"{event.start_date|crmDate:\"%B %E%f\"}"},"font_name":{"1":"dejavusans","2":"dejavusans","3":"dejavusans","4":"dejavusans"},"font_size":{"1":"9","2":"20","3":"15","4":"9"},"font_style":{"1":"","2":"","3":"","4":""},"text_alignment":{"1":"L","2":"C","3":"C","4":"R"},"barcode_type":"barcode","barcode_alignment":"R","image_1":"","image_2":"","is_default":"1","is_active":"1","is_reserved":"1","_qf_default":"Layout:next","_qf_Layout_refresh":"Save and Preview"}{/literal}');
+('Annual Conference Hanging Badge (Avery 5395)', 'Annual_Conference_Hanging_Badge', 'For our annual conference', 'Avery 5395', 1, 1, 1, 1, '{literal}{"title":"Annual Conference Hanging Badge (Avery 5395)","label_format_name":"Avery 5395","description":"For our annual conference","token":{"1":"{event.title}","2":"{contact.display_name}","3":"{contact.current_employer}","4":"{event.start_date|crmDate:\\\"%B %E%f\\\"}"},"font_name":{"1":"dejavusans","2":"dejavusans","3":"dejavusans","4":"dejavusans"},"font_size":{"1":"9","2":"20","3":"15","4":"9"},"font_style":{"1":"","2":"","3":"","4":""},"text_alignment":{"1":"L","2":"C","3":"C","4":"R"},"barcode_type":"barcode","barcode_alignment":"R","image_1":"","image_2":"","is_default":"1","is_active":"1","is_reserved":"1","_qf_default":"Layout:next","_qf_Layout_refresh":"Save and Preview"}{/literal}');
 
 -- navigation
 
@@ -63,11 +63,6 @@ VALUES
     ( @domainID, 'civicrm/event/search?reset=1',                            '{ts escape="sql" skip="true"}Find Participants{/ts}',  'Find Participants',  'access CiviEvent', '',   @searchlastID, '1', NULL, 9 ),
     ( @domainID, 'civicrm/pledge/search?reset=1',                           '{ts escape="sql" skip="true"}Find Pledges{/ts}',       'Find Pledges', 'access CiviPledge', '',        @searchlastID, '1', NULL, 10 ),
     ( @domainID, 'civicrm/activity/search?reset=1',                         '{ts escape="sql" skip="true"}Find Activities{/ts}',    'Find Activities', NULL,  '',                   @searchlastID, '1', '1',  11 );
-
-INSERT INTO civicrm_navigation
-    ( domain_id, url, label, name, permission, permission_operator, parent_id, is_active, has_separator, weight )
-VALUES
-    ( @domainID, 'civicrm/contact/search/custom/list?reset=1',              '{ts escape="sql" skip="true"}Custom Searches{/ts}', 'Custom Searches', NULL, '',                 @searchlastID, '1', NULL, 12 );
 
 INSERT INTO civicrm_navigation
     ( domain_id, url, label, name, permission, permission_operator, parent_id, is_active, has_separator, weight, icon )
@@ -285,8 +280,7 @@ VALUES
     ( @domainID, 'civicrm/admin/setting/search?reset=1',    '{ts escape="sql" skip="true"}Search Preferences{/ts}',    'Search Preferences',                'administer CiviCRM', '',   @CustomizelastID, '1', NULL, 10 ),
     ( @domainID, 'civicrm/admin/setting/preferences/date?reset=1', '{ts escape="sql" skip="true"}Date Preferences{/ts}', 'Date Preferences', 'administer CiviCRM', '', @CustomizelastID, '1', NULL, 11 ),
     ( @domainID, 'civicrm/admin/menu?reset=1',              '{ts escape="sql" skip="true"}Navigation Menu{/ts}', 'Navigation Menu',                         'administer CiviCRM', '',   @CustomizelastID, '1', NULL, 12 ),
-    ( @domainID, 'civicrm/admin/options/wordreplacements?reset=1','{ts escape="sql" skip="true"}Word Replacements{/ts}','Word Replacements',                'administer CiviCRM', '',   @CustomizelastID, '1', NULL, 13 ),
-    ( @domainID, 'civicrm/admin/options/custom_search?reset=1', '{ts escape="sql" skip="true"}Manage Custom Searches{/ts}', 'Manage Custom Searches', 'administer CiviCRM', '', @CustomizelastID, '1', NULL, 14 );
+    ( @domainID, 'civicrm/admin/options/wordreplacements?reset=1','{ts escape="sql" skip="true"}Word Replacements{/ts}','Word Replacements',                'administer CiviCRM', '',   @CustomizelastID, '1', NULL, 13 );
 
 INSERT INTO civicrm_navigation
     ( domain_id, url, label, name, permission, permission_operator, parent_id, is_active, has_separator, weight )

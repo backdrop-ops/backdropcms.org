@@ -113,7 +113,7 @@ function civicrm_member_roles_sync_user($account) {
   if (!civicrm_initialize()) {
     return;
   }
-  if (in_array('login', config_get('civicrm_member_roles.settings', 'civicrm_member_roles_sync_method'), TRUE)) {
+  if (in_array('login', config_get('civicrm_member_roles.settings', 'civicrm_member_roles_sync_method') ?? [], TRUE)) {
     _civicrm_member_roles_sync($account->uid);
   }
 }
@@ -125,7 +125,7 @@ function civicrm_member_roles_cron() {
   if (!civicrm_initialize(TRUE)) {
     return;
   }
-  if (in_array('cron', config_get('civicrm_member_roles.settings', 'civicrm_member_roles_sync_method'), TRUE)) {
+  if (in_array('cron', config_get('civicrm_member_roles.settings', 'civicrm_member_roles_sync_method') ?? [], TRUE)) {
     _civicrm_member_roles_sync(NULL, NULL, 'cron');
   }
 }
@@ -693,7 +693,7 @@ function _civicrm_member_roles_get_data($type) {
 
 function civicrm_member_roles_civicrm_post($op, $objname, $objid, &$objref) {
   if ($objname == "Membership") {
-    if (in_array('update', config_get('civicrm_member_roles.settings', 'civicrm_member_roles_sync_method'), TRUE)) {
+    if (in_array('update', config_get('civicrm_member_roles.settings', 'civicrm_member_roles_sync_method') ?? [], TRUE)) {
       _civicrm_member_roles_sync(NULL, $objref->contact_id);
     }
   }

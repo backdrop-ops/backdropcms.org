@@ -26,6 +26,15 @@
         for (var p=0; p < placeholderCount; ++p) {
           this.placeholders.push({});
         }
+        // Calculate URL of addButton and copy addButton to controller property
+        // It has to be copied rather than simply adding this.settings.addButton.url,
+        // because settings cannot be changed when they are supplied from the markup
+        if (this.settings.addButton && this.settings.addButton.path) {
+          // Clone the variable to prevent polluting it during Preview mode in the Admin UI
+          this.addButton = _.cloneDeep(this.settings.addButton);
+          // TODO: Evaluate variables in the path
+          this.addButton.url = CRM.url(this.addButton.path);
+        }
 
         this.getResults = _.debounce(function() {
           $scope.$apply(function() {
@@ -96,7 +105,7 @@
 
       getAfformFilters: function() {
         return _.pick(this.afFieldset ? this.afFieldset.getFieldData() : {}, function(val) {
-          return val !== null && (_.includes(['boolean', 'number'], typeof val) || val.length);
+          return val !== null && (_.includes(['boolean', 'number', 'object'], typeof val) || val.length);
         });
       },
 

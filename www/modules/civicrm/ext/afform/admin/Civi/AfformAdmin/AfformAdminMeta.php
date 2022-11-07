@@ -123,8 +123,14 @@ class AfformAdminMeta {
     }
     // Index by name
     $fields = array_column($fields, NULL, 'name');
-    // Mix in alterations declared by afform entities
     if ($params['action'] === 'create') {
+      // Add existing entity field
+      $idField = CoreUtil::getIdFieldName($entityName);
+      $fields[$idField]['readonly'] = FALSE;
+      $fields[$idField]['input_type'] = 'Existing';
+      $fields[$idField]['is_id'] = TRUE;
+      $fields[$idField]['label'] = E::ts('Existing %1', [1 => CoreUtil::getInfoItem($entityName, 'title')]);
+      // Mix in alterations declared by afform entities
       $afEntity = self::getMetadata()['entities'][$entityName] ?? [];
       if (!empty($afEntity['alterFields'])) {
         foreach ($afEntity['alterFields'] as $fieldName => $changes) {

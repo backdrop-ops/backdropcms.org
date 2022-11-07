@@ -13,7 +13,7 @@ function _afform_fields_filter($params) {
   $result = [];
   $fields = \Civi\Api4\Afform::getfields(FALSE)->setAction('create')->execute()->indexBy('name');
   foreach ($fields as $fieldName => $field) {
-    if (isset($params[$fieldName])) {
+    if (array_key_exists($fieldName, $params)) {
       $result[$fieldName] = $params[$fieldName];
 
       if ($field['data_type'] === 'Boolean' && !is_bool($params[$fieldName])) {
@@ -56,6 +56,7 @@ function afform_civicrm_config(&$config) {
   $dispatcher->addListener('hook_civicrm_alterAngular', ['\Civi\Afform\AfformMetadataInjector', 'preprocess']);
   $dispatcher->addListener('hook_civicrm_check', ['\Civi\Afform\StatusChecks', 'hook_civicrm_check']);
   $dispatcher->addListener('civi.afform.get', ['\Civi\Api4\Action\Afform\Get', 'getCustomGroupBlocks']);
+  $dispatcher->addSubscriber(new \Civi\Api4\Subscriber\AutocompleteSubscriber());
 
   // Register support for email tokens
   if (CRM_Extension_System::singleton()->getMapper()->isActiveModule('authx')) {
@@ -140,32 +141,66 @@ function afform_civicrm_managed(&$entities, $modules) {
     // This AfformScanner instance only lives during this method call, and it feeds off the regular cache.
     $scanner = new CRM_Afform_AfformScanner();
   }
+  $domains = NULL;
 
   foreach ($scanner->getMetas() as $afform) {
-    if (empty($afform['is_dashlet']) || empty($afform['name'])) {
+    if (empty($afform['name'])) {
       continue;
     }
-    $entities[] = [
-      'module' => E::LONG_NAME,
-      'name' => 'afform_dashlet_' . $afform['name'],
-      'entity' => 'Dashboard',
-      'update' => 'always',
-      // ideal cleanup policy might be to (a) deactivate if used and (b) remove if unused
-      'cleanup' => 'always',
-      'params' => [
-        'version' => 4,
-        'values' => [
-          // Q: Should we loop through all domains?
-          'domain_id' => 'current_domain',
-          'is_active' => TRUE,
-          'name' => $afform['name'],
-          'label' => $afform['title'] ?? E::ts('(Untitled)'),
-          'directive' => _afform_angular_module_name($afform['name'], 'dash'),
-          'permission' => "@afform:" . $afform['name'],
-          'url' => NULL,
+    if (!empty($afform['is_dashlet'])) {
+      $entities[] = [
+        'module' => E::LONG_NAME,
+        'name' => 'afform_dashlet_' . $afform['name'],
+        'entity' => 'Dashboard',
+        'update' => 'always',
+        // ideal cleanup policy might be to (a) deactivate if used and (b) remove if unused
+        'cleanup' => 'always',
+        'params' => [
+          'version' => 4,
+          'values' => [
+            // Q: Should we loop through all domains?
+            'domain_id' => 'current_domain',
+            'is_active' => TRUE,
+            'name' => $afform['name'],
+            'label' => $afform['title'] ?? E::ts('(Untitled)'),
+            'directive' => _afform_angular_module_name($afform['name'], 'dash'),
+            'permission' => "@afform:" . $afform['name'],
+            'url' => NULL,
+          ],
         ],
-      ],
-    ];
+      ];
+    }
+    if (!empty($afform['navigation']) && !empty($afform['server_route'])) {
+      $domains = $domains ?: \Civi\Api4\Domain::get(FALSE)->addSelect('id')->execute();
+      foreach ($domains as $domain) {
+        $params = [
+          'version' => 4,
+          'values' => [
+            'name' => $afform['name'],
+            'label' => $afform['navigation']['label'] ?: $afform['title'],
+            'permission' => (array) $afform['permission'],
+            'permission_operator' => 'OR',
+            'weight' => $afform['navigation']['weight'] ?? 0,
+            'url' => $afform['server_route'],
+            'is_active' => 1,
+            'icon' => 'crm-i ' . $afform['icon'],
+            'domain_id' => $domain['id'],
+          ],
+          'match' => ['domain_id', 'name'],
+        ];
+        if (!empty($afform['navigation']['parent'])) {
+          $params['values']['parent_id.name'] = $afform['navigation']['parent'];
+        }
+        $entities[] = [
+          'module' => E::LONG_NAME,
+          'name' => 'navigation_' . $afform['name'] . '_' . $domain['id'],
+          'cleanup' => 'always',
+          'update' => 'unmodified',
+          'entity' => 'Navigation',
+          'params' => $params,
+        ];
+      }
+    }
   }
 }
 
@@ -207,7 +242,7 @@ function afform_civicrm_tabset($tabsetName, &$tabs, $context) {
  * Adds afforms as contact summary blocks.
  */
 function afform_civicrm_pageRun(&$page) {
-  if (get_class($page) !== 'CRM_Contact_Page_View_Summary') {
+  if (!in_array(get_class($page), ['CRM_Contact_Page_View_Summary', 'CRM_Contact_Page_View_Print'])) {
     return;
   }
   $scanner = \Civi::service('afform_scanner');
@@ -302,7 +337,7 @@ function afform_civicrm_angularModules(&$angularModules) {
  *   The module definition.
  * @return array
  *   Array(string $filename => string $html).
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function _afform_get_partials($moduleName, $module) {
   $afform = civicrm_api4('Afform', 'get', [
@@ -465,14 +500,10 @@ function _afform_clear() {
 function _afform_angular_module_name($fileBaseName, $format = 'camel') {
   switch ($format) {
     case 'camel':
-      $camelCase = '';
-      foreach (preg_split('/[-_ ]/', $fileBaseName, NULL, PREG_SPLIT_NO_EMPTY) as $shortNamePart) {
-        $camelCase .= ucfirst($shortNamePart);
-      }
-      return strtolower($camelCase[0]) . substr($camelCase, 1);
+      return \CRM_Utils_String::convertStringToCamel($fileBaseName, FALSE);
 
     case 'dash':
-      return strtolower(implode('-', preg_split('/[-_ ]|(?=[A-Z])/', $fileBaseName, NULL, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE)));
+      return \CRM_Utils_String::convertStringToDash($fileBaseName);
 
     default:
       throw new \Exception("Unrecognized format");
@@ -491,6 +522,11 @@ function afform_civicrm_alterApiRoutePermissions(&$permissions, $entity, $action
     if (in_array($action, $allowedActions, TRUE)) {
       $permissions = CRM_Core_Permission::ALWAYS_ALLOW_PERMISSION;
     }
+  }
+  // This is temporarily stuck here, but probably belongs in core (until this hook is finally abolished)
+  elseif ($action === 'autocomplete') {
+    // Autocomplete widget must be accessible by anonymous users. Permissions are checked internally.
+    $permissions = CRM_Core_Permission::ALWAYS_ALLOW_PERMISSION;
   }
 }
 

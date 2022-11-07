@@ -373,7 +373,7 @@ class CRM_Utils_File {
    *   stripped string
    */
   public static function stripComments($string) {
-    return preg_replace("/^(#|--).*\R*/m", "", $string);
+    return preg_replace("/^(#|--).*\R*/m", "", ($string ?? ''));
   }
 
   /**
@@ -446,9 +446,9 @@ class CRM_Utils_File {
     $uniqID = md5(uniqid(rand(), TRUE));
     $info = pathinfo($name);
     $basename = substr($info['basename'],
-      0, -(strlen(CRM_Utils_Array::value('extension', $info)) + (CRM_Utils_Array::value('extension', $info) == '' ? 0 : 1))
+      0, -(strlen(CRM_Utils_Array::value('extension', $info, '')) + (CRM_Utils_Array::value('extension', $info, '') == '' ? 0 : 1))
     );
-    if (!self::isExtensionSafe(CRM_Utils_Array::value('extension', $info))) {
+    if (!self::isExtensionSafe(CRM_Utils_Array::value('extension', $info, ''))) {
       // munge extension so it cannot have an embbeded dot in it
       // The maximum length of a filename for most filesystems is 255 chars.
       // We'll truncate at 240 to give some room for the extension.
@@ -531,6 +531,11 @@ class CRM_Utils_File {
     if (!empty($dir) && is_dir($dir)) {
       $htaccess = <<<HTACCESS
 <Files "*">
+# OpenLiteSpeed 1.4.38+
+  <IfModule !authz_core_module>
+    RewriteRule .* - [F,L]
+  </IfModule>
+
 # Apache 2.2
   <IfModule !authz_core_module>
     Order allow,deny
@@ -766,25 +771,11 @@ HTACCESS;
         }
       }
       // Find subdirs to recurse into.
-      if ($dh = opendir($subdir)) {
-        while (FALSE !== ($entry = readdir($dh))) {
-          $path = $subdir . DIRECTORY_SEPARATOR . $entry;
-          // Exclude . (self) and .. (parent) to avoid infinite loop.
-          // Exclude configured exclude dirs.
-          // Exclude dirs we can't read.
-          // Exclude anything that's not a dir.
-          if (
-            $entry !== '.'
-            && $entry !== '..'
-            && (empty($excludeDirsPattern) || !preg_match($excludeDirsPattern, $path))
-            && is_dir($path)
-            && is_readable($path)
-          ) {
-            $todos[] = $path;
-          }
-        }
-        closedir($dh);
+      $subdirs = glob("$subdir/*", GLOB_ONLYDIR);
+      if (!empty($excludeDirsPattern)) {
+        $subdirs = preg_grep($excludeDirsPattern, $subdirs, PREG_GREP_INVERT);
       }
+      $todos = array_merge($todos, $subdirs);
     }
     return $result;
   }
@@ -1058,7 +1049,7 @@ HTACCESS;
     }
     $iconClasses = Civi::$statics[__CLASS__]['mimeIcons'];
     foreach ($iconClasses as $text => $icon) {
-      if (strpos($mimeType, $text) === 0) {
+      if (strpos(($mimeType ?? ''), $text) === 0) {
         return $icon;
       }
     }
@@ -1128,6 +1119,9 @@ HTACCESS;
    *   In php8 the return value from is_dir() is always bool but in php7 it can be null.
    */
   public static function isDir(?string $dir) {
+    if ($dir === NULL) {
+      return FALSE;
+    }
     set_error_handler(function($errno, $errstr) {
       // If this is open_basedir-related, convert it to an exception so we
       // can catch it.

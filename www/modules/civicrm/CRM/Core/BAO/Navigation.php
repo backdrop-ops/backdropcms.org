@@ -20,6 +20,42 @@ class CRM_Core_BAO_Navigation extends CRM_Core_DAO_Navigation {
   const CACHE_KEY_STRLEN = 8;
 
   /**
+   * Override parent method to flush caches after a write op.
+   *
+   * Note: this only applies to APIv4 because v3 uses the singular writeRecord.
+   *
+   * @param array[] $records
+   * @return CRM_Core_DAO_Navigation[]
+   * @throws CRM_Core_Exception
+   */
+  public static function writeRecords($records): array {
+    $results = [];
+    foreach ($records as $record) {
+      $results[] = self::writeRecord($record);
+    }
+    self::resetNavigation();
+    return $results;
+  }
+
+  /**
+   * Override parent method to flush caches after delete.
+   *
+   * Note: this only applies to APIv4 because v3 uses the singular writeRecord.
+   *
+   * @param array[] $records
+   * @return CRM_Core_DAO_Navigation[]
+   * @throws CRM_Core_Exception
+   */
+  public static function deleteRecords(array $records) {
+    $results = [];
+    foreach ($records as $record) {
+      $results[] = self::deleteRecord($record);
+    }
+    self::resetNavigation();
+    return $results;
+  }
+
+  /**
    * Update the is_active flag in the db.
    *
    * @param int $id
@@ -824,7 +860,7 @@ FROM civicrm_navigation WHERE domain_id = $domainID";
     $key = Civi::service('settings_manager')
       ->getBagByContact(NULL, $cid)
       ->get('navigation');
-    if (strlen($key) !== self::CACHE_KEY_STRLEN) {
+    if (strlen($key ?? '') !== self::CACHE_KEY_STRLEN) {
       $key = self::resetNavigation($cid);
     }
     return $key;

@@ -362,6 +362,7 @@ class CRM_Core_CodeGen_Specification {
     $field['required'] = $this->value('required', $fieldXML);
     $field['collate'] = $this->value('collate', $fieldXML);
     $field['comment'] = $this->value('comment', $fieldXML);
+    $field['deprecated'] = $this->value('deprecated', $fieldXML, FALSE);
     $field['default'] = $this->value('default', $fieldXML);
     $field['import'] = $this->value('import', $fieldXML);
     if ($this->value('export', $fieldXML)) {
@@ -447,6 +448,9 @@ class CRM_Core_CodeGen_Specification {
         'nameColumn',
         // Column to fetch in "abbreviate" context
         'abbrColumn',
+        // Supported by APIv4 suffixes
+        'colorColumn',
+        'iconColumn',
         // Where clause snippet (will be joined to the rest of the query with AND operator)
         'condition',
         // callback function incase of static arrays
@@ -587,7 +591,7 @@ class CRM_Core_CodeGen_Specification {
     // all fieldnames have to be defined and should exist in schema.
     foreach ($primaryKey['field'] as $fieldName) {
       if (!$fieldName) {
-        echo "Invalid field definition for index '$name' in table ${table['name']}\n";
+        echo "Invalid field definition for index '$name' in table {$table['name']}\n";
         return;
       }
       $parenOffset = strpos($fieldName, '(');
@@ -595,7 +599,7 @@ class CRM_Core_CodeGen_Specification {
         $fieldName = substr($fieldName, 0, $parenOffset);
       }
       if (!array_key_exists($fieldName, $fields)) {
-        echo "Missing definition of field '$fieldName' for index '$name' in table ${table['name']}\n";
+        echo "Missing definition of field '$fieldName' for index '$name' in table {$table['name']}\n";
         print_r($fields);
         exit();
       }
