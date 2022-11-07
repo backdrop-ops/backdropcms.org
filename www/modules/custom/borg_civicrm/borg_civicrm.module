@@ -11,7 +11,7 @@ function borg_civicrm_admin_paths() {
   // The CiviCRM profile edit pages should be rendered in the front-end theme.
   return array(
     'user/*/edit/name_and_address' => FALSE,
-    'user/*/edit/Subscriptions_14' => FALSE,
+    'user/*/edit/Subscriptions_15' => FALSE,
   );
 }
 
@@ -25,7 +25,7 @@ function borg_civicrm_menu_alter(&$items) {
   $items['user/%user/edit/main']['title'] = t('Account Information');
 
   // Change the Subscriptions weight so it comes last in the row of sub-tabs.
-  $items['user/%user/edit/Subscriptions_14']['weight']++;
+  $items['user/%user/edit/Subscriptions_15']['weight']++;
 }
 
 /**
