@@ -15,6 +15,11 @@ function xmlsitemap_taxonomy_autoload_info() {
 }
 
 /**
+ * @file
+ * Main file for XML sitemap taxonomy.
+ */
+
+/**
  * Implements hook_entity_info_alter().
  */
 function xmlsitemap_taxonomy_entity_info_alter(&$entity_info) {
@@ -80,7 +85,7 @@ function xmlsitemap_taxonomy_xmlsitemap_index_links($limit) {
 /**
  * Process taxonomy term sitemap links.
  *
- * @param $tids
+ * @param array $tids
  *   An array of taxonomy term IDs.
  */
 function xmlsitemap_taxonomy_xmlsitemap_process_taxonomy_term_links(array $tids) {
@@ -140,7 +145,7 @@ function xmlsitemap_taxonomy_vocabulary_update($vocabulary) {
 }
 
 /**
- * Implements hook_taxonomy_term_insert() {
+ * Implements hook_taxonomy_term_insert().
  */
 function xmlsitemap_taxonomy_term_insert($term) {
   $link = xmlsitemap_taxonomy_create_link($term);
@@ -148,7 +153,7 @@ function xmlsitemap_taxonomy_term_insert($term) {
 }
 
 /**
- * Implements hook_taxonomy_term_update() {
+ * Implements hook_taxonomy_term_update().
  */
 function xmlsitemap_taxonomy_term_update($term) {
   $link = xmlsitemap_taxonomy_create_link($term);
@@ -156,7 +161,7 @@ function xmlsitemap_taxonomy_term_update($term) {
 }
 
 /**
- * Implements hook_taxonomy_term_delete() {
+ * Implements hook_taxonomy_term_delete().
  */
 function xmlsitemap_taxonomy_term_delete($term) {
   xmlsitemap_link_delete('taxonomy_term', $term->tid);
@@ -180,9 +185,10 @@ function xmlsitemap_taxonomy_field_extra_fields() {
 /**
  * Create a sitemap link from a taxonomy term.
  *
- * @param $term
+ * @param object $term
  *   A taxonomy term object.
- * @return
+ *
+ * @return array
  *   An array representing a sitemap link.
  */
 function xmlsitemap_taxonomy_create_link(&$term) {
@@ -219,20 +225,22 @@ function xmlsitemap_taxonomy_create_link(&$term) {
 
 /**
  * Calculate the priority of a taxonomy term based on depth and weight.
+ *
+ * Function xmlsitemap_taxonomy_calculate_term_priority(stdClass $term) {
+ *  // Calculate priority.
+ *  // Min weight = -128
+ *  // Max weight = 127
+ *  // Max depth = ?
+ * }
  */
-//function xmlsitemap_taxonomy_calculate_term_priority(stdClass $term) {
-//  // Calculate priority.
-//  // Min weight = -128
-//  // Max weight = 127
-//  // Max depth = ?
-//}
 
 /**
  * Find the tree depth of a taxonomy term.
  *
- * @param $term
+ * @param object $term
  *   A taxonomy term object.
- * @return
+ *
+ * @return array
  *   The tree depth of the term.
  */
 function xmlsitemap_taxonomy_get_term_depth($term) {
@@ -258,12 +266,16 @@ function xmlsitemap_taxonomy_get_term_depth($term) {
 /**
  * Find the number of nodes that are associated with a taxonomy term.
  *
- * @param $term
+ * @param obejct $term
  *   A taxonomy term object.
- * @return
+ *
+ * @return int
  *   The number of nodes associated with the term.
+ *
+ * @codingStandardsIgnoreStart
  */
 function xmlsitemap_taxonomy_get_node_count($term) {
+  // @codingStandardsIgnoreEnd
   // @todo Use db_rewrite_sql() w/ switch user.
   return db_query_range("SELECT COUNT(ti.nid) FROM {taxonomy_index} ti LEFT JOIN {node n} USING (nid) WHERE ti.tid = :tid AND n.status = 1", 0, 1, array(':tid' => $term->tid))->fetchField();
 }

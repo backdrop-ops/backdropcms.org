@@ -4,11 +4,34 @@
  * Unit tests for the xmlsitemap_taxonomy module.
  */
 
+// Temporarily include the parent class until core provides test autoloading.
+include_once(__DIR__ . '/../../tests/xmlsitemap.test');
+
+/**
+ * Functional Test.
+ */
 class XMLSitemapTaxonomyFunctionalTest extends XMLSitemapTestHelper {
+
+  /**
+   * Normal User.
+   *
+   * @var string
+   *
+   * @codingStandardsIgnoreStart
+   */
   protected $normal_user;
+
+  /**
+   * Terms.
+   *
+   * @var array
+   */
   protected $terms = array();
 
-  function setUp($modules = array()) {
+  /**
+   * SetUp.
+   */
+  public function setUp($modules = array()) {
     $modules[] = 'xmlsitemap_taxonomy';
     $modules[] = 'taxonomy';
     parent::setUp($modules);
@@ -17,7 +40,10 @@ class XMLSitemapTaxonomyFunctionalTest extends XMLSitemapTestHelper {
     $this->normal_user = $this->backdropCreateUser(array('access content'));
   }
 
-  function testTaxonomySettings() {
+  /**
+   * TaxonomySettings.
+   */
+  public function testTaxonomySettings() {
     $this->backdropLogin($this->admin_user);
 
     $edit = array(
@@ -26,9 +52,9 @@ class XMLSitemapTaxonomyFunctionalTest extends XMLSitemapTestHelper {
       'xmlsitemap[status]' => '1',
       'xmlsitemap[priority]' => '1.0',
     );
-    $this->backdropPost('admin/structure/taxonomy/add', $edit, 'Save');
+    $this->backdropPost('admin/structure/taxonomy/add', $edit, 'Save vocabulary');
     $this->assertText("Created new vocabulary {$edit['name']}.");
-    $vocabulary = taxonomy_vocabulary_machine_name_load($edit['machine_name']);
+    $vocabulary = taxonomy_vocabulary_load($edit['machine_name']);
 
     $edit = array(
       'name' => $this->randomName(),
@@ -37,4 +63,5 @@ class XMLSitemapTaxonomyFunctionalTest extends XMLSitemapTestHelper {
     );
     $this->backdropPost("admin/structure/taxonomy/{$vocabulary->machine_name}/add", $edit, 'Save');
   }
+
 }

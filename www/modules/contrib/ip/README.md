@@ -26,11 +26,6 @@ Optional: this module provides drush commands to insert IP address data loaded p
 - `drush ip-backlog-comments` —
   Imports comments' IP data from comment table.
 
-Documentation
--------------
-
-Additional documentation may be located in [the Wiki](https://github.com/backdrop-contrib/ip/wiki/Documentation).
-
 Issues
 ------
 

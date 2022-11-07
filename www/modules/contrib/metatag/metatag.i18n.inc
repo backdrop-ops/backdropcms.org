@@ -131,8 +131,8 @@ function metatag_i18n_object_info() {
  * List callback for {metatag_config} strings.
  */
 function metatag_i18n_list_metatag_config() {
-  ctools_include('export');
-  $configs = ctools_export_crud_load_all('metatag_config');
+  $names = config_get_names_with_prefix('metatag.instance');
+  $configs = config_load_multiple($names);
 
   if (!empty($configs)) {
     // Unserialize the config array.

@@ -10,6 +10,10 @@ class MetatagCoreTagRemovalTest extends MetatagTestHelper {
    * Test that the core meta tags work correctly.
    */
   function testCoreTagRemoval() {
+    // Enable core tags and the generator override.
+    config_set('metatag.settings', 'enabled_tags.generator', 'generator');
+    config_set('metatag.settings', 'leave_core_tags', TRUE);
+
     // The default generator string that both Metatag and backdrop core use.
     $generator_global = 'Backdrop CMS (http://backdropcms.org)';
     $generator_core = 'Backdrop CMS 1 (https://backdropcms.org)';

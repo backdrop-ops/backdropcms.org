@@ -26,7 +26,7 @@ function metatag_importer_menu() {
   $items['admin/config/metadata/metatags/importer/nodewords'] = array(
     'title' => 'Import from Nodewords',
     'description' => 'Migrate settings and data from the Drupal 6 Nodewords module to the Drupal 7 Metatag module.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('metatag_importer_nodewords_form'),
     'access arguments' => array('administer meta tags'),
     'file' => 'metatag_importer.nodewords.inc',
@@ -42,7 +42,7 @@ function metatag_importer_menu() {
   $items['admin/config/metadata/metatags/importer/page-title'] = array(
     'title' => 'Import from Page Title',
     'description' => 'Migrate settings and data from the Drupal 6 Nodewords module to the Drupal 7 Metatag module.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('metatag_importer_page_title_form'),
     'access arguments' => array('administer meta tags'),
     'file' => 'metatag_importer.page_title.inc',

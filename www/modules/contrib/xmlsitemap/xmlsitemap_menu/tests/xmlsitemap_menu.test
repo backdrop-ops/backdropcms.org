@@ -1,14 +1,37 @@
 <?php
 /**
  * @file
- * Unit tests for the xmlsitemap_menu module.
+ * Unit tests for the xmlsitemap_menu project..
  */
 
+// Temporarily include the parent class until core provides test autoloading.
+include_once(__DIR__ . '/../../tests/xmlsitemap.test');
+
+/**
+ * Menu Functional Test.
+ */
 class XMLSitemapMenuFunctionalTest extends XMLSitemapTestHelper {
+
+  /**
+   * Normal User.
+   *
+   * @var string
+   *
+   * @codingStandardsIgnoreStart
+   */
   protected $normal_user;
+
+  /**
+   * Menu Items.
+   *
+   * @var array
+   */
   protected $menu_items = array();
 
-  function setUp($modules = array()) {
+  /**
+   * Setup.
+   */
+  public function setUp($modules = array()) {
     $modules[] = 'xmlsitemap_menu';
     $modules[] = 'menu';
     parent::setUp($modules);
@@ -17,7 +40,10 @@ class XMLSitemapMenuFunctionalTest extends XMLSitemapTestHelper {
     $this->normal_user = $this->backdropCreateUser(array('access content'));
   }
 
-  function testMenuSettings() {
+  /**
+   * Menu Settings.
+   */
+  public function testMenuSettings() {
     $this->backdropLogin($this->admin_user);
 
     $edit = array(
@@ -27,7 +53,6 @@ class XMLSitemapMenuFunctionalTest extends XMLSitemapTestHelper {
       'xmlsitemap[priority]' => '1.0',
     );
     $this->backdropPost('admin/structure/menu/add', $edit, 'Save');
-    $menu = menu_load($edit['menu_name']);
 
     $this->clickLink('Add link');
     $edit = array(
@@ -38,4 +63,5 @@ class XMLSitemapMenuFunctionalTest extends XMLSitemapTestHelper {
     );
     $this->backdropPost(NULL, $edit, 'Save');
   }
+
 }

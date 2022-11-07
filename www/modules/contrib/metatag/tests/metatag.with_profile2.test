@@ -118,7 +118,7 @@ class MetatagCoreWithProfile2Test extends MetatagCoreUserTest {
     $this->assertText(strip_tags(t('The changes have been saved.')));
 
     // Clear all caches.
-    drupal_flush_all_caches();
+    backdrop_flush_all_caches();
 
     // Confirm the user profile tags still work correctly.
     $this->assertUserEntityTags($this->adminUser);

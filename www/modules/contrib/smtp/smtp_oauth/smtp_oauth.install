@@ -1,0 +1,21 @@
+<?php
+/**
+ * @file
+ * The installation instructions for the SMTP OAuth Authentication Support.
+ */
+
+/**
+* Implements hook_uninstall().
+*/
+function smtp_oauth_uninstall() {
+  // We also delete the gauth account.
+  $gauth_id = config_get('smtp_oauth.settings', 'smtp_oauth_google_api_client_id');
+  gauth_account_delete($gauth_id, FALSE);
+}
+
+/**
+* Implements hook_disable().
+*/
+function smtp_oauth_disable() {
+  config_set('system.mail', 'default-system', 'SmtpMailSystem');
+}

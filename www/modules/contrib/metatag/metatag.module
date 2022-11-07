@@ -365,6 +365,12 @@ function metatag_config_save($data) {
   if ($config->get('storage') == METATAG_STORAGE_DEFAULT) {
     $config->set('storage', METATAG_STORAGE_OVERRIDDEN);
   }
+  if ($config->get('name') == NULL) {
+    $config->set('name', $name);
+  }
+  if ($config->get('label') == NULL) {
+    $config->set('label', metatag_config_instance_label($data['instance']));
+  }
 
   foreach ($data as $key => $value) {
     $config->set($key, $value);
@@ -1984,14 +1990,19 @@ function metatag_get_info($type = NULL, $name = NULL, $include_disabled = FALSE)
   // Use the advanced backdrop_static() pattern, since this is called very often.
   static $backdrop_static_fast;
   if (!isset($backdrop_static_fast)) {
-    $backdrop_static_fast['metatag_info'] = &backdrop_static(__FUNCTION__);
+    $backdrop_static_fast['metatag_info'] = &backdrop_static(__FUNCTION__, array(
+      'all' => NULL,
+      'enabled' => NULL,
+    ));
   }
-  $info = &$backdrop_static_fast['metatag_info'];
+  // Two static lists are stored: the complete list and the enabled-only list.
+  $info = &$backdrop_static_fast['metatag_info']['all'];
+  $info_enabled = &$backdrop_static_fast['metatag_info']['enabled'];
 
   global $language;
   if (!isset($info)) {
-    // hook_metatag_info() includes translated strings, so each language is cached
-    // separately.
+    // hook_metatag_info() includes translated strings, so each language is
+    // cached separately.
     $cid = 'info:' . $language->langcode;
 
     if ($cache = metatag_cache_get($cid)) {
@@ -2003,18 +2014,12 @@ function metatag_get_info($type = NULL, $name = NULL, $include_disabled = FALSE)
       $info = module_invoke_all('metatag_info');
       $info += array('tags' => array(), 'groups' => array());
 
-      $enabled = config_get('metatag.settings', 'enabled_tags');
       foreach ($info['tags'] as $key => $data) {
         // Merge in default values.
         $info['tags'][$key] += array(
           'name' => $key,
           'class' => 'BackdropTextMetaTag',
         );
-
-        // Only show enabled tags.
-        if (empty($enabled[$key]) && !$include_disabled) {
-          unset($info['tags'][$key]);
-        }
       }
 
       // Let other modules alter the entity info using
@@ -2023,16 +2028,41 @@ function metatag_get_info($type = NULL, $name = NULL, $include_disabled = FALSE)
 
       metatag_cache_set($cid, $info);
     }
+
+    // Build separate list of only enabled tags.
+    if (!isset($info_enabled)) {
+      $info_enabled = $info;
+
+      $enabled_tags = array_filter(config_get('metatag.settings', 'enabled_tags'));
+      $info_enabled['tags'] = array_intersect_key($info['tags'], $enabled_tags);
+
+      // Filter down the list of groups to only those that have active tags.
+      $enabled_groups = array();
+      foreach ($info_enabled['tags'] as $tag_info) {
+        $group = $tag_info['group'];
+        if (!isset($enabled_groups[$group])) {
+          $enabled_groups[$group] = TRUE;
+        }
+        $info_enabled['groups'] = array_intersect_key($info['groups'], $enabled_groups);
+      }
+    }
+  }
+
+  if ($include_disabled) {
+    $return_info = $info;
+  }
+  else {
+    $return_info = $info_enabled;
   }
 
   if (isset($type) && isset($name)) {
-    return isset($info[$type][$name]) ? $info[$type][$name] : FALSE;
+    return isset($return_info[$type][$name]) ? $return_info[$type][$name] : FALSE;
   }
   elseif (isset($type)) {
-    return isset($info[$type]) ? $info[$type] : array();
+    return isset($return_info[$type]) ? $return_info[$type] : array();
   }
   else {
-    return $info;
+    return $return_info;
   }
 }
 
@@ -2113,6 +2143,11 @@ function metatag_preprocess_page(&$variables) {
  * @see metatag_preprocess_page().
  */
 function metatag_preprocess_maintenance_page(&$variables) {
+  // Don't modify install or update pages.
+  if (defined('MAINTENANCE_MODE') && in_array(MAINTENANCE_MODE, array('install', 'update'))) {
+    return;
+  }
+
   // Prepare all the tags, including doing token replacements.
   $metatags = metatag_prepare_tags();
   // Add each metatag to page header.
@@ -2189,15 +2224,17 @@ function metatag_html_head_alter(&$elements) {
     // Examine the other meta tags to see if we have any duplicates.
     foreach ($closer_inspection as $key => $data) {
       // Check attributes.
-      foreach ($closer_inspection[$key]['#attributes'] as $attr_key => $attr_value) {
-        $attr_value = strtolower($attr_value); // Account for G in generator.
-        // Only hide the metatag if it's one we care about.
-        if (in_array($attr_key, $metatag_attrs) && in_array($attr_value, $core_tags)) {
-          // Only hide metatag if another is provided.
-          if (isset($overridden[$attr_key]) && $overridden[$attr_key] == $attr_value) {
-            // Setting the #access attribute to these will stop them from being output
-            // but still leave the tags present for other modules to interact with.
-            $elements[$key]['#access'] = FALSE;
+      if (isset($closer_inspection[$key]['#attributes'])) {
+        foreach ($closer_inspection[$key]['#attributes'] as $attr_key => $attr_value) {
+          $attr_value = strtolower($attr_value); // Account for G in generator.
+          // Only hide the metatag if it's one we care about.
+          if (in_array($attr_key, $metatag_attrs) && in_array($attr_value, $core_tags)) {
+            // Only hide metatag if another is provided.
+            if (isset($overridden[$attr_key]) && $overridden[$attr_key] == $attr_value) {
+              // Setting the #access attribute to these will stop them from being output
+              // but still leave the tags present for other modules to interact with.
+              $elements[$key]['#access'] = FALSE;
+            }
           }
         }
       }
@@ -2998,7 +3035,7 @@ function metatag_translate_metatags(&$metatags, $context = NULL, $langcode = NUL
 function metatag_translations_update($metatags, $context) {
   // Store the context as it was originally provided.
   $original_context = $context;
-  $config = config('metatag.settings');
+  $settings = config('metatag.settings');
 
   // Update the i18n string.
   if (module_exists('i18n_string') && !$settings->get('i18n_disabled')) {
@@ -3040,7 +3077,7 @@ function metatag_translations_update($metatags, $context) {
 function metatag_translations_delete($metatags, $context) {
   // Store the context as it was originally provided.
   $original_context = $context;
-  $config = config('metatag.settings');
+  $settings = config('metatag.settings');
 
   // Update the i18n string.
   if (module_exists('i18n_string') && !$settings->get('i18n_disabled')) {

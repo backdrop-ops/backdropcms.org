@@ -76,9 +76,6 @@ function metatag_mobile_metatag_info() {
     'label' => t('Cleartype'),
     'description' => t('A legacy meta tag for older versions of Internet Explorer on Windows, use the value "on" to enable it; this tag is ignored by all other browsers.'),
     'weight' => ++$weight,
-    'element' => array(
-      '#theme' => 'metatag_http_equiv',
-    ),
   ) + $defaults;
 
   $info['tags']['amphtml'] = array(
@@ -194,9 +191,6 @@ function metatag_mobile_metatag_info() {
     'label' => t('X-UA-Compatible'),
     'description' => t('Indicates to IE which rendering engine should be used for the current page.'),
     'weight' => ++$weight,
-    'element' => array(
-      '#theme' => 'metatag_http_equiv',
-    ),
   ) + $defaults;
 
   $info['tags']['application-name'] = array(

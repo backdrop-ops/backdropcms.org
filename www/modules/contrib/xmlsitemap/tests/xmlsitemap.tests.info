@@ -10,14 +10,14 @@ description = Functional tests for the XML sitemap module.
 group = XML sitemap
 file = xmlsitemap.test
 
-;[XMLSitemapRobotsTxtIntegrationTest]
-;name = XML sitemap robots.txt
-;description = Integration tests for the XML sitemap and robots.txt module.
-;group = XML sitemap
-;file = xmlsitemap.test
-;dependancies[] = robotstxt @todo
+[XMLSitemapRobotsTxtIntegrationTest]
+name = XML sitemap robots.txt
+description = Integration tests for the XML sitemap and robots.txt module.
+group = XML sitemap
+file = xmlsitemap.test
+dependencies[] = robotstxt
 
-; Added by Backdrop CMS packaging script on 2020-05-25
+; Added by Backdrop CMS packaging script on 2022-08-26
 project = xmlsitemap
-version = 1.x-1.0.6
-timestamp = 1590459600
+version = 1.x-1.0.8
+timestamp = 1661535733

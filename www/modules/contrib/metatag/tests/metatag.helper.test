@@ -31,6 +31,9 @@ abstract class MetatagTestHelper extends BackdropWebTestCase {
     $modules[] = 'metatag_test';
 
     parent::setUp($modules);
+
+    // Enable the "Abstract" field for testing.
+    config_set('metatag.settings', 'enabled_tags.abstract', 'abstract');
   }
 
   /**

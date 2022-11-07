@@ -181,7 +181,7 @@ function metatag_devel_node_insert($node) {
 
     // Adjust the values for the nested language structure.
     $metatags = array(
-      $node->language => $metatags,
+      $node->langcode => $metatags,
     );
 
     // Save the meta tags.

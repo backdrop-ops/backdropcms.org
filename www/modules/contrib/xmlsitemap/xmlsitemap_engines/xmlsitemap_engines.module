@@ -26,6 +26,11 @@ function xmlsitemap_engines_autoload_info() {
 }
 
 /**
+ * @file
+ * Main file for XML sitemap engines.
+ */
+
+/**
  * Implements hook_hook_info().
  */
 function xmlsitemap_engines_hook_info() {
@@ -50,7 +55,6 @@ function xmlsitemap_engines_menu() {
     'type' => MENU_LOCAL_TASK,
     'file' => 'xmlsitemap_engines.admin.inc',
   );
-
   return $items;
 }
 
@@ -63,6 +67,9 @@ function xmlsitemap_engines_cron() {
   }
 }
 
+/**
+ * Check if can submit.
+ */
 function xmlsitemap_engines_can_submit() {
   // Skip if the site is offline since search engines will not be able to
   // access the site's content.
@@ -78,15 +85,18 @@ function xmlsitemap_engines_can_submit() {
   return TRUE;
 }
 
+/**
+ * Submit access.
+ */
 function xmlsitemap_engines_submit_access() {
   if (!xmlsitemap_engines_can_submit()) {
     return FALSE;
   }
 
   $config = config('xmlsitemap.settings');
-  $submit_updated = $config->get('engines_submit_updated', TRUE);
+  $submit_updated = $config->get('engines_submit_updated');
   $submitted_last = state_get('xmlsitemap_engines_submit_last', 0);
-  $minimum_lifetime = $config->get('engines_minimum_lifetime', 86400);
+  $minimum_lifetime = $config->get('engines_minimum_lifetime');
 
   // Skip if sitemap data has not been updated since last submission.
   if ($submit_updated && state_get('xmlsitemap_generated_last', 0) <= $submitted_last) {
@@ -104,7 +114,7 @@ function xmlsitemap_engines_submit_access() {
 /**
  * Submit the sitemaps to all the specified search engines.
  *
- * @param $smids
+ * @param array $smids
  *   An optional array of XML sitemap IDs. If not provided, it will load all
  *   existing XML sitemaps.
  */
@@ -136,9 +146,9 @@ function xmlsitemap_engines_submit_engines(array $smids = array()) {
 /**
  * Submit the sitemaps to a specific URL.
  *
- * @param $url
+ * @param string $url
  *   The URL for sitemap submission.
- * @param $sitemaps
+ * @param array $sitemaps
  *   An array of URLs of the sitemaps to submit.
  */
 function xmlsitemap_engines_submit_sitemaps($url, array $sitemaps) {
@@ -153,9 +163,10 @@ function xmlsitemap_engines_submit_sitemaps($url, array $sitemaps) {
 /**
  * Replace valid tokens in the URL with their appropriate values.
  *
- * @param $url
+ * @param string $url
  *   An un-tokenized URL.
- * @return
+ *
+ * @return string
  *   A tokenized URL.
  */
 function xmlsitemap_engines_prepare_url($url, $sitemap) {
@@ -165,12 +176,9 @@ function xmlsitemap_engines_prepare_url($url, $sitemap) {
 /**
  * Returns information about supported search engines.
  *
- * @param $engine
+ * @param string $engine
  *   (optional) The engine to return information for. If omitted, information
  *   for all engines is returned.
- * @param $reset
- *   (optional) Boolean whether to reset the static cache and do nothing. Only
- *   used for tests.
  *
  * @see hook_xmlsitemap_engines_info()
  * @see hook_xmlsitemap_engines_info_alter()
@@ -207,13 +215,13 @@ function xmlsitemap_engines_get_engine_info($engine = NULL) {
 function xmlsitemap_engines_xmlsitemap_engine_info() {
   $engines['google'] = array(
     'name' => t('Google'),
-    'url' => 'http://www.google.com/webmasters/tools/ping?sitemap=[sitemap]',
-    'help url' => 'http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156184',
+    'url' => 'https://www.google.com/webmasters/tools/ping?sitemap=[sitemap]',
+    'help url' => 'https://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156184',
   );
   $engines['bing'] = array(
     'name' => t('Bing'),
-    'url' => 'http://www.bing.com/webmaster/ping.aspx?siteMap=[sitemap]',
-    'help url' => 'http://www.bing.com/webmaster',
+    'url' => 'https://www.bing.com/webmaster/ping.aspx?siteMap=[sitemap]',
+    'help url' => 'https://www.bing.com/webmaster',
   );
   return $engines;
 }

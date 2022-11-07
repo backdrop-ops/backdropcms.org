@@ -133,7 +133,7 @@ class MetatagCoreLocaleTest extends MetatagTestHelper {
 
     // Create a test node.
     $node = $this->drupalCreateNode();
-    $this->assertEqual($node->language, LANGUAGE_NONE);
+    $this->assertEqual($node->langcode, LANGUAGE_NONE);
 
     // Load the node page, confirm that the "content-language" meta tag is not
     // output.

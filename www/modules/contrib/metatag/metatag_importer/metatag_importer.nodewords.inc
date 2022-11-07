@@ -55,9 +55,8 @@ function metatag_importer_nodewords_form($form, &$form_state) {
   }
   else {
     $form['ohbother'] = array(
+      '#type' => 'help',
       '#markup' => t('Nothing has been found that needs to be imported.'),
-      '#prefix' => '<p>',
-      '#suffix' => '</p>',
     );
   }
 
@@ -132,7 +131,7 @@ function _metatag_importer_import(array $types = array()) {
       array('_metatag_importer_migrate', array($types)),
     ),
     'finished' => '_metatag_importer_finished',
-    'file' => drupal_get_path('module', 'metatag_importer') . '/metatag_importer.nodewords.inc',
+    'file' => backdrop_get_path('module', 'metatag_importer') . '/metatag_importer.nodewords.inc',
   );
   batch_set($batch);
 
@@ -308,9 +307,9 @@ function _metatag_importer_migrate(array $types = array(), &$context = array()) 
   $context['finished'] = (empty($context['sandbox']['max']) || $context['sandbox']['progress'] >= $context['sandbox']['max']) ? TRUE : ($context['sandbox']['progress'] / $context['sandbox']['max']);
 
   if ($context['finished'] === TRUE) {
-    drupal_set_message(t('Imported @imported Nodewords records.', array('@imported' => $context['sandbox']['progress'])));
+    backdrop_set_message(t('Imported @imported Nodewords records.', array('@imported' => $context['sandbox']['progress'])));
     if (!empty($context['sandbox']['skipped'])) {
-      drupal_set_message(t('@skipped records were skipped because the corresponding entities were previously deleted.', array('@skipped' => count($context['sandbox']['skipped']))));
+      backdrop_set_message(t('@skipped records were skipped because the corresponding entities were previously deleted.', array('@skipped' => count($context['sandbox']['skipped']))));
     }
   }
 }
@@ -325,7 +324,7 @@ function _metatag_importer_finished($success, $results, $operations) {
       '!count' => count($results),
     ));
     $message .= theme('item_list', array('items' => $results));
-    drupal_set_message($message);
+    backdrop_set_message($message);
   }
   else {
     // An error occurred.
@@ -335,7 +334,7 @@ function _metatag_importer_finished($success, $results, $operations) {
       '%error_operation' => $error_operation[0],
       '@arguments' => print_r($error_operation[1], TRUE),
     ));
-    drupal_set_message($message, 'error');
+    backdrop_set_message($message, 'error');
   }
 }
 

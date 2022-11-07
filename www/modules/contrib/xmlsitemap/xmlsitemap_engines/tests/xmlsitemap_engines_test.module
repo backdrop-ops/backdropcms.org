@@ -5,11 +5,17 @@
  */
 
 /**
+ * @file
+ * Unit tests for the XML sitemap engines project.
+ */
+
+/**
  * Implements hook_menu().
  */
 function xmlsitemap_engines_test_menu() {
   $items['ping'] = array(
     'page callback' => 'xmlsitemap_engines_test_pinged',
+    // @codingStandardsIgnoreLine
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
@@ -39,11 +45,16 @@ function xmlsitemap_engines_test_xmlsitemap_engine_info_alter(&$engines) {
  */
 function xmlsitemap_engines_test_pinged() {
   if (empty($_GET['sitemap']) || !valid_url($_GET['sitemap'])) {
-    watchdog('xmlsitemap', 'No valid sitemap parameter provided.', array(), WATCHDOG_WARNING);
-    // @todo Remove this? Causes an extra watchdog error to be handled.
-    return MENU_NOT_FOUND;
+    $message = 'No valid sitemap parameter provided.';
+    $variables = array();
+    watchdog('xmlsitemap', $message, $variables, WATCHDOG_WARNING);
+    backdrop_add_http_header('Status', '404 Not Found');
   }
   else {
-    watchdog('xmlsitemap', 'Recieved ping for @sitemap.', array('@sitemap' => $_GET['sitemap']));
+    $message = 'Received ping for @sitemap.';
+    $variables = array('@sitemap' => $_GET['sitemap']);
+    watchdog('xmlsitemap', $message, $variables);
   }
+  print format_string($message, $variables);
+  backdrop_exit();
 }

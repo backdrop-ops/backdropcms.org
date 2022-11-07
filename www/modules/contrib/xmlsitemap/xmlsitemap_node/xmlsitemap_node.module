@@ -15,6 +15,11 @@ function xmlsitemap_node_autoload_info() {
 }
 
 /**
+ * @file
+ * Default file for XML sitemap node.
+ */
+
+/**
  * Implements hook_entity_info_alter().
  */
 function xmlsitemap_node_entity_info_alter(array &$entity_info) {
@@ -87,14 +92,23 @@ function xmlsitemap_node_xmlsitemap_index_links($limit) {
 /**
  * Process node sitemap links.
  *
- * @param $nids
+ * @param array $nids
  *   An array of node IDs.
  */
 function xmlsitemap_node_xmlsitemap_process_node_links(array $nids) {
-  $nodes = node_load_multiple($nids);
-  foreach ($nodes as $node) {
-    $link = xmlsitemap_node_create_link($node);
-    xmlsitemap_link_save($link, array($link['type'] => $node));
+  // Load no more than 15 nodes at a time.
+  if (count($nids) >= 1) {
+    $nids_chunks = array_chunk($nids, 15);
+    foreach ($nids_chunks as $chunk) {
+      $nodes = node_load_multiple($chunk);
+      foreach ($nodes as $node) {
+        $link = xmlsitemap_node_create_link($node);
+        xmlsitemap_link_save($link, array($link['type'] => $node));
+      }
+      // Flush each entity from the load cache after processing, to avoid
+      // exceeding PHP memory limits if $nids is large.
+      entity_get_controller('node')->resetCache($chunk);
+    }
   }
 }
 
@@ -124,8 +138,10 @@ function xmlsitemap_node_node_update(stdClass $node) {
 /**
  * Default site map links to not allow access until cron queue runs.
  *
- * @param array $link The link having access set toro.
- * @param array $context The context sent in backdrop_alter().
+ * @param array $link
+ *   The link having access set toro.
+ * @param array $context
+ *   The context sent in backdrop_alter().
  */
 function xmlsitemap_node_deny_access(array $link, array $context = array()) {
   // Force link access to 0.
@@ -134,7 +150,7 @@ function xmlsitemap_node_deny_access(array $link, array $context = array()) {
   // Allow other modules to alter the site map link presave.
   backdrop_alter('xmlsitemap_link_presave', $link, $context);
 
-  // Save or update a site map link which will be overwritten in Drupal cron job.
+  // Save or update a site map link which will be overwritten in cron job.
   xmlsitemap_link_save($link, $context);
 }
 
@@ -149,7 +165,7 @@ function xmlsitemap_node_node_delete(stdClass $node) {
  * Implements hook_comment_update().
  */
 function xmlsitemap_node_comment_update(stdClass $comment) {
-  if ($node = node_load($comment->nid, NULL, TRUE)) {
+  if ($node = entity_load_unchanged('node', $comment->nid)) {
     xmlsitemap_node_node_update($node);
   }
 }
@@ -205,6 +221,8 @@ function xmlsitemap_node_form_node_type_form_alter(array &$form, array $form_sta
 /**
  * Implements hook_form_alter().
  *
+ * @codingStandardsIgnoreLine
+ *
  * Add the XML sitemap individual link options for a node.
  *
  * @see xmlsitemap_add_form_link_options()
@@ -219,9 +237,10 @@ function xmlsitemap_node_form_node_form_alter(array &$form, array &$form_state) 
 /**
  * Fetch all the timestamps for when a node was changed.
  *
- * @param $node
+ * @param object $node
  *   A node object.
- * @return
+ *
+ * @return array
  *   An array of UNIX timestamp integers.
  */
 function xmlsitemap_node_get_timestamps(stdClass $node) {
@@ -243,7 +262,7 @@ function xmlsitemap_node_get_timestamps(stdClass $node) {
  *
  * The link will be saved as $node->xmlsitemap.
  *
- * @param $node
+ * @param object $node
  *   A node object.
  */
 function xmlsitemap_node_create_link(stdClass $node) {
@@ -274,11 +293,6 @@ function xmlsitemap_node_create_link(stdClass $node) {
   $node->xmlsitemap['changefreq'] = $node->nid ? xmlsitemap_calculate_changefreq($timestamps) : 0;
   $node->xmlsitemap['changecount'] = $node->nid ? count($timestamps) - 1 : 0;
 
-  // Node access must be reset since it a user may have changed published status, etc.
-  //$access = &backdrop_static('node_access');
-  //unset($access[0][$node->nid]);
-  //node_access_acquire_grants($node);
-
   // The following values must always be checked because they are volatile.
   $node->xmlsitemap['loc'] = $uri['path'];
   $node->xmlsitemap['lastmod'] = count($timestamps) ? max($timestamps) : 0;
@@ -291,16 +305,18 @@ function xmlsitemap_node_create_link(stdClass $node) {
 /**
  * Determine whether a user may view the specified node.
  *
- * @param $node
+ * @param object $node
  *   The node object on which the operation is to be performed, or node type
  *   (e.g. 'forum') for "create" operation.
- * @param $account
+ * @param object $account
  *   Optional, a user object representing the user for whom the operation is to
  *   be performed. Determines access for a user other than the current user.
- * @return
+ *
+ * @return bool
  *   TRUE if the operation may be performed, FALSE otherwise.
  *
- * This is for all intesive purposes a copy of the core node_access() function.
+ * This is for all intents and purposes a copy of Drupal 7's node_access()
+ * function.
  */
 function xmlsitemap_node_view_access($node, $account = NULL) {
   global $user;
@@ -320,8 +336,7 @@ function xmlsitemap_node_view_access($node, $account = NULL) {
 
   // $node may be either an object or a node type. Since node types cannot be
   // an integer, use either nid or type as the static cache id.
-  //$cid = is_object($node) ? $node->nid : $node;
-
+  // $cid = is_object($node) ? $node->nid : $node;
   // If we've already checked access for this node, user and op, return from
   // cache.
   if (isset($rights[$account->uid][$node->nid])) {
@@ -373,7 +388,8 @@ function xmlsitemap_node_view_access($node, $account = NULL) {
       $query->condition($nids);
       $query->range(0, 1);
 
-      // Fetch the node grants and allow other modules to alter them (D7 backport).
+      // Fetch the node grants and allow other modules to alter them
+      // (D7 backport).
       $grants = &backdrop_static(__FUNCTION__ . ':grants', array());
       if (!isset($grants[$account->uid][$op])) {
         // Indicate that this is our special function in the grants.
@@ -409,4 +425,17 @@ function xmlsitemap_node_view_access($node, $account = NULL) {
   }
 
   return FALSE;
+}
+
+/**
+ * Implements hook_features_pipe_COMPONENT_alter().
+ *
+ * Add variables to exported node types.
+ */
+function xmlsitemap_node_features_pipe_node_alter(&$pipe, $data, $export) {
+  if (!empty($data)) {
+    foreach ($data as $node_type) {
+      $pipe['variable'][] = "xmlsitemap_settings_node_{$node_type}";
+    }
+  }
 }

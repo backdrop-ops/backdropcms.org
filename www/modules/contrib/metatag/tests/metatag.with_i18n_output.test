@@ -166,7 +166,7 @@ class MetatagCoreWithI18nOutputTest extends MetatagTestHelper {
     variable_set('metatag_i18n_translate_output', $enable);
 
     // Reload the translations.
-    drupal_flush_all_caches();
+    backdrop_flush_all_caches();
     module_load_include('admin.inc', 'i18n_string');
     i18n_string_refresh_group('metatag');
   }

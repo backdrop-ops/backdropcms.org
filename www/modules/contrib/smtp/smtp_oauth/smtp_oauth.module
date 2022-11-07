@@ -1,0 +1,38 @@
+<?php
+/**
+ * @file
+ * Enables Backdrop to send e-mail directly to an SMTP server.
+ *
+ * This module uses a customized extract of the PHPMailer library (originally by
+ * Brent R. Matzelle, now maintained  by Codeworx Tech.) relicensed from LGPL to
+ * GPL, included as a part of the module.
+ *
+ * Overriding mail handling in Backdrop to make SMTP the default transport
+ * layer, requires to change the mail_system variable's default value
+ * 'DefaultMailSystem'. This module uses 'SmtpOAuthMailSystem'.
+ *
+ * This module enables authenticating with smtp using oauth credentials.
+ */
+
+/**
+ * Implements hook_config_info().
+ */
+function smtp_oauth_config_info() {
+  $prefixes['smtp_oauth.settings'] = array(
+    'label' => t('SMTP OAuth settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function smtp_oauth_autoload_info() {
+  return array(
+    'SmtpOAuthMailSystem' => 'smtp_oauth.mail.inc',
+    'PHPMailerOAuth' => 'smtp_oauth.phpmailer.inc',
+    'OAuth' => 'smtp_oauth.oauth.inc',
+    'GmailXOAuth2' => 'smtp_oauth.gmailxoauth2.inc',
+  );
+}

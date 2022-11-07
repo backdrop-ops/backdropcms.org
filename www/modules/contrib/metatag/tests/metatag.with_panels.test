@@ -129,7 +129,7 @@ class MetatagCoreWithPanelsTest extends MetatagTestHelper {
     $this->assertText(t('Panel') . ': Test');
 
     // Clear all caches, so we can start off properly.
-    drupal_flush_all_caches();
+    backdrop_flush_all_caches();
 
     // Load the node page again.
     $this->confirmNodeTags($node_url);

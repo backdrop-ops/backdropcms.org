@@ -1,0 +1,10 @@
+[SmtpUnitTest]
+name = SMTP tests
+description = Test the SMTP module.
+group = SMTP
+file = smtp.unit.test
+
+; Added by Backdrop CMS packaging script on 2022-10-31
+project = smtp
+version = 1.x-1.7.0
+timestamp = 1667251148

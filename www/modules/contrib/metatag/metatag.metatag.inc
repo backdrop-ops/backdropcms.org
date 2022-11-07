@@ -252,7 +252,11 @@ function metatag_metatag_info() {
     'weight' => ++$weight,
     'is_language' => TRUE,
     'element' => array(
-      '#theme' => 'metatag_http_equiv',
+      '#tag' => 'meta',
+      '#atributes' => array(
+        'http-equiv',
+        'content',
+      ),
     ),
   );
 
@@ -295,7 +299,11 @@ function metatag_metatag_info() {
     'group' => 'advanced',
     'weight' => ++$weight,
     'element' => array(
-      '#theme' => 'metatag_http_equiv',
+      '#tag' => 'meta',
+      '#atributes' => array(
+        'http-equiv',
+        'content',
+      ),
     ),
   );
 
@@ -317,7 +325,11 @@ function metatag_metatag_info() {
     'group' => 'advanced',
     'weight' => ++$weight,
     'element' => array(
-      '#theme' => 'metatag_http_equiv',
+      '#tag' => 'meta',
+      '#atributes' => array(
+        'http-equiv',
+        'content',
+      ),
     ),
   );
 
@@ -328,7 +340,11 @@ function metatag_metatag_info() {
     'group' => 'advanced',
     'weight' => ++$weight,
     'element' => array(
-      '#theme' => 'metatag_http_equiv',
+      '#tag' => 'meta',
+      '#atributes' => array(
+        'http-equiv',
+        'content',
+      ),
     ),
   );
 

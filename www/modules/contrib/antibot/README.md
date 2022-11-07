@@ -99,8 +99,7 @@ Credits
 -------
 
 - Ported to Backdrop CMS by [Jen Lampton](https://github.com/jenlampton).
-- Maintained for Drupal by [Mike Stefanello](https://www.drupal.org/u/mstef).
-- Originally written for Drupal by [Petr Parimucha](https://www.drupal.org/u/parisek).
+- Originally written and Maintained for Drupal by [Mike Stefanello](https://www.drupal.org/u/mstef).
 
 License
 -------

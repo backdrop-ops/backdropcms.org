@@ -1,19 +1,32 @@
 <?php
 /**
  * @file
- * Unit tests for the xmlsitemap_i18n module.
+ * Unit tests for the xmlsitemap_i18n project.
  */
+
+// Temporarily include the parent class until core provides test autoloading.
+include_once(__DIR__ . '/../../tests/xmlsitemap.test');
 
 /**
  * Common base test class for XML sitemap internationalization tests.
  */
 class XMLSitemapI18nWebTestCase extends XMLSitemapTestHelper {
+
+  /**
+   * Admin User.
+   *
+   * @var string
+   *
+   * @codingStandardsIgnoreStart
+   */
   protected $admin_user;
 
   /**
    * Set up an administrative user account and testing keys.
+   *
+   * @codingStandardsIgnoreEnd
    */
-  function setUp($modules = array()) {
+  public function setUp($modules = array()) {
     // Call parent::setUp() allowing test cases to pass further modules.
     $modules[] = 'locale';
     $modules[] = 'translation';
@@ -28,7 +41,8 @@ class XMLSitemapI18nWebTestCase extends XMLSitemapTestHelper {
     config_set('xmlsitemap.settings', 'language_negotiation', LOCALE_LANGUAGE_NEGOTIATION_URL_PREFIX);
 
     // Create the two different language-context sitemaps.
-    db_query("DELETE FROM {xmlsitemap_sitemap}");
+    db_delete('xmlsitemap_sitemap')->execute();
+
     $sitemap = new stdClass();
     $sitemap->context = array('language' => 'en');
     xmlsitemap_sitemap_save($sitemap);
@@ -36,11 +50,15 @@ class XMLSitemapI18nWebTestCase extends XMLSitemapTestHelper {
     $sitemap->context = array('language' => 'fr');
     xmlsitemap_sitemap_save($sitemap);
   }
+
 }
 
+/**
+ * I18n Test.
+ */
 class XMLSitemapI18nTest extends XMLSitemapI18nWebTestCase {
 
-  function testLanguageSelection() {
+  public function testLanguageSelection() {
     // @todo check config file name.
     $config = config('i18n.settings');
 
@@ -103,11 +121,18 @@ class XMLSitemapI18nTest extends XMLSitemapI18nWebTestCase {
     $this->assertRawSitemapLinks($node_fr, $link, $link_fr);
     $this->assertNoRawSitemapLinks($node, $node_en, $link_en);
   }
+
 }
 
+/**
+ * Node Test.
+ */
 class XMLSitemapI18nNodeTest extends XMLSitemapI18nWebTestCase {
 
-  function setUp($modules = array()) {
+  /**
+   * Setup.
+   */
+  public function setUp($modules = array()) {
     $modules[] = 'xmlsitemap_node';
     parent::setUp($modules);
 
@@ -117,7 +142,10 @@ class XMLSitemapI18nNodeTest extends XMLSitemapI18nWebTestCase {
     $this->backdropLogin($this->admin_user);
   }
 
-  function testNodeLanguageData() {
+  /**
+   * Node Language Data.
+   */
+  public function testNodeLanguageData() {
     $node = $this->backdropCreateNode(array());
 
     $this->backdropPost('node/' . $node->nid . '/edit', array('language' => 'en'), t('Save'));
@@ -128,4 +156,5 @@ class XMLSitemapI18nNodeTest extends XMLSitemapI18nWebTestCase {
     $link = $this->assertSitemapLink('node', $node->nid);
     $this->assertIdentical($link['language'], 'fr');
   }
+
 }
