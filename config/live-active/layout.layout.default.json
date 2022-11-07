@@ -4,6 +4,7 @@
     "name": "default",
     "title": "Default Layout",
     "description": null,
+    "renderer_name": "standard",
     "module": "layout",
     "weight": 0,
     "storage": 2,
@@ -34,10 +35,13 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "6af74ef4-4c62-472a-aa00-d12b128df6d2": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -61,6 +65,7 @@
         "42f8c107-a8ee-4c3a-9100-b5ad313ea09d": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -91,6 +96,7 @@
         "9d4d7374-2a8e-4218-8b22-3440dc62a2ff": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -120,6 +126,7 @@
         "default": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -148,6 +155,7 @@
         "62b827f3-5a2e-463d-ac3f-63fd43e95bdc": {
             "plugin": "borg_blocks:rss",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "rss",
                 "settings": {
@@ -171,6 +179,7 @@
         "71336ea1-c14b-4464-9040-64b1ee6b4fcc": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -194,6 +203,7 @@
         "58a52df4-ec8f-441b-a463-994fe39766df": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -228,6 +238,7 @@
         "3f6bea0b-e674-4374-8103-3ab4762617fb": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -266,6 +277,7 @@
         "90a07faa-7ec4-4b4b-9a0d-13765f963bec": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {
