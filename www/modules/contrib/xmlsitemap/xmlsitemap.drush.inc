@@ -7,23 +7,36 @@
  */
 
 /**
- * Implements hook_drush_command().
+ * The default batch limit.
+ */
+define('XMLSITEMAP_BATCH_LIMIT', 100);
 
+// Load configuration classes and functions.
+require_once BACKDROP_ROOT . '/core/includes/bootstrap.inc';
+backdrop_bootstrap(BACKDROP_BOOTSTRAP_CONFIGURATION);
+
+/**
+ * Implements hook_drush_command().
+ */
 function xmlsitemap_drush_command() {
+
   $items['xmlsitemap-regenerate'] = array(
     'description' => 'Regenerate the XML sitemap files.',
     'callback' => 'drush_xmlsitemap_regenerate',
-    'drupal dependencies' => array('xmlsitemap'),
+    'backdrop dependencies' => array('xmlsitemap'),
   );
   $items['xmlsitemap-rebuild'] = array(
     'description' => 'Dump and re-process all possible XML sitemap data, and then regenerate the files.',
     'callback' => 'drush_xmlsitemap_rebuild',
-    'drupal dependencies' => array('xmlsitemap'),
+    'backdrop dependencies' => array('xmlsitemap'),
+    'options' => array(
+      'types' => 'The types of links to rebuild, comma separated. If not provided, all link types will be used.',
+    ),
   );
   $items['xmlsitemap-index'] = array(
     'description' => 'Process un-indexed XML sitemap links.',
     'callback' => 'drush_xmlsitemap_index',
-    'drupal dependencies' => array('xmlsitemap'),
+    'backdrop dependencies' => array('xmlsitemap'),
     'options' => array(
       'limit' => 'The limit of links of each type to process. Default value: ' . config_get('xmlsitemap.settings', 'batch_limit'),
     ),
@@ -31,12 +44,12 @@ function xmlsitemap_drush_command() {
   $items['xmlsitemap-queue-rebuild'] = array(
     'description' => 'Dump and queues all possible XML sitemap data to be re-processed via the xmlsitemap_link_process queue. This command does not regenerate the sitemap files.',
     'options' => array(
+      'types' => 'The types of links to queue for rebuild, comma separated. If not provided, all link types will be used.',
       'limit' => 'The number of links to be processed in each queue task.',
     ),
   );
   return $items;
 }
-*/
 
 /**
  * Regenerate the sitemap files from existing data.
@@ -62,14 +75,21 @@ function drush_xmlsitemap_rebuild() {
   module_load_include('generate.inc', 'xmlsitemap');
 
   // Build a list of rebuildable link types.
-  $rebuild_types = xmlsitemap_get_rebuildable_link_types();
-  if (empty($rebuild_types)) {
-    return drush_set_error(dt('No link types are rebuildable.'));
+  $types = xmlsitemap_get_rebuildable_link_types();
+  if ($option_types = drush_get_option('types', '')) {
+    $option_types = explode(',', $option_types);
+    if ($invalid_types = array_diff($option_types, $types)) {
+      drush_set_error(dt('The following link types are invalid: @types', array('@types' => implode(', ', $invalid_types))));
+    }
+    $types = array_intersect($types, $option_types);
+  }
+  if (empty($types)) {
+    return drush_log(dt('No link types are rebuildable.'), 'warning');
   }
 
   // Run the batch process.
   timer_start('xmlsitemap_rebuild');
-  xmlsitemap_run_unprogressive_batch('xmlsitemap_rebuild_batch', $rebuild_types, TRUE);
+  xmlsitemap_run_unprogressive_batch('xmlsitemap_rebuild_batch', $types, TRUE);
 
   $vars = array(
     '@timer' => timer_read('xmlsitemap_rebuild'),
@@ -101,30 +121,37 @@ function drush_xmlsitemap_index() {
  */
 function drush_xmlsitemap_queue_rebuild() {
   module_load_include('generate.inc', 'xmlsitemap');
-  $entity_types = xmlsitemap_get_rebuildable_link_types();
-  if (empty($entity_types)) {
-    return drush_set_error(dt('No link types are rebuildable.'));
+
+  $types = xmlsitemap_get_rebuildable_link_types();
+  if ($option_types = drush_get_option('types', '')) {
+    $option_types = explode(',', $option_types);
+    if ($invalid_types = array_diff($option_types, $types)) {
+      drush_set_error(dt('The following link types are invalid: @types', array('@types' => implode(', ', $invalid_types))));
+    }
+    $types = array_intersect($types, $option_types);
+  }
+  if (empty($types)) {
+    return drush_log(dt('No link types are rebuildable.'), 'warning');
   }
 
-  $context = array();
-  xmlsitemap_rebuild_batch_clear($entity_types, TRUE, $context);
+  xmlsitemap_rebuild_clear($types, TRUE);
 
   $link_count = 0;
   $chunk_count = 0;
   $chunk_size = (int) drush_get_option('limit', config_get('xmlsitemap.settings', 'batch_limit'));
 
   // @todo Figure out how to re-use this code with xmlsitemap_rebuild_batch_fetch()
-  foreach ($entity_types as $entity_type) {
-    $info = xmlsitemap_get_link_info($entity_type);
+  foreach ($types as $type) {
+    $info = xmlsitemap_get_link_info($type);
     $query = new EntityFieldQuery();
-    $query->entityCondition('entity_type', $entity_type);
+    $query->entityCondition('entity_type', $type);
     $query->entityCondition('entity_id', 0, '>');
     $query->addTag('xmlsitemap_link_bundle_access');
     $query->addTag('xmlsitemap_rebuild');
-    $query->addMetaData('entity', $entity_type);
+    $query->addMetaData('entity', $type);
     $query->addMetaData('entity_info', $info);
-    if ($types = xmlsitemap_get_link_type_enabled_bundles($entity_type)) {
-      $query->entityCondition('bundle', $types, 'IN');
+    if ($bundles = xmlsitemap_get_link_type_enabled_bundles($type)) {
+      $query->entityCondition('bundle', $bundles, 'IN');
     }
     else {
       // If no enabled bundle types, skip everything else.
@@ -132,21 +159,26 @@ function drush_xmlsitemap_queue_rebuild() {
     }
 
     $results = $query->execute();
-    if (!empty($results[$entity_type])) {
-      $ids = array_keys($results[$entity_type]);
+    if (!empty($results[$type])) {
+      $ids = array_keys($results[$type]);
       $link_count += count($ids);
       $chunks = array_chunk($ids, $chunk_size);
       $chunk_count += count($chunks);
       foreach ($chunks as $chunk) {
-        xmlsitemap_link_enqueue($entity_type, $chunk);
+        xmlsitemap_link_enqueue($type, $chunk);
       }
     }
   }
 
   if ($link_count) {
-    drush_log(dt('Queued @link_count links for rebuild processing in the xmlsitemap_link_process (in @chunk_count chunks of up to @chunk_size links each).', array('@link_count' => $link_count, '@chunk_count' => $chunk_count, '@chunk_size' => $chunk_size)), 'success');
+    drush_log(dt('Queued @link_count links for rebuild processing in the xmlsitemap_link_process (in @chunk_count chunks of up to @chunk_size links each).', array(
+      '@link_count' => $link_count,
+      '@chunk_count' => $chunk_count,
+      '@chunk_size' => $chunk_size,
+    )), 'success');
   }
   else {
     drush_log(dt('No links to queue for rebuild processing.'), 'ok');
   }
+  variable_set('xmlsitemap_rebuild_needed', FALSE);
 }

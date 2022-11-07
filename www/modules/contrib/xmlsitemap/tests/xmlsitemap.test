@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Unit tests for the xmlsitemap module.
+ * Unit tests for the xmlsitemap.
  *
  * @ingroup xmlsitemap
  */
@@ -10,17 +10,34 @@
  * Helper test class with some added functions for testing.
  */
 class XMLSitemapTestHelper extends BackdropWebTestCase {
+
+  /**
+   * Admin User.
+   *
+   * @var string
+   *
+   * @codingStandardsIgnoreStart
+   */
   protected $admin_user;
   protected $profile = 'minimal';
 
-  function setUp($modules = array()) {
+  /**
+   * SetUp.
+   *
+   * @codingStandardsIgnoreEnd
+   */
+  public function setUp($modules = array()) {
     array_unshift($modules, 'xmlsitemap');
     parent::setUp($modules);
   }
 
-  function tearDown() {
+  /**
+   * Tear Down.
+   */
+  public function tearDown() {
     // Capture any (remaining) watchdog errors.
-    //$this->assertNoWatchdogErrors();
+    //$this->_assertNoWatchdogErrors();
+    $this->_getWatchdogMessages(array(), TRUE);
 
     parent::tearDown();
   }
@@ -28,12 +45,13 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
   /**
    * Assert the page does not respond with the specified response code.
    *
-   * @param $code
+   * @param string $code
    *   Response code. For example 200 is a successful page request. For a list
    *   of all codes see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html.
-   * @param $message
+   * @param string $message
    *   Message to display.
-   * @return
+   *
+   * @return string
    *   Assertion result.
    */
   protected function assertNoResponse($code, $message = '') {
@@ -45,7 +63,7 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
   /**
    * Check the files directory is created (massive fails if not done).
    *
-   * @todo This can be removed when http://drupal.org/node/654752 is fixed.
+   * @todo This can be removed when https://www.drupal.org/node/654752 is fixed.
    */
   protected function checkFilesDirectory() {
     if (!xmlsitemap_check_directory()) {
@@ -56,12 +74,12 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
   /**
    * Retrieves an XML sitemap.
    *
-   * @param $context
-   *   An optional array of the XML sitemap context.
-   * @param $options
+   * @param array $context
+   *   An optional array of the XML sitemap's context.
+   * @param array $options
    *   Options to be forwarded to url(). These values will be merged with, but
    *   always override $sitemap->uri['options'].
-   * @param $headers
+   * @param array $headers
    *   An array containing additional HTTP request headers, each formatted as
    *   "name: value".
    * @return
@@ -85,6 +103,9 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     $this->assertTrue(state_get('xmlsitemap_generated_last', 0) && !state_get('xmlsitemap_regenerate_needed', FALSE), t('XML sitemaps regenerated and flag cleared.'));
   }
 
+  /**
+   * Assert Sitemap Link.
+   */
   protected function assertSitemapLink($entity_type, $entity_id = NULL) {
     if (is_array($entity_type)) {
       $links = xmlsitemap_link_load_multiple($entity_type);
@@ -97,6 +118,9 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     return $link;
   }
 
+  /**
+   * Assert No Sitemap Link.
+   */
   protected function assertNoSitemapLink($entity_type, $entity_id = NULL) {
     if (is_array($entity_type)) {
       $links = xmlsitemap_link_load_multiple($entity_type);
@@ -109,54 +133,94 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     return $link;
   }
 
+  /**
+   * Assert Sitemap Link Visible.
+   */
   protected function assertSitemapLinkVisible($entity_type, $entity_id) {
     $link = xmlsitemap_link_load($entity_type, $entity_id);
     $this->assertTrue($link && $link['access'] && $link['status'], t('Sitemap link @type @id is visible.', array('@type' => $entity_type, '@id' => $entity_id)));
   }
 
+  /**
+   * Assert Sitemap Link Not Visible.
+   */
   protected function assertSitemapLinkNotVisible($entity_type, $entity_id) {
     $link = xmlsitemap_link_load($entity_type, $entity_id);
-    $this->assertTrue($link && !($link['access'] && $link['status']), t('Sitemap link @type @id is not visible.', array('@type' => $entity_type, '@id' => $entity_id)));
+    $this->assertTrue($link && !($link['access'] && $link['status']), t('Sitemap link @type @id is not visible.', array(
+      '@type' => $entity_type,
+      '@id' => $entity_id,
+    )));
   }
 
+  /**
+   * Assert Sitemap Link Values.
+   */
   protected function assertSitemapLinkValues($entity_type, $entity_id, array $conditions) {
     $link = xmlsitemap_link_load($entity_type, $entity_id);
-
+debug($link);
     if (!$link) {
-      return $this->fail(t('Could not load sitemap link for @type @id.', array('@type' => $entity_type, '@id' => $entity_id)));
+      return $this->fail(t('Could not load sitemap link for @type @id.', array(
+        '@type' => $entity_type,
+        '@id' => $entity_id,
+      )));
     }
 
     foreach ($conditions as $key => $value) {
       if ($value === NULL || $link[$key] === NULL) {
         // For nullable fields, always check for identical values (===).
-        $this->assertIdentical($link[$key], $value, t('Identical values for @type @id link field @key.', array('@type' => $entity_type, '@id' => $entity_id, '@key' => $key)));
+        $this->assertIdentical($link[$key], $value, t('Identical values for @type @id link field @key.', array(
+          '@type' => $entity_type,
+          '@id' => $entity_id,
+          '@key' => $key,
+        )));
       }
       else {
         // Otherwise check simple equality (==).
-        $this->assertEqual($link[$key], $value, t('Equal values for @type @id link field @key.', array('@type' => $entity_type, '@id' => $entity_id, '@key' => $key)));
+        $this->assertEqual($link[$key], $value, t('Equal values for @type @id link field @key.', array(
+          '@type' => $entity_type,
+          '@id' => $entity_id,
+          '@key' => $key,
+        )));
       }
     }
   }
 
+  /**
+   * Assert Not Sitemap Link Values.
+   */
   protected function assertNotSitemapLinkValues($entity_type, $entity_id, array $conditions) {
     $link = xmlsitemap_link_load($entity_type, $entity_id);
 
     if (!$link) {
-      return $this->fail(t('Could not load sitemap link for @type @id.', array('@type' => $entity_type, '@id' => $entity_id)));
+      return $this->fail(t('Could not load sitemap link for @type @id.', array(
+        '@type' => $entity_type,
+        '@id' => $entity_id,
+      )));
     }
 
     foreach ($conditions as $key => $value) {
       if ($value === NULL || $link[$key] === NULL) {
         // For nullable fields, always check for identical values (===).
-        $this->assertNotIdentical($link[$key], $value, t('Not identical values for @type @id link field @key.', array('@type' => $entity_type, '@id' => $entity_id, '@key' => $key)));
+        $this->assertNotIdentical($link[$key], $value, t('Not identical values for @type @id link field @key.', array(
+          '@type' => $entity_type,
+          '@id' => $entity_id,
+          '@key' => $key,
+        )));
       }
       else {
         // Otherwise check simple equality (==).
-        $this->assertNotEqual($link[$key], $value, t('Not equal values for link @type @id field @key.', array('@type' => $entity_type, '@id' => $entity_id, '@key' => $key)));
+        $this->assertNotEqual($link[$key], $value, t('Not equal values for link @type @id field @key.', array(
+          '@type' => $entity_type,
+          '@id' => $entity_id,
+          '@key' => $key,
+        )));
       }
     }
   }
 
+  /**
+   * Assert Raw Sitemap Links.
+   */
   protected function assertRawSitemapLinks() {
     $links = func_get_args();
     foreach ($links as $link) {
@@ -165,6 +229,9 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     }
   }
 
+  /**
+   * Assert No Raw Sitemap Links.
+   */
   protected function assertNoRawSitemapLinks() {
     $links = func_get_args();
     foreach ($links as $link) {
@@ -173,6 +240,9 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     }
   }
 
+  /**
+   * Add Sitemap Link.
+   */
   protected function addSitemapLink(array $link = array()) {
     $last_id = &backdrop_static(__FUNCTION__, 1);
 
@@ -191,6 +261,9 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     return $link;
   }
 
+  /**
+   * Assert Flag.
+   */
   protected function assertFlag($variable, $assert_value = TRUE, $reset_if_true = TRUE) {
     $value = state_get($variable);
 
@@ -201,7 +274,13 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     return $this->assertEqual($value, $assert_value, "$variable is " . ($assert_value ? 'TRUE' : 'FALSE'));
   }
 
+  /**
+   * Assert XML Sitemap Problems.
+   *
+   * @codingStandardsIgnoreStart
+   */
   protected function assertXMLSitemapProblems($problem_text = FALSE) {
+    // @codingStandardsIgnoreEnd
     $this->backdropGet('admin/config/search/xmlsitemap');
     $this->assertText(t('One or more problems were detected with your XML sitemap configuration'));
     if ($problem_text) {
@@ -209,7 +288,13 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     }
   }
 
+  /**
+   * Assert No XML Sitemap Problems.
+   *
+   * @codingStandardsIgnoreStart
+   */
   protected function assertNoXMLSitemapProblems() {
+    // @codingStandardsIgnoreEnd
     $this->backdropGet('admin/config/search/xmlsitemap');
     $this->assertNoText(t('One or more problems were detected with your XML sitemap configuration'));
   }
@@ -219,7 +304,7 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
    *
    * @todo Add unit tests for this function.
    */
-  protected function getWatchdogMessages(array $conditions = array(), $reset = FALSE) {
+  protected function _getWatchdogMessages(array $conditions = array(), $reset = FALSE) {
     static $seen_ids = array();
 
     if (!module_exists('dblog') || $reset) {
@@ -228,7 +313,14 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     }
 
     $query = db_select('watchdog');
-    $query->fields('watchdog', array('wid', 'type', 'severity', 'message', 'variables', 'timestamp'));
+    $query->fields('watchdog', array(
+      'wid',
+      'type',
+      'severity',
+      'message',
+      'variables',
+      'timestamp',
+    ));
     foreach ($conditions as $field => $value) {
       if ($field == 'variables' && !is_string($value)) {
         $value = serialize($value);
@@ -245,24 +337,42 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
     return $messages;
   }
 
-  protected function assertWatchdogMessage(array $conditions, $message = 'Watchdog message found.') {
-    $this->assertTrue($this->getWatchdogMessages($conditions), $message);
+  /**
+   * Assert Watchdog Message.
+   *
+   * Customized version for XMLSitemap. Differs from core assertWatchdogMessage.
+   */
+  protected function _assertWatchdogMessage(array $conditions, $message = NULL) {
+    if (!isset($message)) {
+      $conditions += array('variables' => array());
+      $message = 'Watchdog message found: ' . format_string($conditions['message'], $conditions['variables']);
+    }
+    $this->assertTrue($this->_getWatchdogMessages($conditions), $message);
   }
 
-  protected function assertNoWatchdogMessage(array $conditions, $message = 'Watchdog message not found.') {
-    $this->assertFalse($this->getWatchdogMessages($conditions), $message);
+  /**
+   * Assert No Watchdog Message.
+   */
+  protected function _assertNoWatchdogMessage(array $conditions, $message = 'Watchdog message not found.') {
+    $this->assertFalse($this->_getWatchdogMessages($conditions), $message);
   }
 
   /**
    * Check that there were no watchdog errors or worse.
    */
-  protected function assertNoWatchdogErrors() {
-    $messages = $this->getWatchdogMessages();
+  protected function _assertNoWatchdogErrors() {
+    $messages = $this->_getWatchdogMessages();
     $verbose = array();
 
     foreach ($messages as $message) {
       $message->text = $this->formatWatchdogMessage($message);
-      if (in_array($message->severity, array(WATCHDOG_EMERGENCY, WATCHDOG_ALERT, WATCHDOG_CRITICAL, WATCHDOG_ERROR, WATCHDOG_WARNING))) {
+      if (in_array($message->severity, array(
+        WATCHDOG_EMERGENCY,
+        WATCHDOG_ALERT,
+        WATCHDOG_CRITICAL,
+        WATCHDOG_ERROR,
+        WATCHDOG_WARNING,
+      ))) {
         $this->fail($message->text);
       }
       $verbose[] = $message->text;
@@ -272,17 +382,15 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
       array_unshift($verbose, '<h2>Watchdog messages</h2>');
       $this->verbose(implode("<br />", $verbose), 'Watchdog messages from test run');
     }
-
-    // Clear the seen watchdog messages since we've failed on any errors.
-    $this->getWatchdogMessages(array(), TRUE);
   }
 
   /**
    * Format a watchdog message in a one-line summary.
    *
-   * @param $message
-   *   A watchdog messsage object.
-   * @return
+   * @param object $message
+   *   A watchdog message object.
+   *
+   * @return string
    *   A string containing the watchdog message's timestamp, severity, type,
    *   and actual message.
    */
@@ -308,13 +416,14 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
    * This is a copy of BackdropWebTestCase->verbose() but allows a customizable
    * summary message rather than hard-coding 'Verbose message'.
    *
-   * @param $verbose_message
+   * @param string $verbose_message
    *   The verbose message to be stored.
-   * @param $message
+   * @param string $message
    *   Message to display.
+   *
    * @see simpletest_verbose()
    *
-   * @todo Remove when http://drupal.org/node/800426 is fixed.
+   * @todo Remove when https://www.drupal.org/node/800426 is fixed.
    */
   protected function verbose($verbose_message, $message = 'Verbose message') {
     if ($id = simpletest_verbose($verbose_message)) {
@@ -322,8 +431,12 @@ class XMLSitemapTestHelper extends BackdropWebTestCase {
       $this->error(l($message, $url, array('attributes' => array('target' => '_blank'))), 'User notice');
     }
   }
+
 }
 
+/**
+ * XML Sitemap UnitTest.
+ */
 class XMLSitemapUnitTest extends XMLSitemapTestHelper {
 
   function testAssertFlag() {
@@ -340,7 +453,7 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
   /**
    * Tests for xmlsitemap_get_changefreq().
    */
-  function testGetChangefreq() {
+  public function testGetChangefreq() {
     // The test values.
     $values = array(
       0,
@@ -374,7 +487,7 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
   /**
    * Tests for xmlsitemap_get_chunk_count().
    */
-  function testGetChunkCount() {
+  public function testGetChunkCount() {
     // Set a low chunk size for testing.
     config_set('xmlsitemap.settings', 'chunk_size', 4);
 
@@ -400,7 +513,8 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
     $this->assertEqual(xmlsitemap_get_link_count(), 0);
 
     // Delete all links. The chunk count should be 1 not 0.
-    db_query("DELETE FROM {xmlsitemap}");
+    db_delete('xmlsitemap')->execute();
+
     $this->assertEqual(db_query("SELECT COUNT(id) FROM {xmlsitemap}")->fetchField(), 0);
     $this->assertEqual(xmlsitemap_get_chunk_count(TRUE), 1);
   }
@@ -408,7 +522,7 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
   /**
    * Tests for xmlsitemap_calculate_changereq().
    */
-  function testCalculateChangefreq() {
+  public function testCalculateChangefreq() {
     // The test values.
     $values = array(
       array(),
@@ -423,16 +537,19 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
     foreach ($values as $i => $value) {
       $actual = xmlsitemap_calculate_changefreq($value);
       $this->assertEqual($actual, $expected[$i]);
-
     }
   }
 
   /**
    * Test for xmlsitemap_recalculate_changefreq().
    */
-  function testRecalculateChangefreq() {
+  public function testRecalculateChangefreq() {
     // The starting test value.
-    $value = array('lastmod' => REQUEST_TIME - 1000, 'changefreq' => 0, 'changecount' => 0);
+    $value = array(
+      'lastmod' => REQUEST_TIME - 1000,
+      'changefreq' => 0,
+      'changecount' => 0,
+    );
 
     // Expected values.
     $expecteds = array(
@@ -450,7 +567,7 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
   /**
    * Tests for xmlsitemap_switch_user and xmlsitemap_restore_user().
    */
-  function testSwitchUser() {
+  public function testSwitchUser() {
     global $user;
 
     $original_user = $user;
@@ -496,56 +613,61 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
   /**
    * Tests for xmlsitemap_link_save().
    */
-  function testSaveLink() {
-    $link = array('type' => 'testing', 'id' => 1, 'loc' => 'testing', 'status' => 1);
+  public function testSaveLink() {
+    $link = array(
+      'type' => 'testing',
+      'id' => 1,
+      'loc' => 'testing',
+      'status' => 1,
+    );
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $link['status'] = 0;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $link['priority'] = 0.5;
     $link['loc'] = 'new_location';
     $link['status'] = 1;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $link['priority'] = 0.0;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $link['priority'] = 0.1;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $link['priority'] = 1.0;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $link['priority'] = 1;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', FALSE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', FALSE);
 
     $link['priority'] = 0;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $link['priority'] = 0.5;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $link['priority'] = 0.5;
     $link['priority_override'] = 0;
     $link['status'] = 1;
     xmlsitemap_link_save($link);
-    $this->assertFlag('regenerate_needed', FALSE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', FALSE);
   }
 
   /**
    * Tests for xmlsitemap_link_delete().
    */
-  function testLinkDelete() {
+  public function testLinkDelete() {
     // Add our testing data.
     $link1 = $this->addSitemapLink(array('loc' => 'testing1', 'status' => 0));
     $link2 = $this->addSitemapLink(array('loc' => 'testing1', 'status' => 1));
@@ -559,66 +681,78 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
     $this->assertFalse(xmlsitemap_link_load($link1['type'], $link1['id']));
     $this->assertFalse(xmlsitemap_link_load($link2['type'], $link2['id']));
     $this->assertTrue(xmlsitemap_link_load($link3['type'], $link3['id']));
-    $this->assertFlag('regenerate_needed', TRUE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
 
     $deleted = xmlsitemap_link_delete($link3['type'], $link3['id']);
     $this->assertEqual($deleted, 1);
     $this->assertFalse(xmlsitemap_link_load($link3['type'], $link3['id']));
-    $this->assertFlag('regenerate_needed', FALSE);
+    $this->assertFlag('xmlsitemap_regenerate_needed', FALSE);
   }
 
   /**
    * Tests for xmlsitemap_link_update_multiple().
    */
-  function testUpdateLinks() {
+  public function testUpdateLinks() {
     // Add our testing data.
     $links = array();
     $links[1] = $this->addSitemapLink(array('subtype' => 'group1'));
     $links[2] = $this->addSitemapLink(array('subtype' => 'group1'));
     $links[3] = $this->addSitemapLink(array('subtype' => 'group2'));
     state_set('xmlsitemap_regenerate_needed', FALSE);
-    // id | type    | subtype | language | access | status | priority
+    // Id | type    | subtype | language | access | status | priority
     // 1  | testing | group1  | ''       | 1      | 1      | 0.5
     // 2  | testing | group1  | ''       | 1      | 1      | 0.5
-    // 3  | testing | group2  | ''       | 1      | 1      | 0.5
-
-    $updated = xmlsitemap_link_update_multiple(array('status' => 0), array('type' => 'testing', 'subtype' => 'group1', 'status_override' => 0));
+    // 3  | testing | group2  | ''       | 1      | 1      | 0.5.
+    $updated = xmlsitemap_link_update_multiple(array('status' => 0), array(
+      'type' => 'testing',
+      'subtype' => 'group1',
+      'status_override' => 0,
+    ));
     $this->assertEqual($updated, 2);
-    $this->assertFlag('regenerate_needed', TRUE);
-    // id | type    | subtype | language | status | priority
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
+    // Id | type    | subtype | language | status | priority
     // 1  | testing | group1  | ''       | 0      | 0.5
     // 2  | testing | group1  | ''       | 0      | 0.5
-    // 3  | testing | group2  | ''       | 1      | 0.5
-
-    $updated = xmlsitemap_link_update_multiple(array('priority' => 0.0), array('type' => 'testing', 'subtype' => 'group1', 'priority_override' => 0));
+    // 3  | testing | group2  | ''       | 1      | 0.5.
+    $updated = xmlsitemap_link_update_multiple(array('priority' => 0.0), array(
+      'type' => 'testing',
+      'subtype' => 'group1',
+      'priority_override' => 0,
+    ));
     $this->assertEqual($updated, 2);
-    $this->assertFlag('regenerate_needed', FALSE);
-    // id | type    | subtype | language | status | priority
+    $this->assertFlag('xmlsitemap_regenerate_needed', FALSE);
+    // Id | type    | subtype | language | status | priority
     // 1  | testing | group1  | ''       | 0      | 0.0
     // 2  | testing | group1  | ''       | 0      | 0.0
-    // 3  | testing | group2  | ''       | 1      | 0.5
-
-    $updated = xmlsitemap_link_update_multiple(array('subtype' => 'group2'), array('type' => 'testing', 'subtype' => 'group1'));
+    // 3  | testing | group2  | ''       | 1      | 0.5.
+    $updated = xmlsitemap_link_update_multiple(array('subtype' => 'group2'), array(
+      'type' => 'testing',
+      'subtype' => 'group1',
+    ));
     $this->assertEqual($updated, 2);
-    $this->assertFlag('regenerate_needed', FALSE);
-    // id | type    | subtype | language | status | priority
+    $this->assertFlag('xmlsitemap_regenerate_needed', FALSE);
+    // Id | type    | subtype | language | status | priority
     // 1  | testing | group2  | ''       | 0      | 0.0
     // 2  | testing | group2  | ''       | 0      | 0.0
-    // 3  | testing | group2  | ''       | 1      | 0.5
-
-    $updated = xmlsitemap_link_update_multiple(array('status' => 1), array('type' => 'testing', 'subtype' => 'group2', 'status_override' => 0, 'status' => 0));
+    // 3  | testing | group2  | ''       | 1      | 0.5.
+    $updated = xmlsitemap_link_update_multiple(array('status' => 1), array(
+      'type' => 'testing',
+      'subtype' => 'group2',
+      'status_override' => 0,
+      'status' => 0,
+    ));
     $this->assertEqual($updated, 2);
-    $this->assertFlag('regenerate_needed', TRUE);
-    // id | type    | subtype | language | status | priority
+    $this->assertFlag('xmlsitemap_regenerate_needed', TRUE);
+    // Id | type    | subtype | language | status | priority
     // 1  | testing | group2  | ''       | 1      | 0.0
     // 2  | testing | group2  | ''       | 1      | 0.0
-    // 3  | testing | group2  | ''       | 1      | 0.5
+    // 3  | testing | group2  | ''       | 1      | 0.5.
   }
 
   /**
    * Test that duplicate paths are skipped during generation.
    */
-  function testDuplicatePaths() {
+  public function testDuplicatePaths() {
     $link1 = $this->addSitemapLink(array('loc' => 'duplicate'));
     $link2 = $this->addSitemapLink(array('loc' => 'duplicate'));
     $this->regenerateSitemap();
@@ -629,7 +763,7 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
   /**
    * Test that the sitemap will not be genereated before the lifetime expires.
    */
-  function testMinimumLifetime() {
+  public function testMinimumLifetime() {
     config_set('xmlsitemap.settings', 'minimum_lifetime', 300);
     $this->regenerateSitemap();
 
@@ -639,7 +773,7 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
     $this->assertResponse(200);
     $this->assertNoRaw('lifetime-test');
 
-    config_set('xmlsitemap', 'generated_last', REQUEST_TIME - 400);
+    state_set('xmlsitemap_generated_last', REQUEST_TIME - 400);
     $this->cronRun();
     $this->backdropGetSitemap();
     $this->assertRaw('lifetime-test');
@@ -654,21 +788,84 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
     $this->assertResponse(200);
     $this->assertNoRaw('lifetime-test');
   }
+
+  /**
+   * Test xmlsitemap_clear_directory().
+   */
+  public function testClearDirectory() {
+    $directory = 'public://not-xmlsitemap';
+    file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    $directory = 'public://xmlsitemap/test';
+    file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    file_unmanaged_save_data('File unrelated to XML sitemap', 'public://not-xmlsitemap/file.txt');
+    file_unmanaged_save_data('File unrelated to XML sitemap', 'public://file.txt');
+    file_unmanaged_save_data('Test contents', 'public://xmlsitemap/test/index.xml');
+
+    // Set the directory to an empty value.
+    config_set('xmlsitemap.settings', 'path', '');
+    backdrop_static_reset('xmlsitemap_get_directory');
+
+    // Test that nothing was deleted.
+    $result = xmlsitemap_clear_directory(NULL, TRUE);
+    $this->assertTrue(is_file('public://xmlsitemap/test/index.xml'));
+    $this->assertTrue(is_dir('public://not-xmlsitemap'));
+    $this->assertTrue(is_file('public://file.txt'));
+    $this->assertFalse($result);
+
+    // Reset the value back to the default.
+    config_set('xmlsitemap.settings', 'path', 'xmlsitemap');
+    backdrop_static_reset('xmlsitemap_get_directory');
+
+    // Test that only the xmlsitemap directory was deleted.
+    $result = xmlsitemap_clear_directory(NULL, TRUE);
+    $this->assertFalse(is_dir('public://xmlsitemap'));
+    $this->assertTrue(is_dir('public://not-xmlsitemap'));
+    $this->assertTrue(is_file('public://file.txt'));
+    $this->assertTrue($result);
+  }
+
+  /**
+   * Test that uninstalling the module correctly deletes the directory.
+   */
+  public function testUninstallDeleteDirectory() {
+    $directory = 'public://test';
+    file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+
+    // Update the directory path to a different value.
+    config_set('xmlsitemap.settings', 'path', 'test');
+    backdrop_static_reset('xmlsitemap_get_directory');
+
+    // Test that running uninstall removes the correct directory (test) and not the default (xmlsitemap)
+    backdrop_uninstall_modules(array('xmlsitemap'));
+    $this->assertFalse(is_dir('public://test'));
+    $this->assertTrue(is_dir('public://xmlsitemap'));
+  }
+
 }
 
+/**
+ * XML Sitemap Functional Test.
+ */
 class XMLSitemapFunctionalTest extends XMLSitemapTestHelper {
 
-  function setUp($modules = array()) {
+  /**
+   * Setup.
+   */
+  public function setUp($modules = array()) {
     $modules[] = 'path';
     parent::setUp($modules);
-    $this->admin_user = $this->backdropCreateUser(array('access content', 'administer site configuration', 'administer xmlsitemap'));
+    $this->admin_user = $this->backdropCreateUser(array(
+      'access content',
+      'administer site configuration',
+      'administer xmlsitemap',
+    ));
     $this->backdropLogin($this->admin_user);
   }
 
   /**
    * Test the sitemap file caching.
    */
-  function testSitemapCaching() {
+  public function testSitemapCaching() {
     $this->regenerateSitemap();
     $this->backdropGetSitemap();
     $this->assertResponse(200);
@@ -683,8 +880,11 @@ class XMLSitemapFunctionalTest extends XMLSitemapTestHelper {
 
   /**
    * Test base URL functionality.
+   *
+   * @codingStandardsIgnoreStart
    */
-  function testBaseURL() {
+  public function testBaseURL() {
+    // @codingStandardsIgnoreEnd
     $edit = array('base_url' => '');
     $this->backdropPost('admin/config/search/xmlsitemap/settings', $edit, t('Save configuration'));
     $this->assertText(t('Default base URL field is required.'));
@@ -735,17 +935,27 @@ class XMLSitemapFunctionalTest extends XMLSitemapTestHelper {
   */
 }
 
+/**
+ * XML Sitemap Robots Txt Integration Test.
+ */
 class XMLSitemapRobotsTxtIntegrationTest extends XMLSitemapTestHelper {
 
-  function setUp($modules = array()) {
+  /**
+   * Setup.
+   */
+  public function setUp($modules = array()) {
     $modules[] = 'robotstxt';
     parent::setUp($modules);
   }
 
-  function testRobotsTxt() {
+  /**
+   * Test Robots Txt.
+   */
+  public function testRobotsTxt() {
     // Request the un-clean robots.txt path so this will work in case there is
     // still the robots.txt file in the root directory.
     $this->backdropGet('', array('query' => array('q' => 'robots.txt')));
     $this->assertRaw('Sitemap: ' . url('sitemap.xml', array('absolute' => TRUE)));
   }
+
 }

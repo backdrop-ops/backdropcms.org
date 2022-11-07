@@ -82,7 +82,7 @@ class MetatagHreflangWithEntityTranslationTest extends MetatagTestHelper {
 
     // Clear all the caches so that all of the various hooks are activated and
     // the appropriate tokens, fields, meta tags, etc are available.
-    drupal_flush_all_caches();
+    backdrop_flush_all_caches();
   }
 
   /**
@@ -164,10 +164,9 @@ class MetatagHreflangWithEntityTranslationTest extends MetatagTestHelper {
       }
 
       // Confirm that a link to translate the node into each locale exists.
-      $url = 'node/' . $node->nid . '/edit/add/' . $node->language . '/' . $langcode;
+      $url = 'node/' . $node->nid . '/edit/add/' . $node->langcode . '/' . $langcode;
       $urls[$langcode] = $url;
-      // @todo This fails in testbot.
-      // $this->assertLinkbyHref(url($url));
+      $this->assertLinkbyHref(url($url));
     }
 
     // Check each of the 'translate' pages loads properly.
@@ -235,7 +234,7 @@ class MetatagHreflangWithEntityTranslationTest extends MetatagTestHelper {
 
       // The node's default language should not have been found, it should have
       // been turned into an xdefault.
-      if ($langcode == $node->language) {
+      if ($langcode == $node->langcode) {
         $this->assertFalse((bool)$found, format_string("A regular hreflang meta tag for the node's default language (%lang) was not found.", array('%lang' => $langcode)));
       }
 
@@ -265,13 +264,13 @@ class MetatagHreflangWithEntityTranslationTest extends MetatagTestHelper {
     $this->assertEqual(count($xpath), count($locales) + 1, 'The correct number of hreflang meta tags was found.');
     $found = FALSE;
     foreach ($xpath as $ctr => $item) {
-      if ($item['hreflang'] == $node->language) {
+      if ($item['hreflang'] == $node->langcode) {
         $found = $ctr;
       }
     }
     $this->assertTrue((bool)$found, "Found an hreflang meta tag for the node's default locale.");
     if ($found) {
-      $this->assertEqual($xpath[$found]['hreflang'], $node->language);
+      $this->assertEqual($xpath[$found]['hreflang'], $node->langcode);
     }
   }
 

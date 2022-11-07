@@ -6,7 +6,7 @@
  *
  */
 /*~ class.smtp.php
-Orginal release information:
+Original release information:
 .---------------------------------------------------------------------------.
 |  Software: PHPMailer - PHP email class                                    |
 |   Version: 5.1                                                            |
@@ -141,7 +141,7 @@ class SMTP {
                            "errno" => $errno,
                            "errstr" => $errstr);
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": $errstr ($errno)" . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @errstr (@errno)", array("@error" => $this->error["error"], "@errstr" => $errstr, "@errno" => $errno)));
       }
       return FALSE;
     }
@@ -155,7 +155,7 @@ class SMTP {
     $announce = $this->get_lines();
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $announce . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @announce", array("@announce" => $announce)));
     }
 
     return TRUE;
@@ -184,7 +184,7 @@ class SMTP {
     $code = substr($rply, 0, 3);
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @rply", array("@rply" => $rply)));
     }
 
     if ($code != 220) {
@@ -193,7 +193,7 @@ class SMTP {
                "smtp_code" => $code,
                "smtp_msg"  => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -211,6 +211,34 @@ class SMTP {
     $crypto_ok = stream_socket_enable_crypto($this->smtp_conn, TRUE, $crypto_method);
 
     return (bool) $crypto_ok;
+  }
+
+  /**
+   * Performs OAuth authentication.
+   */
+  public function AuthenticateOAuth($OAuth) {
+
+    //The OAuth instance must be set up prior to requesting auth.
+    if (null === $OAuth) {
+      return false;
+    }
+    $oauth = $OAuth->getOauth64();
+    fputs($this->smtp_conn, 'AUTH XOAUTH2 ' . $oauth . $this->CRLF);
+
+    $rply = $this->get_lines();
+    $code = substr($rply, 0, 3);
+
+    if ($code != 235) {
+      $this->error =
+        array("error" => "AUTH not accepted from server",
+          "smtp_code" => $code,
+          "smtp_msg" => substr($rply, 4));
+      if ($this->do_debug >= 1) {
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
+      }
+      return FALSE;
+    }
+    return TRUE;
   }
 
   /**
@@ -232,7 +260,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -249,7 +277,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -266,7 +294,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -285,7 +313,7 @@ class SMTP {
       if ($sock_status["eof"]) {
         // the socket is valid but we are not connected
         if ($this->do_debug >= 1) {
-            echo "SMTP -> NOTICE:" . $this->CRLF . "EOF caught while checking if connected";
+          backdrop_set_message(t("SMTP -> NOTICE: EOF caught while checking if connected"));
         }
         $this->Close();
         return FALSE;
@@ -321,7 +349,7 @@ class SMTP {
    * finializing the mail transaction. $msg_data is the message
    * that is to be send with the headers. Each header needs to be
    * on a single line followed by a <CRLF> with the message headers
-   * and the message body being seperated by and additional <CRLF>.
+   * and the message body being separated by and additional <CRLF>.
    *
    * Implements rfc 821: DATA <CRLF>
    *
@@ -350,7 +378,7 @@ class SMTP {
     $code = substr($rply, 0, 3);
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @rply", array("@rply" => $rply)));
     }
 
     if ($code != 354) {
@@ -359,7 +387,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -397,7 +425,7 @@ class SMTP {
 
     $max_line_length = 998; // used below; set here for ease in change
 
-    while (list(, $line) = @each($lines)) {
+    foreach ($lines as $line) {
       $lines_out = NULL;
       if ($line == "" && $in_headers) {
         $in_headers = FALSE;
@@ -427,7 +455,7 @@ class SMTP {
       $lines_out[] = $line;
 
       // send the lines to the server
-      while (list(, $line_out) = @each($lines_out)) {
+      foreach ($lines_out as $line_out) {
         if (strlen($line_out) > 0) {
           if (substr($line_out, 0, 1) == ".") {
             $line_out = "." . $line_out;
@@ -444,7 +472,7 @@ class SMTP {
     $code = substr($rply, 0, 3);
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @rply", array("@rply" => $rply)));
     }
 
     if ($code != 250) {
@@ -453,7 +481,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -509,7 +537,7 @@ class SMTP {
     $code = substr($rply, 0, 3);
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER: " . $rply . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @rply", array("@rply" => $rply)));
     }
 
     if ($code != 250) {
@@ -518,7 +546,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -558,7 +586,7 @@ class SMTP {
     $code = substr($rply, 0, 3);
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @rply", array("@rply" => $rply)));
     }
 
     if ($code != 250) {
@@ -567,7 +595,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -601,7 +629,7 @@ class SMTP {
     $byemsg = $this->get_lines();
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $byemsg . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @byemsg", array("@rply" => $byemsg)));
     }
 
     $rval = TRUE;
@@ -615,7 +643,7 @@ class SMTP {
                  "smtp_rply" => substr($byemsg, 4));
       $rval = FALSE;
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $e["error"] . ": " . $byemsg . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
     }
 
@@ -653,7 +681,7 @@ class SMTP {
     $code = substr($rply, 0, 3);
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @rply", array("@rply" => $rply)));
     }
 
     if ($code != 250 && $code != 251) {
@@ -662,7 +690,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -696,7 +724,7 @@ class SMTP {
     $code = substr($rply, 0, 3);
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @rply", array("@rply" => $rply)));
     }
 
     if ($code != 250) {
@@ -705,7 +733,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -743,7 +771,7 @@ class SMTP {
     $code = substr($rply, 0, 3);
 
     if ($this->do_debug >= 2) {
-      echo "SMTP -> FROM SERVER:" . $rply . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> FROM SERVER: @rply", array("@rply" => $rply)));
     }
 
     if ($code != 250) {
@@ -752,7 +780,7 @@ class SMTP {
               "smtp_code" => $code,
               "smtp_msg" => substr($rply, 4));
       if ($this->do_debug >= 1) {
-        echo "SMTP -> ERROR: " . $this->error["error"] . ": " . $rply . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> ERROR: @error: @rply", array("@error" => $this->error["error"], "@rply" => $rply)));
       }
       return FALSE;
     }
@@ -762,7 +790,7 @@ class SMTP {
   /**
    * This is an optional command for SMTP that this class does not
    * support. This method is here to make the RFC821 Definition
-   * complete for this class and __may__ be implimented in the future
+   * complete for this class and __may__ be implemented in the future
    *
    * Implements from rfc 821: TURN <CRLF>
    *
@@ -775,7 +803,7 @@ class SMTP {
   public function Turn() {
     $this->error = array("error" => "This method, TURN, of the SMTP is not implemented");
     if ($this->do_debug >= 1) {
-      echo "SMTP -> NOTICE: " . $this->error["error"] . $this->CRLF . '<br />';
+      backdrop_set_message(t("SMTP -> NOTICE: @error", array("@error" => $this->error["error"])));
     }
     return FALSE;
   }
@@ -806,12 +834,12 @@ class SMTP {
     $data = "";
     while ($str = @fgets($this->smtp_conn, 515)) {
       if ($this->do_debug >= 4) {
-        echo "SMTP -> get_lines(): \$data was \"$data\"" . $this->CRLF . '<br />';
-        echo "SMTP -> get_lines(): \$str is \"$str\"" . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> get_lines(): \$data was \"@data\"", array("@data" => $data)));
+        backdrop_set_message(t("SMTP -> get_lines(): \$str is \"@str\"", array("@str" => $str)));
       }
       $data .= $str;
       if ($this->do_debug >= 4) {
-        echo "SMTP -> get_lines(): \$data is \"$data\"" . $this->CRLF . '<br />';
+        backdrop_set_message(t("SMTP -> get_lines(): \$data was \"@data\"", array("@data" => $data)));
       }
       // if 4th character is a space, we are done reading, break the loop
       if (substr($str, 3, 1) == " ") {

@@ -9,9 +9,8 @@
  */
 function metatag_importer_page_title_form($form, &$form_state) {
   $form['help'] = array(
+    '#type' => 'help',
     '#markup' => t('To migrate data from Page Title it is necessary to use Drush. See "drush metatag-convert-page-title" for details.'),
-    '#prefix' => '<p>',
-    '#suffix' => '</p>',
   );
   return $form;
 }

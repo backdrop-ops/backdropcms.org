@@ -1,0 +1,280 @@
+<?php
+/**
+ * @file
+ * Some tests for the SMTP module.
+ */
+
+class SmtpUnitTest extends BackdropWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  function setUp(array $modules = array()) {
+    // Requirements.
+    $modules[] = 'smtp';
+
+    // Some extra logic for fully testing the module.
+    $modules[] = 'smtp_tests';
+
+    // This module is used to log all emails so that the delivery can be
+    // confirmed.
+    $modules[] = 'maillog';
+
+    parent::setUp($modules);
+
+    // Take over the email system.
+    config_set('system.mail', 'default-system', 'SmtpMailSystem');
+
+    $config = config('smtp.settings');
+    // Turn on the mail module.
+    $config->set('smtp_on', TRUE);
+
+    // Do not actually deliver the emails.
+    $config->set('smtp_deliver', FALSE);
+    $config->save();
+
+    // Use Maillog to log all emails.
+    config_set('maillog.settings', 'maillog_log', TRUE);
+  }
+
+  /**
+   * Confirm that SMTP has taken over the 'mail_system' variable.
+   */
+  function testSetup() {
+    $enabled = config_get('system.mail', 'default-system');
+    $should_be = 'SmtpMailSystem';
+    $this->assertEqual($enabled, $should_be, 'SMTP is controlling mail delivery.');
+
+    $config = config('smtp.settings');
+    $delivery = $config->get('smtp_on');
+    $this->assertEqual($delivery, TRUE, 'SMTP is enabled.');
+
+    $delivery = $config->get('smtp_deliver');
+    $this->assertEqual($delivery, FALSE, 'Email delivery is disabled.');
+
+    $logging = config_get('maillog.settings', 'maillog_log');
+    $this->assertEqual($logging, TRUE, 'Email delivery is being logged.');
+  }
+
+  /**
+   * Tests logging mail with maillog module.
+   */
+  public function testLogging() {
+    $langcode = language_default('language');
+
+    // This is automatically assigned by Simpletest.
+    $sender = 'simpletest@example.com';
+
+    // Send an email.
+    $to_email = 'to_test@example.com';
+    $reply_email = 'reply_test@example.com';
+    $params = array();
+    backdrop_mail('smtp_tests', 'smtp_basic_test', $to_email, $langcode, $params);
+
+    // The SMTP module controls the 'from' address but defaults to using the
+    // site's system email address.
+    $from_email = config_get('system.core', 'site_mail');
+
+    // Compare the maillog db entry with the sent mail.
+    $logged_email = $this->getLatestMaillogEntry();
+    $this->assertTrue(!empty($logged_email), 'The test email was captured.');
+    $this->assertEqual($to_email, $logged_email['header_to']);//, 'Email "to" address is correct.');
+    $this->assertEqual($from_email, $logged_email['header_from']);//, 'Email "from" address is correct.');
+    $this->assertEqual($from_email, $logged_email['header_all']['From']);//, 'Email "from" header is correct.');
+    $this->assertEqual($sender, $logged_email['header_all']['Sender']);//, 'Email "sender" header is correct.');
+    $this->assertEqual($sender, $logged_email['header_all']['Return-Path']);//, 'Email "return-path" header is correct.');
+    $this->assertEqual('Backdrop CMS', $logged_email['header_all']['X-Mailer']);//, 'Email "x-mailer" header is correct.');
+    $this->assertEqual(t('Test email subject'), $logged_email['subject']);//, 'Email subject is correct.');
+    $this->assertEqual(t('Test email body.') . "\n", $logged_email['body']);//, 'Email body is correct.');
+  }
+
+  /**
+   * Confirm the queue works.
+   */
+  public function testQueue() {
+    // Turn on the queue.
+    config_set('smtp.settings', 'smtp_queue', TRUE);
+
+    // Send a test message.
+    $langcode = language_default('language');
+    $sender = 'simpletest@example.com';
+    $to_email = 'to_test@example.com';
+    $reply_email = 'reply_test@example.com';
+    $params = array();
+    backdrop_mail('smtp_tests', 'smtp_basic_test', $to_email, $langcode, $params);
+
+    // Check the queue for messages.
+    $queue_count = $this->getQueueCount();
+    $this->assertEqual($queue_count, 1, 'An email was found in the send queue.');
+  }
+
+  /**
+   * Confirm the queue works.
+   */
+  public function testFailQueue() {
+    $config = config('smtp.settings');
+    // Turn on the queue failover.
+    $config->set('smtp_queue_fail', TRUE);
+
+    // Make sure the queue is disabled.
+    $config->set('smtp_queue', FALSE);
+
+    // Turn on email delivery.
+    $config->set('smtp_deliver', TRUE);
+
+    // Set some fake values for the delivery, it should fail and then cause the
+    // email to go in to the queue.
+    $config->set('smtp_from', 'backdrop@example.com');
+    $config->set('smtp_fromname', 'Backdrop Simpletest');
+    $config->set('smtp_host', 'smtp.gmail.com');
+    $config->set('smtp_hostbackup', '');
+    $config->set('smtp_password', 'THIS WILL NOT WORK!');
+    $config->set('smtp_port', '465');
+    $config->set('smtp_protocol', 'ssl');
+    $config->set('smtp_username', 'hello@example.com');
+    $config->save();
+
+    // Send a test message.
+    $langcode = language_default('language');
+    $sender = 'simpletest@example.com';
+    $to_email = 'to_test@example.com';
+    $reply_email = 'reply_test@example.com';
+    $params = array();
+    backdrop_mail('smtp_tests', 'smtp_basic_test', $to_email, $langcode, $params);
+
+    // Check the queue for messages.
+    $queue_count = $this->getQueueCount('smtp_failure_queue');
+    $this->assertEqual($queue_count, 1, 'An email was found in the failure queue.');
+    $queue_count = $this->getQueueCount();
+    $this->assertEqual($queue_count, 0, 'An email was not found in the regular email queue.');
+
+    // Run the queue so that messages can be moved to the normal email queue.
+    backdrop_cron_run();
+
+    // Check the queue for messages.
+    $queue_count = $this->getQueueCount();
+    $this->assertEqual($queue_count, 1, 'An email was found in the regular email queue.');
+    $queue_count = $this->getQueueCount('smtp_failure_queue');
+    $this->assertEqual($queue_count, 0, 'An email was not found in the failure queue.');
+  }
+
+  /**
+   * Tests email address parsing.
+   */
+  public function testAddressParsing() {
+    $short_encoded = mime_header_encode('Accent tést');
+    $long_encoded = mime_header_encode('Accent tést - but with a long name see USERNAME_MAX_LENGTH');
+
+    $scenarios = array(
+      array(
+        // Input.
+        'name@example.com',
+        // Expected.
+        array(
+          'email' => 'name@example.com',
+        ),
+      ),
+      array(
+        ' name@example.com',
+        array(
+          'input' => 'name@example.com',
+          'email' => 'name@example.com',
+        ),
+      ),
+      array(
+        'name@example.com ',
+        array(
+          'input' => 'name@example.com',
+          'email' => 'name@example.com',
+        ),
+      ),
+      array(
+        'some name <address@example.com>',
+        array(
+          'name' => 'some name',
+          'email' => 'address@example.com',
+        ),
+      ),
+      array(
+        '"some name" <address@example.com>',
+        array(
+          'name' => 'some name',
+          'email' => 'address@example.com',
+        ),
+      ),
+      array(
+        '<address@example.com>',
+        array(
+          'email' => 'address@example.com',
+        ),
+      ),
+      array(
+        // Short encoded name: 'Accent tést'.
+        '"' . $short_encoded . '" <address@example.com>',
+        array(
+          'name' => $short_encoded,
+          'email' => 'address@example.com',
+        ),
+      ),
+      array(
+        // Long encoded name, also wrapped with newline:
+        // 'Accent tést - but with a long name see USERNAME_MAX_LENGTH'.
+        '"' . $long_encoded . '" <address@example.com>',
+        array(
+          'name' => $long_encoded,
+          'email' => 'address@example.com',
+        ),
+      ),
+    );
+
+    $mail_system = new SmtpMailSystemWrapper();
+
+    foreach ($scenarios as $scenario) {
+      list($input, $expected) = $scenario;
+
+      $ret = $mail_system->getComponents($input);
+
+      if (!empty($expected['input'])) {
+        $this->assertIdentical($expected['input'], $ret['input']);
+      }
+      else {
+        $this->assertIdentical($input, $ret['input']);
+      }
+      $this->assertIdentical(!empty($expected['name']) ? $expected['name'] : '', $ret['name']);
+      $this->assertIdentical(!empty($expected['email']) ? $expected['email'] : '', $ret['email']);
+    }
+  }
+
+  /**
+   * Gets the latest Maillog entry.
+   *
+   * @return array
+   *   Maillog entry.
+   */
+  protected function getLatestMaillogEntry() {
+    $query = 'SELECT idmaillog, header_from, header_to, header_reply_to, header_all, subject, body FROM {maillog} ORDER BY idmaillog DESC';
+    $result = db_query_range($query, 0, 1);
+
+    if ($maillog = $result->fetchAssoc()) {
+      // Unserialize values.
+      $maillog['header_all'] = unserialize($maillog['header_all']);
+    }
+    return $maillog;
+  }
+
+  /**
+   * Get the number of emails in a specific queue.
+   *
+   * @param string $queue
+   *   The name of the queue to add the emails to.
+   *
+   * @return int
+   *   The number of messages found in the requested queue.
+   */
+  protected function getQueueCount($queue = 'smtp_send_queue') {
+    return db_query("SELECT count('name') FROM {queue} WHERE name = :queue",
+      array(':queue' => $queue))
+      ->fetchField();
+  }
+
+}

@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * @file
+ * Functional tests for providing xmlsitemap fields to views.
+ */
+
+class XmlsitemapViewsFieldsTest extends BackdropWebTestCase {
+
+  /**
+   * Information about these tests, for the testing UX.
+   *
+   * @return array
+   *   The information.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'XML sitemap views fields',
+      'description' => 'Functional tests for providing xmlsitemap fields to views.',
+      'group' => 'XML sitemap',
+      'dependencies' => array('views'),
+    );
+  }
+
+  /**
+   * Setup before any tests are run.
+   *
+   * @see BackdropWebTestCase::setUp()
+   */
+  protected function setUp($modules = array()) {
+    $modules[] = 'views';
+    $modules[] = 'xmlsitemap_node';
+    parent::setUp($modules);
+  }
+
+  /**
+   * Test that views can show XML sitemap settings on nodes.
+   */
+  public function testNodeSettings() {
+    // Create a node.
+    $node = $this->backdropCreateNode();
+    // Create view with xmlsitemap fields.
+    $view = $this->nodeView();
+    $view->save();
+    // Load view, check that xmlsitemap fields are not overridden.
+    $this->backdropGet('xmlsitemap-node-fields');
+    $this->assertRaw('<span class="xmlsitemap-priority">0.5</span>');
+    $this->assertRaw('<span class="xmlsitemap-priority-override">No</span>');
+    $this->assertRaw('<span class="xmlsitemap-inclusion">No</span>');
+    $this->assertRaw('<span class="xmlsitemap-inclusion-override">No</span>');
+    // Override xmlsitemap fields for node.
+    $node->xmlsitemap['priority'] = 0.6;
+    $node->xmlsitemap['priority_override'] = 1;
+    $node->xmlsitemap['status'] = 1;
+    $node->xmlsitemap['status_override'] = 1;
+    node_save($node);
+    // Re-load view, check that xmlsitemap fields are overridden.
+    $this->backdropGet('xmlsitemap-node-fields');
+    $this->assertRaw('<span class="xmlsitemap-priority">0.6</span>');
+    $this->assertRaw('<span class="xmlsitemap-priority-override">Yes</span>');
+    $this->assertRaw('<span class="xmlsitemap-inclusion">Yes</span>');
+    $this->assertRaw('<span class="xmlsitemap-inclusion-override">Yes</span>');
+  }
+
+  /**
+   * An exported view.
+   *
+   * @return view
+   *   A view of nodes that displays the XML sitemap fields.
+   */
+  private function nodeView() {
+    $view = new view();
+    $view->name = 'xmlsitemap_views_fields_nodes';
+    $view->description = '';
+    $view->tag = 'default';
+    $view->base_table = 'node';
+    $view->human_name = 'XML sitemap node fields';
+    $view->core = 7;
+    $view->api_version = '3.0';
+    $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+    /* Display: Master */
+    $handler = $view->new_display('default', 'Master', 'default');
+    $handler->display->display_options['title'] = 'XML sitemap node fields';
+    $handler->display->display_options['use_more_always'] = FALSE;
+    $handler->display->display_options['access']['type'] = 'perm';
+    $handler->display->display_options['cache']['type'] = 'none';
+    $handler->display->display_options['query']['type'] = 'views_query';
+    $handler->display->display_options['exposed_form']['type'] = 'basic';
+    $handler->display->display_options['pager']['type'] = 'none';
+    $handler->display->display_options['pager']['options']['offset'] = '0';
+    $handler->display->display_options['style_plugin'] = 'default';
+    $handler->display->display_options['style_options']['default_row_class'] = FALSE;
+    $handler->display->display_options['style_options']['row_class_special'] = FALSE;
+    $handler->display->display_options['row_plugin'] = 'fields';
+    /* Field: Content: Title */
+    $handler->display->display_options['fields']['title']['id'] = 'title';
+    $handler->display->display_options['fields']['title']['table'] = 'node';
+    $handler->display->display_options['fields']['title']['field'] = 'title';
+    $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+    $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+    $handler->display->display_options['fields']['title']['element_default_classes'] = FALSE;
+    $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
+    /* Field: XML sitemap: Inclusion */
+    $handler->display->display_options['fields']['status']['id'] = 'status';
+    $handler->display->display_options['fields']['status']['table'] = 'xmlsitemap_node';
+    $handler->display->display_options['fields']['status']['field'] = 'status';
+    $handler->display->display_options['fields']['status']['element_type'] = 'span';
+    $handler->display->display_options['fields']['status']['element_class'] = 'xmlsitemap-inclusion';
+    $handler->display->display_options['fields']['status']['element_default_classes'] = FALSE;
+    $handler->display->display_options['fields']['status']['not'] = 0;
+    /* Field: XML sitemap: Inclusion override */
+    $handler->display->display_options['fields']['status_override']['id'] = 'status_override';
+    $handler->display->display_options['fields']['status_override']['table'] = 'xmlsitemap_node';
+    $handler->display->display_options['fields']['status_override']['field'] = 'status_override';
+    $handler->display->display_options['fields']['status_override']['element_type'] = 'span';
+    $handler->display->display_options['fields']['status_override']['element_class'] = 'xmlsitemap-inclusion-override';
+    $handler->display->display_options['fields']['status_override']['element_default_classes'] = FALSE;
+    $handler->display->display_options['fields']['status_override']['not'] = 0;
+    /* Field: XML sitemap: Priority */
+    $handler->display->display_options['fields']['priority']['id'] = 'priority';
+    $handler->display->display_options['fields']['priority']['table'] = 'xmlsitemap_node';
+    $handler->display->display_options['fields']['priority']['field'] = 'priority';
+    $handler->display->display_options['fields']['priority']['element_type'] = 'span';
+    $handler->display->display_options['fields']['priority']['element_class'] = 'xmlsitemap-priority';
+    $handler->display->display_options['fields']['priority']['element_default_classes'] = FALSE;
+    $handler->display->display_options['fields']['priority']['separator'] = '';
+    /* Field: XML sitemap: Priority override */
+    $handler->display->display_options['fields']['priority_override']['id'] = 'priority_override';
+    $handler->display->display_options['fields']['priority_override']['table'] = 'xmlsitemap_node';
+    $handler->display->display_options['fields']['priority_override']['field'] = 'priority_override';
+    $handler->display->display_options['fields']['priority_override']['element_type'] = 'span';
+    $handler->display->display_options['fields']['priority_override']['element_class'] = 'xmlsitemap-priority-override';
+    $handler->display->display_options['fields']['priority_override']['element_default_classes'] = FALSE;
+    $handler->display->display_options['fields']['priority_override']['not'] = 0;
+
+    /* Display: Page */
+    $handler = $view->new_display('page', 'Page', 'page');
+    $handler->display->display_options['path'] = 'xmlsitemap-node-fields';
+
+    return $view;
+  }
+
+}

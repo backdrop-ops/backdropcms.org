@@ -35,9 +35,10 @@ function civicrm_cron_menu() {
  */
 function civicrm_cron_config_info() {
   $prefixes['civicrm_cron.settings'] = array(
-    'label' => t('Module name settings'),
+    'label' => t('CiviCRM Cron settings'),
     'group' => t('Configuration'),
   );
+  return $prefixes;
 }
 
 /**
@@ -53,7 +54,7 @@ function civicrm_cron_admin_settings($form, &$form_state) {
     backdrop_set_message(t('Failed to initialize CiviCRM'), 'error');
     return;
   }
-  // Check if CiviMail is activated
+  // Check if CiviMail is activated.
   $result = civicrm_api3('System', 'get', [
     'sequential' => 1,
   ]);
@@ -79,7 +80,7 @@ function civicrm_cron_admin_settings($form, &$form_state) {
 
   }
 
-  //if it's still NULL at this point, set to site key constant
+  // If it's still NULL at this point, set to site key constant.
   if ($key == NULL ) {
     $key = CIVICRM_SITE_KEY;
     if (empty($form_state['input']['civicrm_cron_sitekey'])) {
@@ -102,8 +103,8 @@ function civicrm_cron_admin_settings($form, &$form_state) {
       '#collapsed' => TRUE,
     );
 
-    // CiviMail job appears to be the only job that requires authentication
-    // added username and pass back to resolve https://drupal.org/node/2088595
+    // CiviMail job appears to be the only job that requires authentication.
+    // Added username and pass back to resolve https://drupal.org/node/2088595
 
     $cron_values['name'] = $config->get('civicrm_cron_username');
     $cron_values['pass'] = $config->get('civicrm_cron_password');
@@ -164,10 +165,10 @@ function civicrm_cron_cron() {
   global $base_url;
 
   $key = config_get('civicrm_cron.settings', 'civicrm_cron_sitekey');
-  // we use backdrop_http_request because any errors from
-  // $facility->execute() are printed to screen
+  // We use backdrop_http_request because any errors from
+  // $facility->execute() are printed to screen.
   $result = backdrop_http_request($base_url . '/civicrm-cron/passthrough?key=' . $key);
-  //look for the CiviCRM error in response... successful processing returns nothing
+  // Look for the CiviCRM error in response. If successful it returns nothing.
   if (!empty($result->error) || $result->code == 0) {
     watchdog('civicrm_cron', 'CiviCRM cron error ' . $result->code . ': ' . $result->error, NULL, WATCHDOG_ERROR);
   }
@@ -189,12 +190,12 @@ function civicrm_cron_passthrough() {
   $key = $config->get('civicrm_cron_sitekey');
 
   if ($sentkey != $key) {
-    // Key doesn't match, don't process.
+    // Key doesn't match, so don't process.
     return t('The site key that was provided does not match the key in the CiviCRM configuration.');
   }
 
   if (!civicrm_initialize()) {
-    //watchdog('civicrm_cron', t('Failed to initialize CiviCRM during Cron'), NULL, WATCHDOG_ERROR);
+    // watchdog('civicrm_cron', t('Failed to initialize CiviCRM during Cron'), NULL, WATCHDOG_ERROR);
     return t('Failed to initialize CiviCRM during cron.');
   }
 

@@ -120,11 +120,11 @@ class MetatagCoreImageTest extends MetatagTestHelper {
     $image_url = file_create_url($image_uri);
 
     // Extract the relative URL version of the absolute URL.
-    $url_length = drupal_strlen($GLOBALS['base_url']);
+    $url_length = backdrop_strlen($GLOBALS['base_url']);
 
     // Need to increase the length by 1 as the base_url does not include a
     // trailing slash.
-    $relative_url = drupal_substr($image_url, $url_length + 1);
+    $relative_url = backdrop_substr($image_url, $url_length + 1);
 
     // Update the global config to add an image meta tag.
     $config = metatag_config_load('global');

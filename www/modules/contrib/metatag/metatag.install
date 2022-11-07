@@ -394,7 +394,7 @@ function metatag_update_last_removed() {
 }
 
 /**
- * The Publisher meta tag is now part of the Google Plus submodule.
+ * Convert variables to configuration system.
  */
 function metatag_update_1000() {
   // Remove variables not needed for Backdrop.
@@ -493,7 +493,7 @@ function metatag_update_1000() {
 }
 
 /**
- * Disable output caching.
+ * Disable output caching by default.
  */
 function metatag_update_1001() {
   $settings = config('metatag.settings');
@@ -502,7 +502,7 @@ function metatag_update_1001() {
 }
 
 /**
- * Clear all metatag output caches, it will be rebuild if needed.
+ * Clear all metatag output caches, it will be rebuilt if needed.
  */
 function metatag_update_1002() {
   cache_clear_all('output:', 'cache_metatag', TRUE);
@@ -543,4 +543,33 @@ function metatag_update_1004() {
     $enabled_tags[$tag_name] = $tag_name;
   }
   config_set('metatag.settings', 'enabled_tags', $enabled_tags);
+}
+
+/**
+ * Add name and label attributes to any config instances that don't have one.
+ */
+function metatag_update_1005() {
+  $files = config_get_names_with_prefix('metatag.instance');
+  $configs = config_load_multiple($files);
+  foreach ($configs as $filename => $config) {
+    $instance = $config['instance'];
+    if (!isset($config['name'])) {
+      $name = str_replace(':', '.', $instance);
+      config_set($filename, 'name', $name);
+    }
+    if (!isset($config['label'])) {
+      config_set($filename, 'label', metatag_config_instance_label($instance));
+    }
+  }
+}
+
+
+/**
+ * Clean up metatag_config table if it still exists.
+ */
+function metatag_update_1006() {
+  // This table was converted to config in metatag_update_1000().
+  if (db_table_exists('metatag_config')) {
+    db_drop_table('metatag_config');
+  }
 }

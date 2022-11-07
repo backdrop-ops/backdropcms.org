@@ -74,7 +74,7 @@ function hook_metatag_get_entity_metatags_instance_alter(&$instance, $entity, $e
   if ($entity_type == 'user') {
     // Split config instances based on user roles.
     foreach (array_reverse(user_roles(), TRUE) as $rid => $role) {
-      if ($rid == BACKDROP_AUTHENTICATED_RID) {
+      if ($rid == BACKDROP_AUTHENTICATED_ROLE) {
         continue;
       }
 

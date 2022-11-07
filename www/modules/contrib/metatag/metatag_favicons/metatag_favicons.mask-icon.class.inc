@@ -90,6 +90,11 @@ class BackdropMaskIconMetaTag extends BackdropTextMetaTag {
       '#weight' => $this->getWeight(),
     );
 
+    // Remove the color attribute if empty.
+    if (empty($color)) {
+      unset($element['#attributes']['color']);
+    }
+
     return $element;
   }
 

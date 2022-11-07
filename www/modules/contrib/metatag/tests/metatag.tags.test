@@ -20,6 +20,15 @@ class MetatagTagsTestBase extends MetatagTestHelper {
     // Create an admin user that can manage meta tags.
     $account = $this->createAdminUser();
     $this->backdropLogin($account);
+
+    // Ensure any tested tags are enabled at the start.
+    $config = config('metatag.settings');
+    $enabled_tags = $config->get('enabled_tags');
+    foreach ($this->tags as $tag_name) {
+      $enabled_tags[$tag_name] = $tag_name;
+    }
+    $config->set('enabled_tags', $enabled_tags);
+    $config->save();
   }
 
   /**

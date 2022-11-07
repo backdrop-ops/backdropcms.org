@@ -4,11 +4,34 @@
  * Unit tests for the xmlsitemap_node module.
  */
 
+// Temporarily include the parent class until core provides test autoloading.
+include_once(__DIR__ . '/../../tests/xmlsitemap.test');
+
+/**
+ * Node Functional Test.
+ */
 class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
+
+  /**
+   * Normal User.
+   *
+   * @var string
+   *
+   * @codingStandardsIgnoreStart
+   */
   protected $normal_user;
+
+  /**
+   * Nodes.
+   *
+   * @var array
+   */
   protected $nodes = array();
 
-  function setUp($modules = array()) {
+  /**
+   * Setup.
+   */
+  public function setUp($modules = array()) {
     $modules[] = 'xmlsitemap_node';
     $modules[] = 'comment';
     parent::setUp($modules);
@@ -16,16 +39,35 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
     $this->backdropCreateContentType(array('type' => 'page', 'name' => 'Page'));
     $this->backdropCreateContentType(array('type' => 'post', 'name' => 'Post'));
 
-    $this->admin_user = $this->backdropCreateUser(array('administer nodes', 'bypass node access', 'administer content types', 'administer xmlsitemap'));
-    $this->normal_user = $this->backdropCreateUser(array('create page content', 'edit any page content', 'access content', 'view own unpublished content'));
+    $this->admin_user = $this->backdropCreateUser(array(
+      'administer nodes',
+      'bypass node access',
+      'administer content types',
+      'administer xmlsitemap',
+    ));
+    $this->normal_user = $this->backdropCreateUser(array(
+      'create page content',
+      'edit any page content',
+      'access content',
+      'view own unpublished content',
+    ));
     xmlsitemap_link_bundle_settings_save('node', 'page', array('status' => 1, 'priority' => 0.5));
   }
 
-  function testNodeSettings() {
+  /**
+   * Node Settings.
+   */
+  public function testNodeSettings() {
     $body_field = 'body[' . LANGUAGE_NONE . '][0][value]';
 
     $node = $this->backdropCreateNode(array('status' => FALSE, 'uid' => $this->normal_user->uid));
-    $this->assertSitemapLinkValues('node', $node->nid, array('access' => 0, 'status' => 1, 'priority' => 0.5, 'status_override' => 0, 'priority_override' => 0));
+    $this->assertSitemapLinkValues('node', $node->nid, array(
+      'access' => 0,
+      'status' => 1,
+      'priority' => 0.5,
+      'status_override' => 0,
+      'priority_override' => 0,
+    ));
 
     $this->backdropLogin($this->normal_user);
     $this->backdropGet('node/' . $node->nid . '/edit');
@@ -38,7 +80,13 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
     );
     $this->backdropPost('node/' . $node->nid . '/edit', $edit, t('Save'));
     $this->assertText('Page Test node title has been updated.');
-    $this->assertSitemapLinkValues('node', $node->nid, array('access' => 0, 'status' => 1, 'priority' => 0.5, 'status_override' => 0, 'priority_override' => 0));
+    $this->assertSitemapLinkValues('node', $node->nid, array(
+      'access' => 0,
+      'status' => 1,
+      'priority' => 0.5,
+      'status_override' => 0,
+      'priority_override' => 0,
+    ));
 
     $this->backdropLogin($this->admin_user);
     $this->backdropGet('node/' . $node->nid . '/edit');
@@ -48,29 +96,50 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
     $edit = array(
       'xmlsitemap[status]' => 0,
       'xmlsitemap[priority]' => 0.9,
-      'status' => TRUE,
+      'status' => 1,
     );
     $this->backdropPost('node/' . $node->nid . '/edit', $edit, t('Save'));
     $this->assertText('Page Test node title has been updated.');
-    $this->assertSitemapLinkValues('node', $node->nid, array('access' => 1, 'status' => 0, 'priority' => 0.9, 'status_override' => 1, 'priority_override' => 1));
+    // The access starts as 0 immediately, then is updated based on node
+    // grants on cron jobs.
+    $this->assertSitemapLinkValues('node', $node->nid, array(
+      'access' => 0,
+      'status' => 0,
+      'priority' => 0.9,
+      'status_override' => 1,
+      'priority_override' => 1,
+    ));
+
+    // Run cron to check status is updated after run.
+    $this->cronRun();
+    $this->assertSitemapLinkValues('node', $node->nid, array(
+      'access' => 1,
+    ));
 
     $edit = array(
       'xmlsitemap[status]' => 'default',
       'xmlsitemap[priority]' => 'default',
-      'status' => FALSE,
+      'status' => 0,
     );
     $this->backdropPost('node/' . $node->nid . '/edit', $edit, t('Save'));
     $this->assertText('Page Test node title has been updated.');
-    $this->assertSitemapLinkValues('node', $node->nid, array('access' => 0, 'status' => 1, 'priority' => 0.5, 'status_override' => 0, 'priority_override' => 0));
+    $this->assertSitemapLinkValues('node', $node->nid, array(
+      'access' => 0,
+      'status' => 1,
+      'priority' => 0.5,
+      'status_override' => 0,
+      'priority_override' => 0,
+    ));
   }
 
   /**
    * Test the content type settings.
    */
-  function testTypeSettings() {
+  public function testTypeSettings() {
     $this->backdropLogin($this->admin_user);
 
     $node_old = $this->backdropCreateNode();
+    $this->cronRun();
     $this->assertSitemapLinkValues('node', $node_old->nid, array('status' => 1, 'priority' => 0.5));
 
     $edit = array(
@@ -81,6 +150,7 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
     $this->assertText('The content type Page has been updated.');
 
     $node = $this->backdropCreateNode();
+    $this->cronRun();
     $this->assertSitemapLinkValues('node', $node->nid, array('status' => 0, 'priority' => 0.0));
     $this->assertSitemapLinkValues('node', $node_old->nid, array('status' => 0, 'priority' => 0.0));
 
@@ -90,11 +160,20 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
       'xmlsitemap[priority]' => '0.5',
     );
     $this->backdropPost('admin/structure/types/manage/page', $edit, t('Save content type'));
-    $this->assertText('Changed the content type of 2 posts from page to page2.');
+    $this->assertText('Changed the content type of 2 pieces of content from page to page2.');
     $this->assertText('The content type Page has been updated.');
+    $this->cronRun();
 
-    $this->assertSitemapLinkValues('node', $node->nid, array('subtype' => 'page2', 'status' => 1, 'priority' => 0.5));
-    $this->assertSitemapLinkValues('node', $node_old->nid, array('subtype' => 'page2', 'status' => 1, 'priority' => 0.5));
+    $this->assertSitemapLinkValues('node', $node->nid, array(
+      'subtype' => 'page2',
+      'status' => 1,
+      'priority' => 0.5,
+    ));
+    $this->assertSitemapLinkValues('node', $node_old->nid, array(
+      'subtype' => 'page2',
+      'status' => 1,
+      'priority' => 0.5,
+    ));
     $this->assertEqual(count(xmlsitemap_link_load_multiple(array('type' => 'node', 'subtype' => 'page'))), 0);
     $this->assertEqual(count(xmlsitemap_link_load_multiple(array('type' => 'node', 'subtype' => 'page2'))), 2);
 
@@ -106,7 +185,7 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
   /**
    * Test the import of old nodes via cron.
    */
-  function testCron() {
+  public function testCron() {
     $limit = 5;
     config_set('xmlsitemap.settings', 'batch_limit', $limit);
 
@@ -121,17 +200,21 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
 
     // Clear all the node link data so we can emulate 'old' nodes.
     db_delete('xmlsitemap')
-      ->condition('type', 'node')
-      ->execute();
+        ->condition('type', 'node')
+        ->execute();
 
     // Run cron to import old nodes.
     xmlsitemap_node_cron();
 
     for ($i = 1; $i <= ($limit + 1); $i++) {
-      $node = array_pop($nodes);
+      $node = array_shift($nodes);
       if ($i <= $limit) {
         // The first $limit nodes should be inserted.
-        $this->assertSitemapLinkValues('node', $node->nid, array('access' => 1, 'status' => 1, 'lastmod' => $node->changed));
+        $this->assertSitemapLinkValues('node', $node->nid, array(
+          'access' => 1,
+          'status' => 1,
+          'lastmod' => $node->changed,
+        ));
       }
       else {
         // Any beyond $limit should not be in the sitemap.
@@ -139,4 +222,5 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
       }
     }
   }
+
 }

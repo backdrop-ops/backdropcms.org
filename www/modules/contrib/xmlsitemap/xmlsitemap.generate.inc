@@ -13,9 +13,9 @@
  * at once so that only one database query is executed instead of several or
  * possibly thousands during sitemap generation.
  *
- * @param $path
- *   An internal path.
- * @param $language
+ * @param string $path
+ *   An internal Backdrop path.
+ * @param string $language
  *   A language code to use when looking up the paths.
  */
 function xmlsitemap_get_path_alias($path, $language) {
@@ -69,13 +69,16 @@ function _xmlsitemap_regenerate_before() {
 
   if (config_get('xmlsitemap.settings', 'developer_mode', 0)) {
     watchdog('xmlsitemap', 'Starting XML sitemap generation. Memory usage: @memory-peak.', array(
-        '@memory-peak' => format_size(memory_get_peak_usage(TRUE)),
-      ),
+      '@memory-peak' => format_size(memory_get_peak_usage(TRUE)),
+    ),
       WATCHDOG_DEBUG
     );
   }
 }
 
+/**
+ * Get Memory Usage.
+ */
 function _xmlsitemap_get_memory_usage($start = FALSE) {
   static $memory_start;
   $current = memory_get_peak_usage(TRUE);
@@ -112,7 +115,7 @@ function _xmlsitemap_get_optimal_memory_limit() {
 /**
  * Calculate the optimal memory level for sitemap generation.
  *
- * @param $new_limit
+ * @param string $new_limit
  *   An optional PHP memory limit in bytes. If not provided, the value of
  *   _xmlsitemap_get_optimal_memory_limit() will be used.
  */
@@ -131,9 +134,9 @@ function _xmlsitemap_set_memory_limit($new_limit = NULL) {
 /**
  * Generate one page (chunk) of the sitemap.
  *
- * @param $sitemap
+ * @param object $sitemap
  *   An unserialized data array for an XML sitemap.
- * @param $page
+ * @param string $page
  *   An integer of the specific page of the sitemap to generate.
  */
 function xmlsitemap_generate_page(stdClass $sitemap, $page) {
@@ -146,21 +149,24 @@ function xmlsitemap_generate_page(stdClass $sitemap, $page) {
   catch (Exception $e) {
     watchdog_exception('xmlsitemap', $e);
     throw $e;
-    return FALSE;
   }
 
   return $writer->getSitemapElementCount();
 }
 
+/**
+ * Generate chunk.
+ */
 function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, $chunk) {
   $config = config('xmlsitemap.settings');
+  $base_url = !empty($config->get('base_url')) ? $config->get('base_url') : $GLOBALS['base_url'];
   $output_elements = backdrop_map_assoc($config->get('output_elements'));
-  $lastmod_format = $config->get('lastmod_format', XMLSITEMAP_LASTMOD_MEDIUM);
+  $lastmod_format = $config->get('lastmod_format');
 
   $url_options = $sitemap->uri['options'];
   $url_options += array(
     'absolute' => TRUE,
-    'base_url' => $config->get('base_url', $GLOBALS['base_url']),
+    'base_url' => $base_url,
     'language' => language_default(),
     'alias' => $config->get('prefetch_aliases', TRUE),
   );
@@ -169,7 +175,19 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
   $link_count = 0;
 
   $query = db_select('xmlsitemap', 'x');
-  $query->fields('x', array('id', 'type', 'subtype', 'loc', 'lastmod', 'changefreq', 'changecount', 'priority', 'language', 'access', 'status'));
+  $query->fields('x', array(
+    'id',
+    'type',
+    'subtype',
+    'loc',
+    'lastmod',
+    'changefreq',
+    'changecount',
+    'priority',
+    'language',
+    'access',
+    'status',
+  ));
   $query->condition('x.access', 1);
   $query->condition('x.status', 1);
   $query->orderBy('x.language', 'DESC');
@@ -184,6 +202,18 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
 
   while ($link = $links->fetchAssoc()) {
     $link['language'] = $link['language'] != LANGUAGE_NONE ? xmlsitemap_language_load($link['language']) : $url_options['language'];
+    $parsed_url = backdrop_parse_url($link['loc']);
+    // Skip nodes which are 301 redirected.
+    if (variable_get('xmlsitemap_redirect')) {
+      $relative_redirect = redirect_fetch_rids_by_path($link['loc'], $link['language']->language, TRUE);
+      $alias_redirect = redirect_fetch_rids_by_path(ltrim(url($link['loc']), '/'), $link['language']->language, TRUE);
+      // If node contains a 301 redirect we skip it.
+      if (!empty($relative_redirect) || !empty($alias_redirect)) {
+        continue;
+      }
+    }
+    // Remove query or fragment.
+    $link['loc'] = $parsed_url['path'];
     if ($url_options['alias']) {
       $link['loc'] = xmlsitemap_get_path_alias($link['loc'], $link['language']->langcode);
     }
@@ -191,6 +221,8 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
       'language' => $link['language'],
       'xmlsitemap_link' => $link,
       'xmlsitemap_sitemap' => $sitemap,
+      'query' => $parsed_url['query'],
+      'fragment' => $parsed_url['fragment'],
     );
     // @todo Add a separate hook_xmlsitemap_link_url_alter() here?
     $link_url = url($link['loc'], $link_options + $url_options);
@@ -208,7 +240,7 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
     }
 
     $element = array();
-    $element['loc'] = $link_url;
+    $element['loc'] = urldecode($link_url);
     if ($link['lastmod']) {
       if (!empty($output_elements['lastmod'])) {
         $element['lastmod'] = gmdate($lastmod_format, $link['lastmod']);
@@ -232,7 +264,9 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
     // @todo Should this be moved to XMLSitemapWritier::writeSitemapElement()?
     backdrop_alter('xmlsitemap_element', $element, $link, $sitemap);
 
-    $writer->writeSitemapElement('url', $element);
+    if (!empty($element)) {
+      $writer->writeSitemapElement('url', $element);
+    }
   }
 
   return $link_count;
@@ -241,7 +275,7 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
 /**
  * Generate the index sitemap.
  *
- * @param $sitemap
+ * @param object $sitemap
  *   An unserialized data array for an XML sitemap.
  */
 function xmlsitemap_generate_index(stdClass $sitemap) {
@@ -254,18 +288,17 @@ function xmlsitemap_generate_index(stdClass $sitemap) {
   catch (Exception $e) {
     watchdog_exception('xmlsitemap', $e);
     throw $e;
-    return FALSE;
   }
 
   return $writer->getSitemapElementCount();
 }
 
-// BATCH OPERATIONS ------------------------------------------------------------
-
 /**
+ * BATCH OPERATIONS -----------------------------------------------------------.
+ *
  * Batch information callback for regenerating the sitemap files.
  *
- * @param $smids
+ * @param array $smids
  *   An optional array of XML sitemap IDs. If not provided, it will load all
  *   existing XML sitemaps.
  */
@@ -273,11 +306,8 @@ function xmlsitemap_regenerate_batch(array $smids = array()) {
   if (empty($smids)) {
     $smids = db_query("SELECT smid FROM {xmlsitemap_sitemap}")->fetchCol();
   }
-
-  //$t = get_t();
   $batch = array(
     'operations' => array(),
-    //'error_message' => $t('An error has occurred.'),
     'finished' => 'xmlsitemap_regenerate_batch_finished',
     'title' => t('Regenerating Sitemap'),
     'file' => backdrop_get_path('module', 'xmlsitemap') . '/xmlsitemap.generate.inc',
@@ -371,6 +401,7 @@ function xmlsitemap_regenerate_batch_finished($success, $results, $operations, $
       ),
       WATCHDOG_NOTICE
     );
+    module_invoke_all('xmlsitemap_regenerate_finished');
   }
   else {
     backdrop_set_message(t('The sitemaps were not successfully regenerated.'), 'error');
@@ -392,7 +423,9 @@ function xmlsitemap_rebuild_batch(array $entities, $save_custom = FALSE) {
   $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array('xmlsitemap_rebuild_needed' => TRUE)));
 
   // Purge any links first.
-  $batch['operations'][] = array('xmlsitemap_rebuild_batch_clear', array($entities, (bool) $save_custom));
+  $batch['operations'][] = array('xmlsitemap_rebuild_batch_clear',
+    array($entities, (bool) $save_custom),
+  );
 
   // Fetch all the sitemap links and save them to the {xmlsitemap} table.
   foreach ($entities as $entity) {
@@ -424,22 +457,8 @@ function xmlsitemap_batch_state_set(array $variables) {
  */
 function xmlsitemap_rebuild_batch_clear(array $entities, $save_custom, &$context) {
   if (!empty($entities)) {
-    // Let other modules respond to the rebuild clearing.
-    module_invoke_all('xmlsitemap_rebuild_clear', $entities, $save_custom);
-
-    $query = db_delete('xmlsitemap');
-    $query->condition('type', $entities);
-
-    // If we want to save the custom data, make sure to exclude any links
-    // that are not using default inclusion or priority.
-    if ($save_custom) {
-      $query->condition('status_override', 0);
-      $query->condition('priority_override', 0);
-    }
-
-    $query->execute();
+    xmlsitemap_rebuild_clear($entities, $save_custom);
   }
-
   $context['message'] = t('Purging links.');
 }
 
@@ -481,9 +500,7 @@ function xmlsitemap_rebuild_batch_fetch($entity, &$context) {
 
   // PostgreSQL cannot have the ORDERED BY in the count query.
   $query->entityOrderBy('entity_id');
-
   $limit = 20;
-  //config_get('xmlsitemap.setings', 'batch_limit', 100); // @todo why comment?
   $query->range(0, $limit);
 
   $result = $query->execute();
@@ -492,7 +509,12 @@ function xmlsitemap_rebuild_batch_fetch($entity, &$context) {
   $info['xmlsitemap']['process callback']($ids);
   $context['sandbox']['last_id'] = end($ids);
   $context['sandbox']['progress'] += count($ids);
-  $context['message'] = t('Now processing %entity @last_id (@progress of @count).', array('%entity' => $entity, '@last_id' => $context['sandbox']['last_id'], '@progress' => $context['sandbox']['progress'], '@count' => $context['sandbox']['max']));
+  $context['message'] = t('Now processing %entity @last_id (@progress of @count).', array(
+    '%entity' => $entity,
+    '@last_id' => $context['sandbox']['last_id'],
+    '@progress' => $context['sandbox']['progress'],
+    '@count' => $context['sandbox']['max'],
+  ));
 
   if ($context['sandbox']['progress'] >= $context['sandbox']['max']) {
     $context['finished'] = 1;
@@ -514,6 +536,9 @@ function xmlsitemap_rebuild_batch_finished($success, $results, $operations, $ela
   }
 }
 
+/**
+ * Get Rebuildable link types.
+ */
 function xmlsitemap_get_rebuildable_link_types() {
   $rebuild_types = array();
   $entities = xmlsitemap_get_link_info();
@@ -534,4 +559,33 @@ function xmlsitemap_get_rebuildable_link_types() {
   }
 
   return $rebuild_types;
+}
+
+/**
+ * Clear all sitemap links for given entity types.
+ *
+ * @param array $types
+ *   An array of link types.
+ * @param bool $save_custom
+ *   A boolean if links with status or priority overridden should not be
+ *   removed (and hence overridden values not lost).
+ *
+ * @return int
+ *   The number of deleted links.
+ */
+function xmlsitemap_rebuild_clear(array $types, $save_custom) {
+  // Let other modules respond to the rebuild clearing.
+  module_invoke_all('xmlsitemap_rebuild_clear', $types, $save_custom);
+
+  $query = db_delete('xmlsitemap');
+  $query->condition('type', $types);
+
+  // If we want to save the custom data, make sure to exclude any links
+  // that are not using default inclusion or priority.
+  if ($save_custom) {
+    $query->condition('status_override', 0);
+    $query->condition('priority_override', 0);
+  }
+
+  return $query->execute();
 }

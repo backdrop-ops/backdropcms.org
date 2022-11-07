@@ -14,7 +14,7 @@ function metatag_feeds_processor_targets_alter(&$targets, $entity_type, $bundle)
       $targets['meta_' . $name] = array(
         'name' => t('Meta tag: !label', array('!label' => $tag['label'])),
         'callback' => 'metatag_feeds_set_target',
-        'description' => $tag['description'],
+        'description' => (!empty($tag['description'])) ? $tag['description'] : '',
       );
     }
   }

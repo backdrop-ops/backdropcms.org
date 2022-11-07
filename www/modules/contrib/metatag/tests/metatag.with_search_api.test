@@ -63,7 +63,7 @@ class MetatagCoreWithSearchAPITest extends MetatagTestHelper {
       'administer search_api',
     );
     $this->adminUser = $this->createAdminUser($perms);
-    $this->drupalLogin($this->adminUser);
+    $this->backdropLogin($this->adminUser);
 
     // Create an index.
     $this->indexId = 'test_index';
@@ -97,16 +97,16 @@ class MetatagCoreWithSearchAPITest extends MetatagTestHelper {
       'description' => 'A server used for testing.',
       'class' => 'metatag_search_test_service',
     );
-    $this->drupalPost('admin/config/search/search_api/add_server', $values, 'Create server');
+    $this->backdropPost('admin/config/search/search_api/add_server', $values, 'Create server');
 
     // Configure the server.
-    $this->drupalPost(NULL, array(), 'Create server');
+    $this->backdropPost(NULL, array(), 'Create server');
     $this->assertText(t('The server was successfully created.'));
-    $this->drupalGet('admin/config/search/search_api');
+    $this->backdropGet('admin/config/search/search_api');
     $values = array(
       'server' => $this->serverId,
     );
-    $this->drupalPost("admin/config/search/search_api/index/{$this->indexId}/edit", $values, 'Save settings');
+    $this->backdropPost("admin/config/search/search_api/index/{$this->indexId}/edit", $values, 'Save settings');
     $this->clickLink(t('enable'));
 
     // Enable meta tags for the 'page' content type.
@@ -118,18 +118,18 @@ class MetatagCoreWithSearchAPITest extends MetatagTestHelper {
    */
   public function testAlter() {
     // Add a node with keywords.
-    $node = $this->drupalCreateNode();
+    $node = $this->backdropCreateNode();
     $keywords = 'puppies, rainbows';
     $values = array(
       'metatags[' . LANGUAGE_NONE . '][keywords][value]' => $keywords,
     );
-    $this->drupalPost('node/' . $node->nid . '/edit', $values, 'Save');
+    $this->backdropPost('node/' . $node->nid . '/edit', $values, 'Save');
 
     // Index the node.
-    $this->drupalPost("admin/config/search/search_api/index/{$this->indexId}", array(), 'Index now');
+    $this->backdropPost("admin/config/search/search_api/index/{$this->indexId}", array(), 'Index now');
 
     // Check whether the keywords have been indexed.
-    $this->assertIdentical(variable_get('metatag_search_test_keywords', FALSE), $keywords);
+    $this->assertIdentical(state_get('metatag_search_test_keywords', FALSE), $keywords);
   }
 
 }

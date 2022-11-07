@@ -7,7 +7,7 @@
  */
 
 /*~ class.phpmailer.php
-Orginal release information:
+Original release information:
 .---------------------------------------------------------------------------.
 |  Software: PHPMailer - PHP email class                                    |
 |   Version: 5.1                                                            |
@@ -310,7 +310,7 @@ class PHPMailer {
   // PROPERTIES, PRIVATE AND PROTECTED
   /////////////////////////////////////////////////
 
-  private   $smtp           = NULL;
+  protected $smtp           = NULL;
   private   $to             = array();
   private   $cc             = array();
   private   $bcc            = array();
@@ -325,6 +325,7 @@ class PHPMailer {
   private   $sign_key_file  = "";
   private   $sign_key_pass  = "";
   private   $exceptions     = FALSE;
+  private   $logging;
 
   /////////////////////////////////////////////////
   // CONSTANTS
@@ -343,6 +344,7 @@ class PHPMailer {
    * @param boolean $exceptions Should we throw external exceptions?
    */
   public function __construct($exceptions = FALSE) {
+    $this->logging = variable_get('smtp_debugging', SMTP_LOGGING_ERRORS);
     $this->exceptions = ($exceptions == TRUE);
   }
 
@@ -455,7 +457,9 @@ class PHPMailer {
    */
   private function AddAnAddress($kind, $address, $name = '') {
     if (!preg_match('/^(to|cc|bcc|ReplyTo)$/', $kind)) {
-      echo 'Invalid recipient array: ' . kind;
+      if ($this->logging) {
+        watchdog('smtp', 'Invalid recipient array: %kind', array('%kind' => $kind), WATCHDOG_ERROR);
+      }
       return FALSE;
     }
     $address = trim($address);
@@ -465,7 +469,9 @@ class PHPMailer {
       if ($this->exceptions) {
         throw new phpmailerException(t('Invalid address') . ': ' . $address);
       }
-      echo t('Invalid address') . ': ' . $address;
+      if ($this->logging) {
+        watchdog('smtp', 'Invalid address: %address', array('%address' => $address), WATCHDOG_ERROR);
+      }
       return FALSE;
     }
     if ($kind != 'ReplyTo') {
@@ -498,7 +504,9 @@ class PHPMailer {
       if ($this->exceptions) {
         throw new phpmailerException(t('Invalid address') . ': ' . $address);
       }
-      echo t('Invalid address') . ': ' . $address;
+      if ($this->logging) {
+        watchdog('smtp', 'Invalid address: %address', array('%address' => $address), WATCHDOG_ERROR);
+      }
       return FALSE;
     }
     $this->From = $address;
@@ -588,7 +596,9 @@ class PHPMailer {
       if ($this->exceptions) {
         throw $e;
       }
-      echo $e->getMessage() . "\n";
+      if ($this->logging) {
+        watchdog_exception('smtp', $e);
+      }
       return FALSE;
     }
   }
@@ -612,7 +622,7 @@ class PHPMailer {
       $old_from = ini_get('sendmail_from');
       ini_set('sendmail_from', $this->Sender);
       if ($this->SingleTo === TRUE && count($toArr) > 1) {
-        foreach ($toArr as $key => $val) {
+        foreach ($toArr as $val) {
           $rt = @mail($val, $this->EncodeHeader($this->SecureHeader($this->Subject)), $body, $header, $params);
           // implement call back function if it exists
           $isSent = ($rt == 1) ? 1 : 0;
@@ -628,7 +638,7 @@ class PHPMailer {
     }
     else {
       if ($this->SingleTo === TRUE && count($toArr) > 1) {
-        foreach ($toArr as $key => $val) {
+        foreach ($toArr as $val) {
           $rt = @mail($val, $this->EncodeHeader($this->SecureHeader($this->Subject)), $body, $header, $params);
           // implement call back function if it exists
           $isSent = ($rt == 1) ? 1 : 0;
@@ -742,10 +752,11 @@ class PHPMailer {
     $hosts = explode(';', $this->Host);
     $index = 0;
     $connection = $this->smtp->Connected();
+    $lastexception = NULL;
 
     // Retry while there is no connection
-    try {
-      while ($index < count($hosts) && !$connection) {
+    while ($index < count($hosts) && !$connection) {
+      try {
         $hostinfo = array();
         if (preg_match('/^(.+):([0-9]+)$/', $hosts[$index], $hostinfo)) {
           $host = $hostinfo[1];
@@ -780,14 +791,24 @@ class PHPMailer {
             }
           }
         }
-        $index++;
-        if (!$connection) {
-          throw new phpmailerException(t('SMTP Error: Could not connect to SMTP host.'));
+      } catch (phpmailerException $e) {
+        if ($connection) {
+          $this->SmtpClose();
+          $connection = FALSE;
         }
+
+        $lastexception = $e;
       }
-    } catch (phpmailerException $e) {
-      $this->smtp->Reset();
-      throw $e;
+
+      $index++;
+    }
+    if (!$connection) {
+      if ($lastexception != NULL) {
+        throw $lastexception;
+      }
+      else {
+        throw new phpmailerException(t('SMTP Error: Could not connect to SMTP host.'));
+      }
     }
     return TRUE;
   }
@@ -1311,7 +1332,9 @@ class PHPMailer {
       if ($this->exceptions) {
         throw $e;
       }
-      echo $e->getMessage() . "\n";
+      if ($this->logging) {
+        watchdog_exception('smtp', $e);
+      }
       if ( $e->getCode() == self::STOP_CRITICAL ) {
         return FALSE;
       }
@@ -1611,7 +1634,7 @@ class PHPMailer {
     $eol = "\r\n";
     $escape = '=';
     $output = '';
-    while ( list(, $line) = each($lines) ) {
+    foreach ($lines as $line) {
       $linlen = strlen($line);
       $newline = '';
       for ($i = 0; $i < $linlen; $i++) {
@@ -1644,7 +1667,7 @@ class PHPMailer {
         $newline .= $c;
       } // end of for
       $output .= $newline . $eol;
-    } // end of while
+    } // end of foreach
     return $output;
   }
 
@@ -2167,7 +2190,6 @@ class PHPMailer {
    * @param string $key_pass Password for private key
    */
   public function DKIM_QP($txt) {
-    $tmp="";
     $line="";
     for ($i=0;$i<strlen($txt);$i++) {
       $ord=ord($txt[$i]);

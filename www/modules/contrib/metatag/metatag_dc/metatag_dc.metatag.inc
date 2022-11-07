@@ -210,5 +210,5 @@ function _metatag_dc_dcmi_type_vocabulary_options() {
     'StillImage',
     'Text',
   );
-  return drupal_map_assoc($options);
+  return backdrop_map_assoc($options);
 }

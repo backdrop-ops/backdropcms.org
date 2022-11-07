@@ -46,9 +46,14 @@ function metatag_opengraph_metatag_bundled_config_alter(array &$configs) {
             'og:description' => array('value' => '[node:summary]'),
             'og:title' => array('value' => '[node:title]'),
             'og:updated_time' => array('value' => '[node:changed:custom:c]'),
-            'og:image' => array('value' => '[node:field_image]'),
-            'og:image:url' => array('value' => '[node:field_image]'),
           );
+          // Set defaults for og:image if the default "field_image" exists.
+          if (field_info_field('field_image')) {
+            $config['config'] += array(
+              'og:image' => array('value' => '[node:field_image]'),
+              'og:image:url' => array('value' => '[node:field_image]'),
+            );
+          }
           break;
 
         case 'taxonomy_term':

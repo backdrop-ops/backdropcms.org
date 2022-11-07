@@ -43,7 +43,7 @@ class MetatagBulkRevertTest extends MetatagTestHelper {
     // Confirm each of the languages has a checkbox.
     $this->assertFieldByName("languages[" . LANGUAGE_NONE . "]");
     foreach (language_list() as $language) {
-      $this->assertFieldByName("languages[{$language->language}]");
+      $this->assertFieldByName("languages[{$language->langcode}]");
     }
   }
 

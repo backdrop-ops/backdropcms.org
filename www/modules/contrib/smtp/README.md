@@ -16,6 +16,10 @@ Installation
   SMTP Authentication (admin/config/system/smtp) and enter the required
   information.
 
+- To send SMTP mail using OAuth2 authentication (required for Google mail),
+install the SMTP OAuth Authentication submodule (part of this package) and the
+[Google Auth](https://backdropcms.org/project/gauth) module (which it depends
+upon).
 
 Requirements
 ------------
@@ -66,3 +70,6 @@ This module is a port of the SMTP module for Drupal which was written and mainta
 - wundo (https://www.drupal.org/u/wundo)
 - Drupal maintenance sponsored by Chuva Inc. <http://chuva-inc.com/>
 - This module uses the smtp and mail class's from PHPMailer. (https://github.com/PHPMailer/PHPMailer)
+
+The SMTP OAuth Authentication submodule was written for Drupal by [Sadashiv Dalvi](https://github.com/sadashivdalvi) and ported to Backdrop by [Robert J. Lang](https://github.com/bugfolder).
+

@@ -26,7 +26,7 @@ function xmlsitemap_requirements($phase) {
       'value' => $t('Disabled'),
       'severity' => REQUIREMENT_ERROR,
       'description' => $t("The XML sitemap module requires you to enable the PHP extensions in the following list (see the <a href=\"@xmlsitemap_requirements\">module's system requirements page</a> for more information):", array(
-        '@xmlsitemap_requirements' => 'http://drupal.org/documentation/modules/xmlsitemap/requirements',
+        '@xmlsitemap_requirements' => 'https://www.drupal.org/documentation/modules/xmlsitemap/requirements',
       )) . theme('item_list', array('items' => $missing_extensions)),
     );
   }
@@ -51,7 +51,7 @@ function xmlsitemap_requirements($phase) {
     if (!xmlsitemap_check_directory()) {
       $requirements['xmlsitemap_directory']['value'] = $t('Not found or not writable');
       $requirements['xmlsitemap_directory']['severity'] = REQUIREMENT_ERROR;
-      $requirements['xmlsitemap_directory']['description'] = $t('The directory %directory was not found or is not writable by the server. See <a href="@docpage">@docpage</a> for more information.', array('%directory' => xmlsitemap_get_directory(), '@docpage' => 'http://drupal.org/node/34025'));
+      $requirements['xmlsitemap_directory']['description'] = $t('The directory %directory was not found or is not writable by the server. See <a href="@docpage">@docpage</a> for more information.', array('%directory' => xmlsitemap_get_directory(), '@docpage' => 'https://www.drupal.org/node/244924'));
     }
     else {
       $directories = xmlsitemap_check_all_directories();
@@ -63,7 +63,11 @@ function xmlsitemap_requirements($phase) {
       if (!empty($directories)) {
         $requirements['xmlsitemap_directory']['value'] = $t('Not found or not writable');
         $requirements['xmlsitemap_directory']['severity'] = REQUIREMENT_ERROR;
-        $requirements['xmlsitemap_directory']['description'] = $t('The following directories were not found or are not writable by the server. See <a href="@docpage">@docpage</a> for more information. !directories', array('!directories' => theme('item_list', array('items' => array_keys($directories))), '@docpage' => 'http://drupal.org/node/34025'));
+        $requirements['xmlsitemap_directory']['description'] = $t('The following directories were not found or are not writable by the server. See <a href="@docpage">@docpage</a> for more information. !directories', array(
+          '!directories' => theme('item_list', array(
+            'items' => array_keys($directories),
+          )), '@docpage' => 'https://www.drupal.org/node/244924',
+        ));
       }
     }
 
@@ -89,7 +93,7 @@ function xmlsitemap_requirements($phase) {
         'severity' => REQUIREMENT_ERROR,
       );
       if (!in_array(xmlsitemap_get_chunk_size(), array(50000, 'auto'))) {
-        $requirements['xmlsitemap_chunk_count']['description'] .= ' ' . t('Please increase the number of links per page.');
+        $requirements['xmlsitemap_chunk_count']['description'] .= ' ' . $t('Please increase the number of links per page.');
       }
     }
 
@@ -112,7 +116,10 @@ function xmlsitemap_requirements($phase) {
     $generated_ago = REQUEST_TIME - $generated_last;
     $requirements['xmlsitemap_generated'] = array(
       'title' => $t('XML sitemap'),
-      'value' => $generated_last ? $t('Last attempted generation on !date (!interval ago).', array('!date' => format_date($generated_last, 'small'), '!interval' => format_interval($generated_ago))) : $t('Cached files have not been generated yet.'),
+      'value' => $generated_last ? $t('Last attempted generation on !date (!interval ago).', array(
+        '!date' => format_date($generated_last, 'small'),
+        '!interval' => format_interval($generated_ago),
+      )) : $t('Cached files have not been generated yet.'),
       'severity' => REQUIREMENT_OK,
     );
     if (state_get('xmlsitemap_rebuild_needed', FALSE) && _xmlsitemap_rebuild_form_access()) {
@@ -215,8 +222,8 @@ function xmlsitemap_schema() {
         'type' => 'float',
         'default' => NULL,
         // @todo Convert this field to non-nullable.
-        //'default' => 0.5,
-        //'not null' => NULL,
+        // 'default' => 0.5,
+        // 'not null' => NULL,
       ),
       'priority_override' => array(
         'description' => 'A boolean that if TRUE means that the priority field has been overridden from its default value.',
@@ -287,13 +294,15 @@ function xmlsitemap_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      //'queued' => array(
+      // @codingStandardsIgnoreStart
+      // 'queued' => array(
       //  'type' => 'int',
       //  'unsigned' => TRUE,
       //  'not null' => TRUE,
       //  'default' => 0,
       //  'description' => 'Time when this sitemap was queued for regeneration, 0 if not queued.',
-      //),
+      // ),.
+      // @codingStandardsIgnoreEnd
     ),
     'primary key' => array('smid'),
   );
@@ -345,7 +354,9 @@ function xmlsitemap_install() {
   // @todo Does the sitemap show up on first install or is it a 404 page?
 
   // Create the link process the queue.
+  // @codingStandardsIgnoreStart
   /** @var BackdropReliableQueueInterface $queue */
+  // @codingStandardsIgnoreEnd
   $queue = BackdropQueue::get('xmlsitemap_link_process', TRUE);
   $queue->createQueue();
 }
@@ -369,7 +380,9 @@ function xmlsitemap_uninstall() {
   xmlsitemap_clear_directory(NULL, TRUE);
 
   // Remove the queue.
+  // @codingStandardsIgnoreStart
   /** @var BackdropReliableQueueInterface $queue */
+  // @codingStandardsIgnoreEnd
   $queue = BackdropQueue::get('xmlsitemap_link_process', TRUE);
   $queue->deleteQueue();
 }
@@ -448,4 +461,29 @@ function xmlsitemap_update_1001() {
   $config->clear('regenerate_needed');
   $config->clear('rebuild_needed');
   $config->save();
+}
+
+/**
+ * Rehash all sitemaps according to new context sorting.
+ */
+function xmlsitemap_update_1002() {
+  _xmlsitemap_sitemap_rehash_all();
+}
+
+/**
+ * Rehash all.
+ */
+function _xmlsitemap_sitemap_rehash_all() {
+  // Reload the schema cache and reprocess all sitemap hashes into smids.
+  backdrop_load('module', 'xmlsitemap');
+  backdrop_get_schema(NULL, TRUE);
+
+  // Force a rehash of all sitemaps.
+  $sitemaps = xmlsitemap_sitemap_load_multiple(FALSE);
+  foreach ($sitemaps as $sitemap) {
+    $hash = xmlsitemap_sitemap_get_context_hash($sitemap->context);
+    if ($hash != $sitemap->smid) {
+      xmlsitemap_sitemap_save($sitemap);
+    }
+  }
 }

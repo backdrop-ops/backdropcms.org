@@ -39,7 +39,7 @@ class MetatagCoreNodeWithI18nTest extends MetatagTestHelper {
     $this->setupLocales();
 
     // Reload the translations.
-    drupal_flush_all_caches();
+    backdrop_flush_all_caches();
     module_load_include('admin.inc', 'i18n_string');
     i18n_string_refresh_group('metatag');
   }

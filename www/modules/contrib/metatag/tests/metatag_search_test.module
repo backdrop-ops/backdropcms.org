@@ -17,31 +17,10 @@ function metatag_search_test_search_api_service_info() {
 }
 
 /**
- * Dummy Search API service class.
+ * Implements hook_autoload_info().
  */
-class MetatagSearchTestSearchApiService extends SearchApiAbstractService {
-
-  /**
-   * @inheritdoc
-   */
-  public function indexItems(SearchApiIndex $index, array $items) {
-    variable_set('metatag_search_test_keywords', FALSE);
-    foreach (array_values($items) as $item) {
-      if (isset($item['metatag_keywords']['value'])) {
-        variable_set('metatag_search_test_keywords', $item['metatag_keywords']['value']);
-      }
-    }
-    return array_keys($items);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function deleteItems($ids = 'all', SearchApiIndex $index = NULL) {}
-
-  /**
-   * @inheritdoc
-   */
-  public function search(SearchApiQueryInterface $query) {}
-
+function metatag_search_test_autoload_info() {
+  return array(
+    'MetatagSearchTestSearchApiService' => 'metatag_search_test.class.inc',
+  );
 }

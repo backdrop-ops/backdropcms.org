@@ -1,0 +1,14 @@
+name = SMTP tests
+description = Contains helper logic for the SMTP tests.
+package = Mail
+backdrop = 1.x
+type = module
+hidden = TRUE
+
+dependencies[] = smtp
+dependencies[] = maillog
+
+; Added by Backdrop CMS packaging script on 2022-10-31
+project = smtp
+version = 1.x-1.7.0
+timestamp = 1667251148
