@@ -15,9 +15,5 @@ modules/contrib/devel
 *.tar
 *.tar.gz
 
-# Ignore libs.
-# 2022-11-04 Can't ignore vendor directories, CiviCRM uses these
-# vendor
-
 # Ignore env vars.
 .env
