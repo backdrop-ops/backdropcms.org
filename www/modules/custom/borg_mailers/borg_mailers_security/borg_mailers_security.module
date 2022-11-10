@@ -66,21 +66,17 @@ function borg_mailers_security_cron_queue_info() {
  * An associative array of email addresses keyed on uid.
  */
 function _borg_mailers_security_subscribers() {
-  $result = db_select('field_data_field_security_mailing_list', 'sl')
-    ->fields('sl', array('entity_id'))
-    ->condition('field_security_mailing_list_value', 1)
+  civicrm_initialize();
+  $groupContacts = \Civi\Api4\GroupContact::get()
+    ->addSelect('uf_match.uf_id', 'email.email')
+    ->addJoin('Email AS email', 'LEFT', ['email.contact_id', '=', 'contact_id'])
+    ->addJoin('UFMatch AS uf_match', 'LEFT', ['uf_match.contact_id', '=', 'contact_id'])
+    ->addWhere('group_id', '=', 6)
     ->execute();
-
-  $uids = [];
-  foreach ($result as $subscriber) {
-    $uids[] = $subscriber->entity_id;
-  }
-  $accounts = user_load_multiple($uids);
   $to = [];
-  foreach ($accounts as $account) {
-    $to[$account->uid] = $account->mail;
+  foreach ($groupContacts as $groupContact) {
+    $to[$groupContact['uf_match.uf_id']] = $groupContact['email.email'];
   }
-
   return $to;
 }
 
