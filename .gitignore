@@ -6,7 +6,7 @@
 private-files
 
 # Ignore developer modules
-modules/contrib/devel
+www/modules/contrib/devel
 
 # Backups. Don't ignore .sql files because CiviCRM uses some of those.
 *.sql.gz
