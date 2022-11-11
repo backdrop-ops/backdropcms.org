@@ -269,12 +269,13 @@ function hook_element_info_alter(&$type) {
  * the browser.
  *
  * This hook by default is not called on pages served by the default page cache,
- * but can be enabled through the $settings['invoke_page_cache_hooks'] option in
+ * but can be enabled through the $settings['page_cache_invoke_hook'] option in
  * settings.php.
  *
  * @param $destination
- *   If this hook is invoked as part of a backdrop_goto() call, then this argument
- *   will be a fully-qualified URL that is the destination of the redirect.
+ *   If this hook is invoked as part of a backdrop_goto() call, then this
+ *   argument will be a fully-qualified URL that is the destination of the
+ *   redirect.
  */
 function hook_exit($destination = NULL) {
   db_update('counter')
@@ -1346,7 +1347,7 @@ function hook_forms($form_id, $args) {
  * hook_init() instead. In hook_boot(), only the most basic APIs are available
  * and not all modules have been loaded. This hook by default is not called on
  * pages served by the default page cache, but can be enabled through the
- * $settings['invoke_page_cache_hooks'] option in settings.php.
+ * $settings['page_cache_invoke_hook'] option in settings.php.
  *
  * @see hook_init()
  */
@@ -1897,7 +1898,7 @@ function hook_watchdog(array $log_entry) {
  *     or backdrop_mail() for possible id values.
  *   - to: The address or addresses the message will be sent to. The
  *     formatting of this string must comply with RFC 2822.
- *   - subject: Subject of the e-mail to be sent. This must not contain any
+ *   - subject: Subject of the email to be sent. This must not contain any
  *     newline characters, or the mail may not be sent properly. backdrop_mail()
  *     sets this to an empty string when the hook is invoked.
  *   - body: An array of lines containing the message to be sent. Backdrop will
