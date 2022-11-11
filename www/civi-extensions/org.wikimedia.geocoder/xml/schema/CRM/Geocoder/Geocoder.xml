@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<table>
+    <base>CRM/Geocoder</base>
+    <class>Geocoder</class>
+    <name>civicrm_geocoder</name>
+    <comment>Geocoding provider table</comment>
+    <log>true</log>
+
+    <field>
+        <name>id</name>
+        <type>int unsigned</type>
+        <title>Geocoder ID</title>
+        <required>true</required>
+        <comment>Unique Geocoder ID</comment>
+    </field>
+    <primaryKey>
+        <name>id</name>
+        <autoincrement>true</autoincrement>
+    </primaryKey>
+    <field>
+        <name>name</name>
+        <type>varchar</type>
+        <length>32</length>
+        <comment>Provider name</comment>
+        <required>true</required>
+    </field>
+    <field>
+        <name>title</name>
+        <type>varchar</type>
+        <length>32</length>
+        <comment>Provider Title</comment>
+        <required>true</required>
+    </field>
+    <field>
+        <name>class</name>
+        <type>varchar</type>
+        <length>32</length>
+        <comment>Non generic part of the class name - after Geocoder_Provider. See mgd files for examples</comment>
+        <required>true</required>
+    </field>
+    <field>
+        <name>is_active</name>
+        <type>boolean</type>
+        <comment>Enabled?</comment>
+        <default>0</default>
+    </field>
+    <field>
+        <name>weight</name>
+        <type>int unsigned</type>
+        <comment>Weight</comment>
+    </field>
+    <field>
+        <name>api_key</name>
+        <type>varchar</type>
+        <length>255</length>
+        <comment>API Key or a json array of user customised values.</comment>
+    </field>
+    <field>
+        <name>url</name>
+        <type>varchar</type>
+        <length>255</length>
+        <comment>URL (if required)</comment>
+    </field>
+    <field>
+        <name>required_fields</name>
+        <type>varchar</type>
+        <length>255</length>
+        <comment>Array of fields required for this to parse</comment>
+        <serialize>JSON</serialize>
+    </field>
+    <field>
+        <name>retained_response_fields</name>
+        <type>varchar</type>
+        <length>255</length>
+        <comment>fields to be retained from the response</comment>
+        <default>'["geo_code_1","geo_code_2"]'</default>
+        <serialize>JSON</serialize>
+    </field>
+    <field>
+        <name>datafill_response_fields</name>
+        <type>varchar</type>
+        <length>255</length>
+        <comment>fields retained to fill but not overwrite data</comment>
+        <serialize>JSON</serialize>
+    </field>
+    <field>
+        <name>threshold_standdown</name>
+        <type>int</type>
+        <length>11</length>
+        <default>60</default>
+        <title>Threshold Standdown</title>
+        <comment>Number of seconds to wait before retrying after hitting threshold. Geocaching delayed in this time</comment>
+    </field>
+    <field>
+        <name>threshold_last_hit</name>
+        <type>timestamp</type>
+        <required>false</required>
+        <comment>Timestamp when the threshold was last hit.</comment>
+    </field>
+    <field>
+        <name>valid_countries</name>
+        <type>string</type>
+        <length>255</length>
+        <comment>Countries this geocoder is valid for</comment>
+        <required>false</required>
+        <serialize>JSON</serialize>
+    </field>
+</table>

@@ -1,0 +1,41 @@
+{
+    "name": "geo6/geocoder-php-addok-provider",
+    "type": "library",
+    "description": "Geocoder addok adapter",
+    "keywords": [],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonathan Beliën",
+            "email": "jbe@geo6.be"
+        }
+    ],
+    "require": {
+        "php": "^7.3 || ^8.0",
+        "geocoder-php/common-http": "^4.0",
+        "willdurand/geocoder": "^4.0"
+    },
+    "provide": {
+        "geocoder-php/provider-implementation": "1.0"
+    },
+    "require-dev": {
+        "geocoder-php/provider-integration-tests": "^1.0",
+        "php-http/curl-client": "^2.0",
+        "php-http/message": "^1.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Geocoder\\Provider\\Addok\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "phpunit",
+        "test-ci": "phpunit --coverage-text --coverage-clover=coverage.clover"
+    }
+}
