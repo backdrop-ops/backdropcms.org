@@ -6,10 +6,9 @@
 private-files
 
 # Ignore developer modules
-modules/contrib/devel
+www/modules/contrib/devel
 
 # Backups.
-*.sql
 *.sql.gz
 *.tgz
 *.tar
@@ -17,8 +16,3 @@ modules/contrib/devel
 
 # Ignore env vars.
 .env
-
-# Ignore local CiviCRM settings
-civicrm.settings.local.php
-
-# Note that Backdrop's settings.local.php is .gitignored at www/.gitignore.
