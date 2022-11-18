@@ -38,59 +38,12 @@ function restrict_abusive_words_admin_form($form, &$form_state) {
     'prevent_form' => t('Prevent the form from being submitted until abusive words are removed.'),
     'deactive_form' => t('Submit the form as usual, but then unpublish the content, or block the user.'),
   );
+
   $form['restrict_abusive_words_actions'] = array(
     '#type' => 'radios',
     '#title' => t('How should abusive words be handled?'),
     '#options' => $actions,
     '#default_value' => $config->get('restrict_abusive_words_actions'),
-  );
-
-  $form['restrict_abusive_words_message_validate'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display a message when the form is submitted'),
-    '#default_value' => $config->get('restrict_abusive_words_message_validate'),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="restrict_abusive_words_actions"]' => array('value' => 'prevent_form'),
-      ),
-    ),
-  );
-  $form['restrict_abusive_words_message_validate_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Validation message text'),
-    '#size' => 120,
-    '#default_value' => $config->get('restrict_abusive_words_message_validate_text'),
-    '#description' => 'Default value: ' . t('The phrase %word is not allowed. Please replace the phrase and try again.'),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="restrict_abusive_words_actions"]' => array('value' => 'prevent_form'),
-        ':input[name="restrict_abusive_words_message_validate"]' => array('checked' => TRUE),
-      ),
-    ),
-  );
-
-  $form['restrict_abusive_words_message_submit'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Display a message when the form is submitted'),
-    '#default_value' => $config->get('restrict_abusive_words_message_submit'),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="restrict_abusive_words_actions"]' => array('value' => 'deactive_form'),
-      ),
-    ),
-  );
-  $form['restrict_abusive_words_message_submit_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Submit message text'),
-    '#size' => 120,
-    '#default_value' => $config->get('restrict_abusive_words_message_submit_text'),
-    '#description' => 'Default value: ' . t('%title has been deactivated because the phrase %word is not allowed.'),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="restrict_abusive_words_actions"]' => array('value' => 'deactive_form'),
-        ':input[name="restrict_abusive_words_message_submit"]' => array('checked' => TRUE),
-      ),
-    ),
   );
 
   $form['restrict_abusive_words_search'] = array(
