@@ -37,6 +37,10 @@ restrict_abusive_words - make messages configurable.
   https://github.com/backdrop-contrib/restrict_abusive_words/issues/4
   https://patch-diff.githubusercontent.com/raw/backdrop-contrib/restrict_abusive_words/pull/6.patch
 
+restrict_abusive_words - search within words.
+  https://github.com/backdrop-contrib/restrict_abusive_words/issues/3
+  https://patch-diff.githubusercontent.com/raw/backdrop-contrib/restrict_abusive_words/pull/7.patch
+
 spambot - move last checked uid to state
   https://github.com/backdrop-contrib/spambot/issues/4
   https://github.com/backdrop-contrib/spambot/pull/5.patch

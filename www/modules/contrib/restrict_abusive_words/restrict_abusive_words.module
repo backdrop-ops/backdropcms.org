@@ -441,13 +441,26 @@ function _restrict_abusive_words_comment_form_submit(&$form, &$form_state) {
  *   TRUE if the word is restructed, FALSE if not.
  */
 function _restrict_abusive_words_search_words($words, $string) {
+  $setting = config_get('restrict_abusive_words.settings', 'restrict_abusive_words_search');
   if (!empty($string) && isset($words)) {
-    foreach ($words as $word) {
-      if (preg_match("/\b$word\b/i", $string)) {
-        return $word;
+    if ($setting == 'words') {
+      foreach ($words as $word) {
+        $safe_word = preg_quote($word, '/');
+        if (preg_match("/\b$safe_word\b/i", $string)) {
+          return $word;
+        }
+      }
+    }
+    elseif ($setting == 'parts') {
+      foreach ($words as $word) {
+        $safe_word = preg_quote($word, '/');
+        if (preg_match("/$safe_word/i", $string)) {
+          return $word;
+        }
       }
     }
   }
+  
   return FALSE;
 }
 

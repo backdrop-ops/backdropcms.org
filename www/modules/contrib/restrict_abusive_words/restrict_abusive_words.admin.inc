@@ -93,6 +93,16 @@ function restrict_abusive_words_admin_form($form, &$form_state) {
     ),
   );
 
+  $form['restrict_abusive_words_search'] = array(
+    '#type' => 'radios',
+    '#title' => t('How to search for abusive words?'),
+    '#options' => array(
+      'words' => t('Search for complete words only. Example: casino would NOT match casinoroyale.'),
+      'parts' => t('Also Search witin words. Example: casino would match casinoroyale.'),
+    ),
+    '#default_value' => $config->get('restrict_abusive_words_search'),
+  );
+
   // @todo - convert to permission.
   $form['restrict_abusive_words_disable_user_roles'] = array(
     '#type' => 'checkboxes',
