@@ -513,8 +513,10 @@ function _restrict_abusive_words_get_words_list() {
  *   The word or phrase that is causing the problem.
  */
 function _restrict_abusive_words_validation_message($field, $word) {
+  // 'The phrase %word is not allowed. Please replace the phrase and try again.'
+  $message_text = check_plain(config_get('restrict_abusive_words.settings', 'restrict_abusive_words_message_validate_text'));
   $replacements = array('%word' => $word);
-  $message = t('The word %word is not allowed. Please replace the word and try again.', $replacements);
+  $message = t($message_text, $replacements);
   form_set_error($field, $message);
 }
 
@@ -529,12 +531,13 @@ function _restrict_abusive_words_validation_message($field, $word) {
  *   The word or phrase that is causing the problem.
  */
 function _restrict_abusive_words_submit_message($type, $title, $word) {
+  // '%title has been deactivated because the phrase %word is not allowed.'
+  $message_text = check_plain(config_get('restrict_abusive_words.settings', 'restrict_abusive_words_message_submit_text'));
   $replacements = array(
-    '@type' => $type,
     '%title' => $title,
     '%word' => $word,
   );
-  $message = t('The @type %title has been deactivated because the phrase %word is not allowed.', $replacements);
+  $message = t($message_text, $replacements);
   backdrop_set_message($message, 'warning');
 }
 

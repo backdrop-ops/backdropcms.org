@@ -51,3 +51,15 @@ function restrict_abusive_words_update_1000() {
   variable_del('restrict_abusive_words_entity_node');
   variable_del('restrict_abusive_words_entity_comment');
 }
+
+/**
+ * Adds default values for new settings.
+ */
+function restrict_abusive_words_update_1001() {
+  $config = config('restrict_abusive_words.settings');
+  $config->set('restrict_abusive_words_message_validate', TRUE);
+  $config->set('restrict_abusive_words_message_validate_text', 'The phrase %word is not allowed. Please replace the phrase and try again.');
+  $config->set('restrict_abusive_words_message_submit', TRUE);
+  $config->set('restrict_abusive_words_message_submit_text', '%title has been deactivated because the phrase %word is not allowed.');
+  $config->save();
+}
