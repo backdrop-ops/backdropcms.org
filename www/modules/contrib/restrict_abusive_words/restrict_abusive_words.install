@@ -63,3 +63,12 @@ function restrict_abusive_words_update_1001() {
   $config->set('restrict_abusive_words_message_submit_text', '%title has been deactivated because the phrase %word is not allowed.');
   $config->save();
 }
+
+/**
+ * Adds default values for new settings.
+ */
+function restrict_abusive_words_update_1002() {
+  $config = config('restrict_abusive_words.settings');
+  $config->set('restrict_abusive_words_search', 'words');
+  $config->save();
+}

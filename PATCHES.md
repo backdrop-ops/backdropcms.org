@@ -35,11 +35,11 @@ restrict_abusive_words - prevent PHP notice
 
 restrict_abusive_words - search within words.
   https://github.com/backdrop-contrib/restrict_abusive_words/issues/3
-  https://patch-diff.githubusercontent.com/raw/backdrop-contrib/restrict_abusive_words/pull/7.patch
+  fix committed to -dev
 
 restrict_abusive_words - configurable messages.
   https://github.com/backdrop-contrib/restrict_abusive_words/issues/4
-  https://patch-diff.githubusercontent.com/raw/backdrop-contrib/restrict_abusive_words/pull/6.patch
+  fix committed to -dev
 
 
 spambot - move last checked uid to state

@@ -43,16 +43,7 @@ function restrict_abusive_words_admin_form($form, &$form_state) {
     '#title' => t('How should abusive words be handled?'),
     '#options' => $actions,
     '#default_value' => $config->get('restrict_abusive_words_actions'),
-  );
-
-  $form['restrict_abusive_words_search'] = array(
-    '#type' => 'radios',
-    '#title' => t('How to search for abusive words?'),
-    '#options' => array(
-      'words' => t('Search for complete words only. Example: casino would NOT match casinoroyale.'),
-      'parts' => t('Also Search witin words. Example: casino would match casinoroyale.'),
-    ),
-    '#default_value' => $config->get('restrict_abusive_words_search'),
+    '#required' => TRUE,
   );
 
   $form['restrict_abusive_words_message_validate'] = array(
@@ -100,6 +91,23 @@ function restrict_abusive_words_admin_form($form, &$form_state) {
         ':input[name="restrict_abusive_words_actions"]' => array('value' => 'deactive_form'),
         ':input[name="restrict_abusive_words_message_submit"]' => array('checked' => TRUE),
       ),
+    ),
+  );
+
+  $form['restrict_abusive_words_search'] = array(
+    '#type' => 'radios',
+    '#title' => t('Where to search for abusive words:'),
+    '#options' => array(
+      'words' => t('Search for complete words only.'),
+      'parts' => t('Also Search within words.'),
+    ),
+    '#default_value' => $config->get('restrict_abusive_words_search'),
+    '#required' => TRUE,
+    'words' => array(
+      '#description' => t('Example: "casino" would not match "casinoroyale".'),
+    ),
+    'parts' => array(
+      '#description' => t('Example: "casino" would match "casinoroyale".'),
     ),
   );
 
