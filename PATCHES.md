@@ -41,6 +41,9 @@ restrict_abusive_words - configurable messages.
   https://github.com/backdrop-contrib/restrict_abusive_words/issues/4
   fix committed to -dev
 
+socialfield - prevent PHP notice
+  https://github.com/backdrop-contrib/socialfield/issues/19
+  fix committed to -dev
 
 spambot - move last checked uid to state
   https://github.com/backdrop-contrib/spambot/issues/4

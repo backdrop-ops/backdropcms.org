@@ -312,7 +312,7 @@ function socialfield_field_validate($entity_type, $entity, $field, $instance, $l
   $services = config_get('socialfield.settings', 'services');
   $form_elements = array($field['field_name'], $langcode, 'social_buttons');
   foreach ($items as $delta => &$item) {
-    if (!$item['url']) {
+    if (empty($item['url'])) {
       // No url inserted. Nothing to validate here.
       continue;
     }
