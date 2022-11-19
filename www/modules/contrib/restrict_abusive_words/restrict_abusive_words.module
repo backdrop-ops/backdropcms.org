@@ -210,7 +210,7 @@ function _restrict_abusive_words_user_form_validate(&$form, &$form_state) {
       if ((stripos($key, 'field_') !== FALSE)) {
         if (count($fields[LANGUAGE_NONE]) > 0) {
           foreach ($fields[LANGUAGE_NONE] as $f_key => $val) {
-            if (count($val) > 0) {
+            if (!empty($val)) {
               if (isset($val['value'])) {
                 $check_word = _restrict_abusive_words_search_words($search_string, $form_state['values'][$key][LANGUAGE_NONE][$f_key]['value']);
               }
@@ -328,13 +328,12 @@ function _restrict_abusive_words_user_form_submit(&$form, &$form_state) {
         }
       }
       elseif (($key == 'name') || ($key == 'mail')) {
-        $user = $form_state['user'];
         $check_word = _restrict_abusive_words_search_words($search_string, $form_state['values'][$key]);
       }
 
       if ($check_word !== FALSE) {
         $entity = 'User account';
-        _restrict_abusive_words_submit_message($entity, $user->name, $check_word);
+        _restrict_abusive_words_submit_message($entity, $form_state['values']['name'], $check_word);
         $form_state['values']['status'] = FALSE;
       }
     }
@@ -513,11 +512,19 @@ function _restrict_abusive_words_get_words_list() {
  *   The word or phrase that is causing the problem.
  */
 function _restrict_abusive_words_validation_message($field, $word) {
-  // 'The phrase %word is not allowed. Please replace the phrase and try again.'
-  $message_text = check_plain(config_get('restrict_abusive_words.settings', 'restrict_abusive_words_message_validate_text'));
-  $replacements = array('%word' => $word);
-  $message = t($message_text, $replacements);
-  form_set_error($field, $message);
+  // Only set the message once.
+  $count = &backdrop_static(__FUNCTION__);
+  if (!isset($count)) {
+    $count = 0;
+  }
+  $count++;
+  if ($count == 1) {
+    // 'The phrase %word is not allowed. Please replace the phrase and try again.'
+    $message_text = config_get('restrict_abusive_words.settings', 'restrict_abusive_words_message_validate_text');
+    $replacements = array('%word' => $word);
+    $message = t($message_text, $replacements);
+    form_set_error($field, $message);
+  }
 }
 
 /**
@@ -531,14 +538,22 @@ function _restrict_abusive_words_validation_message($field, $word) {
  *   The word or phrase that is causing the problem.
  */
 function _restrict_abusive_words_submit_message($type, $title, $word) {
-  // '%title has been deactivated because the phrase %word is not allowed.'
-  $message_text = check_plain(config_get('restrict_abusive_words.settings', 'restrict_abusive_words_message_submit_text'));
-  $replacements = array(
-    '%title' => $title,
-    '%word' => $word,
-  );
-  $message = t($message_text, $replacements);
-  backdrop_set_message($message, 'warning');
+  // Only set the message once.
+  $count = &backdrop_static(__FUNCTION__);
+  if (!isset($count)) {
+    $count = 0;
+  }
+  $count++;
+  if ($count == 1) {
+    // '%title has been deactivated because the phrase %word is not allowed.'
+    $message_text = config_get('restrict_abusive_words.settings', 'restrict_abusive_words_message_submit_text');
+    $replacements = array(
+      '%title' => $title,
+      '%word' => $word,
+    );
+    $message = t($message_text, $replacements);
+    backdrop_set_message($message, 'warning');
+  }
 }
 
 /**
