@@ -1,0 +1,28 @@
+<?php
+/**
+ * @file
+ * Anti-spam modifications for BackdropCMS.org.
+ */
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Adds extra validation for known spammer characteristics.
+ */
+function borg_antispam_form_user_register_form_alter(&$form, &$form_state) {
+  $form['#validate'][] = 'borg_antispam_form_user_register_form_validate';
+}
+
+/**
+ * Validation function for user register form.
+ */
+function borg_antispam_form_user_register_form_validate($form, &$form_state) {
+  // A large fraction of spam submissions put the term "merch" in both name
+  // or email address and use a Gmail email address. We'll add an extra barrier
+  // to those submissions.
+  $name = $form_state['values']['name'];
+  $mail = $form_state['values']['mail'];
+  if (strpos(strtolower($name), 'merch') !== FALSE && strpos(strtolower($mail), 'merch') !== FALSE && strpos($mail, 'gmail') !== FALSE) {
+    form_set_error('', t('There is a problem with your submission. Please send an email to info@backdropcms.org with your requested username, email, full name, address information, and interest in Backdrop CMS (i.e., the fields from the registration form) and we will set up your account for you.'));
+  }
+}
