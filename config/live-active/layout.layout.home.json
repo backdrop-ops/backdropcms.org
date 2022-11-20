@@ -22,6 +22,7 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
+            "2ccf25c8-e89e-4531-b83a-585d462a1e02",
             "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "top1": [
@@ -142,6 +143,35 @@
                     "contexts": []
                 },
                 "uuid": "27013356-7af8-4532-8b09-9d2c147ea872",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "2ccf25c8-e89e-4531-b83a-585d462a1e02": {
+            "plugin": "system:page_components:messages",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "page_components",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title_tag": "h1",
+                    "title_classes": "page-title",
+                    "tab_type": "both",
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "2ccf25c8-e89e-4531-b83a-585d462a1e02",
                 "style": {
                     "plugin": "default",
                     "data": {
