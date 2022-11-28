@@ -1,0 +1,273 @@
+<?php
+/**
+ * @file
+ * IP Demerits module.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function ip_demerits_menu() {
+
+  // Configuration
+  $items['admin/config/people/ip-demerits'] = array(
+    'title' => 'IP demerits',
+    'description' => 'Manage IP demerits.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ip_demerits_settings_form'),
+    'access arguments' => array('manage ip demerits'),
+    'file' => 'ip_demerits.admin.inc',
+  );
+
+  // Admin pages (in addition to pages created by Views)
+  $items['admin/people/ip-demerits/create'] = array(
+    'title' => 'IP demerits',
+    'description' => 'Create an IP demerit.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ip_demerits_create_form'),
+    'access arguments' => array('manage ip demerits'),
+    'file' => 'ip_demerits.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/people/ip-details/%'] = array(
+    'title' => 'IP demerits',
+    'description' => 'IP details by IP address',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ip_demerits_ip_details_form', 3),
+    'access arguments' => array('manage ip demerits'),
+    'file' => 'ip_demerits.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  // Autocomplete path for user account
+  $items['ip_demerits_account_autocomplete'] = array(
+    'page callback' => 'ip_demerits_account_autocomplete',
+    'access arguments' => array('manage ip demerits'),
+    'file' => 'ip_demerits.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function ip_demerits_menu_alter(&$items) {
+  foreach ($items as $path => $item) {
+    if ($path == 'user/%/ip') {
+      $items[$path] = array(
+        'title' => 'IP',
+        'description' => 'Manage IP addresses and demerits.',
+        'page callback' => 'backdrop_get_form',
+        'page arguments' => array('ip_demerits_user_ip_view', 1),
+        'access arguments' => array('manage ip addresses'),
+        'file' => backdrop_get_path('module', 'ip_demerits') . '/ip_demerits.pages.inc',
+        'type' => MENU_LOCAL_TASK,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ */
+function ip_demerits_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'menu_alter') {
+    // Make sure we alter the menu items after Views has created its pages.
+    $group = $implementations['ip_demerits'];
+    unset($implementations['ip_demerits']);
+    $implementations['ip_demerits'] = $group;
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function ip_demerits_permission() {
+  return array(
+    'manage ip demerits' => array(
+      'title' => t('Manage IP demerits'),
+      'description' => t('Manage IP demerits for users and configuration settings.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function ip_demerits_config_info() {
+  $prefixes['ip_demerits.settings'] = array(
+    'label' => t('IP Demerits settings'),
+    'group' => t('Configuration'),
+  );
+  $prefixes['views.view.ip_address_users_by_ip'] = array(
+    'label' => t('IP address users by IP'),
+    'group' => t('Views'),
+  );
+  $prefixes['views.view.ip_demerits_ip_totals'] = array(
+    'label' => t('IP demerits - ip totals'),
+    'group' => t('Views'),
+  );
+  $prefixes['views.view.ip_demerits_user_totals'] = array(
+    'label' => t('IP demerits — user totals'),
+    'group' => t('Views'),
+  );
+  $prefixes['views.view.ip_demerits'] = array(
+    'label' => t('IP demerits'),
+    'group' => t('Views'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function ip_demerits_views_api() {
+  return array(
+    'api' => '3.0',
+    'path' => backdrop_get_path('module', 'ip_demerits') . '/views',
+  );
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function ip_demerits_autoload_info() {
+  return array(
+    'IpDemerit' => 'ip_demerits.entity.inc',
+  );
+}
+
+/**
+ * Assign a demerit to an IP address and user.
+ *
+ * @param long $ip
+ *   The ID of the blocked IP address (converted by ip2long()). 0 is allowed and
+ *   means that the IP address is unknown but we still want to give a demerit to
+ *   the account.
+ * @param int uid
+ *   The user ID of the account to be blocked.
+ * @param string points
+ *   The demerit points to assign for this infraction.
+ * @param string reason
+ *   The reason that the demerit was awarded.
+ */
+function ip_demerits_assign($ip, $uid, $points, $reason) {
+  // Add the demerit.
+  db_query('
+    INSERT INTO {ip_demerits}
+    (ip, uid, points, date, reason)
+    VALUES (:ip, :uid, :points, :date, :reason)',
+    array(
+      ':ip' => $ip,
+      ':uid' => $uid,
+      ':points' => $points,
+      ':date' => REQUEST_TIME,
+      ':reason' => $reason,
+    ));
+
+  // Recalculate total for the IP address.
+  $total_points = db_query('
+    SELECT SUM(points)
+    FROM {ip_demerits}
+    WHERE ip = :ip
+    ', array(':ip' => $ip))
+    ->fetchField();
+  db_query('
+    REPLACE INTO {ip_demerits_ip_totals}
+    VALUES (:ip, :points)
+    ', array(':ip' => $ip, ':points' => $total_points));
+
+  // Recalculate total for the uid if uid is nonzero.
+  if ($uid) {
+    $total_points = db_query('
+      SELECT SUM(points)
+      FROM {ip_demerits}
+      WHERE uid = :uid
+      ', array(':uid' => $uid))
+      ->fetchField();
+    db_query('
+      REPLACE INTO {ip_demerits_uid_totals}
+      VALUES (:uid, :points)
+      ', array(':uid' => $uid, ':points' => $total_points));
+  }
+}
+
+/**
+ * Implements hook_entity_info().
+ *
+ * Implement this as an entity so that Views Bulk Operations can apply bulk
+ * operations to it.
+ */
+function ip_demerits_entity_info() {
+  return array(
+    'ip_demerit' => array(
+      'label' => t('IP Demerit'),
+      'entity class' => 'IpDemerit',
+      'base table' => 'ip_demerits',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => 'demerit_id',
+      ),
+      'module' => 'ip_demerits',
+    ),
+  );
+}
+
+/**
+ * Implement hook_action_info().
+ */
+function ip_demerits_action_info() {
+  $actions['ip_demerit_remove'] = array(
+    'label' => t('Remove demerit(s)'),
+    'type' => 'ip_demerit',
+    'callback' => 'ip_demerits_remove_demerit_action',
+    'file' => 'ip_demerits.actions.inc',
+  );
+  return $actions;
+}
+
+/**
+ * Implements hook_user_update().
+ */
+function ip_demerits_user_update($account) {
+  $points = config_get('ip_demerits.settings', 'points_user_blocked');
+  if ($points) {
+    if ($account->status == 0 && $account->original->status == 1) {
+      $ip = _ip_demerits_latest_ip($account);
+      ip_demerits_assign($ip, $account->uid, $points, t('Account was blocked.'));
+      watchdog('ip_demerits', t('A demerit was assigned to IP @ip because account %name was blocked', array(
+        '@ip' => long2ip($ip),
+        '%name' => $account->name)));
+    }
+  }
+}
+
+/**
+ * Implements hook_user_delete().
+ */
+function ip_demerits_user_delete($account) {
+  $points = config_get('ip_demerits.settings', 'points_user_cancelled');
+  if ($points) {
+    $ip = _ip_demerits_latest_ip($account);
+    ip_demerits_assign($ip, $account->uid, $points, t('Account was cancelled.'));
+    watchdog('ip_demerits', t('A demerit was assigned to @ip because account %name was cancelled', array(
+      ':ip' => long2ip($ip),
+      '%name' => $account->name)));
+  }
+}
+
+/**
+ * Return the latest IP address (if any) used by a given user or 0 if none.
+ */
+function _ip_demerits_latest_ip($account) {
+  return (int) db_query('
+    SELECT ip
+    FROM {ip_tracker}
+    WHERE uid = :uid
+    ORDER BY last_visit DESC
+    LIMIT 1
+    ', array(':uid' => $account->uid))
+    ->fetchField();
+}

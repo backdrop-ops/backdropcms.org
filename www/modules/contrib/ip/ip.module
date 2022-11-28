@@ -11,6 +11,7 @@ function ip_permission() {
   return array(
     'manage ip addresses' => array(
       'title' => t('Manage IP addresses'),
+      'description' => t("Manage IP addresses for users. Users with this permission will be able to see other users' IP addresses."),
     ),
   );
 }
@@ -239,15 +240,27 @@ function ip_config_info() {
  */
 function ip_autoload_info() {
   return array(
+    // Original D7 Views handlers for IP addresses
     'Ip2LongArgument' => 'src/Plugin/views/argument/Ip2LongArgument.php',
     'IpUserCountField' => 'src/Plugin/views/field/IpUserCountField.php',
     'Long2IpField' => 'src/Plugin/views/field/Long2IpField.php',
     'Ip2LongFilter' => 'src/Plugin/views/filter/Ip2LongFilter.php',
+
+    // Views handlers that distinguish between anonymous and cancelled accounts
+    'views_handler_argument_uid_status' => 'src/Plugin/views/argument/views_handler_argument_uid_status.inc',
+    'views_handler_field_uid_status' => 'src/Plugin/views/field/views_handler_field_uid_status.inc',
+    'views_handler_filter_uid_status' => 'src/Plugin/views/filter/views_handler_filter_uid_status.inc',
+    'views_handler_sort_uid_status' => 'src/Plugin/views/sort/views_handler_sort_uid_status.inc',
+
+    'views_handler_argument_uid_name' => 'src/Plugin/views/argument/views_handler_argument_uid_name.inc',
+    'views_handler_field_uid_name' => 'src/Plugin/views/field/views_handler_field_uid_name.inc',
+    'views_handler_filter_uid_name' => 'src/Plugin/views/filter/views_handler_filter_uid_name.inc',
+    'views_handler_sort_uid_name' => 'src/Plugin/views/sort/views_handler_sort_uid_name.inc',
   );
 }
 
 // @todo duplicate finder.
 // @todo attach our module's data to nodes/comments ?
-// @todo delete from posts table when object (node/comment) is deleted.
+// @todo delete from posts table when object (node/comment) is cancelled.
 // @todo something like hook_user_operations, but hook_ip_operations
 // @todo handle deleting of comments and nodes.

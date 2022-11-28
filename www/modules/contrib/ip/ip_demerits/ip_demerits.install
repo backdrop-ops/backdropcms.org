@@ -1,0 +1,100 @@
+<?php
+/**
+ * @file
+ * IP demerit module install file.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function ip_demerits_schema() {
+  // Schema for individual demerits
+  $schema['ip_demerits'] = array(
+    'description' => 'Stores IP demerits',
+    'fields' => array(
+       'demerit_id' => array(
+        'description' => 'Primary key: unique ID for a demerit.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'ip' => array(
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The user IP address',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The user ID associated with the demerit',
+      ),
+      'points' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Points assigned to the demerit',
+      ),
+      'date' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Date that the demerit was assigned',
+      ),
+      'reason' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Reason for the demerit',
+      ),
+    ),
+    'primary key' => array('demerit_id'),
+  );
+
+  // Schema for total points by ip
+  $schema['ip_demerits_ip_totals'] = array(
+    'description' => 'Stores IP demerit points by IP address',
+    'fields' => array(
+      'ip' => array(
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The user IP address',
+      ),
+      'points' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Total points assigned to this IP address',
+      ),
+    ),
+    'primary key' => array('ip'),
+  );
+
+  // Schema for total points by uid
+  $schema['ip_demerits_uid_totals'] = array(
+    'description' => 'Stores IP demerit points by user ID',
+    'fields' => array(
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The user ID',
+      ),
+      'points' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Total points assigned to this user ID',
+      ),
+    ),
+    'primary key' => array('uid'),
+  );
+
+
+  return $schema;
+}

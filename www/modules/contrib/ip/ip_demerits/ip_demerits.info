@@ -1,0 +1,13 @@
+name = IP Demerits
+description = Give demerits to IP addresses and/or users and act on them.
+backdrop = 1.x
+type = module
+
+dependencies[] = ip
+
+configure = admin/config/people/ip-demerits
+
+; Added by Backdrop CMS packaging script on 2022-11-28
+project = ip
+version = 1.x-2.1.0
+timestamp = 1669672457

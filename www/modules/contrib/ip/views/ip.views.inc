@@ -10,12 +10,14 @@
 function ip_views_data() {
   $data = array();
 
-  // Table: IP tracker:
-  $data['ip_tracker']['table']['group'] = t('IP Tracker (user)');
+  //
+  // Table: IP tracker
+  //
+  $data['ip_tracker']['table']['group'] = t('IP tracker');
   $data['ip_tracker']['table']['base'] = array(
     'field' => 'uid',
-    'title' => t('IP Tracker (user)'),
-    'help' => t('IP Tracker (user)'),
+    'title' => t('IP tracker'),
+    'help' => t('IP tracker table contains IP addresses, the IDs of the users that visited, and related details.'),
     'weight' => -10,
   );
 
@@ -40,6 +42,46 @@ function ip_views_data() {
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
+    ),
+  );
+
+  // Uid status field
+  $data['ip_tracker']['uid_status'] = array(
+    'title' => t('User id-based status'),
+    'help' => t('Status of user identified by uid (distinguishing anonymous vs cancelled)'),
+    'real field' => 'uid',
+    'field' => array(
+      'handler' => 'views_handler_field_uid_status',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_uid_status',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_uid_status',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_uid_status',
+    ),
+  );
+
+  // Uid name field
+  $data['ip_tracker']['uid_name'] = array(
+    'title' => t('User id-based name'),
+    'help' => t('Name of user identified by uid (distinguishing anonymous vs cancelled)'),
+    'real field' => 'uid',
+    'field' => array(
+      'handler' => 'views_handler_field_uid_name',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_uid_name',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_uid_name',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_uid_name',
     ),
   );
 
@@ -110,7 +152,7 @@ function ip_views_data() {
     ),
   );
 
-  // Last visit
+  // User count
   $data['ip_tracker']['user_count'] = array(
     'title' => t('User count'),
     'help' => t('User count.'),
@@ -120,13 +162,14 @@ function ip_views_data() {
     ),
   );
 
-
-  // Table: IP Posts:
-  $data['ip_posts']['table']['group'] = t('IP Posts');
+  //
+  // Table: IP Posts
+  //
+  $data['ip_posts']['table']['group'] = t('IP posts');
   $data['ip_posts']['table']['base'] = array(
     'field' => 'type',
-    'title' => t('IP Posts (entity)'),
-    'help' => t('IP Posts (entity)'),
+    'title' => t('IP posts'),
+    'help' => t('IP posts table records IP addresses and IDs for various entities.'),
     'weight' => -10,
   );
 
