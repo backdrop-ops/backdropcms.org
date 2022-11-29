@@ -4,3 +4,8 @@ description = "Restrict use of abusive/bad words in the forms all over the site.
 backdrop = 1.x
 package = Other
 configure = admin/config/content/restrict_abusive_words
+
+; Added by Backdrop CMS packaging script on 2022-11-28
+project = restrict_abusive_words
+version = 1.x-2.1.0
+timestamp = 1669682924

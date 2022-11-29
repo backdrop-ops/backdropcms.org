@@ -26,22 +26,16 @@ Installation
   https://backdropcms.org/guide/modules.
 
 - Visit the configuration page under Administration > Configuration >
-  Content authoring > Restrict Abusive Words or
+  Content authoring > Restrict Abusive Words
   (admin/config/content/restrict_abusive_words) and adjust the settings.
 
 - Add abusive words under Administration > Configuration > Content authoring >
   Restrict Abusive Words > Add abusive words
-  (admin/config/content/restrict_abusive_words/add) and Enter abusive words.
+  (admin/config/content/restrict_abusive_words/add) and enter abusive words.
 
 - View the list of abusive words at Administration > Configuration >
   Content authoring > Restrict Abusive Words > List abusive words
-  (admin/config/content/restrict_abusive_words/list)
-
-Documentation
--------------
-
-Additional documentation is located in the Wiki:
-https://github.com/backdrop-contrib/restrict_abusive_words/wiki/Documentation.
+  (admin/config/content/restrict_abusive_words/list).
 
 Issues
 ------
@@ -53,7 +47,7 @@ Current Maintainers
 -------------------
 
 - [Jen Lampton](https://github.com/jenlampton).
-- Seeking additional maintainers.
+- [Robert J. Lang](https://github.com/bugfolder).
 
 Credits
 -------
