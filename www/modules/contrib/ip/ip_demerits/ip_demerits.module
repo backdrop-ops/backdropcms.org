@@ -19,7 +19,7 @@ function ip_demerits_menu() {
     'file' => 'ip_demerits.admin.inc',
   );
 
-  // Admin pages (in addition to pages created by Views)
+  // Admin page (in addition to pages created by Views)
   $items['admin/people/ip-demerits/create'] = array(
     'title' => 'IP demerits',
     'description' => 'Create an IP demerit.',
@@ -28,15 +28,6 @@ function ip_demerits_menu() {
     'access arguments' => array('manage ip demerits'),
     'file' => 'ip_demerits.admin.inc',
     'type' => MENU_NORMAL_ITEM,
-  );
-  $items['admin/people/ip-details/%'] = array(
-    'title' => 'IP demerits',
-    'description' => 'IP details by IP address',
-    'page callback' => 'backdrop_get_form',
-    'page arguments' => array('ip_demerits_ip_details_form', 3),
-    'access arguments' => array('manage ip demerits'),
-    'file' => 'ip_demerits.admin.inc',
-    'type' => MENU_CALLBACK,
   );
 
   // Autocomplete path for user account
@@ -94,48 +85,12 @@ function ip_demerits_permission() {
 }
 
 /**
- * Implements hook_config_info().
- */
-function ip_demerits_config_info() {
-  $prefixes['ip_demerits.settings'] = array(
-    'label' => t('IP Demerits settings'),
-    'group' => t('Configuration'),
-  );
-  $prefixes['views.view.ip_address_users_by_ip'] = array(
-    'label' => t('IP address users by IP'),
-    'group' => t('Views'),
-  );
-  $prefixes['views.view.ip_demerits_ip_totals'] = array(
-    'label' => t('IP demerits - ip totals'),
-    'group' => t('Views'),
-  );
-  $prefixes['views.view.ip_demerits_user_totals'] = array(
-    'label' => t('IP demerits — user totals'),
-    'group' => t('Views'),
-  );
-  $prefixes['views.view.ip_demerits'] = array(
-    'label' => t('IP demerits'),
-    'group' => t('Views'),
-  );
-  return $prefixes;
-}
-
-/**
  * Implements hook_views_api().
  */
 function ip_demerits_views_api() {
   return array(
     'api' => '3.0',
     'path' => backdrop_get_path('module', 'ip_demerits') . '/views',
-  );
-}
-
-/**
- * Implements hook_autoload_info().
- */
-function ip_demerits_autoload_info() {
-  return array(
-    'IpDemerit' => 'ip_demerits.entity.inc',
   );
 }
 
@@ -256,6 +211,66 @@ function ip_demerits_user_delete($account) {
       ':ip' => long2ip($ip),
       '%name' => $account->name)));
   }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add demerits information to the details form for individual IP addresses.
+ */
+function ip_demerits_form_ip_details_form_alter(&$form, &$form_state, $form_id) {
+  $ip = $form_state['build_info']['args'][0];
+  if (user_access('manage ip demerits')) {
+    $form['demerits'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Demerits'),
+    );
+    $total_points = (int) db_query('
+      SELECT points
+      FROM {ip_demerits_ip_totals}
+      WHERE ip = :ip
+      ', array(':ip' => ip2long($ip)))
+      ->fetchField();
+    $form['demerits'][] = array(
+      '#type' => 'help',
+      '#markup' => $total_points ? format_plural($total_points, 'This address has received 1 demerit point.', 'This address has received @points demerit points.', array('@points' => $total_points)) : t('This address has received no demerits.'),
+    );
+    $form['demerits'][] = array(
+      '#markup' => views_embed_view('ip_demerits', 'by_ip', $ip),
+    );
+  }
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function ip_demerits_config_info() {
+  $prefixes['ip_demerits.settings'] = array(
+    'label' => t('IP Demerits settings'),
+    'group' => t('Configuration'),
+  );
+  $prefixes['views.view.ip_demerits_ip_totals'] = array(
+    'label' => t('IP demerits - ip totals'),
+    'group' => t('Views'),
+  );
+  $prefixes['views.view.ip_demerits_user_totals'] = array(
+    'label' => t('IP demerits — user totals'),
+    'group' => t('Views'),
+  );
+  $prefixes['views.view.ip_demerits'] = array(
+    'label' => t('IP demerits'),
+    'group' => t('Views'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function ip_demerits_autoload_info() {
+  return array(
+    'IpDemerit' => 'ip_demerits.entity.inc',
+  );
 }
 
 /**

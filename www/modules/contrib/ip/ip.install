@@ -69,3 +69,10 @@ function ip_schema() {
   );
   return $schema;
 }
+
+/**
+ * Install the new "IP address users by IP" View in existing installations.
+ */
+function ip_update_1200() {
+  config_install_default_config('ip', 'views.view.ip_address_users_by_ip');
+}
