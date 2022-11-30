@@ -11,6 +11,9 @@
 class Ip2LongArgument extends views_handler_argument {
   function query($group_by = FALSE) {
     $this->ensure_my_table();
+    if (!isset($this->options['group'])) {
+      $this->options['group'] = array();
+    }
     $this->query->add_where($this->options['group'], "$this->table_alias.$this->real_field", ip2long($this->argument));
   }
 }

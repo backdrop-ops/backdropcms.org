@@ -5,6 +5,23 @@
  */
 
 /**
+ * Implements hook_menu().
+ */
+function ip_menu() {
+
+  $items['admin/people/ip-details/%'] = array(
+    'title' => 'IP details',
+    'description' => 'IP details by IP address',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('ip_details_form', 3),
+    'access arguments' => array('manage ip addresses'),
+    'file' => 'ip.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
  * Implements hook_permission().
  */
 function ip_permission() {
@@ -230,6 +247,10 @@ function ip_config_info() {
   );
   $prefixes['views.view.ip_tracker_user'] = array(
     'label' => t('IP Address by user'),
+    'group' => t('Views'),
+  );
+  $prefixes['views.view.ip_address_users_by_ip'] = array(
+    'label' => t('IP address users by IP'),
     'group' => t('Views'),
   );
   return $prefixes;
