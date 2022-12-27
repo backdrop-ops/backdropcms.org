@@ -4,6 +4,7 @@
     "name": "news_mentions",
     "title": "News / Mentions",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": -1,
     "storage": 1,
@@ -41,10 +42,13 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "384ca120-51fa-423c-9f2f-4746b1da5968": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -68,6 +72,7 @@
         "4c9f650d-285c-4ac9-a400-bf2c928cf219": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -98,6 +103,7 @@
         "8cb1257b-8c83-48c9-8c00-d631dbad0ac7": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -127,6 +133,7 @@
         "cf391d08-3cac-4242-8100-d11a3cc5f9c2": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -152,6 +159,7 @@
         "e81c9e8e-de17-4a54-881e-308b15e28e75": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -175,6 +183,7 @@
         "6dd45bcc-c42c-4dba-9a12-18833d1ba369": {
             "plugin": "block:7",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "7",
                 "settings": {
@@ -201,6 +210,7 @@
         "d4212fcf-cd32-43b3-be03-03fa628a51f4": {
             "plugin": "block:meeting_schedule",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "meeting_schedule",
                 "settings": {
@@ -227,6 +237,7 @@
         "ea3d1cdf-a469-4514-bf03-3ee430a845cb": {
             "plugin": "views:backdrop_on_the_web-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "backdrop_on_the_web-block_1",
                 "settings": {
@@ -261,6 +272,7 @@
         "fc8f3467-8b1b-4122-9e00-bd55db37d4b2": {
             "plugin": "views:events-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "events-block_1",
                 "settings": {
@@ -295,6 +307,7 @@
         "e586a598-e0a2-485a-8f00-d55fececd52a": {
             "plugin": "block:9",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "9",
                 "settings": {
@@ -321,6 +334,7 @@
         "e4172621-fe71-4f37-9c00-eacabc178b07": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -344,6 +358,7 @@
         "20907d06-4ba4-4056-b900-a84696fc481a": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -378,6 +393,7 @@
         "e440c6d6-5c61-4117-b500-f77e8b966a9e": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -416,6 +432,7 @@
         "c9fdeec9-490e-4f28-a301-1ee083f34202": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

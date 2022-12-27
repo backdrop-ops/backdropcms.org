@@ -22,6 +22,9 @@
             "f8dcb481-1600-4815-b75f-955912953fb7"
         ],
         "top": [],
+        "top1": [],
+        "top2": [],
+        "top3": [],
         "content": [],
         "half1": [
             "5f728f4d-39e1-4374-9100-c8cafcf972cb",
@@ -43,10 +46,13 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "df41d07d-d134-41c7-8100-a6c546e8b011": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -70,6 +76,7 @@
         "f073450f-77af-46fe-9f00-e4d7f8811018": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -100,6 +107,7 @@
         "f8dcb481-1600-4815-b75f-955912953fb7": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -129,6 +137,7 @@
         "5f728f4d-39e1-4374-9100-c8cafcf972cb": {
             "plugin": "block:3",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -156,6 +165,7 @@
         "1fb2f605-7570-4233-b500-fab72e1f92dd": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -181,6 +191,7 @@
         "fe4084b4-503a-4acf-8b47-71644f3dd63f": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -206,6 +217,7 @@
         "d7aeb93d-74af-4baa-8300-dc172dabc48f": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -231,6 +243,7 @@
         "62373681-f984-4684-9900-cd988717ab5b": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -254,6 +267,7 @@
         "cca67b87-a46d-4fde-ba00-e8300baa4bb8": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -288,6 +302,7 @@
         "60aa7959-c169-4586-9502-2e25916a5718": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -327,6 +342,7 @@
         "dfe6b881-4538-4913-800d-132ee764eb60": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {
