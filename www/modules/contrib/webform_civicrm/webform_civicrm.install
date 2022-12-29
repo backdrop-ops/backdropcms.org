@@ -1,0 +1,193 @@
+<?php
+
+/**
+ * @file
+ * Webform CiviCRM module's install, uninstall and upgrade code.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function webform_civicrm_requirements($phase) {
+  $requirements = [];
+
+  if ($phase == 'runtime') {
+    $t = get_t();
+    $status = _webform_civicrm_status();
+
+    if (!$status['webform_civicrm']) {
+      $requirements['webform_civicrm'] = [
+        'title' => 'Webform CiviCRM Integration',
+        'value' => $t('Version error'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => $t('The versions of the Webform CiviCRM Integration, Webform, CiviCRM enabled are not compatible. ') .
+        l($t('See the Webform CiviCRM Integration project page for version compatibility'), 'https://drupal.org/project/webform_civicrm'),
+      ];
+    }
+    else {
+      $requirements['webform_civicrm'] = [
+        'title' => 'Webform CiviCRM Integration',
+        'severity' => REQUIREMENT_OK,
+        'value' => t('Required version of CiviCRM and Webform are enabled.'),
+      ];
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_schema().
+ */
+function webform_civicrm_schema() {
+  $schema = [];
+  $schema['webform_civicrm_forms'] = [
+    'description' => 'CiviCRM settings for individual Webform nodes.',
+    'fields' => [
+      'nid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Webform Node ID',
+      ],
+      'data' => [
+        'type' => 'text',
+        'serialize' => TRUE,
+        'description' => 'Array of entity data for this webform',
+      ],
+      'prefix_known' => [
+        'description' => 'Form prefix for known users.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+      'prefix_unknown' => [
+        'description' => 'Form prefix for unknown users.',
+        'type' => 'text',
+        'not null' => TRUE,
+      ],
+      'message' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Message to show to known users',
+      ],
+      'confirm_subscription' => [
+        'description' => 'Send confirmation for mailing list subscriptions.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'block_unknown_users' => [
+        'description' => 'Only allow known contacts to use form.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'create_new_relationship' => [
+        'description' => 'Create new relationship if duplicate record exists and is expired or inactive.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'create_fieldsets' => [
+        'description' => 'Add fieldsets around contacts.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ],
+      'new_contact_source' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Source label for newly created contacts',
+      ],
+    ],
+    'primary key' => ['nid'],
+  ];
+  $schema['webform_civicrm_submissions'] = [
+    'description' => 'Link between form submissions and CiviCRM data.',
+    'fields' => [
+      'sid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Webform Submission ID',
+      ],
+      'contact_id' => [
+        'type' => 'varchar',
+        'length' => 2000,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'CiviCRM contact ids from this submission',
+      ],
+      'civicrm_data' => [
+        'type' => 'text',
+        'serialize' => TRUE,
+        'description' => 'Array of entity ids for this submission',
+      ],
+    ],
+    'primary key' => ['sid'],
+  ];
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function webform_civicrm_uninstall() {
+  config_set('webform.settings', 'webform_table', FALSE);
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function webform_civicrm_update_last_removed() {
+  return 7402;
+}
+
+/**
+ * Move Webform CiviCRM settings from variables to config.
+ */
+function webform_civicrm_update_1000() {
+  $config = config('webform_civicrm.settings');
+  $config->set('webform_civicrm_help_seen', update_variable_get('webform_civicrm_help_seen', TRUE));
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('webform_civicrm_help_seen');
+}
+
+/**
+ * Set the Webform submissions list to a hard-coded table instead of a View as a temporary fix.
+ * See https://www.drupal.org/node/2389537.
+ * To change, use Backdrop's Configuration management.
+ */
+function webform_civicrm_update_1001() {
+  config_set('webform.settings', 'webform_table', TRUE);
+}
+
+/**
+ * Add field to create new relationship for duplicate records(expired/inactive).
+ */
+function webform_civicrm_update_1002() {
+  $field =  array(
+    'description' => 'Create new relationship if duplicate record exists and is expired or inactive.',
+    'type' => 'int',
+    'size' => 'tiny',
+    'not null' => TRUE,
+    'default' => 0,
+  );
+  if (db_table_exists('webform_civicrm_forms')) {
+    if (!db_field_exists('webform_civicrm_forms', 'create_new_relationship')) {
+      db_add_field('webform_civicrm_forms', 'create_new_relationship', $field);
+    }
+  }
+}

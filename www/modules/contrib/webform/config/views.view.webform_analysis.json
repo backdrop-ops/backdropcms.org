@@ -1,0 +1,67 @@
+{
+    "_config_name": "views.view.webform_analysis",
+    "name": "webform_analysis",
+    "description": "Limit submissions for the webform node's analysis. Query must have sid as a field. Don't duplicate sids in result.",
+    "module": "webform",
+    "storage": 4,
+    "tag": "webform",
+    "disabled": false,
+    "base_table": "webform_submissions",
+    "human_name": "Webform Analysis",
+    "core": "1.0",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": {
+                        "distinct": true
+                    }
+                },
+                "use_more_always": false,
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "none",
+                    "options": {
+                        "offset": "0"
+                    }
+                },
+                "style_plugin": "default",
+                "row_plugin": "fields",
+                "fields": {
+                    "sid": {
+                        "id": "sid",
+                        "table": "webform_submissions",
+                        "field": "sid"
+                    }
+                },
+                "arguments": {
+                    "nid": {
+                        "id": "nid",
+                        "table": "webform_submissions",
+                        "field": "nid",
+                        "default_action": "empty",
+                        "default_argument_type": "fixed",
+                        "summary": {
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "summary_options": {
+                            "items_per_page": "25"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
