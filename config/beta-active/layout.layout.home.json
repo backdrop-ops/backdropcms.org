@@ -22,6 +22,7 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
+            "87df021b-bc2f-43b5-9e00-d11c3aeb5c1c",
             "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "top1": [
@@ -67,6 +68,7 @@
         "0f1b9743-2dc8-4ace-9931-49b69a559232": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -90,6 +92,7 @@
         "97333694-c855-42c7-a205-5ddabdf74185": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -120,6 +123,7 @@
         "27013356-7af8-4532-8b09-9d2c147ea872": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -147,9 +151,39 @@
                 }
             }
         },
+        "87df021b-bc2f-43b5-9e00-d11c3aeb5c1c": {
+            "plugin": "system:page_components:messages",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "page_components",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title_tag": "h1",
+                    "title_classes": "page-title",
+                    "tab_type": "both",
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "87df021b-bc2f-43b5-9e00-d11c3aeb5c1c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d": {
             "plugin": "borg_blocks:tagline",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "tagline",
                 "settings": {
@@ -177,6 +211,7 @@
         "af96a11b-a617-457e-8e00-e6a56cf0f640": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -204,6 +239,7 @@
         "e66902ae-5fac-47b7-8500-b84bff8c4dd9": {
             "plugin": "block:backdrop_live",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "backdrop_live",
                 "settings": {
@@ -233,6 +269,7 @@
         "712c691e-6273-4634-8000-d97d82d86e88": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -261,6 +298,7 @@
         "78355c13-bb46-4609-a607-7fa6192a1afd": {
             "plugin": "block:books",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "books",
                 "settings": {
@@ -288,6 +326,7 @@
         "f763943b-8712-44ff-ba00-e45044734b4b": {
             "plugin": "block:resources",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "resources",
                 "settings": {
@@ -314,6 +353,7 @@
         "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -339,6 +379,7 @@
         "65611a78-5d6e-4d50-8705-058169d6120c": {
             "plugin": "views:showcase-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "showcase-block_1",
                 "settings": {
@@ -373,6 +414,7 @@
         "1bcb4583-cc63-43dc-8908-08af956e6975": {
             "plugin": "borg_project_metrics:backdrop_project_metrics",
             "data": {
+                "status": 1,
                 "module": "borg_project_metrics",
                 "delta": "backdrop_project_metrics",
                 "settings": {
@@ -396,6 +438,7 @@
         "67447c68-4227-4401-ad00-f50c7b1a6690": {
             "plugin": "views:news-block",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "news-block",
                 "settings": {
@@ -430,6 +473,7 @@
         "a9d84586-db47-4e43-a75d-93e603166bfb": {
             "plugin": "views:supporters_home-block_2",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "supporters_home-block_2",
                 "settings": {
@@ -464,6 +508,7 @@
         "ab1a0052-0f34-4e5d-ba00-00f61a41f411": {
             "plugin": "borg_blocks:upgrade",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "upgrade",
                 "settings": {
@@ -487,6 +532,7 @@
         "b91d2e82-5e00-4ea6-a81a-26ef2bb5f78a": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -510,6 +556,7 @@
         "23c3eb78-a138-4cd1-a411-179dc4717218": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -544,6 +591,7 @@
         "d6581d63-76d2-4da6-820e-1445176ab358": {
             "plugin": "block:3",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -570,6 +618,7 @@
         "e8ddbc67-6dbd-4031-b345-693eb3bbc11f": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {
