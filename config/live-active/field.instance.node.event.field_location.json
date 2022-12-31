@@ -11,7 +11,7 @@
         "active": 1,
         "settings": {
             "available_countries": [],
-            "default_country": "US",
+            "default_country": "",
             "format_handlers": {
                 "address": "address",
                 "address_hide_street_two": "address_hide_street_two",
@@ -30,17 +30,7 @@
     "description": "",
     "required": 0,
     "deleted": 0,
-    "default_value": [
-        {
-            "thoroughfare": "",
-            "premise": "",
-            "dependent_locality": "",
-            "locality": "",
-            "administrative_area": "",
-            "postal_code": "",
-            "country": ""
-        }
-    ],
+    "default_value": null,
     "default_value_function": null,
     "settings": {
         "user_register_form": false
