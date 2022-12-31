@@ -373,7 +373,7 @@ function _restrict_abusive_words_node_form_submit(&$form, &$form_state) {
       if ((stripos($key, 'field_') !== FALSE) || ($key == 'body')) {
         if (count($fields[LANGUAGE_NONE]) > 0) {
           foreach ($fields[LANGUAGE_NONE] as $f_key => $val) {
-            if (count($val) > 0) {
+            if (is_array($val) && count($val) > 0) {
               if (isset($val['value'])) {
                 $check_word = _restrict_abusive_words_search_words($search_string, $form_state['values'][$key][LANGUAGE_NONE][$f_key]['value']);
               }
@@ -459,7 +459,7 @@ function _restrict_abusive_words_search_words($words, $string) {
       }
     }
   }
-  
+
   return FALSE;
 }
 
