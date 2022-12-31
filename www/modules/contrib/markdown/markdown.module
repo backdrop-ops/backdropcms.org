@@ -103,7 +103,7 @@ And now some code:
  */
 function _filter_markdown($text, $format) {
   if (!empty($text)) {
-    module_load_include('php', 'markdown', 'includes/MarkdownExtra.inc');
+    module_load_include('inc.php', 'markdown', 'includes/MarkdownExtra');
     $text = \Michelf\MarkdownExtra::defaultTransform($text);
   }
 
@@ -114,7 +114,7 @@ function _filter_markdown($text, $format) {
  * Filter settings callback. Just provides a version overview.
  */
 function _filter_markdown_settings($form, &$form_state, $filter, $format) {
-  module_load_include('php', 'markdown', 'includes/MarkdownExtra.inc');
+  module_load_include('inc.php', 'markdown', 'includes/MarkdownExtra');
 
   $settings['markdown_wrapper'] = array(
     '#type' => 'fieldset',

@@ -268,7 +268,7 @@ function hook_metatag_presave(&$metatags, $entity_type, $entity_id, $revision_id
  * Allows modules to alter the defined list of tokens available
  * for metatag patterns replacements.
  *
- * By default only context (for example: global, node, etc...)
+ * By default, only context (for example: global, node, etc...)
  * related tokens are made available to metatag patterns replacements.
  * This hook allows other modules to extend the default declared tokens.
  *
@@ -282,11 +282,6 @@ function hook_metatag_presave(&$metatags, $entity_type, $entity_id, $revision_id
  * @see metatag_field_attach_form()
  */
 function hook_metatag_token_types_alter(&$options) {
-  // Watchout: $options['token types'] might be empty.
-  if (!isset($options['token types'])) {
-    $options['token types'] = array();
-  }
-
   if ($options['context'] == 'config1') {
     $options['token types'] += array('token_type1', 'token_type2');
   }

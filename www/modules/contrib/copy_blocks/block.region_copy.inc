@@ -44,7 +44,7 @@ class BlockRegionCopy extends Block {
       foreach ($layout->positions[$region] as $uuid) {
         if (isset($layout->content[$uuid])) {
           $block = $layout->content[$uuid];
-          $blocks[] = $block->delta != 'main' ? $this->renderBlock($layout, $block) : '';
+          $blocks[] = ($block->delta != 'main' && $block->status) ? $this->renderBlock($layout, $block) : '';
         }
       }
       $rendered_region = $this->renderRegion($layout, $region, $blocks);
@@ -144,7 +144,7 @@ class BlockRegionCopy extends Block {
     $all_layouts = layout_load_all();
 
     $layout_name = 'default';
-    $region = 'default:header';
+    $region = '';
     if (!empty($this->settings['source_region'])) {
       list($layout_name, ) = explode(':', $this->settings['source_region']);
       $region = $this->settings['source_region'];
@@ -170,10 +170,10 @@ class BlockRegionCopy extends Block {
       ),
     );
 
-      $form['layout_blocks_wrapper'] = array(
-        '#type' => 'container',
-        '#id' => 'layout_blocks_wrapper',
-      );
+    $form['layout_blocks_wrapper'] = array(
+      '#type' => 'container',
+      '#id' => 'layout_blocks_wrapper',
+    );
 
     $form['layout_blocks_wrapper']['source_region'] = array(
       '#type' => 'radios',

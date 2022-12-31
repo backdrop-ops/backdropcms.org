@@ -269,9 +269,12 @@ function metatag_config_edit_form($form, &$form_state, $config) {
 
   $contexts = explode(':', $config['instance']);
   $options['context'] = $contexts[0];
+  $options['token types'] = array();
   if ($contexts[0] != 'global') {
     $info = entity_get_info($contexts[0]);
-    $options['token types'] = array($info['token type']);
+    if ($info) {
+      $options['token types'][] = $info['token type'];
+    }
     // Allow the defined tokens to be modified.
     backdrop_alter('metatag_token_types', $options);
   }
