@@ -1,4 +1,4 @@
-Markdown filter
+Markdown Filter
 =============================
 
 Provides Markdown filter integration for Backdrop input formats. The
@@ -52,13 +52,14 @@ complete text.
 Maintainers
 -----------
 
-- Chris Herberte (https://github.com/chrisherberte)
-- Fredrik Jonsson (https://github.com/frjo)
-- David Norman (https://github.com/deekayen)
+- [Robert J. Lang (bugfolder)](https://github.com/bugfolder)
+- [Chris Herberte](https://github.com/chrisherberte)
+- [Fredrik Jonsson](https://github.com/frjo)
 
 Credits
 -------
-- Markdown created by John Gruber: <http://daringfireball.net>
-- PHP executions by Michel Fortin: <http://www.michelf.com/>
-- Drupal Markdown filter originally by justin2pin: <https://www.drupal.org/project/markdown>
-- Ported to Backdrop by Chris Herberte (https://github.com/chrisherberte)
+- Markdown created by [John Gruber](http://daringfireball.net)
+- PHP executions by [Michel Fortin](http://www.michelf.com/)
+- Drupal Markdown filter originally by [justin2pin](https://www.drupal.org/project/markdown)
+- Ported to Backdrop by [Chris Herberte](https://github.com/chrisherberte)
+

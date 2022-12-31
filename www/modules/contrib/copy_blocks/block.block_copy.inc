@@ -86,7 +86,7 @@ class BlockCopy extends Block {
         '#type' => 'radios',
         '#title' => t('Copy this block'),
         '#parents' => array('source_block'),
-        '#default_value' => $form_state['source_block'],
+        '#default_value' => isset($form_state['source_block']) ? $form_state['source_block'] : '',
         '#options' => $this->layout_available_blocks($form_state),
       );
     }

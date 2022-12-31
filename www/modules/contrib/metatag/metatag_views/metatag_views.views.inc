@@ -14,7 +14,6 @@ function metatag_views_views_plugins() {
     'help' => t('Provides meta tags for views.'),
     'handler' => 'metatag_views_plugin_display_extender_metatags',
     'enabled' => TRUE,
-    'path' => backdrop_get_path('module', 'metatag_views'),
   );
 
   return $plugins;

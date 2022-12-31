@@ -42,6 +42,10 @@ function metatag_autoload_info() {
     'BackdropTitleMetaTag' => 'metatag.inc',
     'BackdropListMetaTag' => 'metatag.inc',
     'BackdropDateIntervalMetaTag' => 'metatag.inc',
+
+    // Search API classes.
+    'MetatagSearchAlterCallback' => 'metatag.search_api.inc',
+
     // Tests.
     'MetatagTestHelper' => 'tests/metatag.helper.test',
     'MetatagCoreUnitTest' => 'tests/metatag.unit.test',
@@ -2124,11 +2128,11 @@ function metatag_preprocess_page(&$variables) {
             // Account for multi-valued tags.
             if (!isset($data['#tag']) && !empty($data[0])) {
               foreach($data as $delta => $subdata) {
-                backdrop_add_html_head($subdata, 'metatag_preprocess_page-' . $tag . '-' . $delta);
+                backdrop_add_html_head($subdata, $tag . '-' . $delta);
               }
             }
             else {
-              backdrop_add_html_head($data, 'metatag_preprocess_page-' . $tag);
+              backdrop_add_html_head($data, $tag);
             }
           }
         }
@@ -2161,7 +2165,7 @@ function metatag_preprocess_maintenance_page(&$variables) {
           }
           // ALl other tags are assumed 'meta' tags.
           else {
-            backdrop_add_html_head($data, 'metatag_preprocess_maintenance_page');
+            backdrop_add_html_head($data, $tag);
           }
         }
       }
