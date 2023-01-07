@@ -1,0 +1,37 @@
+{
+    "_config_name": "field.instance.user.user.field_comp_org",
+    "field_name": "field_comp_org",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Organization",
+    "widget": {
+        "type": "entityreference_autocomplete",
+        "weight": "23",
+        "settings": {
+            "match_operator": "CONTAINS",
+            "size": 60,
+            "path": ""
+        },
+        "module": "entityreference"
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "entityreference_label",
+            "settings": {
+                "link": false,
+                "bypass_access": false
+            },
+            "module": "entityreference",
+            "weight": 17
+        }
+    }
+}
