@@ -1,0 +1,139 @@
+<?php
+/**
+ * @file
+ * CiviCRM Table Prefixes
+ *
+ * Support for creating prefixes for CiviCRM tables so they can be used in
+ * queries with Backdrop tables (e.g., in Views queries).
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function civicrm_table_prefixes_menu() {
+  $items['admin/config/system/civicrm-table-prefixes'] = array(
+    'title' => 'CiviCRM table prefixes',
+    'description' => 'Create prefixes for CiviCRM pages.',
+    'page callback' => 'civicrm_table_prefixes_view',
+    'access arguments' => array('administer site configuration'),
+  );
+  return $items;
+}
+
+/**
+ * Returns the page with information about CiviCRM tables.
+ */
+function civicrm_table_prefixes_view() {
+  $build[] = array(
+    '#type' => 'help',
+    '#markup' => t('Copy the text below into a file and save it as <code>civicrm_table_prefixes.php</code> at the root of your website (at the same level as <code>settings.php</code>). You will need to update this whenever you create additional CiviCRM tables (for example, adding a custom data group).'),
+  );
+
+/*
+  civicrm_initialize();
+  $civicrm_dsn = preg_split('/:\/\/|:|@|\/|\?/', CIVICRM_DSN);
+  $db_user = $civicrm_dsn[1];
+  $db_pass = $civicrm_dsn[2];
+  $db_host = $civicrm_dsn[3];
+  $db_name = $civicrm_dsn[4];
+
+  $prefixes = array();
+  try {
+    $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='$db_name';";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetchAll();
+    foreach ($result as $row) {
+      $table_name = $row['table_name'];
+      // Ignore temporary tables
+      if (strpos($table_name, 'civicrm_tmp_') === FALSE) {
+        $prefixes[$table_name] = "$db_name.";
+      }
+    }
+  }
+  catch(PDOException $e) {
+    backdrop_set_message(t('There was an error reading the CiviCRM db: @error', array('@error' => $e->getMessage())), 'error');
+  }
+ */
+
+  $build['prefixes'] = array(
+    '#type' => 'fieldset',
+  );
+  $prefixes =  _civicrm_table_prefixes_get_from_db();
+  $code = "<pre><code>&lt;?php\nglobal \$civicrm_table_prefixes;\n\$civicrm_table_prefixes = " . var_export($prefixes, TRUE) . ";\n</code></pre>";
+  $build['prefixes']['code'] = array(
+    '#markup' => $code,
+  );
+
+  $build[] = array(
+    '#type' => 'help',
+    '#markup' => t('Put this code at the beginning of your <code>settings.php</code> or <code>settings.local.php</code> file, making the appropriate substitutions indicated. Replace or comment out the existing <code>$database = ...</code> line.'),
+  );
+  $build['settings'] = array(
+    '#type' => 'fieldset',
+  );
+  $build['settings'][] = array(
+    '#markup' => '<pre><code>
+global $civicrm_table_prefixes;
+require_once __DIR__ . \'/civicrm_table_prefixes.php\';
+$databases = array(
+  \'default\' => array (
+    \'default\' =>
+    array (
+      \'driver\' => \'mysql\',
+      \'database\' => \'&lt;Backdrop db name&gt;\',
+      \'username\' => \'&lt;db user&gt;\',
+      \'password\' => \'&lt;db password&gt;\',
+      \'host\' => \'&lt;db host&gt;\',
+      \'port\' => \'&lt;db port&gt;\',
+      \'prefix\' => $civicrm_table_prefixes,
+      \'charset\' => \'utf8mb4\',
+      \'collation\' => \'utf8mb4_general_ci\',
+    ),
+  ),
+);</code></pre>',
+  );
+
+  return $build;
+}
+
+/**
+ * Returns the table of CiviCRM table prefixes.
+ */
+function _civicrm_table_prefixes_get_from_db() {
+  $prefixes = &backdrop_static(__FUNCTION__);
+  if (isset($prefixes)) {
+    return $prefixes;
+  }
+  civicrm_initialize();
+
+  // Get CiviCRM db credentials so we can make our own direct query.
+  $civicrm_dsn = preg_split('/:\/\/|:|@|\/|\?/', CIVICRM_DSN);
+  $db_user = $civicrm_dsn[1];
+  $db_pass = $civicrm_dsn[2];
+  $db_host = $civicrm_dsn[3];
+  $db_name = $civicrm_dsn[4];
+
+  $prefixes = array();
+  try {
+    $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='$db_name';";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetchAll();
+    foreach ($result as $row) {
+      $table_name = $row['table_name'];
+      // Ignore temporary tables
+      if (strpos($table_name, 'civicrm_tmp_') === FALSE) {
+        $prefixes[$table_name] = "$db_name.";
+      }
+    }
+  }
+  catch(PDOException $e) {
+    backdrop_set_message(t('There was an error reading the CiviCRM db: @error', array('@error' => $e->getMessage())), 'error');
+  }
+  return $prefixes;
+}

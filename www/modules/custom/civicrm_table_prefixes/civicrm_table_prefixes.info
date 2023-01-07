@@ -1,0 +1,8 @@
+name = CiviCRM Table Prefixes
+description = Provide prefixes for CiviCRM tables if the CiviCRM db is separate from the Backdrop db table.
+type = module
+backdrop = 1.x
+package = CiviCRM-Contrib
+configure = admin/config/system/civicrm-table-prefixes
+
+dependencies[] = civicrm

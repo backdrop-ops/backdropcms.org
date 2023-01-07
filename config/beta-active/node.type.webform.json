@@ -1,0 +1,53 @@
+{
+    "_config_name": "node.type.webform",
+    "type": "webform",
+    "name": "Webform",
+    "base": "node_content",
+    "description": "Create a new form or questionnaire accessible to users. Submission results and statistics are recorded and accessible to privileged users.",
+    "custom": true,
+    "modified": true,
+    "locked": false,
+    "settings": {
+        "comment_default": "1",
+        "formblock_expose": 0,
+        "formblock_show_help": 0,
+        "menu_default": 0,
+        "menu_options": {
+            "menu-more-developer-resources": 0,
+            "menu-footer-menu": 0,
+            "menu-handbook": 0,
+            "main-menu": 0,
+            "management": 0,
+            "user-menu": 0
+        },
+        "menu_parent": "main-menu:0",
+        "status_default": 1,
+        "scheduling_enabled": 1,
+        "promote_enabled": 1,
+        "promote_default": 0,
+        "sticky_enabled": 1,
+        "sticky_default": 0,
+        "revision_enabled": 1,
+        "revision_default": 0,
+        "node_preview": "1",
+        "node_submitted": 0,
+        "node_submitted_format": "[node:created:medium] by [node:author]",
+        "node_user_picture": true,
+        "hidden_path": 0,
+        "language": 0,
+        "node_permissions": true,
+        "project_behavior": "none",
+        "project_release_version_format": "!api#major%minor%patch#extra",
+        "project_release_api_versions": [
+            ""
+        ],
+        "project_release_type": ""
+    },
+    "module": "node",
+    "node_preview": "1",
+    "help": "",
+    "disabled": false,
+    "has_title": true,
+    "title_label": "Title",
+    "orig_type": "webform"
+}

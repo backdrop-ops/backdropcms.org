@@ -10,6 +10,10 @@ sites/*/settings.local.php
 civicrm.settings.local.php
 sites/*/civicrm.settings.local.php
 
+# Ignore files that change for local installations
+civicrm_table_prefixes.php
+sites/*/civicrm_table_prefixes.php
+
 # Ignore paths that contain user-generated content.
 files
 private

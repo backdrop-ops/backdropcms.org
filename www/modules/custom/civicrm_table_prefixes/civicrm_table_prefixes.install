@@ -1,0 +1,68 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the CiviCRM Table Prefixes module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function civicrm_table_prefixes_requirements($phase) {
+  $requirements = array();
+  if ($phase == 'runtime') {
+
+    $see_config = ' ' . t('See <a href="!url">the configuration page</a>.', array('!url' => url('admin/config/system/civicrm-table-prefixes')));
+    $filename = BACKDROP_ROOT . '/civicrm_table_prefixes.php';
+    if (!file_exists($filename)) {
+      $error = t('File @filename does not exist at !root/.', array('@filename' => $filename)) . $see_config;
+    }
+    else {
+      global $civicrm_table_prefixes;
+      if (empty($civicrm_table_prefixes)) {
+        $error = t('The global variable $civicrm_table_prefixes has not been set in @filename.', array('@filename' => $filename)) . $see_config;
+      }
+      else {
+        // Get prefixes from the CiviCRM db.
+        $db_civicrm_table_prefixes = _civicrm_table_prefixes_get_from_db();
+
+        // Compare the two lists. They should be equal, but might not be if
+        // CiviCRM has added non-temporary tables due to further configuration.
+        if (serialize($civicrm_table_prefixes) != serialize($db_civicrm_table_prefixes)) {
+          $error = t('File civicrm_table_prefixes.php does not match the CiviCRM database.') . $see_config;
+        }
+        else {
+          // Try a simple query to verify that the Backdrup db user has
+          // sufficient privileges on the CiviCRM db.
+          try {
+            $result = db_query('
+              SELECT COUNT(1)
+              FROM {users} u
+              LEFT JOIN {civicrm_uf_match} uf ON uf.uf_id = u.uid
+              ')->fetchField();
+          }
+          catch (PDOException $e) {
+            $pdo_message = str_replace('&#039;', '\'', $e->getMessage());
+            $error = t('There was a problem with the Backdrop db user accessing the CiviCRM db: @error. Please check the permissions for the Backdrop db user to ensure that it can access the CiviCRM db.', array('@error' => $pdo_message));
+          }
+        }
+      }
+    }
+
+    $title = t('CiviCRM table prefixes');
+    if (!empty($error)) {
+      $requirements['civicrm_table_prefixes'] = array(
+        'title' => $title,
+        'value' => $error,
+        'severity' => REQUIREMENT_WARNING,
+      );
+    }
+    else {
+      $requirements['civicrm_table_prefixes'] = array(
+        'title' => $title,
+        'value' => t('There are @num CiviCRM table prefixes defined.', array('@num' => count($civicrm_table_prefixes))),
+        'severity' => REQUIREMENT_OK,
+      );
+    }
+  }
+  return $requirements;
+}
