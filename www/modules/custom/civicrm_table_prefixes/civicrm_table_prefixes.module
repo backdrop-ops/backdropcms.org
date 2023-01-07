@@ -62,7 +62,7 @@ function civicrm_table_prefixes_view() {
     '#type' => 'fieldset',
   );
   $prefixes =  _civicrm_table_prefixes_get_from_db();
-  $code = "<pre><code>&lt;?php\n\$civicrm_table_prefixes = " . var_export($prefixes, TRUE) . ";\n</code></pre>";
+  $code = "<pre><code>&lt;?php\nglobal \$civicrm_table_prefixes;\n\$civicrm_table_prefixes = " . var_export($prefixes, TRUE) . ";\n</code></pre>";
   $build['prefixes']['code'] = array(
     '#markup' => $code,
   );

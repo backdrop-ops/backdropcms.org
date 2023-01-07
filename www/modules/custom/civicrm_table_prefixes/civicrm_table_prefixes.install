@@ -57,7 +57,7 @@ function civicrm_table_prefixes_requirements($phase) {
     else {
       $requirements['civicrm_table_prefixes'] = array(
         'title' => $title,
-        'value' => t('There is a mismatch between civicrm_table_prefixes.php and the CiviCRM database. See <a href="!url">the configuration page</a> for the text to update the file.', array('!url' => url('admin/config/system/civicrm-table-prefixes'))),
+        'value' => t('There is a mismatch between civicrm_table_prefixes.php and the CiviCRM database: @error. See <a href="!url">the configuration page</a> for the text to update the file.', array('@error' => $error, '!url' => url('admin/config/system/civicrm-table-prefixes'))),
         'severity' => REQUIREMENT_WARNING,
       );
     }
