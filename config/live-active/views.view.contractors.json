@@ -459,49 +459,6 @@
                         "vocabulary": "services",
                         "hierarchy": 0,
                         "error_message": 1
-                    },
-                    "field_location_country": {
-                        "id": "field_location_country",
-                        "table": "field_data_field_location",
-                        "field": "field_location_country",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "in",
-                        "value": [],
-                        "group": "1",
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "field_location_country_op",
-                            "label": "Country",
-                            "description": "",
-                            "use_operator": 0,
-                            "operator": "field_location_country_op",
-                            "identifier": "field_location_country",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": 0,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            },
-                            "reduce": 0
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
                     }
                 },
                 "sorts": {
