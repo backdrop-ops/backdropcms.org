@@ -5,7 +5,7 @@ return [
   [
     'name' => 'SavedSearch_Administer_Custom_Fields',
     'entity' => 'SavedSearch',
-    'cleanup' => 'unused',
+    'cleanup' => 'always',
     'update' => 'unmodified',
     'params' => [
       'version' => 4,
@@ -42,7 +42,7 @@ return [
   [
     'name' => 'SavedSearch_Administer_Custom_Fields_SearchDisplay_Table',
     'entity' => 'SearchDisplay',
-    'cleanup' => 'unused',
+    'cleanup' => 'always',
     'update' => 'unmodified',
     'params' => [
       'version' => 4,
@@ -192,6 +192,11 @@ return [
               '=',
               FALSE,
             ],
+          ],
+          'addButton' => [
+            'path' => 'civicrm/admin/custom/group/field/add?reset=1&action=add&gid=[custom_group_id]',
+            'text' => E::ts('Add Custom Field'),
+            'icon' => 'fa-plus',
           ],
         ],
         'acl_bypass' => FALSE,

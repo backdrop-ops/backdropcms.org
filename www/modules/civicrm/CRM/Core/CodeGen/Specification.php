@@ -245,6 +245,12 @@ class CRM_Core_CodeGen_Specification {
 
     $table['fields'] = &$fields;
 
+    // Default label field
+    if (!$table['labelField']) {
+      $possibleLabels = ['label', 'title'];
+      $table['labelField'] = CRM_Utils_Array::first(array_intersect($possibleLabels, array_keys($fields)));
+    }
+
     if ($this->value('primaryKey', $tableXML)) {
       $this->getPrimaryKey($tableXML->primaryKey, $fields, $table);
     }
@@ -413,6 +419,9 @@ class CRM_Core_CodeGen_Specification {
           $field['html'][$htmlOption] = $this->value($htmlOption, $fieldXML->html);
         }
       }
+      if (isset($fieldXML->html->filter)) {
+        $field['html']['filter'] = (array) $fieldXML->html->filter;
+      }
     }
 
     // in multilingual context popup, we need extra information to create appropriate widget
@@ -533,24 +542,23 @@ class CRM_Core_CodeGen_Specification {
    * @return string
    */
   public function composeTitle($name) {
+    $substitutions = [
+      'is_active' => 'Enabled',
+    ];
+    if (isset($substitutions[$name])) {
+      return $substitutions[$name];
+    }
     $names = explode('_', strtolower($name));
-    $title = '';
-    for ($i = 0; $i < count($names); $i++) {
-      if ($names[$i] === 'id' || $names[$i] === 'is') {
-        // id's do not get titles
-        return NULL;
-      }
-
-      if ($names[$i] === 'im') {
-        $names[$i] = 'IM';
+    $allCaps = ['im', 'id'];
+    foreach ($names as $i => $str) {
+      if (in_array($str, $allCaps, TRUE)) {
+        $names[$i] = strtoupper($str);
       }
       else {
-        $names[$i] = ucfirst(trim($names[$i]));
+        $names[$i] = ucfirst(trim($str));
       }
-
-      $title = $title . ' ' . $names[$i];
     }
-    return trim($title);
+    return trim(implode(' ', $names));
   }
 
   /**

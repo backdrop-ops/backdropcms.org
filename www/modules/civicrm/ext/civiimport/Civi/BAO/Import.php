@@ -42,11 +42,21 @@ class Import extends CRM_Core_DAO {
   public static $_primaryKey = ['_id'];
 
   /**
+   * Get the array of import tables in the database.
+   *
+   * Caching is a challenge here as the tables are loaded by the entityTypes hook
+   * before the cache & full class loading is necessarily available. We did have
+   * caching in this function but removed it recently in favour of a static cache in
+   * the other function as that function was 'doing it's work' from the entityTypes
+   * hook anyway.
+   *
+   * In general, call this function from any code that runs late enough in the boot
+   * order that caches/ class loading is available in case it diverges once again
+   * from the lower level function.
+   *
    * @return array
    */
   public static function getImportTables(): array {
-    // This calls a function on the extension file as it is called from `entityTypes`
-    // which can be called very early, before this class is available to that hook.
     return _civiimport_civicrm_get_import_tables();
   }
 

@@ -1140,7 +1140,7 @@ class CRM_Utils_Date {
    *   start date and end date for the relative time frame
    */
   public static function relativeToAbsolute($relativeTerm, $unit) {
-    $now = getdate();
+    $now = getdate(CRM_Utils_Time::time());
     $from = $to = $dateRange = [];
     $from['H'] = $from['i'] = $from['s'] = 0;
     $relativeTermParts = explode('_', $relativeTerm);
@@ -1316,11 +1316,12 @@ class CRM_Utils_Date {
             }
             else {
               $from['Y'] = $fYear - $relativeTermSuffix;
-              $fiscalYear = mktime(0, 0, 0, $from['M'], $from['d'] - 1, $from['Y'] + 1);
+              $fiscalYear = mktime(0, 0, 0, $from['M'], $from['d'] - 1, $from['Y'] + $relativeTermSuffix);
               $fiscalEnd = explode('-', date("Y-m-d", $fiscalYear));
               $to['d'] = $fiscalEnd['2'];
               $to['M'] = $fiscalEnd['1'];
-              $to['Y'] = $fYear;
+              // We need the year from FiscalEnd, instead of just fYear, because these differ if the FY starts on Jan 1
+              $to['Y'] = $fiscalEnd['0'];
               $to['H'] = 23;
               $to['i'] = $to['s'] = 59;
             }
@@ -1927,8 +1928,8 @@ class CRM_Utils_Date {
    *   $fy       Current Fiscal Year
    */
   public static function calculateFiscalYear($fyDate, $fyMonth) {
-    $date = date("Y-m-d");
-    $currentYear = date("Y");
+    $date = date("Y-m-d", CRM_Utils_Time::time());
+    $currentYear = date("Y", CRM_Utils_Time::time());
 
     // recalculate the date because month 4::04 make the difference
     $fiscalYear = explode('-', date("Y-m-d", mktime(0, 0, 0, $fyMonth, $fyDate, $currentYear)));

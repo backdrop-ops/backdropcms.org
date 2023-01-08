@@ -266,9 +266,9 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Import_Parser {
     if (
       CRM_Contact_BAO_Relationship::checkDuplicateRelationship(
         $contactFields,
-        $contactID,
+        (int) $contactID,
         // step 2
-        $relatedContactID
+        (int) $relatedContactID
       )
     ) {
       return [0, 1];
@@ -812,59 +812,56 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Import_Parser {
           $data[$blockName][$loc]['is_primary'] = 1;
         }
 
-        if (1) {
-          if ($fieldName === 'state_province') {
-            // CRM-3393
-            if (is_numeric($value) && ((int ) $value) >= 1000) {
-              $data['address'][$loc]['state_province_id'] = $value;
-            }
-            elseif (empty($value)) {
-              $data['address'][$loc]['state_province_id'] = '';
-            }
-            else {
-              $data['address'][$loc]['state_province'] = $value;
-            }
+        if ($fieldName === 'state_province') {
+          // CRM-3393
+          if (is_numeric($value) && ((int ) $value) >= 1000) {
+            $data['address'][$loc]['state_province_id'] = $value;
           }
-          elseif ($fieldName === 'country_id') {
-            $data['address'][$loc]['country_id'] = $value;
-          }
-          elseif ($fieldName === 'county') {
-            $data['address'][$loc]['county_id'] = $value;
-          }
-          elseif ($fieldName == 'address_name') {
-            $data['address'][$loc]['name'] = $value;
-          }
-          elseif (substr($fieldName, 0, 14) === 'address_custom') {
-            $data['address'][$loc][substr($fieldName, 8)] = $value;
+          elseif (empty($value)) {
+            $data['address'][$loc]['state_province_id'] = '';
           }
           else {
-            $data[$blockName][$loc][$fieldName] = $value;
+            $data['address'][$loc]['state_province'] = $value;
           }
         }
+        elseif ($fieldName === 'country_id') {
+          $data['address'][$loc]['country_id'] = $value;
+        }
+        elseif ($fieldName === 'county') {
+          $data['address'][$loc]['county_id'] = $value;
+        }
+        elseif ($fieldName == 'address_name') {
+          $data['address'][$loc]['name'] = $value;
+        }
+        elseif (substr($fieldName, 0, 14) === 'address_custom') {
+          $data['address'][$loc][substr($fieldName, 8)] = $value;
+        }
+        else {
+          $data[$blockName][$loc][$fieldName] = $value;
+        }
       }
-      if (TRUE) {
-        // @todo - meaningless IF - left to keep whitespace clean in PR.
-        if ($key === 'location') {
-          foreach ($value as $locationTypeId => $field) {
-            foreach ($field as $block => $val) {
-              if ($block === 'address' && array_key_exists('address_name', $val)) {
-                $value[$locationTypeId][$block]['name'] = $value[$locationTypeId][$block]['address_name'];
-              }
+
+      if ($key === 'location') {
+        foreach ($value as $locationTypeId => $field) {
+          foreach ($field as $block => $val) {
+            if ($block === 'address' && array_key_exists('address_name', $val)) {
+              $value[$locationTypeId][$block]['name'] = $value[$locationTypeId][$block]['address_name'];
             }
           }
         }
-        if (in_array($key, ['nick_name', 'job_title', 'middle_name', 'birth_date', 'gender_id', 'current_employer', 'prefix_id', 'suffix_id'])
-          && ($value == '' || !isset($value)) &&
-          ($session->get('authSrc') & (CRM_Core_Permission::AUTH_SRC_CHECKSUM + CRM_Core_Permission::AUTH_SRC_LOGIN)) == 0 ||
-          ($key === 'current_employer' && empty($params['current_employer']))) {
-          // CRM-10128: if auth source is not checksum / login && $value is blank, do not fill $data with empty value
-          // to avoid update with empty values
-          continue;
-        }
-        else {
-          $data[$key] = $value;
-        }
       }
+      if (in_array($key, ['nick_name', 'job_title', 'middle_name', 'birth_date', 'gender_id', 'current_employer', 'prefix_id', 'suffix_id'])
+        && ($value == '' || !isset($value)) &&
+        ($session->get('authSrc') & (CRM_Core_Permission::AUTH_SRC_CHECKSUM + CRM_Core_Permission::AUTH_SRC_LOGIN)) == 0 ||
+        ($key === 'current_employer' && empty($params['current_employer']))) {
+        // CRM-10128: if auth source is not checksum / login && $value is blank, do not fill $data with empty value
+        // to avoid update with empty values
+        continue;
+      }
+      else {
+        $data[$key] = $value;
+      }
+
     }
 
     if (!isset($data['contact_type'])) {
@@ -900,7 +897,7 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Import_Parser {
    * @param int $cid
    *   contact id.
    */
-  public function formatParams(&$params, $cid) {
+  private function formatParams(&$params, $cid) {
     if ($this->isSkipDuplicates()) {
       return;
     }
@@ -917,18 +914,10 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Import_Parser {
     $groupTree = CRM_Core_BAO_CustomGroup::getTree($params['contact_type'], NULL, $cid, 0, NULL);
     CRM_Core_BAO_CustomGroup::setDefaults($groupTree, $defaults, FALSE, FALSE);
 
-    $locationFields = [
-      'address' => 'address',
-    ];
-
     $contact = get_object_vars($contactObj);
 
     foreach ($params as $key => $value) {
-      if ($key == 'id' || $key == 'contact_type') {
-        continue;
-      }
-
-      if (array_key_exists($key, $locationFields)) {
+      if ($key === 'id' || $key === 'contact_type' || $key === 'address') {
         continue;
       }
 
@@ -953,24 +942,22 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Import_Parser {
       }
     }
 
-    foreach ($locationFields as $locKeys) {
-      if (isset($params[$locKeys]) && is_array($params[$locKeys])) {
-        foreach ($params[$locKeys] as $key => $value) {
-          if ($modeFill) {
-            $getValue = CRM_Utils_Array::retrieveValueRecursive($contact, $locKeys);
+    if (isset($params['address']) && is_array($params['address'])) {
+      foreach ($params['address'] as $key => $value) {
+        if ($modeFill) {
+          $getValue = CRM_Utils_Array::retrieveValueRecursive($contact, 'address');
 
-            if (isset($getValue)) {
-              foreach ($getValue as $cnt => $values) {
-                if ((!empty($getValue[$cnt]['location_type_id']) && !empty($params[$locKeys][$key]['location_type_id'])) && $getValue[$cnt]['location_type_id'] == $params[$locKeys][$key]['location_type_id']) {
-                  unset($params[$locKeys][$key]);
-                }
+          if (isset($getValue)) {
+            foreach ($getValue as $cnt => $values) {
+              if ((!empty($getValue[$cnt]['location_type_id']) && !empty($params['address'][$key]['location_type_id'])) && $getValue[$cnt]['location_type_id'] == $params['address'][$key]['location_type_id']) {
+                unset($params['address'][$key]);
               }
             }
           }
         }
-        if (count($params[$locKeys]) == 0) {
-          unset($params[$locKeys]);
-        }
+      }
+      if (count($params['address']) == 0) {
+        unset($params['address']);
       }
     }
   }

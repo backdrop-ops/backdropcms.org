@@ -9,7 +9,7 @@
     },
     controller: function($scope, $element, $timeout, crmApi4, crmStatus, $window, $location, $parse, FileUploader) {
       var schema = {},
-        data = {},
+        data = {extra: {}},
         status,
         args,
         submissionResponse,
@@ -56,7 +56,7 @@
         else {
           args = _.assign({}, $scope.$parent.routeParams || {}, $scope.$parent.options || {});
           _.each(schema, function (entity, entityName) {
-            if (args[entityName] || entity.autofill) {
+            if (args[entityName] || entity.actions.update) {
               toLoad++;
             }
             if (args[entityName] && typeof args[entityName] === 'string') {
@@ -164,6 +164,12 @@
           } else {
             postProcess();
           }
+        })
+        .catch(function(error) {
+          status.resolve();
+          status = CRM.status(error.error_message, 'error');
+          $element.unblock();
+          CRM.alert(error.error_message, ts('Form Error'));
         });
       };
     }

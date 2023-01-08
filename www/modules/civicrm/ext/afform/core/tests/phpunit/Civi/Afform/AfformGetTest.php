@@ -13,7 +13,7 @@ class AfformGetTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
   private $formName = 'abc_123_test';
 
   public function setUpHeadless() {
-    return \Civi\Test::headless()->installMe(__DIR__)->apply();
+    return \Civi\Test::headless()->installMe(__DIR__)->install('org.civicrm.search_kit')->apply();
   }
 
   public function tearDown(): void {
@@ -53,6 +53,22 @@ class AfformGetTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
     $this->assertFalse($result['has_base']);
     $this->assertArrayNotHasKey('has_local', $result);
     $this->assertArrayNotHasKey('base_module', $result);
+  }
+
+  public function testGetLayoutWithEmptyNode() {
+    Afform::create(FALSE)
+      ->addValue('name', $this->formName)
+      ->addValue('title', 'Test Form')
+      ->addValue('layout', '<af-form><af-entity name="a"></af-entity><div></div></af-form>')
+      ->execute();
+
+    $layout = Afform::get(FALSE)
+      ->addWhere('name', '=', $this->formName)
+      ->execute()->single()['layout'];
+
+    // Ensure container elements like <div> always have #children even if empty
+    $this->assertEquals([], $layout[0]['#children'][1]['#children']);
+    $this->assertArrayNotHasKey('#children', $layout[0]['#children'][0]);
   }
 
   public function testAfformAutocomplete(): void {

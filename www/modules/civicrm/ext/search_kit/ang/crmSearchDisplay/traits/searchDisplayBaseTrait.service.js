@@ -26,15 +26,6 @@
         for (var p=0; p < placeholderCount; ++p) {
           this.placeholders.push({});
         }
-        // Calculate URL of addButton and copy addButton to controller property
-        // It has to be copied rather than simply adding this.settings.addButton.url,
-        // because settings cannot be changed when they are supplied from the markup
-        if (this.settings.addButton && this.settings.addButton.path) {
-          // Clone the variable to prevent polluting it during Preview mode in the Admin UI
-          this.addButton = _.cloneDeep(this.settings.addButton);
-          // TODO: Evaluate variables in the path
-          this.addButton.url = CRM.url(this.addButton.path);
-        }
 
         this.getResults = _.debounce(function() {
           $scope.$apply(function() {
@@ -103,9 +94,13 @@
         return this.settings.actions || this.settings.draggable || (this.settings.tally && this.settings.tally.label);
       },
 
+      getFilters: function() {
+        return _.assign({}, this.getAfformFilters(), this.filters);
+      },
+
       getAfformFilters: function() {
         return _.pick(this.afFieldset ? this.afFieldset.getFieldData() : {}, function(val) {
-          return val !== null && (_.includes(['boolean', 'number', 'object'], typeof val) || val.length);
+          return typeof val !== 'undefined' && val !== null && (_.includes(['boolean', 'number', 'object'], typeof val) || val.length);
         });
       },
 
@@ -118,9 +113,19 @@
           sort: this.sort,
           limit: this.limit,
           seed: this.seed,
-          filters: _.assign({}, this.getAfformFilters(), this.filters),
+          filters: this.getFilters(),
           afform: this.afFieldset ? this.afFieldset.getFormName() : null
         };
+      },
+
+      // Get path for the addButton
+      getButtonUrl: function() {
+        var path = this.settings.addButton.path,
+          filters = this.getFilters();
+        _.each(filters, function(value, key) {
+          path = path.replace('[' + key + ']', value);
+        });
+        return CRM.url(path);
       },
 
       onClickSearchButton: function() {
@@ -151,9 +156,10 @@
           ctrl.editing = ctrl.loading = false;
           // Update rowCount if running for the first time or during an update op
           if (!ctrl.rowCount || editedRow) {
-            if (!ctrl.limit || ctrl.results.length < ctrl.limit) {
+            // No need to fetch count if on page 1 and result count is under the limit
+            if (!ctrl.limit || (ctrl.results.length < ctrl.limit && ctrl.page === 1)) {
               ctrl.rowCount = ctrl.results.length;
-            } else if (ctrl.settings.pager) {
+            } else if (ctrl.settings.pager || ctrl.settings.headerCount) {
               var params = ctrl.getApiParams('row_count');
               crmApi4('SearchDisplay', 'run', params).then(function(result) {
                 ctrl.rowCount = result.count;

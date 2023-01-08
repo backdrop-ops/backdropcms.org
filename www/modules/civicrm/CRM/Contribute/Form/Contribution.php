@@ -901,7 +901,12 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
       && $self->_values['contribution_status_id'] != $fields['contribution_status_id']
       && $self->_values['is_template'] != 1
     ) {
-      CRM_Contribute_BAO_Contribution::checkStatusValidation($self->_values, $fields, $errors);
+      try {
+        CRM_Contribute_BAO_Contribution::checkStatusValidation($self->_values, $fields);
+      }
+      catch (CRM_Core_Exception $e) {
+        $errors['contribution_status_id'] = $e->getMessage();
+      }
     }
     // CRM-16015, add form-rule to restrict change of financial type if using price field of different financial type
     if (($self->_action & CRM_Core_Action::UPDATE)
@@ -1368,23 +1373,6 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
       ];
 
       CRM_Core_BAO_Note::add($noteParams, []);
-    }
-
-    //create contribution activity w/ individual and target
-    //activity w/ organisation contact id when onbelf, CRM-4027
-    $actParams = [];
-    $targetContactID = NULL;
-    if (!empty($params['onbehalf_contact_id'])) {
-      $actParams = [
-        'source_contact_id' => $params['onbehalf_contact_id'],
-        'on_behalf' => TRUE,
-      ];
-      $targetContactID = $contribution->contact_id;
-    }
-
-    // create an activity record
-    if ($contribution) {
-      CRM_Activity_BAO_Activity::addActivity($contribution, 'Contribution', $targetContactID, $actParams);
     }
 
     $transaction->commit();

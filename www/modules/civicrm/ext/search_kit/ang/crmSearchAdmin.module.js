@@ -398,7 +398,10 @@
               entity.optionsLoaded = false;
               entitiesToLoad[entityName] = [entityName, 'getFields', {
                 loadOptions: ['id', 'name', 'label', 'description', 'color', 'icon'],
-                where: [['options', '!=', false]],
+                // For fields with both an FK and an option list, prefer the FK
+                // because it's more efficient to render an autocomplete than to
+                // pre-load potentially thousands of options into a select dropdown.
+                where: [['options', '!=', false], ['suffixes', 'CONTAINS', 'name']],
                 select: ['options']
               }, {name: 'options'}];
             }
@@ -408,7 +411,10 @@
               _.each(results, function(fields, entityName) {
                 var entity = getEntity(entityName);
                 _.each(fields, function(options, fieldName) {
-                  _.find(entity.fields, {name: fieldName}).options = options;
+                  var field = _.find(entity.fields, {name: fieldName});
+                  if (field) {
+                    field.options = options;
+                  }
                 });
                 entity.optionsLoaded = true;
               });
