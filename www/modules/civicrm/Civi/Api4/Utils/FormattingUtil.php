@@ -89,7 +89,29 @@ class FormattingUtil {
    */
   public static function formatInputValue(&$value, ?string $fieldName, array $fieldSpec, array $params = [], &$operator = NULL, $index = NULL) {
     // Evaluate pseudoconstant suffix
-    $suffix = strpos(($fieldName ?? ''), ':');
+    $suffix = str_replace(':', '', strstr(($fieldName ?? ''), ':'));
+    $fk = $fieldSpec['name'] == 'id' ? $fieldSpec['entity'] : $fieldSpec['fk_entity'] ?? NULL;
+
+    // Handle special 'current_domain' option. See SpecFormatter::getOptions
+    $currentDomain = ($fk === 'Domain' && in_array('current_domain', (array) $value, TRUE));
+    if ($currentDomain) {
+      // If the fieldName uses a suffix, convert
+      $domainKey = $suffix ?: 'id';
+      $domainValue = \CRM_Core_BAO_Domain::getDomain()->$domainKey;
+      // If the value is an array, only convert the current_domain item
+      if (is_array($value)) {
+        foreach ($value as $idx => $val) {
+          if ($val === 'current_domain') {
+            $value[$idx] = $domainValue;
+          }
+        }
+      }
+      else {
+        $value = $domainValue;
+      }
+    }
+
+    // Convert option list suffix to value
     if ($suffix) {
       $options = self::getPseudoconstantList($fieldSpec, $fieldName, $params, $operator ? 'get' : 'create');
       $value = self::replacePseudoconstant($options, $value, TRUE);
@@ -102,13 +124,9 @@ class FormattingUtil {
       }
       return;
     }
-    $fk = $fieldSpec['name'] == 'id' ? $fieldSpec['entity'] : $fieldSpec['fk_entity'] ?? NULL;
 
-    if ($fk === 'Domain' && $value === 'current_domain') {
-      $value = \CRM_Core_Config::domainID();
-    }
-
-    if ($fk === 'Contact' && !is_numeric($value)) {
+    // Special handling for 'current_user' and user lookups
+    if ($fk === 'Contact' && isset($value) && !is_numeric($value)) {
       $value = \_civicrm_api3_resolve_contactID($value);
       if ('unknown-user' === $value) {
         throw new \CRM_Core_Exception("\"{$fieldSpec['name']}\" \"{$value}\" cannot be resolved to a contact ID", 2002, ['error_field' => $fieldSpec['name'], "type" => "integer"]);
@@ -225,6 +243,12 @@ class FormattingUtil {
           $fieldOptions = self::getPseudoconstantList($field, $fieldName, $result, $action);
           $dataType = NULL;
         }
+        // Store contact_type value before replacing pseudoconstant (e.g. transforming it to contact_type:label)
+        // Used by self::contactFieldsToRemove below
+        if ($value && isset($field['entity']) && $field['entity'] === 'Contact' && $field['name'] === 'contact_type') {
+          $prefix = strrpos($fieldName, '.');
+          $contactTypePaths[$prefix ? substr($fieldName, 0, $prefix + 1) : ''] = $value;
+        }
         if ($fieldExpr->supportsExpansion) {
           if (!empty($field['serialize']) && is_string($value)) {
             $value = \CRM_Core_DAO::unSerializeField($value, $field['serialize']);
@@ -232,11 +256,6 @@ class FormattingUtil {
           if (isset($fieldOptions)) {
             $value = self::replacePseudoconstant($fieldOptions, $value);
           }
-        }
-        // Keep track of contact types for self::contactFieldsToRemove
-        if ($value && isset($field['entity']) && $field['entity'] === 'Contact' && $field['name'] === 'contact_type') {
-          $prefix = strrpos($fieldName, '.');
-          $contactTypePaths[$prefix ? substr($fieldName, 0, $prefix + 1) : ''] = $value;
         }
         $result[$key] = self::convertDataType($value, $dataType);
       }

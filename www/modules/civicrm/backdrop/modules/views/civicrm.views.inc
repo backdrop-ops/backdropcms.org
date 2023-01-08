@@ -756,6 +756,12 @@ function civicrm_views_plugins() {
     'handler' => 'civicrm_plugin_argument_default_civicrm_id',
     'path' => "$civicrm_module_path/modules/views/plugins",
   );
+  // Default argument to pull CiviCRM IDs from the logged in user.
+  $plugins['argument default']['civicrm_id_current_user'] = array(
+    'title' => t('CiviCRM ID from logged in person'),
+    'handler' => 'civicrm_plugin_argument_default_civicrm_id_current_user',
+    'path' => "$civicrm_module_path/modules/views/plugins",
+  );
 
   // Calendar module integration
   if (module_exists('calendar')) {

@@ -51,8 +51,7 @@
       };
 
       this.getFkEntity = function() {
-        var defn = ctrl.getDefn(),
-          fkEntity = defn.is_id ? ctrl.container.getMainEntityType() : defn.fk_entity;
+        var fkEntity = ctrl.getDefn().fk_entity;
         return ctrl.editor.meta.entities[fkEntity];
       };
 
@@ -228,8 +227,8 @@
         setDateOptions();
       };
 
-      $scope.toggleRequired = function() {
-        getSet('required', !getSet('required'));
+      $scope.toggleAttr = function(attr) {
+        getSet(attr, !getSet(attr));
       };
 
       $scope.toggleHelp = function(position) {
@@ -247,6 +246,7 @@
 
       function setDateOptions() {
         if (_.includes(['Date', 'Timestamp'], $scope.getProp('data_type'))) {
+          ctrl.node.defn = ctrl.node.defn || {};
           ctrl.node.defn.options = $scope.getProp('search_range') ? CRM.afGuiEditor.dateRanges : CRM.afGuiEditor.dateRanges.slice(1);
           setFieldDefn();
         }

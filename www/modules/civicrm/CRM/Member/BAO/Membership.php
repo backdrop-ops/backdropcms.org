@@ -1129,7 +1129,7 @@ AND civicrm_membership.is_test = %2";
    * @param \CRM_Contribute_BAO_Contribution|\CRM_Contribute_DAO_Contribution $contribution
    */
   public static function updateRecurMembership(CRM_Member_DAO_Membership $membership, CRM_Contribute_BAO_Contribution $contribution) {
-    CRM_Core_Error::deprecatedFunctionWarning('Use the API instead');
+    CRM_Core_Error::deprecatedFunctionWarning('Use the api');
 
     if (empty($contribution->contribution_recur_id)) {
       return;
@@ -1467,7 +1467,7 @@ WHERE  civicrm_membership.contact_id = civicrm_contact.id
         $params['start_date'] = $membership->start_date;
         $params['end_date'] = $membership->end_date;
 
-        // we should not created contribution record for related contacts, CRM-3371
+        // we should not create contribution record for related contacts, CRM-3371
         unset($params['contribution_status_id']);
 
         //CRM-16857: Do not create multiple line-items for inherited membership through priceset.
@@ -2647,7 +2647,7 @@ WHERE {$whereClause}";
             'now',
             FALSE,
             $newMembershipId,
-            $newMembership
+            (array) $newMembership
           );
 
           if (!empty($status['id']) and $status['id'] != $newMembership->status_id) {

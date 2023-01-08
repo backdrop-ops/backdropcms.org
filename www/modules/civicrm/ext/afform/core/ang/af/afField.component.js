@@ -29,7 +29,7 @@
       this.$onInit = function() {
         var closestController = $($element).closest('[af-fieldset],[af-join],[af-repeat-item]');
         $scope.dataProvider = closestController.is('[af-repeat-item]') ? ctrl.afRepeatItem : ctrl.afJoin || ctrl.afFieldset;
-        $scope.fieldId = ctrl.fieldName + '-' + id++;
+        $scope.fieldId = _.kebabCase(ctrl.fieldName) + '-' + id++;
 
         $element.addClass('af-field-type-' + _.kebabCase(ctrl.defn.input_type));
 
@@ -173,12 +173,25 @@
         }
       };
 
+      ctrl.isReadonly = function() {
+        if (ctrl.defn.is_id) {
+          return ctrl.afFieldset.getEntity().actions.update === false;
+        }
+        // TODO: Not actually used, but could be used if we wanted to render displayOnly
+        // fields as more than just raw data. I think we probably ought to do so for entityRef fields
+        // Since the ids are kind of meaningless. Making that change would require adding a function
+        // to get the widget template rather than just concatenating the input_type into an ngInclude.
+        return ctrl.defn.input_type === 'DisplayOnly';
+      };
+
       // ngChange callback from Existing entity field
-      ctrl.onSelectExisting = function() {
-        var val = $scope.getSetSelect();
-        var entity = ctrl.afFieldset.modelName;
-        var index = ctrl.getEntityIndex();
-        ctrl.afFieldset.afFormCtrl.loadData(entity, index, val);
+      ctrl.onSelectEntity = function() {
+        if (ctrl.defn.is_id) {
+          var val = $scope.getSetSelect();
+          var entity = ctrl.afFieldset.modelName;
+          var index = ctrl.getEntityIndex();
+          ctrl.afFieldset.afFormCtrl.loadData(entity, index, val);
+        }
       };
 
       // Params for the Afform.submitFile API when uploading a file field
@@ -190,6 +203,10 @@
           entityIndex: ctrl.getEntityIndex(),
           joinIndex: ctrl.afJoin && $scope.dataProvider.repeatIndex || null
         };
+      };
+
+      ctrl.getAutocompleteFieldName = function() {
+        return ctrl.afFieldset.modelName + (ctrl.afJoin ? ('+' + ctrl.afJoin.entity) : '') + ':' + ctrl.fieldName;
       };
 
       $scope.getOptions = function () {
@@ -219,16 +236,9 @@
           else if (ctrl.defn.search_range) {
             return ($scope.dataProvider.getFieldData()[ctrl.fieldName]['>='] = val);
           }
-          // A multi-select needs to split string value into an array
-          if (ctrl.defn.input_attrs && ctrl.defn.input_attrs.multiple) {
-            val = val ? val.split(',') : [];
-          }
           return ($scope.dataProvider.getFieldData()[ctrl.fieldName] = val);
         }
         // Getter
-        if (_.isArray(currentVal)) {
-          return currentVal.join(',');
-        }
         if (ctrl.defn.is_date) {
           return _.isPlainObject(currentVal) ? '{}' : currentVal;
         }

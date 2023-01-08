@@ -914,7 +914,7 @@ class CRM_Contribute_BAO_Contribution extends CRM_Contribute_DAO_Contribution im
       return CRM_Contribute_PseudoConstant::getRelationalFinancialAccount($params['payment_processor_id'], NULL, 'civicrm_payment_processor');
     }
     if (!empty($params['payment_instrument_id'])) {
-      return CRM_Financial_BAO_FinancialTypeAccount::getInstrumentFinancialAccount($contribution['payment_instrument_id']);
+      return CRM_Financial_BAO_EntityFinancialAccount::getInstrumentFinancialAccount($contribution['payment_instrument_id']);
     }
     else {
       $relationTypeId = key(CRM_Core_PseudoConstant::accountOptionValues('financial_account_type', NULL, " AND v.name LIKE 'Asset' "));
@@ -3104,11 +3104,11 @@ INNER JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_ac
         ]);
       }
       elseif (!empty($params['payment_instrument_id'])) {
-        $params['to_financial_account_id'] = CRM_Financial_BAO_FinancialTypeAccount::getInstrumentFinancialAccount($params['payment_instrument_id']);
+        $params['to_financial_account_id'] = CRM_Financial_BAO_EntityFinancialAccount::getInstrumentFinancialAccount($params['payment_instrument_id']);
       }
       // dev/financial#160 - If this is a contribution update, also check for an existing payment_instrument_id.
       elseif ($isUpdate && $params['prevContribution']->payment_instrument_id) {
-        $params['to_financial_account_id'] = CRM_Financial_BAO_FinancialTypeAccount::getInstrumentFinancialAccount((int) $params['prevContribution']->payment_instrument_id);
+        $params['to_financial_account_id'] = CRM_Financial_BAO_EntityFinancialAccount::getInstrumentFinancialAccount((int) $params['prevContribution']->payment_instrument_id);
       }
       else {
         $relationTypeId = key(CRM_Core_PseudoConstant::accountOptionValues('financial_account_type', NULL, " AND v.name LIKE 'Asset' "));
@@ -3367,25 +3367,18 @@ INNER JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_ac
   /**
    * Check status validation on update of a contribution.
    *
-   * @param array $values
+   * @param array $oldContributionValues
    *   Previous form values before submit.
    *
-   * @param array $fields
+   * @param array $newContributionValues
    *   The input form values.
    *
-   * @param array $errors
-   *   List of errors.
-   *
-   * @return bool
+   * @throws \CRM_Core_Exception
    */
-  public static function checkStatusValidation($values, &$fields, &$errors) {
-    if (CRM_Utils_System::isNull($values) && !empty($fields['id'])) {
-      $values['contribution_status_id'] = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_Contribution', $fields['id'], 'contribution_status_id');
-      if ($values['contribution_status_id'] == $fields['contribution_status_id']) {
-        return FALSE;
-      }
-    }
-    $contributionStatuses = CRM_Contribute_PseudoConstant::contributionStatus(NULL, 'name');
+  public static function checkStatusValidation(array $oldContributionValues, array $newContributionValues): void {
+    $newContributionStatus = CRM_Core_PseudoConstant::getName('CRM_Contribute_BAO_Contribution', 'contribution_status_id', $newContributionValues['contribution_status_id']);
+    $oldContributionStatus = CRM_Core_PseudoConstant::getName('CRM_Contribute_BAO_Contribution', 'contribution_status_id', $oldContributionValues['contribution_status_id']);
+
     $checkStatus = [
       'Cancelled' => ['Completed', 'Refunded'],
       'Completed' => ['Cancelled', 'Refunded', 'Chargeback'],
@@ -3396,14 +3389,13 @@ INNER JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_ac
       'Pending refund' => ['Completed', 'Refunded'],
       'Failed' => ['Pending'],
     ];
+    $validNewStatues = $checkStatus[$oldContributionStatus] ?? [];
 
-    if (!in_array($contributionStatuses[$fields['contribution_status_id']],
-      CRM_Utils_Array::value($contributionStatuses[$values['contribution_status_id']], $checkStatus, []))
-    ) {
-      $errors['contribution_status_id'] = ts("Cannot change contribution status from %1 to %2.", [
-        1 => $contributionStatuses[$values['contribution_status_id']],
-        2 => $contributionStatuses[$fields['contribution_status_id']],
-      ]);
+    if (!in_array($newContributionStatus, $validNewStatues, TRUE)) {
+      throw new CRM_Core_Exception(ts('Cannot change contribution status from %1 to %2.', [
+        1 => $oldContributionStatus,
+        2 => $newContributionStatus,
+      ]));
     }
   }
 
@@ -4606,6 +4598,7 @@ LIMIT 1;";
     $messageToken,
     $escapeSmarty
   ) {
+    CRM_Core_Error::deprecatedFunctionWarning('use the TokenProcessor');
     if (empty($contributionIds)) {
       return [];
     }

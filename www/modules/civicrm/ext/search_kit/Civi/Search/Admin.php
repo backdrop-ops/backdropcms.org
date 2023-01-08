@@ -44,7 +44,7 @@ class Admin {
       'functions' => self::getSqlFunctions(),
       'displayTypes' => Display::getDisplayTypes(['id', 'name', 'label', 'description', 'icon']),
       'styles' => \CRM_Utils_Array::makeNonAssociative(self::getStyles()),
-      'defaultPagerSize' => \Civi::settings()->get('default_pager_size'),
+      'defaultPagerSize' => (int) \Civi::settings()->get('default_pager_size'),
       'defaultDisplay' => SearchDisplay::getDefault(FALSE)->setSavedSearch(['id' => NULL])->execute()->first(),
       'modules' => $extensions,
       'defaultContactType' => \CRM_Contact_BAO_ContactType::basicTypeInfo()['Individual']['name'] ?? NULL,
@@ -143,7 +143,7 @@ class Admin {
         }
         $getFields = civicrm_api4($entity['name'], 'getFields', [
           'select' => ['name', 'title', 'label', 'description', 'type', 'options', 'input_type', 'input_attrs', 'data_type', 'serialize', 'entity', 'fk_entity', 'readonly', 'operators', 'suffixes', 'nullable'],
-          'where' => [['name', 'NOT IN', ['api_key', 'hash']]],
+          'where' => [['deprecated', '=', FALSE], ['name', 'NOT IN', ['api_key', 'hash']]],
           'orderBy' => ['label'],
         ]);
         foreach ($getFields as $field) {

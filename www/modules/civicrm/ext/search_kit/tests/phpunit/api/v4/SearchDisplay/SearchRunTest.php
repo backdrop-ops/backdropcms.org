@@ -1066,7 +1066,7 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
     // Icon based on activity type
     $this->assertEquals([['class' => 'fa-slideshare', 'side' => 'left']], $result[0]['columns'][0]['icons']);
     // Activity type icon + conditional icon based on status
-    $this->assertEquals([['class' => 'fa-phone', 'side' => 'left'], ['class' => 'fa-star', 'side' => 'right']], $result[1]['columns'][0]['icons']);
+    $this->assertEquals([['class' => 'fa-star', 'side' => 'right'], ['class' => 'fa-phone', 'side' => 'left']], $result[1]['columns'][0]['icons']);
   }
 
   /**
@@ -1376,8 +1376,68 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
         'api_entity' => 'Contribution',
         'api_params' => [
           'version' => 4,
-          'select' => ['total_amount'],
+          'select' => ['total_amount', 'id'],
           'where' => [['id', 'IN', $contributions->column('id')]],
+        ],
+      ],
+      'display' => NULL,
+      'sort' => [['id', 'DESC']],
+    ];
+
+    $result = civicrm_api4('SearchDisplay', 'run', $params);
+    $this->assertCount(3, $result);
+
+    // Currency should have been fetched automatically and used to format the value
+    $this->assertEquals('GBP', $result[2]['data']['currency']);
+    $this->assertEquals('£100.00', $result[2]['columns'][0]['val']);
+
+    $this->assertEquals('USD', $result[1]['data']['currency']);
+    $this->assertEquals('$200.00', $result[1]['columns'][0]['val']);
+
+    $this->assertEquals('JPY', $result[0]['data']['currency']);
+    $this->assertEquals('¥500', $result[0]['columns'][0]['val']);
+
+    // Now do a search for the contribution line-items
+    $params['savedSearch'] = [
+      'api_entity' => 'LineItem',
+      'api_params' => [
+        'version' => 4,
+        'select' => ['line_total', 'id'],
+        'where' => [['contribution_id', 'IN', $contributions->column('id')]],
+      ],
+    ];
+
+    $result = civicrm_api4('SearchDisplay', 'run', $params);
+    $this->assertCount(3, $result);
+
+    // An automatic join should have been added to fetch the contribution currency
+    $this->assertEquals('GBP', $result[2]['data']['contribution_id.currency']);
+    $this->assertEquals('£100.00', $result[2]['columns'][0]['val']);
+
+    $this->assertEquals('USD', $result[1]['data']['contribution_id.currency']);
+    $this->assertEquals('$200.00', $result[1]['columns'][0]['val']);
+
+    $this->assertEquals('JPY', $result[0]['data']['contribution_id.currency']);
+    $this->assertEquals('¥500', $result[0]['columns'][0]['val']);
+  }
+
+  public function testSelectEquations() {
+    $activities = $this->saveTestRecords('Activity', [
+      'records' => [
+        ['duration' => 60],
+        ['duration' => 120],
+        ['duration' => 180],
+      ],
+    ]);
+    $params = [
+      'checkPermissions' => FALSE,
+      'return' => 'page:1',
+      'savedSearch' => [
+        'api_entity' => 'Activity',
+        'api_params' => [
+          'version' => 4,
+          'select' => ['id', '(duration / 60)'],
+          'where' => [['id', 'IN', $activities->column('id')]],
         ],
       ],
       'display' => NULL,
@@ -1387,38 +1447,91 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(3, $result);
 
-    // Currency should have been fetched automatically and used to format the value
-    $this->assertEquals('GBP', $result[0]['data']['currency']);
-    $this->assertEquals('£100.00', $result[0]['columns'][0]['val']);
+    $this->assertEquals(1, $result[0]['columns'][1]['val']);
+    $this->assertEquals(2, $result[1]['columns'][1]['val']);
+    $this->assertEquals(3, $result[2]['columns'][1]['val']);
+  }
 
-    $this->assertEquals('USD', $result[1]['data']['currency']);
-    $this->assertEquals('$200.00', $result[1]['columns'][0]['val']);
+  public function testContactTypeIcons(): void {
+    $this->createTestRecord('ContactType', [
+      'label' => 'Star',
+      'name' => 'Star',
+      'parent_id:name' => 'Individual',
+      'icon' => 'fa-star',
+    ]);
+    $this->createTestRecord('ContactType', [
+      'label' => 'None',
+      'name' => 'None',
+      'parent_id:name' => 'Individual',
+      'icon' => NULL,
+    ]);
 
-    $this->assertEquals('JPY', $result[2]['data']['currency']);
-    $this->assertEquals('¥500', $result[2]['columns'][0]['val']);
-
-    // Now do a search for the contribution line-items
-    $params['savedSearch'] = [
-      'api_entity' => 'LineItem',
-      'api_params' => [
-        'version' => 4,
-        'select' => ['line_total'],
-        'where' => [['contribution_id', 'IN', $contributions->column('id')]],
+    $lastName = uniqid(__FUNCTION__);
+    $sampleData = [
+      [
+        'first_name' => 'Starry',
+        'contact_sub_type' => ['Star'],
       ],
+      [
+        'first_name' => 'No icon',
+        'contact_sub_type' => ['None'],
+      ],
+      [
+        'first_name' => 'Both',
+        'contact_sub_type' => ['None', 'Star'],
+      ],
+    ];
+    $records = $this->saveTestRecords('Contact', [
+      'records' => $sampleData,
+      'defaults' => ['last_name' => $lastName],
+    ]);
+
+    $params = [
+      'checkPermissions' => FALSE,
+      'return' => 'page:1',
+      'savedSearch' => [
+        'api_entity' => 'Contact',
+        'api_params' => [
+          'version' => 4,
+          'select' => ['first_name', 'last_name'],
+        ],
+      ],
+      'display' => [
+        'type' => 'table',
+        'label' => '',
+        'settings' => [
+          'actions' => TRUE,
+          'pager' => [],
+          'columns' => [
+            [
+              'key' => 'first_name',
+              'label' => 'First',
+              'dataType' => 'String',
+              'type' => 'field',
+              'icons' => [
+                ['field' => 'contact_sub_type:icon'],
+                ['field' => 'contact_type:icon'],
+              ],
+            ],
+          ],
+          'sort' => [
+            ['sort_name', 'ASC'],
+          ],
+        ],
+      ],
+      'filters' => ['last_name' => $lastName],
     ];
 
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertCount(3, $result);
 
-    // An automatic join should have been added to fetch the contribution currency
-    $this->assertEquals('GBP', $result[0]['data']['contribution_id.currency']);
-    $this->assertEquals('£100.00', $result[0]['columns'][0]['val']);
-
-    $this->assertEquals('USD', $result[1]['data']['contribution_id.currency']);
-    $this->assertEquals('$200.00', $result[1]['columns'][0]['val']);
-
-    $this->assertEquals('JPY', $result[2]['data']['contribution_id.currency']);
-    $this->assertEquals('¥500', $result[2]['columns'][0]['val']);
+    // Contacts will be returned in order by sort_name
+    $this->assertEquals('Both', $result[0]['columns'][0]['val']);
+    $this->assertEquals('fa-star', $result[0]['columns'][0]['icons'][0]['class']);
+    $this->assertEquals('No icon', $result[1]['columns'][0]['val']);
+    $this->assertEquals('fa-user', $result[1]['columns'][0]['icons'][0]['class']);
+    $this->assertEquals('Starry', $result[2]['columns'][0]['val']);
+    $this->assertEquals('fa-star', $result[2]['columns'][0]['icons'][0]['class']);
   }
 
 }

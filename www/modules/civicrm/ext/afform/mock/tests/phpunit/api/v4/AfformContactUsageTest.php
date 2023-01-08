@@ -58,6 +58,21 @@ EOHTML;
   <button class="af-button btn-primary" crm-icon="fa-check" ng-click="afform.submit()">Submit</button>
 </af-form>
 EOHTML;
+    self::$layouts['updateInfo'] = <<<EOHTML
+<af-form ctrl="modelListCtrl">
+  <af-entity data="{contact_type: 'Individual', source: 'Update Info'}" type="Contact" name="Individual1" label="Individual 1" actions="{create: true, update: true}" security="RBAC" />
+  <fieldset af-fieldset="Individual1">
+      <af-field name="first_name" defn="{required: true, input_attrs: {}}" />
+      <af-field name="middle_name" />
+      <af-field name="last_name" defn="{required: false, input_attrs: {}}"/>
+      <div af-join="Email">
+        <div class="af-container af-layout-inline">
+          <af-field name="email" />
+        </div>
+      </div>
+  </fieldset>
+</af-form>
+EOHTML;
   }
 
   public function testAboutMeAllowed(): void {
@@ -69,6 +84,7 @@ EOHTML;
     $cid = $this->createLoggedInUser();
     CRM_Core_Config::singleton()->userPermissionTemp = new CRM_Core_Permission_Temp();
 
+    // Autofill form with current user. See `Civi\Afform\Behavior\ContactAutofill`
     $prefill = Civi\Api4\Afform::prefill()
       ->setName($this->formName)
       ->execute()
@@ -313,7 +329,7 @@ EOHTML;
           ],
           'joins' => [
             'Email' => [
-              ['email' => $individualEmail, 'location_type_id' => $locationType],
+              ['email' => $individualEmail, 'location_type_id' => $locationType, 'is_primary' => TRUE],
             ],
           ],
         ],
@@ -323,7 +339,7 @@ EOHTML;
           'fields' => [],
           'joins' => [
             'Email' => [
-              ['email' => $orgEmail, 'location_type_id' => $locationType],
+              ['email' => $orgEmail, 'location_type_id' => $locationType, 'is_primary' => TRUE],
             ],
           ],
         ],
@@ -352,6 +368,132 @@ EOHTML;
     $this->assertEquals($locationType, $submission['data']['Individual1'][0]['_joins']['Email'][0]['location_type_id']);
     $this->assertEquals($orgEmail, $submission['data']['Organization1'][0]['_joins']['Email'][0]['email']);
     $this->assertEquals($locationType, $submission['data']['Organization1'][0]['_joins']['Email'][0]['location_type_id']);
+  }
+
+  public function testDedupeIndividual(): void {
+    $layout = <<<EOHTML
+<af-form ctrl="modelListCtrl">
+  <af-entity type="Contact" data="{contact_type: 'Individual'}" name="Individual1" contact-dedupe="Individual.Supervised" />
+  <fieldset af-fieldset="Individual1">
+      <af-field name="first_name" />
+      <af-field name="middle_name" />
+      <af-field name="last_name" />
+      <div af-join="Email" min="1" af-repeat="Add">
+        <afblock-contact-email></afblock-contact-email>
+      </div>
+  </fieldset>
+</af-form>
+EOHTML;
+    $this->useValues([
+      'layout' => $layout,
+      'permission' => CRM_Core_Permission::ALWAYS_ALLOW_PERMISSION,
+    ]);
+
+    $lastName = uniqid(__FUNCTION__);
+    $contact = \Civi\Api4\Contact::create(FALSE)
+      ->addValue('first_name', 'Bob')
+      ->addValue('last_name', $lastName)
+      ->addValue('email_primary.email', '123@example.com')
+      ->execute()->single();
+
+    $locationType = CRM_Core_BAO_LocationType::getDefault()->id;
+    $values = [
+      'Individual1' => [
+        [
+          'fields' => [
+            'first_name' => 'Bob',
+            'middle_name' => 'New',
+            'last_name' => $lastName,
+          ],
+          'joins' => [
+            'Email' => [
+              ['email' => '123@example.com', 'location_type_id' => $locationType, 'is_primary' => TRUE],
+            ],
+          ],
+        ],
+      ],
+    ];
+    Civi\Api4\Afform::submit()
+      ->setName($this->formName)
+      ->setValues($values)
+      ->execute();
+
+    // Check that the contact was updated per dedupe rule
+    $result = \Civi\Api4\Contact::get(FALSE)
+      ->addWhere('id', '=', $contact['id'])
+      ->execute()->single();
+    $this->assertEquals('New', $result['middle_name']);
+  }
+
+  public function testFormValidationEntityFields(): void {
+    $this->useValues([
+      'layout' => self::$layouts['updateInfo'],
+      'permission' => CRM_Core_Permission::ALWAYS_ALLOW_PERMISSION,
+    ]);
+
+    $values = [
+      'Individual1' => [
+        [
+          'fields' => [],
+          'joins' => [
+            'Email' => [
+              ['email' => 'test@example.org'],
+              [],
+            ],
+          ],
+        ],
+      ],
+    ];
+
+    try {
+      Civi\Api4\Afform::submit()
+        ->setName($this->formName)
+        ->setValues($values)
+        ->execute();
+      $this->fail('Should have thrown exception');
+    }
+    catch (\CRM_Core_Exception $e) {
+      // Should fail required fields missing
+      $this->assertCount(2, $e->getErrorData()['validation']);
+      $this->assertEquals('First Name is a required field.', $e->getErrorData()['validation'][0]);
+      $this->assertEquals('Email is a required field.', $e->getErrorData()['validation'][1]);
+    }
+
+  }
+
+  public function testFormValidationEntityJoinFields(): void {
+    $this->useValues([
+      'layout' => self::$layouts['updateInfo'],
+      'permission' => CRM_Core_Permission::ALWAYS_ALLOW_PERMISSION,
+    ]);
+
+    $values = [
+      'Individual1' => [
+        [
+          'fields' => [
+            'first_name' => 'Jane',
+            'last_name' => 'Doe',
+          ],
+          'joins' => [
+            'Email' => [[]],
+          ],
+        ],
+      ],
+    ];
+
+    try {
+      Civi\Api4\Afform::submit()
+        ->setName($this->formName)
+        ->setValues($values)
+        ->execute();
+      $this->fail('Should have thrown exception');
+    }
+    catch (\CRM_Core_Exception $e) {
+      // Should fail required fields missing
+      $this->assertCount(1, $e->getErrorData()['validation']);
+      $this->assertEquals('Email is a required field.', $e->getErrorData()['validation'][0]);
+    }
+
   }
 
 }

@@ -1017,15 +1017,17 @@ VALUES
    (@option_group_id_date_filter, '{ts escape="sql"}Previous 2 calendar months{/ts}', 'previous_2.month', 'previous_2.month', NULL, NULL, 0,51, NULL, 0, 0, 1, NULL, NULL, NULL),
    (@option_group_id_date_filter, '{ts escape="sql"}Previous 2 quarters{/ts}', 'previous_2.quarter', 'previous_2.quarter', NULL, NULL, 0,52, NULL, 0, 0, 1, NULL, NULL, NULL),
    (@option_group_id_date_filter, '{ts escape="sql"}Previous 2 calendar years{/ts}', 'previous_2.year', 'previous_2.year', NULL, NULL, 0,53, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}Day prior to yesterday{/ts}', 'previous_before.day', 'previous_before.day', NULL, NULL, 0,54, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}Week prior to previous week{/ts}', 'previous_before.week', 'previous_before.week', NULL, NULL, 0,55, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}Month prior to previous calendar month{/ts}', 'previous_before.month', 'previous_before.month', NULL, NULL, NULL,56, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}Quarter prior to previous quarter{/ts}', 'previous_before.quarter', 'previous_before.quarter', NULL, NULL, 0,57, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}Year prior to previous calendar year{/ts}', 'previous_before.year', 'previous_before.year', NULL, NULL, 0,58, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}From end of previous week{/ts}', 'greater_previous.week', 'greater_previous.week', NULL, NULL, 0,59, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}From end of previous calendar month{/ts}', 'greater_previous.month', 'greater_previous.month', NULL, NULL, 0,60, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}From end of previous quarter{/ts}', 'greater_previous.quarter', 'greater_previous.quarter', NULL, NULL, 0,61, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, '{ts escape="sql"}From end of previous calendar year{/ts}', 'greater_previous.year', 'greater_previous.year', NULL, NULL, 0,62, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}Previous 2 fiscal years{/ts}', 'previous_2.fiscal_year', 'previous_2.fiscal_year', NULL, NULL, 0,54, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}Day prior to yesterday{/ts}', 'previous_before.day', 'previous_before.day', NULL, NULL, 0,55, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}Week prior to previous week{/ts}', 'previous_before.week', 'previous_before.week', NULL, NULL, 0,56, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}Month prior to previous calendar month{/ts}', 'previous_before.month', 'previous_before.month', NULL, NULL, NULL,57, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}Quarter prior to previous quarter{/ts}', 'previous_before.quarter', 'previous_before.quarter', NULL, NULL, 0,58, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}Year prior to previous calendar year{/ts}', 'previous_before.year', 'previous_before.year', NULL, NULL, 0,59, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}Fiscal year prior to previous fiscal year{/ts}', 'previous_before.fiscal_year', 'previous_before.fiscal_year', NULL, NULL, 0,60, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}From end of previous week{/ts}', 'greater_previous.week', 'greater_previous.week', NULL, NULL, 0,61, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}From end of previous calendar month{/ts}', 'greater_previous.month', 'greater_previous.month', NULL, NULL, 0,62, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}From end of previous quarter{/ts}', 'greater_previous.quarter', 'greater_previous.quarter', NULL, NULL, 0,63, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, '{ts escape="sql"}From end of previous calendar year{/ts}', 'greater_previous.year', 'greater_previous.year', NULL, NULL, 0,64, NULL, 0, 0, 1, NULL, NULL, NULL),
 
 -- Pledge Status
   (@option_group_id_ps, '{ts escape="sql"}Completed{/ts}'  , 1, 'Completed'  , NULL, 0, 0, 1, NULL, 0, 1, 1, NULL, NULL, NULL),
@@ -1137,13 +1139,13 @@ VALUES
 INSERT INTO `civicrm_preferences_date`
   (name, start, end, date_format, time_format, description)
 VALUES
-  ( 'activityDate'    ,  20, 10, '',    '',  '{ts escape="sql"}Date for activities including contributions: receive, receipt, cancel. membership: join, start, renew. case: start, end.{/ts}'         ),
+  ( 'activityDate'    ,  20, 10, '',    '',  '{ts escape="sql"}Date for relationships. activities. contributions: receive, receipt, cancel. membership: join, start, renew. case: start, end.{/ts}'         ),
   ( 'activityDateTime',  20, 10, '',     1,  '{ts escape="sql"}Date and time for activity: scheduled. participant: registered.{/ts}'                                                                  ),
   ( 'birth'           , 100,  0, '',    '',  '{ts escape="sql"}Birth and deceased dates. Only year, month and day fields are supported.{/ts}'                                                         ),
   ( 'creditCard'      ,   0, 10, 'M Y', '',  '{ts escape="sql"}Month and year only for credit card expiration.{/ts}'                                                                                  ),
   ( 'custom'          ,  20, 20, '',    '',  '{ts escape="sql"}Uses date range passed in by form field. Can pass in a posix date part parameter. Start and end offsets defined here are ignored.{/ts}'),
   ( 'mailing'         ,   0,  1, '',    '',  '{ts escape="sql"}Date and time. Used for scheduling mailings.{/ts}'                                                                                     ),
-  ( 'searchDate'      ,  20, 20, '',    '',  '{ts escape="sql"}Used in search forms and for relationships.{/ts}'                                                                                      );
+  ( 'searchDate'      ,  20, 20, '',    '',  '{ts escape="sql"}Used in search forms.{/ts}'                                                                                      );
 
 
 -- various processor options

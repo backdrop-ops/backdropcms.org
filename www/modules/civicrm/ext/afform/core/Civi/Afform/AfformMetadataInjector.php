@@ -11,7 +11,6 @@
 
 namespace Civi\Afform;
 
-use Civi\Api4\Utils\CoreUtil;
 use CRM_Afform_ExtensionUtil as E;
 
 /**
@@ -63,7 +62,8 @@ class AfformMetadataInjector {
           // If this fieldset is standalone (not linked to an af-entity) it is for get rather than create
           if ($apiEntities) {
             $action = 'get';
-            $entityType = self::getFieldEntityType($afField->getAttribute('name'), \CRM_Utils_JS::decode($apiEntities));
+            $entityList = \CRM_Utils_JS::decode(htmlspecialchars_decode($apiEntities));
+            $entityType = self::getFieldEntityType($afField->getAttribute('name'), $entityList);
           }
           else {
             $entityName = pq($fieldset)->attr('af-fieldset');
@@ -87,7 +87,7 @@ class AfformMetadataInjector {
    */
   private static function getFieldMetadata($entityNames, string $action, string $fieldName):? array {
     foreach ((array) $entityNames as $entityName) {
-      $fieldInfo = self::getField($entityName, $fieldName, $action);
+      $fieldInfo = FormDataModel::getField($entityName, $fieldName, $action);
       if ($fieldInfo) {
         return $fieldInfo;
       }
@@ -125,7 +125,7 @@ class AfformMetadataInjector {
     if ($inputType === 'Select' || $inputType === 'ChainSelect') {
       $fieldInfo['input_attrs']['placeholder'] = E::ts('Select');
     }
-    elseif ($inputType === 'EntityRef') {
+    elseif ($inputType === 'EntityRef' && empty($field['is_id'])) {
       $info = civicrm_api4('Entity', 'get', [
         'where' => [['name', '=', $fieldInfo['fk_entity']]],
         'checkPermissions' => FALSE,
@@ -157,7 +157,7 @@ class AfformMetadataInjector {
         $fieldDefn[$name] = \CRM_Utils_JS::encode($prop);
       }
     }
-    pq($afField)->attr('defn', htmlspecialchars(\CRM_Utils_JS::writeObject($fieldDefn)));
+    pq($afField)->attr('defn', htmlspecialchars(\CRM_Utils_JS::writeObject($fieldDefn), ENT_COMPAT));
   }
 
   /**
@@ -175,64 +175,6 @@ class AfformMetadataInjector {
     if ($fieldInfo) {
       self::setFieldMetadata($afField, $fieldInfo);
     }
-  }
-
-  /**
-   * @param string $entityName
-   * @param string $fieldName
-   * @param string $action
-   * @return array|NULL
-   */
-  private static function getField(string $entityName, string $fieldName, string $action):? array {
-    // For explicit joins, strip the alias off the field name
-    if (strpos($entityName, ' AS ')) {
-      [$entityName, $alias] = explode(' AS ', $entityName);
-      $fieldName = preg_replace('/^' . preg_quote($alias . '.', '/') . '/', '', $fieldName);
-    }
-    $namesToMatch = [$fieldName];
-    // Also match base field if this is an implicit join
-    if ($action === 'get' && strpos($fieldName, '.')) {
-      $namesToMatch[] = substr($fieldName, 0, strrpos($fieldName, '.'));
-    }
-    $params = [
-      'action' => $action,
-      'where' => [['name', 'IN', $namesToMatch]],
-      'select' => ['name', 'label', 'input_type', 'input_attrs', 'help_pre', 'help_post', 'options', 'fk_entity', 'required'],
-      'loadOptions' => ['id', 'label'],
-      // If the admin included this field on the form, then it's OK to get metadata about the field regardless of user permissions.
-      'checkPermissions' => FALSE,
-    ];
-    if (in_array($entityName, \CRM_Contact_BAO_ContactType::basicTypes(TRUE))) {
-      $params['values'] = ['contact_type' => $entityName];
-      $entityName = 'Contact';
-    }
-    foreach (civicrm_api4($entityName, 'getFields', $params) as $field) {
-      // In the highly unlikely event of 2 fields returned, prefer the exact match
-      if ($field['name'] === $fieldName) {
-        break;
-      }
-    }
-    if (!isset($field)) {
-      return NULL;
-    }
-    // Id field for selecting existing entity
-    if ($action === 'create' && $field['name'] === CoreUtil::getIdFieldName($entityName)) {
-      $entityTitle = CoreUtil::getInfoItem($entityName, 'title');
-      $field['input_type'] = 'Existing';
-      $field['entity'] = $entityName;
-      $field['label'] = E::ts('Existing %1', [1 => $entityTitle]);
-      $field['input_attrs']['placeholder'] = E::ts('Select %1', [1 => $entityTitle]);
-    }
-    // If this is an implicit join, get new field from fk entity
-    if ($field['name'] !== $fieldName && $field['fk_entity']) {
-      $params['where'] = [['name', '=', substr($fieldName, 1 + strrpos($fieldName, '.'))]];
-      $originalField = $field;
-      $field = civicrm_api4($field['fk_entity'], 'getFields', $params)->first();
-      if ($field) {
-        $field['label'] = $originalField['label'] . ' ' . $field['label'];
-      }
-    }
-    return $field;
   }
 
   /**

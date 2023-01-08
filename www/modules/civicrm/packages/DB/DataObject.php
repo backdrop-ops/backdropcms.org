@@ -210,7 +210,7 @@ if (!defined('DB_DATAOBJECT_NO_OVERLOAD')) {
  * @author   Alan Knowles <alan@akbkhome.com>
  * @since    PHP 4.0
  */
-
+#[AllowDynamicProperties]
 class DB_DataObject extends DB_DataObject_Overload
 {
    /**
@@ -4880,10 +4880,6 @@ class DB_DataObject extends DB_DataObject_Overload
         }
         // clear the staticGet cache as well.
         $this->_clear_cache();
-        // this is a huge bug in DB!
-        if (isset($_DB_DATAOBJECT['CONNECTIONS'][$this->_database_dsn_md5])) {
-            $_DB_DATAOBJECT['CONNECTIONS'][$this->_database_dsn_md5]->num_rows = array();
-        }
 
         if (is_array($this->_link_loaded)) {
             foreach ($this->_link_loaded as $do) {

@@ -146,7 +146,8 @@ class CRM_Contact_Page_View_Relationship extends CRM_Core_Page {
   public function browse() {
     // do nothing :) we are using datatable for rendering relationship selectors
     $columnHeaders = CRM_Contact_BAO_Relationship::getColumnHeaders();
-    $contactRelationships = $selector = NULL;
+    $selector = NULL;
+    $contactRelationships = [];
     CRM_Utils_Hook::searchColumns('relationship.columns', $columnHeaders, $contactRelationships, $selector);
     $this->assign('columnHeaders', $columnHeaders);
   }
@@ -181,6 +182,7 @@ class CRM_Contact_Page_View_Relationship extends CRM_Core_Page {
 
       // delete relationship
       CRM_Contact_BAO_Relationship::del($this->getEntityId());
+      CRM_Core_Session::setStatus(ts('Selected relationship has been deleted successfully.'), ts('Record Deleted'), 'success');
 
       CRM_Utils_System::redirect($url);
     }
@@ -239,6 +241,7 @@ class CRM_Contact_Page_View_Relationship extends CRM_Core_Page {
   public function delete() {
     // calls a function to delete relationship
     CRM_Contact_BAO_Relationship::del($this->getEntityId());
+    CRM_Core_Session::setStatus(ts('Selected relationship has been deleted successfully.'), ts('Record Deleted'), 'success');
   }
 
   /**

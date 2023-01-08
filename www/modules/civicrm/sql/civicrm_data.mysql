@@ -394,8 +394,6 @@ INSERT INTO civicrm_state_province (id, country_id, abbreviation, name) VALUES
 (1226, 1101, "UP", "Uttar Pradesh"),
 (1227, 1101, "WB", "West Bengal"),
 (1228, 1101, "AN", "Andaman and Nicobar Islands"),
-(1229, 1101, "DN", "Dadra and Nagar Haveli"),
-(1230, 1101, "DD", "Daman and Diu"),
 (1231, 1101, "DL", "Delhi"),
 (1232, 1101, "LD", "Lakshadweep"),
 (1233, 1101, "PY", "Pondicherry"),
@@ -4440,8 +4438,13 @@ INSERT INTO civicrm_state_province (id, country_id, abbreviation, name) VALUES
  (NULL, 1023, 'SAN', 'Sandys'),
  (NULL, 1023, 'SMI', 'Smiths'),
  (NULL, 1023, 'SOU', 'Southampton'),
- (NULL, 1023, 'WAR', 'Warwick')
- 
+ (NULL, 1023, 'WAR', 'Warwick'),
+
+-- Add in missing Indian State provinces
+
+(NULL, 1101, "DH", "Dādra and Nagar Haveli and Damān and Diu"),
+(NULL, 1101, "LA", "Ladākh")
+
  -- end of statement:
  ;
 -- +--------------------------------------------------------------------+
@@ -5639,15 +5642,17 @@ VALUES
    (@option_group_id_date_filter, 'Previous 2 calendar months', 'previous_2.month', 'previous_2.month', NULL, NULL, 0,51, NULL, 0, 0, 1, NULL, NULL, NULL),
    (@option_group_id_date_filter, 'Previous 2 quarters', 'previous_2.quarter', 'previous_2.quarter', NULL, NULL, 0,52, NULL, 0, 0, 1, NULL, NULL, NULL),
    (@option_group_id_date_filter, 'Previous 2 calendar years', 'previous_2.year', 'previous_2.year', NULL, NULL, 0,53, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'Day prior to yesterday', 'previous_before.day', 'previous_before.day', NULL, NULL, 0,54, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'Week prior to previous week', 'previous_before.week', 'previous_before.week', NULL, NULL, 0,55, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'Month prior to previous calendar month', 'previous_before.month', 'previous_before.month', NULL, NULL, NULL,56, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'Quarter prior to previous quarter', 'previous_before.quarter', 'previous_before.quarter', NULL, NULL, 0,57, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'Year prior to previous calendar year', 'previous_before.year', 'previous_before.year', NULL, NULL, 0,58, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'From end of previous week', 'greater_previous.week', 'greater_previous.week', NULL, NULL, 0,59, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'From end of previous calendar month', 'greater_previous.month', 'greater_previous.month', NULL, NULL, 0,60, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'From end of previous quarter', 'greater_previous.quarter', 'greater_previous.quarter', NULL, NULL, 0,61, NULL, 0, 0, 1, NULL, NULL, NULL),
-   (@option_group_id_date_filter, 'From end of previous calendar year', 'greater_previous.year', 'greater_previous.year', NULL, NULL, 0,62, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'Previous 2 fiscal years', 'previous_2.fiscal_year', 'previous_2.fiscal_year', NULL, NULL, 0,54, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'Day prior to yesterday', 'previous_before.day', 'previous_before.day', NULL, NULL, 0,55, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'Week prior to previous week', 'previous_before.week', 'previous_before.week', NULL, NULL, 0,56, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'Month prior to previous calendar month', 'previous_before.month', 'previous_before.month', NULL, NULL, NULL,57, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'Quarter prior to previous quarter', 'previous_before.quarter', 'previous_before.quarter', NULL, NULL, 0,58, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'Year prior to previous calendar year', 'previous_before.year', 'previous_before.year', NULL, NULL, 0,59, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'Fiscal year prior to previous fiscal year', 'previous_before.fiscal_year', 'previous_before.fiscal_year', NULL, NULL, 0,60, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'From end of previous week', 'greater_previous.week', 'greater_previous.week', NULL, NULL, 0,61, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'From end of previous calendar month', 'greater_previous.month', 'greater_previous.month', NULL, NULL, 0,62, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'From end of previous quarter', 'greater_previous.quarter', 'greater_previous.quarter', NULL, NULL, 0,63, NULL, 0, 0, 1, NULL, NULL, NULL),
+   (@option_group_id_date_filter, 'From end of previous calendar year', 'greater_previous.year', 'greater_previous.year', NULL, NULL, 0,64, NULL, 0, 0, 1, NULL, NULL, NULL),
 
 -- Pledge Status
   (@option_group_id_ps, 'Completed'  , 1, 'Completed'  , NULL, 0, 0, 1, NULL, 0, 1, 1, NULL, NULL, NULL),
@@ -5970,13 +5975,13 @@ VALUES
 INSERT INTO `civicrm_preferences_date`
   (name, start, end, date_format, time_format, description)
 VALUES
-  ( 'activityDate'    ,  20, 10, '',    '',  'Date for activities including contributions: receive, receipt, cancel. membership: join, start, renew. case: start, end.'         ),
+  ( 'activityDate'    ,  20, 10, '',    '',  'Date for relationships. activities. contributions: receive, receipt, cancel. membership: join, start, renew. case: start, end.'         ),
   ( 'activityDateTime',  20, 10, '',     1,  'Date and time for activity: scheduled. participant: registered.'                                                                  ),
   ( 'birth'           , 100,  0, '',    '',  'Birth and deceased dates. Only year, month and day fields are supported.'                                                         ),
   ( 'creditCard'      ,   0, 10, 'M Y', '',  'Month and year only for credit card expiration.'                                                                                  ),
   ( 'custom'          ,  20, 20, '',    '',  'Uses date range passed in by form field. Can pass in a posix date part parameter. Start and end offsets defined here are ignored.'),
   ( 'mailing'         ,   0,  1, '',    '',  'Date and time. Used for scheduling mailings.'                                                                                     ),
-  ( 'searchDate'      ,  20, 20, '',    '',  'Used in search forms and for relationships.'                                                                                      );
+  ( 'searchDate'      ,  20, 20, '',    '',  'Used in search forms.'                                                                                      );
 
 
 -- various processor options
@@ -11616,7 +11621,7 @@ INSERT INTO civicrm_msg_template
 {ts}Refund Details{/ts}
 
 ===============================================================================
-{ts}This Refund Amount{/ts}: {$refundAmount|crmMoney}
+{ts}This Refund Amount{/ts}: {$refundAmount|crmMoney:$currency}
 ------------------------------------------------------------------------------------
 
 {else}
@@ -11625,7 +11630,7 @@ INSERT INTO civicrm_msg_template
 {ts}Payment Details{/ts}
 
 ===============================================================================
-{ts}This Payment Amount{/ts}: {$paymentAmount|crmMoney}
+{ts}This Payment Amount{/ts}: {$paymentAmount|crmMoney:$currency}
 ------------------------------------------------------------------------------------
 {/if}
 {if $receive_date}
@@ -11647,13 +11652,13 @@ INSERT INTO civicrm_msg_template
 
 ===============================================================================
 {if $totalAmount}
-{ts}Total Fee{/ts}: {$totalAmount|crmMoney}
+{ts}Total Fee{/ts}: {$totalAmount|crmMoney:$currency}
 {/if}
 {if $totalPaid}
-{ts}Total Paid{/ts}: {$totalPaid|crmMoney}
+{ts}Total Paid{/ts}: {$totalPaid|crmMoney:$currency}
 {/if}
 {if $amountOwed}
-{ts}Balance Owed{/ts}: {$amountOwed|crmMoney} {* This will be zero after final payment. *}
+{ts}Balance Owed{/ts}: {$amountOwed|crmMoney:$currency} {* This will be zero after final payment. *}
 {/if}
 
 
@@ -11760,7 +11765,7 @@ INSERT INTO civicrm_msg_template
         {ts}This Refund Amount{/ts}
         </td>
         <td {$valueStyle}>
-        {$refundAmount|crmMoney}
+        {$refundAmount|crmMoney:$currency}
         </td>
       </tr>
     {else}
@@ -11772,7 +11777,7 @@ INSERT INTO civicrm_msg_template
         {ts}This Payment Amount{/ts}
         </td>
         <td {$valueStyle}>
-        {$paymentAmount|crmMoney}
+        {$paymentAmount|crmMoney:$currency}
         </td>
       </tr>
     {/if}
@@ -11826,7 +11831,7 @@ INSERT INTO civicrm_msg_template
       {ts}Total Fee{/ts}
     </td>
     <td {$valueStyle}>
-      {$totalAmount|crmMoney}
+      {$totalAmount|crmMoney:$currency}
     </td>
   </tr>
   {/if}
@@ -11836,7 +11841,7 @@ INSERT INTO civicrm_msg_template
       {ts}Total Paid{/ts}
     </td>
     <td {$valueStyle}>
-      {$totalPaid|crmMoney}
+      {$totalPaid|crmMoney:$currency}
     </td>
   </tr>
   {/if}
@@ -11846,7 +11851,7 @@ INSERT INTO civicrm_msg_template
       {ts}Balance Owed{/ts}
     </td>
     <td {$valueStyle}>
-      {$amountOwed|crmMoney}
+      {$amountOwed|crmMoney:$currency}
     </td> {* This will be zero after final payment. *}
   </tr>
   {/if}
@@ -11980,7 +11985,7 @@ INSERT INTO civicrm_msg_template
 {ts}Refund Details{/ts}
 
 ===============================================================================
-{ts}This Refund Amount{/ts}: {$refundAmount|crmMoney}
+{ts}This Refund Amount{/ts}: {$refundAmount|crmMoney:$currency}
 ------------------------------------------------------------------------------------
 
 {else}
@@ -11989,7 +11994,7 @@ INSERT INTO civicrm_msg_template
 {ts}Payment Details{/ts}
 
 ===============================================================================
-{ts}This Payment Amount{/ts}: {$paymentAmount|crmMoney}
+{ts}This Payment Amount{/ts}: {$paymentAmount|crmMoney:$currency}
 ------------------------------------------------------------------------------------
 {/if}
 {if $receive_date}
@@ -12011,13 +12016,13 @@ INSERT INTO civicrm_msg_template
 
 ===============================================================================
 {if $totalAmount}
-{ts}Total Fee{/ts}: {$totalAmount|crmMoney}
+{ts}Total Fee{/ts}: {$totalAmount|crmMoney:$currency}
 {/if}
 {if $totalPaid}
-{ts}Total Paid{/ts}: {$totalPaid|crmMoney}
+{ts}Total Paid{/ts}: {$totalPaid|crmMoney:$currency}
 {/if}
 {if $amountOwed}
-{ts}Balance Owed{/ts}: {$amountOwed|crmMoney} {* This will be zero after final payment. *}
+{ts}Balance Owed{/ts}: {$amountOwed|crmMoney:$currency} {* This will be zero after final payment. *}
 {/if}
 
 
@@ -12124,7 +12129,7 @@ INSERT INTO civicrm_msg_template
         {ts}This Refund Amount{/ts}
         </td>
         <td {$valueStyle}>
-        {$refundAmount|crmMoney}
+        {$refundAmount|crmMoney:$currency}
         </td>
       </tr>
     {else}
@@ -12136,7 +12141,7 @@ INSERT INTO civicrm_msg_template
         {ts}This Payment Amount{/ts}
         </td>
         <td {$valueStyle}>
-        {$paymentAmount|crmMoney}
+        {$paymentAmount|crmMoney:$currency}
         </td>
       </tr>
     {/if}
@@ -12190,7 +12195,7 @@ INSERT INTO civicrm_msg_template
       {ts}Total Fee{/ts}
     </td>
     <td {$valueStyle}>
-      {$totalAmount|crmMoney}
+      {$totalAmount|crmMoney:$currency}
     </td>
   </tr>
   {/if}
@@ -12200,7 +12205,7 @@ INSERT INTO civicrm_msg_template
       {ts}Total Paid{/ts}
     </td>
     <td {$valueStyle}>
-      {$totalPaid|crmMoney}
+      {$totalPaid|crmMoney:$currency}
     </td>
   </tr>
   {/if}
@@ -12210,7 +12215,7 @@ INSERT INTO civicrm_msg_template
       {ts}Balance Owed{/ts}
     </td>
     <td {$valueStyle}>
-      {$amountOwed|crmMoney}
+      {$amountOwed|crmMoney:$currency}
     </td> {* This will be zero after final payment. *}
   </tr>
   {/if}
@@ -23068,8 +23073,8 @@ INSERT INTO civicrm_navigation
     ( domain_id, url, label, name, permission, permission_operator, parent_id, is_active, has_separator, weight )
 VALUES
     ( @domainID, 'civicrm/mailing/send?reset=1',                            'New Mailing', 'New Mailing',                                          'access CiviMail,create mailings', 'OR', @mailinglastID, '1', NULL, 1 ),
-    ( @domainID, 'civicrm/mailing/browse/unscheduled?reset=1&scheduled=false', 'Draft and Unscheduled Mailings', 'Draft and Unscheduled Mailings', 'access CiviMail,create mailings,schedule mailings', 'OR', @mailinglastID, '1', NULL, 2 ),
-    ( @domainID, 'civicrm/mailing/browse/scheduled?reset=1&scheduled=true', 'Scheduled and Sent Mailings', 'Scheduled and Sent Mailings',          'access CiviMail,approve mailings,create mailings,schedule mailings', 'OR', @mailinglastID, '1', NULL, 3 ),
+    ( @domainID, 'civicrm/mailing/browse/unscheduled?reset=1&scheduled=false', 'Draft Mailings', 'Draft and Unscheduled Mailings', 'access CiviMail,create mailings,schedule mailings', 'OR', @mailinglastID, '1', NULL, 2 ),
+    ( @domainID, 'civicrm/mailing/browse/scheduled?reset=1&scheduled=true', 'Sent Mailings', 'Scheduled and Sent Mailings',          'access CiviMail,approve mailings,create mailings,schedule mailings', 'OR', @mailinglastID, '1', NULL, 3 ),
     ( @domainID, 'civicrm/mailing/browse/archived?reset=1',                 'Archived Mailings', 'Archived Mailings',                              'access CiviMail,create mailings', 'OR', @mailinglastID, '1', NULL,    4 ),
     ( @domainID, 'civicrm/report/list?compid=4&reset=1', 'Mailing Reports', 'Mailing Reports', 'access CiviMail', '', @mailinglastID, '1', 1,    5 ),
     ( @domainID, 'civicrm/admin/component?reset=1',                         'Headers, Footers, and Automated Messages', 'Headers, Footers, and Automated Messages', 'access CiviMail,administer CiviCRM', 'AND', @mailinglastID, '1', NULL, 6 ),
@@ -23519,12 +23524,12 @@ VALUES
 INSERT INTO `civicrm_report_instance`
     ( `domain_id`, `title`, `report_id`, `description`, `permission`, `form_values`)
 VALUES
-    ( @domainID, 'SYBUNT (some year but not this year)', 'contribute/sybunt', 'Some year(s) but not this year. Provides a list of constituents who donated at some time in the history of your organization but did not donate during the time period you specify.', 'access CiviContribute', 'a:18:{s:6:"fields";a:3:{s:9:"sort_name";s:1:"1";s:5:"email";s:1:"1";s:5:"phone";s:1:"1";}s:12:"sort_name_op";s:3:"has";s:15:"sort_name_value";s:0:"";s:6:"yid_op";s:2:"eq";s:9:"yid_value";s:4:"2011";s:25:"contribution_status_id_op";s:2:"in";s:28:"contribution_status_id_value";a:1:{i:0;s:1:"1";}s:6:"gid_op";s:2:"in";s:9:"gid_value";a:0:{}s:8:"tagid_op";s:2:"in";s:11:"tagid_value";a:0:{}s:11:"description";s:179:"Some year(s) but not this year. Provides a list of constituents who donated at some time in the history of your organization but did not donate during the time period you specify.";s:13:"email_subject";s:0:"";s:8:"email_to";s:0:"";s:8:"email_cc";s:0:"";s:10:"permission";s:21:"access CiviContribute";s:6:"charts";s:0:"";s:9:"domain_id";i:1;}');
+    ( @domainID, 'SYBUNT (some year but not this year)', 'contribute/sybunt', 'Some year(s) but not this year. Provides a list of constituents who donated at some time in the history of your organization but did not donate during the time period you specify.', 'access CiviContribute', 'a:16:{s:6:"fields";a:3:{s:9:"sort_name";s:1:"1";s:5:"email";s:1:"1";s:5:"phone";s:1:"1";}s:12:"sort_name_op";s:3:"has";s:15:"sort_name_value";s:0:"";s:25:"contribution_status_id_op";s:2:"in";s:28:"contribution_status_id_value";a:1:{i:0;s:1:"1";}s:6:"gid_op";s:2:"in";s:9:"gid_value";a:0:{}s:8:"tagid_op";s:2:"in";s:11:"tagid_value";a:0:{}s:11:"description";s:179:"Some year(s) but not this year. Provides a list of constituents who donated at some time in the history of your organization but did not donate during the time period you specify.";s:13:"email_subject";s:0:"";s:8:"email_to";s:0:"";s:8:"email_cc";s:0:"";s:10:"permission";s:21:"access CiviContribute";s:6:"charts";s:0:"";s:9:"domain_id";i:1;}');
 
 INSERT INTO `civicrm_report_instance`
     ( `domain_id`, `title`, `report_id`, `description`, `permission`, `form_values`)
 VALUES
-    ( @domainID, 'LYBUNT (last year but not this year)', 'contribute/lybunt', 'Last year but not this year. Provides a list of constituents who donated last year but did not donate during the time period you specify as the current year.', 'access CiviContribute', 'a:19:{s:6:"fields";a:5:{s:9:"sort_name";s:1:"1";s:5:"email";s:1:"1";s:5:"phone";s:1:"1";s:22:"last_year_total_amount";s:1:"1";s:23:"civicrm_life_time_total";s:1:"1";}s:12:"sort_name_op";s:3:"has";s:15:"sort_name_value";s:0:"";s:6:"yid_op";s:2:"eq";s:9:"yid_value";s:4:"2011";s:25:"contribution_status_id_op";s:2:"in";s:28:"contribution_status_id_value";a:1:{i:0;s:1:"1";}s:6:"gid_op";s:2:"in";s:9:"gid_value";a:0:{}s:8:"tagid_op";s:2:"in";s:11:"tagid_value";a:0:{}s:11:"description";s:157:"Last year but not this year. Provides a list of constituents who donated last year but did not donate during the time period you specify as the current year.";s:13:"email_subject";s:0:"";s:8:"email_to";s:0:"";s:8:"email_cc";s:0:"";s:10:"permission";s:21:"access CiviContribute";s:6:"groups";s:0:"";s:6:"charts";s:0:"";s:9:"domain_id";i:1;}');
+    ( @domainID, 'LYBUNT (last year but not this year)', 'contribute/lybunt', 'Last year but not this year. Provides a list of constituents who donated last year but did not donate during the time period you specify as the current year.', 'access CiviContribute', 'a:17:{s:6:"fields";a:5:{s:9:"sort_name";s:1:"1";s:5:"email";s:1:"1";s:5:"phone";s:1:"1";s:22:"last_year_total_amount";s:1:"1";s:23:"civicrm_life_time_total";s:1:"1";}s:12:"sort_name_op";s:3:"has";s:15:"sort_name_value";s:0:"";s:25:"contribution_status_id_op";s:2:"in";s:28:"contribution_status_id_value";a:1:{i:0;s:1:"1";}s:6:"gid_op";s:2:"in";s:9:"gid_value";a:0:{}s:8:"tagid_op";s:2:"in";s:11:"tagid_value";a:0:{}s:11:"description";s:157:"Last year but not this year. Provides a list of constituents who donated last year but did not donate during the time period you specify as the current year.";s:13:"email_subject";s:0:"";s:8:"email_to";s:0:"";s:8:"email_cc";s:0:"";s:10:"permission";s:21:"access CiviContribute";s:6:"groups";s:0:"";s:6:"charts";s:0:"";s:9:"domain_id";i:1;}');
 
 INSERT INTO `civicrm_report_instance`
     ( `domain_id`, `title`, `report_id`, `description`, `permission`, `form_values`)
@@ -23649,4 +23654,4 @@ INSERT INTO `civicrm_report_instance`
     ( `domain_id`, `title`, `report_id`, `description`, `permission`, `form_values`)
 VALUES
     (  @domainID, 'Survey Details', 'survey/detail', 'Detailed report for canvassing, phone-banking, walk lists or other surveys.', 'access CiviReport', 'a:39:{s:6:"fields";a:2:{s:9:"sort_name";s:1:"1";s:6:"result";s:1:"1";}s:22:"assignee_contact_id_op";s:2:"eq";s:25:"assignee_contact_id_value";s:0:"";s:12:"sort_name_op";s:3:"has";s:15:"sort_name_value";s:0:"";s:17:"street_number_min";s:0:"";s:17:"street_number_max";s:0:"";s:16:"street_number_op";s:3:"lte";s:19:"street_number_value";s:0:"";s:14:"street_name_op";s:3:"has";s:17:"street_name_value";s:0:"";s:15:"postal_code_min";s:0:"";s:15:"postal_code_max";s:0:"";s:14:"postal_code_op";s:3:"lte";s:17:"postal_code_value";s:0:"";s:7:"city_op";s:3:"has";s:10:"city_value";s:0:"";s:20:"state_province_id_op";s:2:"in";s:23:"state_province_id_value";a:0:{}s:13:"country_id_op";s:2:"in";s:16:"country_id_value";a:0:{}s:12:"survey_id_op";s:2:"in";s:15:"survey_id_value";a:0:{}s:12:"status_id_op";s:2:"eq";s:15:"status_id_value";s:1:"1";s:11:"custom_1_op";s:2:"in";s:14:"custom_1_value";a:0:{}s:11:"custom_2_op";s:2:"in";s:14:"custom_2_value";a:0:{}s:17:"custom_3_relative";s:1:"0";s:13:"custom_3_from";s:0:"";s:11:"custom_3_to";s:0:"";s:11:"description";s:75:"Detailed report for canvassing, phone-banking, walk lists or other surveys.";s:13:"email_subject";s:0:"";s:8:"email_to";s:0:"";s:8:"email_cc";s:0:"";s:10:"permission";s:17:"access CiviReport";s:6:"groups";s:0:"";s:9:"domain_id";i:1;}');
-UPDATE civicrm_domain SET version = '5.55.1';
+UPDATE civicrm_domain SET version = '5.57.0';
