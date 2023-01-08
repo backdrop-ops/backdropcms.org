@@ -3,9 +3,9 @@
     "field_name": "field_expertise",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Areas of expertise (other)",
+    "label": "Areas of Expertise (Other)",
     "widget": {
-        "weight": "15",
+        "weight": "12",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -26,7 +26,7 @@
         "default": {
             "label": "above",
             "type": "hidden",
-            "weight": "11",
+            "weight": "10",
             "settings": []
         }
     }

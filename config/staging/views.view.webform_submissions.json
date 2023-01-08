@@ -1,0 +1,228 @@
+{
+    "_config_name": "views.view.webform_submissions",
+    "name": "webform_submissions",
+    "description": "",
+    "module": "webform",
+    "storage": 4,
+    "tag": "webform",
+    "disabled": false,
+    "base_table": "webform_submissions",
+    "human_name": "Webform Submissions",
+    "core": "1.0",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "use_more_always": false,
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "50",
+                        "offset": "0",
+                        "id": "0",
+                        "quantity": "9",
+                        "expose": {
+                            "items_per_page_options": "10, 50, 100, 200, 500, 1000",
+                            "items_per_page_options_all": true,
+                            "items_per_page_options_all_label": "All"
+                        }
+                    }
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "columns": {
+                        "view_submission": "view_submission",
+                        "submitted": "submitted",
+                        "name": "name",
+                        "remote_addr": "remote_addr",
+                        "view_submission_1": "view_submission_1",
+                        "edit_submission": "view_submission_1",
+                        "delete_submission": "view_submission_1"
+                    },
+                    "default": "view_submission",
+                    "info": {
+                        "view_submission": {
+                            "sortable": 1,
+                            "default_sort_order": "desc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "submitted": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "name": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "remote_addr": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "view_submission_1": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": " &nbsp; ",
+                            "empty_column": 0
+                        },
+                        "edit_submission": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "delete_submission": {
+                            "sortable": 0,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    },
+                    "sticky": true,
+                    "empty_table": true
+                },
+                "header": {
+                    "webform_result": {
+                        "id": "webform_result",
+                        "table": "views",
+                        "field": "webform_result",
+                        "content": "<div class=\"webform-results-per-page\">Showing @start - @end of @total. &nbsp; @items_per_page_links</div>"
+                    }
+                },
+                "empty": {
+                    "area_text_custom": {
+                        "id": "area_text_custom",
+                        "table": "views",
+                        "field": "area_text_custom",
+                        "empty": true,
+                        "content": "There are no submissions for this form. <a href=\"/node/!1\">View this form</a>.",
+                        "tokenize": true
+                    }
+                },
+                "relationships": {
+                    "uid": {
+                        "id": "uid",
+                        "table": "webform_submissions",
+                        "field": "uid"
+                    }
+                },
+                "fields": {
+                    "view_submission": {
+                        "id": "view_submission",
+                        "table": "webform_submissions",
+                        "field": "view_submission",
+                        "label": "#",
+                        "element_label_colon": false,
+                        "text": "[serial]",
+                        "access_check": 0
+                    },
+                    "submitted": {
+                        "id": "submitted",
+                        "table": "webform_submissions",
+                        "field": "submitted",
+                        "date_format": "short",
+                        "second_date_format": "long"
+                    },
+                    "name": {
+                        "id": "name",
+                        "table": "users",
+                        "field": "name",
+                        "relationship": "uid",
+                        "label": "User",
+                        "element_label_colon": false
+                    },
+                    "remote_addr": {
+                        "id": "remote_addr",
+                        "table": "webform_submissions",
+                        "field": "remote_addr",
+                        "label": "IP address"
+                    },
+                    "view_submission_1": {
+                        "id": "view_submission_1",
+                        "table": "webform_submissions",
+                        "field": "view_submission",
+                        "label": "Operations",
+                        "element_label_colon": false,
+                        "access_check": 0
+                    },
+                    "edit_submission": {
+                        "id": "edit_submission",
+                        "table": "webform_submissions",
+                        "field": "edit_submission",
+                        "label": "",
+                        "element_label_colon": false,
+                        "access_check": 1
+                    },
+                    "delete_submission": {
+                        "id": "delete_submission",
+                        "table": "webform_submissions",
+                        "field": "delete_submission",
+                        "label": "",
+                        "element_label_colon": false,
+                        "access_check": 1
+                    }
+                },
+                "arguments": {
+                    "nid": {
+                        "id": "nid",
+                        "table": "webform_submissions",
+                        "field": "nid",
+                        "default_action": "not found",
+                        "default_argument_type": "fixed",
+                        "summary": {
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "summary_options": {
+                            "items_per_page": "25"
+                        },
+                        "specify_validation": true,
+                        "validate": {
+                            "type": "node"
+                        }
+                    },
+                    "uid": {
+                        "id": "uid",
+                        "table": "webform_submissions",
+                        "field": "uid",
+                        "default_argument_type": "fixed",
+                        "summary": {
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "summary_options": {
+                            "items_per_page": "25"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

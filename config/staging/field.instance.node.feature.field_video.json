@@ -5,7 +5,7 @@
     "bundle": "feature",
     "label": "Video",
     "widget": {
-        "weight": "6",
+        "weight": "5",
         "type": "youtube",
         "module": "youtube",
         "active": 0,
@@ -36,12 +36,6 @@
                 "youtube_iv_load_policy": 0
             },
             "module": "youtube"
-        },
-        "teaser": {
-            "label": "hidden",
-            "type": "hidden",
-            "weight": "7",
-            "settings": []
         }
     }
 }

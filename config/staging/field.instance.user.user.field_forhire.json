@@ -5,7 +5,7 @@
     "bundle": "user",
     "label": "Available for hire",
     "widget": {
-        "weight": "6",
+        "weight": "2",
         "type": "options_onoff",
         "module": "options",
         "active": 1,
@@ -29,7 +29,7 @@
         "default": {
             "label": "above",
             "type": "hidden",
-            "weight": "4",
+            "weight": "3",
             "settings": []
         }
     }

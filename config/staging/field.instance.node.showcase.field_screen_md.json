@@ -5,14 +5,13 @@
     "bundle": "showcase",
     "label": "Screenshot (tablet)",
     "widget": {
-        "weight": "11",
+        "weight": "10",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "preview_image_style": "showcase_preview_512x512",
-            "browser_view": "image_library"
+            "preview_image_style": "showcase_preview_512x512"
         }
     },
     "description": "Images should be exactly 768px wide by 576px tall.",
@@ -29,20 +28,19 @@
         "alt_field": 1,
         "title_field": 0,
         "default_image": "",
-        "user_register_form": false,
-        "orientate": 0
+        "user_register_form": false
     },
     "display": {
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "8",
+            "weight": "7",
             "settings": []
         },
         "teaser": {
             "label": "above",
             "type": "hidden",
-            "weight": "5",
+            "weight": "4",
             "settings": []
         }
     }

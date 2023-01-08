@@ -1,12 +1,12 @@
 {
-    "_config_name": "views.view.spam",
-    "name": "spam",
+    "_config_name": "views.view.users_to_civicrm",
+    "name": "users_to_civicrm",
     "description": "",
     "tag": "default",
     "disabled": false,
     "base_table": "users",
-    "human_name": "spam",
-    "core": "1.18.1",
+    "human_name": "Users to CiviCRM",
+    "core": "1.22.1",
     "display": {
         "default": {
             "display_title": "Master",
@@ -18,7 +18,7 @@
                 },
                 "access": {
                     "type": "perm",
-                    "perm": "administer users"
+                    "perm": "access user profiles"
                 },
                 "cache": {
                     "type": "none"
@@ -29,104 +29,12 @@
                 "pager": {
                     "type": "full",
                     "options": {
-                        "items_per_page": "100",
-                        "offset": "0",
-                        "id": "0",
-                        "total_pages": "",
-                        "quantity": "9",
-                        "tags": {
-                            "first": "« first",
-                            "previous": "‹ previous",
-                            "next": "next ›",
-                            "last": "last »"
-                        },
-                        "expose": {
-                            "items_per_page": 0,
-                            "items_per_page_label": "Items per page",
-                            "items_per_page_options": "5, 10, 20, 40, 60",
-                            "items_per_page_options_all": 0,
-                            "items_per_page_options_all_label": "- All -",
-                            "offset": 0,
-                            "offset_label": "Offset"
-                        }
+                        "items_per_page": "10"
                     }
                 },
                 "style_plugin": "table",
                 "row_plugin": "fields",
                 "fields": {
-                    "bulk_form": {
-                        "id": "bulk_form",
-                        "table": "users",
-                        "field": "bulk_form",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "Bulk operations",
-                        "exclude": 0,
-                        "alter": {
-                            "alter_text": 0,
-                            "text": "",
-                            "make_link": 0,
-                            "path": "",
-                            "absolute": 0,
-                            "external": 0,
-                            "replace_spaces": 0,
-                            "path_case": "none",
-                            "trim_whitespace": 0,
-                            "alt": "",
-                            "rel": "",
-                            "link_class": "",
-                            "prefix": "",
-                            "suffix": "",
-                            "target": "",
-                            "nl2br": 0,
-                            "max_length": "",
-                            "word_boundary": 1,
-                            "ellipsis": 1,
-                            "more_link": 0,
-                            "more_link_text": "",
-                            "more_link_path": "",
-                            "strip_tags": 0,
-                            "trim": 0,
-                            "preserve_tags": "",
-                            "html": 0
-                        },
-                        "element_type": "",
-                        "element_class": "",
-                        "element_label_type": "",
-                        "element_label_class": "",
-                        "element_label_colon": 1,
-                        "element_wrapper_type": "",
-                        "element_wrapper_class": "",
-                        "element_default_classes": 1,
-                        "empty": "",
-                        "hide_empty": 0,
-                        "empty_zero": 0,
-                        "hide_alter_empty": 1,
-                        "include_exclude": "include",
-                        "selected_actions": {
-                            "user_cancel_user_action": "user_cancel_user_action"
-                        }
-                    },
-                    "name": {
-                        "id": "name",
-                        "table": "users",
-                        "field": "name",
-                        "alter": {
-                            "alter_text": 0,
-                            "make_link": 0,
-                            "absolute": 0,
-                            "trim": 0,
-                            "word_boundary": 0,
-                            "ellipsis": 0,
-                            "strip_tags": 0,
-                            "html": 0
-                        },
-                        "hide_empty": 0,
-                        "empty_zero": 0,
-                        "link_to_user": 1,
-                        "overwrite_anonymous": 0
-                    },
                     "mail": {
                         "id": "mail",
                         "table": "users",
@@ -134,7 +42,7 @@
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "E-mail",
+                        "label": "Email",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -178,14 +86,64 @@
                         "hide_alter_empty": 1,
                         "link_to_user": "mailto"
                     },
-                    "field_bio": {
-                        "id": "field_bio",
-                        "table": "field_data_field_bio",
-                        "field": "field_bio",
+                    "nothing": {
+                        "id": "nothing",
+                        "table": "views",
+                        "field": "nothing",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "Biography",
+                        "label": "First name",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": true,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 0
+                    },
+                    "field_name": {
+                        "id": "field_name",
+                        "table": "field_data_field_name",
+                        "field": "field_name",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Full Name",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -228,10 +186,8 @@
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
                         "click_sort_column": "value",
-                        "type": "text_trimmed",
-                        "settings": {
-                            "trim_length": "250"
-                        },
+                        "type": "text_default",
+                        "settings": [],
                         "group_column": "value",
                         "group_columns": [],
                         "group_rows": true,
@@ -243,14 +199,114 @@
                         "separator": ", ",
                         "field_api_classes": 0
                     },
-                    "field_websites": {
-                        "id": "field_websites",
-                        "table": "field_data_field_websites",
-                        "field": "field_websites",
+                    "field_location_thoroughfare": {
+                        "id": "field_location_thoroughfare",
+                        "table": "field_data_field_location",
+                        "field": "field_location_thoroughfare",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "Website(s)",
+                        "label": "Address 1",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1
+                    },
+                    "field_location_locality": {
+                        "id": "field_location_locality",
+                        "table": "field_data_field_location",
+                        "field": "field_location_locality",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "City",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1
+                    },
+                    "field_location_administrative_area": {
+                        "id": "field_location_administrative_area",
+                        "table": "field_data_field_location",
+                        "field": "field_location_administrative_area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "State",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -292,28 +348,16 @@
                         "hide_empty": 0,
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
-                        "click_sort_column": "url",
-                        "type": "link_default",
-                        "settings": [],
-                        "group_column": "",
-                        "group_columns": [],
-                        "group_rows": 1,
-                        "delta_limit": "all",
-                        "delta_offset": "0",
-                        "delta_reversed": 0,
-                        "delta_first_last": 0,
-                        "multi_type": "separator",
-                        "separator": ", ",
-                        "field_api_classes": 0
+                        "display_name": 1
                     },
-                    "field_photo_1": {
-                        "id": "field_photo_1",
-                        "table": "field_data_field_photo",
-                        "field": "field_photo",
+                    "field_location_postal_code": {
+                        "id": "field_location_postal_code",
+                        "table": "field_data_field_location",
+                        "field": "field_location_postal_code",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "Photo",
+                        "label": "ZIP code",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -347,41 +391,23 @@
                         "element_class": "",
                         "element_label_type": "",
                         "element_label_class": "",
-                        "element_label_colon": 0,
+                        "element_label_colon": 1,
                         "element_wrapper_type": "",
                         "element_wrapper_class": "",
                         "element_default_classes": 1,
                         "empty": "",
                         "hide_empty": 0,
                         "empty_zero": 0,
-                        "hide_alter_empty": 1,
-                        "click_sort_column": "fid",
-                        "type": "image",
-                        "settings": {
-                            "image_style": "thumbnail",
-                            "image_link": "",
-                            "image_float": "",
-                            "image_load": "auto"
-                        },
-                        "group_column": "",
-                        "group_columns": [],
-                        "group_rows": true,
-                        "delta_limit": "all",
-                        "delta_offset": 0,
-                        "delta_reversed": false,
-                        "delta_first_last": false,
-                        "multi_type": "separator",
-                        "separator": ", ",
-                        "field_api_classes": 0
+                        "hide_alter_empty": 1
                     },
-                    "field_header_photo_1": {
-                        "id": "field_header_photo_1",
-                        "table": "field_data_field_header_photo",
-                        "field": "field_header_photo",
+                    "field_location_country": {
+                        "id": "field_location_country",
+                        "table": "field_data_field_location",
+                        "field": "field_location_country",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "label": "Hero",
+                        "label": "Country",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -423,24 +449,58 @@
                         "hide_empty": 0,
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
-                        "click_sort_column": "fid",
-                        "type": "image",
-                        "settings": {
-                            "image_style": "thumbnail",
-                            "image_link": "",
-                            "image_float": "",
-                            "image_load": "auto"
+                        "display_name": 1
+                    },
+                    "uid": {
+                        "id": "uid",
+                        "table": "users",
+                        "field": "uid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Uid",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
                         },
-                        "group_column": "",
-                        "group_columns": [],
-                        "group_rows": true,
-                        "delta_limit": "all",
-                        "delta_offset": 0,
-                        "delta_reversed": false,
-                        "delta_first_last": false,
-                        "multi_type": "separator",
-                        "separator": ", ",
-                        "field_api_classes": 0
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link_to_user": 1
                     }
                 },
                 "filters": {
@@ -453,132 +513,6 @@
                             "operator": false
                         },
                         "group": 1
-                    },
-                    "name": {
-                        "id": "name",
-                        "table": "users",
-                        "field": "name",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "contains",
-                        "value": "",
-                        "group": 1,
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "name_op",
-                            "label": "Username",
-                            "description": "",
-                            "use_operator": 1,
-                            "operator": "name_op",
-                            "identifier": "name",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
-                    },
-                    "mail": {
-                        "id": "mail",
-                        "table": "users",
-                        "field": "mail",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "contains",
-                        "value": "",
-                        "group": 1,
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "mail_op",
-                            "label": "E-mail",
-                            "description": "",
-                            "use_operator": 1,
-                            "operator": "mail_op",
-                            "identifier": "mail",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
-                    },
-                    "field_bio_value": {
-                        "id": "field_bio_value",
-                        "table": "field_data_field_bio",
-                        "field": "field_bio_value",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "contains",
-                        "value": "",
-                        "group": 1,
-                        "exposed": true,
-                        "expose": {
-                            "operator_id": "field_bio_value_op",
-                            "label": "Biography",
-                            "description": "",
-                            "use_operator": 1,
-                            "operator": "field_bio_value_op",
-                            "identifier": "field_bio_value",
-                            "required": 0,
-                            "remember": 0,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated",
-                                "anonymous": 0,
-                                "4": 0,
-                                "3": 0
-                            }
-                        },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
                     }
                 },
                 "sorts": {
@@ -589,7 +523,7 @@
                         "order": "DESC"
                     }
                 },
-                "title": "Spam check",
+                "title": "Users to CiviCRM",
                 "style_options": {
                     "grouping": [],
                     "row_class": "",
@@ -600,18 +534,10 @@
                     "caption": "",
                     "summary": "",
                     "columns": {
-                        "bulk_form": "bulk_form",
                         "name": "name",
-                        "field_bio": "field_bio",
-                        "field_header_photo": "field_bio",
-                        "field_photo": "name"
+                        "field_name": "field_name"
                     },
                     "info": {
-                        "bulk_form": {
-                            "align": "",
-                            "separator": "",
-                            "empty_column": 0
-                        },
                         "name": {
                             "sortable": 0,
                             "default_sort_order": "asc",
@@ -619,21 +545,7 @@
                             "separator": "",
                             "empty_column": 0
                         },
-                        "field_bio": {
-                            "sortable": 0,
-                            "default_sort_order": "asc",
-                            "align": "",
-                            "separator": "",
-                            "empty_column": 0
-                        },
-                        "field_header_photo": {
-                            "sortable": 0,
-                            "default_sort_order": "asc",
-                            "align": "",
-                            "separator": "",
-                            "empty_column": 0
-                        },
-                        "field_photo": {
+                        "field_name": {
                             "sortable": 0,
                             "default_sort_order": "asc",
                             "align": "",
@@ -643,12 +555,6 @@
                     },
                     "default": "-1",
                     "empty_table": 0
-                },
-                "filter_groups": {
-                    "operator": "AND",
-                    "groups": {
-                        "1": "AND"
-                    }
                 }
             }
         },
@@ -660,15 +566,23 @@
                     "type": "views_query",
                     "options": []
                 },
-                "path": "admin/people/spam",
-                "menu": {
-                    "type": "normal",
-                    "title": "Spam check",
-                    "description": "A list of user accounts and fields that might show that they are spam.",
-                    "name": "management",
-                    "weight": "0",
-                    "context": 0,
-                    "context_only_inline": 0
+                "path": "users-to-civicrm"
+            }
+        },
+        "views_data_export_1": {
+            "display_title": "Data export",
+            "display_plugin": "views_data_export",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "users-to-civicrm.csv",
+                "pager": {
+                    "type": "none",
+                    "options": {
+                        "offset": "0"
+                    }
                 }
             }
         }

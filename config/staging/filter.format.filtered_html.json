@@ -4,7 +4,7 @@
     "name": "Standard",
     "cache": true,
     "status": "1",
-    "weight": "-10",
+    "weight": "0",
     "roles": {
         "authenticated": "authenticated",
         "4": "4",
@@ -12,47 +12,15 @@
         "anonymous": 0
     },
     "filters": {
-        "filter_html_escape": {
-            "status": 0,
-            "weight": -50,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_html": {
-            "status": 1,
-            "weight": -49,
-            "settings": {
-                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h1> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th><span>",
-                "filter_html_help": 1,
-                "filter_html_nofollow": 0
-            },
-            "module": "filter"
-        },
         "codefilter": {
             "status": 1,
             "weight": -48,
             "module": "codefilter",
-            "settings": {
-                "nowrap_expand": false
-            }
-        },
-        "filter_url": {
-            "status": 1,
-            "weight": -47,
-            "module": "filter",
-            "settings": {
-                "filter_url_length": 72
-            }
+            "settings": []
         },
         "filter_image_caption": {
             "status": 1,
             "weight": -46,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_image_align": {
-            "status": 1,
-            "weight": -45,
             "module": "filter",
             "settings": []
         },
@@ -62,16 +30,42 @@
             "module": "filter",
             "settings": []
         },
-        "filter_tokens": {
-            "status": 0,
-            "weight": -43,
-            "module": "token_filter",
+        "filter_url": {
+            "status": 1,
+            "weight": -47,
+            "module": "filter",
             "settings": []
         },
         "filter_htmlcorrector": {
             "status": 1,
             "weight": -42,
             "module": "filter",
+            "settings": []
+        },
+        "filter_html_escape": {
+            "status": 0,
+            "weight": -50,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_image_align": {
+            "status": 1,
+            "weight": -45,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html": {
+            "status": 1,
+            "weight": -49,
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h1> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th><span>"
+            },
+            "module": "filter"
+        },
+        "filter_tokens": {
+            "status": 0,
+            "weight": -43,
+            "module": "token_filter",
             "settings": []
         }
     },
@@ -239,16 +233,6 @@
                     }
                 ]
             }
-        },
-        "format_list": [
-            "p",
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6"
-        ],
-        "style_list": []
+        }
     }
 }

@@ -5,7 +5,7 @@
     "bundle": "showcase",
     "label": "Project summary",
     "widget": {
-        "weight": "9",
+        "weight": "8",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
@@ -26,13 +26,13 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "12",
+            "weight": "11",
             "settings": []
         },
         "teaser": {
             "label": "above",
             "type": "hidden",
-            "weight": "10",
+            "weight": "9",
             "settings": []
         }
     }

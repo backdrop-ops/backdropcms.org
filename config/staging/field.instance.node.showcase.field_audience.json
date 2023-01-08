@@ -27,14 +27,15 @@
         "default": {
             "label": "above",
             "type": "hidden",
-            "weight": "5",
+            "weight": "4",
             "settings": []
         },
         "teaser": {
             "label": "hidden",
-            "type": "hidden",
+            "type": "list_default",
             "weight": "2",
-            "settings": []
+            "settings": [],
+            "module": "list"
         }
     }
 }

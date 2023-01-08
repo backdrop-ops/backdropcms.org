@@ -3,19 +3,18 @@
     "field_name": "field_header_photo",
     "entity_type": "node",
     "bundle": "showcase",
-    "label": "Please add a large photograph that that sets the appropriate mood",
+    "label": "Hero Photo",
     "widget": {
-        "weight": "5",
+        "weight": "4",
         "type": "image_image",
         "module": "image",
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
-            "browser_view": "image_library",
             "preview_image_style": "header_preview"
         }
     },
-    "description": "No screenshots here please. Recommended size is 1500px by 500px.",
+    "description": "Please add a photograph that that sets the appropriate mood for this project (no screenshots here please).",
     "required": 0,
     "deleted": 0,
     "default_value": null,
@@ -26,9 +25,8 @@
         "max_filesize": "",
         "max_dimensions": "3000x3000",
         "min_dimensions": "",
-        "alt_field": 0,
+        "alt_field": 1,
         "title_field": 0,
-        "orientate": 0,
         "default_image": "",
         "user_register_form": false
     },
@@ -36,13 +34,13 @@
         "default": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "10",
+            "weight": "9",
             "settings": []
         },
         "teaser": {
             "label": "above",
             "type": "hidden",
-            "weight": "11",
+            "weight": "10",
             "settings": []
         }
     }

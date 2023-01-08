@@ -3,9 +3,9 @@
     "field_name": "field_services",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Areas of expertise",
+    "label": "Areas of Expertise",
     "widget": {
-        "weight": "14",
+        "weight": "11",
         "type": "options_buttons",
         "module": "options",
         "active": 1,
@@ -23,7 +23,7 @@
         "default": {
             "label": "above",
             "type": "hidden",
-            "weight": "12",
+            "weight": "11",
             "settings": []
         }
     }

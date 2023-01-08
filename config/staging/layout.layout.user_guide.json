@@ -41,8 +41,6 @@
         ],
         "title": []
     },
-    "contexts": [],
-    "relationships": [],
     "content": {
         "097f5235-00e7-4ce1-ac00-d49b0e0588bb": {
             "plugin": "borg_blocks:branding",
@@ -306,12 +304,9 @@
                     "style": "default",
                     "block_settings": {
                         "delta": "resources",
-                        "description": "",
                         "reusable": true
                     },
-                    "contexts": [],
-                    "admin_label": "",
-                    "admin_description": ""
+                    "contexts": []
                 },
                 "uuid": "7f6fad2e-fbc8-45fc-ac58-884728c8236a",
                 "style": {

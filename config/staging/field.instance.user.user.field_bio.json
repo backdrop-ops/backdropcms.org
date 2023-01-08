@@ -3,9 +3,9 @@
     "field_name": "field_bio",
     "entity_type": "user",
     "bundle": "user",
-    "label": "Biography",
+    "label": "Biography (visible on your public profile)",
     "widget": {
-        "weight": "4",
+        "weight": "7",
         "type": "text_textarea",
         "module": "text",
         "active": 1,
@@ -13,8 +13,8 @@
             "rows": "10"
         }
     },
-    "description": "Give some description about yourself. This will be visible on your public profile.",
-    "required": 0,
+    "description": "",
+    "required": 1,
     "deleted": 0,
     "default_value": [
         {
@@ -25,7 +25,7 @@
     "default_value_function": null,
     "settings": {
         "text_processing": "1",
-        "user_register_form": 0
+        "user_register_form": 1
     },
     "display": {
         "default": {

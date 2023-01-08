@@ -411,43 +411,14 @@
                 },
                 "filters": {
                     "status": {
-                        "id": "status",
+                        "value": 1,
                         "table": "node",
                         "field": "status",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "operator": "=",
-                        "value": "1",
-                        "group": 1,
-                        "exposed": false,
+                        "id": "status",
                         "expose": {
-                            "operator_id": false,
-                            "label": "",
-                            "description": "",
-                            "use_operator": false,
-                            "operator": "",
-                            "identifier": "",
-                            "required": false,
-                            "remember": false,
-                            "multiple": false,
-                            "remember_roles": {
-                                "authenticated": "authenticated"
-                            }
+                            "operator": false
                         },
-                        "is_grouped": false,
-                        "group_info": {
-                            "label": "",
-                            "description": "",
-                            "identifier": "",
-                            "optional": true,
-                            "widget": "select",
-                            "multiple": false,
-                            "remember": 0,
-                            "default_group": "All",
-                            "default_group_multiple": [],
-                            "group_items": []
-                        }
+                        "group": 1
                     },
                     "type": {
                         "id": "type",
@@ -455,8 +426,7 @@
                         "field": "type",
                         "value": {
                             "platform": "platform"
-                        },
-                        "group": 1
+                        }
                     }
                 },
                 "sorts": {
@@ -496,12 +466,6 @@
                         "content": "<h2>There are lots of ways you can try Backdrop CMS. Check the list below to find one that matches your needs.</h2>\r\n",
                         "format": "filtered_html",
                         "tokenize": 0
-                    }
-                },
-                "filter_groups": {
-                    "operator": "AND",
-                    "groups": {
-                        "1": "AND"
                     }
                 }
             }
