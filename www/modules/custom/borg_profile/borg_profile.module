@@ -11,7 +11,9 @@ function borg_profile_form_views_exposed_form_alter(&$form, &$form_state, $form_
   // Only edit the form on user profile pages.
   $user = menu_get_object('user', 1);
   if ($user !== NULL) {
-    $username = '';
+    // This is the text we will search for in projects to determine if the user
+    // is involved in the project.
+    $search_text = '';
 
     // Get the user's GitHub username from their GitHub social field (if set).
     if (!empty($user->field_social)) {
@@ -23,19 +25,22 @@ function borg_profile_form_views_exposed_form_alter(&$form, &$form_state, $form_
         }
       }
       if (!empty($github_url)) {
-        $url_parts = explode('/', $github_url);
-        $username = array_pop($url_parts);
+        // Allow for both http:// and https:// GitHub links. They'll appear in
+        // the body as the destination of an <a href="..."> tag, so we can use
+        // '"' as a terminal delimiter.
+        $url_parts = explode('://', $github_url);
+        $search_text = array_pop($url_parts) . '"';
       }
     }
 
     // Get the user's BackdropCMS.org username otherwise.
-    if (empty($username) && !empty($user->name)) {
-      $username = $user->name;
+    if (empty($search_text) && !empty($user->name)) {
+      $search_text = $user->name;
     }
 
-    if (!empty($username)) {
+    if (!empty($search_text)) {
       // Search for projects by username and hide the exposed form.
-      $form_state['input']['user'] = $username;
+      $form_state['input']['user'] = $search_text;
       $form['#attributes']['class'][] = 'element-hidden';
     }
     else {
