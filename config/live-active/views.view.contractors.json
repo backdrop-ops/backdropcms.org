@@ -459,6 +459,50 @@
                         "vocabulary": "services",
                         "hierarchy": 0,
                         "error_message": 1
+                    },
+                    "country": {
+                        "id": "country",
+                        "table": "civicrm_address",
+                        "field": "country",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": [],
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "country_op",
+                            "label": "Country",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "country_op",
+                            "identifier": "country",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "civi": 0,
+                                "3": 0
+                            },
+                            "reduce": 0
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
                     }
                 },
                 "sorts": {
@@ -644,6 +688,50 @@
                         "vocabulary": "services",
                         "hierarchy": 0,
                         "error_message": 1
+                    },
+                    "country": {
+                        "id": "country",
+                        "table": "civicrm_address",
+                        "field": "country",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "in",
+                        "value": [],
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "country_op",
+                            "label": "Country",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "country_op",
+                            "identifier": "country",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "civi": 0,
+                                "3": 0
+                            },
+                            "reduce": 0
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
                     }
                 },
                 "filter_groups": {
