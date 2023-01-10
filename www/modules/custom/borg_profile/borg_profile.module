@@ -23,9 +23,11 @@ function borg_profile_form_views_exposed_form_alter(&$form, &$form_state, $form_
         }
       }
       if (!empty($github_url)) {
-        // Allow for both http:// and https:// GitHub links.
+        // Allow for both http:// and https:// GitHub links. They'll appear in
+        // the body as the destination of an <a href="..."> tag, so we can use
+        // '"' as a terminal delimiter.
         $url_parts = explode('://', $github_url);
-        $username = array_pop($url_parts);
+        $username = array_pop($url_parts) . '"';
       }
     }
 
