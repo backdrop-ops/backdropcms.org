@@ -26,38 +26,8 @@ function civicrm_table_prefixes_menu() {
 function civicrm_table_prefixes_view() {
   $build[] = array(
     '#type' => 'help',
-    '#markup' => t('Copy the text below into a file and save it as <code>civicrm_table_prefixes.php</code> at the root of your website (at the same level as <code>settings.php</code>). You will need to update this whenever you create additional CiviCRM tables (for example, adding a custom data group).'),
+    '#markup' => t('Copy the text below into a file and save it as <code>civicrm_table_prefixes.php</code> at the root of your website (at the same level as <code>settings.php</code>). You will need to update this whenever you create additional CiviCRM tables (for example, adding a custom data group). The <a href="!url">status report</a> will let you know when this is necessary.', array('!url' => url('admin/reports/status'))),
   );
-
-/*
-  civicrm_initialize();
-  $civicrm_dsn = preg_split('/:\/\/|:|@|\/|\?/', CIVICRM_DSN);
-  $db_user = $civicrm_dsn[1];
-  $db_pass = $civicrm_dsn[2];
-  $db_host = $civicrm_dsn[3];
-  $db_name = $civicrm_dsn[4];
-
-  $prefixes = array();
-  try {
-    $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='$db_name';";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->fetchAll();
-    foreach ($result as $row) {
-      $table_name = $row['table_name'];
-      // Ignore temporary tables
-      if (strpos($table_name, 'civicrm_tmp_') === FALSE) {
-        $prefixes[$table_name] = "$db_name.";
-      }
-    }
-  }
-  catch(PDOException $e) {
-    backdrop_set_message(t('There was an error reading the CiviCRM db: @error', array('@error' => $e->getMessage())), 'error');
-  }
- */
-
   $build['prefixes'] = array(
     '#type' => 'fieldset',
   );
@@ -107,20 +77,16 @@ function _civicrm_table_prefixes_get_from_db() {
   if (isset($prefixes)) {
     return $prefixes;
   }
-  civicrm_initialize();
 
-  // Get CiviCRM db credentials so we can make our own direct query.
-  $civicrm_dsn = preg_split('/:\/\/|:|@|\/|\?/', CIVICRM_DSN);
-  $db_user = $civicrm_dsn[1];
-  $db_pass = $civicrm_dsn[2];
-  $db_host = $civicrm_dsn[3];
-  $db_name = $civicrm_dsn[4];
+  // Use the CiviCRM DB class to parse the CiviCRM data source name.
+  civicrm_initialize();
+  $db = (object) DB::parseDSN(CIVICRM_DSN);
 
   $prefixes = array();
   try {
-    $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass);
+    $conn = new PDO(CIVICRM_DSN, $db->username, $db->password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='$db_name';";
+    $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='$db->database';";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->fetchAll();
@@ -128,7 +94,7 @@ function _civicrm_table_prefixes_get_from_db() {
       $table_name = $row['table_name'];
       // Ignore temporary tables
       if (strpos($table_name, 'civicrm_tmp_') === FALSE) {
-        $prefixes[$table_name] = "$db_name.";
+        $prefixes[$table_name] = $db->database . '.';
       }
     }
   }

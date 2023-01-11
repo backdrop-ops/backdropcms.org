@@ -11,15 +11,15 @@ function civicrm_table_prefixes_requirements($phase) {
   $requirements = array();
   if ($phase == 'runtime') {
 
-    $see_config = ' ' . t('See <a href="!url">the configuration page</a>.', array('!url' => url('admin/config/system/civicrm-table-prefixes')));
+    $see_config = ' ' . l('See the configuration page for details.', t('admin/config/system/civicrm-table-prefixes'));
     $filename = BACKDROP_ROOT . '/civicrm_table_prefixes.php';
     if (!file_exists($filename)) {
-      $error = t('File @filename does not exist at !root/.', array('@filename' => $filename)) . $see_config;
+      $error = t('File %filename does not exist.', array('%filename' => $filename)) . $see_config;
     }
     else {
       global $civicrm_table_prefixes;
       if (empty($civicrm_table_prefixes)) {
-        $error = t('The global variable $civicrm_table_prefixes has not been set in @filename.', array('@filename' => $filename)) . $see_config;
+        $error = t('The global variable $civicrm_table_prefixes has not been set.') . $see_config;
       }
       else {
         // Get prefixes from the CiviCRM db.
