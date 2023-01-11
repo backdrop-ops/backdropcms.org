@@ -13,7 +13,12 @@ Installation
   
 - You will be modifying your `settings.php` file (or `settings.local.php` file) and adding a file `civicrm_table_prefixes.php` to the root of your Backdrop installation.
 
+Usage Notes
+-----------
+
 - If CiviCRM adds tables over time (which happens, for example, when you add new custom data groups), you will need to update your `civicrm_table_prefixes.php` file to make the new tables available to Backdrop. The Backdrop status report at Administration > Reports > Status will alert you when this is necessary and the configuration page for this module will provide the required replacement text.
+
+- Since the `civicrm_table_prefixes.php` file contains the CiviCRM database name, if you use a non-version-controlled `civicrm.settings.local.php` file to give local and remote dbs different names, you should probably also keep `civicrm_table_prefixes.php` out of version control since the local and remote versions would be different.
   
 Issues
 ------
