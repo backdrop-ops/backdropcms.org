@@ -506,6 +506,19 @@
                     }
                 },
                 "sorts": {
+                    "field_photo_fid": {
+                        "id": "field_photo_fid",
+                        "table": "field_data_field_photo",
+                        "field": "field_photo_fid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    },
                     "random": {
                         "id": "random",
                         "table": "views",
