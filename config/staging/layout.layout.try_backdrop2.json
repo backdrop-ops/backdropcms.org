@@ -1,12 +1,12 @@
 {
-    "_config_name": "layout.layout.profile_edit",
-    "path": "user/%/edit",
-    "name": "profile_edit",
-    "title": "Profile Edit",
+    "_config_name": "layout.layout.try_backdrop2",
+    "path": "try-backdrop2",
+    "name": "try_backdrop2",
+    "title": "try-backdrop2",
     "description": null,
     "renderer_name": "standard",
     "module": null,
-    "weight": -1,
+    "weight": 0,
     "storage": 1,
     "layout_template": "boxton",
     "disabled": false,
@@ -17,27 +17,27 @@
     },
     "positions": {
         "header": [
-            "0a91bb92-7ad6-4dfd-9700-d05b376c522e",
-            "5b119248-ffc9-484c-863d-6112400471cb",
-            "3af429a3-2c08-4781-b606-6f06bf7a2749"
+            "3fe75419-c16f-4538-aa2c-44fe031a3a0b",
+            "2968b5ac-2646-43a5-b014-2019ecaf9ba8",
+            "a7b790c0-5707-4eec-8d06-6d7d94dd5a71"
         ],
         "top": [],
         "content": [
-            "ca0ecac5-0331-4a9f-8f05-05b29b2d5e93"
+            "ac739bb4-8ec7-4e09-a800-e95445f06e6e"
         ],
         "bottom": [],
         "footer": [
-            "9f0286fd-0644-40f8-a504-4aabbab01eee",
-            "0d5c963f-c990-4953-b300-a679606c465a",
-            "1e834d8d-265f-4697-b109-9d2b57e66eed",
-            "d4bb6249-078c-4489-8e00-a5555047a9e7"
+            "ff622d09-8757-40e3-9c20-32e832fbeb7e",
+            "b6a7d8d5-6174-4e0c-8900-d8f16638a62c",
+            "dc64924a-919f-459b-b75f-95a423882335",
+            "955dea1d-37f9-4869-b900-e851b0ed168c"
         ],
         "title": []
     },
     "contexts": [],
     "relationships": [],
     "content": {
-        "0a91bb92-7ad6-4dfd-9700-d05b376c522e": {
+        "3fe75419-c16f-4538-aa2c-44fe031a3a0b": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "status": 1,
@@ -50,7 +50,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "0a91bb92-7ad6-4dfd-9700-d05b376c522e",
+                "uuid": "3fe75419-c16f-4538-aa2c-44fe031a3a0b",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -61,7 +61,7 @@
                 }
             }
         },
-        "5b119248-ffc9-484c-863d-6112400471cb": {
+        "2968b5ac-2646-43a5-b014-2019ecaf9ba8": {
             "plugin": "system:user-menu",
             "data": {
                 "status": 1,
@@ -81,7 +81,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "5b119248-ffc9-484c-863d-6112400471cb",
+                "uuid": "2968b5ac-2646-43a5-b014-2019ecaf9ba8",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -92,7 +92,7 @@
                 }
             }
         },
-        "3af429a3-2c08-4781-b606-6f06bf7a2749": {
+        "a7b790c0-5707-4eec-8d06-6d7d94dd5a71": {
             "plugin": "system:main-menu",
             "data": {
                 "status": 1,
@@ -111,7 +111,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "3af429a3-2c08-4781-b606-6f06bf7a2749",
+                "uuid": "a7b790c0-5707-4eec-8d06-6d7d94dd5a71",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -122,36 +122,44 @@
                 }
             }
         },
-        "ca0ecac5-0331-4a9f-8f05-05b29b2d5e93": {
-            "plugin": "system:main",
+        "ac739bb4-8ec7-4e09-a800-e95445f06e6e": {
+            "plugin": "views:platforms-block_1",
             "data": {
                 "status": 1,
-                "module": "system",
-                "delta": "main",
+                "module": "views",
+                "delta": "platforms-block_1",
                 "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "10",
+                    "offset": 0,
+                    "path": "try-backdrop",
+                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
-                    "style": "dynamic",
+                    "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "ca0ecac5-0331-4a9f-8f05-05b29b2d5e93",
+                "uuid": "ac739bb4-8ec7-4e09-a800-e95445f06e6e",
                 "style": {
-                    "plugin": "dynamic",
+                    "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "l-content-wrapper",
-                            "wrapper_tag": "div",
-                            "title_tag": "h2",
-                            "title_classes": "block-title",
-                            "content_tag": "div",
-                            "content_classes": ""
+                            "classes": ""
                         }
                     }
                 }
             }
         },
-        "9f0286fd-0644-40f8-a504-4aabbab01eee": {
+        "ff622d09-8757-40e3-9c20-32e832fbeb7e": {
             "plugin": "system:powered-by",
             "data": {
                 "status": 1,
@@ -164,7 +172,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "9f0286fd-0644-40f8-a504-4aabbab01eee",
+                "uuid": "ff622d09-8757-40e3-9c20-32e832fbeb7e",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -175,7 +183,7 @@
                 }
             }
         },
-        "0d5c963f-c990-4953-b300-a679606c465a": {
+        "b6a7d8d5-6174-4e0c-8900-d8f16638a62c": {
             "plugin": "on_the_web:social_links",
             "data": {
                 "status": 1,
@@ -199,7 +207,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "0d5c963f-c990-4953-b300-a679606c465a",
+                "uuid": "b6a7d8d5-6174-4e0c-8900-d8f16638a62c",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -210,7 +218,7 @@
                 }
             }
         },
-        "1e834d8d-265f-4697-b109-9d2b57e66eed": {
+        "dc64924a-919f-459b-b75f-95a423882335": {
             "plugin": "block:3",
             "data": {
                 "status": 0,
@@ -226,7 +234,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "1e834d8d-265f-4697-b109-9d2b57e66eed",
+                "uuid": "dc64924a-919f-459b-b75f-95a423882335",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -234,10 +242,22 @@
                             "classes": "col-sm-6"
                         }
                     }
-                }
+                },
+                "conditions": [
+                    {
+                        "plugin": "path",
+                        "data": {
+                            "settings": {
+                                "visibility_setting": "0",
+                                "paths": "security",
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
             }
         },
-        "d4bb6249-078c-4489-8e00-a5555047a9e7": {
+        "955dea1d-37f9-4869-b900-e851b0ed168c": {
             "plugin": "menu:menu-footer-menu",
             "data": {
                 "status": 1,
@@ -256,7 +276,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "d4bb6249-078c-4489-8e00-a5555047a9e7",
+                "uuid": "955dea1d-37f9-4869-b900-e851b0ed168c",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -267,5 +287,19 @@
                 }
             }
         }
-    }
+    },
+    "conditions": [
+        {
+            "plugin": "user_role",
+            "data": {
+                "settings": {
+                    "negate": false,
+                    "roles": [
+                        3
+                    ],
+                    "load_condition_nojs": "Load condition"
+                }
+            }
+        }
+    ]
 }

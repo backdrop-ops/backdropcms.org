@@ -4,6 +4,7 @@
     "name": "my_profile",
     "title": "My Profile",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": -1,
     "storage": 1,
@@ -36,10 +37,13 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "6a0481aa-b1a6-46b2-b500-dfebb5154484": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -63,6 +67,7 @@
         "aec1fbf4-65ab-4313-950f-1597bf3ba316": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -93,6 +98,7 @@
         "b1792fd7-906e-4d38-8901-1cdf2a066df1": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -122,6 +128,7 @@
         "7133af07-dd80-4067-9933-51901be22c5c": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -150,6 +157,7 @@
         "58b993f7-b3cb-4dad-9249-73df1afa4bc4": {
             "plugin": "views:profile_sidebar-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "profile_sidebar-block_1",
                 "settings": {
@@ -184,6 +192,7 @@
         "8443e8ae-fc83-4d02-8100-b19a279a697b": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -207,6 +216,7 @@
         "6169e6a5-81a6-4b57-8e00-c7dfdcd9efce": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -241,6 +251,7 @@
         "3dfe57d3-1c02-4a29-8527-3930f43ebf65": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -267,6 +278,7 @@
         "e73d6853-a479-4ec9-bc24-36e23e81e514": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {
@@ -302,7 +314,8 @@
                     "roles": [
                         "authenticated"
                     ],
-                    "load_condition_nojs": "Load condition"
+                    "load_condition_nojs": "Load condition",
+                    "negate": false
                 }
             }
         }

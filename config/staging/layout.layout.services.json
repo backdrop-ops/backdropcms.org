@@ -4,6 +4,7 @@
     "name": "services",
     "title": "Services",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": 0,
     "storage": 1,
@@ -42,10 +43,13 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "40fdcf69-7813-404d-af09-9a6798c50500": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -69,6 +73,7 @@
         "79d39010-664b-4dcd-a002-02266d21672f": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -99,6 +104,7 @@
         "fa3d50bf-12ba-4276-8f00-db34f9abc799": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -128,6 +134,7 @@
         "bb3796b7-2305-443f-8138-56333e2d775c": {
             "plugin": "system:page_components:title",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "page_components",
                 "settings": {
@@ -154,6 +161,7 @@
         "fd4d983e-2f55-49d8-8f05-5ba1e4ebd58c": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -179,6 +187,7 @@
         "96f302dc-b471-4fed-b311-1737463dcc3e": {
             "plugin": "views:providers-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "providers-block_1",
                 "settings": {
@@ -212,6 +221,7 @@
         "863498ad-5fde-4331-a500-a36e921cb887": {
             "plugin": "borg_blocks:rss",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "rss",
                 "settings": {
@@ -235,6 +245,7 @@
         "f2335aaa-3444-4cc4-8c00-a75bdd4562e2": {
             "plugin": "views:contractors-block",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "contractors-block",
                 "settings": {
@@ -268,6 +279,7 @@
         "9401402d-1468-486b-b407-7ffcea4f39d4": {
             "plugin": "views:supporters-block",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "supporters-block",
                 "settings": {
@@ -302,6 +314,7 @@
         "b8891a33-f9ca-4507-a800-b25913352828": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -325,6 +338,7 @@
         "0f1df073-3119-486f-8c00-ab1442e3a986": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -359,6 +373,7 @@
         "1059b15c-21f3-4934-8800-b28ce7c4e37f": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -385,6 +400,7 @@
         "056702e2-0976-407f-9547-71b9b5b83654": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

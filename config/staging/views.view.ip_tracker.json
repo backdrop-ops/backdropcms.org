@@ -3,9 +3,10 @@
     "name": "ip_tracker",
     "description": "List of IP address by visitors",
     "tag": "admin, ip",
+    "disabled": false,
     "base_table": "ip_tracker",
-    "core": "7",
     "human_name": "IP addresses",
+    "core": "7",
     "display": {
         "default": {
             "display_title": "Master",
@@ -38,16 +39,23 @@
                 },
                 "style_plugin": "table",
                 "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "override": 1,
+                    "sticky": 0,
+                    "caption": "",
+                    "summary": "",
                     "columns": {
-                        "name": "name",
+                        "uid_name": "uid_name",
                         "visits": "visits",
                         "first_visit": "first_visit",
                         "last_visit": "last_visit",
                         "ip": "ip"
                     },
-                    "default": "-1",
                     "info": {
-                        "name": {
+                        "uid_name": {
                             "sortable": 1,
                             "default_sort_order": "asc",
                             "align": "",
@@ -63,14 +71,14 @@
                         },
                         "first_visit": {
                             "sortable": 1,
-                            "default_sort_order": "asc",
+                            "default_sort_order": "desc",
                             "align": "",
                             "separator": "",
                             "empty_column": 0
                         },
                         "last_visit": {
                             "sortable": 1,
-                            "default_sort_order": "asc",
+                            "default_sort_order": "desc",
                             "align": "",
                             "separator": "",
                             "empty_column": 0
@@ -82,7 +90,9 @@
                             "separator": "",
                             "empty_column": 0
                         }
-                    }
+                    },
+                    "default": "last_visit",
+                    "empty_table": 0
                 },
                 "relationships": {
                     "uid": {
@@ -93,12 +103,58 @@
                     }
                 },
                 "fields": {
-                    "name": {
-                        "id": "name",
-                        "table": "users",
-                        "field": "name",
-                        "relationship": "uid",
-                        "label": "User"
+                    "uid_name": {
+                        "id": "uid_name",
+                        "table": "ip_tracker",
+                        "field": "uid_name",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Username",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link": 1,
+                        "cancelled": "<cancelled [uid]>",
+                        "anonymous": "Anonymous"
                     },
                     "visits": {
                         "id": "visits",
@@ -120,7 +176,52 @@
                     "ip": {
                         "id": "ip",
                         "table": "ip_tracker",
-                        "field": "ip"
+                        "field": "ip",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "IP Address",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 1,
+                            "path": "admin/people/ip-details/[ip]",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1
                     }
                 },
                 "filters": {

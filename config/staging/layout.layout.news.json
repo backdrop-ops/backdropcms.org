@@ -43,10 +43,13 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "74914ed2-7655-40ad-9900-b106a5b7d481": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -70,6 +73,7 @@
         "e7b7643d-b925-4d01-b836-54f47b917f7f": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -100,6 +104,7 @@
         "703d4639-db2d-4934-8300-eae9f40fb582": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -129,6 +134,7 @@
         "70afa89b-8469-4c6b-8801-01932c27a8a3": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -154,6 +160,7 @@
         "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -182,6 +189,7 @@
         "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909": {
             "plugin": "block:newsletter_signup",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "newsletter_signup",
                 "settings": {
@@ -209,6 +217,7 @@
         "1c732b6a-9279-45af-b242-666a63fa2848": {
             "plugin": "block:7",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "7",
                 "settings": {
@@ -235,6 +244,7 @@
         "1cb8ed0f-b783-4901-9a00-f445fd6db153": {
             "plugin": "block:meeting_schedule",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "meeting_schedule",
                 "settings": {
@@ -258,6 +268,7 @@
         "0765a3fa-4353-454d-9301-1c346e550eae": {
             "plugin": "views:backdrop_on_the_web-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "backdrop_on_the_web-block_1",
                 "settings": {
@@ -291,6 +302,7 @@
         "e161c1f5-be5c-47c4-a723-352567c8870c": {
             "plugin": "views:events-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "events-block_1",
                 "settings": {
@@ -324,6 +336,7 @@
         "11f77fa6-ce86-4619-9338-56b87d16920f": {
             "plugin": "block:9",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "9",
                 "settings": {
@@ -350,6 +363,7 @@
         "91be13c7-fc28-4904-ad00-bb7ea3f36b68": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -373,6 +387,7 @@
         "43e431c8-4e4c-4b0a-9740-64ee320ef7e2": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -407,6 +422,7 @@
         "dca8ec3b-4d56-44da-b100-0020d8c86e3c": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -433,6 +449,7 @@
         "9a1ad266-2c94-4b75-9c08-8cb4ac7972fa": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

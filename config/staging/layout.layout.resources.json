@@ -47,6 +47,7 @@
         "5740f4b1-23ef-4ec8-bb0f-158468cc36a1": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -70,6 +71,7 @@
         "82d7ad59-29e9-4541-8e04-4bd29ac6c22d": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -100,6 +102,7 @@
         "d6fd2fb7-112e-42a1-8b06-6a53da3b0f56": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -129,6 +132,7 @@
         "2b25a428-72d4-4957-8100-00e8ac1f78ac": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -157,6 +161,7 @@
         "9a65a35d-23c6-4800-af00-fc16ed0825b8": {
             "plugin": "block:books",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "books",
                 "settings": {
@@ -183,6 +188,7 @@
         "f0a1a87f-75fe-4d79-a261-97875c307a34": {
             "plugin": "block:resources",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "resources",
                 "settings": {
@@ -212,6 +218,7 @@
         "c13974ed-6702-4c2e-8400-e4143e9a30e9": {
             "plugin": "views:contractors-block",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "contractors-block",
                 "settings": {
@@ -246,6 +253,7 @@
         "f26b380e-29b5-4d29-bb03-3aaf7e795248": {
             "plugin": "views:supporters-block",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "supporters-block",
                 "settings": {
@@ -280,6 +288,7 @@
         "076ef9ed-4e50-48ef-8801-1bb026ac0479": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -303,6 +312,7 @@
         "99c1abeb-0d1a-4204-8e0e-14053f721ce8": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -337,6 +347,7 @@
         "da88c801-bd7a-4c90-ad08-08040699c1f9": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -375,6 +386,7 @@
         "e3de4f0f-010e-437e-ae04-4f944eff0a6c": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

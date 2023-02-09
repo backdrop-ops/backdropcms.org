@@ -6,7 +6,7 @@
     "description": null,
     "renderer_name": "standard",
     "module": null,
-    "weight": -9,
+    "weight": -10,
     "storage": 1,
     "layout_template": "moscone_flipped",
     "disabled": false,
@@ -40,10 +40,13 @@
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "7b375897-7e90-4c26-b159-89cfcaa8ba35": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -67,6 +70,7 @@
         "f8773ba0-a308-4a55-8f00-b50392818344": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -97,6 +101,7 @@
         "fb73fad0-2b82-4e46-8500-fe0527414abd": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -126,6 +131,7 @@
         "cf46b35a-9f1b-4f5d-bc00-bda51d35fe3b": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -154,6 +160,7 @@
         "cf8c10df-fd63-4cb1-8c00-d94702f6000c": {
             "plugin": "views:project_release_download_table-block_1",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "project_release_download_table-block_1",
                 "settings": {
@@ -187,6 +194,7 @@
         "ec44e1e9-2b5e-4ef5-ae2e-46d8f2ec8689": {
             "plugin": "field:field_block:node-field_download_count",
             "data": {
+                "status": 1,
                 "module": "field",
                 "delta": "field_block",
                 "settings": {
@@ -219,6 +227,7 @@
         "93fc73fc-86d3-4840-9141-65e29bef9e2d": {
             "plugin": "project_usage:project_usage",
             "data": {
+                "status": 1,
                 "module": "project_usage",
                 "delta": "project_usage",
                 "settings": {
@@ -242,6 +251,7 @@
         "b4b3a835-c7a3-4022-bd00-dfc3e01a7313": {
             "plugin": "project_github:project_github",
             "data": {
+                "status": 1,
                 "module": "project_github",
                 "delta": "project_github",
                 "settings": {
@@ -265,6 +275,7 @@
         "7f6e7e08-5bb8-4560-8961-97b9cd3badec": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -288,6 +299,7 @@
         "e1da808a-a0d6-4889-9107-7b39e316eb74": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -322,6 +334,7 @@
         "4fbe9b97-2be8-401e-ab42-663e996d1908": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -348,6 +361,7 @@
         "dc7fa6e9-70ba-45a6-b204-04423e2e2c2f": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

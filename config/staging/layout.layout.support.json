@@ -40,8 +40,8 @@
         ],
         "footer": [
             "e2dae38b-2711-419d-a200-f2e32ce8ed33",
-            "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
             "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
+            "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
             "07a7ba84-7b76-4d2a-b808-8c23b57253b2"
         ],
         "title": []
@@ -52,6 +52,7 @@
         "c2aa251f-a884-4ab0-bb4c-765adfae3828": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -75,6 +76,7 @@
         "8bfdd592-5b89-4005-b900-eba9d99197ba": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -105,6 +107,7 @@
         "8c924952-e403-4fa8-a203-3e915942230c": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -134,6 +137,7 @@
         "4543880d-1a0a-413e-8300-0045a93106df": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -159,6 +163,7 @@
         "1bf26084-5e1f-49da-9e4a-74d812df73ba": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -184,6 +189,7 @@
         "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -209,6 +215,7 @@
         "debc30fa-2afd-4390-9200-ca4456b6c081": {
             "plugin": "block:newsletter_signup",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "newsletter_signup",
                 "settings": {
@@ -232,6 +239,7 @@
         "aa20864f-9388-46a1-a608-8eb21c6b7b63": {
             "plugin": "block:books",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "books",
                 "settings": {
@@ -255,6 +263,7 @@
         "36ba10f1-d0f3-4e17-ad00-ff5114fedc38": {
             "plugin": "views:providers-block_2",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "providers-block_2",
                 "settings": {
@@ -288,6 +297,7 @@
         "e21a9e69-e89f-4b7a-b809-9e961daa1208": {
             "plugin": "views:providers-block_3",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "providers-block_3",
                 "settings": {
@@ -321,6 +331,7 @@
         "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6": {
             "plugin": "block:resources",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "resources",
                 "settings": {
@@ -350,6 +361,7 @@
         "d9c1cdda-6733-4683-ac00-bde06aabf0f7": {
             "plugin": "views:contractors-block",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "contractors-block",
                 "settings": {
@@ -384,6 +396,7 @@
         "c4a24465-963d-4fc1-a809-9c9ca6ef0833": {
             "plugin": "views:supporters-block",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "supporters-block",
                 "settings": {
@@ -418,6 +431,7 @@
         "e2dae38b-2711-419d-a200-f2e32ce8ed33": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -438,9 +452,37 @@
                 }
             }
         },
+        "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35": {
+            "plugin": "block:3",
+            "data": {
+                "status": 0,
+                "module": "block",
+                "delta": "3",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "3",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "col-sm-6"
+                        }
+                    }
+                }
+            }
+        },
         "ae9d462d-018b-4cb0-ad00-d520b595ff6e": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -472,35 +514,10 @@
                 }
             }
         },
-        "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35": {
-            "plugin": "block:3",
-            "data": {
-                "module": "block",
-                "delta": "3",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "3",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": "col-sm-6"
-                        }
-                    }
-                }
-            }
-        },
         "07a7ba84-7b76-4d2a-b808-8c23b57253b2": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

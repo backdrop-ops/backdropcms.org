@@ -6,7 +6,7 @@
     "description": null,
     "renderer_name": "standard",
     "module": null,
-    "weight": -7,
+    "weight": -8,
     "storage": 1,
     "layout_template": "moscone_flipped",
     "disabled": false,
@@ -47,6 +47,7 @@
         "097f5235-00e7-4ce1-ac00-d49b0e0588bb": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -70,6 +71,7 @@
         "8a6ed203-29d0-40ec-8d00-ff84003c43d4": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -100,6 +102,7 @@
         "9d55288e-828e-4c47-8000-f51089d1a51a": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -129,6 +132,7 @@
         "35318ea2-97a4-49f4-b801-1b60e9ace706": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -157,6 +161,7 @@
         "ead0b165-6c3c-41a4-9c31-49cf350497d9": {
             "plugin": "borg_blocks:rss",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "rss",
                 "settings": {
@@ -180,6 +185,7 @@
         "73d1feb9-4846-4d8a-a308-8f7d6e972a9a": {
             "plugin": "menu:menu-more-developer-resources",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-more-developer-resources",
                 "settings": {
@@ -222,6 +228,7 @@
         "17c3e7e6-2f99-492b-a400-f994fcbccc90": {
             "plugin": "book:navigation",
             "data": {
+                "status": 1,
                 "module": "book",
                 "delta": "navigation",
                 "settings": {
@@ -260,6 +267,7 @@
         "89d0e596-9881-41cf-9d5f-95d793000534": {
             "plugin": "book:navigation",
             "data": {
+                "status": 1,
                 "module": "book",
                 "delta": "navigation",
                 "settings": {
@@ -298,6 +306,7 @@
         "7f6fad2e-fbc8-45fc-ac58-884728c8236a": {
             "plugin": "block:resources",
             "data": {
+                "status": 1,
                 "module": "block",
                 "delta": "resources",
                 "settings": {
@@ -327,6 +336,7 @@
         "39dd467d-f155-4804-b41e-30b55532ddf9": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -350,6 +360,7 @@
         "a7e09823-2c39-4b98-8300-dccebf2aea09": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -384,6 +395,7 @@
         "14e6d29f-104b-44cf-8c00-b14be74ea7f1": {
             "plugin": "block:3",
             "data": {
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {
@@ -410,6 +422,7 @@
         "348436a2-c080-4031-9506-6d1681b197ef": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

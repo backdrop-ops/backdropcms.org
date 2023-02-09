@@ -372,15 +372,48 @@
                     }
                 },
                 "filters": {
-                    "status": {
-                        "value": "1",
+                    "status_1": {
+                        "id": "status_1",
                         "table": "users",
                         "field": "status",
-                        "id": "status",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": "1",
+                        "group": 1,
+                        "exposed": true,
                         "expose": {
-                            "operator": false
+                            "operator_id": "",
+                            "label": "Status",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "status_1_op",
+                            "identifier": "status_1",
+                            "required": 1,
+                            "remember": 0,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "civi": 0,
+                                "3": 0
+                            }
                         },
-                        "group": 1
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
                     },
                     "name": {
                         "id": "name",
@@ -576,6 +609,21 @@
                     "operator": "AND",
                     "groups": {
                         "1": "AND"
+                    }
+                },
+                "header": {
+                    "area": {
+                        "id": "area",
+                        "table": "views",
+                        "field": "area",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "empty": 0,
+                        "content": "<!-- Adjust the column widths for better readability on large screens -->\r\n<style>\r\n@media (min-width: 1200px) {\r\n  .view-spam .views-field-field-interest,\r\n  .view-spam .views-field-field-bio {\r\n    min-width: 240px;\r\n  }\r\n}\r\n</style>",
+                        "format": "full_html",
+                        "tokenize": 0
                     }
                 }
             }

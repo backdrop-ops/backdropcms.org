@@ -22,6 +22,7 @@
             "27013356-7af8-4532-8b09-9d2c147ea872"
         ],
         "top": [
+            "2ccf25c8-e89e-4531-b83a-585d462a1e02",
             "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
         ],
         "top1": [
@@ -152,6 +153,35 @@
                 }
             }
         },
+        "2ccf25c8-e89e-4531-b83a-585d462a1e02": {
+            "plugin": "system:page_components:messages",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "page_components",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title_tag": "h1",
+                    "title_classes": "page-title",
+                    "tab_type": "both",
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "2ccf25c8-e89e-4531-b83a-585d462a1e02",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d": {
             "plugin": "borg_blocks:tagline",
             "data": {
@@ -163,7 +193,7 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "1.22.2"
+                        "version": "1.24.0"
                     },
                     "contexts": [],
                     "admin_label": "",
@@ -192,7 +222,7 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>Backdrop is a free and Open Source Content Management System that helps you build modern, comprehensive websites for businesses and non-profits.</p>\r\n",
+                    "content": "<p>Backdrop is a free and Open Source Content Management System that helps you build modern, comprehensive websites for businesses and non-profits.</p>\r\n\r\n<p>Backdrop is a fork of the Drupal project. The two projects have different goals, but come from the same code base.&nbsp;</p>\r\n",
                     "format": "filtered_html",
                     "admin_label": "",
                     "admin_description": ""
@@ -600,7 +630,7 @@
         "d6581d63-76d2-4da6-820e-1445176ab358": {
             "plugin": "block:3",
             "data": {
-                "status": 1,
+                "status": 0,
                 "module": "block",
                 "delta": "3",
                 "settings": {

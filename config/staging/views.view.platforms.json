@@ -516,6 +516,18 @@
                 },
                 "path": "try-backdrop"
             }
+        },
+        "block_1": {
+            "display_title": "Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "try-backdrop",
+                "block_description": "Platforms "
+            }
         }
     }
 }
