@@ -67,6 +67,20 @@ function borg_mailers_security_cron_queue_info() {
  */
 function _borg_mailers_security_subscribers() {
   civicrm_initialize();
+
+  // Use the CiviCRM Cron user's permissions to access the API.
+  $_REQUEST['key'] = CIVICRM_SITE_KEY;
+  $config = config('civicrm_cron.settings');
+  $username = $config->get('civicrm_cron_username');
+  if ($username) {
+    CRM_Utils_System::authenticateScript(TRUE, $username, $config->get('civicrm_cron_password'));
+  }
+  else {
+    watchdog('borg_mailers_security', 'Could not authenticate user %username. Terminating security mailing.', array('%username' => $username), WATCHDOG_ERROR);
+    // Exit so that we don't record the mailing as having completed successfully.
+    exit;
+  }
+
   $groupContacts = \Civi\Api4\GroupContact::get()
     ->addSelect('uf_match.uf_id', 'email.email')
     ->addJoin('Email AS email', 'LEFT', ['email.contact_id', '=', 'contact_id'])
