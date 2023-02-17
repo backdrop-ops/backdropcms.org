@@ -32,3 +32,11 @@ markdown - PHP notice
 spambot - move last checked uid to state
   https://github.com/backdrop-contrib/spambot/issues/4
   https://github.com/backdrop-contrib/spambot/pull/5.patch
+
+Patches to CiviCRM:
+============================
+
+Templates: eliminate crashes and warnings when variables are not set
+  https://github.com/backdrop-ops/backdropcms.org/issues/981
+  https://lab.civicrm.org/dev/backdrop/-/issues/78
+  https://github.com/civicrm/civicrm-core/pull/25606.patch
