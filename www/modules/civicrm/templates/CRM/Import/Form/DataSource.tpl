@@ -24,21 +24,20 @@
   </div>
 
   <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
-    <table class="form-layout-compressed">
-      <tr class="crm-import-uploadfile-from-block-uploadFile">
-        <td class="label">{$form.uploadFile.label}</td>
-        <td class="html-adjust"> {$form.uploadFile.html}<br />
-          <span class="description">{ts}File format must be comma-separated-values (CSV).{/ts}</span>
-          <br /><span>{ts 1=$uploadSize}Maximum Upload File Size: %1 MB{/ts}</span>
-        </td>
+  <div id="choose-data-source" class="form-item">
+    <h3>{ts}Choose Data Source{/ts}</h3>
+    <table class="form-layout">
+      <tr class="crm-import-datasource-form-block-dataSource">
+        <td class="label">{$form.dataSource.label}</td>
+        <td>{$form.dataSource.html} {help id='data-source-selection'}</td>
       </tr>
-       <tr class="crm-import-uploadfile-from-block-skipColumnHeader">
-         <td class="label"></td><td>{$form.skipColumnHeader.html}{$form.skipColumnHeader.label}<br />
-           <span class="description">
-             {ts}Check this box if the first row of your file consists of field names (Example: 'Contact ID', 'Amount').{/ts}
-           </span>
-         </td>
-       </tr>
+    </table>
+  </div>
+
+    {* Data source form pane is injected here when the data source is selected. *}
+  <div id="data-source-form-block">
+  </div>
+    <table class="form-layout-compressed">
       {if array_key_exists('contactType', $form)}
         <tr class="crm-import-uploadfile-from-block-contactType">
           <td class="label">{$form.contactType.label}</td>
@@ -62,12 +61,8 @@
           <td><span>{$form.multipleCustomData.html}</span> </td>
         </tr>
       {/if}
-        <tr class="crm-import-datasource-form-block-fieldSeparator">
-          <td class="label">{$form.fieldSeparator.label} {help id='id-fieldSeparator' file='CRM/Contact/Import/Form/DataSource'}</td>
-          <td>{$form.fieldSeparator.html}</td>
-        </tr>
        <tr class="crm-import-uploadfile-form-block-date">{include file="CRM/Core/Date.tpl"}</tr>
-       {if $savedMapping}
+       {if array_key_exists('savedMapping', $form)}
          <tr class="crm-import-uploadfile-form-block-savedMapping">
            <td>{$form.savedMapping.label}</td>
            <td>{$form.savedMapping.html}<br />
@@ -79,5 +74,30 @@
     <div class="spacer"></div>
 
   <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
+{literal}
+  <script type="text/javascript">
+    CRM.$(function($) {
+      // build data source form block
+      buildDataSourceFormBlock();
+    });
+
+    function buildDataSourceFormBlock(dataSource) {
+      var dataUrl = {/literal}"{crmURL p=$urlPath h=0 q=$urlPathVar|smarty:nodefaults}"{literal};
+
+      if (!dataSource) {
+        var dataSource = CRM.$("#dataSource").val();
+      }
+
+      if (dataSource) {
+        dataUrl = dataUrl + '&dataSource=' + dataSource;
+      } else {
+        CRM.$("#data-source-form-block").html('');
+        return;
+      }
+
+      CRM.$("#data-source-form-block").load(dataUrl);
+    }
+  </script>
+{/literal}
 </div>
 

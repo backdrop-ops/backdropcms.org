@@ -43,39 +43,6 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Import_Form_DataSource {
   }
 
   /**
-   * Set variables up before form is built.
-   *
-   * @throws \CRM_Core_Exception
-   */
-  public function preProcess() {
-    $results = [];
-    $config = CRM_Core_Config::singleton();
-    $handler = opendir($config->uploadDir);
-    $errorFiles = ['sqlImport.errors', 'sqlImport.conflicts', 'sqlImport.duplicates', 'sqlImport.mismatch'];
-
-    // check for post max size avoid when called twice
-    $snippet = $_GET['snippet'] ?? 0;
-    if (empty($snippet)) {
-      CRM_Utils_Number::formatUnitSize(ini_get('post_max_size'), TRUE);
-    }
-
-    while ($file = readdir($handler)) {
-      if ($file !== '.' && $file !== '..' &&
-        in_array($file, $errorFiles) && !is_writable($config->uploadDir . $file)
-      ) {
-        $results[] = $file;
-      }
-    }
-    closedir($handler);
-    if (!empty($results)) {
-      $this->invalidConfig(ts('<b>%1</b> file(s) in %2 directory are not writable. Listed file(s) might be used during the import to log the errors occurred during Import process. Contact your site administrator for assistance.', [
-        1 => implode(', ', $results),
-        2 => $config->uploadDir,
-      ]));
-    }
-  }
-
-  /**
    * Build the form object.
    *
    * @throws \CRM_Core_Exception
@@ -98,8 +65,6 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Import_Form_DataSource {
     ]);
 
     $mappingArray = CRM_Core_BAO_Mapping::getMappings('Import Contact');
-
-    $this->assign('savedMapping', $mappingArray);
     $this->addElement('select', 'savedMapping', ts('Saved Field Mapping'), ['' => ts('- select -')] + $mappingArray);
 
     $js = ['onClick' => "buildSubTypes();buildDedupeRules();"];
@@ -124,14 +89,9 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Import_Form_DataSource {
 
     CRM_Core_Form_Date::buildAllowedDateFormats($this);
 
-    $geoCode = FALSE;
     if (CRM_Utils_GeocodeProvider::getUsableClassName()) {
-      $geoCode = TRUE;
       $this->addElement('checkbox', 'doGeocodeAddress', ts('Geocode addresses during import?'));
     }
-    $this->assign('geoCode', $geoCode);
-
-    $this->addElement('text', 'fieldSeparator', ts('Import Field Separator'), ['size' => 2]);
 
     if (Civi::settings()->get('address_standardization_provider') === 'USPS') {
       $this->addElement('checkbox', 'disableUSPS', ts('Disable USPS address validation during import?'));
@@ -159,13 +119,9 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Import_Form_DataSource {
    *   reference to the array of default values
    */
   public function setDefaultValues() {
-    $defaults = [
-      'dataSource' => $this->getDefaultDataSource(),
-      'onDuplicate' => CRM_Import_Parser::DUPLICATE_SKIP,
-      'contactType' => 'Individual',
-      'fieldSeparator' => CRM_Core_Config::singleton()->fieldSeparator,
-      'disableUSPS' => TRUE,
-    ];
+    $defaults = parent::setDefaultValues();
+    $defaults['contactType'] = 'Individual';
+    $defaults['disableUSPS'] = TRUE;
 
     if ($this->get('loadedMapping')) {
       $defaults['savedMapping'] = $this->get('loadedMapping');

@@ -46,6 +46,7 @@ class CRM_Contact_Selector extends CRM_Core_Selector_Base implements CRM_Core_Se
     'contact_id',
     'contact_type',
     'contact_sub_type',
+    'contact_is_deleted',
     'sort_name',
     'street_address',
     'city',

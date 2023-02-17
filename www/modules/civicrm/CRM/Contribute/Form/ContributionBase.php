@@ -360,8 +360,7 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
 
       // get price info
       // CRM-5095
-      $priceSetId = CRM_Price_BAO_PriceSet::getFor('civicrm_contribution_page', $this->_id);
-      CRM_Price_BAO_PriceSet::initSet($this, 'civicrm_contribution_page', FALSE, $priceSetId);
+      $this->initSet($this);
 
       // this avoids getting E_NOTICE errors in php
       $setNullFields = [
@@ -372,27 +371,6 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
         if (!isset($this->_values[$f])) {
           $this->_values[$f] = NULL;
         }
-      }
-
-      //check if Membership Block is enabled, if Membership Fields are included in profile
-      //get membership section for this contribution page
-      $this->_membershipBlock = CRM_Member_BAO_Membership::getMembershipBlock($this->_id);
-      $this->set('membershipBlock', $this->_membershipBlock);
-
-      if (!empty($this->_values['custom_pre_id'])) {
-        $preProfileType = CRM_Core_BAO_UFField::getProfileType($this->_values['custom_pre_id']);
-      }
-
-      if (!empty($this->_values['custom_post_id'])) {
-        $postProfileType = CRM_Core_BAO_UFField::getProfileType($this->_values['custom_post_id']);
-      }
-
-      if (((isset($postProfileType) && $postProfileType === 'Membership') ||
-          (isset($preProfileType) && $preProfileType === 'Membership')
-        ) &&
-        !$this->_membershipBlock['is_active']
-      ) {
-        CRM_Core_Error::statusBounce(ts('This page includes a Profile with Membership fields - but the Membership Block is NOT enabled. Please notify the site administrator.'));
       }
 
       $pledgeBlock = CRM_Pledge_BAO_PledgeBlock::getPledgeBlock($this->_id);
@@ -421,6 +399,7 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
       $this->set('values', $this->_values);
       $this->set('fields', $this->_fields);
     }
+    $this->set('membershipBlock', $this->getMembershipBlock());
 
     // Handle PCP
     $pcpId = CRM_Utils_Request::retrieve('pcpId', 'Positive', $this);
@@ -446,9 +425,7 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
       $this->assign('pledgeBlock', TRUE);
     }
 
-    // check if one of the (amount , membership)  blocks is active or not.
-    $this->_membershipBlock = $this->get('membershipBlock');
-
+    // @todo - move this check to `getMembershipBlock`
     if (!$this->isFormSupportsNonMembershipContributions() &&
       !$this->_membershipBlock['is_active'] &&
       !$this->_priceSetId
@@ -490,15 +467,48 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
       $this->_values['campaign_id'] = $campID;
     }
 
-    //do check for cancel recurring and clean db, CRM-7696
-    if (CRM_Utils_Request::retrieve('cancel', 'Boolean')) {
-      self::cancelRecurring();
-    }
-
     // check if billing block is required for pay later
     if (!empty($this->_values['is_pay_later'])) {
       $this->_isBillingAddressRequiredForPayLater = $this->_values['is_billing_required'] ?? NULL;
       $this->assign('isBillingAddressRequiredForPayLater', $this->_isBillingAddressRequiredForPayLater);
+    }
+  }
+
+  /**
+   * Initiate price set such that various non-BAO things are set on the form.
+   *
+   * This function is not really a BAO function so the location is misleading.
+   *
+   * @param CRM_Core_Form $form
+   *   Form entity id.
+   *
+   * @todo - removed unneeded code from previously-shared function
+   */
+  private function initSet($form) {
+    $priceSetId = CRM_Price_BAO_PriceSet::getFor('civicrm_contribution_page', $this->_id);
+    //check if price set is is_config
+    if (is_numeric($priceSetId)) {
+      if (CRM_Core_DAO::getFieldValue('CRM_Price_DAO_PriceSet', $priceSetId, 'is_quick_config') && $form->getVar('_name') != 'Participant') {
+        $form->assign('quickConfig', 1);
+      }
+    }
+    // get price info
+    if ($priceSetId) {
+      if ($form->_action & CRM_Core_Action::UPDATE) {
+        $form->_values['line_items'] = CRM_Price_BAO_LineItem::getLineItems($form->_id, 'contribution');
+        $required = FALSE;
+      }
+      else {
+        $required = TRUE;
+      }
+
+      $form->_priceSetId = $priceSetId;
+      $priceSet = CRM_Price_BAO_PriceSet::getSetDetail($priceSetId, $required);
+      $form->_priceSet = $priceSet[$priceSetId] ?? NULL;
+      $form->_values['fee'] = $form->_priceSet['fields'] ?? NULL;
+
+      $form->set('priceSetId', $form->_priceSetId);
+      $form->set('priceSet', $form->_priceSet);
     }
   }
 
@@ -1089,31 +1099,6 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
   }
 
   /**
-   * Cancel recurring contributions.
-   *
-   * In case user cancel recurring contribution,
-   * When we get the control back from payment gate way
-   * lets delete the recurring and related contribution.
-   *
-   * @throws \CRM_Core_Exception
-   */
-  public function cancelRecurring() {
-    $isCancel = CRM_Utils_Request::retrieve('cancel', 'Boolean');
-    if ($isCancel) {
-      $isRecur = CRM_Utils_Request::retrieve('isRecur', 'Boolean');
-      $recurId = CRM_Utils_Request::retrieve('recurId', 'Positive');
-      //clean db for recurring contribution.
-      if ($isRecur && $recurId) {
-        CRM_Contribute_BAO_ContributionRecur::deleteRecurContribution($recurId);
-      }
-      $contribId = CRM_Utils_Request::retrieve('contribId', 'Positive');
-      if ($contribId) {
-        CRM_Contribute_BAO_Contribution::deleteContribution($contribId);
-      }
-    }
-  }
-
-  /**
    * Determine if recurring parameters need to be added to the form parameters.
    *
    *  - is_recur
@@ -1247,6 +1232,31 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
    */
   public function isFormSupportsNonMembershipContributions(): bool {
     return (bool) ($this->_values['amount_block_is_active'] ?? FALSE);
+  }
+
+  /**
+   * Get the membership block configured for the page, fetching if needed.
+   *
+   * The membership block is configured memberships are available to purchase via
+   * a quick-config price set.
+   *
+   * @return array|false
+   */
+  protected function getMembershipBlock() {
+    if (!isset($this->_membershipBlock)) {
+      //check if Membership Block is enabled, if Membership Fields are included in profile
+      //get membership section for this contribution page
+      $this->_membershipBlock = CRM_Member_BAO_Membership::getMembershipBlock($this->_id) ?? FALSE;
+      $preProfileType = empty($this->_values['custom_pre_id']) ? NULL : CRM_Core_BAO_UFField::getProfileType($this->_values['custom_pre_id']);
+      $postProfileType = empty($this->_values['custom_post_id']) ? NULL : CRM_Core_BAO_UFField::getProfileType($this->_values['custom_post_id']);
+
+      if ((($postProfileType === 'Membership') || ($preProfileType === 'Membership')) &&
+        !$this->_membershipBlock['is_active']
+      ) {
+        CRM_Core_Error::statusBounce(ts('This page includes a Profile with Membership fields - but the Membership Block is NOT enabled. Please notify the site administrator.'));
+      }
+    }
+    return $this->_membershipBlock;
   }
 
 }

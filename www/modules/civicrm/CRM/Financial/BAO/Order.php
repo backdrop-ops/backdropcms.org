@@ -1125,7 +1125,7 @@ class CRM_Financial_BAO_Order {
   /**
    * Get the line items from a template.
    *
-   * @return \Civi\Api4\Generic\Result
+   * @return array
    *
    * @throws \CRM_Core_Exception
    */
@@ -1246,7 +1246,7 @@ class CRM_Financial_BAO_Order {
         $lineItemTitle .= ' ' . CRM_Utils_String::ellipsify($description, 30);
       }
     }
-    return $lineItemTitle;
+    return $lineItemTitle ?? '';
   }
 
 }
