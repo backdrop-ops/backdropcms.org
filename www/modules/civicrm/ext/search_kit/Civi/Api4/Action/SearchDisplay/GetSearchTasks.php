@@ -2,6 +2,7 @@
 
 namespace Civi\Api4\Action\SearchDisplay;
 
+use Civi\Api4\Generic\Traits\SavedSearchInspectorTrait;
 use CRM_Search_ExtensionUtil as E;
 use Civi\Api4\Entity;
 
@@ -11,6 +12,14 @@ use Civi\Api4\Entity;
  * @package Civi\Api4\Action\SearchDisplay
  */
 class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
+
+  use SavedSearchInspectorTrait;
+
+  /**
+   * An array containing the searchDisplay definition
+   * @var string|array
+   */
+  protected $display;
 
   /**
    * Name of entity
@@ -36,6 +45,10 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
     if (!$entity) {
       return;
     }
+
+    $this->loadSavedSearch();
+    $this->loadSearchDisplay();
+
     $tasks = [$entity['name'] => []];
 
     if (array_key_exists($entity['name'], \CRM_Export_BAO_Export::getComponents())) {
@@ -138,10 +151,14 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
             $task['title'] = E::ts('Profile Update');
           }
           $key = \CRM_Core_Key::get(\CRM_Utils_Array::first((array) $task['class']), TRUE);
+
+          // Print Labels action does not support popups, open full-screen
+          $actionType = $id == \CRM_Core_Task::LABEL_CONTACTS ? 'redirect' : 'crmPopup';
+
           $tasks[$entity['name']]['contact.' . $id] = [
             'title' => $task['title'],
             'icon' => $task['icon'] ?? 'fa-gear',
-            'crmPopup' => [
+            $actionType => [
               'path' => "'{$task['url']}'",
               'query' => "{reset: 1}",
               'data' => "{cids: ids.join(','), qfKey: '$key'}",
@@ -199,9 +216,9 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
     $null = NULL;
     $checkPermissions = $this->checkPermissions;
     $userId = $this->checkPermissions ? \CRM_Core_Session::getLoggedInContactID() : NULL;
-    \CRM_Utils_Hook::singleton()->invoke(['tasks', 'checkPermissions', 'userId'],
+    \CRM_Utils_Hook::singleton()->invoke(['tasks', 'checkPermissions', 'userId', 'search', 'display'],
       $tasks, $checkPermissions, $userId,
-      $null, $null, $null, 'civicrm_searchKitTasks'
+      $this->savedSearch, $this->display, $null, 'civicrm_searchKitTasks'
     );
 
     foreach ($tasks[$entity['name']] as $name => &$task) {

@@ -301,7 +301,7 @@ CREATE TABLE `civicrm_option_group` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Option Group ID',
   `name` varchar(64) NOT NULL COMMENT 'Option group name. Used as selection key by class properties which lookup options in civicrm_option_value.',
   `title` varchar(255) COMMENT 'Option Group title.',
-  `description` varchar(255) COMMENT 'Option group description.',
+  `description` text COMMENT 'Option group description.',
   `data_type` varchar(128) COMMENT 'Type of data stored by this option group.',
   `is_reserved` tinyint NOT NULL DEFAULT 1 COMMENT 'Is this a predefined system option group (i.e. it can not be deleted)?',
   `is_active` tinyint NOT NULL DEFAULT 1 COMMENT 'Is this option group active?',
