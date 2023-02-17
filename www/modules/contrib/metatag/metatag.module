@@ -42,6 +42,10 @@ function metatag_autoload_info() {
     'BackdropTitleMetaTag' => 'metatag.inc',
     'BackdropListMetaTag' => 'metatag.inc',
     'BackdropDateIntervalMetaTag' => 'metatag.inc',
+
+    // Search API classes.
+    'MetatagSearchAlterCallback' => 'metatag.search_api.inc',
+
     // Tests.
     'MetatagTestHelper' => 'tests/metatag.helper.test',
     'MetatagCoreUnitTest' => 'tests/metatag.unit.test',
@@ -2033,7 +2037,8 @@ function metatag_get_info($type = NULL, $name = NULL, $include_disabled = FALSE)
     if (!isset($info_enabled)) {
       $info_enabled = $info;
 
-      $enabled_tags = array_filter(config_get('metatag.settings', 'enabled_tags'));
+      $enabled_tags_config = config_get('metatag.settings', 'enabled_tags');
+      $enabled_tags = is_array($enabled_tags_config) ? array_filter($enabled_tags_config) : [];
       $info_enabled['tags'] = array_intersect_key($info['tags'], $enabled_tags);
 
       // Filter down the list of groups to only those that have active tags.
@@ -2124,11 +2129,11 @@ function metatag_preprocess_page(&$variables) {
             // Account for multi-valued tags.
             if (!isset($data['#tag']) && !empty($data[0])) {
               foreach($data as $delta => $subdata) {
-                backdrop_add_html_head($subdata, 'metatag_preprocess_page-' . $tag . '-' . $delta);
+                backdrop_add_html_head($subdata, $tag . '-' . $delta);
               }
             }
             else {
-              backdrop_add_html_head($data, 'metatag_preprocess_page-' . $tag);
+              backdrop_add_html_head($data, $tag);
             }
           }
         }
@@ -2161,7 +2166,7 @@ function metatag_preprocess_maintenance_page(&$variables) {
           }
           // ALl other tags are assumed 'meta' tags.
           else {
-            backdrop_add_html_head($data, 'metatag_preprocess_maintenance_page');
+            backdrop_add_html_head($data, $tag);
           }
         }
       }
@@ -3111,23 +3116,23 @@ function metatag_translations_delete($metatags, $context) {
 /**
  * Implements hook_metatag_config_insert() on behalf of i18n_string.
  */
-function i18n_string_metatag_config_insert($config) {
-  $context = 'metatag_config:' . $config->instance;
-  metatag_translations_update($config['config'], $context);
+function i18n_string_metatag_config_insert($data) {
+  $context = 'metatag_config:' . $data['instance'];
+  metatag_translations_update($data['config'], $context);
 }
 
 /**
  * Implements hook_metatag_config_update() on behalf of i18n_string.
  */
-function i18n_string_metatag_config_update($config) {
+function i18n_string_metatag_config_update($data) {
   // Defer to the 'insert' function.
-  i18n_string_metatag_config_insert($config);
+  i18n_string_metatag_config_insert($data);
 }
 
 /**
  * Implements hook_metatag_config_delete() on behalf of i18n_string.
  */
-function i18n_string_metatag_config_delete($config) {
-  $context = 'metatag_config:' . $config->instance;
-  metatag_translations_delete($config['config'], $context);
+function i18n_string_metatag_config_delete($data) {
+  $context = 'metatag_config:' . $data['instance'];
+  metatag_translations_delete($data['config'], $context);
 }

@@ -1,0 +1,17 @@
+[MetatagViewsTest]
+name = Metatag: Views tests
+description = Test Metatag integration via the Metatag: Views module
+group = Metatag
+file = metatag_views.test
+
+# @todo: Finish porting i18n tests to Backdrop.
+# [MetatagViewsI18nTest]
+# name = Metatag: Views i18n tests
+# description = Test Metatag i18n integration via the Metatag: Views module.
+# group = Metatag
+# file = metatag_views.i18n.test
+
+; Added by Backdrop CMS packaging script on 2023-02-16
+project = metatag
+version = 1.x-1.22.5
+timestamp = 1676587014

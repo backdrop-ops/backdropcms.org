@@ -16,8 +16,17 @@ function metatag_views_autoload_info() {
 function metatag_views_views_api() {
   return array(
     'api' => 3,
-    'path' => backdrop_get_path('module', 'metatag'),
+    'path' => backdrop_get_path('module', 'metatag_views'),
   );
+}
+
+/**
+ * Implements hook_metatag_token_types_alter().
+ */
+function metatag_views_metatag_token_types_alter(&$options) {
+  if ($options['context'] == 'view') {
+    $options['token types'][] = 'view';
+  }
 }
 
 /**
@@ -64,9 +73,9 @@ function metatag_views_views_preview_info_alter(&$rows, $view) {
  * Implements hook_preprocess_HOOK().
  */
 function metatag_views_preprocess_page(&$variables) {
-  // By default do not add meta tags to admin pages. To enable meta tags on
-  // admin pages set the 'metatag_tag_admin_pages' variable to TRUE.
-  if (path_is_admin(current_path()) && !variable_get('metatag_tag_admin_pages', FALSE)) {
+  // By default, do not add meta tags to admin pages. To enable meta tags on
+  // admin pages set the 'tag_admin_pages' config value to TRUE.
+  if (path_is_admin(current_path()) && config('metatag.settings')->get('tag_admin_pages') == FALSE) {
     return;
   }
 

@@ -1,6 +1,6 @@
 name = Metatag:Views Tests
 description = Helper module for testing metatag_views.module.
-core = 7.x
+backdrop = 1.x
 
 ; Don't show this on the modules admin page.
 hidden = TRUE
@@ -9,7 +9,7 @@ dependencies[] = metatag
 dependencies[] = metatag_views
 dependencies[] = views
 
-; Added by Backdrop CMS packaging script on 2022-11-03
+; Added by Backdrop CMS packaging script on 2023-02-16
 project = metatag
-version = 1.x-1.22.3
-timestamp = 1667538445
+version = 1.x-1.22.5
+timestamp = 1676587014

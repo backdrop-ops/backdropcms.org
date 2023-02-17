@@ -60,7 +60,7 @@ Documentation
 -------------
 
 Additional documentation is located in the Wiki:
-https://github.com/backdrop-contrib/metatag/wiki/Documentation
+https://github.com/backdrop-contrib/metatag/wiki
 
 
 Issues

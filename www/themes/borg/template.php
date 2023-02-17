@@ -107,6 +107,9 @@ function borg_form_user_login_alter(&$form, &$form_state) {
  * @see page.tpl.php
  */
 function borg_preprocess_page(&$variables) {
+  $arg0 = check_plain(arg(0));
+  $arg1 = check_plain(arg(1));
+  $arg2 = check_plain(arg(2));
   // Add the Source Sans Pro font.
   backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700', array('type' => 'external'));
   // Add FontAwesome.
@@ -123,35 +126,35 @@ function borg_preprocess_page(&$variables) {
   if (backdrop_is_front_page()) {
     backdrop_add_css($path . '/css/page-front.css');
   }
-  elseif (arg(0) == 'support') {
-    if (arg(1) == 'services') {
+  elseif ($arg0 == 'support') {
+    if ($arg1 == 'services') {
       backdrop_add_css($path . '/css/page-services.css');
     }
   }
-  elseif (arg(0) == 'modules' || arg(0) == 'themes' || arg(0) == 'layouts') {
+  elseif ($arg0 == 'modules' || $arg0 == 'themes' || $arg0 == 'layouts') {
     $variables['classes'][] = 'project-search';
     backdrop_add_css($path . '/css/page-project-search.css');
   }
-  elseif (arg(0) == 'user') {
-    if (arg(1) == 'login') {
+  elseif ($arg0 == 'user') {
+    if ($arg1 == 'login') {
       $variables['classes'][] = 'user-form';
       $variables['classes'][] = 'user-login';
     }
-    if (arg(1) == 'register') {
+    if ($arg1 == 'register') {
       $variables['classes'][] = 'user-form';
       $variables['classes'][] = 'user-reister';
     }
-    elseif (arg(1) == 'password') {
+    elseif ($arg1 == 'password') {
       $variables['classes'][] = 'user-form';
       $variables['classes'][] = 'user-password';
     }
     else {
       global $user;
-      if ($user->uid == 0 && !arg(1)) {
+      if ($user->uid == 0 && !$arg1) {
         $variables['classes'][] = 'user-form';
         $variables['classes'][] = 'user-login';
       }
-      elseif (is_numeric(arg(1)) && !arg(2) || ($user->uid)) {
+      elseif (is_numeric($arg1) && !$arg2 || ($user->uid)) {
         $variables['classes'][] = 'profile-page';
         backdrop_add_css($path . '/css/page-profile.css');
       }
@@ -159,17 +162,17 @@ function borg_preprocess_page(&$variables) {
   }
 
   // Add a node class based on the node ID...
-  if (arg(0) == 'node' && is_numeric(arg(1)) && !arg(2)) {
-    $variables['classes'][] = 'node-' . arg(1);
+  if ($arg0 == 'node' && is_numeric($arg1) && !$arg2) {
+    $variables['classes'][] = 'node-' . $arg1;
   }
 
   // ...or add body classes based on args.
-  elseif (arg(0)) {
-    $variables['classes'][] = arg(0);
-    if (arg(1)) {
-      $variables['classes'][] = arg(0) . '-' . arg(1);
-      if (arg(2)) {
-        $variables['classes'][] = arg(0) . '-' . arg(1) . '-' . arg(2);
+  elseif ($arg0) {
+    $variables['classes'][] = $arg0;
+    if ($arg1) {
+      $variables['classes'][] = $arg0 . '-' . $arg1;
+      if ($arg2) {
+        $variables['classes'][] = $arg0 . '-' . $arg1 . '-' . $arg2;
       }
     }
   }
@@ -180,15 +183,19 @@ function borg_preprocess_page(&$variables) {
  * @see layout.tpl.php
  */
 function borg_preprocess_layout(&$variables) {
+  $arg0 = check_plain(arg(0));
+  $arg1 = check_plain(arg(1));
+  $arg2 = check_plain(arg(2));
+
   $variables['wrap_attributes'] = array('class' => array('l-wrapper'));
 
-  if (arg(0) == 'user' && !is_numeric(arg(1))) {
+  if ($arg0 == 'user' && !is_numeric($arg1)) {
     $variables['tabs'] = FALSE;
   }
   // Special handling for header image.
-  if (arg(0) == 'user' && is_numeric(arg(1)) && !arg(2)) {
+  if ($arg0 == 'user' && is_numeric($arg1) && !$arg2) {
     // Check to see if there is a profile image.
-    $account = user_load(arg(1)); // Entity cache should save us here?
+    $account = user_load($arg1); // Entity cache should save us here?
     if (isset($account->field_header_photo[LANGUAGE_NONE][0]['uri'])) {
       // Generate an image at the correct size.
       $image = image_style_url('header', $account->field_header_photo[LANGUAGE_NONE][0]['uri']);
@@ -206,6 +213,10 @@ function borg_preprocess_layout(&$variables) {
 function borg_preprocess_header(&$variables) {
   $path = backdrop_get_path('theme', 'borg');
   $variables['logo'] = theme('image', array('uri' => $path . '/logo-inverse.png'));
+  // Remove Backdrop CMS from the site name in the header template.
+  if ($variables['site_name'] && strstr($variables['site_name'], 'Backdrop CMS')) {
+    $variables['site_name'] = trim(str_replace('Backdrop CMS', '', $variables['site_name']));
+  }
 }
 
 /**
@@ -216,7 +227,7 @@ function borg_preprocess_views_exposed_form(&$variables) {
   if (substr($variables['form']['#id'], 0, 26) == 'views-exposed-form-modules'){
     // Update search field
     $search_field_key = '';
-    $search_type = arg(0);
+    $search_type = check_plain(arg(0));
 
     if (!empty($variables['form']['keys'])){
       $search_field_key = 'keys';
@@ -788,11 +799,14 @@ function borg_feed_icon($variables) {
  * Overrides theme_menu_local_tasks().
  */
 function borg_menu_local_tasks($variables) {
+  $arg0 = check_plain(arg(0));
+  $arg1 = check_plain(arg(1));
+  $arg2 = check_plain(arg(2));
   $output = '';
 
   if (!empty($variables['primary'])) {
     // Remove the releases tab.
-    if (arg(0) == 'node' && is_numeric(arg(1)) && !arg(2)) {
+    if ($arg0 == 'node' && is_numeric($arg1) && !$arg2) {
       foreach ($variables['primary'] as $key => $link) {
         if (strstr($link['#link']['path'], '/releases')) {
           unset($variables['primary'][$key]);

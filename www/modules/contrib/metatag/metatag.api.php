@@ -114,28 +114,28 @@ function hook_metatag_config_presave($config) {
 /**
  * Triggered when a Metatag configuration is created.
  *
- * @param object $config
- *   The configuration object that was created.
+ * @param array $data
+ *   An array of configuration data that has been saved.
  */
-function hook_metatag_config_insert($config) {
+function hook_metatag_config_insert(array $data) {
 }
 
 /**
  * Triggered when a Metatag configuration is updated.
  *
- * @param object $config
- *   The configuration object that was modified.
+ * @param array $data
+ *   An array of configuration data that has been saved.
  */
-function hook_metatag_config_update($config) {
+function hook_metatag_config_update(array $data) {
 }
 
 /**
  * Triggered when a Metatag configuration is removed.
  *
- * @param object $config
- *   The name of the configuration object that was removed.
+ * @param array $data
+ *   An array of configuration data that was removed.
  */
-function hook_metatag_config_delete($config) {
+function hook_metatag_config_delete(array $data) {
 }
 
 /**
@@ -268,7 +268,7 @@ function hook_metatag_presave(&$metatags, $entity_type, $entity_id, $revision_id
  * Allows modules to alter the defined list of tokens available
  * for metatag patterns replacements.
  *
- * By default only context (for example: global, node, etc...)
+ * By default, only context (for example: global, node, etc...)
  * related tokens are made available to metatag patterns replacements.
  * This hook allows other modules to extend the default declared tokens.
  *
@@ -282,11 +282,6 @@ function hook_metatag_presave(&$metatags, $entity_type, $entity_id, $revision_id
  * @see metatag_field_attach_form()
  */
 function hook_metatag_token_types_alter(&$options) {
-  // Watchout: $options['token types'] might be empty.
-  if (!isset($options['token types'])) {
-    $options['token types'] = array();
-  }
-
   if ($options['context'] == 'config1') {
     $options['token types'] += array('token_type1', 'token_type2');
   }

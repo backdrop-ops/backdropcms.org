@@ -8,17 +8,6 @@ class MetatagViewsI18nTest extends MetatagTestHelper {
   /**
    * {@inheritdoc}
    */
-  public static function getInfo() {
-    return array(
-      'name' => 'Metatag:Views i18n tests',
-      'description' => 'Test Metatag integration via the Metatag:Views module.',
-      'group' => 'Metatag',
-    );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   function setUp(array $modules = array()) {
     $modules[] = 'views';
     $modules[] = 'metatag_views';
@@ -51,11 +40,11 @@ class MetatagViewsI18nTest extends MetatagTestHelper {
   }
 
   /**
-   * Test the Metatag:Views translations.
+   * Test the Metatag: Views translations.
    */
   public function testExportedPage() {
     // Plan out the different translation string tests.
-    $string_en = 'Testing Metatag:Views.';
+    $string_en = 'Testing Metatag: Views.';
     $string_fr = 'French page description.';
     $config_name = 'metatag_views:metatag_views_test__page:description';
     $path = 'metatag-views-test';
@@ -72,7 +61,7 @@ class MetatagViewsI18nTest extends MetatagTestHelper {
     $this->saveTranslationString($lid, $config_name, 'fr', $string_en, $string_fr);
 
     // Load the English page again.
-    $this->drupalGet($path);
+    $this->backdropGet($path);
     $this->assertResponse(200, 'Loaded the default test page again.');
 
     // Confirm the page's description is what we set it to.
@@ -82,7 +71,7 @@ class MetatagViewsI18nTest extends MetatagTestHelper {
     $this->assertNotEqual($xpath[0]['content'], $string_fr);
 
     // Load the French page.
-    $this->drupalGet('fr/' . $path);
+    $this->backdropGet('fr/' . $path);
     $this->assertResponse(200, 'Loaded the French test page.');
 
     // Confirm the generator string was translated.

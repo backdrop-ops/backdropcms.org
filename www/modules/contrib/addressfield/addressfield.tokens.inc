@@ -209,22 +209,23 @@ function addressfield_tokens($type, $tokens, array $data = array(), array $optio
   // generation process to find and replace address field tokens on relevant
   // entities. This ensures our tokens aren't overwritten by the Token module
   // and helps us avoid having to do the entity detection ourselves.
-  if ($type == 'entity') {
+  if (!empty($data[$type]) && is_a($data[$type], 'Entity')) {
     // Loop over the address fields defined on the site.
-    foreach (addressfield_get_address_fields($data['entity_type']) as $field_name => $field) {
+    $entity_type = $data[$type]->entityType();
+    foreach (addressfield_get_address_fields($entity_type) as $field_name => $field) {
       // If there are any address field tokens in the token list...
       if ($addressfield_tokens = token_find_with_prefix($tokens, $field_name)) {
         // If the current field is on the matching entity type...
-        if (!empty($field['bundles'][$data['entity_type']])) {
+        if (!empty($field['bundles'][$entity_type])) {
           // Extract the format handlers selected in a representative instance
           // settings form for use in formatting tokens.
-          $instance = field_info_instance($data['entity_type'], $field_name, reset($field['bundles'][$data['entity_type']]));
+          $instance = field_info_instance($entity_type, $field_name, reset($field['bundles'][$entity_type]));
           $format_handlers = $instance['widget']['settings']['format_handlers'];
         }
 
-        if (property_exists($data['entity'], $field_name)) {
+        if (property_exists($data[$type], $field_name)) {
           // Generate the necessary address field tokens for the entity.
-          $replacements += token_generate('address-field', $addressfield_tokens, array('address-field' => $data['entity']->$field_name, 'format_handlers' => $format_handlers), $options);
+          $replacements += token_generate('address-field', $addressfield_tokens, array('address-field' => $data[$type]->$field_name, 'format_handlers' => $format_handlers), $options);
         }
       }
     }

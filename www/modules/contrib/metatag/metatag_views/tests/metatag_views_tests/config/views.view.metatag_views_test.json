@@ -1,0 +1,459 @@
+{
+    "_config_name": "views.view.metatag_views_test",
+    "name": "metatag_views_test",
+    "description": "",
+    "tag": "default",
+    "disabled": false,
+    "base_table": "node",
+    "human_name": "Metatag Views test",
+    "core": 7,
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "Metatag Views test",
+                "use_more_always": false,
+                "access": {
+                    "type": "perm"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "5"
+                    }
+                },
+                "style_plugin": "default",
+                "row_plugin": "node",
+                "row_options": {
+                    "links": false
+                },
+                "fields": {
+                    "title": {
+                        "id": "title",
+                        "table": "node",
+                        "field": "title",
+                        "label": "",
+                        "alter": {
+                            "word_boundary": false,
+                            "ellipsis": false
+                        }
+                    }
+                },
+                "sorts": {
+                    "created": {
+                        "id": "created",
+                        "table": "node",
+                        "field": "created",
+                        "order": "DESC"
+                    }
+                },
+                "filters": {
+                    "status": {
+                        "id": "status",
+                        "table": "node",
+                        "field": "status",
+                        "value": 1,
+                        "group": 1,
+                        "expose": {
+                            "operator": false
+                        }
+                    }
+                }
+            }
+        },
+        "page": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "metatags": {
+                    "und": {
+                        "title": {
+                            "value": "Test Views page title",
+                            "default": "[view:title] | [current-page:pager][site:name]"
+                        },
+                        "description": {
+                            "value": "Testing Metatag: Views.",
+                            "default": "[view:description]"
+                        },
+                        "abstract": {
+                            "value": ""
+                        },
+                        "keywords": {
+                            "value": "Test, page, keywords"
+                        },
+                        "robots": {
+                            "value": {
+                                "index": 0,
+                                "follow": 0,
+                                "noindex": 0,
+                                "nofollow": 0,
+                                "noarchive": 0,
+                                "nosnippet": 0,
+                                "noodp": 0,
+                                "noydir": 0,
+                                "noimageindex": 0,
+                                "notranslate": 0
+                            }
+                        },
+                        "news_keywords": {
+                            "value": ""
+                        },
+                        "standout": {
+                            "value": ""
+                        },
+                        "rating": {
+                            "value": ""
+                        },
+                        "referrer": {
+                            "value": ""
+                        },
+                        "rights": {
+                            "value": ""
+                        },
+                        "image_src": {
+                            "value": ""
+                        },
+                        "canonical": {
+                            "value": "[view:url]",
+                            "default": "[view:url]"
+                        },
+                        "shortlink": {
+                            "value": "[current-page:url:unaliased]",
+                            "default": "[current-page:url:unaliased]"
+                        },
+                        "publisher": {
+                            "value": ""
+                        },
+                        "author": {
+                            "value": ""
+                        },
+                        "original-source": {
+                            "value": ""
+                        },
+                        "prev": {
+                            "value": ""
+                        },
+                        "next": {
+                            "value": ""
+                        },
+                        "revisit-after": {
+                            "value": "",
+                            "period": ""
+                        },
+                        "content-language": {
+                            "value": ""
+                        },
+                        "geo.position": {
+                            "value": ""
+                        },
+                        "geo.placename": {
+                            "value": ""
+                        },
+                        "geo.region": {
+                            "value": ""
+                        },
+                        "icbm": {
+                            "value": ""
+                        },
+                        "refresh": {
+                            "value": ""
+                        },
+                        "itemtype": {
+                            "value": ""
+                        },
+                        "itemprop:name": {
+                            "value": "[current-page:title]",
+                            "default": "[current-page:title]"
+                        },
+                        "itemprop:description": {
+                            "value": ""
+                        },
+                        "itemprop:image": {
+                            "value": ""
+                        },
+                        "theme-color": {
+                            "value": ""
+                        },
+                        "MobileOptimized": {
+                            "value": ""
+                        },
+                        "HandheldFriendly": {
+                            "value": ""
+                        },
+                        "viewport": {
+                            "value": ""
+                        },
+                        "cleartype": {
+                            "value": ""
+                        },
+                        "apple-itunes-app": {
+                            "value": ""
+                        },
+                        "apple-mobile-web-app-capable": {
+                            "value": ""
+                        },
+                        "apple-mobile-web-app-status-bar-style": {
+                            "value": ""
+                        },
+                        "format-detection": {
+                            "value": ""
+                        },
+                        "ios-app-link-alternative": {
+                            "value": ""
+                        },
+                        "android-app-link-alternative": {
+                            "value": ""
+                        },
+                        "android-manifest": {
+                            "value": ""
+                        },
+                        "x-ua-compatible": {
+                            "value": ""
+                        },
+                        "application-name": {
+                            "value": ""
+                        },
+                        "msapplication-allowDomainApiCalls": {
+                            "value": ""
+                        },
+                        "msapplication-allowDomainMetaTags": {
+                            "value": ""
+                        },
+                        "msapplication-badge": {
+                            "value": ""
+                        },
+                        "msapplication-config": {
+                            "value": ""
+                        },
+                        "msapplication-navbutton-color": {
+                            "value": ""
+                        },
+                        "msapplication-notification": {
+                            "value": ""
+                        },
+                        "msapplication-square150x150logo": {
+                            "value": ""
+                        },
+                        "msapplication-square310x310logo": {
+                            "value": ""
+                        },
+                        "msapplication-square70x70logo": {
+                            "value": ""
+                        },
+                        "msapplication-wide310x150logo": {
+                            "value": ""
+                        },
+                        "msapplication-starturl": {
+                            "value": ""
+                        },
+                        "msapplication-task": {
+                            "value": ""
+                        },
+                        "msapplication-task-separator": {
+                            "value": ""
+                        },
+                        "msapplication-tilecolor": {
+                            "value": ""
+                        },
+                        "msapplication-tileimage": {
+                            "value": ""
+                        },
+                        "msapplication-tooltip": {
+                            "value": ""
+                        },
+                        "msapplication-window": {
+                            "value": ""
+                        },
+                        "og:type": {
+                            "value": "article",
+                            "default": "article"
+                        },
+                        "og:url": {
+                            "value": "[current-page:url:absolute]",
+                            "default": "[current-page:url:absolute]"
+                        },
+                        "og:title": {
+                            "value": "[current-page:title]",
+                            "default": "[current-page:title]"
+                        },
+                        "og:determiner": {
+                            "value": ""
+                        },
+                        "og:description": {
+                            "value": ""
+                        },
+                        "og:updated_time": {
+                            "value": ""
+                        },
+                        "og:see_also": {
+                            "value": ""
+                        },
+                        "og:image": {
+                            "value": ""
+                        },
+                        "og:image:url": {
+                            "value": ""
+                        },
+                        "og:image:secure_url": {
+                            "value": ""
+                        },
+                        "og:image:type": {
+                            "value": ""
+                        },
+                        "og:image:width": {
+                            "value": ""
+                        },
+                        "og:image:height": {
+                            "value": ""
+                        },
+                        "og:latitude": {
+                            "value": ""
+                        },
+                        "og:longitude": {
+                            "value": ""
+                        },
+                        "og:street_address": {
+                            "value": ""
+                        },
+                        "og:locality": {
+                            "value": ""
+                        },
+                        "og:region": {
+                            "value": ""
+                        },
+                        "og:postal_code": {
+                            "value": ""
+                        },
+                        "og:country_name": {
+                            "value": ""
+                        },
+                        "og:email": {
+                            "value": ""
+                        },
+                        "og:phone_number": {
+                            "value": ""
+                        },
+                        "og:fax_number": {
+                            "value": ""
+                        },
+                        "og:locale": {
+                            "value": ""
+                        },
+                        "og:locale:alternate": {
+                            "value": ""
+                        },
+                        "article:author": {
+                            "value": ""
+                        },
+                        "article:publisher": {
+                            "value": ""
+                        },
+                        "article:section": {
+                            "value": ""
+                        },
+                        "article:tag": {
+                            "value": ""
+                        },
+                        "article:published_time": {
+                            "value": ""
+                        },
+                        "article:modified_time": {
+                            "value": ""
+                        },
+                        "article:expiration_time": {
+                            "value": ""
+                        },
+                        "profile:first_name": {
+                            "value": ""
+                        },
+                        "profile:last_name": {
+                            "value": ""
+                        },
+                        "profile:username": {
+                            "value": ""
+                        },
+                        "profile:gender": {
+                            "value": ""
+                        },
+                        "og:audio": {
+                            "value": ""
+                        },
+                        "og:audio:secure_url": {
+                            "value": ""
+                        },
+                        "og:audio:type": {
+                            "value": ""
+                        },
+                        "book:author": {
+                            "value": ""
+                        },
+                        "book:isbn": {
+                            "value": ""
+                        },
+                        "book:release_date": {
+                            "value": ""
+                        },
+                        "book:tag": {
+                            "value": ""
+                        },
+                        "og:video:url": {
+                            "value": ""
+                        },
+                        "og:video:secure_url": {
+                            "value": ""
+                        },
+                        "og:video:width": {
+                            "value": ""
+                        },
+                        "og:video:height": {
+                            "value": ""
+                        },
+                        "og:video:type": {
+                            "value": ""
+                        },
+                        "video:actor": {
+                            "value": ""
+                        },
+                        "video:actor:role": {
+                            "value": ""
+                        },
+                        "video:director": {
+                            "value": ""
+                        },
+                        "video:writer": {
+                            "value": ""
+                        },
+                        "video:duration": {
+                            "value": ""
+                        },
+                        "video:release_date": {
+                            "value": ""
+                        },
+                        "video:tag": {
+                            "value": ""
+                        },
+                        "video:series": {
+                            "value": ""
+                        }
+                    }
+                },
+                "path": "metatag-views-test"
+            }
+        }
+    }
+}
