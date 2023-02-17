@@ -31,11 +31,11 @@ table.metatag-config-overview tbody div.indent {
 }
 
 table.metatag-config-overview tr.disabled > td:first-child a {
-  color: #999;
+  color: #535353; /** AAA compliant **/
+  color: #75757b; /** AA compliant **/
 }
 
 div.metatag-config-details {
-  color: #666;
   margin-left: 20px;
 }
 
@@ -55,7 +55,6 @@ div.metatag-config-details table.metatag-value-summary {
 
 div.metatag-config-details table.metatag-value-summary td {
   padding: 0 0.5em 0 0;
-  color: #666;
 }
 
 div.metatag-config-details table.metatag-value-summary tr,

@@ -64,18 +64,9 @@ function addressfield_get_address_fields($entity_type = '') {
     return $fields;
   }
 
-  // Get all field definitions in advance to save individual function calls to field_info_field().
-  $fields = field_info_fields();
-  foreach (field_info_instances($entity_type) as $field_name => $instance) {
-    $field = $fields[$field_name];
-    if (!isset($field['bundles'][$entity_type])) {
-      unset($fields[$field_name]);
-    }
-  }
-
   // Get all addressfield fields.
   $fields = array_filter(field_info_field_map(), 'addressfield_field_map_filter');
-  if (!empty($fields)) {
+  if (!empty($fields) && !empty($entity_type)) {
     // Keep only the fields present on this entity_type to spare some iterations
     // in the calling function.
     foreach ($fields as $field_name => $field) {
@@ -121,7 +112,7 @@ function addressfield_addressfield_format_info() {
       'format callback' => 'addressfield_format_address_hide_postal_code',
       'type' => 'address',
       'weight' => -85,
-      'file' => 'formats/address-hide-potal-code.inc',
+      'file' => 'formats/address-hide-postal-code.inc',
     ),
     'address_hide_administrative_area' => array(
       'title' => t('Hide administrative area field (State/Province)'),
@@ -570,6 +561,10 @@ function addressfield_field_info() {
 function addressfield_default_values($field, $instance, array $address = array()) {
   $available_countries = _addressfield_country_options_list($field, $instance);
   $default_country = $instance['widget']['settings']['default_country'];
+  // Resolve the special site_default option.
+  if ($default_country == 'site_default') {
+    $default_country = config_get('system.date', 'default_country');
+  }
   // Fallback to the first country in the list if the default country is not
   // available, or is empty even though the field is required.
   $not_available = $default_country && !isset($available_countries[$default_country]);
@@ -709,7 +704,7 @@ function addressfield_field_widget_settings_form($field, $instance) {
     $form['default_country'] = array(
       '#type' => 'select',
       '#title' => t('Default country'),
-      '#options' => array(_addressfield_country_options_list()),
+      '#options' => array('site_default' => t('- Site default -')) + _addressfield_country_options_list(),
       '#default_value' => $settings['default_country'],
       '#empty_value' => '',
     );
@@ -1079,8 +1074,8 @@ function addressfield_property_info_callback(&$info, $entity_type, $field, $inst
   $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$name];
 
   $property['type'] = ($field['cardinality'] != 1) ? 'list<addressfield>' : 'addressfield';
-  $property['getter callback'] = 'entity_metadata_field_verbatim_get';
-  $property['setter callback'] = 'entity_metadata_field_verbatim_set';
+  $property['getter callback'] = 'entity_plus_metadata_field_verbatim_get';
+  $property['setter callback'] = 'entity_plus_metadata_field_verbatim_set';
   $property['auto creation'] = 'addressfield_auto_creation';
   $property['property info'] = addressfield_data_property_info();
 
@@ -1149,8 +1144,8 @@ function addressfield_data_property_info($name = NULL) {
     $value += array(
       'description' => !empty($name) ? t('!label of field %name', array('!label' => $value['label'], '%name' => $name)) : '',
       'type' => 'text',
-      'getter callback' => 'entity_property_verbatim_get',
-      'setter callback' => 'entity_property_verbatim_set',
+      'getter callback' => 'entity_plus_property_verbatim_get',
+      'setter callback' => 'entity_plus_property_verbatim_set',
     );
   }
 
@@ -1207,7 +1202,9 @@ function _addressfield_get_format_callback($handler, $formats) {
     $function = $formats[$handler]['format callback'];
     if (array_key_exists('file', $formats[$handler])) {
       $file = str_replace('.inc', '', $formats[$handler]['file']);
-      module_load_include('inc', 'addressfield', $file);
+      foreach (module_implements('addressfield_format_info') as $module) {
+        module_load_include('inc', $module, $file);
+      }
     }
     if (function_exists($function)) {
       return $function;

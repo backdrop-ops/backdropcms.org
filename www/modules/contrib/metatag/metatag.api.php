@@ -114,28 +114,28 @@ function hook_metatag_config_presave($config) {
 /**
  * Triggered when a Metatag configuration is created.
  *
- * @param object $config
- *   The configuration object that was created.
+ * @param array $data
+ *   An array of configuration data that has been saved.
  */
-function hook_metatag_config_insert($config) {
+function hook_metatag_config_insert(array $data) {
 }
 
 /**
  * Triggered when a Metatag configuration is updated.
  *
- * @param object $config
- *   The configuration object that was modified.
+ * @param array $data
+ *   An array of configuration data that has been saved.
  */
-function hook_metatag_config_update($config) {
+function hook_metatag_config_update(array $data) {
 }
 
 /**
  * Triggered when a Metatag configuration is removed.
  *
- * @param object $config
- *   The name of the configuration object that was removed.
+ * @param array $data
+ *   An array of configuration data that was removed.
  */
-function hook_metatag_config_delete($config) {
+function hook_metatag_config_delete(array $data) {
 }
 
 /**

@@ -213,6 +213,10 @@ function borg_preprocess_layout(&$variables) {
 function borg_preprocess_header(&$variables) {
   $path = backdrop_get_path('theme', 'borg');
   $variables['logo'] = theme('image', array('uri' => $path . '/logo-inverse.png'));
+  // Remove Backdrop CMS from the site name in the header template.
+  if ($variables['site_name'] && strstr($variables['site_name'], 'Backdrop CMS')) {
+    $variables['site_name'] = trim(str_replace('Backdrop CMS', '', $variables['site_name']));
+  }
 }
 
 /**

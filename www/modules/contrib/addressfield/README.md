@@ -57,6 +57,7 @@ Current Maintainers
 -------------------
 
 - Jen Lampton (https://github.com/jenlampton)
+- [argiepiano](https://github.com/argiepiano)
 - Seeking additional maintainers.
 
 
