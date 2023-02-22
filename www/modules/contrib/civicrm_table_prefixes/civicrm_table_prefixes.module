@@ -14,59 +14,110 @@ function civicrm_table_prefixes_menu() {
   $items['admin/config/system/civicrm-table-prefixes'] = array(
     'title' => 'CiviCRM table prefixes',
     'description' => 'Create prefixes for CiviCRM pages.',
-    'page callback' => 'civicrm_table_prefixes_view',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('civicrm_table_prefixes_form'),
     'access arguments' => array('administer site configuration'),
   );
   return $items;
 }
 
 /**
- * Returns the page with information about CiviCRM tables.
+ * Returns the page with information about CiviCRM tables for the Backdrop db.
  */
-function civicrm_table_prefixes_view() {
-  $build[] = array(
-    '#type' => 'help',
-    '#markup' => t('Copy the text below into a file and save it as <code>civicrm_table_prefixes.php</code> at the root of your website (at the same level as <code>settings.php</code>). You will need to update this whenever you create additional CiviCRM tables (for example, adding a custom data group). The <a href="!url">status report</a> will let you know when this is necessary.', array('!url' => url('admin/reports/status'))),
-  );
-  $build['prefixes'] = array(
-    '#type' => 'fieldset',
-  );
-  $prefixes =  _civicrm_table_prefixes_get_from_db();
-  $code = "<pre><code>&lt;?php\nglobal \$civicrm_table_prefixes;\n\$civicrm_table_prefixes = " . var_export($prefixes, TRUE) . ";\n</code></pre>";
-  $build['prefixes']['code'] = array(
-    '#markup' => $code,
-  );
+function civicrm_table_prefixes_form($form, &$form_state) {
+  $filename = BACKDROP_ROOT . '/civicrm_table_prefixes.php';
+  if (!file_exists($filename)) {
+    $form[] = array(
+      '#type' => 'help',
+      '#markup' => t('Copy the following code into a file and save it as <code>civicrm_table_prefixes.php</code> at the root of your website (at the same level as <code>settings.php</code>). You will need to update this whenever you create additional CiviCRM tables (for example, adding a custom data group). The <a href="!url">status report</a> will let you know when this is necessary.', array('!url' => url('admin/reports/status'))),
+    );
+    $prefixes =  _civicrm_table_prefixes_get_from_db();
+    $code = "<pre><code>&lt;?php\nglobal \$civicrm_table_prefixes;\n\$civicrm_table_prefixes = " . var_export($prefixes, TRUE) . ";\n</code></pre>";
+    $form['prefixes'] = array(
+      '#type' => 'details',
+      '#summary' => t('civicrm_table_prefixes.php code'),
+      '#details' => $code,
+    );
 
-  $build[] = array(
-    '#type' => 'help',
-    '#markup' => t('Put this code at the beginning of your <code>settings.php</code> or <code>settings.local.php</code> file, making the appropriate substitutions indicated. Replace or comment out the existing <code>$database = ...</code> line.'),
-  );
-  $build['settings'] = array(
-    '#type' => 'fieldset',
-  );
-  $build['settings'][] = array(
-    '#markup' => '<pre><code>
-global $civicrm_table_prefixes;
-require_once __DIR__ . \'/civicrm_table_prefixes.php\';
-$databases = array(
-  \'default\' => array (
-    \'default\' =>
-    array (
-      \'driver\' => \'mysql\',
-      \'database\' => \'&lt;Backdrop db name&gt;\',
-      \'username\' => \'&lt;db user&gt;\',
-      \'password\' => \'&lt;db password&gt;\',
-      \'host\' => \'&lt;db host&gt;\',
-      \'port\' => \'&lt;db port&gt;\',
-      \'prefix\' => $civicrm_table_prefixes,
-      \'charset\' => \'utf8mb4\',
-      \'collation\' => \'utf8mb4_general_ci\',
+    $form[] = array(
+      '#type' => 'help',
+      '#markup' => t('Put the following code at the beginning of your <code>settings.php</code> or <code>settings.local.php</code> file, making the appropriate substitutions indicated. Replace or comment out the existing <code>$database = ...</code> line.'),
+    );
+    $form['settings'] = array(
+      '#type' => 'details',
+      '#summary' => t('settings.php code'),
+      '#details' => '<pre><code>
+  global $civicrm_table_prefixes;
+  require_once __DIR__ . \'/civicrm_table_prefixes.php\';
+  $databases = array(
+    \'default\' => array (
+      \'default\' =>
+      array (
+        \'driver\' => \'mysql\',
+        \'database\' => \'&lt;Backdrop db name&gt;\',
+        \'username\' => \'&lt;db user&gt;\',
+        \'password\' => \'&lt;db password&gt;\',
+        \'host\' => \'&lt;db host&gt;\',
+        \'port\' => \'&lt;db port&gt;\',
+        \'prefix\' => $civicrm_table_prefixes,
+        \'charset\' => \'utf8mb4\',
+        \'collation\' => \'utf8mb4_general_ci\',
+      ),
     ),
-  ),
-);</code></pre>',
-  );
+  );</code></pre>',
+    );
+  }
+  else {
+    // Compare tables and the db and report the differences.
+    $diff = _civicrm_table_prefixes_diff();
+    if (empty($diff['db_extra']) && empty($diff['file_extra'])) {
+      $form[] = array(
+        '#type' => 'help',
+        '#markup' => t('The civicrm_table_prefixes.php file is up to date.'),
+      );
+    }
+    else {
+      $form[] = array(
+        '#type' => 'help',
+        '#markup' => t('The civicrm_table_prefixes.php file needs to be updated.'),
+      );
+      if (!empty($diff['db_extra'])) {
+        $form[] = array(
+          '#type' => 'help',
+          '#markup' => t('These elements should be added to the array in the civicrm_table_prefixes.php file:'),
+        );
+        $form[] = array(
+          '#type' => 'help',
+          '#markup' => "<pre><code>" . var_export($diff['db_extra'], TRUE) . ";\n</code></pre>",
+        );
+      }
+      if (!empty($diff['file_extra'])) {
+        $form[] = array(
+          '#type' => 'help',
+          '#markup' => t('These elements should be removed from the array in the civicrm_table_prefixes.php file:'),
+        );
+        $form[] = array(
+          '#type' => 'help',
+          '#markup' => "<pre><code>" . var_export($diff['file_extra'], TRUE) . ";\n</code></pre>",
+        );
+      }
+    }
+  }
+  return $form;
+}
 
-  return $build;
+/**
+ * Compare db and file prefix tables and return a list with differences.
+ */
+function _civicrm_table_prefixes_diff() {
+  $db_civicrm_table_prefixes = _civicrm_table_prefixes_get_from_db();
+  global $civicrm_table_prefixes;
+  $db_extra = array_intersect_key($db_civicrm_table_prefixes, array_map(NULL, array_diff_key($db_civicrm_table_prefixes, $civicrm_table_prefixes)));
+  $file_extra = array_intersect_key($civicrm_table_prefixes, array_map(NULL, array_diff_key($civicrm_table_prefixes, $db_civicrm_table_prefixes)));
+  return array(
+    'db_extra' => $db_extra,
+    'file_extra' => $file_extra,
+  );
 }
 
 /**
@@ -80,21 +131,21 @@ function _civicrm_table_prefixes_get_from_db() {
 
   // Use the CiviCRM DB class to parse the CiviCRM data source name.
   civicrm_initialize();
-  $db = (object) DB::parseDSN(CIVICRM_DSN);
+  $dsn = (object) DB::parseDSN(CIVICRM_DSN);
 
   $prefixes = array();
   try {
-    $conn = new PDO(CIVICRM_DSN, $db->username, $db->password);
+    $conn = new PDO(CIVICRM_DSN, $dsn->username, $dsn->password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='$db->database';";
+    $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='$dsn->database';";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->fetchAll();
     foreach ($result as $row) {
       $table_name = $row['table_name'];
-      // Ignore temporary tables
-      if (strpos($table_name, 'civicrm_tmp_') === FALSE) {
-        $prefixes[$table_name] = $db->database . '.';
+      // Ignore temporary tables and snap_civicrm_ tables.
+      if (strpos($table_name, 'civicrm_tmp_') === FALSE && strpos($table_name, 'snap_civicrm_') === FALSE) {
+        $prefixes[$table_name] = $dsn->database . '.';
       }
     }
   }

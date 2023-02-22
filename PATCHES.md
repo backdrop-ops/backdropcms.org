@@ -25,10 +25,6 @@ colorbox - Remove dependance on libraries API
   https://github.com/backdrop-contrib/colorbox/issues/9
   https://github.com/backdrop-contrib/colorbox/pull/10.patch
 
-markdown - PHP notice
-  https://github.com/backdrop-contrib/markdown/issues/4
-  https://github.com/backdrop-contrib/markdown/pull/7.patch
-
 spambot - move last checked uid to state
   https://github.com/backdrop-contrib/spambot/issues/4
   https://github.com/backdrop-contrib/spambot/pull/5.patch
