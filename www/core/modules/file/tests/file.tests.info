@@ -124,13 +124,19 @@ description = Test the access aspects of file entity.
 group = File
 file = file.test
 
+[FileAccessFunctionsAlignedTestCase]
+name = File access functions aligned
+description = Test that file access functions return consistent values.
+group = File
+file = file.test
+
 [FileAttributeOverrideTestCase]
 name = File attribute override
 description = Test overriding file entity attributes.
 group = File
 file = file.test
 
-; Added by Backdrop CMS packaging script on 2022-09-15
+; Added by Backdrop CMS packaging script on 2023-01-15
 project = backdrop
-version = 1.23.0
-timestamp = 1663295416
+version = 1.24.0
+timestamp = 1673829117
