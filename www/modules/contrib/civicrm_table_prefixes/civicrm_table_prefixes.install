@@ -22,12 +22,9 @@ function civicrm_table_prefixes_requirements($phase) {
         $error = t('The global variable $civicrm_table_prefixes has not been set.') . $see_config;
       }
       else {
-        // Get prefixes from the CiviCRM db.
-        $db_civicrm_table_prefixes = _civicrm_table_prefixes_get_from_db();
-
-        // Compare the two lists. They should be equal, but might not be if
-        // CiviCRM has added non-temporary tables due to further configuration.
-        if (serialize($civicrm_table_prefixes) != serialize($db_civicrm_table_prefixes)) {
+        // Compare the CiviCRM db and civicrm_table_prefixes.php file.
+        $diff = _civicrm_table_prefixes_diff();
+        if (!empty($diff['db_extra']) || !empty($diff['file_exptra'])) {
           $error = t('File civicrm_table_prefixes.php does not match the CiviCRM database.') . $see_config;
         }
         else {
