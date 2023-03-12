@@ -56,7 +56,7 @@ function borg_pbs_project_browser_server_query($filters) {
     ->fields('n');
 
   // Filter out projects based on type.
-  if (isset($filters['type'])) {
+  if (isset($filters['type']) && $filters['type'] != 'all') {
     $query->condition('n.type', 'project_' . $filters['type']);
   }
 
@@ -104,10 +104,12 @@ function borg_pbs_project_browser_server_query($filters) {
   }
 
   // Only send back the requested amount.
-  $start = $filters['page'] * $filters['items_per_page'];
-  $count_query = $query;
-  $count_result = $count_query->execute();
-  $query->range($start, $filters['items_per_page']);
+  if ($filters['items_per_page'] != 'all') {
+    $start = $filters['page'] * $filters['items_per_page'];
+    $count_query = $query;
+    $count_result = $count_query->execute();
+    $query->range($start, $filters['items_per_page']);
+  }
 
   // Add the sorting.
   if (!empty($filters['order'])) {
@@ -143,6 +145,9 @@ function borg_pbs_project_browser_server_query($filters) {
   }
 
   $result = $query->execute();
+  if ($filters['items_per_page'] == 'all') {
+    $count_result = $result;
+  }
 
   $load = array();
   foreach ($result as $row) {
@@ -168,7 +173,7 @@ function borg_pbs_project_browser_server_query($filters) {
     $image_url = str_replace('https://projects.backdropcms.org','https://backdropcms.org', $image_url);
 
     $projects[$node->project['name']] = array(
-      'type' => $filters['type'],
+      'type' => $node->type,
       'title' => $node->title,
       'name' => $node->project['name'],
       'backdrop version' => $filters['version'] . '.x',

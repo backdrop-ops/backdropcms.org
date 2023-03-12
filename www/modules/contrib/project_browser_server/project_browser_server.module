@@ -93,7 +93,7 @@ function _project_browser_server_return($results) {
  * Validate a Project Browser request.
  */
 function _project_browser_server_validate($type) {
-  if ($type != 'module' && $type != 'theme' && $type != 'layout') {
+  if ($type != 'all' && $type != 'module' && $type != 'theme' && $type != 'layout') {
     backdrop_add_http_header('Status', '404 Not Found');
 
     _project_browser_server_return(t('You must specify a project type to be either "module" or "theme" or "layout".'));
