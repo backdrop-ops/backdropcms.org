@@ -9,7 +9,8 @@ Text module -- formatted text fields should not lock when empty due to access.
 Patches to Backdrop Contrib:
 ============================
 
-borg theme: none.
+borg theme: (committed to HEAD)
+  Remove bug squad display from base theme
 
 ---
 

@@ -581,35 +581,6 @@ function _borg_book_next($book_link) {
 }
 
 /**
- * Overrides theme_field__body__docs().
- */
-function borg_field__body__docs($variables) {
-  // Only add bug squad members on the bug squad page.
-  if ($variables['element']['#object']->nid == '2306') {
-    // Safety check for the project metrics module.
-    if (module_exists('borg_project_metrics')) {
-      $bug_squad = borg_project_metrics_teams('3489194');
-      $members = array();
-      foreach ($bug_squad as $key => $member) {
-        $info  = '<img class="gh-avatar" src="' . $member['avatar_url'] . '" />';
-        $info .= '<strong>' . $member['name'] . '</strong>';
-        $members[] = $info;
-      }
-
-      $output  = backdrop_render($variables['element'][0]);
-      $output .= '<p class="bug-squad-header"><strong>Bug Squad Members</strong></p>';
-      $output .= '<div class="container">';
-      $output .= '  <div class="row">';
-      $output .=      theme('item_list', array('items' => $members, 'attributes' => array('class' => array('leadership', 'bug-squad'))));
-      $output .= '  </div> <!-- /.row -->';
-      $output .= '</div> <!-- /.container -->';
-
-      return $output;
-    }
-  }
-}
-
-/**
  * Overrides theme_form_element().
  */
 function borg_form_element($variables) {
