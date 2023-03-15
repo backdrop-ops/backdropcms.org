@@ -15,11 +15,7 @@
         "view own unpublished content",
         "access contextual links",
         "view the administration theme",
-        "create docs content",
         "edit own docs content",
-        "edit any docs content",
-        "delete own docs content",
-        "delete any docs content",
         "access administration bar",
         "flush caches",
         "access administration pages",
@@ -44,12 +40,9 @@
         "delete own feature content",
         "edit terms in feature_type",
         "edit own project_dummy content",
-        "edit any project_dummy content",
         "cancel account",
         "edit any external_mention content",
-        "delete own project_dummy content",
         "edit own sa content",
-        "create project_dummy content",
         "view files",
         "edit meta tags",
         "revert revisions",
@@ -58,6 +51,9 @@
         "use text format filtered_html",
         "use text format full_html",
         "use text format standard_tokens",
-        "use text format markdown"
-    ]
+        "use text format markdown",
+        "edit any project_dummy content",
+        "edit any docs content"
+    ],
+    "description": ""
 }

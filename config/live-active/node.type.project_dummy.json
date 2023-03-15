@@ -14,12 +14,11 @@
         "formblock_expose": 0,
         "formblock_show_help": 0,
         "menu_options": {
-            "devel": 0,
+            "menu-more-developer-resources": 0,
             "menu-footer-menu": 0,
             "menu-handbook": 0,
             "main-menu": 0,
             "management": 0,
-            "menu-user-guide": 0,
             "user-menu": 0
         },
         "menu_parent": "main-menu:0",
@@ -42,7 +41,9 @@
         "project_release_type": "",
         "hidden_path": 0,
         "node_preview": "1",
-        "scheduling_enabled": 0
+        "scheduling_enabled": 0,
+        "menu_default": 0,
+        "node_submitted_format": "[node:created:medium] by [node:author]"
     },
     "orig_type": "project_dummy",
     "node_preview": "1"
