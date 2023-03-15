@@ -96,3 +96,57 @@ function backdropcms_menu_link(array $variables) {
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
   return '<li' . backdrop_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
 }
+
+/**
+ * Overrides theme_field__body__docs().
+ */
+function backdropcms_field__body__docs($variables) {
+
+  // Add bug squad members on the bug squad page.
+  if ($variables['element']['#object']->nid == '2306') {
+    // Safety check for the project metrics module.
+    if (module_exists('borg_project_metrics')) {
+      $bug_squad = borg_project_metrics_teams('3489194');
+      $members = array();
+      foreach ($bug_squad as $key => $member) {
+        $info  = '<img class="gh-avatar" src="' . $member['avatar_url'] . '" />';
+        $info .= '<strong>' . $member['name'] . '</strong>';
+        $members[] = $info;
+      }
+
+      $output  = backdrop_render($variables['element'][0]);
+      $output .= '<p class="bug-squad-header"><strong>Bug Squad Members</strong></p>';
+      $output .= '<div class="container">';
+      $output .= '  <div class="row">';
+      $output .=      theme('item_list', array('items' => $members, 'attributes' => array('class' => array('leadership', 'bug-squad'))));
+      $output .= '  </div> <!-- /.row -->';
+      $output .= '</div> <!-- /.container -->';
+
+      return $output;
+    }
+  }
+
+  // Add security team members on the security team page.
+  if ($variables['element']['#object']->nid == '2566') {
+    // Safety check for the project metrics module.
+    if (module_exists('borg_project_metrics')) {
+      $sec_team = borg_project_metrics_teams('1817637');
+      $members = array();
+      foreach ($sec_team as $key => $member) {
+        $info  = '<img class="gh-avatar" src="' . $member['avatar_url'] . '" />';
+        $info .= '<strong>' . $member['name'] . '</strong>';
+        $members[] = $info;
+      }
+
+      $output  = backdrop_render($variables['element'][0]);
+      $output .= '<p class="bug-squad-header"><strong>Security Team Members</strong></p>';
+      $output .= '<div class="container">';
+      $output .= '  <div class="row">';
+      $output .=      theme('item_list', array('items' => $members, 'attributes' => array('class' => array('leadership', 'bug-squad'))));
+      $output .= '  </div> <!-- /.row -->';
+      $output .= '</div> <!-- /.container -->';
+
+      return $output;
+    }
+  }
+}
