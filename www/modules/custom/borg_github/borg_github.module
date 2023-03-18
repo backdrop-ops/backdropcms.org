@@ -288,6 +288,7 @@ function borg_github_project_github_create_package_alter(&$files, $project_name)
     '/\.gitattributes/',
 
     // Remove CI files not needed in distributed projects.
+    '/\.cspell\/.*/',
     '/\.gitlc\.yml/',
     '/\.gitlab\/.*/',
     '/\.gitlab-ci\.yml/',
