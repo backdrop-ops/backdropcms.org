@@ -598,7 +598,7 @@ class CRM_Report_Form extends CRM_Core_Form {
     // and addCustomDataToColumns() will allow access to all custom groups.
     $permCustomGroupIds = [];
     if (!CRM_Core_Permission::check('access all custom data')) {
-      $permCustomGroupIds = CRM_ACL_API::group(CRM_Core_Permission::VIEW, NULL, 'civicrm_custom_group', $allGroups, NULL);
+      $permCustomGroupIds = CRM_ACL_API::group(CRM_Core_Permission::VIEW, NULL, 'civicrm_custom_group', $allGroups);
       // do not allow custom data for reports if user doesn't have
       // permission to access custom data.
       if (!empty($this->_customGroupExtends) && empty($permCustomGroupIds)) {
@@ -2695,7 +2695,7 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
     $communicationMethods = CRM_Core_PseudoConstant::get('CRM_Contact_DAO_Contact', 'preferred_communication_method');
 
     // Explode padded values.
-    $values = CRM_utils_array::explodePadded($value);
+    $values = CRM_Utils_Array::explodePadded($value);
     // Flip values, compute intersection with $communicationMethods, and implode with commas.
     $value = implode(', ', array_intersect_key($communicationMethods, array_flip($values)));
     return $value;

@@ -1459,7 +1459,6 @@ CREATE TABLE `civicrm_custom_field` (
   `weight` int NOT NULL DEFAULT 1 COMMENT 'Controls field display order within an extended property group.',
   `help_pre` text COMMENT 'Description and/or help text to display before this field.',
   `help_post` text COMMENT 'Description and/or help text to display after this field.',
-  `mask` varchar(64) COMMENT 'Optional format instructions for specific field types, like date types.',
   `attributes` varchar(255) COMMENT 'Store collection of type-appropriate attributes, e.g. textarea  needs rows/cols attributes',
   `javascript` varchar(255) COMMENT 'Optional scripting attributes for field.',
   `is_active` tinyint DEFAULT 1 COMMENT 'Is this property active?',

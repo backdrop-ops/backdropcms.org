@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit9f9955bf8d90b6eb142de17e7c9fca9f
+class ComposerStaticInit5b9fa8178f0547c9453906e5e95835fb
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -605,6 +605,12 @@ class ComposerStaticInit9f9955bf8d90b6eb142de17e7c9fca9f
         'PEAR_Exception' => __DIR__ . '/..' . '/pear/pear_exception/PEAR/Exception.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
+        'Random\\BrokenRandomEngineError' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/BrokenRandomEngineError.php',
+        'Random\\CryptoSafeEngine' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/CryptoSafeEngine.php',
+        'Random\\Engine' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/Engine.php',
+        'Random\\Engine\\Secure' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/Engine/Secure.php',
+        'Random\\RandomError' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomError.php',
+        'Random\\RandomException' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomException.php',
         'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'SensitiveParameter' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameter.php',
         'SensitiveParameterValue' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameterValue.php',
@@ -738,11 +744,11 @@ class ComposerStaticInit9f9955bf8d90b6eb142de17e7c9fca9f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit9f9955bf8d90b6eb142de17e7c9fca9f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit9f9955bf8d90b6eb142de17e7c9fca9f::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit9f9955bf8d90b6eb142de17e7c9fca9f::$prefixesPsr0;
-            $loader->fallbackDirsPsr0 = ComposerStaticInit9f9955bf8d90b6eb142de17e7c9fca9f::$fallbackDirsPsr0;
-            $loader->classMap = ComposerStaticInit9f9955bf8d90b6eb142de17e7c9fca9f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5b9fa8178f0547c9453906e5e95835fb::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5b9fa8178f0547c9453906e5e95835fb::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit5b9fa8178f0547c9453906e5e95835fb::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInit5b9fa8178f0547c9453906e5e95835fb::$fallbackDirsPsr0;
+            $loader->classMap = ComposerStaticInit5b9fa8178f0547c9453906e5e95835fb::$classMap;
 
         }, null, ClassLoader::class);
     }
