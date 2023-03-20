@@ -12,7 +12,6 @@
 namespace Civi\Search;
 
 use Civi\Api4\Action\SearchDisplay\AbstractRunAction;
-use Civi\Api4\Entity;
 use Civi\Api4\Extension;
 use Civi\Api4\Query\SqlEquation;
 use Civi\Api4\Query\SqlFunction;
@@ -31,7 +30,6 @@ class Admin {
    * Returns clientside data needed for the `crmSearchAdmin` Angular module.
    *
    * @return array
-   * @throws \CRM_Core_Exception
    */
   public static function getAdminSettings():array {
     $schema = self::getSchema();
@@ -121,11 +119,10 @@ class Admin {
    * Fetch all entities the current user has permission to `get`.
    *
    * @return array[]
-   * @throws \CRM_Core_Exception
    */
   public static function getSchema(): array {
     $schema = [];
-    $entities = Entity::get()
+    $entities = \Civi\Api4\Entity::get()
       ->addSelect('name', 'title', 'title_plural', 'bridge_title', 'type', 'primary_key', 'description', 'label_field', 'icon', 'dao', 'bridge', 'ui_join_filters', 'searchable', 'order_by')
       ->addWhere('searchable', '!=', 'none')
       ->addOrderBy('title_plural')
@@ -144,17 +141,11 @@ class Admin {
         if (!empty($paths['add'])) {
           $entity['addPath'] = $paths['add'];
         }
-        try {
-          $getFields = civicrm_api4($entity['name'], 'getFields', [
-            'select' => ['name', 'title', 'label', 'description', 'type', 'options', 'input_type', 'input_attrs', 'data_type', 'serialize', 'entity', 'fk_entity', 'readonly', 'operators', 'suffixes', 'nullable'],
-            'where' => [['deprecated', '=', FALSE], ['name', 'NOT IN', ['api_key', 'hash']]],
-            'orderBy' => ['label'],
-          ]);
-        }
-        catch (\CRM_Core_Exception $e) {
-          \Civi::log()->warning('Entity could not be loaded', ['entity' => $entity['name']]);
-          continue;
-        }
+        $getFields = civicrm_api4($entity['name'], 'getFields', [
+          'select' => ['name', 'title', 'label', 'description', 'type', 'options', 'input_type', 'input_attrs', 'data_type', 'serialize', 'entity', 'fk_entity', 'readonly', 'operators', 'suffixes', 'nullable'],
+          'where' => [['deprecated', '=', FALSE], ['name', 'NOT IN', ['api_key', 'hash']]],
+          'orderBy' => ['label'],
+        ]);
         foreach ($getFields as $field) {
           $field['fieldName'] = $field['name'];
           // Hack for RelationshipCache to make Relationship fields editable
@@ -417,11 +408,7 @@ class Admin {
    *
    * @param string $alias
    * @param array ...$entities
-   *
    * @return array
-   *
-   * @throws \CRM_Core_Exception
-   * @throws \Civi\API\Exception\NotImplementedException
    */
   private static function getJoinDefaults(string $alias, ...$entities):array {
     $conditions = [];

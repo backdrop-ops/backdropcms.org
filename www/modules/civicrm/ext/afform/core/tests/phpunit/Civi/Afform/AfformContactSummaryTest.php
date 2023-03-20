@@ -1,19 +1,15 @@
 <?php
 namespace Civi\Afform;
 
+// Hopefully temporry workaround for loading core test classes
+require_once __DIR__ . '/../../../../../../../tests/phpunit/api/v4/Api4TestBase.php';
+
 use Civi\Api4\Afform;
-use Civi\Test;
-use Civi\Test\Api4TestTrait;
-use Civi\Test\CiviEnvBuilder;
-use Civi\Test\HeadlessInterface;
-use PHPUnit\Framework\TestCase;
 
 /**
  * @group headless
  */
-class AfformContactSummaryTest extends TestCase implements HeadlessInterface {
-
-  use Api4TestTrait;
+class AfformContactSummaryTest extends \api\v4\Api4TestBase {
 
   private $formNames = [
     'contact_summary_test1',
@@ -23,13 +19,13 @@ class AfformContactSummaryTest extends TestCase implements HeadlessInterface {
     'contact_summary_test5',
   ];
 
-  public function setUpHeadless(): CiviEnvBuilder {
-    return Test::headless()->installMe(__DIR__)->install('org.civicrm.search_kit')->apply();
+  public function setUpHeadless() {
+    return \Civi\Test::headless()->installMe(__DIR__)->install('org.civicrm.search_kit')->apply();
   }
 
   public function tearDown(): void {
     Afform::revert(FALSE)->addWhere('name', 'IN', $this->formNames)->execute();
-    $this->deleteTestRecords();
+    parent::tearDown();
   }
 
   public function testAfformContactSummaryTab(): void {

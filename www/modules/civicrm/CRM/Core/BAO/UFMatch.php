@@ -179,16 +179,16 @@ class CRM_Core_BAO_UFMatch extends CRM_Core_DAO_UFMatch {
 
       $dao = NULL;
       if (!empty($_POST) && !$isLogin) {
-        $dedupeParameters = $_POST;
-        $dedupeParameters['email'] = $uniqId;
+        $params = $_POST;
+        $params['email'] = $uniqId;
         // dev/core#1858 Ensure that if we have a contactID parameter which is set in the Create user Record contact task form
-        // That this contactID value is passed through as the contact_id to the get duplicate contacts function. This is necessary because for Drupal 8 this function gets invoked
+        // That this contacID value is passed through as the contact_id to the get duplicate contacts function. This is necessary because for Drupal 8 this function gets invoked
         // Before the civicrm_uf_match record is added where as in D7 it isn't called until the user tries to actually login.
-        if (!empty($dedupeParameters['contactID'])) {
-          $dedupeParameters['contact_id'] = $dedupeParameters['contactID'];
+        if (!empty($params['contactID'])) {
+          $params['contact_id'] = $params['contactID'];
         }
 
-        $ids = CRM_Contact_BAO_Contact::getDuplicateContacts($dedupeParameters, 'Individual', 'Unsupervised', [], FALSE);
+        $ids = CRM_Contact_BAO_Contact::getDuplicateContacts($params, 'Individual', 'Unsupervised', [], FALSE);
 
         if (!empty($ids) && Civi::settings()->get('uniq_email_per_site')) {
           // restrict dupeIds to ones that belong to current domain/site.
@@ -235,7 +235,6 @@ AND    domain_id = %2
       }
 
       if (!$found) {
-        $contactParameters = [];
         // Not sure why we're testing for this. Is there ever a case
         // in which $user is not an object?
         if (is_object($user)) {
@@ -248,39 +247,36 @@ AND    domain_id = %2
           else {
             $primary_email = $user->email;
           }
-          $contactParameters['email'] = $primary_email;
-        }
-        else {
-          CRM_Core_Error::deprecatedWarning('please log how you hit this...');
+          $params['email'] = $primary_email;
         }
 
         if ($ctype === 'Organization') {
-          $contactParameters['organization_name'] = $uniqId;
+          $params['organization_name'] = $uniqId;
         }
         elseif ($ctype === 'Household') {
-          $contactParameters['household_name'] = $uniqId;
+          $params['household_name'] = $uniqId;
         }
 
-        $contactParameters['contact_type'] = $ctype ?? 'Individual';
+        $params['contact_type'] = $ctype ?? 'Individual';
 
         // extract first / middle / last name
         // for joomla
         if ($uf === 'Joomla' && $user->name) {
-          CRM_Utils_String::extractName($user->name, $contactParameters);
+          CRM_Utils_String::extractName($user->name, $params);
         }
 
         if ($uf === 'WordPress') {
           if ($user->first_name) {
-            $contactParameters['first_name'] = $user->first_name;
+            $params['first_name'] = $user->first_name;
           }
 
           if ($user->last_name) {
-            $contactParameters['last_name'] = $user->last_name;
+            $params['last_name'] = $user->last_name;
           }
         }
 
-        $contactID = civicrm_api3('Contact', 'create', $contactParameters)['id'];
-        $ufmatch->contact_id = $contactID;
+        $contactId = civicrm_api3('Contact', 'create', $params)['id'];
+        $ufmatch->contact_id = $contactId;
         $ufmatch->uf_name = $uniqId;
       }
 

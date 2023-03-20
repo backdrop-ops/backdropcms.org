@@ -70,7 +70,6 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
     'File' => ['File'],
     'Link' => ['Link'],
     'ContactReference' => ['Autocomplete-Select'],
-    'EntityReference' => ['Autocomplete-Select'],
   ];
 
   /**
@@ -418,7 +417,7 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
     $this->add('number', 'options_per_line', ts('Options Per Line'), ['min' => 0]);
     $this->addRule('options_per_line', ts('must be a numeric value'), 'numeric');
 
-    // default value, help pre, help post
+    // default value, help pre, help post, mask, attributes, javascript ?
     $this->add('text', 'default_value', ts('Default Value'),
       $attributes['default_value']
     );
@@ -427,6 +426,9 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
     );
     $this->add('textarea', 'help_post', ts('Field Post Help'),
       $attributes['help_post']
+    );
+    $this->add('text', 'mask', ts('Mask'),
+      $attributes['mask']
     );
 
     // is active ?
@@ -738,7 +740,7 @@ SELECT count(*)
       }
     }
     elseif (in_array($htmlType, self::$htmlTypesWithOptions) &&
-      !in_array($dataType, ['Boolean', 'Country', 'StateProvince', 'ContactReference', 'EntityReference'])
+      !in_array($dataType, ['Boolean', 'Country', 'StateProvince', 'ContactReference'])
     ) {
       if (!$fields['option_group_id']) {
         $errors['option_group_id'] = ts('You must select a Multiple Choice Option set if you chose Reuse an existing set.');

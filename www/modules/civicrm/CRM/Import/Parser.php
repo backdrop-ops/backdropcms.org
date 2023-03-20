@@ -2548,20 +2548,16 @@ abstract class CRM_Import_Parser implements UserJobInterface {
 
   /**
    * @param array|null $row
-   *
-   * @return bool
    */
-  public function validateRow(?array $row): bool {
+  public function validateRow(?array $row): void {
     try {
       $rowNumber = $row['_id'];
       $values = array_values($row);
       $this->validateValues($values);
       $this->setImportStatus($rowNumber, 'VALID', '');
-      return TRUE;
     }
     catch (CRM_Core_Exception $e) {
       $this->setImportStatus($rowNumber, 'ERROR', $e->getMessage());
-      return FALSE;
     }
   }
 

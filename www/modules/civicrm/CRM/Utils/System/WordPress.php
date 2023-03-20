@@ -581,15 +581,15 @@ class CRM_Utils_System_WordPress extends CRM_Utils_System_Base {
    */
   public function loadUser($user) {
     $userdata = get_user_by('login', $user);
-    if (empty($userdata->ID)) {
+    if (!$userdata->data->ID) {
       return FALSE;
     }
 
-    $uid = $userdata->ID;
+    $uid = $userdata->data->ID;
     wp_set_current_user($uid);
     $contactID = CRM_Core_BAO_UFMatch::getContactId($uid);
 
-    // Lets store contact id and user id in session.
+    // lets store contact id and user id in session
     $session = CRM_Core_Session::singleton();
     $session->set('ufID', $uid);
     $session->set('userID', $contactID);
@@ -616,10 +616,10 @@ class CRM_Utils_System_WordPress extends CRM_Utils_System_Base {
    */
   public function getUfId($username) {
     $userdata = get_user_by('login', $username);
-    if (empty($userdata->ID)) {
+    if (!$userdata->data->ID) {
       return NULL;
     }
-    return $userdata->ID;
+    return $userdata->data->ID;
   }
 
   /**
@@ -972,32 +972,17 @@ class CRM_Utils_System_WordPress extends CRM_Utils_System_Base {
   }
 
   /**
-   * @inheritdoc
-   */
-  public function getEmailFieldName(CRM_Core_Form $form, array $fields):string {
-    $emailName = '';
-
-    if (!empty($form->_bltID) && array_key_exists("email-{$form->_bltID}", $fields)) {
-      // this is a transaction related page
-      $emailName = 'email-' . $form->_bltID;
-    }
-    else {
-      // find the email field in a profile page
-      foreach ($fields as $name => $dontCare) {
-        if (substr($name, 0, 5) == 'email') {
-          $emailName = $name;
-          break;
-        }
-      }
-    }
-
-    return $emailName;
-  }
-
-  /**
-   * @inheritdoc
+   * @param array $params
+   * @param array $errors
+   * @param string $emailName
    */
   public function checkUserNameEmailExists(&$params, &$errors, $emailName = 'email') {
+    $config = CRM_Core_Config::singleton();
+
+    $dao = new CRM_Core_DAO();
+    $name = $dao->escape(CRM_Utils_Array::value('name', $params));
+    $email = $dao->escape(CRM_Utils_Array::value('mail', $params));
+
     if (!empty($params['name'])) {
       if (!validate_username($params['name'])) {
         $errors['cms_name'] = ts("Your username contains invalid characters");

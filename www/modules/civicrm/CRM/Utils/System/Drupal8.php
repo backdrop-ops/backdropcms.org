@@ -124,9 +124,16 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
   }
 
   /**
-   * @inheritdoc
+   * Check if username and email exists in the drupal db.
+   *
+   * @param array $params
+   *   Array of name and mail values.
+   * @param array $errors
+   *   Errors.
+   * @param string $emailName
+   *   Field label for the 'email'.
    */
-  public function checkUserNameEmailExists(&$params, &$errors, $emailName = 'email') {
+  public static function checkUserNameEmailExists(&$params, &$errors, $emailName = 'email') {
     // If we are given a name, let's check to see if it already exists.
     if (!empty($params['name'])) {
       $name = $params['name'];
@@ -892,20 +899,6 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
       return \Drupal::VERSION;
     }
     return 'Unknown';
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function suppressProfileFormErrors():bool {
-    // Suppress the errors if they are displayed using
-    // setErrorByName method on FormStateInterface.
-    $current_path = \Drupal::service('path.current')->getPath();
-    $path_args = explode('/', $current_path);
-    if ($path_args[1] == 'user' || ($path_args[1] == 'admin' && $path_args[2] == 'people')) {
-      return TRUE;
-    }
-    return FALSE;
   }
 
 }

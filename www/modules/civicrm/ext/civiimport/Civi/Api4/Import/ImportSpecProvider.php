@@ -32,14 +32,8 @@ class ImportSpecProvider extends AutoService implements SpecProviderInterface {
    */
   public function modifySpec(RequestSpec $spec): void {
     $tableName = $spec->getEntityTableName();
-    try {
-      $columns = Import::getFieldsForTable($tableName);
-    }
-    catch (\CRM_Core_Exception $e) {
-      // The api metadata may retain the expectation that this entity exists after the
-      // table is deleted - & hence we get an error.
-      return;
-    }
+    $columns = Import::getFieldsForTable($tableName);
+    $action = $spec->getAction();
     // CheckPermissions does not reach us here - so we will have to rely on earlier permission filters.
     $userJobID = substr($spec->getEntity(), (strpos($spec->getEntity(), '_') + 1));
     $userJob = UserJob::get(FALSE)->addWhere('id', '=', $userJobID)->addSelect('metadata', 'job_type', 'created_id')->execute()->first();

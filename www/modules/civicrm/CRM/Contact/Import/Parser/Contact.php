@@ -420,7 +420,12 @@ class CRM_Contact_Import_Parser_Contact extends CRM_Import_Parser {
               if ((strtolower($v2['label']) == strtolower(trim($v1))) ||
                 (strtolower($v2['value']) == strtolower(trim($v1)))
               ) {
-                $params[$key][] = $formatted[$key][] = $v2['value'];
+                if ($htmlType == 'CheckBox') {
+                  $params[$key][$v2['value']] = $formatted[$key][$v2['value']] = 1;
+                }
+                else {
+                  $params[$key][] = $formatted[$key][] = $v2['value'];
+                }
               }
             }
           }

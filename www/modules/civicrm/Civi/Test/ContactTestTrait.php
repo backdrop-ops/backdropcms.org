@@ -16,13 +16,6 @@ namespace Civi\Test;
 trait ContactTestTrait {
 
   /**
-   * API version to use for any api calls.
-   *
-   * @var int
-   */
-  public $apiversion = 4;
-
-  /**
    * Emulate a logged in user since certain functions use that.
    * value to store a record in the DB (like activity)
    *

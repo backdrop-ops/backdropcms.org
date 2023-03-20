@@ -21,11 +21,6 @@
 class CRM_Extension_Container_Static implements CRM_Extension_Container_Interface {
 
   /**
-   * @var array
-   */
-  protected $exts = [];
-
-  /**
    * @param array $exts
    *   Array(string $key => array $spec) List of extensions.
    */

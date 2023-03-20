@@ -440,7 +440,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Import_Parser {
       $softCreditParams = [];
       foreach ($params['SoftCreditContact'] ?? [] as $index => $softCreditContact) {
         $softCreditParams[$index]['soft_credit_type_id'] = $softCreditContact['soft_credit_type_id'];
-        $softCreditParams[$index]['contact_id'] = $this->getContactID($softCreditContact['Contact'], !empty($softCreditContact['Contact']['id']) ? $softCreditContact['Contact']['id'] : NULL, 'SoftCreditContact', $this->getDedupeRulesForEntity('SoftCreditContact'));
+        $softCreditParams[$index]['contact_id'] = $this->getContactID($softCreditContact['Contact'], $softCreditContact['Contact']['id'] ?? NULL, 'SoftCreditContact', $this->getDedupeRulesForEntity('SoftCreditContact'));
         if (empty($softCreditParams[$index]['contact_id']) && in_array($this->getActionForEntity('SoftCreditContact'), ['update', 'select'])) {
           throw new CRM_Core_Exception(ts('Soft Credit Contact not found'));
         }
@@ -810,9 +810,6 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Import_Parser {
    * @throws \CRM_Core_Exception
    */
   protected function processNote(int $contributionID, int $contactID, array $noteParams): void {
-    if (!$noteParams['note']) {
-      return;
-    }
     $noteParams = array_merge([
       'entity_table' => 'civicrm_contribution',
       'entity_id' => $contributionID,

@@ -878,18 +878,38 @@ WHERE  id = %1";
   }
 
   /**
-   * Check for lifetime membership types this contact has that are in this price field.
+   * Check the current Membership having end date null.
    *
    * @param array $options
-   * @param int $contactId
+   * @param int $userid
+   *   Probably actually contact ID.
    *
    * @return bool
    */
-  private static function checkCurrentMembership(array $options, int $contactId) : bool {
-    $contactsLifetimeMemberships = CRM_Member_BAO_Membership::getAllContactMembership($contactId, FALSE, TRUE);
-    $contactsLifetimeMembershipTypes = array_column($contactsLifetimeMemberships, 'membership_type_id');
-    $memTypeIdsInPriceField = array_column($options, 'membership_type_id');
-    return (bool) array_intersect($memTypeIdsInPriceField, $contactsLifetimeMembershipTypes);
+  public static function checkCurrentMembership(&$options, $userid) {
+    if (!$userid || empty($options)) {
+      return FALSE;
+    }
+    static $_contact_memberships = [];
+    $checkLifetime = FALSE;
+    foreach ($options as $key => $value) {
+      if (!empty($value['membership_type_id'])) {
+        if (!isset($_contact_memberships[$userid][$value['membership_type_id']])) {
+          $_contact_memberships[$userid][$value['membership_type_id']] = CRM_Member_BAO_Membership::getContactMembership($userid, $value['membership_type_id'], FALSE);
+        }
+        $currentMembership = $_contact_memberships[$userid][$value['membership_type_id']];
+        if (!empty($currentMembership) && empty($currentMembership['end_date'])) {
+          unset($options[$key]);
+          $checkLifetime = TRUE;
+        }
+      }
+    }
+    if ($checkLifetime) {
+      return TRUE;
+    }
+    else {
+      return FALSE;
+    }
   }
 
   /**
@@ -1661,7 +1681,6 @@ WHERE     ct.id = cp.financial_type_id AND
     $hideAdminValues = !CRM_Core_Permission::check('edit contributions');
     // CRM-14492 Admin price fields should show up on event registration if user has 'administer CiviCRM' permissions
     $adminFieldVisible = CRM_Core_Permission::check('administer CiviCRM');
-    $checklifetime = FALSE;
     foreach ($feeBlock as $id => $field) {
       if (CRM_Utils_Array::value('visibility', $field) == 'public' ||
         (CRM_Utils_Array::value('visibility', $field) == 'admin' && $adminFieldVisible == TRUE) ||
@@ -1669,9 +1688,10 @@ WHERE     ct.id = cp.financial_type_id AND
       ) {
         $options = $field['options'] ?? NULL;
         if ($className == 'CRM_Contribute_Form_Contribution_Main' && $component = 'membership') {
-          $contactId = $form->getVar('_membershipContactID');
-          if ($contactId && $options) {
-            $checklifetime = $checklifetime ?: self::checkCurrentMembership($options, $contactId);
+          $userid = $form->getVar('_membershipContactID');
+          $checklifetime = self::checkCurrentMembership($options, $userid);
+          if ($checklifetime) {
+            $form->assign('ispricelifetime', TRUE);
           }
         }
 
@@ -1699,7 +1719,6 @@ WHERE     ct.id = cp.financial_type_id AND
         }
       }
     }
-    $form->assign('ispricelifetime', $checklifetime);
   }
 
 }

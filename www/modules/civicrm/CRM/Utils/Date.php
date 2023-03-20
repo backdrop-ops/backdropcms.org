@@ -850,9 +850,9 @@ class CRM_Utils_Date {
    * Find whether today's date lies in
    * the given range
    *
-   * @param Date $startDate
+   * @param date $startDate
    *   Start date for the range.
-   * @param Date $endDate
+   * @param date $endDate
    *   End date for the range.
    *
    * @return bool
@@ -915,9 +915,9 @@ class CRM_Utils_Date {
   /**
    * Calculate Age in Years if greater than one year else in months.
    *
-   * @param Date $birthDate
+   * @param date $birthDate
    *   Birth Date.
-   * @param Date $targetDate
+   * @param date $targetDate
    *   Target Date. (show age on specific date)
    *
    * @return array

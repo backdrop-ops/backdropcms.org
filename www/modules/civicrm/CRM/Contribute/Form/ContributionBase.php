@@ -393,7 +393,7 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
             $pledgeId,
             'campaign_id'
           );
-          $this->authenticatePledgeUser();
+          self::authenticatePledgeUser();
         }
       }
       $this->set('values', $this->_values);
@@ -1052,7 +1052,7 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
    *
    * @throws \CRM_Core_Exception
    */
-  private function authenticatePledgeUser(): void {
+  public function authenticatePledgeUser() {
     //get the userChecksum and contact id
     $userChecksum = CRM_Utils_Request::retrieve('cs', 'String', $this);
     $contactID = CRM_Utils_Request::retrieve('cid', 'Positive', $this);

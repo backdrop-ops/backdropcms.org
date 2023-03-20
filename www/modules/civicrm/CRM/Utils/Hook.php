@@ -309,10 +309,6 @@ abstract class CRM_Utils_Hook {
    * @param $moduleList
    */
   public function requireCiviModules(&$moduleList) {
-    foreach ($GLOBALS['CIVICRM_FORCE_MODULES'] ?? [] as $prefix) {
-      $moduleList[$prefix] = $prefix;
-    }
-
     $civiModules = CRM_Core_PseudoConstant::getModuleExtensions();
     foreach ($civiModules as $civiModule) {
       if (!file_exists($civiModule['filePath'] ?? '')) {

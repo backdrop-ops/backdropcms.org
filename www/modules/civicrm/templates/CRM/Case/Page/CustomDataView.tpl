@@ -16,31 +16,36 @@
       {$cd_edit.title}
     </div>
     <div class="crm-accordion-body">
-      {if !empty($cd_edit.fields)}
+      {foreach from=$cd_edit.fields item=element key=field_id}
         <table class="crm-info-panel">
-          {foreach from=$cd_edit.fields item=element key=field_id}
-            <tr>
+          <tr>
+            {if $element.options_per_line != 0}
               <td class="label">{$element.field_title}</td>
               <td class="html-adjust">
-                {if $element.options_per_line != 0}
-                  {* sort by fails for option per line. Added a variable to iterate through the element array*}
+              {* sort by fails for option per line. Added a variable to iterate through the element array*}
+                {if $element.field_data_type EQ 'ContactReference' && $element.contact_ref_links}
+                  {', '|implode:$element.contact_ref_links}
+                {else}
                   {foreach from=$element.field_value item=val}
                     {$val}<br/>
                   {/foreach}
-                {elseif $element.field_data_type == 'Memo'}
-                  {$element.field_value|nl2br}
-                {elseif $element.field_data_type == 'Money' && $element.field_type == 'Text'}
-                  {$element.data|crmMoney}
-                {elseif $element.field_data_type == 'ContactReference' && $element.contact_ref_links}
-                  {', '|implode:$element.contact_ref_links}
-                {else}
-                  {$element.field_value}
                 {/if}
               </td>
-            </tr>
-          {/foreach}
+              {else}
+                <td class="label">{$element.field_title}</td>
+                <td class="html-adjust">
+                  {if $element.field_data_type EQ 'ContactReference' && $element.contact_ref_links}
+                    {', '|implode:$element.contact_ref_links}
+                  {elseif $element.field_data_type == 'Money'}
+                    {$element.field_value|crmMoney}
+                  {else}
+                    {$element.field_value}
+                  {/if}
+                </td>
+            {/if}
+          </tr>
         </table>
-      {/if}
+      {/foreach}
       <div>
         {crmButton p="civicrm/case/cd/edit" q="cgcount=1&action=update&reset=1&type=Case&entityID=$caseID&groupID=$customGroupId&cid=$contactID&subType=$caseTypeID" icon="pencil"}{ts}Edit{/ts}{/crmButton}
       </div>
@@ -52,4 +57,3 @@
   {/foreach}
 {/foreach}
 <div id="case_custom_edit"></div>
-

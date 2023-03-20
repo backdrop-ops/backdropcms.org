@@ -14,11 +14,26 @@ if (defined('PANTHEON_ENVIRONMENT')) {
 }
 session_start();
 
-$server = new SoapServer(NULL, [
-  'uri' => 'urn:civicrm',
-  'soap_version' => SOAP_1_2,
-]);
+require_once '../civicrm.config.php';
+require_once 'CRM/Core/Config.php';
 
-$server->fault('obsolete', "SOAP support is no longer included with civicrm-core.");
-// It's removed because (a) the main consumer is no longer live, (b) it's awkward to maintain 'extern/' scripts,
-// and (c) there's an extensionized version at https://lab.civicrm.org/extensions/civismtp/
+$server = new SoapServer(NULL,
+  array(
+    'uri' => 'urn:civicrm',
+    'soap_version' => SOAP_1_2,
+  )
+);
+
+
+require_once 'CRM/Utils/SoapServer.php';
+$crm_soap = new CRM_Utils_SoapServer();
+
+/* Cache the real UF, override it with the SOAP environment */
+
+$civicrmConfig = CRM_Core_Config::singleton();
+
+$server->setClass('CRM_Utils_SoapServer', $civicrmConfig->userFrameworkClass);
+
+$server->setPersistence(SOAP_PERSISTENCE_SESSION);
+
+$server->handle();

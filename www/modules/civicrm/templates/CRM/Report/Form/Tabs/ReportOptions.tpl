@@ -13,12 +13,10 @@
       {assign var="optionCount" value=0}
       <tr class="crm-report crm-report-criteria-field">
         {foreach from=$otherOptions item=optionField key=optionName}
-        {if array_key_exists($optionName, $form)}
-          {assign var="optionCount" value=`$optionCount+1`}
-          <td>{if $form.$optionName.label}{$form.$optionName.label}&nbsp;{/if}{$form.$optionName.html}</td>
-          {if $optionCount is div by 2}
-        </tr><tr class="crm-report crm-report-criteria-field">
-          {/if}
+        {assign var="optionCount" value=`$optionCount+1`}
+        <td>{if $form.$optionName.label}{$form.$optionName.label}&nbsp;{/if}{$form.$optionName.html}</td>
+        {if $optionCount is div by 2}
+      </tr><tr class="crm-report crm-report-criteria-field">
         {/if}
         {/foreach}
         {if $optionCount is not div by 2}

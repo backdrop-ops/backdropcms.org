@@ -114,13 +114,13 @@ class CRM_Admin_Form_PaymentProcessor extends CRM_Admin_Form {
     $this->assign('ppTypeName', $this->_paymentProcessorDAO->name);
 
     if ($this->_id) {
-      $refreshURL = CRM_Utils_System::url('civicrm/admin/paymentProcessor/edit',
+      $refreshURL = CRM_Utils_System::url('civicrm/admin/paymentProcessor',
         "reset=1&action=update&id={$this->_id}",
         FALSE, NULL, FALSE
       );
     }
     else {
-      $refreshURL = CRM_Utils_System::url('civicrm/admin/paymentProcessor/edit',
+      $refreshURL = CRM_Utils_System::url('civicrm/admin/paymentProcessor',
         "reset=1&action=add",
         FALSE, NULL, FALSE
       );

@@ -66,7 +66,6 @@ trait ImportProcessTrait {
       ->indexBy('name'));
     $importFields[] = '_id';
     $importFields[] = '_entity_id';
-    $importFields[] = '_status';
     $this->setSelect($importFields);
     parent::_run($result);
     foreach ($result as &$row) {

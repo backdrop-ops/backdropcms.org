@@ -27,6 +27,7 @@
  * @author Monte Ohrt <monte at ohrt dot com>
  * @author Andrei Zmievski <andrei@php.net>
  * @package Smarty
+ * @version 2.6.31-dev
  */
 
 /* $Id$ */
@@ -465,7 +466,7 @@ class Smarty
      *
      * @var string
      */
-    var $_version = '2.6.32';
+    var $_version              = '2.6.31';
 
     /**
      * current template inclusion depth
@@ -1211,7 +1212,7 @@ class Smarty
                         $_server_vars = ($this->request_use_auto_globals) ? $_SERVER : $GLOBALS['HTTP_SERVER_VARS'];
                         $_last_modified_date = @substr($_server_vars['HTTP_IF_MODIFIED_SINCE'], 0, strpos($_server_vars['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
                         $_gmt_mtime = gmdate('D, d M Y H:i:s', $this->_cache_info['timestamp']).' GMT';
-                        if (empty($this->_cache_info['insert_tags'])
+                        if (@count($this->_cache_info['insert_tags']) == 0
                             && !$this->_cache_serials
                             && $_gmt_mtime == $_last_modified_date) {
                             if (php_sapi_name()=='cgi')

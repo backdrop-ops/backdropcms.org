@@ -46,7 +46,7 @@
   </script>
 {/literal}
 
-  {if ($action & 1024) or $dummyTitle}
+  {if $action & 1024}
     {include file="CRM/Contribute/Form/Contribution/PreviewHeader.tpl"}
   {/if}
 

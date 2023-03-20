@@ -207,7 +207,9 @@
     </div>
   {/if}
 
-    {if $billingName or $address}
+  {if ( $contributeMode ne 'notify' and (!$is_pay_later or $isBillingAddressRequiredForPayLater) and $is_monetary and ( $amount GT 0 OR $minimum_fee GT 0 ) ) or $email }
+    {if $contributeMode ne 'notify' and (!$is_pay_later or $isBillingAddressRequiredForPayLater) and $is_monetary and ( $amount GT 0 OR $minimum_fee GT 0 ) }
+      {if $billingName or $address}
         <div class="crm-group billing_name_address-group">
           <div class="header-dark">
             {ts}Billing Name and Address{/ts}
@@ -222,7 +224,8 @@
           </div>
         </div>
       {/if}
-    {if $email && !$emailExists}
+    {/if}
+    {if !$emailExists}
       <div class="crm-group contributor_email-group">
         <div class="header-dark">
           {ts}Your Email{/ts}
@@ -233,17 +236,19 @@
         </div>
       </div>
     {/if}
+  {/if}
 
   {* Show credit or debit card section for 'direct' mode, except for PayPal Express (detected because credit card number is empty) *}
+  {if $contributeMode eq 'direct' and ! $is_pay_later and $is_monetary and ( $amount GT 0 OR $minimum_fee GT 0 )}
     {crmRegion name="contribution-confirm-billing-block"}
-    {if in_array('credit_card_number', $form) || in_array('bank_account_number', $form)}
+    {if ($credit_card_number or $bank_account_number)}
       <div class="crm-group credit_card-group">
         {if $paymentFieldsetLabel}
           <div class="header-dark">
             {$paymentFieldsetLabel}
           </div>
         {/if}
-        {if in_array('bank_account_number', $form)}
+        {if $paymentProcessor.payment_type == 2}
           <div class="display-block">
             {ts}Account Holder{/ts}: {$account_holder}<br/>
             {ts}Bank Account Number{/ts}: {$bank_account_number}<br/>
@@ -260,8 +265,7 @@
               </div>
             </div>
           {/if}
-        {/if}
-        {if in_array('credit_card_number', $form)}
+        {else}
           <div class="crm-section no-label credit_card_details-section">
             <div class="content">{$credit_card_type}</div>
             <div class="content">{$credit_card_number}</div>
@@ -272,6 +276,7 @@
       </div>
     {/if}
     {/crmRegion}
+  {/if}
 
   {include file="CRM/Contribute/Form/Contribution/PremiumBlock.tpl" context="confirmContribution"}
 
