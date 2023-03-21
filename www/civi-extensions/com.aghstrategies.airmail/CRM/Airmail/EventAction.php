@@ -43,7 +43,7 @@ class CRM_Airmail_EventAction {
    * @param array $params
    *   Must include a key `event_queue_id` with the queue of the email
    */
-  public function open($params) {
+  public static function open($params) {
     CRM_Mailing_Event_BAO_Opened::open($params['event_queue_id']);
   }
 
