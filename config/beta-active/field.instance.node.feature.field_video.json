@@ -1,0 +1,47 @@
+{
+    "_config_name": "field.instance.node.feature.field_video",
+    "field_name": "field_video",
+    "entity_type": "node",
+    "bundle": "feature",
+    "label": "Video",
+    "widget": {
+        "weight": "6",
+        "type": "youtube",
+        "module": "youtube",
+        "active": 0,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "youtube_video",
+            "weight": "1",
+            "settings": {
+                "youtube_size": "responsive",
+                "youtube_width": "",
+                "youtube_height": "",
+                "youtube_autoplay": 0,
+                "youtube_loop": 0,
+                "youtube_showinfo": 0,
+                "youtube_controls": 0,
+                "youtube_autohide": 0,
+                "youtube_iv_load_policy": 0
+            },
+            "module": "youtube"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "7",
+            "settings": []
+        }
+    }
+}

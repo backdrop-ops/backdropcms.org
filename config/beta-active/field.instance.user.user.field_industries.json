@@ -1,0 +1,33 @@
+{
+    "_config_name": "field.instance.user.user.field_industries",
+    "field_name": "field_industries",
+    "entity_type": "user",
+    "bundle": "user",
+    "label": "Industries in which I've worked",
+    "widget": {
+        "weight": "16",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "60"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": 0
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "13",
+            "settings": []
+        }
+    }
+}

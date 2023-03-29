@@ -1,0 +1,49 @@
+{
+    "_config_name": "field.instance.node.project_layout.field_project_screenshots",
+    "field_name": "field_project_screenshots",
+    "entity_type": "node",
+    "bundle": "project_layout",
+    "label": "Project Screenshots",
+    "widget": {
+        "weight": "8",
+        "type": "image_image",
+        "module": "image",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber",
+            "preview_image_style": "thumbnail",
+            "browser_view": "image_library"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "file_directory": "images/projects/layouts",
+        "file_extensions": "png gif jpg jpeg",
+        "max_filesize": "",
+        "max_dimensions": "",
+        "min_dimensions": "",
+        "alt_field": 1,
+        "title_field": 0,
+        "orientate": 0,
+        "default_image": "",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "10",
+            "settings": []
+        },
+        "project_search": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "10",
+            "settings": []
+        }
+    }
+}

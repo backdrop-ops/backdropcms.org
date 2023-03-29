@@ -1,0 +1,333 @@
+{
+    "_config_name": "layout.layout.node",
+    "path": "node/%",
+    "name": "node",
+    "title": "Thank You",
+    "description": null,
+    "renderer_name": "standard",
+    "module": null,
+    "weight": -5,
+    "storage": 1,
+    "layout_template": "borg_sutro",
+    "disabled": false,
+    "settings": {
+        "title": "",
+        "title_display": "default",
+        "title_block": null
+    },
+    "positions": {
+        "header": [
+            "24a5361a-5fa5-4ab0-8f00-f66eb95430b3",
+            "ab2a358e-4f84-4069-9800-a6bd33473a41",
+            "b1dbc29e-1086-437c-9954-84da772b65e1"
+        ],
+        "top": [],
+        "top1": [],
+        "top2": [],
+        "top3": [],
+        "content": [],
+        "half1": [],
+        "half2": [],
+        "below": [],
+        "below1": [
+            "24bf51aa-72e4-4b6a-a100-b40a23027d50"
+        ],
+        "below2": [
+            "f9e70a58-6dcd-4f61-a406-6db6b23e00a5"
+        ],
+        "bottom": [],
+        "footer": [
+            "c3456ec1-8266-41c3-8760-96a7149d7958",
+            "8b3b3bea-3ffb-4e76-a358-886aaeb0b092",
+            "cee18505-c815-4f7e-9f01-1eae0cadce7c",
+            "da7d2f8d-7afb-4d3c-bf00-a8f36988fa60"
+        ],
+        "title": []
+    },
+    "contexts": [],
+    "relationships": [],
+    "content": {
+        "24a5361a-5fa5-4ab0-8f00-f66eb95430b3": {
+            "plugin": "borg_blocks:branding",
+            "data": {
+                "status": 1,
+                "module": "borg_blocks",
+                "delta": "branding",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "24a5361a-5fa5-4ab0-8f00-f66eb95430b3",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "ab2a358e-4f84-4069-9800-a6bd33473a41": {
+            "plugin": "system:user-menu",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "user-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "user-menu",
+                        "style": "tree",
+                        "level": "1",
+                        "depth": "1",
+                        "expand_all": 0,
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "ab2a358e-4f84-4069-9800-a6bd33473a41",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "b1dbc29e-1086-437c-9954-84da772b65e1": {
+            "plugin": "system:main-menu",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "main-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "main-menu",
+                        "style": "dropdown",
+                        "level": "1",
+                        "depth": "2",
+                        "toggle": 1
+                    },
+                    "contexts": []
+                },
+                "uuid": "b1dbc29e-1086-437c-9954-84da772b65e1",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "24bf51aa-72e4-4b6a-a100-b40a23027d50": {
+            "plugin": "system:main",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "main",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "dynamic",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "24bf51aa-72e4-4b6a-a100-b40a23027d50",
+                "style": {
+                    "plugin": "dynamic",
+                    "data": {
+                        "settings": {
+                            "classes": "l-content-wrapper",
+                            "wrapper_tag": "div",
+                            "title_tag": "h2",
+                            "title_classes": "block-title",
+                            "content_tag": "div",
+                            "content_classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "f9e70a58-6dcd-4f61-a406-6db6b23e00a5": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "status": 1,
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Products and Services Sponsors",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>Thanks to the following companies for providing sponsorship through services and products which may be used by Backdrop contributors to build and improve the project:</p>\r\n\r\n<div class=\"row\" style=\"text-align:center;\">\r\n\r\n  <div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://www.browserstack.com\"><img alt=\"\" src=\"/files/browserstack_3.png\" /></a>\r\n    <p><a href=\"https://www.browserstack.com\">BrowserStack</a> for interface testing across desktop and mobile browsers. <em>(Contact info@backdropcms.org if you need access.)</em></p>\r\n  </div>\r\n  <div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://www.jetbrains.com/phpstorm/\"><img alt=\"\" src=\"/files/jetbrains-variant-2_0.png\" /></a>\r\n    <p><a href=\"https://www.jetbrains.com/phpstorm/\">JetBrains</a> for use of the PHPStorm IDE for development.<em> (Contact info@backdropcms.org for a license.)</em></p>\r\n  </div>\r\n  <div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://www.fastly.com\"><img alt=\"\" src=\"/files/fastly.png\" /></a>\r\n    <p><a href=\"https://www.fastly.com\">Fastly</a> Free CDN services for all backdropcms.org properties.</em></p>\r\n  </div>\r\n  <div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://github.com\"><img alt=\"\" src=\"/files/GitHub-Mark-120px-plus.png\" /></a>\r\n    <p><a href=\"https://github.com\">GitHub</a> for collaboration and code management tools.</p>\r\n  </div>\r\n  <div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://zen.ci\"><img alt=\"\" src=\"/files/zenci_0.png\" /></a>\r\n    <p><a href=\"https://zen.ci\">ZenCI</a> for continuous automated testing.</p>\r\n  </div>\r\n  <div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://www.tugboat.qa/\"><img alt=\"\" src=\"https://backdropcms.org/files/tugboat.svg\" style=\"margin: 30px 0;\" /></a>\r\n    <p><a href=\"https://www.tugboat.qa/\">TugBoat QA</a> for automatic sandboxes used for testing.</p>\r\n  </div>\r\n  <div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://www.linode.com\"><img alt=\"\" src=\"https://backdropcms.org/files/linode.svg\" style=\"margin: 30px 0;\" /></a>\r\n    <p><a href=\"https://www.linode.com\">Linode</a> for web hosting.</p>\r\n  </div>\r\n\r\n<div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://www.1password.com\"><img alt=\"\" src=\"https://backdropcms.org/files/1password-logo-2.png\" style=\"margin: 30px 0;\" /></a>\r\n    <p><a href=\"https://www.1password.com\">1Password</a> for keeping our passwords safe.</p>\r\n  </div>\r\n<div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://www.sendgrid.com\"><img alt=\"\" src=\"https://backdropcms.org/files/sendgrid.png\" style=\"margin: 30px 0;\" /></a>\r\n    <p><a href=\"https://www.sendgrid.com\">SendGrid</a> for getting our emails into your inboxes.</p>\r\n  </div>\r\n<div class=\"col-sm-6 col-md-12 col-lg-6\">\r\n    <a href=\"https://zulip.com\"><img alt=\"\" src=\"https://backdropcms.org/files/zulip-org-logo.png\" style=\"margin: 30px 0;\" /></a>\r\n    <p><a href=\"https://zulip.com\">Zulip</a> for providing the platform that allows us to chat.</p>\r\n  </div>",
+                    "format": "full_html",
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "f9e70a58-6dcd-4f61-a406-6db6b23e00a5",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "c3456ec1-8266-41c3-8760-96a7149d7958": {
+            "plugin": "system:powered-by",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "powered-by",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "c3456ec1-8266-41c3-8760-96a7149d7958",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "8b3b3bea-3ffb-4e76-a358-886aaeb0b092": {
+            "plugin": "on_the_web:social_links",
+            "data": {
+                "status": 1,
+                "module": "on_the_web",
+                "delta": "social_links",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "Stay connected",
+                    "style": "default",
+                    "block_settings": {
+                        "services": {
+                            "display": "auto",
+                            "enabled": {
+                                "rss": "rss",
+                                "youtube": "youtube",
+                                "google": "google",
+                                "facebook": "facebook",
+                                "twitter": "twitter"
+                            }
+                        }
+                    },
+                    "contexts": []
+                },
+                "uuid": "8b3b3bea-3ffb-4e76-a358-886aaeb0b092",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "col-sm-6"
+                        }
+                    }
+                }
+            }
+        },
+        "cee18505-c815-4f7e-9f01-1eae0cadce7c": {
+            "plugin": "block:3",
+            "data": {
+                "status": 0,
+                "module": "block",
+                "delta": "3",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "3",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "cee18505-c815-4f7e-9f01-1eae0cadce7c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "col-sm-6"
+                        }
+                    }
+                },
+                "conditions": [
+                    {
+                        "plugin": "path",
+                        "data": {
+                            "settings": {
+                                "visibility_setting": "0",
+                                "paths": "security",
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "da7d2f8d-7afb-4d3c-bf00-a8f36988fa60": {
+            "plugin": "menu:menu-footer-menu",
+            "data": {
+                "status": 1,
+                "module": "menu",
+                "delta": "menu-footer-menu",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "menu_name": "menu-footer-menu",
+                        "style": "top_only",
+                        "level": "1",
+                        "depth": "0",
+                        "toggle": 0
+                    },
+                    "contexts": []
+                },
+                "uuid": "da7d2f8d-7afb-4d3c-bf00-a8f36988fa60",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "conditions": [
+        {
+            "plugin": "node_nid",
+            "data": {
+                "settings": {
+                    "negate": false,
+                    "entity_id": "9",
+                    "load_condition_nojs": "Load condition"
+                }
+            }
+        }
+    ]
+}

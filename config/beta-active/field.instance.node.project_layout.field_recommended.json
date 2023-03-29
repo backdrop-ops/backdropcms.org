@@ -1,0 +1,42 @@
+{
+    "_config_name": "field.instance.node.project_layout.field_recommended",
+    "field_name": "field_recommended",
+    "entity_type": "node",
+    "bundle": "project_layout",
+    "label": "Recommended Layout Template",
+    "widget": {
+        "weight": "1",
+        "type": "options_onoff",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "display_label": 1
+        }
+    },
+    "description": "Checking this box will make this project appear at the top of the list of available projects on b.org, and in the project installer.",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": 0
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
+        },
+        "project_search": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "8",
+            "settings": []
+        }
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "_config_name": "field.instance.node.event.field_online",
+    "field_name": "field_online",
+    "entity_type": "node",
+    "bundle": "event",
+    "label": "Attend this event remotely",
+    "widget": {
+        "weight": "3",
+        "type": "options_onoff",
+        "module": "options",
+        "active": 1,
+        "settings": {
+            "display_label": 1
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": 1
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "boolean_yes_no",
+            "weight": "2",
+            "settings": {
+                "format": "yes-no",
+                "custom_on": "",
+                "custom_off": "",
+                "reverse": 0
+            },
+            "module": "list"
+        }
+    }
+}

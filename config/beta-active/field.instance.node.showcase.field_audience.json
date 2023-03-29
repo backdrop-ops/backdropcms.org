@@ -1,0 +1,40 @@
+{
+    "_config_name": "field.instance.node.showcase.field_audience",
+    "field_name": "field_audience",
+    "entity_type": "node",
+    "bundle": "showcase",
+    "label": "Audience",
+    "widget": {
+        "weight": "3",
+        "type": "options_buttons",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": "np"
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "2",
+            "settings": []
+        }
+    }
+}

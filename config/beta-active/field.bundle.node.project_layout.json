@@ -1,0 +1,101 @@
+{
+    "_config_name": "field.bundle.node.project_layout",
+    "bundle": "project_layout",
+    "entity_type": "node",
+    "view_modes": {
+        "teaser": {
+            "custom_settings": true
+        },
+        "full": {
+            "custom_settings": false
+        },
+        "rss": {
+            "custom_settings": false
+        },
+        "search_index": {
+            "custom_settings": false
+        },
+        "search_result": {
+            "custom_settings": false
+        },
+        "print": {
+            "custom_settings": false
+        },
+        "project_search": {
+            "custom_settings": true
+        }
+    },
+    "extra_fields": {
+        "form": {
+            "title": {
+                "weight": "0"
+            },
+            "project_name": {
+                "weight": "3"
+            },
+            "project_sandbox": {
+                "weight": "5"
+            },
+            "project_github_path": {
+                "weight": "4"
+            },
+            "project_github_sync_readme": {
+                "weight": "6"
+            },
+            "project_releases_enabled": {
+                "weight": "2"
+            },
+            "xmlsitemap": {
+                "weight": "16"
+            }
+        },
+        "display": {
+            "github_info": {
+                "default": {
+                    "weight": "9",
+                    "visible": false
+                },
+                "full": {
+                    "weight": "2",
+                    "visible": false
+                },
+                "project_search": {
+                    "weight": "7",
+                    "visible": false
+                },
+                "teaser": {
+                    "weight": "4",
+                    "visible": false
+                }
+            },
+            "project_release_downloads": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
+                },
+                "project_search": {
+                    "weight": "4",
+                    "visible": false
+                },
+                "teaser": {
+                    "weight": "3",
+                    "visible": false
+                }
+            },
+            "project_usage": {
+                "default": {
+                    "weight": "6",
+                    "visible": false
+                },
+                "project_search": {
+                    "weight": "3",
+                    "visible": true
+                },
+                "teaser": {
+                    "weight": "1",
+                    "visible": true
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "_config_name": "field.instance.node.feature.field_feature_type",
+    "field_name": "field_feature_type",
+    "entity_type": "node",
+    "bundle": "feature",
+    "label": "Type of feature",
+    "widget": {
+        "weight": "4",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "inline",
+            "type": "taxonomy_term_reference_link",
+            "weight": "5",
+            "settings": [],
+            "module": "taxonomy"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
+        }
+    }
+}

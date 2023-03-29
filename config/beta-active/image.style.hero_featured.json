@@ -1,0 +1,16 @@
+{
+    "_config_name": "image.style.hero_featured",
+    "label": "Featured Hero (540x305)",
+    "name": "hero_featured",
+    "effects": [
+        {
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": "540",
+                "height": "305",
+                "anchor": "center-top"
+            },
+            "weight": "1"
+        }
+    ]
+}

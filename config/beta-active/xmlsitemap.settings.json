@@ -1,0 +1,105 @@
+{
+    "_config_name": "xmlsitemap.settings",
+    "_config_static": true,
+    "minimum_lifetime": "0",
+    "xsl": 0,
+    "prefetch_aliases": 1,
+    "chunk_size": "auto",
+    "batch_limit": "100",
+    "path": "xmlsitemap",
+    "base_url": "https://backdropcms.org",
+    "developer_mode": 0,
+    "frontpage_priority": 1,
+    "frontpage_changefreq": 86400,
+    "lastmod_format": "Y-m-d",
+    "gz": false,
+    "disable_cron_regeneration": 0,
+    "output_elements": {
+        "lastmod": "lastmod",
+        "changefreq": "changefreq",
+        "priority": "priority"
+    },
+    "regenerate_last": "",
+    "custom_links": "",
+    "priority_default": "",
+    "languages": "",
+    "max_chunks": "",
+    "max_filesize": "",
+    "engines": [],
+    "engines_custom_urls": "",
+    "engines_minimum_lifetime": 86400,
+    "engines_submit_updated": true,
+    "settings_node_post": {
+        "status": "1",
+        "priority": "0.7"
+    },
+    "settings_node_project_layout": {
+        "status": "1",
+        "priority": "0.6"
+    },
+    "settings_node_project_module": {
+        "status": "1",
+        "priority": "0.6"
+    },
+    "settings_node_project_theme": {
+        "status": "1",
+        "priority": "0.6"
+    },
+    "settings_node_sa": {
+        "status": "0",
+        "priority": "0.8"
+    },
+    "settings_node_showcase": {
+        "status": "1",
+        "priority": "0.5"
+    },
+    "settings_node_page": {
+        "status": "1",
+        "priority": "0.5"
+    },
+    "settings_node_event": {
+        "status": "1",
+        "priority": "0.4"
+    },
+    "settings_node_docs": {
+        "status": "1",
+        "priority": "0.5"
+    },
+    "settings_node_book": {
+        "status": "1",
+        "priority": "0.5"
+    },
+    "settings_node_core": {
+        "status": "1",
+        "priority": "0.5"
+    },
+    "settings_node_organization": {
+        "status": "1",
+        "priority": "0.5"
+    },
+    "xmlsitemap_settings__active_tab": "",
+    "xmlsitemap_frontpage_priority": "1.0",
+    "xmlsitemap_frontpage_changefreq": "86400",
+    "array_filter": true,
+    "submit": "Save configuration",
+    "form_build_id": "form-_quoAlFEArUUWC6YDHWoHMV_68vKswyN8Eheve3t2p4",
+    "form_token": "C32Y6f9YSwrlVDX57mdrVq5SS7ikus79GoWEQg-gjuQ",
+    "form_id": "xmlsitemap_settings_form",
+    "op": "Save configuration",
+    "settings_node_external_mention": {
+        "status": "0",
+        "priority": "0.5"
+    },
+    "settings_node_quote": {
+        "status": "0",
+        "priority": "0.5"
+    },
+    "settings_node_supporter": {
+        "status": "0",
+        "priority": "0.5"
+    },
+    "settings_node_project_dummy": {
+        "status": "0",
+        "priority": "0.5"
+    }
+}

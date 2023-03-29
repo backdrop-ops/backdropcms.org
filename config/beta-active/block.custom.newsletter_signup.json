@@ -1,0 +1,12 @@
+{
+    "_config_name": "block.custom.newsletter_signup",
+    "delta": "newsletter_signup",
+    "info": "Newsletter Promo",
+    "title": "Newsletter Signup",
+    "description": "Text and a link to our newsletter signup page",
+    "body": {
+        "value": "<p>The Backdrop newsletter will arrive in your inbox about once a month. It contains important news and updates about Backdrop CMS.</p>\r\n\r\n<p><i class=\"fa fa-envelope\"></i> &nbsp; <a href=\"https://backdropcms.org/newsletter\">Sign up for our Newsletter</a></p>\r\n",
+        "format": "full_html"
+    },
+    "default_langcode": "und"
+}

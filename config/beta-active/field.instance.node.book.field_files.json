@@ -1,0 +1,37 @@
+{
+    "_config_name": "field.instance.node.book.field_files",
+    "field_name": "field_files",
+    "entity_type": "node",
+    "bundle": "book",
+    "deleted": "0",
+    "label": "Files",
+    "widget": {
+        "weight": "3",
+        "type": "file_generic",
+        "module": "file",
+        "active": 1,
+        "settings": {
+            "progress_indicator": "throbber"
+        }
+    },
+    "settings": {
+        "file_directory": "book",
+        "file_extensions": "txt pdf jpg gif png mp3 zip gz tar rtf",
+        "max_filesize": "",
+        "description_field": 0,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "above",
+            "type": "file_default",
+            "weight": "2",
+            "settings": [],
+            "module": "file"
+        }
+    },
+    "required": 0,
+    "description": "",
+    "default_value": null,
+    "default_value_function": null
+}

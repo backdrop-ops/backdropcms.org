@@ -1,0 +1,288 @@
+{
+    "_config_name": "views.view.ip_tracker",
+    "name": "ip_tracker",
+    "description": "List of IP address by visitors",
+    "tag": "admin, ip",
+    "disabled": false,
+    "base_table": "ip_tracker",
+    "human_name": "IP addresses",
+    "core": "7",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "title": "User IP addresses",
+                "use_more_always": false,
+                "access": {
+                    "type": "perm",
+                    "perm": "manage ip addresses"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic",
+                    "options": {
+                        "reset_button": true
+                    }
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "50"
+                    }
+                },
+                "style_plugin": "table",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "override": 1,
+                    "sticky": 0,
+                    "caption": "",
+                    "summary": "",
+                    "columns": {
+                        "uid_name": "uid_name",
+                        "visits": "visits",
+                        "first_visit": "first_visit",
+                        "last_visit": "last_visit",
+                        "ip": "ip"
+                    },
+                    "info": {
+                        "uid_name": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "visits": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "first_visit": {
+                            "sortable": 1,
+                            "default_sort_order": "desc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "last_visit": {
+                            "sortable": 1,
+                            "default_sort_order": "desc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "ip": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    },
+                    "default": "last_visit",
+                    "empty_table": 0
+                },
+                "relationships": {
+                    "uid": {
+                        "id": "uid",
+                        "table": "ip_tracker",
+                        "field": "uid",
+                        "label": "USER"
+                    }
+                },
+                "fields": {
+                    "uid_name": {
+                        "id": "uid_name",
+                        "table": "ip_tracker",
+                        "field": "uid_name",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Username",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link": 1,
+                        "cancelled": "<cancelled [uid]>",
+                        "anonymous": "Anonymous"
+                    },
+                    "visits": {
+                        "id": "visits",
+                        "table": "ip_tracker",
+                        "field": "visits"
+                    },
+                    "first_visit": {
+                        "id": "first_visit",
+                        "table": "ip_tracker",
+                        "field": "first_visit",
+                        "date_format": "long"
+                    },
+                    "last_visit": {
+                        "id": "last_visit",
+                        "table": "ip_tracker",
+                        "field": "last_visit",
+                        "date_format": "long"
+                    },
+                    "ip": {
+                        "id": "ip",
+                        "table": "ip_tracker",
+                        "field": "ip",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "IP Address",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 1,
+                            "path": "admin/people/ip-details/[ip]",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1
+                    }
+                },
+                "filters": {
+                    "uid": {
+                        "id": "uid",
+                        "table": "users",
+                        "field": "uid",
+                        "relationship": "uid",
+                        "value": "",
+                        "group": 1,
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "uid_op",
+                            "label": "Name",
+                            "operator": "uid_op",
+                            "identifier": "uid",
+                            "remember_roles": {
+                                "2": "2",
+                                "1": 0,
+                                "3": 0
+                            }
+                        }
+                    },
+                    "ip": {
+                        "id": "ip",
+                        "table": "ip_tracker",
+                        "field": "ip",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "ip_op",
+                            "label": "IP Address",
+                            "use_operator": true,
+                            "operator": "ip_op",
+                            "identifier": "ip",
+                            "remember_roles": {
+                                "2": "2",
+                                "1": 0,
+                                "3": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "page": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "admin/people/ip",
+                "menu": {
+                    "type": "tab",
+                    "title": "IP addresses",
+                    "weight": "1",
+                    "context": 0,
+                    "context_only_inline": 0
+                }
+            }
+        }
+    }
+}

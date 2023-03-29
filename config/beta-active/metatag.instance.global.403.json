@@ -1,0 +1,21 @@
+{
+    "_config_name": "metatag.instance.global.403",
+    "module": "metatag",
+    "storage": "default",
+    "name": "global.403",
+    "instance": "global:403",
+    "label": "Global: 403 access denied",
+    "disabled": true,
+    "api_version": 1,
+    "config": {
+        "title": {
+            "value": "[current-page:title] | [current-page:pager][site:name]"
+        },
+        "canonical": {
+            "value": "[site:url]"
+        },
+        "shortlink": {
+            "value": "[site:url]"
+        }
+    }
+}

@@ -1,0 +1,45 @@
+{
+    "_config_name": "field.instance.node.docs.body",
+    "field_name": "body",
+    "entity_type": "node",
+    "bundle": "docs",
+    "label": "Body",
+    "widget": {
+        "weight": "5",
+        "type": "text_textarea_with_summary",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "rows": "30",
+            "summary_rows": 5
+        }
+    },
+    "settings": {
+        "text_processing": "1",
+        "display_summary": 0,
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "3",
+            "settings": [],
+            "module": "text"
+        },
+        "teaser": {
+            "label": "hidden",
+            "type": "text_summary_or_trimmed",
+            "settings": {
+                "trim_length": 600
+            },
+            "module": "text",
+            "weight": 0
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null
+}

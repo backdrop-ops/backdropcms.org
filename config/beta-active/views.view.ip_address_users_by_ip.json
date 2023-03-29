@@ -1,0 +1,300 @@
+{
+    "_config_name": "views.view.ip_address_users_by_ip",
+    "name": "ip_address_users_by_ip",
+    "description": "",
+    "tag": "default",
+    "disabled": false,
+    "base_table": "ip_tracker",
+    "human_name": "IP address users by IP",
+    "core": "1.23.0",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "access": {
+                    "type": "none"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full"
+                },
+                "style_plugin": "table",
+                "row_plugin": "fields",
+                "fields": {
+                    "uid_name": {
+                        "id": "uid_name",
+                        "table": "ip_tracker",
+                        "field": "uid_name",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "User",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link": 1,
+                        "cancelled": "<cancelled [uid]>",
+                        "anonymous": "Anonymous"
+                    },
+                    "uid_status": {
+                        "id": "uid_status",
+                        "table": "ip_tracker",
+                        "field": "uid_status",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Status",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "cancelled": "Cancelled",
+                        "anonymous": "Anonymous",
+                        "active": "Active",
+                        "blocked": "Blocked"
+                    },
+                    "visits": {
+                        "id": "visits",
+                        "table": "ip_tracker",
+                        "field": "visits",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Visits",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "set_precision": false,
+                        "precision": 0,
+                        "decimal": ".",
+                        "separator": ",",
+                        "format_plural": 0,
+                        "format_plural_singular": "1",
+                        "format_plural_plural": "@count",
+                        "prefix": "",
+                        "suffix": ""
+                    }
+                },
+                "filters": [],
+                "sorts": [],
+                "arguments": {
+                    "ip": {
+                        "id": "ip",
+                        "table": "ip_tracker",
+                        "field": "ip",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "empty",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 0,
+                            "title": "All"
+                        },
+                        "title_enable": 0,
+                        "title": "",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "fixed",
+                        "default_argument_options": {
+                            "argument": ""
+                        },
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 0,
+                        "validate": {
+                            "type": "none",
+                            "fail": "not found"
+                        },
+                        "validate_options": []
+                    }
+                },
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "",
+                    "default_row_class": 1,
+                    "row_class_special": 1,
+                    "override": 1,
+                    "sticky": 0,
+                    "caption": "",
+                    "summary": "",
+                    "columns": {
+                        "uid_name": "uid_name",
+                        "uid_status": "uid_status",
+                        "visits": "visits"
+                    },
+                    "info": {
+                        "uid_name": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "uid_status": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        },
+                        "visits": {
+                            "sortable": 1,
+                            "default_sort_order": "asc",
+                            "align": "",
+                            "separator": "",
+                            "empty_column": 0
+                        }
+                    },
+                    "default": "-1",
+                    "empty_table": 0
+                },
+                "relationships": {
+                    "uid": {
+                        "id": "uid",
+                        "table": "ip_tracker",
+                        "field": "uid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "User uid",
+                        "required": 0
+                    }
+                }
+            }
+        }
+    }
+}

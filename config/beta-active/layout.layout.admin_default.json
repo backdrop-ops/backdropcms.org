@@ -1,0 +1,84 @@
+{
+    "_config_name": "layout.layout.admin_default",
+    "path": "",
+    "name": "admin_default",
+    "title": "Default Administrative Layout",
+    "description": null,
+    "module": "layout",
+    "weight": 1,
+    "storage": 2,
+    "layout_template": "boxton",
+    "disabled": false,
+    "settings": {
+        "title": "",
+        "title_display": "default",
+        "title_block": null
+    },
+    "positions": {
+        "sidebar": [],
+        "sidebar2": [],
+        "third1": [],
+        "third2": [],
+        "third3": [],
+        "quarter1": [],
+        "quarter2": [],
+        "quarter3": [],
+        "quarter4": [],
+        "header": [
+            "31491bca-6a85-4c0d-8a1d-298ad90d30a7"
+        ],
+        "top": [],
+        "content": [
+            "default"
+        ],
+        "footer": []
+    },
+    "content": {
+        "31491bca-6a85-4c0d-8a1d-298ad90d30a7": {
+            "plugin": "system:breadcrumb",
+            "data": {
+                "module": "system",
+                "delta": "breadcrumb",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "31491bca-6a85-4c0d-8a1d-298ad90d30a7",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "default": {
+            "plugin": "system:main",
+            "data": {
+                "module": "system",
+                "delta": "main",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": null,
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "_config_name": "field.instance.node.project_layout.field_project_maintainers_github",
+    "field_name": "field_project_maintainers_github",
+    "entity_type": "node",
+    "bundle": "project_layout",
+    "label": "GitHub Maintainers",
+    "widget": {
+        "weight": "11",
+        "type": "text_textfield",
+        "module": "text",
+        "active": 1,
+        "settings": {
+            "size": "60"
+        }
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "text_processing": "0",
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "8",
+            "settings": []
+        },
+        "project_search": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "9",
+            "settings": []
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "_config_name": "image.style.thumbnail",
+    "name": "thumbnail",
+    "label": "Thumbnail (100x100)",
+    "effects": [
+        {
+            "weight": "-10",
+            "name": "image_scale",
+            "data": {
+                "width": 100,
+                "height": 100,
+                "upscale": 1
+            }
+        },
+        {
+            "weight": "-9",
+            "name": "image_desaturate",
+            "data": []
+        }
+    ]
+}

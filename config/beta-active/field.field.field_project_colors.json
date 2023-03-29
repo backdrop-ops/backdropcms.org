@@ -1,0 +1,48 @@
+{
+    "_config_name": "field.field.field_project_colors",
+    "field_name": "field_project_colors",
+    "type": "list_text",
+    "translatable": false,
+    "module": "list",
+    "active": 1,
+    "locked": 0,
+    "cardinality": "-1",
+    "deleted": 0,
+    "entity_types": [],
+    "settings": {
+        "allowed_values": {
+            "Aqua": "Aqua",
+            "Beige": "Beige",
+            "Black": "Black",
+            "Blue": "Blue",
+            "Brown": "Brown",
+            "Gold": "Gold",
+            "Gray": "Gray",
+            "Green": "Green",
+            "Ivory": "Ivory",
+            "Lavender": "Lavender",
+            "Lime": "Lime",
+            "Maroon": "Maroon",
+            "Navy": "Navy",
+            "Olive": "Olive",
+            "Orange": "Orange",
+            "Pink": "Pink",
+            "Purple": "Purple",
+            "Red": "Red",
+            "Salmon": "Salmon",
+            "Silver": "Silver",
+            "Tan": "Tan",
+            "Teal": "Teal",
+            "Violet": "Violet",
+            "White": "White",
+            "Yellow": "Yellow"
+        },
+        "allowed_values_function": ""
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "settings": [],
+        "module": "field_sql_storage",
+        "active": 1
+    }
+}

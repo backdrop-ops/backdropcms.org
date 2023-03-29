@@ -1,0 +1,50 @@
+{
+    "_config_name": "node.type.quote",
+    "type": "quote",
+    "name": "Testimonial",
+    "base": "node_content",
+    "module": "node",
+    "description": "A testimonial is a quote or something endorsing Backdrop.",
+    "help": "",
+    "has_title": true,
+    "title_label": "Person's full or formal name",
+    "modified": true,
+    "disabled": false,
+    "orig_type": "quote",
+    "settings": {
+        "status_default": 0,
+        "sticky_enabled": 0,
+        "sticky_default": 0,
+        "promote_enabled": 0,
+        "promote_default": 0,
+        "revision_enabled": 0,
+        "revision_default": 0,
+        "node_preview": "0",
+        "node_submitted": 0,
+        "node_user_picture": true,
+        "language": null,
+        "formblock_expose": 0,
+        "formblock_show_help": 0,
+        "menu_options": {
+            "main-menu": "main-menu",
+            "menu-more-developer-resources": 0,
+            "menu-footer-menu": 0,
+            "menu-handbook": 0,
+            "management": 0,
+            "user-menu": 0
+        },
+        "menu_parent": "main-menu:0",
+        "node_permissions": true,
+        "project_behavior": "none",
+        "project_release_version_format": "!api#major%minor%patch#extra",
+        "project_release_api_versions": [
+            ""
+        ],
+        "project_release_type": "",
+        "hidden_path": 0,
+        "menu_default": 0,
+        "scheduling_enabled": 0,
+        "node_submitted_format": "[node:created:medium] by [node:author]"
+    },
+    "node_preview": "0"
+}

@@ -1,0 +1,29 @@
+{
+    "_config_name": "field_group.field_group.node.project_layout.form.group_infofile",
+    "group_name": "group_infofile",
+    "entity_type": "node",
+    "bundle": "project_layout",
+    "mode": "form",
+    "children": [
+        "field_image",
+        "field_project_maintainers",
+        "field_project_maintainers_github",
+        "field_project_screenshots",
+        "field_project_tags"
+    ],
+    "parent_name": "",
+    "weight": "14",
+    "label": "Infofile",
+    "format_type": "fieldset",
+    "format_settings": {
+        "formatter": "collapsible",
+        "instance_settings": {
+            "description": "",
+            "classes": "group-infofile field-group-fieldset",
+            "required_fields": 1,
+            "id": ""
+        }
+    },
+    "collapsible": true,
+    "collapsed": false
+}

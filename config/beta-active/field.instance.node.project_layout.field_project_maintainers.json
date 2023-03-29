@@ -1,0 +1,40 @@
+{
+    "_config_name": "field.instance.node.project_layout.field_project_maintainers",
+    "field_name": "field_project_maintainers",
+    "entity_type": "node",
+    "bundle": "project_layout",
+    "label": "Maintainers",
+    "widget": {
+        "weight": "10",
+        "type": "options_select",
+        "module": "options",
+        "active": 1,
+        "settings": []
+    },
+    "description": "",
+    "required": 0,
+    "deleted": 0,
+    "default_value": [
+        {
+            "value": "Happy maintainer"
+        }
+    ],
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "3",
+            "settings": []
+        },
+        "project_search": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
+        }
+    }
+}

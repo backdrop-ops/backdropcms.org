@@ -1,0 +1,23 @@
+{
+    "_config_name": "field.field.field_files",
+    "field_name": "field_files",
+    "type": "file",
+    "module": "file",
+    "active": 1,
+    "locked": "0",
+    "cardinality": "-1",
+    "translatable": "0",
+    "deleted": "0",
+    "entity_types": [],
+    "settings": {
+        "display_field": 1,
+        "display_default": 1,
+        "uri_scheme": "public"
+    },
+    "storage": {
+        "type": "field_sql_storage",
+        "module": "field_sql_storage",
+        "active": 1,
+        "settings": []
+    }
+}
