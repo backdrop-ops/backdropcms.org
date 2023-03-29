@@ -338,10 +338,13 @@ function iats_civicrm_buildForm($formName, &$form) {
 /**
  * Modifications to a (public/frontend) contribution financial forms for iATS
  * procesors.
- * 1. enable public selection of future recurring contribution start date.
+ * 1. enable public selection of future recurring contribution start date, but only if the form allows recurring!
  * 
  * We're only handling financial payment class forms here. Note that we can no
  * longer test for whether the page has/is recurring or not. 
+ * Special note - if a page offers recurring contributions and if
+ * future recurring start dates are enabled with restrictions on which days,
+ * then any one-time contribution will be forced to use those rules as well.
  */
 
 function iats_civicrm_buildForm_CRM_Financial_Form_Payment(&$form) {
@@ -354,8 +357,11 @@ function iats_civicrm_buildForm_CRM_Financial_Form_Payment(&$form) {
   if (empty($type)) {
     return;
   }
-
-  // If enabled provide a way to set future contribution dates. 
+  // Skip if this form doesn't allow recurring
+  if (empty($form->_values['is_recur'])) {
+    return;
+  }
+  // If future public start dates are enabled on a recurring-enabled page ...
   // Uses javascript to hide/reset unless they have recurring contributions checked.
   $settings = Civi::settings()->get('iats_settings');
   if (!empty($settings['enable_public_future_recurring_start'])
@@ -818,4 +824,11 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_UpdateBilling(&$form) {
   if ($crid) {
     $form->addElement('hidden', 'crid', $crid);
   }
+}
+
+function _iats_payment_status_complete() {
+  return [
+    'payment_status_id' => CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_Contribution', 'contribution_status_id', 'Completed'),
+    'payment_status' => 'Completed',
+  ];
 }

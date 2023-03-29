@@ -63,7 +63,7 @@ class CRM_Utils_Mail_Incoming {
       return self::formatMailRfc822Digest($part, $attachments);
     }
 
-    if ($part instanceof ezcMailMultiPart) {
+    if ($part instanceof ezcMailMultipart) {
       return self::formatMailMultipart($part, $attachments);
     }
 
@@ -86,19 +86,19 @@ class CRM_Utils_Mail_Incoming {
    * @throws Exception
    */
   public static function formatMailMultipart($part, &$attachments) {
-    if ($part instanceof ezcMailMultiPartAlternative) {
+    if ($part instanceof ezcMailMultipartAlternative) {
       return self::formatMailMultipartAlternative($part, $attachments);
     }
 
-    if ($part instanceof ezcMailMultiPartDigest) {
+    if ($part instanceof ezcMailMultipartDigest) {
       return self::formatMailMultipartDigest($part, $attachments);
     }
 
-    if ($part instanceof ezcMailMultiPartRelated) {
+    if ($part instanceof ezcMailMultipartRelated) {
       return self::formatMailMultipartRelated($part, $attachments);
     }
 
-    if ($part instanceof ezcMailMultiPartMixed) {
+    if ($part instanceof ezcMailMultipartMixed) {
       return self::formatMailMultipartMixed($part, $attachments);
     }
 
@@ -394,7 +394,7 @@ class CRM_Utils_Mail_Incoming {
   }
 
   /**
-   * @param $address
+   * @param ezcMailAddress $address
    * @param array $params
    * @param $subParam
    * @param $mail
@@ -418,7 +418,7 @@ class CRM_Utils_Mail_Incoming {
   }
 
   /**
-   * @param $addresses
+   * @param ezcMailAddress[] $addresses
    * @param $token
    * @param array $params
    * @param $mail

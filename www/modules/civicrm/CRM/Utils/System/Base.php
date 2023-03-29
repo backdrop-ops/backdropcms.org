@@ -459,6 +459,17 @@ abstract class CRM_Utils_System_Base {
   }
 
   /**
+   * Verify password
+   *
+   * @param array $params
+   *   Array of name, mail and password values.
+   * @param array $errors
+   *   Array of errors.
+   */
+  public function verifyPassword($params, &$errors) {
+  }
+
+  /**
    * Is a front end page being accessed.
    *
    * Generally this would be a contribution form or other public page as opposed to a backoffice page (like contact edit).
@@ -1112,6 +1123,40 @@ abstract class CRM_Utils_System_Base {
 
   public function checkCleanurls() {
     return [];
+  }
+
+  /**
+   * Suppress profile form errors
+   *
+   * @return bool
+   */
+  public function suppressProfileFormErrors():bool {
+    return FALSE;
+  }
+
+  /**
+   * Get email field name from form values
+   *
+   * @param CRM_Core_Form $form
+   * @param array $fields
+   *
+   * @return string
+   */
+  public function getEmailFieldName(CRM_Core_Form $form, array $fields):string {
+    return 'email';
+  }
+
+  /**
+   * Check if username and email exists in the CMS.
+   *
+   * @param array $params
+   *   Array of name and mail values.
+   * @param array $errors
+   *   Array of errors.
+   * @param string $emailName
+   *   Field label for the 'email'.
+   */
+  public function checkUserNameEmailExists(&$params, &$errors, $emailName = 'email') {
   }
 
 }
