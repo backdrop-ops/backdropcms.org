@@ -393,7 +393,7 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
             $pledgeId,
             'campaign_id'
           );
-          self::authenticatePledgeUser();
+          $this->authenticatePledgeUser();
         }
       }
       $this->set('values', $this->_values);
@@ -779,10 +779,10 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
 
     // The concept of contributeMode is deprecated.
     // The payment processor object can provide info about the fields it shows.
-    if ($isMonetary && is_a($this->_paymentProcessor['object'], 'CRM_Core_Payment')) {
-      /** @var  \CRM_Core_Payment $paymentProcessorObject */
+    if ($isMonetary && $this->_paymentProcessor['object'] instanceof \CRM_Core_Payment) {
       $paymentProcessorObject = $this->_paymentProcessor['object'];
-
+      $this->assign('paymentAgreementTitle', $paymentProcessorObject->getText('agreementTitle', []));
+      $this->assign('paymentAgreementText', $paymentProcessorObject->getText('agreementText', []));
       $paymentFields = $paymentProcessorObject->getPaymentFormFields();
       foreach ($paymentFields as $index => $paymentField) {
         if (!isset($this->_params[$paymentField])) {
@@ -1052,7 +1052,7 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
    *
    * @throws \CRM_Core_Exception
    */
-  public function authenticatePledgeUser() {
+  private function authenticatePledgeUser(): void {
     //get the userChecksum and contact id
     $userChecksum = CRM_Utils_Request::retrieve('cs', 'String', $this);
     $contactID = CRM_Utils_Request::retrieve('cid', 'Positive', $this);

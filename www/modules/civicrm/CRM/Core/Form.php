@@ -1713,7 +1713,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    * @throws \CRM_Core_Exception
    * @throws \Exception
    * @return mixed
-   *   HTML_QuickForm_Element
+   *   HTML_QuickForm_element
    *   void
    */
   public function addField($name, $props = [], $required = FALSE, $legacyDate = TRUE) {
