@@ -1,0 +1,13 @@
+name = Webform CiviCRM Integration
+description = A powerful, flexible, user-friendly form builder for CiviCRM.
+backdrop = 1.x
+type = module
+package = CiviCRM
+php = 7.0
+dependencies[] = civicrm (>=5.12)
+dependencies[] = webform (>=4.19)
+
+; Added by Backdrop CMS packaging script on 2022-02-05
+project = webform_civicrm
+version = 1.x-5.7.0
+timestamp = 1644127793
