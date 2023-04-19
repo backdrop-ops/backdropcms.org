@@ -1,6 +1,6 @@
 {
     "_config_name": "system.core",
-    "user_admin_role": "0",
+    "user_admin_role": "3",
     "anonymous": "Anonymous",
     "user_email_verification": 1,
     "user_mail_status_activated_notify": 1,
@@ -110,5 +110,6 @@
     "block_interest_cohort": 1,
     "messages_dismissible": 1,
     "file_additional_public_schemes": [],
-    "log_max_length": 56
+    "log_max_length": "128",
+    "dblog_max_length": "128"
 }
