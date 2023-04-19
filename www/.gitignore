@@ -1,0 +1,14 @@
+# Ignore this file so it can be changed.
+.gitignore
+
+# Ignore configuration files that may contain sensitive information.
+/settings*.php
+/civicrm.settings*.php
+sites/*/settings*.php
+sites/*/civicrm.settings*.php
+
+# Ignore paths that contain user-generated content.
+/files
+/private
+sites/*/files
+sites/*/private
