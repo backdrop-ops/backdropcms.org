@@ -1,7 +1,7 @@
 Akismet
 =======
 
-Integrates with the Akismet content moderation service: https://akismet.com
+Integrates with the [https://akismet.com](Akismet) content moderation service.
 
 Requirements
 ------------
@@ -13,16 +13,16 @@ Installation
 ------------
 
 * Install this module using the official Backdrop CMS instructions at
-  https://backdropcms.org/guide/modules
-* Go to https://akismet.com,
-  - sign up or log in with your account
-  - go to your Account Overview
-  - Find your Akismet API key at the top of the page.
+  <https://backdropcms.org/guide/modules>
+* Go to <https://akismet.com>,
+  * sign up or log in with your account
+  * go to your Account Overview
+  * Find your Akismet API key at the top of the page.
 * Enter your API keys on Administration » Configuration » Content authoring
   » Akismet » Settings.
 * If your site runs behind a reverse proxy or load balancer:
-  - Open sites/default/settings.php in a text editor.
-  - Ensure that the "reverse_proxy" settings are enabled and configured
+  * Open sites/default/settings.php in a text editor.
+  * Ensure that the "reverse_proxy" settings are enabled and configured
     correctly.
   Your site MUST send the actual/proper IP address for every site visitor to
   Akismet.  You can confirm that your configuration is correct by going to
@@ -50,7 +50,6 @@ Note the "bypass permissions" for each protected form:  If the currently
 logged-in user has any of the listed permissions, then Akismet is NOT involved
 in the form submission (at all).
 
-
 Testing
 -------
 
@@ -75,7 +74,6 @@ A: Do you see the Akismet privacy policy link on the protected form?  If not, yo
 
    Note: The privacy policy link can be toggled in the global module settings.
 
-
 Q: Can I protect other forms that are not listed?
 Q: Can I protect a custom form?
 Q: The form I want to protect is not offered as an option?
@@ -87,31 +85,28 @@ A: Out of the box, the Akismet module allows to protect Backdrop CMS core forms 
 
    To protect a custom form, you need to integrate with the Akismet module API.
    If you have a completely custom form (not even using Backdrop's Form API), see
-   the Akismet developer documentation:
-
-   - https://akismet.com/development/api/
+   the Akismet developer documentation: <https://akismet.com/development/api/>
 
 Issues
 ------
 
 To submit bug reports and feature suggestions, or to track changes:
-  http://.org/project/issues/akismet
+  <https://github.com/project/akismet/issues>
 
-For issues pertaining to the Akismet service, contact Akismet Support:
-  https://akismet.com/contact
-  - e.g., inappropriately blocked posts, spam posts getting through, etc.
+For issues pertaining to the Akismet service, contact [https://akismet.com/contact](Akismet Support),
+for example, inappropriately blocked posts, spam posts getting through, etc.
 
 Current Maintainers
 -------------------
 
-- Herb v/d Dool (https://github.com/herbdool/)
-- Seeking additional maintainers.
+* Herb v/d Dool <https://github.com/herbdool/>
+* Seeking additional maintainers.
 
 Credits
 -------
 
-- Ported to Backdrop by Herb v/d Dool (https://github.com/herbdool/)
-- Originally developed for Drupal by [Katherine Senzee (ksenzee)](http://drupal.org/u/ksenzee)
+* Ported to Backdrop by Herb v/d Dool <https://github.com/herbdool/>
+* Originally developed for Drupal by [Katherine Senzee (ksenzee)](http://drupal.org/u/ksenzee)
 
 This module is a fork of the Mollom module. The Mollom spam-control service was
 discontinued in 2018. This module attempts to serve as a drop-in replacement
