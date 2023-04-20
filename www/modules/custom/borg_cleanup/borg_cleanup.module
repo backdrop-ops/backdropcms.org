@@ -5,57 +5,11 @@
  */
 
 /**
- * Implements hook_menu_alter().
- *
- * Removes tabs from the log in and password pages.
- */
-function borg_cleanup_menu_alter(&$items) {
-  $items['user/login']['type'] = MENU_CALLBACK;
-  $items['user/pasword']['type'] = MENU_CALLBACK;
-  $items['node']['page callback'] = 'backdrop_not_found';
-}
-
-/**
- * Implements hook_admin_paths_alter().
- */
-function borg_cleanup_admin_paths_alter(&$paths) {
-  // Treat user edit pages as non-administrative.
-  $paths['user/*/edit'] = FALSE;
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- *
- * Removes useless description text from log in form, adds additional links.
- */
-function borg_cleanup_form_user_login_alter(&$form, &$form_state) {
-  $form['actions']['forgot'] = array(
-    '#markup' => '<small>' . l(t('Forgot password?'), 'user/password') . '</small>',
-    '#weight' => 10,
-  );
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- *
- * Removes useless description text from log in form, adds additional links.
- */
-function borg_cleanup_form_user_pass_alter(&$form, &$form_state) {
-  $form['actions']['forgot'] = array(
-    '#markup' => '<small>' . l(t('Log in'), 'user/login') . '</small>',
-    '#weight' => 10,
-  );
-}
-
-/**
  * Implements hook_form_FORM_ID_alter().
  *
  * Removes useless description text.
  */
 function borg_cleanup_form_user_register_form_alter(&$form, &$form_state) {
-  $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you request to receive a new password.');
-  unset($form['account']['pass']['#description']);
-
   // Require the interest field on user registration form, even though it's not
   // required in general (for backward compatibility with accounts created prior
   // to this field).
@@ -72,6 +26,66 @@ function borg_cleanup_form_user_register_form_alter(&$form, &$form_state) {
  * Removes useless description text.
  */
 function borg_cleanup_form_user_profile_form_alter(&$form, &$form_state) {
+  backdrop_add_js('core/misc/vertical-tabs.js');
+  $account_fieldset = array(
+    '#type'         => 'fieldset',
+    '#title'        => t('Change Email or Password'),
+    '#collapsible'  => true,
+    '#collapsed'    => true,
+    '#weight'       => -9,
+  );
+
+  $fields_for_account_fieldset = array('current_pass', 'mail', 'pass');
+  foreach ($fields_for_account_fieldset as $field_name) {
+    if (isset($form['account'][$field_name])) {
+      $account_fieldset[$field_name] = $form['account'][$field_name];
+      hide($form['account'][$field_name]);
+    }
+  }
+  $form['account']['account_fieldset'] = $account_fieldset;
+
+  $form['account']['#weight'] = 1;
+  $form['account']['name']['#weight'] = -50;
+  $form['field_name']['#weight'] = -51;
+
+  $form['field_forhire']['#weight'] = 2;
+  $form['field_services']['#weight'] = 3;
+  $form['field_expertise']['#weight'] = 4;
+
+  $form['field_bio']['#weight'] = 5;
+  $form['field_photo']['#weight'] = 6;
+  $form['field_header_photo']['#weight'] = 7;
+  $form['field_gender']['#weight'] = 8;
+  $form['field_gender'][LANGUAGE_NONE]['#options']['_none'] = t('- Not specified -');
+  $form['field_industries']['#weight'] = 9;
+
+  $social_fieldset = array(
+    '#type'         => 'fieldset',
+    '#title'        => t('Find me Online'),
+    '#collapsible'  => true,
+    '#collapsed'    => false,
+    '#weight'       => 10,
+  );
+
+  $form['field_social']['#weight'] = 1;
+  $form['field_irc']['#weight'] = 2;
+  $form['field_websites']['#weight'] = 3;
+
+  $fields_for_account_fieldset = array('field_irc', 'field_social', 'field_websites');
+  foreach ($fields_for_account_fieldset as $field_name) {
+    $social_fieldset[$field_name] = $form[$field_name];
+    hide($form[$field_name]);
+  }
+  $form['social_fieldset'] = $social_fieldset;
+
+  $form['field_contributions']['#weight'] = 11;
+  $form['field_contributions_other']['#weight'] = 12;
+
+  $form['contact']['#weight'] = 21;
+  $form['timezone']['#weight'] = 22;
+  $form['timezone']['#collapsed'] = TRUE;
+  $form['redirect']['#weight'] = 23;
+
   unset($form['account']['pass']['#description']);
   $form['account']['mail']['#description'] = str_replace('A valid e-mail address. All e-mails from the system will be sent to this address. ', '', $form['account']['mail']['#description']);
   $form['account']['mail']['#description'] = str_replace(' or wish to receive certain news or notifications by e-mail', '', $form['account']['mail']['#description']);
