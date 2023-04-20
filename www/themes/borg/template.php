@@ -13,65 +13,7 @@
  * Modify the user edit form for usability++
  */
 function borg_form_user_profile_form_alter(&$form, &$form_state) {
-  drupal_add_js('core/misc/vertical-tabs.js');
-  $account_fieldset = array(
-    '#type'         => 'fieldset',
-    '#title'        => t('Change Email or Password'),
-    '#collapsible'  => true,
-    '#collapsed'    => true,
-    '#weight'       => -9,
-  );
 
-  $fields_for_account_fieldset = array('current_pass', 'mail', 'pass');
-  foreach ($fields_for_account_fieldset as $field_name) {
-    if (isset($form['account'][$field_name])) {
-      $account_fieldset[$field_name] = $form['account'][$field_name];
-      hide($form['account'][$field_name]);
-    }
-  }
-  $form['account']['account_fieldset'] = $account_fieldset;
-
-  $form['account']['#weight'] = 1;
-  $form['account']['name']['#weight'] = -50;
-  $form['field_name']['#weight'] = -51;
-
-  $form['field_forhire']['#weight'] = 2;
-  $form['field_services']['#weight'] = 3;
-  $form['field_expertise']['#weight'] = 4;
-
-  $form['field_bio']['#weight'] = 5;
-  $form['field_photo']['#weight'] = 6;
-  $form['field_header_photo']['#weight'] = 7;
-  $form['field_gender']['#weight'] = 8;
-  $form['field_gender'][LANGUAGE_NONE]['#options']['_none'] = t('- Not specified -');
-  $form['field_industries']['#weight'] = 9;
-
-  $social_fieldset = array(
-    '#type'         => 'fieldset',
-    '#title'        => t('Find me Online'),
-    '#collapsible'  => true,
-    '#collapsed'    => false,
-    '#weight'       => 10,
-  );
-
-  $form['field_social']['#weight'] = 1;
-  $form['field_irc']['#weight'] = 2;
-  $form['field_websites']['#weight'] = 3;
-
-  $fields_for_account_fieldset = array('field_irc', 'field_social', 'field_websites');
-  foreach ($fields_for_account_fieldset as $field_name) {
-    $social_fieldset[$field_name] = $form[$field_name];
-    hide($form[$field_name]);
-  }
-  $form['social_fieldset'] = $social_fieldset;
-
-  $form['field_contributions']['#weight'] = 11;
-  $form['field_contributions_other']['#weight'] = 12;
-
-  $form['contact']['#weight'] = 21;
-  $form['timezone']['#weight'] = 22;
-  $form['timezone']['#collapsed'] = TRUE;
-  $form['redirect']['#weight'] = 23;
 }
 
 /**
@@ -84,6 +26,11 @@ function borg_form_user_register_form_alter(&$form, &$form_state) {
     '#markup' => $help,
     '#weight' => -100,
   );
+
+  // Remove description text from password.
+  unset($form['account']['pass']['#description']);
+  // Fix the description text for email address.
+  $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you request to receive a new password.');
 }
 
 /**
@@ -96,6 +43,44 @@ function borg_form_user_login_alter(&$form, &$form_state) {
     '#markup' => $help,
     '#weight' => -100,
   );
+
+  // Add a forgot password link, since tabs are removed.
+  $form['actions']['forgot'] = array(
+    '#markup' => '<small>' . l(t('Forgot password?'), 'user/password') . '</small>',
+    '#weight' => 10,
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Removes useless description text from log in form, adds additional links.
+ */
+function borg_form_user_pass_alter(&$form, &$form_state) {
+  // Add a log in link, since tabs are removed.
+  $form['actions']['forgot'] = array(
+    '#markup' => '<small>' . l(t('Log in'), 'user/login') . '</small>',
+    '#weight' => 10,
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Removes tabs from the log in and password pages.
+ */
+function borg_menu_alter(&$items) {
+  $items['user/login']['type'] = MENU_CALLBACK;
+  $items['user/pasword']['type'] = MENU_CALLBACK;
+  $items['node']['page callback'] = 'backdrop_not_found';
+}
+
+/**
+ * Implements hook_admin_paths_alter().
+ */
+function borg_admin_paths_alter(&$paths) {
+  // Treat user edit pages as non-administrative.
+  $paths['user/*/edit'] = FALSE;
 }
 
 /*******************************************************************************

@@ -1,4 +1,4 @@
-<?php if ($forhire = drupal_render($item)) : ?>
+<?php if ($forhire = backdrop_render($item)) : ?>
   <div class="<?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
     <?php foreach ($items as $delta => $item): ?>
       <?php print $forhire; ?>
