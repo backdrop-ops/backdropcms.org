@@ -1,10 +1,18 @@
 # Ignore this file so it can be changed.
-.gitignore
+#.gitignore
+
+# Ignore SSL verification files
+.well-known/*
 
 # Ignore configuration files that may contain sensitive information.
 /settings*.php
 /civicrm.settings*.php
 sites/*/settings*.php
+sites/*/civicrm.settings*.php
+
+# Ignore civicrm configuration files
+civicrm_table_prefixes.php
+/civicrm.settings*.php
 sites/*/civicrm.settings*.php
 
 # Ignore paths that contain user-generated content.
