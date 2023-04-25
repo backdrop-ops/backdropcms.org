@@ -831,7 +831,6 @@ body.user-form .page-title {
 *******************************************************************************/
 #user-login .help p {
   font-size: 1.5rem; /* 24px */
-  text-align: center;
 }
 #user-login .form-item {
   padding: 15px 0;
@@ -867,7 +866,7 @@ body.user-form .page-title {
   }
   #user-login .form-item label {
     text-align: right;
-    width: 215px;
+    width: 240px;
     padding-right: 15px;
     display: inline-block;
     line-height: 2em;
@@ -875,7 +874,7 @@ body.user-form .page-title {
     white-space: nowrap;
   }
   #user-login .form-item input {
-    width: 390px;
+    width: 345px;
     flex: 1;
   }
   #user-login small {
@@ -920,6 +919,7 @@ body.user-form .page-title {
 #user-register-form .form-item label {
   padding-right: 15px;
   line-height: 2.2em;
+  margin: 0;
 }
 #user-register-form .field-type-text-long label {
   width: auto;
@@ -945,9 +945,6 @@ body.user-form .page-title {
 #user-register-form #edit-contact .form-item label {
   width: auto;
 }
-#user-register-form .form-item div.description {
-  display: none;
-}
 
 #user-register-form .form-item-pass {
   display: block;
@@ -962,26 +959,29 @@ body.user-form .page-title {
 }
 
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  #user-register-form .form-item {
+  #user-register-form .form-type-textfield,
+  #user-register-form .form-type-email {
     display: flex;
     padding: 10px 0;
     margin: 0;
+    flex-wrap: wrap;
   }
-  #user-register-form .field-type-text-long .form-item,
-  #user-register-form .form-type-checkbox .form-item {
-    /* undo flex */
-    display: block;
-    padding-bottom: 0;
-  }
-  #user-register-form .form-item label {
-    width: 150px;
-  }
-  #user-register-form .form-type-checkbox label {
-    width: auto;
+  #user-register-form .form-type-textfield label,
+  #user-register-form .form-type-email label {
+    width: 140px;
   }
   #user-register-form .form-item input[type="text"],
   #user-register-form .form-item input[type="email"] {
     flex: 1;
+  }
+  #user-register-form .form-item div.description {
+    /* undo flex */
+    display: block;
+    padding-left: 165px;
+  }
+
+  #user-register-form .form-type-checkbox label {
+
   }
   #user-register-form #edit-contact .form-item input {
     flex: none;
