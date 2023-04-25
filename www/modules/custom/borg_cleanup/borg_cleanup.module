@@ -5,6 +5,14 @@
  */
 
 /**
+ * Implements hook_admin_paths_alter().
+ */
+function borg_cleanup_admin_paths_alter(&$paths) {
+  // Treat user edit pages as non-administrative.
+  $paths['user/*/edit'] = FALSE;
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  *
  * Removes useless description text.
