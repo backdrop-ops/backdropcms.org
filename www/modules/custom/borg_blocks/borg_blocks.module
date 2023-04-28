@@ -144,11 +144,11 @@ function borg_blocks_upgrade($settings) {
 
   $included_modules = l(t('70+ included modules'), 'https://docs.backdropcms.org/documentation/features-added-to-core');
   $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" />';
-  $included_modules_icon_link = l($included_modules_icon, 'node/1683', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
+  $included_modules_icon_link = l($included_modules_icon, 'https://docs.backdropcms.org/documentation/features-added-to-core', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
   $top_modules = l(t('96% of top modules ready'), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
   $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" />';
-  $top_modules_icon_link = l($top_modules_icon, 'node/2255', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
+  $top_modules_icon_link = l($top_modules_icon, 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
   $total_addons = l(t('900+ total add-ons'), 'node/1686');
   $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" />';
