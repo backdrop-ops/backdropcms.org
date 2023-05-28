@@ -1,0 +1,7 @@
+type = module
+name = BackdropCMS.org Signup Block
+description = Signup block for *.backdropcms.org sites for the Newsletter.
+backdrop = 1.x
+package = BackdropCMS.org
+
+dependencies[] = civicrm
