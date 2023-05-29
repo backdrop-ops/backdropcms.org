@@ -28,7 +28,7 @@ function borg_signup_block_view($delta = '', $settings = array(), $contexts = ar
   $block = array();
   switch ($delta) {
     case 'borg_signup':
-      $block['subject'] = NULL;
+      $block['subject'] = t('Sign up for our newsletter');
       $block['content'] = backdrop_get_form('borg_signup_newsletter_form');
       return $block;
   }
@@ -38,10 +38,6 @@ function borg_signup_block_view($delta = '', $settings = array(), $contexts = ar
  * Form for the Newsletter signup block.
  */
 function borg_signup_newsletter_form($form, &$form_state) {
-  $form[] = array(
-    '#type' => 'help',
-    '#markup' => t('Sign up for our Newsletter here. You can unsubscribe at any time using the link included in each mailing.'),
-  );
   if (user_is_logged_in()) {
     global $user;
     $email = $user->mail;
@@ -50,6 +46,12 @@ function borg_signup_newsletter_form($form, &$form_state) {
     '#type' => 'email',
     '#title' => t('Email address'),
     '#default_value' => isset($email) ? $email : '',
+  );
+  $form['confirm'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('I agree to receive this newsletter, and understand that I can easily unsubscribe at any time by using the link in any email.'),
+    '#default_value' => TRUE,
+    '#required' => TRUE,
   );
 
   $form['actions'] = array(
