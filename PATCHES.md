@@ -10,7 +10,8 @@ Patches to Backdrop Contrib:
 ============================
 
 borg theme: (committed to HEAD)
-  Remove bug squad display from base theme
+  - Remove bug squad display from base theme.
+  - Update CSS for newsletter signup block.
 
 ---
 
