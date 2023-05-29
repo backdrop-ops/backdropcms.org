@@ -52,6 +52,10 @@ function borg_signup_newsletter_form($form, &$form_state) {
     '#default_value' => isset($email) ? $email : '',
   );
 
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
+
   $form['actions']['signup'] = array(
     '#type' => 'submit',
     '#description' => t('Sign up for the BackdropCMS Newsletter.'),
