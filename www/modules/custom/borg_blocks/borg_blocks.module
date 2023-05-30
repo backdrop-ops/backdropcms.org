@@ -176,7 +176,7 @@ function borg_blocks_upgrade($settings) {
   $output .= '    <div class="col-md-4 column">';
   $output .=        $total_addons_icon_link;
   $output .= '      <h3>' . $total_addons . '</h3>';
-  $output .= '      <p>' . t("More than $projects_available modules, themes, and layouts are available for Backdrop CMS.") . '</p>';
+  $output .= '      <p>' . t("More than $projects_available modules, themes, and layouts are available for use today.") . '</p>';
   $output .= '    </div>';
   $output .= '  </div>';
   $output .= '</div>';
