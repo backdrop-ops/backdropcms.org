@@ -27,12 +27,13 @@
             "ead0b165-6c3c-41a4-9c31-49cf350497d9"
         ],
         "sidebar": [
-            "73d1feb9-4846-4d8a-a308-8f7d6e972a9a",
             "17c3e7e6-2f99-492b-a400-f994fcbccc90",
-            "89d0e596-9881-41cf-9d5f-95d793000534",
-            "7f6fad2e-fbc8-45fc-ac58-884728c8236a"
+            "7f6fad2e-fbc8-45fc-ac58-884728c8236a",
+            "4c3cd4bd-6e7b-41e0-be2f-4734fa1d422b"
         ],
-        "bottom": [],
+        "bottom": [
+            "eb20d91c-5100-48c8-ab00-ae2ba3f37c4c"
+        ],
         "footer": [
             "39dd467d-f155-4804-b41e-30b55532ddf9",
             "a7e09823-2c39-4b98-8300-dccebf2aea09",
@@ -182,49 +183,6 @@
                 }
             }
         },
-        "73d1feb9-4846-4d8a-a308-8f7d6e972a9a": {
-            "plugin": "menu:menu-more-developer-resources",
-            "data": {
-                "status": 1,
-                "module": "menu",
-                "delta": "menu-more-developer-resources",
-                "settings": {
-                    "title_display": "custom",
-                    "title": "Developers",
-                    "style": "default",
-                    "block_settings": {
-                        "menu_name": "menu-more-developer-resources",
-                        "style": "tree",
-                        "level": "1",
-                        "depth": "0",
-                        "expand_all": 0,
-                        "toggle": 0
-                    },
-                    "contexts": []
-                },
-                "uuid": "73d1feb9-4846-4d8a-a308-8f7d6e972a9a",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                },
-                "conditions": [
-                    {
-                        "plugin": "node_nid",
-                        "data": {
-                            "settings": {
-                                "negate": false,
-                                "entity_id": "737",
-                                "load_condition_nojs": "Load condition"
-                            }
-                        }
-                    }
-                ]
-            }
-        },
         "17c3e7e6-2f99-492b-a400-f994fcbccc90": {
             "plugin": "book:navigation",
             "data": {
@@ -264,45 +222,6 @@
                 ]
             }
         },
-        "89d0e596-9881-41cf-9d5f-95d793000534": {
-            "plugin": "book:navigation",
-            "data": {
-                "status": 1,
-                "module": "book",
-                "delta": "navigation",
-                "settings": {
-                    "title_display": "custom",
-                    "title": "User Guide",
-                    "style": "default",
-                    "block_settings": {
-                        "book_mode": "book pages"
-                    },
-                    "contexts": []
-                },
-                "uuid": "89d0e596-9881-41cf-9d5f-95d793000534",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                },
-                "conditions": [
-                    {
-                        "plugin": "node_type",
-                        "data": {
-                            "settings": {
-                                "bundles": [
-                                    "docs"
-                                ],
-                                "load_condition_nojs": "Load condition"
-                            }
-                        }
-                    }
-                ]
-            }
-        },
         "7f6fad2e-fbc8-45fc-ac58-884728c8236a": {
             "plugin": "block:resources",
             "data": {
@@ -331,6 +250,74 @@
                         }
                     }
                 }
+            }
+        },
+        "4c3cd4bd-6e7b-41e0-be2f-4734fa1d422b": {
+            "plugin": "block:books",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "books",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "books",
+                        "description": "",
+                        "reusable": true
+                    },
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "4c3cd4bd-6e7b-41e0-be2f-4734fa1d422b",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "eb20d91c-5100-48c8-ab00-ae2ba3f37c4c": {
+            "plugin": "borg_blocks:upgrade",
+            "data": {
+                "status": 1,
+                "module": "borg_blocks",
+                "delta": "upgrade",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "eb20d91c-5100-48c8-ab00-ae2ba3f37c4c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                },
+                "conditions": [
+                    {
+                        "plugin": "path",
+                        "data": {
+                            "settings": {
+                                "visibility_setting": "1",
+                                "paths": "node/4967",
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
             }
         },
         "39dd467d-f155-4804-b41e-30b55532ddf9": {
