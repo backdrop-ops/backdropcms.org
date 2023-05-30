@@ -1,0 +1,30 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the borg_signup module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function borg_signup_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+  if ($phase == 'runtime') {
+    if (!defined('BORG_SIGNUP_KEY') || !defined('BORG_SIGNUP_URL')) {
+      if (!defined('BORG_SIGNUP_KEY')) {
+        $value[] = $t('BORG_SIGNUP_KEY is undefined.');
+      }
+      if (!defined('BORG_SIGNUP_URL')) {
+        $value[] = $t('BORG_SIGNUP_URL is undefined.');
+      }
+      $requirements['borg_signup'] = array(
+        'title' => $t('Borg Signup'),
+        'value' => implode(' ', $value),
+        'description' => $t('BORG_SIGNUP_KEY and BORG_SIGNUP_URL should be defined in settings.php or settings.local.php. Please see the README file for details.'),
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+  }
+  return $requirements;
+}
