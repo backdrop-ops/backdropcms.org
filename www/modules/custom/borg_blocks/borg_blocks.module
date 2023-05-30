@@ -139,18 +139,25 @@ function borg_blocks_tagline($settings) {
 }
 
 function borg_blocks_upgrade($settings) {
+  // Included in core
+  $modules_core = 70;
+  // Percent ready
+  $modules_top = 96;
+  // Number of modules
+  $projects_available = 900;
+
   $path = backdrop_get_path('module', 'borg_blocks');
   $button = l(t('Upgrade from Drupal'), 'https://docs.backdropcms.org/documentation/upgrading-from-drupal-7-overview', array('attributes' => array('class' => array('button'))));
 
-  $included_modules = l(t('70+ included modules'), 'https://docs.backdropcms.org/documentation/features-added-to-core');
+  $included_modules = l(t("$modules_core+ included modules"), 'https://docs.backdropcms.org/documentation/features-added-to-core');
   $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" />';
   $included_modules_icon_link = l($included_modules_icon, 'https://docs.backdropcms.org/documentation/features-added-to-core', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $top_modules = l(t('96% of top modules ready'), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
+  $top_modules = l(t("$modules_top% of top modules ready"), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
   $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" />';
   $top_modules_icon_link = l($top_modules_icon, 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $total_addons = l(t('900+ total add-ons'), 'node/1686');
+  $total_addons = l(t("$projects_available+ total add-ons"), 'node/1686');
   $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" />';
   $total_addons_icon_link = l($total_addons_icon, 'node/1686', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
@@ -159,17 +166,17 @@ function borg_blocks_upgrade($settings) {
   $output .= '    <div class="col-md-4 column">';
   $output .=        $included_modules_icon_link;
   $output .= '      <h3>' . $included_modules . '</h3>';
-  $output .= '      <p>' . t('More than 70 Drupal modules have been merged into Backdrop core.') . '</p>';
+  $output .= '      <p>' . t("More than $modules_core Drupal modules have been merged into Backdrop core.") . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $top_modules_icon_link;
   $output .= '      <h3>' . $top_modules . '</h3>';
-  $output .= '      <p>' . t('Of the top 100 Drupal 7 modules, 96 of them are ready for Backdrop CMS.') . '</p>';
+  $output .= '      <p>' . t("Of the top 100 Drupal 7 modules, $modules_top of them are ready for Backdrop CMS.") . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $total_addons_icon_link;
   $output .= '      <h3>' . $total_addons . '</h3>';
-  $output .= '      <p>' . t('More than 750 modules, themes, and layouts are available for Backdrop CMS.') . '</p>';
+  $output .= '      <p>' . t("More than $projects_available modules, themes, and layouts are available for Backdrop CMS.") . '</p>';
   $output .= '    </div>';
   $output .= '  </div>';
   $output .= '</div>';
