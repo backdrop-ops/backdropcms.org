@@ -144,7 +144,7 @@ function borg_blocks_upgrade($settings) {
   // Percent ready
   $modules_top = 96;
   // Number of modules
-  $projects_available = 900;
+  $projects_available = 1000;
 
   $path = backdrop_get_path('module', 'borg_blocks');
   $button = l(t('Upgrade from Drupal'), 'https://docs.backdropcms.org/documentation/upgrading-from-drupal-7-overview', array('attributes' => array('class' => array('button'))));
