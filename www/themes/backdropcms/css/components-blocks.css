@@ -222,6 +222,7 @@ div.block-borg-project-metrics-backdrop-project-metrics {
  * Upgrade from Drupal block
  ******************************************************************************/
 .block-borg-blocks-upgrade {
+  width: 100%;
   padding-top: 15px;
   text-align: center;
 }
@@ -238,8 +239,6 @@ div.block-borg-project-metrics-backdrop-project-metrics {
 }
 .block-borg-blocks-upgrade h3 a {
   color: #fff;
-}
-.block-borg-blocks-upgrade h3 a:hover {
   text-decoration: underline;
 }
 .block-borg-blocks-upgrade p {
