@@ -30,7 +30,7 @@ function borg_signup_menu() {
  * Implements hook_block_info().
  */
 function borg_signup_block_info() {
-  $blocks['borg_signup'] = array(
+  $blocks['newsletter'] = array(
     'info' => t('Newsletter Signup'),
     'description' => t('Signup block for the BackdropCMS Newsletter.'),
     'render last' => TRUE,
@@ -44,7 +44,7 @@ function borg_signup_block_info() {
 function borg_signup_block_view($delta = '', $settings = array(), $contexts = array()) {
   $block = array();
   switch ($delta) {
-    case 'borg_signup':
+    case 'newsletter':
       $block['subject'] = t('Sign up for our newsletter');
       $block['content'] = backdrop_get_form('borg_signup_newsletter_form');
       return $block;
