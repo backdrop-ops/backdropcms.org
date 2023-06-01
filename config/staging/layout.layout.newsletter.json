@@ -27,9 +27,8 @@
         "top3": [],
         "content": [],
         "half1": [
-            "5f728f4d-39e1-4374-9100-c8cafcf972cb",
-            "1fb2f605-7570-4233-b500-fab72e1f92dd",
-            "fe4084b4-503a-4acf-8b47-71644f3dd63f"
+            "4f288bb3-311a-478f-bb05-5a4eb20dd38b",
+            "1fb2f605-7570-4233-b500-fab72e1f92dd"
         ],
         "half2": [
             "d7aeb93d-74af-4baa-8300-dc172dabc48f"
@@ -41,6 +40,7 @@
         "footer": [
             "62373681-f984-4684-9900-cd988717ab5b",
             "cca67b87-a46d-4fde-ba00-e8300baa4bb8",
+            "cab5cc99-04ee-497b-ab00-d4cfd1f9cae6",
             "60aa7959-c169-4586-9502-2e25916a5718",
             "dfe6b881-4538-4913-800d-132ee764eb60"
         ],
@@ -134,24 +134,22 @@
                 }
             }
         },
-        "5f728f4d-39e1-4374-9100-c8cafcf972cb": {
-            "plugin": "block:3",
+        "4f288bb3-311a-478f-bb05-5a4eb20dd38b": {
+            "plugin": "borg_signup:newsletter",
             "data": {
                 "status": 1,
-                "module": "block",
-                "delta": "3",
+                "module": "borg_signup",
+                "delta": "newsletter",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": {
-                        "description": "",
-                        "delta": "3",
-                        "reusable": true
-                    },
-                    "contexts": []
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "5f728f4d-39e1-4374-9100-c8cafcf972cb",
+                "uuid": "4f288bb3-311a-478f-bb05-5a4eb20dd38b",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -188,32 +186,6 @@
                 }
             }
         },
-        "fe4084b4-503a-4acf-8b47-71644f3dd63f": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "status": 1,
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>You can change your mind at any time by clicking the \"unsubscribe\" link, included&nbsp;in the footer of every&nbsp;newsletter email.&nbsp;</p>\r\n",
-                    "format": "filtered_html"
-                },
-                "uuid": "fe4084b4-503a-4acf-8b47-71644f3dd63f",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "d7aeb93d-74af-4baa-8300-dc172dabc48f": {
             "plugin": "layout:custom_block",
             "data": {
@@ -226,8 +198,10 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>Backdrop CMS will never sell your email address. We will treat all your personal information with respect. For more information about our privacy practices please visit our <a href=\"https://backdropcms.org/privacy\">privacy page</a>.</p>\r\n\r\n<p><small>We use MailChimp as our marketing platform. By subscribing, you acknowledge that your information will be transferred to Mailchimp for processing. <a href=\"https://mailchimp.com/legal/\" target=\"_blank\">Learn more about Mailchimp's privacy practices here.</a></small></p>\r\n",
-                    "format": "full_html"
+                    "content": "<p>Backdrop CMS will never sell your email address. We will treat all your personal information with care and respect. For more information about our privacy practices please visit our <a href=\"https://backdropcms.org/privacy\">privacy page</a>.</p>\r\n",
+                    "format": "full_html",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "d7aeb93d-74af-4baa-8300-dc172dabc48f",
                 "style": {
@@ -294,6 +268,32 @@
                     "data": {
                         "settings": {
                             "classes": "col-sm-6"
+                        }
+                    }
+                }
+            }
+        },
+        "cab5cc99-04ee-497b-ab00-d4cfd1f9cae6": {
+            "plugin": "borg_signup:newsletter",
+            "data": {
+                "status": 1,
+                "module": "borg_signup",
+                "delta": "newsletter",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "cab5cc99-04ee-497b-ab00-d4cfd1f9cae6",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
                         }
                     }
                 }
