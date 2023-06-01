@@ -18,11 +18,6 @@ body.front .vertical-tabs {
   display: none;
 }
 
-/* left align submit button on home page */
-body.front #edit-actions {
-  text-align: left;
-}
-
 body.front .block-block-books figure,
 body.front .backdrop-books figure {
   max-width: 50%;

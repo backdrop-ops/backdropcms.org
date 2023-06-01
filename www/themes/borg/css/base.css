@@ -14,7 +14,7 @@ body {
   min-width: 320px;
 }
 
-@media (max-width: 48em) {  /* 768px @ 16px font size  -- MD */
+@media (max-width: 47.9375em) {  /* 767px @ 16px font size  -- MD */
   /* Larger font for smaller screens */
   body {
     font-size: 1.125em; /* relative size: 18px; */

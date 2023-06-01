@@ -75,14 +75,6 @@ function borg_menu_alter(&$items) {
   $items['node']['page callback'] = 'backdrop_not_found';
 }
 
-/**
- * Implements hook_admin_paths_alter().
- */
-function borg_admin_paths_alter(&$paths) {
-  // Treat user edit pages as non-administrative.
-  $paths['user/*/edit'] = FALSE;
-}
-
 /*******************************************************************************
  * Preprocess functions: prepare variables for templates.
  ******************************************************************************/

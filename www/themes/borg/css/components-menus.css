@@ -7,7 +7,7 @@
 /*******************************************************************************
  * Main menu at mobile width
  ******************************************************************************/
-@media all and (max-width: 48em) { /* 768px @ 16px font size  -- MD */
+@media all and (max-width: 47.9375em) { /* 767px @ 16px font size  -- MD */
   .block-system-main-menu ul.menu {
     position: absolute;
     right: 0;
@@ -15,7 +15,7 @@
     width: 250px;
   }
 }
-@media all and (max-width: 34em) { /* 544px @ 16px font size -- SM */
+@media all and (max-width: 33.9375em) { /* 543px @ 16px font size -- SM */
   .block-system-main-menu ul.menu {
     position: absolute;
     right: 0;
