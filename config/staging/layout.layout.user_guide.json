@@ -2,7 +2,7 @@
     "_config_name": "layout.layout.user_guide",
     "path": "node/%",
     "name": "user_guide",
-    "title": "Handbook",
+    "title": "About pages",
     "description": null,
     "renderer_name": "standard",
     "module": null,
@@ -302,19 +302,7 @@
                             "classes": ""
                         }
                     }
-                },
-                "conditions": [
-                    {
-                        "plugin": "path",
-                        "data": {
-                            "settings": {
-                                "visibility_setting": "1",
-                                "paths": "node/4967",
-                                "load_condition_nojs": "Load condition"
-                            }
-                        }
-                    }
-                ]
+                }
             }
         },
         "11f401ca-83f4-4f1d-9c00-bfa4acb3e287": {
