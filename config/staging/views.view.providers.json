@@ -670,6 +670,53 @@
                             "default_group_multiple": [],
                             "group_items": []
                         }
+                    },
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "contains",
+                        "value": "",
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "combine_op",
+                            "label": "Search",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "combine_op",
+                            "identifier": "combine",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "civi": 0,
+                                "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "fields": {
+                            "title": "title",
+                            "body": "body"
+                        }
                     }
                 },
                 "defaults": {
