@@ -83,3 +83,17 @@ function xmlsitemap_engines_update_1001() {
   state_set('xmlsitemap_engines_submit_last', config_get('xmlsitemap.settings', 'engines_submit_last'), 0);
   config_clear('xmlsitemap.settings', 'engines_submit_last');
 }
+
+/**
+ * Remove Bing search engine ping support (discontinued by Bing).
+ */
+function xmlsitemap_engines_update_1002() {
+  $config = config('xmlsitemap.settings');
+  $engines = $config->get('engines');
+  if ($engines && isset($engines['bing'])) {
+    unset($engines['bing']);
+    $config->set('engines', $engines);
+    $config->save();
+    return t('Bing has discontinued their XML sitemap ping services. The corresponding XML sitemap engine was removed.');
+  }
+}

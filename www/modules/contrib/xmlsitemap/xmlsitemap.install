@@ -413,7 +413,7 @@ function xmlsitemap_update_1000() {
   // Make sure all the default config values are set.
   config_install_default_config('xmlsitemap', 'xmlsitemap.settings');
 
-  // Set the xmlsitemap_base_url variale to $GLOBALS['base_url'].
+  // Set the xmlsitemap_base_url variable to $GLOBALS['base_url'].
   $config = config('xmlsitemap.settings');
   $config->set('base_url', $GLOBALS['base_url']);
 
@@ -468,6 +468,22 @@ function xmlsitemap_update_1001() {
  */
 function xmlsitemap_update_1002() {
   _xmlsitemap_sitemap_rehash_all();
+}
+
+/**
+ * Convert robotstxt and redirect variables to config.
+ */
+function xmlsitemap_update_1003() {
+  $config = config('xmlsitemap.settings');
+  if ($config->get('robotstxt') === NULL) {
+    $config->set('robotstxt', update_variable_get('xmlsitemap_robotstxt', 1));
+  }
+  if ($config->get('redirect') === NULL) {
+    $config->set('redirect', update_variable_get('xmlsitemap_redirect', 0));
+  }
+  update_variable_del('xmlsitemap_robotstxt');
+  update_variable_del('xmlsitemap_redirect');
+  $config->save();
 }
 
 /**
