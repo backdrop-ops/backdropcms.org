@@ -278,7 +278,7 @@ function xmlsitemap_modules_disabled(array $modules) {
  * Implements hook_robotstxt().
  */
 function xmlsitemap_robotstxt() {
-  if (variable_get('xmlsitemap_robotstxt', 1)) {
+  if (config_get('xmlsitemap.settings', 'robotstxt')) {
     if ($sitemap = xmlsitemap_sitemap_load_by_context()) {
       $robotstxt[] = 'Sitemap: ' . url($sitemap->uri['path'], $sitemap->uri['options']);
       return $robotstxt;

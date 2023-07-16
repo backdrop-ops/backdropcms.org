@@ -68,6 +68,7 @@ class XMLSitemapWriter extends XMLWriter {
   /**
    * Open URI.
    */
+  #[\ReturnTypeWillChange]
   public function openUri($uri) {
     $return = parent::openUri($uri);
     if (!$return) {
@@ -79,6 +80,7 @@ class XMLSitemapWriter extends XMLWriter {
   /**
    * Start Document.
    */
+  #[\ReturnTypeWillChange]
   public function startDocument($version = '1.0', $encoding = 'UTF-8', $standalone = NULL) {
     $this->setIndent(FALSE);
     $result = parent::startDocument($version, $encoding);
@@ -153,6 +155,7 @@ class XMLSitemapWriter extends XMLWriter {
   /**
    * Start Element.
    */
+  #[\ReturnTypeWillChange]
   public function startElement($name, $root = FALSE) {
     parent::startElement($name);
 
@@ -194,6 +197,7 @@ class XMLSitemapWriter extends XMLWriter {
    *
    * @todo Missing a return value since XMLWriter::writeElement() has one.
    */
+  #[\ReturnTypeWillChange]
   public function writeElement($name, $content = NULL) {
     if (is_array($content)) {
       $this->startElement($name);
@@ -228,6 +232,7 @@ class XMLSitemapWriter extends XMLWriter {
   /**
    * Document.
    */
+  #[\ReturnTypeWillChange]
   public function endDocument() {
     $return = parent::endDocument();
 

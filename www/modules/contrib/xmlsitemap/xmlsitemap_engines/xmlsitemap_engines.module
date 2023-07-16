@@ -215,13 +215,8 @@ function xmlsitemap_engines_get_engine_info($engine = NULL) {
 function xmlsitemap_engines_xmlsitemap_engine_info() {
   $engines['google'] = array(
     'name' => t('Google'),
-    'url' => 'https://www.google.com/webmasters/tools/ping?sitemap=[sitemap]',
-    'help url' => 'https://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=156184',
-  );
-  $engines['bing'] = array(
-    'name' => t('Bing'),
-    'url' => 'https://www.bing.com/webmaster/ping.aspx?siteMap=[sitemap]',
-    'help url' => 'https://www.bing.com/webmaster',
+    'url' => 'https://www.google.com/ping?sitemap=[sitemap]',
+    'help url' => 'https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap',
   );
   return $engines;
 }
