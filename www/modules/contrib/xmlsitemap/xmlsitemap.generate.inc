@@ -204,7 +204,7 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
     $link['language'] = $link['language'] != LANGUAGE_NONE ? xmlsitemap_language_load($link['language']) : $url_options['language'];
     $parsed_url = backdrop_parse_url($link['loc']);
     // Skip nodes which are 301 redirected.
-    if (variable_get('xmlsitemap_redirect')) {
+    if (config_get('xmlsitemap.settings', 'redirect')) {
       $relative_redirect = redirect_fetch_rids_by_path($link['loc'], $link['language']->language, TRUE);
       $alias_redirect = redirect_fetch_rids_by_path(ltrim(url($link['loc']), '/'), $link['language']->language, TRUE);
       // If node contains a 301 redirect we skip it.
