@@ -30,7 +30,8 @@
             "73d1feb9-4846-4d8a-a308-8f7d6e972a9a",
             "17c3e7e6-2f99-492b-a400-f994fcbccc90",
             "89d0e596-9881-41cf-9d5f-95d793000534",
-            "7f6fad2e-fbc8-45fc-ac58-884728c8236a"
+            "7f6fad2e-fbc8-45fc-ac58-884728c8236a",
+            "9fa40bbc-fd4c-4128-8500-c04306609ee7"
         ],
         "bottom": [],
         "footer": [
@@ -323,6 +324,36 @@
                     "admin_description": ""
                 },
                 "uuid": "7f6fad2e-fbc8-45fc-ac58-884728c8236a",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "9fa40bbc-fd4c-4128-8500-c04306609ee7": {
+            "plugin": "block:books",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "books",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "books",
+                        "description": "",
+                        "reusable": true
+                    },
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "9fa40bbc-fd4c-4128-8500-c04306609ee7",
                 "style": {
                     "plugin": "default",
                     "data": {
