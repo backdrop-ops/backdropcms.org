@@ -454,12 +454,14 @@ function system_element_info() {
     '#element_validate' => array('html_date_validate'),
     '#theme' => 'html_date',
     '#theme_wrappers' => array('form_element'),
+    '#value_callback' => 'html_date_or_time_value_callback',
   );
   $types['html_time'] = array(
     '#input' => TRUE,
     '#element_validate' => array('html_time_validate'),
     '#theme' => 'html_time',
     '#theme_wrappers' => array('form_element'),
+    '#value_callback' => 'html_date_or_time_value_callback',
   );
   $types['html_datetime'] = array(
     '#input' => TRUE,
@@ -637,7 +639,6 @@ function system_menu() {
   $items['admin/structure'] = array(
     'title' => 'Structure',
     'description' => 'Administer blocks, content types, menus, etc.',
-    'position' => 'right',
     'weight' => -2,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -649,7 +650,6 @@ function system_menu() {
     'description' => 'Select and configure themes.',
     'page callback' => 'system_themes_page',
     'access arguments' => array('administer themes'),
-    'position' => 'left',
     'weight' => -4,
     'file' => 'system.admin.inc',
   );
@@ -743,7 +743,6 @@ function system_menu() {
   $items['admin/config/administration'] = array(
     'title' => 'Administration',
     'description' => 'Administration tools.',
-    'position' => 'left',
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
     'file' => 'system.admin.inc',
@@ -752,7 +751,6 @@ function system_menu() {
   $items['admin/config/media'] = array(
     'title' => 'Media',
     'description' => 'Media tools.',
-    'position' => 'left',
     'weight' => -10,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -790,7 +788,6 @@ function system_menu() {
   $items['admin/config/services'] = array(
     'title' => 'Web services',
     'description' => 'Tools related to web services.',
-    'position' => 'right',
     'weight' => 0,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -809,7 +806,6 @@ function system_menu() {
   $items['admin/config/development'] = array(
     'title' => 'Development',
     'description' => 'Development tools.',
-    'position' => 'right',
     'weight' => -10,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -856,7 +852,6 @@ function system_menu() {
   $items['admin/config/regional'] = array(
     'title' => 'Regional and language',
     'description' => 'Regional settings, localization and translation.',
-    'position' => 'left',
     'weight' => -5,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -922,7 +917,6 @@ function system_menu() {
   $items['admin/config/search'] = array(
     'title' => 'Search',
     'description' => 'Local site search settings.',
-    'position' => 'left',
     'weight' => -10,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -933,7 +927,6 @@ function system_menu() {
   $items['admin/config/system'] = array(
     'title' => 'System',
     'description' => 'General system related configuration.',
-    'position' => 'right',
     'weight' => -20,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -962,7 +955,6 @@ function system_menu() {
   $items['admin/config/urls'] = array(
     'title' => 'URL handling',
     'description' => 'Settings related to URLs including URL aliases and URL redirects.',
-    'position' => 'right',
     'weight' => -20,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -1011,7 +1003,6 @@ function system_menu() {
   $items['admin/config/content'] = array(
     'title' => 'Content authoring',
     'description' => 'Settings related to formatting and authoring content.',
-    'position' => 'left',
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
     'file' => 'system.admin.inc',
@@ -1019,7 +1010,6 @@ function system_menu() {
   $items['admin/config/metadata'] = array(
     'title' => 'Metadata',
     'description' => 'Settings related to meta tags, and other data commonly used by search engines.',
-    'position' => 'left',
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
     'file' => 'system.admin.inc',
@@ -1027,7 +1017,6 @@ function system_menu() {
   $items['admin/config/user-interface'] = array(
     'title' => 'User interface',
     'description' => 'Tools that enhance the user interface.',
-    'position' => 'right',
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
     'file' => 'system.admin.inc',
@@ -1035,7 +1024,6 @@ function system_menu() {
   $items['admin/config/workflow'] = array(
     'title' => 'Workflow',
     'description' => 'Settings related to editorial workflow.',
-    'position' => 'right',
     'weight' => 5,
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access administration pages'),
@@ -1049,7 +1037,6 @@ function system_menu() {
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('access site reports'),
     'weight' => 5,
-    'position' => 'left',
     'file' => 'system.admin.inc',
   );
   $items['admin/reports/status'] = array(
@@ -3821,21 +3808,6 @@ function system_image_toolkits() {
       'available' => function_exists('image_gd_check_settings') && image_gd_check_settings(),
     ),
   );
-}
-
-/**
- * Implements hook_image_supported_extensions_alter().
- *
- * Add webp to supported file extensions if GD is the active image toolkit and
- * the GD version supports WebP.
- */
-function system_image_supported_extensions_alter(&$supported_extensions) {
-  if (config_get('system.core', 'image_toolkit') == 'gd' && defined('IMAGETYPE_WEBP')) {
-    $gd_info = gd_info();
-    if (isset($gd_info['WebP Support']) && $gd_info['WebP Support'] == TRUE) {
-      $supported_extensions[] = 'webp';
-    }
-  }
 }
 
 /**
