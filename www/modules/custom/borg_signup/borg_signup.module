@@ -1,0 +1,296 @@
+<?php
+/**
+ * @file
+ * Newsletter signup block for backdropcms.org and *.backdropcms.org sites.
+ */
+
+/**
+ * CiviCRM Group ID for the Newsletter
+ */
+define('BORG_SIGNUP_GROUP_NEWSLETTER', 'Newsletter_5');
+
+/**
+ * Implements hook_menu().
+ */
+function borg_signup_menu() {
+  $items = array();
+
+  $items['borg-signup'] = array(
+    'title' => 'Newsletter Signup',
+    'description' => 'Menu callback for signing up for the Newsletter',
+    'page callback' => 'borg_signup_processor',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function borg_signup_block_info() {
+  $blocks['newsletter'] = array(
+    'info' => t('Newsletter Signup'),
+    'description' => t('Signup block for the BackdropCMS Newsletter.'),
+    'render last' => TRUE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function borg_signup_block_view($delta = '', $settings = array(), $contexts = array()) {
+  $block = array();
+  switch ($delta) {
+    case 'newsletter':
+      $block['subject'] = t('Sign up for our newsletter');
+      $block['content'] = backdrop_get_form('borg_signup_newsletter_form');
+      return $block;
+  }
+}
+
+/**
+ * Form for the Newsletter signup block.
+ */
+function borg_signup_newsletter_form($form, &$form_state) {
+  if (user_is_logged_in()) {
+    global $user;
+    $email = $user->mail;
+  }
+  $form['email'] = array(
+    '#type' => 'email',
+    '#title' => t('Email address'),
+    '#default_value' => isset($email) ? $email : '',
+  );
+  $form['confirm'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('I agree to receive this newsletter, and understand that I can easily unsubscribe at any time by using the link in any email.'),
+    '#default_value' => TRUE,
+    '#required' => TRUE,
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
+
+  $form['actions']['signup'] = array(
+    '#type' => 'submit',
+    '#description' => t('Sign up for the BackdropCMS Newsletter.'),
+    '#value' => t('Sign up'),
+    '#submit' => array('borg_signup_newsletter_form_submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submission function for the Newsletter signup form.
+ */
+function borg_signup_newsletter_form_submit($form, &$form_state) {
+  $email = $form_state['values']['email'];
+
+  $params = array(
+    'email' => $email,
+    'borg_signup_key' => BORG_SIGNUP_KEY,
+  );
+  $post_data = http_build_query($params);
+
+  $backdrop_http_request_options = array(
+    'method' => 'POST',
+    'data' => $post_data,
+    'timeout' => 15,
+    'headers' => array(
+      'Content-Type' => 'application/x-www-form-urlencoded',
+    ),
+  );
+  $request = backdrop_http_request(BORG_SIGNUP_URL, $backdrop_http_request_options);
+
+  // Log any HTTP errors.
+  $benign_reponse_codes = array('200', '301', '302', '307');
+  global $base_url;
+  if (isset($request->code) && !in_array($request->code, $benign_reponse_codes)) {
+    $log_msg = 'A signup request to %url from %base_url returned a \'%code\' code, which is a different HTTP response code than expected. Please check whether the post was received in the remote system.';
+    watchdog(
+      'borg_signup',
+      $log_msg,
+      array(
+        '%url'  => BORG_SIGNUP_URL,
+        '%base_url' => $base_url,
+        '%code' => $request->code,
+      ),
+      WATCHDOG_WARNING);
+  }
+
+  // Display any errors returned by the signup processor.
+  if (isset($request->data)) {
+    $result = _borg_signup_info($request->data, $email);
+    backdrop_set_message($result['message'], $result['status']);
+  }
+  else {
+    backdrop_set_message(t('Unable to communicate with the server.'), 'error');
+  }
+}
+
+/**
+ * Processor function for signing up an email address for the Newsletter. This
+ * only gets called on the main server. This function serves up the web response
+ * from an HTTP request to the main server.
+ */
+function borg_signup_processor() {
+
+  if (!module_exists('civicrm')) {
+    $result = 'error_no_civicrm';
+  }
+  elseif (!isset($_POST['email'])) {
+    $result = 'error_no_email';
+  }
+  elseif (!isset($_POST['borg_signup_key'])) {
+    $result = 'error_no_key';
+  }
+  elseif ($_POST['borg_signup_key'] != BORG_SIGNUP_KEY) {
+    $result = 'error_bad_key';
+  }
+  else {
+    $result = _borg_signup_email($_POST['email']);
+  }
+
+  ob_end_clean();
+  $http_headers = array(
+    'Content-Length' => strlen($result),
+    'Content-Type' => 'text/plain; charset=utf-8',
+  );
+  foreach ($http_headers as $header => $value) {
+    $value = preg_replace('/\r?\n(?!\t| )/', '', $value);
+    backdrop_add_http_header($header, $value);
+  }
+  print $result;
+  exit();
+}
+
+/**
+ * Handler for signing up an email address for the Newsletter. This only gets
+ * called on the main server.
+ *
+ * @return string
+ *   A result code indicating the outcome of the signup attempt.
+ */
+function _borg_signup_email($email) {
+
+  civicrm_initialize();
+
+  // See if a contact already exists with this email address.
+  $result = civicrm_api3('Email', 'get', [
+    'sequential' => 1,
+    'email' => $email,
+    'is_primary' => 1,
+    'options' => ['limit' => 1],
+  ]);
+  if ($result['count']) {
+    $contact_id = $result['values'][0]['contact_id'];
+  }
+  else {
+    // Create a new contact record with this email address as the name.
+    $result = civicrm_api3('Contact', 'create', [
+      'contact_type' => "Individual",
+      'last_name' => $email,
+      'source' => t('Newsletter signup'),
+    ]);
+    $contact_id = $result['id'];
+
+    // Add the email to the contact.
+    $result = civicrm_api3('Email', 'create', [
+      'contact_id' => $contact_id,
+      'email' => $email,
+    ]);
+  }
+
+  // See if a GroupContact already exists for this contact and update if it
+  // does, otherwise create a new GroupContact.
+  $result = civicrm_api3('GroupContact', 'get', [
+    'sequential' => 1,
+    'contact_id' => $contact_id,
+    'group_id' => BORG_SIGNUP_GROUP_NEWSLETTER,
+  ]);
+  if (!$result['count']) {
+    // Create a new GroupContact adding the contact to the group.
+    $result = civicrm_api3('GroupContact', 'create', [
+      'contact_id' => $contact_id,
+      'group_id' => BORG_SIGNUP_GROUP_NEWSLETTER,
+    ]);
+    if ($result['added']) {
+      return 'success_subscribed';
+    }
+    else {
+      return 'success_resubscribed';
+    }
+  }
+  else {
+    // There was already a GroupContact for this contact and group.
+      return 'already_subscribed';
+  }
+}
+
+/**
+ * Return an explanatory message and a status code for any result code returned
+ * by the signup processor.
+ */
+function _borg_signup_info($result, $email) {
+  switch ($result) {
+    case 'error_no_civicrm':
+      return array(
+        'message' => t('The CiviCRM module is not installed.'),
+        'status' => 'error',
+      );
+      break;
+
+    case 'error_no_email':
+      return array(
+        'message' => t('There was no email in the POST parameters.'),
+        'status' => 'error',
+      );
+      break;
+
+    case 'error_no_key':
+      return array(
+        'message' => t('There was no signup key in the POST parameters.'),
+        'status' => 'error',
+      );
+      break;
+
+    case 'err_bad_key':
+      return array(
+        'message' => t('The signup key in the POST parameters was incorrect.'),
+        'status' => 'error',
+      );
+      break;
+
+    case 'already_subscribed':
+      return array(
+        'message' => t('%email was already subscribed to the Newsletter.', array('%email' => $email)),
+        'status' => 'warning',
+      );
+      break;
+
+    case 'success_subscribed':
+      return array(
+        'message' => t('%email has been subscribed to the Newsletter.', array('%email' => $email)),
+        'status' => 'status',
+      );
+      break;
+
+    case 'success_resubscribed':
+      return array(
+        'message' => t('%email has been re-subscribed to the Newsletter.', array('%email' => $email)),
+        'status' => 'status',
+      );
+      break;
+
+    default:
+      return array(
+        'status' => 'error',
+        'message' => t('Unknown result code %result', array('%result' => $result)),
+      );
+  }
+}
