@@ -1,12 +1,11 @@
 <?php
-
 /**
  * @file
- * colorbox.views.inc
+ * Views data definitions of the Colorbox module.
  */
 
 /**
- * Implementation of hook_views_data()
+ * Implements hook_views_data().
  */
 function colorbox_views_data() {
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * A light-weight, customizable lightbox plugin for jQuery 1.3
+ * A light-weight, customizable lightbox plugin for jQuery 1.3.
  */
 
 /**
@@ -38,26 +38,25 @@ function colorbox_theme() {
       ),
       'file' => 'colorbox.theme.inc',
     ),
-
     'colorbox_insert_image' => array(
       'variables' => array(
         'item' => NULL,
         'widget' => NULL,
       ),
-      'template' => 'colorbox-insert-image',
+      'template' => 'templates/colorbox-insert-image',
       'pattern' => 'colorbox_insert_image__[a-z0-9_]+',
       'file' => 'colorbox.theme.inc',
     ),
-
     'colorbox_image_formatter' => array(
       'variables' => array(
         'item' => NULL,
         'entity_type' => NULL,
         'entity' => NULL,
-        'node' => NULL,  // Left for legacy support.
+        // Left for legacy support.
+        'node' => NULL,
         'field' => array(),
         'display_settings' => array(),
-        'delta' => null,
+        'delta' => NULL,
       ),
       'file' => 'colorbox.theme.inc',
     ),
@@ -69,8 +68,9 @@ function colorbox_theme() {
  */
 function colorbox_init() {
   // Do not load colorbox during the Backdrop installation process, e.g. if part
-  // of installation profiles.
-  if (!backdrop_installation_attempted()) {
+  // of installation profiles. Only add the JavaScript and CSS on specified
+  // paths.
+  if (!backdrop_installation_attempted() && _colorbox_active()) {
     _colorbox_doheader();
   }
 }
@@ -89,12 +89,13 @@ function colorbox_views_api() {
  * Implements hook_library_info().
  */
 function colorbox_library_info() {
+  $colorbox_path = backdrop_get_path('module', 'colorbox');
   $libraries['colorbox'] = array(
     'title' => 'Colorbox',
     'website' => 'http://www.jacklmoore.com/colorbox',
     'version' => '1.6.4',
     'js' => array(
-      backdrop_get_path('module', 'colorbox') . '/libraries/colorbox/jquery.colorbox-min.js' => array(),
+      $colorbox_path . '/libraries/colorbox/jquery.colorbox-min.js' => array(),
     ),
   );
   $libraries['colorbox-source'] = array(
@@ -102,7 +103,23 @@ function colorbox_library_info() {
     'website' => 'http://www.jacklmoore.com/colorbox',
     'version' => '1.6.4',
     'js' => array(
-      backdrop_get_path('module', 'colorbox') . '/libraries/colorbox/jquery.colorbox.js' => array(),
+      $colorbox_path . '/libraries/colorbox/jquery.colorbox.js' => array(),
+    ),
+  );
+  $libraries['DOMPurify'] = array(
+    'title' => 'DOMPurify',
+    'website' => 'https://github.com/cure53/DOMPurify',
+    'version' => '2.3.6',
+    'js' => array(
+      $colorbox_path . '/libraries/DOMPurify/dist/purify.min.js' => array(),
+    ),
+  );
+  $libraries['DOMPurify-source'] = array(
+    'title' => 'DOMPurify',
+    'website' => 'https://github.com/cure53/DOMPurify',
+    'version' => '2.3.6',
+    'js' => array(
+      $colorbox_path . '/libraries/DOMPurify/dist/purify.js' => array(),
     ),
   );
 
@@ -130,7 +147,7 @@ function colorbox_menu() {
 /**
  * Check if Colorbox should be active for the current URL.
  *
- * @return
+ * @return bool
  *   TRUE if Colorbox should be active for the current page.
  */
 function _colorbox_active() {
@@ -159,14 +176,12 @@ function _colorbox_active() {
 function _colorbox_doheader() {
   static $already_added = FALSE;
   if ($already_added) {
-    return; // Don't add the JavaScript and CSS multiple times.
-  }
-  if (!_colorbox_active()) {
-    return; // Don't add the JavaScript and CSS on specified paths.
+    // Don't add the JavaScript and CSS multiple times.
+    return;
   }
 
   $config = config('colorbox.settings');
-  // Insert options and translated strings as javascript settings.
+  // Insert options and translated strings as JavaScript settings.
   if ($config->get('colorbox_custom_settings_activate')) {
     $js_settings = array(
       'transition' => $config->get('colorbox_transition_type'),
@@ -182,6 +197,7 @@ function _colorbox_doheader() {
       'next' => strip_tags($config->get('colorbox_text_next')),
       'close' => strip_tags($config->get('colorbox_text_close')),
       'overlayClose' => $config->get('colorbox_overlayclose') ? TRUE : FALSE,
+      'returnFocus' => $config->get('colorbox_returnfocus') ? TRUE : FALSE,
       'maxWidth' => $config->get('colorbox_maxwidth'),
       'maxHeight' => $config->get('colorbox_maxheight'),
       'initialWidth' => $config->get('colorbox_initialwidth'),
@@ -207,6 +223,11 @@ function _colorbox_doheader() {
     );
   }
 
+  // Determine URL path to public files.
+  $file_public_path = config_get('system.core', 'file_public_path');
+  $js_settings['file_public_path'] = base_path() . $file_public_path;
+  $js_settings['specificPagesDefaultValue'] = "admin*\nimagebrowser*\nimg_assist*\nimce*\nnode/add/*\nnode/*/edit\nprint/*\nprintpdf/*\nsystem/ajax\nsystem/ajax/*";
+
   $path = backdrop_get_path('module', 'colorbox');
   $style = config_get('colorbox.settings', 'colorbox_style');
 
@@ -216,13 +237,20 @@ function _colorbox_doheader() {
 
   backdrop_add_js(array('colorbox' => $js_settings), array('type' => 'setting', 'scope' => JS_DEFAULT));
 
-  // Add and initialise the Colorbox plugin.
+  // Add and initialize the Colorbox and DOMPurify libraries.
   $variant = config_get('colorbox.settings', 'colorbox_compression_type');
+  $dompurify = config_get('colorbox.settings', 'colorbox_dompurify_include');
   if ($variant == 'minified') {
     backdrop_add_library('colorbox', 'colorbox');
+    if ($dompurify) {
+      backdrop_add_library('colorbox', 'DOMPurify');
+    }
   }
   elseif ($variant == 'source') {
     backdrop_add_library('colorbox', 'colorbox-source');
+    if ($dompurify) {
+      backdrop_add_library('colorbox', 'DOMPurify-source');
+    }
   }
 
   backdrop_add_js($path . '/js/colorbox.js');
@@ -231,12 +259,14 @@ function _colorbox_doheader() {
   switch ($style) {
     case 'none':
       break;
+
     case 'default':
     case 'plain':
     case 'stockholmsyndrome':
       backdrop_add_css($path . '/styles/' . $style . '/colorbox_style.css');
       backdrop_add_js($path . '/styles/' . $style . '/colorbox_style.js');
       break;
+
     default:
       backdrop_add_css($style . '/colorbox.css');
   }
@@ -340,7 +370,7 @@ function colorbox_field_formatter_settings_form($field, $instance, $view_mode, $
   );
 
   $caption = array(
-    'auto' =>  t('Automatic'),
+    'auto' => t('Automatic'),
     'title' => t('Title text'),
     'alt' => t('Alt text'),
     'node_title' => t('Content title'),
@@ -365,27 +395,24 @@ function colorbox_field_formatter_settings_form($field, $instance, $view_mode, $
     ),
   );
   // Allow users to hide or set a custom recursion limit.
-  // The module token_tweaks sets a global recursion limit that can not be bypassed.
-  if (module_exists('token') && $recursion_limit = min(config_get('colorbox.settings', 'token_tree_recursion_limit'), config_get('colorbox.settings', 'colorbox_token_recursion_limit'))) {
+  // The module token_tweaks sets a global recursion limit that can not be
+  // bypassed.
+  if ($recursion_limit = min(config_get('colorbox.settings', 'token_tree_recursion_limit'), config_get('colorbox.settings', 'colorbox_token_recursion_limit'))) {
+    // File entities do not have $field, only $instance.
+    if (!empty($field['bundles'])) {
+      $token_types = array_merge(array_keys($field['bundles']), array('file'));
+    }
+    else {
+      $token_types = array($instance['entity_type'], 'file');
+    }
+
     $element['colorbox_token'] = array(
       '#type' => 'fieldset',
       '#title' => t('Replacement patterns'),
       '#theme' => 'token_tree',
-      '#token_types' => array($instance['entity_type'], 'file'),
+      '#token_types' => $token_types,
       '#recursion_limit' => $recursion_limit,
       '#dialog' => TRUE,
-      '#states' => array(
-        'visible' => array(
-          ':input[name$="[settings_edit_form][settings][colorbox_caption]"]' => array('value' => 'custom'),
-        ),
-      ),
-    );
-  }
-  else {
-    $element['colorbox_token'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Replacement patterns'),
-      '#description' => '<strong class="error">' . t('For token support the <a href="@token_url">token module</a> must be installed.', array('@token_url' => 'http://drupal.org/project/token')) . '</strong>',
       '#states' => array(
         'visible' => array(
           ':input[name$="[settings_edit_form][settings][colorbox_caption]"]' => array('value' => 'custom'),
@@ -454,7 +481,7 @@ function colorbox_field_formatter_settings_summary($field, $instance, $view_mode
   }
 
   $caption = array(
-    'auto' =>  t('Automatic'),
+    'auto' => t('Automatic'),
     'title' => t('Title text'),
     'alt' => t('Alt text'),
     'node_title' => t('Content title'),
@@ -482,7 +509,8 @@ function colorbox_field_formatter_view($entity_type, $entity, $field, $instance,
         '#item' => $item,
         '#entity_type' => $entity_type,
         '#entity' => $entity,
-        '#node' => $entity, // Left for legacy support.
+      // Left for legacy support.
+        '#node' => $entity,
         '#field' => $field,
         '#display_settings' => $display['settings'],
         '#delta' => $delta,
@@ -495,6 +523,8 @@ function colorbox_field_formatter_view($entity_type, $entity, $field, $instance,
 
 /**
  * Implements hook_insert_styles().
+ *
+ * @todo Does the Backdrop version of Insert actually ship with this hook?
  */
 function colorbox_insert_styles() {
   $insert_styles = array();
@@ -511,14 +541,20 @@ function colorbox_insert_styles() {
  */
 function colorbox_insert_content($item, $style, $widget) {
   list($item['module_name'], $item['style_name']) = explode('__', $style['name'], 2);
-  return theme(array('colorbox_insert_image__' . str_replace('-', '_', $item['style_name']), 'colorbox_insert_image'), array('item' => $item, 'widget' => $widget));
+  return theme(array('colorbox_insert_image__' . str_replace('-', '_', $item['style_name']), 'colorbox_insert_image'), array(
+    'item' => $item,
+    'widget' => $widget,
+  ));
 }
 
 /**
- * Machine names normally need to be unique but that does not apply to galleries.
+ * Helper function.
  *
- * @return
- *   Always FALSE
+ * Machine names normally need to be unique but that does not apply to
+ * galleries.
+ *
+ * @return bool
+ *   Always FALSE.
  */
 function colorbox_gallery_exists() {
   return FALSE;

@@ -1,10 +1,24 @@
+/**
+ * @file
+ * Colorbox module inline js.
+ */
+
 (function ($) {
 
 Backdrop.behaviors.initColorboxInline = {
   attach: function (context, settings) {
-    if (!$.isFunction($.colorbox)) {
+    if (!$.isFunction($.colorbox) || typeof settings.colorbox === 'undefined') {
       return;
     }
+
+    if (settings.colorbox.mobiledetect && window.matchMedia) {
+      // Disable Colorbox for small screens.
+      var mq = window.matchMedia("(max-device-width: " + settings.colorbox.mobiledevicewidth + ")");
+      if (mq.matches) {
+        return;
+      }
+    }
+
     $.urlParam = function(name, url){
       if (name == 'fragment') {
         var results = new RegExp('(#[^&#]*)').exec(url);
@@ -38,7 +52,8 @@ Backdrop.behaviors.initColorboxInline = {
         return $.urlParam('height', $(this).attr('href'));
       },
       title:function(){
-        return decodeURIComponent($.urlParam('title', $(this).attr('href')));
+        return Backdrop.colorbox.sanitizeMarkup(
+          decodeURIComponent($.urlParam('title', $(this).attr('href'))));
       },
       iframe:function(){
         return $.urlParam('iframe', $(this).attr('href'));

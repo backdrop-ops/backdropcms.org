@@ -24,10 +24,6 @@ bakery - Prevent PHP 7.2 errors about deprecated mcrypt.
   https://github.com/backdrop-contrib/bakery/issues/8
   https://github.com/backdrop-contrib/bakery/pull/9.patch
 
-colorbox - Remove dependance on libraries API
-  https://github.com/backdrop-contrib/colorbox/issues/9
-  https://github.com/backdrop-contrib/colorbox/pull/10.patch
-
 spambot - move last checked uid to state
   https://github.com/backdrop-contrib/spambot/issues/4
   https://github.com/backdrop-contrib/spambot/pull/5.patch

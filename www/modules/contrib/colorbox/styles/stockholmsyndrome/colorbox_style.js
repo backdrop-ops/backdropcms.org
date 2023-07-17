@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Colorbox module style js.
+ */
+
 (function ($) {
 
 Backdrop.behaviors.initColorboxStockholmsyndromeStyle = {

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Views handlers for Colorbox module.
@@ -11,11 +10,19 @@
  * @ingroup views_field_handlers
  */
 class colorbox_handler_field_colorbox extends views_handler_field {
-  function query() {
-    // Do nothing, as this handler does not need to do anything to the query itself.
+
+  /**
+   * {@inheritdoc}
+   */
+  public function query() {
+    // Do nothing, as this handler does not need to do anything to the query
+    // itself.
   }
 
-  function option_definition() {
+  /**
+   * {@inheritdoc}
+   */
+  public function option_definition() {
     $options = parent::option_definition();
 
     $options['trigger_field'] = array('default' => '');
@@ -29,10 +36,14 @@ class colorbox_handler_field_colorbox extends views_handler_field {
     return $options;
   }
 
-  function options_form(&$form, &$form_state) {
+  /**
+   * {@inheritdoc}
+   */
+  public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
-    // Get a list of the available fields and arguments for trigger field and token replacement.
+    // Get a list of the available fields and arguments for trigger field and
+    // token replacement.
     $options = array();
     $fields = array('trigger_field' => t('- None -'));
     foreach ($this->view->display_handler->get_handlers('field') as $field => $handler) {
@@ -44,8 +55,9 @@ class colorbox_handler_field_colorbox extends views_handler_field {
 
       $fields[$field] = $handler->definition['title'];
     }
-    $count = 0; // This lets us prepare the key as we want it printed.
-    foreach ($this->view->display_handler->get_handlers('argument') as $arg => $handler) {
+    // This lets us prepare the key as we want it printed.
+    $count = 0;
+    foreach ($this->view->display_handler->get_handlers('argument') as $handler) {
       $options[t('Arguments')]['%' . ++$count] = t('@argument title', array('@argument' => $handler->ui_name()));
       $options[t('Arguments')]['!' . $count] = t('@argument input', array('@argument' => $handler->ui_name()));
     }
@@ -67,7 +79,7 @@ If you would like to have the characters %5B and %5D please use the html entity 
           $patterns .= theme('item_list',
             array(
               'items' => $items,
-              'type' => $type
+              'type' => $type,
             ));
         }
       }
@@ -142,9 +154,9 @@ If you would like to have the characters %5B and %5D please use the html entity 
   /**
    * Render the trigger field and its linked popup information.
    */
-  function render($values) {
+  public function render($values) {
     // Load the necessary js file for Colorbox activation.
-    if (_colorbox_active() && !config_get('colorbox.settings', 'colorbox_inline')) { 
+    if (_colorbox_active() && !config_get('colorbox.settings', 'colorbox_inline')) {
       backdrop_add_js(backdrop_get_path('module', 'colorbox') . '/js/colorbox_inline.js');
     }
 
@@ -158,14 +170,21 @@ If you would like to have the characters %5B and %5D please use the html entity 
     }
 
     // Get the token information and generate the value for the popup and the
-    // caption.
+    // caption. @todo try to replace this with token_replace().
     $tokens = $this->get_render_tokens($this->options['alter']);
+
     $popup = filter_xss_admin($this->options['popup']);
     $caption = filter_xss_admin($this->options['caption']);
-    $gallery = backdrop_html_class($this->options['custom_gid']);
+    $gallery = filter_xss_admin($this->options['custom_gid']);
+
     $popup = strtr($popup, $tokens);
     $caption = strtr($caption, $tokens);
-    $gallery = strtr($gallery, $tokens);
+    $gallery = backdrop_html_class(strtr($gallery, $tokens));
+
+    // Return nothing if popup is empty.
+    if (empty($popup)) {
+      return;
+    }
 
     $width = $this->options['width'] ? $this->options['width'] : '';
     $height = $this->options['height'] ? $this->options['height'] : '';
@@ -178,12 +197,12 @@ If you would like to have the characters %5B and %5D please use the html entity 
         'width' => $width,
         'height' => $height,
         'title' => $caption,
-        'inline' => 'true'
+        'inline' => 'true',
       ),
       'attributes' => array(
         'class' => array('colorbox-inline'),
-        'rel' => $gallery_id
-      )
+        'rel' => $gallery_id,
+      ),
     );
     // Remove any parameters that aren't set.
     $link_options['query'] = array_filter($link_options['query']);
@@ -193,8 +212,9 @@ If you would like to have the characters %5B and %5D please use the html entity 
     $link_target = isset($values->nid) ? 'node/' . $values->nid : '';
     $link_tag = l($link_text, $link_target, $link_options);
 
-    // The outside div is there to hide all of the divs because if the specific Colorbox
-    // div is hidden it won't show up as a Colorbox.
+    // The outside div is there to hide all of the divs because if the specific
+    // Colorbox div is hidden it won't show up as a Colorbox.
     return $link_tag . '<div style="display: none;"><div id="colorbox-inline-' . $i . '">' . $popup . '</div></div>';
   }
+
 }

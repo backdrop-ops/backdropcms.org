@@ -5,12 +5,24 @@
  */
 
 /**
+ * Implements hook_enable().
+ */
+function colorbox_enable() {
+  backdrop_set_message(t('Thanks for installing Colorbox! You may configure Colorbox by visiting <a href="@url_settings">@url_settings</a>', array(
+    '@url_settings' => url('admin/config/media/colorbox'),
+  )));
+}
+
+/**
  * Implements hook_uninstall().
  */
 function colorbox_uninstall() {
   db_delete('variable')->condition('name', db_like('colorbox_') . '%', 'LIKE')->execute();
 }
 
+/**
+ * Convert Drupal variables to config.
+ */
 function colorbox_update_1000() {
   $config = config('colorbox.settings');
 
