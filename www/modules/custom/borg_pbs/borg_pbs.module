@@ -80,8 +80,7 @@ function borg_pbs_project_browser_server_query($filters) {
     // Create a subquery based on the search index table.
     // See node_search_execute().
     $search_query = db_select('search_index', 'i', array('target' => 'slave'))
-      ->extend('SearchQuery')
-      ->extend('PagerDefault');
+      ->extend('SearchQuery');
     $search_query->join('node', 'n', 'n.nid = i.sid');
     $search_query->condition('n.status', 1);
     $search_query->addTag('node_access');
