@@ -156,7 +156,7 @@ function _borg_mailers_security_worker($node) {
     $queue->createItem($node->nid);
 
     // Set a watchdog message and print a message for the user.
-    watchdog('borg_mailers_security', t('Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.'));
+    watchdog('borg_mailers_security', 'Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.');
     backdrop_set_message(t('Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.'));
   }
 }
@@ -186,7 +186,7 @@ function _borg_mailers_security_cron_send_email($nid) {
   _borg_mailers_record_mail_sent($nid);
 
   $link = l($node->label(), 'node/' . $node->nid);
-  watchdog('borg_mailers_security', t('Starting mail send to Backdrop CMS Security list subscribers for !link.'), array('!link' => $link), WATCHDOG_NOTICE, NULL);
+  watchdog('borg_mailers_security', 'Starting mail send to Backdrop CMS Security list subscribers for !link.', array('!link' => $link), WATCHDOG_NOTICE, NULL);
 
   // Allow for a longer execution time to send these emails.
   if (ini_get('max_execution_time') < 600) {
@@ -204,7 +204,7 @@ function _borg_mailers_security_cron_send_email($nid) {
 
   $time_elapsed = format_interval(microtime(TRUE) - $start_time);
 
-  watchdog('borg_mailers_security', t('@count emails sent in @time to Backdrop CMS Security list subscribers for !link.'), array(
+  watchdog('borg_mailers_security', '@count emails sent in @time to Backdrop CMS Security list subscribers for !link.', array(
     '@count' => count($addresses),
     '@time' => $time_elapsed,
     '!link' => $link,
