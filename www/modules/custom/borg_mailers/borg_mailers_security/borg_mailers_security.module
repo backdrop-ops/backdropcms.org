@@ -146,20 +146,18 @@ function _borg_mailers_record_mail_sent($nid) {
  * @see _borg_mailers_record_mail_sent().
  */
 function _borg_mailers_security_worker($node) {
-  // Check if we have sent mail for this node already.
-  $sent = _borg_mailers_check_if_already_sent($node->nid);
+  // Check if we have sent (or started sending) mail for this node already.
+  if (_borg_mailers_check_if_already_sent($node->nid)) {
+    return;
+  }
 
-  if (!$sent) {
-    if (($node->type == 'sa') && $node->status == 1) {
-      $queue = BackdropQueue::get('borg_mailers_security_cron_send_email');
-      $queue->createItem($node->nid);
+  if (($node->type == 'sa') && $node->status == NODE_PUBLISHED) {
+    $queue = BackdropQueue::get('borg_mailers_security_cron_send_email');
+    $queue->createItem($node->nid);
 
-      // Set a watchdog message and print a message for the user.
-      backdrop_set_message(t('Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.'));
-
-      // Record that the message has been queued to be sent.
-      _borg_mailers_record_mail_sent($node->nid);
-    }
+    // Set a watchdog message and print a message for the user.
+    watchdog('borg_mailers_security', 'Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.');
+    backdrop_set_message(t('Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.'));
   }
 }
 
@@ -176,12 +174,23 @@ function _borg_mailers_security_cron_send_email($nid) {
     return;
   }
 
+  // Don't send if we've already started the job (needed in case of overlapping
+  // queue item execution).
+  if (_borg_mailers_check_if_already_sent($nid)) {
+    return;
+  }
+
+  // Record that we've sent the mails even before we start so that if a second
+  // copy of the queue item gets triggered before we're done we won't send
+  // duplicate emails.
+  _borg_mailers_record_mail_sent($nid);
+
   $link = l($node->label(), 'node/' . $node->nid);
-  watchdog('borg_mailers_security', t('Starting mail send to Backdrop CMS Security list subscribers for !link.'), array('!link' => $link), WATCHDOG_NOTICE, NULL);
+  watchdog('borg_mailers_security', 'Starting mail send to Backdrop CMS Security list subscribers for !link.', array('!link' => $link), WATCHDOG_NOTICE, NULL);
 
   // Allow for a longer execution time to send these emails.
-  if (ini_get('max_execution_time') < 300) {
-    ini_set('max_execution_time' , 300);
+  if (ini_get('max_execution_time') < 600) {
+    ini_set('max_execution_time' , 600);
   }
 
   $start_time = microtime(TRUE);
@@ -195,5 +204,9 @@ function _borg_mailers_security_cron_send_email($nid) {
 
   $time_elapsed = format_interval(microtime(TRUE) - $start_time);
 
-  watchdog('borg_mailers_security', t('@count emails sent in @time to Backdrop CMS Security list subscribers for !link.'), array('@count' => count($addresses), '@time' => $time_elapsed, '!link' => $link), WATCHDOG_NOTICE, NULL);
+  watchdog('borg_mailers_security', '@count emails sent in @time to Backdrop CMS Security list subscribers for !link.', array(
+    '@count' => count($addresses),
+    '@time' => $time_elapsed,
+    '!link' => $link,
+  ), WATCHDOG_NOTICE, NULL);
 }
