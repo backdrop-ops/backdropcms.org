@@ -51,6 +51,10 @@ class Admin {
       'modules' => $extensions,
       'defaultContactType' => \CRM_Contact_BAO_ContactType::basicTypeInfo()['Individual']['name'] ?? NULL,
       'defaultDistanceUnit' => \CRM_Utils_Address::getDefaultDistanceUnit(),
+      'jobFrequency' => \Civi\Api4\Job::getFields()
+        ->addWhere('name', '=', 'run_frequency')
+        ->setLoadOptions(['id', 'label'])
+        ->execute()->first()['options'],
       'tags' => Tag::get()
         ->addSelect('id', 'name', 'color', 'is_selectable', 'description')
         ->addWhere('used_for', 'CONTAINS', 'civicrm_saved_search')
@@ -87,6 +91,7 @@ class Admin {
       '>=' => '≥',
       '<=' => '≤',
       'CONTAINS' => E::ts('Contains'),
+      'NOT CONTAINS' => E::ts("Doesn't Contain"),
       'IN' => E::ts('Is One Of'),
       'NOT IN' => E::ts('Not One Of'),
       'LIKE' => E::ts('Is Like'),
@@ -188,12 +193,13 @@ class Admin {
   private static function addImplicitFKFields(array $schema):array {
     foreach ($schema as &$entity) {
       if ($entity['searchable'] !== 'bridge') {
-        foreach (array_reverse($entity['fields'], TRUE) as $index => $field) {
-          if (!empty($field['fk_entity']) && !$field['options'] && !empty($schema[$field['fk_entity']]['label_field'])) {
+        foreach (array_reverse($entity['fields'] ?? [], TRUE) as $index => $field) {
+          if (!empty($field['fk_entity']) && !$field['options'] && !$field['suffixes'] && !empty($schema[$field['fk_entity']]['label_field'])) {
             $isCustom = strpos($field['name'], '.');
-            // Custom fields: append "Contact ID" to original field label
+            // Custom fields: append "Contact ID" etc. to original field label
             if ($isCustom) {
-              $entity['fields'][$index]['label'] .= ' ' . E::ts('Contact ID');
+              $idField = array_column($schema[$field['fk_entity']]['fields'], NULL, 'name')['id'];
+              $entity['fields'][$index]['label'] .= ' ' . $idField['title'];
             }
             // DAO fields: use title instead of label since it represents the id (title usually ends in ID but label does not)
             else {
@@ -208,7 +214,7 @@ class Admin {
         }
         // Useful address fields (see ContactSchemaMapSubscriber)
         if ($entity['name'] === 'Contact') {
-          $addressFields = ['city', 'state_province_id', 'country_id'];
+          $addressFields = ['city', 'state_province_id', 'country_id', 'street_address', 'postal_code', 'supplemental_address_1'];
           foreach ($addressFields as $fieldName) {
             foreach (['primary', 'billing'] as $type) {
               $newField = \CRM_Utils_Array::findAll($schema['Address']['fields'], ['name' => $fieldName])[0];
@@ -365,6 +371,24 @@ class Admin {
             }
           }
         }
+        // Custom EntityRef joins
+        foreach ($fields as $field) {
+          if ($field['type'] === 'Custom' && $field['input_type'] === 'EntityRef') {
+            $targetEntity = $allowedEntities[$field['fk_entity']];
+            // Add the EntityRef join
+            [, $bareFieldName] = explode('.', $field['name']);
+            $alias = $entity['name'] . '_' . $field['fk_entity'] . '_' . $bareFieldName;
+            $joins[$entity['name']][] = [
+              'label' => $entity['title'] . ' ' . $field['title'],
+              'description' => $field['description'],
+              'entity' => $field['fk_entity'],
+              'conditions' => self::getJoinConditions($field['name'], $alias . '.id'),
+              'defaults' => [],
+              'alias' => $alias,
+              'multi' => FALSE,
+            ];
+          }
+        }
       }
     }
     return $joins;
@@ -458,7 +482,7 @@ class Admin {
    * @return array
    */
   private static function getSqlFunctions():array {
-    $functions = \CRM_Api4_Page_Api4Explorer::getSqlFunctions();
+    $functions = CoreUtil::getSqlFunctions();
     // Add faux function "e" for SqlEquations
     $functions[] = [
       'name' => 'e',
@@ -466,6 +490,7 @@ class Admin {
       'description' => ts('Add, subtract, multiply, divide'),
       'category' => SqlFunction::CATEGORY_MATH,
       'data_type' => 'Number',
+      'options' => FALSE,
       'params' => [
         [
           'label' => ts('Value'),

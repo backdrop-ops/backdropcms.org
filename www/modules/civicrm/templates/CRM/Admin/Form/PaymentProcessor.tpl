@@ -10,7 +10,6 @@
 {* This template is used for adding/configuring Payment Processors used by a particular site/domain.  *}
 <h3>{if $action eq 1}{ts}New Payment Processor{/ts}{elseif $action eq 2}{ts}Edit Payment Processor{/ts}{else}{ts}Delete Payment Processor{/ts}{/if}</h3>
 <div class="crm-block crm-form-block crm-paymentProcessor-form-block">
- <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
 
 {if $action eq 8}
   <div class="messages status no-popup">
@@ -145,12 +144,15 @@
 {if $action eq 1  or $action eq 2}
   <script type="text/javascript">
   {literal}
-    function reload(refresh) {
-      var paymentProcessorType = cj("#payment_processor_type_id");
-      var url = {/literal}"{$refreshURL}"{literal} + "&pp=" + paymentProcessorType.val();
-      paymentProcessorType.closest('form').attr('data-warn-changes', 'false');
-      window.location.href = url;
-    }
+    CRM.$(function($) {
+      $('#payment_processor_type_id').change(function() {
+        var url = {/literal}"{$refreshURL}"{literal} + "&pp=" + $(this).val();
+        $(this).closest('form').attr('data-warn-changes', 'false')
+          // Ajax refresh (works in a popup or full-screen)
+          .closest('.crm-ajax-container, #crm-main-content-wrapper')
+          .crmSnippet({url: url}).crmSnippet('refresh');
+      });
+    });
   {/literal}
   </script>
 

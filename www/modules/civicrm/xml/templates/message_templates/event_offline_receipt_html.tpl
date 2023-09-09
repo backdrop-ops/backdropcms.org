@@ -27,15 +27,11 @@
     {/if}
 
     {if !empty($isOnWaitlist)}
-     <p>{ts}You have been added to the WAIT LIST for this event.{/ts}</p>
-     {if !empty($isPrimary)}
-       <p>{ts}If space becomes available you will receive an email with a link to a web page where you can complete your registration.{/ts}</p>
-     {/if}
+      <p>{ts}You have been added to the WAIT LIST for this event.{/ts}</p>
+      <p>{ts}If space becomes available you will receive an email with a link to a web page where you can complete your registration.{/ts}</p>
     {elseif !empty($isRequireApproval)}
-     <p>{ts}Your registration has been submitted.{/ts}</p>
-     {if !empty($isPrimary)}
+      <p>{ts}Your registration has been submitted.{/ts}</p>
       <p>{ts}Once your registration has been reviewed, you will receive an email with a link to a web page where you can complete the registration process.{/ts}</p>
-     {/if}
     {elseif $is_pay_later}
      <p>{$pay_later_receipt}</p> {* FIXME: this might be text rather than HTML *}
     {/if}
@@ -76,40 +72,65 @@
       </tr>
      {/if}
 
-     {if !empty($location.phone.1.phone) || !empty($location.email.1.email)}
+     {if {event.loc_block_id.phone_id.phone|boolean} || {event.loc_block_id.email_id.email|boolean}}
       <tr>
        <td colspan="2" {$labelStyle}>
         {ts}Event Contacts:{/ts}
        </td>
       </tr>
-      {foreach from=$location.phone item=phone}
-       {if $phone.phone}
+
+       {if {event.loc_block_id.phone_id.phone|boolean}}
         <tr>
          <td {$labelStyle}>
-          {if $phone.phone_type}
-           {$phone.phone_type_display}
+          {if {event.loc_block_id.phone_id.phone_type_id|boolean}}
+            {event.loc_block_id.phone_id.phone_type_id:label}
           {else}
            {ts}Phone{/ts}
           {/if}
          </td>
          <td {$valueStyle}>
-          {$phone.phone} {if $phone.phone_ext}&nbsp;{ts}ext.{/ts} {$phone.phone_ext}{/if}
+          {event.loc_block_id.phone_id.phone} {if {event.loc_block_id.phone_id.phone_ext|boolean}}&nbsp;{ts}ext.{/ts} {event.loc_block_id.phone_id.phone_ext}{/if}
          </td>
         </tr>
        {/if}
-      {/foreach}
-      {foreach from=$location.email item=eventEmail}
-       {if $eventEmail.email}
+         {if {event.loc_block_id.phone_2_id.phone|boolean}}
+           <tr>
+             <td {$labelStyle}>
+                 {if {event.loc_block_id.phone_2_id.phone_type_id|boolean}}
+                     {event.loc_block_id.phone_2_id.phone_type_id:label}
+                 {else}
+                     {ts}Phone{/ts}
+                 {/if}
+             </td>
+             <td {$valueStyle}>
+                 {event.loc_block_id.phone_2_id.phone} {if {event.loc_block_id.phone_2_id.phone_ext|boolean}}&nbsp;{ts}ext.{/ts} {event.loc_block_id.phone_2_id.phone_ext}{/if}
+             </td>
+           </tr>
+         {/if}
+
+
+       {if {event.loc_block_id.email_id.email|boolean}}
         <tr>
          <td {$labelStyle}>
           {ts}Email{/ts}
          </td>
          <td {$valueStyle}>
-          {$eventEmail.email}
+             {event.loc_block_id.email_id.email}
          </td>
         </tr>
        {/if}
-      {/foreach}
+
+       {if {event.loc_block_id.email_2_id.email|boolean}}
+         <tr>
+           <td {$labelStyle}>
+               {ts}Email{/ts}
+           </td>
+           <td {$valueStyle}>
+               {event.loc_block_id.email_2_id.email}
+           </td>
+         </tr>
+       {/if}
+
      {/if}
 
      {if !empty($event.is_public)}
@@ -141,7 +162,7 @@
      {/if}
 
 
-     {if !empty($event.is_monetary)}
+     {if {event.is_monetary|boolean}}
 
       <tr>
        <th {$headerStyle}>
@@ -152,7 +173,6 @@
       {if !empty($lineItem)}
        {foreach from=$lineItem item=value key=priceset}
         {if $value neq 'skip'}
-         {if !empty($isPrimary)}
           {if $lineItem|@count GT 1} {* Header for multi participant registration cases. *}
            <tr>
             <td colspan="2" {$labelStyle}>
@@ -160,7 +180,7 @@
             </td>
            </tr>
           {/if}
-         {/if}
+
          <tr>
           <td colspan="2" {$valueStyle}>
            <table>
@@ -234,9 +254,6 @@
            {if $priceset || $priceset == 0}
             <td>&nbsp;{$taxTerm} {$priceset|string_format:"%.2f"}%</td>
             <td>&nbsp;{$value|crmMoney:$currency}</td>
-           {else}
-            <td>&nbsp;{ts}No{/ts} {$taxTerm}</td>
-            <td>&nbsp;{$value|crmMoney:$currency}</td>
            {/if}
           </tr>
         {/foreach}
@@ -262,29 +279,26 @@
         </td>
        </tr>
       {/if}
-      {if !empty($isPrimary)}
-       <tr>
-        <td {$labelStyle}>
-        {if isset($balanceAmount)}
-           {ts}Total Paid{/ts}
+      {if {event.is_monetary|boolean}}
+       {if {contribution.balance_amount|boolean}}
+         <tr>
+           <td {$labelStyle}>{ts}Total Paid{/ts}</td>
+           <td {$valueStyle}>
+             {if {contribution.paid_amount|boolean}}{contribution.paid_amount|crmMoney}{/if} {if !empty($hookDiscount.message)}({$hookDiscount.message}){/if}
+           </td>
+          </tr>
+          <tr>
+           <td {$labelStyle}>{ts}Balance{/ts}</td>
+           <td {$valueStyle}>{contribution.balance_amount}</td>
+         </tr>
         {else}
-           {ts}Total Amount{/ts}
-         {/if}
-        </td>
-        <td {$valueStyle}>
-         {if !empty($totalAmount)}{$totalAmount|crmMoney}{/if} {if !empty($hookDiscount.message)}({$hookDiscount.message}){/if}
-        </td>
-       </tr>
-      {if isset($balanceAmount)}
-       <tr>
-        <td {$labelStyle}>
-         {ts}Balance{/ts}
-        </td>
-        <td {$valueStyle}>
-         {$balanceAmount|crmMoney}
-        </td>
-       </tr>
-      {/if}
+         <tr>
+           <td {$labelStyle}>{ts}Total Amount{/ts}</td>
+           <td {$valueStyle}>
+               {if {contribution.total_amount|boolean}}{contribution.total_amount|crmMoney}{/if} {if !empty($hookDiscount.message)}({$hookDiscount.message}){/if}
+           </td>
+         </tr>
+       {/if}
        {if !empty($pricesetFieldsCount) }
      <tr>
        <td {$labelStyle}>

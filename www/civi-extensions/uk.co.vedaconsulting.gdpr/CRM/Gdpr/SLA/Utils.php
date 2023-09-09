@@ -198,8 +198,7 @@ EOT;
           case 1:
           default:
             $config = & CRM_Core_Config::singleton();
-            $baseUrl = $config->userFrameworkBaseURL;
-            $url = $baseUrl.$settings['sla_tc'];
+            $url = $settings['sla_tc'];
             break;
 
           // Web page link

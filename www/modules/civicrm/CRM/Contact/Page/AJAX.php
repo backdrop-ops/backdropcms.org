@@ -324,7 +324,7 @@ class CRM_Contact_Page_AJAX {
     }
 
     $config = CRM_Core_Config::singleton();
-    $username = trim(CRM_Utils_Array::value('cms_name', $_REQUEST));
+    $username = trim($_REQUEST['cms_name'] ?? '');
 
     $params = ['name' => $username];
 
@@ -483,7 +483,7 @@ LIMIT {$offset}, {$rowCount}
   }
 
   public static function buildDedupeRules() {
-    $contactType = CRM_Utils_Request::retrieve('parentId', 'Positive');
+    $contactType = CRM_Utils_Request::retrieve('parentId', 'String');
     $dedupeRules = CRM_Dedupe_BAO_DedupeRuleGroup::getByType($contactType);
 
     CRM_Utils_JSON::output($dedupeRules);

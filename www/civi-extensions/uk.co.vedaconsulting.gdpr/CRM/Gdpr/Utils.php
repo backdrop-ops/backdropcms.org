@@ -154,7 +154,7 @@ WHERE s.contact_id = %1 ORDER BY s.date DESC";
    */
   public static function getGDPRSettings() {
     // Get GDPR settings from civicrm_settings table
-    $settingsStr = CRM_Core_BAO_Setting::getItem(
+    $settingsStr = CRM_Gdpr_Utils::getItem(
       CRM_Gdpr_Constants::GDPR_SETTING_GROUP,
       CRM_Gdpr_Constants::GDPR_SETTING_NAME
     );
@@ -519,7 +519,7 @@ WHERE url.time_stamp > '{$date}'";
       'options' => ['limit' => 0],
       'return' => ['id', 'activity_type_id'],
       'activity_type_id' => ['IN' => $actTypeIds],
-    ]['values']);
+    ])['values'];
     foreach ($results as $data) {
       // Not-required, but still need to do validation for being safe.
       // Check if the activity type needs to be deleted
@@ -748,6 +748,40 @@ WHERE url.time_stamp > '{$date}'";
     }
 
     return substr(bin2hex($bytes), 0, $lenght);
+  }
+
+  /**
+   * Function to retrieve values from civicrm_setting
+   * https://github.com/veda-consulting-company/uk.co.vedaconsulting.gdpr/issues/249
+   * From v4.7 deprecated warning added in CRM_Core_BAO_Setting::getItem. Civi::settings() has been introduced. We check CiviCRM version and use the supported method to retrieve the setting values
+   *
+   * @return settingValue
+   */
+  public static function getItem($group, $settingName = NULL, $componentID = NULL, $defaultValue = NULL, $contactID = NULL, $domainID = NULL) {
+    $settingValue = NULL;
+    $isCiviCRMVersion47 = _gdpr_isCiviCRMVersion47();
+    if ($isCiviCRMVersion47) {
+      $settingValue = Civi::settings()->get($settingName);
+    } else {
+      $settingValue = CRM_Core_BAO_Setting::getItem($group, $settingName, $componentID, $defaultValue, $contactID, $domainID);
+    }
+    return $settingValue;
+  }
+
+  /**
+   * Function to set values to civicrm_setting
+   * https://github.com/veda-consulting-company/uk.co.vedaconsulting.gdpr/issues/249
+   * From v4.7 deprecated warning added in CRM_Core_BAO_Setting::setItem. Civi::settings() has been introduced. We check CiviCRM version and use the supported method to set the setting values
+   *
+   */
+  public static function setItem($value, $group, $name) {
+    $isCiviCRMVersion47 = _gdpr_isCiviCRMVersion47();
+    if ($isCiviCRMVersion47) {
+      Civi::settings()->set($name, $value);
+    } else {
+      CRM_Core_BAO_Setting::setItem($value, $group, $name);
+    }
+    return $settingValue;
   }
 
 }//End Class

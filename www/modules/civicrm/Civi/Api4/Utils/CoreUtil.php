@@ -15,6 +15,7 @@ namespace Civi\Api4\Utils;
 use Civi\API\Exception\NotImplementedException;
 use Civi\API\Exception\UnauthorizedException;
 use Civi\API\Request;
+use Civi\Api4\Generic\AbstractAction;
 use CRM_Core_DAO_AllCoreTables as AllCoreTables;
 
 class CoreUtil {
@@ -32,6 +33,19 @@ class CoreUtil {
     }
     $dao = AllCoreTables::getFullName($entityName);
     return $dao ? AllCoreTables::getBAOClassName($dao) : NULL;
+  }
+
+  /**
+   * Returns API entity name given an BAO/DAO class name
+   *
+   * Returns null if the API has not been implemented
+   *
+   * @param $baoClassName
+   * @return string|null
+   */
+  public static function getApiNameFromBAO($baoClassName) {
+    $briefName = AllCoreTables::getBriefName($baoClassName);
+    return $briefName && self::getApiClass($briefName) ? $briefName : NULL;
   }
 
   /**
@@ -74,7 +88,7 @@ class CoreUtil {
    *
    * @return string
    */
-  public static function getTableName($entityName) {
+  public static function getTableName(string $entityName) {
     return self::getInfoItem($entityName, 'table_name');
   }
 
@@ -100,6 +114,7 @@ class CoreUtil {
   public static function getOperators() {
     $operators = \CRM_Core_DAO::acceptedSQLOperators();
     $operators[] = 'CONTAINS';
+    $operators[] = 'NOT CONTAINS';
     $operators[] = 'IS EMPTY';
     $operators[] = 'IS NOT EMPTY';
     $operators[] = 'REGEXP';
@@ -158,14 +173,13 @@ class CoreUtil {
    *
    * @param \Civi\Api4\Generic\AbstractAction $apiRequest
    * @param array $record
-   * @param int|string $userID
-   *   Contact ID of the user we are testing,. 0 for the anonymous user.
+   * @param int|null $userID
+   *   Contact ID of the user we are testing, 0 for the anonymous user.
    * @return bool
    * @throws \CRM_Core_Exception
-   * @throws \Civi\API\Exception\NotImplementedException
-   * @throws \Civi\API\Exception\UnauthorizedException
    */
-  public static function checkAccessRecord(\Civi\Api4\Generic\AbstractAction $apiRequest, array $record, int $userID) {
+  public static function checkAccessRecord(AbstractAction $apiRequest, array $record, int $userID = NULL) {
+    $userID = $userID ?? \CRM_Core_Session::getLoggedInContactID() ?? 0;
 
     // Super-admins always have access to everything
     if (\CRM_Core_Permission::check('all CiviCRM permissions and ACLs', $userID)) {
@@ -175,7 +189,7 @@ class CoreUtil {
     // For get actions, just run a get and ACLs will be applied to the query.
     // It's a cheap trick and not as efficient as not running the query at all,
     // but BAO::checkAccess doesn't consistently check permissions for the "get" action.
-    if (is_a($apiRequest, '\Civi\Api4\Generic\DAOGetAction')) {
+    if (is_a($apiRequest, '\Civi\Api4\Generic\AbstractGetAction')) {
       return (bool) $apiRequest->addSelect('id')->addWhere('id', '=', $record['id'])->execute()->count();
     }
 
@@ -303,6 +317,100 @@ class CoreUtil {
       return ['name', 'label', 'description'];
     }
     return explode(',', $fields);
+  }
+
+  /**
+   * Transforms a raw option list (which could be either a flat or non-associative array)
+   * into an APIv4-compatible format.
+   *
+   * @param array|bool $options
+   * @param array|bool $format
+   * @return array|bool
+   */
+  public static function formatOptionList($options, $format) {
+    if (!$options || !is_array($options)) {
+      return $options ?? FALSE;
+    }
+
+    $formatted = [];
+    $first = reset($options);
+    // Flat array requested
+    if ($format === TRUE) {
+      // Convert non-associative to flat array
+      if (is_array($first) && isset($first['id'])) {
+        foreach ($options as $option) {
+          $formatted[$option['id']] = $option['label'] ?? $option['name'] ?? $option['id'];
+        }
+        return $formatted;
+      }
+      return $options;
+    }
+    // Non-associative array of multiple properties requested
+    foreach ($options as $id => $option) {
+      // Transform a flat list
+      if (!is_array($option)) {
+        $option = [
+          'id' => $id,
+          'name' => $id,
+          'label' => $option,
+        ];
+      }
+      $formatted[] = array_intersect_key($option, array_flip($format));
+    }
+    return $formatted;
+  }
+
+  /**
+   * Gets info about all available sql functions
+   * @return array
+   */
+  public static function getSqlFunctions(): array {
+    $fns = [];
+    foreach (glob(\Civi::paths()->getPath('[civicrm.root]/Civi/Api4/Query/SqlFunction*.php')) as $file) {
+      $matches = [];
+      if (preg_match('/(SqlFunction[A-Z_]+)\.php$/', $file, $matches)) {
+        $className = '\Civi\Api4\Query\\' . $matches[1];
+        if (is_subclass_of($className, '\Civi\Api4\Query\SqlFunction')) {
+          $fns[] = [
+            'name' => $className::getName(),
+            'title' => $className::getTitle(),
+            'description' => $className::getDescription(),
+            'params' => $className::getParams(),
+            'category' => $className::getCategory(),
+            'dataType' => $className::getDataType(),
+            'options' => CoreUtil::formatOptionList($className::getOptions(), ['id', 'name', 'label']),
+          ];
+        }
+      }
+    }
+    return $fns;
+  }
+
+  /**
+   * Sorts fields so that control fields are ordered before the fields they control.
+   *
+   * @param array[] $fields
+   * @return void
+   */
+  public static function topSortFields(array &$fields): void {
+    $indexedFields = array_column($fields, NULL, 'name');
+    $needsSort = [];
+    foreach ($indexedFields as $fieldName => $field) {
+      if (!empty($field['input_attrs']['control_field']) && array_key_exists($field['input_attrs']['control_field'], $indexedFields)) {
+        $needsSort[$fieldName] = [$field['input_attrs']['control_field']];
+      }
+    }
+    // Only fire up the Topological sorter if we actually need it...
+    if ($needsSort) {
+      $fields = [];
+      $sorter = new \MJS\TopSort\Implementations\FixedArraySort();
+      foreach ($indexedFields as $fieldName => $field) {
+        $sorter->add($fieldName, $needsSort[$fieldName] ?? []);
+      }
+      foreach ($sorter->sort() as $fieldName) {
+        $fields[] = $indexedFields[$fieldName];
+      }
+    }
   }
 
 }

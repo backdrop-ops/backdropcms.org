@@ -116,7 +116,9 @@
           if (url.indexOf('civicrm/') === 0) {
             url = CRM.url(url);
           } else if (url.indexOf('/') === 0) {
-            url = $location.protocol() + '://' + $location.host() + url;
+            let port = $location.port();
+            port = port ? `:${port}` : '';
+            url = `${$location.protocol()}://${$location.host()}${port}${url}`;
           }
           $window.location.href = url;
         }
@@ -137,8 +139,19 @@
         return str;
       }
 
+      function validateFileFields() {
+        var valid = true;
+        $("af-form[ng-form=" + ctrl.getFormMeta().name +"] input[type='file']").each((index, fld) => {
+          if ($(fld).attr('required') && $(fld).get(0).files.length == 0) {
+            valid = false;
+          }
+        });
+        return valid;
+      }
+
       this.submit = function() {
-        if (!ctrl.ngForm.$valid) {
+        // validate required fields on the form
+        if (!ctrl.ngForm.$valid || !validateFileFields()) {
           CRM.alert(ts('Please fill all required fields.'), ts('Form Error'));
           return;
         }

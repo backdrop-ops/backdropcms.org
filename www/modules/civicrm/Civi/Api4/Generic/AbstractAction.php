@@ -151,7 +151,6 @@ abstract class AbstractAction implements \ArrayAccess {
    *
    * @param string $entityName
    * @param string $actionName
-   * @throws \CRM_Core_Exception
    */
   public function __construct($entityName, $actionName) {
     // If a namespaced class name is passed in
@@ -227,7 +226,7 @@ abstract class AbstractAction implements \ArrayAccess {
           return $this->$param;
 
         case 'set':
-          $this->$param = $arguments[0];
+          $this->$param = ReflectionUtils::castTypeSoftly($arguments[0], $this->getParamInfo()[$param] ?? []);
           return $this;
       }
     }
@@ -512,23 +511,22 @@ abstract class AbstractAction implements \ArrayAccess {
         if ($field) {
           $optionFields[$fieldName] = [
             'val' => $record[$expr],
+            'name' => $fieldName,
             'expr' => $expr,
             'field' => $field,
             'suffix' => substr($expr, $suffix + 1),
-            'depends' => $field['input_attrs']['control_field'] ?? NULL,
+            'input_attrs' => $field['input_attrs'] ?? [],
           ];
           unset($record[$expr]);
         }
       }
     }
-    // Sort option lookups by dependency, so e.g. country_id is processed first, then state_province_id, then county_id
-    uasort($optionFields, function ($a, $b) {
-      return $a['field']['name'] === $b['depends'] ? -1 : 1;
-    });
+    // Sort lookups by `input_attrs.control_field`, so e.g. country_id is processed first, then state_province_id, then county_id
+    CoreUtil::topSortFields($optionFields);
     // Replace pseudoconstants. Note this is a reverse lookup as we are evaluating input not output.
-    foreach ($optionFields as $fieldName => $info) {
+    foreach ($optionFields as $info) {
       $options = FormattingUtil::getPseudoconstantList($info['field'], $info['expr'], $record, 'create');
-      $record[$fieldName] = FormattingUtil::replacePseudoconstant($options, $info['val'], TRUE);
+      $record[$info['name']] = FormattingUtil::replacePseudoconstant($options, $info['val'], TRUE);
     }
     // The DAO works better with ints than booleans. See https://github.com/civicrm/civicrm-core/pull/23970
     foreach ($record as $key => $value) {

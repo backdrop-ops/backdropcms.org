@@ -32,7 +32,7 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
 
   protected $_toDoNotEmail = NULL;
 
-  protected $_contributionId = NULL;
+  protected $contributionID;
 
   protected $fromEmailId = NULL;
 
@@ -58,14 +58,7 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
     $this->_eventId = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_Participant', $this->_participantId, 'event_id');
     $this->_fromEmails = CRM_Event_BAO_Event::getFromEmailIds($this->_eventId);
 
-    $this->_contributionId = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_ParticipantPayment', $this->_participantId, 'contribution_id', 'participant_id');
-    if (!$this->_contributionId) {
-      if ($primaryParticipantId = CRM_Core_DAO::getFieldValue('CRM_Event_BAO_Participant', $this->_participantId, 'registered_by_id')) {
-        $this->_contributionId = CRM_Core_DAO::getFieldValue('CRM_Event_BAO_ParticipantPayment', $primaryParticipantId, 'contribution_id', 'participant_id');
-      }
-    }
-
-    if ($this->_contributionId) {
+    if ($this->getContributionID()) {
       $this->_isPaidEvent = TRUE;
     }
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this, TRUE);
@@ -86,9 +79,9 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
     $this->assign('paymentInfo', $paymentInfo);
     $this->assign('feePaid', $this->_paidAmount);
 
-    $ids = CRM_Event_BAO_Participant::getParticipantIds($this->_contributionId);
+    $ids = CRM_Event_BAO_Participant::getParticipantIds($this->getContributionID());
     if (count($ids) > 1) {
-      $total = CRM_Price_BAO_LineItem::getLineTotal($this->_contributionId);
+      $total = CRM_Price_BAO_LineItem::getLineTotal($this->getContributionID());
       $this->assign('totalLineTotal', $total);
       $this->assign('lineItemTotal', $total);
     }
@@ -97,6 +90,29 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
     if ($title) {
       $this->setTitle($title);
     }
+  }
+
+  /**
+   * Get the contribution ID.
+   *
+   * @api This function will not change in a minor release and is supported for
+   * use outside of core. This annotation / external support for properties
+   * is only given where there is specific test cover.
+   *
+   * @noinspection PhpUnhandledExceptionInspection
+   */
+  public function getContributionID(): ?int {
+    if ($this->contributionID === NULL) {
+      $this->contributionID = CRM_Core_DAO::getFieldValue('CRM_Event_DAO_ParticipantPayment', $this->_participantId, 'contribution_id', 'participant_id') ?: FALSE;
+
+      if (!$this->contributionID) {
+        $primaryParticipantID = CRM_Core_DAO::getFieldValue('CRM_Event_BAO_Participant', $this->_participantId, 'registered_by_id');
+        if ($primaryParticipantID) {
+          $this->contributionID = CRM_Core_DAO::getFieldValue('CRM_Event_BAO_ParticipantPayment', $primaryParticipantID, 'contribution_id', 'participant_id') ?: FALSE;
+        }
+      }
+    }
+    return $this->contributionID ?: NULL;
   }
 
   /**
@@ -159,7 +175,7 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
     CRM_Event_Form_Registration::initEventFee($this, $event['id'], $this->_action !== CRM_Core_Action::UPDATE);
     CRM_Event_Form_Registration_Register::buildAmount($this, TRUE);
 
-    if (!CRM_Utils_System::isNull(CRM_Utils_Array::value('line_items', $this->_values))) {
+    if (!CRM_Utils_System::isNull($this->_values['line_items'] ?? NULL)) {
       $lineItem[] = $this->_values['line_items'];
     }
     $this->assign('lineItem', empty($lineItem) ? FALSE : $lineItem);
@@ -230,9 +246,8 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
     $params = $this->controller->exportValues($this->_name);
 
     $feeBlock = $this->_values['fee'];
-    $lineItems = $this->_values['line_items'];
-    CRM_Price_BAO_LineItem::changeFeeSelections($params, $this->_participantId, 'participant', $this->_contributionId, $feeBlock, $lineItems);
-    $this->contributionAmt = CRM_Core_DAO::getFieldValue('CRM_Contribute_BAO_Contribution', $this->_contributionId, 'total_amount');
+    CRM_Price_BAO_LineItem::changeFeeSelections($params, $this->_participantId, 'participant', $this->getContributionID(), $feeBlock);
+    $this->contributionAmt = CRM_Core_DAO::getFieldValue('CRM_Contribute_BAO_Contribution', $this->getContributionID(), 'total_amount');
     // email sending
     if (!empty($params['send_receipt'])) {
       $fetchParticipantVals = ['id' => $this->_participantId];
@@ -307,11 +322,10 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
       $event['confirm_email_text'] = $params['receipt_text'];
     }
 
-    $this->assign('isAmountzero', 1);
     $this->assign('event', $event);
 
     $this->assign('isShowLocation', $event['is_show_location']);
-    if (CRM_Utils_Array::value('is_show_location', $event) == 1) {
+    if (($event['is_show_location'] ?? NULL) == 1) {
       $locationParams = [
         'entity_id' => $params['event_id'],
         'entity_table' => 'civicrm_event',
@@ -333,11 +347,13 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
       }
 
       $this->assign('totalAmount', $this->contributionAmt);
-
-      $this->assign('isPrimary', 1);
       $this->assign('checkNumber', CRM_Utils_Array::value('check_number', $params));
     }
-
+    // @todo isPrimary no longer used from 5.63 in core templates, remove
+    // once users have been 'pushed' to update their templates (via
+    // upgrade message - which we don't always do whenever we change
+    // a minor variable.
+    $this->assign('isPrimary', $this->_isPaidEvent);
     $this->assign('register_date', $params['register_date']);
 
     // Retrieve the name and email of the contact - this will be the TO for receipt email
@@ -357,6 +373,7 @@ class CRM_Event_Form_ParticipantFeeSelection extends CRM_Core_Form {
       'modelProps' => [
         'participantID' => $this->_participantId,
         'eventID' => $params['event_id'],
+        'contributionID' => $this->getContributionID(),
       ],
     ];
 

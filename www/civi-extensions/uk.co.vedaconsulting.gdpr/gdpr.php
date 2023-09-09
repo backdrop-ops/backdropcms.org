@@ -196,8 +196,13 @@ function gdpr_civicrm_alterContent(&$content, $context, $tplName, &$object) {
             var split = data.split('|');
             if( split[0] != 0 ){
             var linkHtml = '<div class="crm-content" align="right"><a href="javascript:void(0);" id="address_history_dialog_link"> Address History ('+split[0]+') </a></div>';
-
-            cj(linkHtml).insertAfter('#website-block');
+            
+            // check if we are using standard layout or contact summary layout
+            if (cj('#website-block').length > 0) {
+              cj(linkHtml).insertAfter('#website-block');
+            } else {
+              cj(linkHtml).insertBefore('.crm-address_1');
+            }
             cj(linkHtml).wrap('<div class="contact_panel"></div>');
             cj('#address_history_dialog_link').click(function(){
               var oTable = cj(split[1]).dataTable({
@@ -372,7 +377,7 @@ function gdpr_civicrm_tabset($tabsetName, &$tabs, $context) {
  * Implements hook_civicrm_export().
  */
 function gdpr_civicrm_export($exportTempTable, $headerRows, $sqlColumns, $exportMode, $componentTable = '', $ids = []) {
-  $trackExports = CRM_Core_BAO_Setting::getItem(CRM_Gdpr_Constants::GDPR_SETTING_GROUP,'track_exports',NULL, FALSE);
+  $trackExports = CRM_Gdpr_Utils::getItem(CRM_Gdpr_Constants::GDPR_SETTING_GROUP, 'track_exports', NULL, FALSE);
   if (version_compare(CRM_Utils_System::version(), '5.8.0', '>=') && $trackExports) {
     switch ($exportMode) {
       case CRM_Export_Form_Select::CONTACT_EXPORT:
@@ -591,7 +596,7 @@ function gdpr_civicrm_searchTasks($objectName, &$tasks) {
   if($objectName == 'contact'){
     if(CRM_Core_Permission::check('forget contact')) {
       $tasks[] = [
-        'title' => 'GDPR forget',
+        'title' => E::ts('GDPR forget'),
         'class' => 'CRM_Gdpr_Form_Task_Contact'
       ];
     }

@@ -391,7 +391,7 @@ WHERE pcp.id = %1 AND cc.contribution_status_id = %2 AND cc.is_test = 0";
       $form->assign('profile', $profile);
     }
 
-    $form->add('select', 'supporter_profile_id', ts('Supporter Profile'), ['' => ts('- select -')] + $profile, TRUE);
+    $form->add('select', 'supporter_profile_id', ts('Supporter Profile'), ['' => ts('- select -')] + $profile, TRUE, ['class' => 'crm-select2']);
 
     //CRM-15821 - To add new option for PCP "Owner" notification
     $ownerNotifications = CRM_Core_OptionGroup::values('pcp_owner_notify');
@@ -470,8 +470,9 @@ WHERE pcp.id = %1 AND cc.contribution_status_id = %2 AND cc.is_test = 0";
     // build honor roll fields for registration form if supporter has honor roll enabled for their PCP
     if ($pcpInfo['is_honor_roll']) {
       $page->assign('is_honor_roll', TRUE);
-      $page->add('checkbox', 'pcp_display_in_roll', ts('Show my support in the public honor roll'), NULL, NULL,
-        ['onclick' => "showHideByValue('pcp_display_in_roll','','nameID|nickID|personalNoteID','block','radio',false); pcpAnonymous( );"]
+      $page->add('checkbox', 'pcp_display_in_roll', ts('Show my support in the public honor roll'),
+        ['onclick' => "showHideByValue('pcp_display_in_roll','','nameID|nickID|personalNoteID','block','radio',false); pcpAnonymous( );"],
+        FALSE
       );
       $extraOption = ['onclick' => "return pcpAnonymous( );"];
       $page->addRadio('pcp_is_anonymous', '', [ts('Include my name and message'), ts('List my support anonymously')], [], '&nbsp;&nbsp;&nbsp;', FALSE, [$extraOption, $extraOption]);
@@ -520,13 +521,13 @@ WHERE pcp.id = %1 AND cc.contribution_status_id = %2 AND cc.is_test = 0";
 
       // ignore startDate for events - PCP's can be active long before event start date
       $startDate = 0;
-      $endDate = CRM_Utils_Date::unixTime(CRM_Utils_Array::value('end_date', $entity));
+      $endDate = CRM_Utils_Date::unixTime($entity['end_date'] ?? '');
     }
     elseif ($component == 'contribute') {
       $urlBase = 'civicrm/contribute/transact';
       //start and end date of the contribution page
-      $startDate = CRM_Utils_Date::unixTime(CRM_Utils_Array::value('start_date', $entity));
-      $endDate = CRM_Utils_Date::unixTime(CRM_Utils_Array::value('end_date', $entity));
+      $startDate = CRM_Utils_Date::unixTime($entity['start_date'] ?? '');
+      $endDate = CRM_Utils_Date::unixTime($entity['end_date'] ?? '');
     }
 
     // define redirect url back to contrib page or event if needed
@@ -551,8 +552,8 @@ WHERE pcp.id = %1 AND cc.contribution_status_id = %2 AND cc.is_test = 0";
     }
     // Check if we're in range for contribution page start and end dates. for events, check if after event end date
     elseif (($startDate && $startDate > $now) || ($endDate && $endDate < $now)) {
-      $customStartDate = CRM_Utils_Date::customFormat(CRM_Utils_Array::value('start_date', $entity));
-      $customEndDate = CRM_Utils_Date::customFormat(CRM_Utils_Array::value('end_date', $entity));
+      $customStartDate = CRM_Utils_Date::customFormat($entity['start_date'] ?? '');
+      $customEndDate = CRM_Utils_Date::customFormat($entity['end_date'] ?? '');
       if ($startDate && $endDate) {
         $statusMessage = ts('The Personal Campaign Page you have just visited is only active from %1 to %2. However you can still support the campaign here.',
           [1 => $customStartDate, 2 => $customEndDate]
@@ -704,7 +705,8 @@ WHERE pcp.id = %1 AND cc.contribution_status_id = %2 AND cc.is_test = 0";
     );
     $tplParams['pcpInfoURL'] = $pcpInfoURL;
     $tplParams['contribPageTitle'] = $contribPageTitle;
-    if ($emails = CRM_Utils_Array::value('notify_email', $pcpBlockInfo)) {
+    $emails = $pcpBlockInfo['notify_email'] ?? NULL;
+    if ($emails) {
       $emailArray = explode(',', $emails);
       $tplParams['pcpNotifyEmailAddress'] = $emailArray[0];
     }

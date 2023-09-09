@@ -115,7 +115,13 @@ class CRM_Event_Form_ManageEvent extends CRM_Core_Form {
       }
 
       $participantListingID = $eventInfo['participant_listing_id'] ?? NULL;
-      //CRM_Core_DAO::getFieldValue( 'CRM_Event_DAO_Event', $this->_id, 'participant_listing_id' );
+      if ($participantListingID) {
+        $participantListingURL = CRM_Utils_System::url('civicrm/event/participant',
+          "reset=1&id={$this->_id}",
+          FALSE, NULL, TRUE, TRUE
+        );
+      }
+      $this->assign('participantListingURL', $participantListingURL ?? NULL);
       $this->assign('participantListingID', $participantListingID);
       $this->assign('isOnlineRegistration', CRM_Utils_Array::value('is_online_registration', $eventInfo));
 
@@ -136,11 +142,11 @@ class CRM_Event_Form_ManageEvent extends CRM_Core_Form {
     $title = NULL;
     if ($this->_id) {
       if ($this->_isTemplate) {
-        $title = ts('Edit Event Template') . ' - ' . CRM_Utils_Array::value('template_title', $eventInfo);
+        $title = ts('Edit Event Template') . ' - ' . ($eventInfo['template_title'] ?? '');
       }
       else {
         $configureText = $this->_isRepeatingEvent ? ts('Configure Repeating Event') : ts('Configure Event');
-        $title = $configureText . ' - ' . CRM_Utils_Array::value('title', $eventInfo);
+        $title = $configureText . ' - ' . ($eventInfo['title'] ?? '');
       }
     }
     elseif ($this->_action & CRM_Core_Action::ADD) {

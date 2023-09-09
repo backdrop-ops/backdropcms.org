@@ -171,6 +171,18 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
   }
 
   /**
+   * Is this being called from an entity reference field.
+   *
+   * E.g clicking on 'New Organization' from the employer field
+   * would create a link with the context = 'dialog' in the url.
+   *
+   * @return bool
+   */
+  public function isEntityReferenceContactCreateMode(): bool {
+    return $this->_context === 'dialog';
+  }
+
+  /**
    * Add the custom fields.
    *
    * @param int $ufGroupID
@@ -230,6 +242,7 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
     if (!empty($form->groupEleNames)) {
       foreach ($form->groupEleNames as $groupName => $groupEleName) {
         //get the channel array and group channel array
+        $channelArray = [] ;
         $groupChannelArray = [];
         foreach ($form->channelEleNames as $channel) {
           $groupChannel = str_replace($form->containerPrefix, '', $channel);
@@ -241,6 +254,12 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
           }
         }
 
+        
+        if( !is_array( $channelArray ) ){
+          // create an empty array to avoid error message
+          $channelArray = [];
+        }
+        
         //check any difference then return as error
         if(!empty($fields[$groupEleName]) && ($diff = array_diff_assoc($groupChannelArray, $channelArray))){
           //do something here.

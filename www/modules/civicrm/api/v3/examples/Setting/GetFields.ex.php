@@ -1216,8 +1216,6 @@ function setting_getfields_expectedresult() {
         'help_text' => '',
         'on_change' => [
           '0' => 'CRM_Case_Info::onToggleComponents',
-          '1' => 'CRM_Core_Component::flushEnabledComponents',
-          '2' => 'call://resources/resetCacheCode',
         ],
         'pseudoconstant' => [
           'callback' => 'CRM_Core_SelectValues::getComponentSelectValues',
@@ -2932,24 +2930,6 @@ function setting_getfields_expectedresult() {
             '1' => 'onToggleFts',
           ],
         ],
-      ],
-      'fts_query_mode' => [
-        'group_name' => 'Search Preferences',
-        'group' => 'Search Preferences',
-        'name' => 'fts_query_mode',
-        'type' => 'String',
-        'quick_form_type' => 'Element',
-        'html_attributes' => [
-          'size' => 64,
-          'maxlength' => 64,
-        ],
-        'html_type' => 'text',
-        'default' => 'simple',
-        'add' => '4.5',
-        'title' => 'How to handle full-text queries',
-        'is_domain' => 1,
-        'is_contact' => 0,
-        'help_text' => '',
       ],
       'includeOrderByClause' => [
         'group_name' => 'Search Preferences',

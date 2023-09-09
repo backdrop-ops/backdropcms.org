@@ -19,11 +19,11 @@ class CRM_Gdpr_Page_AJAX {
   /**
    * Function to get address log for a contact
    */
-  public static function get_address_logs($contactId){
-    $aGetMemberships = [];
+  public static function get_address_logs($contactId) {
+    $aGetAddressHistory = [];
 
     if (empty($contactId)) {
-      return $aGetMemberships;
+      return $aGetAddressHistory;
     }
 
     // Get logging DB
@@ -41,13 +41,13 @@ LEFT JOIN civicrm_location_type as lt ON ( lca.location_type_id = lt.id )
 WHERE lca.contact_id = %1
 ORDER BY lca.log_date DESC";
     $sqlParams = [
-      1 => [$contactId, 'Integer']
+      1 => [$contactId, 'Integer'],
     ];
     $dao = CRM_Core_DAO::executeQuery($sql, $sqlParams);
     while ($dao->fetch()) {
-      $country  = empty($dao->country_id) ? NULL  : CRM_Core_PseudoConstant::country( $dao->country_id );
-      $county   = empty($dao->county_id)  ? NULL  : CRM_Core_PseudoConstant::county( $dao->county_id );
-      $aGetMemberships[] = [
+      $country = empty($dao->country_id) ? NULL : CRM_Core_PseudoConstant::country($dao->country_id);
+      $county = empty($dao->county_id) ? NULL : CRM_Core_PseudoConstant::county($dao->county_id);
+      $aGetAddressHistory[] = [
         'street'        => $dao->street_address,
         'location_type' => $dao->lt_name,
         'postal_code'   => $dao->postal_code,
@@ -58,22 +58,22 @@ ORDER BY lca.log_date DESC";
         'country'       => $country,
         'county'        => $county,
         'log_action'    => $dao->log_action,
-        'log_date'      => CRM_Utils_Date::customFormat($dao->log_date , '%d-%m-%Y')
+        'log_date'      => $dao->log_date,
       ];
     }
-    return $aGetMemberships;
+    return $aGetAddressHistory;
   }
 
   public static function get_address_history_table($data) {
     if (empty($data)) {
       return NULL;
     }
-    $table  = <<< TABLE
+    $table = <<< TABLE
       <table id="custom_address_history">
         <thead>
           <tr>
             <th>
-              Date <small>(dd-mm-yyyy)</small>
+              Date
             </th>
             <th>
               Action
@@ -96,27 +96,27 @@ ORDER BY lca.log_date DESC";
 TABLE;
 
     foreach ($data as $row) {
-      $table  .= "<tr> ";
-      $table  .= "<td valign='top'> ".$row['log_date']."</td> ";
-      $table  .= "<td valign='top'> ".$row['log_action']."</td> ";
-      $table  .= "<td valign='top'> ".$row['location_type']."</td> ";
-      $table  .= "<td valign='top'> ".$row['street'];
-      if(!empty( $row['line1'])){
-        $table .= "<br>".$row['line1'];
+      $table .= "<tr> ";
+      $table .= "<td valign='top' data-order=" . strtotime($row['log_date']) . "> " . CRM_Utils_Date::customFormat($row['log_date'], Civi::settings()->get('dateformatDatetime')) . "</td> ";
+      $table .= "<td valign='top'> " . $row['log_action'] . "</td> ";
+      $table .= "<td valign='top'> " . $row['location_type'] . "</td> ";
+      $table .= "<td valign='top'> " . $row['street'];
+      if (!empty($row['line1'])) {
+        $table .= "<br>" . $row['line1'];
       }
-      if(!empty( $row['line2'])){
-        $table .= "<br>".$row['line2'];
+      if (!empty($row['line2'])) {
+        $table .= "<br>" . $row['line2'];
       }
-      if(!empty( $row['line3'])){
-        $table .= "<br>".$row['line3'];
+      if (!empty($row['line3'])) {
+        $table .= "<br>" . $row['line3'];
       }
-      if(!empty( $row['city'])){
-        $table .= "<br>".$row['city'];
+      if (!empty($row['city'])) {
+        $table .= "<br>" . $row['city'];
       }
-      $table  .= "</td>";
-      $table  .= "<td valign='top'> ".$row['postal_code']."</td> ";
-      $table  .= "<td valign='top'> ".$row['country']."</td> ";
-      $table  .= "</tr> ";
+      $table .= "</td>";
+      $table .= "<td valign='top'> " . $row['postal_code'] . "</td> ";
+      $table .= "<td valign='top'> " . $row['country'] . "</td> ";
+      $table .= "</tr> ";
     }
 
     $table .= <<<TABLE
@@ -130,17 +130,17 @@ TABLE;
 
   public static function getAddressHistory() {
     $iContactId = $_POST['contactId'];
-    if(!empty($iContactId)){
-      $aGetAddressHistory = self::get_address_logs( $iContactId );
-      $table = self::get_address_history_table( $aGetAddressHistory );
+    if (!empty($iContactId)) {
+      $aGetAddressHistory = self::get_address_logs($iContactId);
+      $table = self::get_address_history_table($aGetAddressHistory);
     }
 
     $countHistory = count($aGetAddressHistory);
     //$return['table'] = $table;
     //echo json_encode($return);
     $return = "";
-    if(!empty( $table ) && !empty($countHistory)){
-      $return = $countHistory.'|'.$table;
+    if (!empty($table) && !empty($countHistory)) {
+      $return = $countHistory . '|' . $table;
     }
     echo $return;
     exit;
@@ -201,7 +201,7 @@ TABLE;
     $submittedValues = $_POST['preference'];
 
     if (empty($iContactId) || !CRM_Contact_BAO_Contact_Utils::validChecksum($iContactId, $checksum)) {
-      echo "Failed to Update communication preferences." . $checksum ;
+      echo "Failed to Update communication preferences." . $checksum;
       CRM_Utils_System::civiExit();
     }
 

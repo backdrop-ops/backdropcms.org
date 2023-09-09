@@ -44,8 +44,8 @@
         {if !$sections} {* section headers and sticky headers aren't playing nice yet *}
             <thead class="sticky">
             <tr>
-                {$tableHeader}
-        </tr>
+              {$tableHeader|smarty:nodefaults}
+            </tr>
         </thead>
         {/if}
 
@@ -98,7 +98,7 @@
                     {assign var=fieldHover value=$field|cat:"_hover"}
                     {assign var=fieldClass value=$field|cat:"_class"}
                     <td class="crm-report-{$field}{if $header.type eq 1024 OR $header.type eq 1 OR $header.type eq 512} report-contents-right{elseif $row.$field eq 'Subtotal'} report-label{/if}">
-                        {if !empty($row.$fieldLink)}
+                        {if array_key_exists($fieldLink, $row) && $row.$fieldLink}
                             <a title="{$row.$fieldHover|escape}" href="{$row.$fieldLink}"  {if array_key_exists($fieldClass, $row)} class="{$row.$fieldClass}"{/if}>
                         {/if}
 
@@ -127,10 +127,10 @@
                                 <span class="nowrap">{$row.$field|crmMoney}</span>
                            {/if}
                         {else}
-                            {$row.$field}
+                            {$row.$field|smarty:nodefaults|purify}
                         {/if}
 
-                        {if !empty($row.$fieldLink)}</a>{/if}
+                        {if array_key_exists($fieldLink, $row) && $row.$fieldLink}</a>{/if}
                     </td>
                 {/foreach}
             </tr>

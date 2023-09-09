@@ -44,7 +44,7 @@ function civicrm_rules_civicrm_post($op, $objectName, $objectId, &$objectRef) {
 
   // process only contacts for now
   $validObjects = array_merge(
-    config_get('civicrm_rules', 'post_entities'),
+    config_get('civicrm_rules', 'post_entities') ?? [],
     array('contact' => 'contact')
   );
 

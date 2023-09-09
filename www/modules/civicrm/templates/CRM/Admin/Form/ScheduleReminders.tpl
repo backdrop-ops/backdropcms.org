@@ -9,7 +9,6 @@
 *}
 {* This template is used for adding/scheduling reminders.  *}
 <div class="crm-block crm-form-block crm-scheduleReminder-form-block">
- <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
 
 {if $action eq 8}
   <div class="messages status no-popup">
@@ -42,7 +41,7 @@
         <td>{$form.record_activity.html}</td>
     </tr>
     <tr id="relativeDateRepeat" class="crm-scheduleReminder-form-block-is_repeat"><td class="label" width="20%">{$form.is_repeat.label}</td>
-        <td>{$form.is_repeat.html}&nbsp;&nbsp;<span class="description">{ts}Enable repetition.{/ts}</span></td>
+        <td>{$form.is_repeat.html}</td>
     </tr>
     <tr id="repeatFields" class="crm-scheduleReminder-form-block-repeatFields"><td></td><td>
         <table class="form-layout-compressed">
@@ -81,7 +80,7 @@
     </tr>
     <tr id="recipientManual" class="crm-scheduleReminder-form-block-recipient_manual_id recipient">
         <td class="label">{$form.recipient_manual_id.label}</td>
-        <td>{$form.recipient_manual_id.html}{edit}<div class="description">{ts}You can manually send out the reminders to these recipients.{/ts}</div>{/edit}</td>
+        <td>{$form.recipient_manual_id.html}</td>
     </tr>
 
     <tr id="recipientGroup" class="crm-scheduleReminder-form-block-recipient_group_id recipient">
@@ -105,8 +104,8 @@
     </tr>
     {/if}
     <tr class="crm-scheduleReminder-form-block-active">
-      <td class="label"></td>
-      <td>{$form.is_active.html}&nbsp;{$form.is_active.label}</td>
+      <td class="label">{$form.is_active.label}</td>
+      <td>{$form.is_active.html}</td>
     </tr>
   </table>
   <fieldset id="email" class="crm-collapsible" style="display: block;">
@@ -122,7 +121,7 @@
             <td>
               {$form.subject.html|crmAddClass:huge}
               <input class="crm-token-selector big" data-field="subject" />
-              {help id="id-token-subject" tplFile=$tplFile isAdmin=$isAdmin file="CRM/Contact/Form/Task/Email.hlp"}
+              {help id="id-token-subject" file="CRM/Contact/Form/Task/Email.hlp"}
             </td>
          </tr>
        </table>
@@ -225,11 +224,11 @@
         $('#limit_to', $form).toggle(!($('#entity_0', $form).val() == '1'));
         if ($('#entity_0', $form).val() != '1' || !($('#entity_0').length)) {
           // Some Event entity is selected.
-          if (['2', '3', '5'].includes($('#entity_0', $form).val())) {
-            $('#limit_to option[value="0"]', $form).attr('disabled','disabled').removeAttr('selected');
+          if (['2', '3', '5'].includes($('#entity_0', $form).val()) || {/literal}'{$context}'{literal} === 'event') {
+            $('#limit_to option[value="2"]', $form).attr('disabled','disabled').removeAttr('selected');
           }
           else {
-            $('#limit_to option[value="0"]', $form).removeAttr('disabled');
+            $('#limit_to option[value="2"]', $form).removeAttr('disabled');
           }
           // Anything but Activity is selected.
           if ($('#limit_to', $form).val() == '') {

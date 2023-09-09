@@ -110,7 +110,7 @@ function civicrm_api3_case_create($params) {
   if (isset($params['contact_id']) && !isset($params['id'])) {
     foreach ((array) $params['contact_id'] as $cid) {
       $contactParams = ['case_id' => $caseBAO->id, 'contact_id' => $cid];
-      CRM_Case_BAO_CaseContact::create($contactParams);
+      CRM_Case_BAO_CaseContact::writeRecord($contactParams);
     }
   }
 
@@ -649,7 +649,7 @@ function _civicrm_api3_case_read(&$cases, $options) {
   // Bulk-load activities
   if (!empty($options['return']['activities'])) {
     $query = "SELECT case_id, activity_id FROM civicrm_case_activity WHERE case_id IN (%1)";
-    $params = [1 => [implode(',', array_keys($cases)), 'String', CRM_Core_DAO::QUERY_FORMAT_NO_QUOTES]];
+    $params = [1 => [implode(',', array_keys($cases)), 'CommaSeparatedIntegers']];
     $dao = CRM_Core_DAO::executeQuery($query, $params);
     while ($dao->fetch()) {
       $cases[$dao->case_id]['activities'][] = $dao->activity_id;

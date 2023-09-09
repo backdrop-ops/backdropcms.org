@@ -22,7 +22,8 @@
             "type": "library",
             "extra": {
                 "patches_applied": {
-                    "Update gitignore to ensure that sites that manage via git don't miss out on the important db.json file": "https://patch-diff.githubusercontent.com/raw/adrienrn/php-mimetyper/pull/15.patch"
+                    "Update gitignore to ensure that sites that manage via git don't miss out on the important db.json file": "https://patch-diff.githubusercontent.com/raw/adrienrn/php-mimetyper/pull/15.patch",
+                    "Apply patch to fix php8.2 deprecation notice on dynamic property $filename": "https://patch-diff.githubusercontent.com/raw/adrienrn/php-mimetyper/pull/17.patch"
                 }
             },
             "installation-source": "dist",
@@ -174,137 +175,6 @@
                 }
             ],
             "install-path": "../brick/money"
-        },
-        {
-            "name": "cache/integration-tests",
-            "version": "0.17.0",
-            "version_normalized": "0.17.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-cache/integration-tests.git",
-                "reference": "eda2e6b8bc5abcd623c8047e2345cda38dd6479e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-cache/integration-tests/zipball/eda2e6b8bc5abcd623c8047e2345cda38dd6479e",
-                "reference": "eda2e6b8bc5abcd623c8047e2345cda38dd6479e",
-                "shasum": ""
-            },
-            "require": {
-                "cache/tag-interop": "^1.0",
-                "php": ">=5.5.9",
-                "psr/cache": "~1.0"
-            },
-            "conflict": {
-                "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0"
-            },
-            "require-dev": {
-                "cache/cache": "^1.0",
-                "illuminate/cache": "^5.4|^5.5|^5.6",
-                "mockery/mockery": "^1.0",
-                "symfony/cache": "^3.4.31|^4.3.4|^5.0",
-                "symfony/phpunit-bridge": "^5.1",
-                "tedivm/stash": "^0.14"
-            },
-            "time": "2020-11-03T12:52:23+00:00",
-            "type": "library",
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Cache\\IntegrationTests\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Aaron Scherer",
-                    "email": "aequasi@gmail.com",
-                    "homepage": "https://github.com/aequasi"
-                },
-                {
-                    "name": "Tobias Nyholm",
-                    "email": "tobias.nyholm@gmail.com",
-                    "homepage": "https://github.com/nyholm"
-                }
-            ],
-            "description": "Integration tests for PSR-6 and PSR-16 cache implementations",
-            "homepage": "https://github.com/php-cache/integration-tests",
-            "keywords": [
-                "cache",
-                "psr16",
-                "psr6",
-                "test"
-            ],
-            "support": {
-                "issues": "https://github.com/php-cache/integration-tests/issues",
-                "source": "https://github.com/php-cache/integration-tests/tree/0.17.0"
-            },
-            "install-path": "../cache/integration-tests"
-        },
-        {
-            "name": "cache/tag-interop",
-            "version": "1.0.0",
-            "version_normalized": "1.0.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-cache/tag-interop.git",
-                "reference": "c7496dd81530f538af27b4f2713cde97bc292832"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-cache/tag-interop/zipball/c7496dd81530f538af27b4f2713cde97bc292832",
-                "reference": "c7496dd81530f538af27b4f2713cde97bc292832",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.5 || ^7.0",
-                "psr/cache": "^1.0"
-            },
-            "time": "2017-03-13T09:14:27+00:00",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Cache\\TagInterop\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tobias Nyholm",
-                    "email": "tobias.nyholm@gmail.com",
-                    "homepage": "https://github.com/Nyholm"
-                },
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com",
-                    "homepage": "https://github.com/nicolas-grekas"
-                }
-            ],
-            "description": "Framework interoperable interfaces for tags",
-            "homepage": "http://www.php-cache.com/en/latest/",
-            "keywords": [
-                "cache",
-                "psr",
-                "psr6",
-                "tag"
-            ],
-            "support": {
-                "issues": "https://github.com/php-cache/tag-interop/issues",
-                "source": "https://github.com/php-cache/tag-interop/tree/master"
-            },
-            "install-path": "../cache/tag-interop"
         },
         {
             "name": "civicrm/civicrm-cxn-rpc",
@@ -1035,17 +905,17 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.9.0",
-            "version_normalized": "1.9.0.0",
+            "version": "1.9.1",
+            "version_normalized": "1.9.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "e98e3e6d4f86621a9b75f623996e6bbdeb4b9318"
+                "reference": "e4490cabc77465aaee90b20cfc9a770f8c04be6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e98e3e6d4f86621a9b75f623996e6bbdeb4b9318",
-                "reference": "e98e3e6d4f86621a9b75f623996e6bbdeb4b9318",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/e4490cabc77465aaee90b20cfc9a770f8c04be6b",
+                "reference": "e4490cabc77465aaee90b20cfc9a770f8c04be6b",
                 "shasum": ""
             },
             "require": {
@@ -1063,13 +933,8 @@
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
-            "time": "2022-06-20T21:43:03+00:00",
+            "time": "2023-04-17T16:00:37+00:00",
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.9-dev"
-                }
-            },
             "installation-source": "dist",
             "autoload": {
                 "files": [
@@ -1128,7 +993,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.9.0"
+                "source": "https://github.com/guzzle/psr7/tree/1.9.1"
             },
             "funding": [
                 {
@@ -1320,49 +1185,42 @@
         },
         {
             "name": "league/csv",
-            "version": "9.6.2",
-            "version_normalized": "9.6.2.0",
+            "version": "9.7.4",
+            "version_normalized": "9.7.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/csv.git",
-                "reference": "f28da6e483bf979bac10e2add384c90ae9983e4e"
+                "reference": "002f55f649e7511710dc7154ff44c7be32c8195c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/csv/zipball/f28da6e483bf979bac10e2add384c90ae9983e4e",
-                "reference": "f28da6e483bf979bac10e2add384c90ae9983e4e",
+                "url": "https://api.github.com/repos/thephpleague/csv/zipball/002f55f649e7511710dc7154ff44c7be32c8195c",
+                "reference": "002f55f649e7511710dc7154ff44c7be32c8195c",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "php": ">=7.2.5"
+                "php": "^7.3 || ^8.0"
             },
             "require-dev": {
                 "ext-curl": "*",
                 "ext-dom": "*",
-                "friendsofphp/php-cs-fixer": "^2.16",
-                "phpstan/phpstan": "^0.12.0",
-                "phpstan/phpstan-phpunit": "^0.12.0",
-                "phpstan/phpstan-strict-rules": "^0.12.0",
-                "phpunit/phpunit": "^8.5"
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "phpstan/phpstan": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0.0",
+                "phpstan/phpstan-strict-rules": "^1.0",
+                "phpunit/phpunit": "^9.5"
             },
             "suggest": {
                 "ext-dom": "Required to use the XMLConverter and or the HTMLConverter classes",
                 "ext-iconv": "Needed to ease transcoding CSV using iconv stream filters"
             },
-            "time": "2020-12-10T19:40:30+00:00",
+            "time": "2021-11-30T07:09:34+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "9.x-dev"
-                },
-                "patches_applied": {
-                    "Adding in eol support to fputcsv for php8.1": "https://raw.githubusercontent.com/civicrm/civicrm-core/cacdbfaeaed8e04d504bf2fc604536137c03abeb/tools/scripts/composer/leage_csv_fputcsv.patch",
-                    "Remove deprecated flag from php8.1": "https://github.com/thephpleague/csv/commit/380f884922a6cdaaaaab3ad4bfc7d1d710af736e.patch",
-                    "Fix php8.1 deprecation errors part 1": "https://github.com/thephpleague/csv/commit/613db0b20157a1114cb1f9a801bd4c9c1f609cdf.patch",
-                    "Fix php8.1 deprecation errors part 2": "https://github.com/thephpleague/csv/commit/49e2b08ca025ebaf87a904b5645f535c807b6f10.patch",
-                    "Fix php8.1 notice issues part 3": "https://github.com/thephpleague/csv/commit/b83e972caea3cd22e7aaf65c5cffff1d49b46b69.patch"
                 }
             },
             "installation-source": "dist",
@@ -1607,9 +1465,13 @@
             ],
             "support": {
                 "issues": "https://github.com/maennchen/ZipStream-PHP/issues",
-                "source": "https://github.com/maennchen/ZipStream-PHP/tree/master"
+                "source": "https://github.com/maennchen/ZipStream-PHP/tree/2.1.0"
             },
             "funding": [
+                {
+                    "url": "https://github.com/maennchen",
+                    "type": "github"
+                },
                 {
                     "url": "https://opencollective.com/zipstream",
                     "type": "open_collective"
@@ -2595,17 +2457,17 @@
         },
         {
             "name": "pear/pear-core-minimal",
-            "version": "v1.10.11",
-            "version_normalized": "1.10.11.0",
+            "version": "v1.10.13",
+            "version_normalized": "1.10.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pear/pear-core-minimal.git",
-                "reference": "68d0d32ada737153b7e93b8d3c710ebe70ac867d"
+                "reference": "aed862e95fd286c53cc546734868dc38ff4b5b1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pear/pear-core-minimal/zipball/68d0d32ada737153b7e93b8d3c710ebe70ac867d",
-                "reference": "68d0d32ada737153b7e93b8d3c710ebe70ac867d",
+                "url": "https://api.github.com/repos/pear/pear-core-minimal/zipball/aed862e95fd286c53cc546734868dc38ff4b5b1d",
+                "reference": "aed862e95fd286c53cc546734868dc38ff4b5b1d",
                 "shasum": ""
             },
             "require": {
@@ -2615,13 +2477,8 @@
             "replace": {
                 "rsky/pear-core-min": "self.version"
             },
-            "time": "2021-08-10T22:31:03+00:00",
+            "time": "2023-04-19T19:15:47+00:00",
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Apply patch to fix creation of dynamic properties in PEAR_Error class": "https://patch-diff.githubusercontent.com/raw/pear/pear-core-minimal/pull/11.patch"
-                }
-            },
             "installation-source": "dist",
             "autoload": {
                 "psr-0": {
@@ -3194,58 +3051,6 @@
                 }
             ],
             "install-path": "../phpseclib/phpseclib"
-        },
-        {
-            "name": "psr/cache",
-            "version": "1.0.1",
-            "version_normalized": "1.0.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/cache.git",
-                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/cache/zipball/d11b50ad223250cf17b86e38383413f5a6764bf8",
-                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "time": "2016-08-06T20:24:11+00:00",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Cache\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for caching libraries",
-            "keywords": [
-                "cache",
-                "psr",
-                "psr-6"
-            ],
-            "support": {
-                "source": "https://github.com/php-fig/cache/tree/master"
-            },
-            "install-path": "../psr/cache"
         },
         {
             "name": "psr/container",
@@ -5356,36 +5161,44 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v3.4.47",
-            "version_normalized": "3.4.47.0",
+            "version": "v4.4.47",
+            "version_normalized": "4.4.47.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "0719f6cf4633a38b2c1585140998579ce23b4b7d"
+                "reference": "1069c7a3fca74578022fab6f81643248d02f8e63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/0719f6cf4633a38b2c1585140998579ce23b4b7d",
-                "reference": "0719f6cf4633a38b2c1585140998579ce23b4b7d",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/1069c7a3fca74578022fab6f81643248d02f8e63",
+                "reference": "1069c7a3fca74578022fab6f81643248d02f8e63",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.5.9|>=7.0.8",
-                "symfony/polyfill-mbstring": "~1.0"
+                "php": ">=7.1.3",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/polyfill-php72": "~1.5",
+                "symfony/polyfill-php80": "^1.16"
             },
             "conflict": {
-                "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0"
+                "phpunit/phpunit": "<4.8.35|<5.4.3,>=5.0",
+                "symfony/console": "<3.4"
             },
             "require-dev": {
                 "ext-iconv": "*",
-                "twig/twig": "~1.34|~2.4"
+                "symfony/console": "^3.4|^4.0|^5.0",
+                "symfony/process": "^4.4|^5.0",
+                "twig/twig": "^1.43|^2.13|^3.0.4"
             },
             "suggest": {
                 "ext-iconv": "To convert non-UTF-8 strings to UTF-8 (or symfony/polyfill-iconv in case ext-iconv cannot be used).",
                 "ext-intl": "To show region name in time zone dump",
-                "ext-symfony_debug": ""
+                "symfony/console": "To use the ServerDumpCommand and/or the bin/var-dump-server script"
             },
-            "time": "2020-10-24T10:57:07+00:00",
+            "time": "2022-10-03T15:15:11+00:00",
+            "bin": [
+                "Resources/bin/var-dump-server"
+            ],
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -5413,14 +5226,14 @@
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
-            "description": "Symfony mechanism for exploring and dumping PHP variables",
+            "description": "Provides mechanisms for walking through any arbitrary PHP variable",
             "homepage": "https://symfony.com",
             "keywords": [
                 "debug",
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v3.4.47"
+                "source": "https://github.com/symfony/var-dumper/tree/v4.4.47"
             },
             "funding": [
                 {
