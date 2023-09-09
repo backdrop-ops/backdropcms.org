@@ -66,7 +66,7 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
    *
    * @var CRM_Core_Config
    */
-  private static $_singleton = NULL;
+  private static $_singleton;
 
   /**
    * Singleton function used to manage this object.
@@ -290,7 +290,7 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
     if ($this->userPermissionClass->isModulePermissionSupported()) {
       // Can store permissions -- so do it!
       $this->userPermissionClass->upgradePermissions(
-        CRM_Core_Permission::basicPermissions()
+        CRM_Core_Permission::basicPermissions(TRUE)
       );
     }
     elseif (get_class($this->userPermissionClass) !== 'CRM_Core_Permission_UnitTests') {
@@ -363,12 +363,10 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
    *   tables created recently from being deleted.
    */
   public static function clearTempTables($timeInterval = FALSE): void {
-
-    $dao = new CRM_Core_DAO();
     $query = "
       SELECT TABLE_NAME as tableName
       FROM   INFORMATION_SCHEMA.TABLES
-      WHERE  TABLE_SCHEMA = %1
+      WHERE  TABLE_SCHEMA = DATABASE()
       AND TABLE_NAME LIKE 'civicrm_tmp_d%'
     ";
 
@@ -376,13 +374,9 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
       $query .= " AND CREATE_TIME < DATE_SUB(NOW(), INTERVAL {$timeInterval})";
     }
 
-    $tableDAO = CRM_Core_DAO::executeQuery($query, [1 => [$dao->database(), 'String']]);
+    $tableDAO = CRM_Core_DAO::executeQuery($query);
     $tables = [];
     while ($tableDAO->fetch()) {
-      $tables[] = $tableDAO->tableName;
-    }
-    if (!empty($tables)) {
-      $table = implode(',', $tables);
       // If a User Job references the table do not drop it. This is a bit quick & dirty, but we don't want to
       // get into calling more sophisticated functions in a cache clear, and the table names are pretty unique
       // (ex: "civicrm_tmp_d_dflt_1234abcd5678efgh"), and the "metadata" may continue to evolve for the next
@@ -390,10 +384,14 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
       // TODO: Circa v5.60+, consider a more precise cleanup. Discussion: https://github.com/civicrm/civicrm-core/pull/24538
       // A separate process will reap the UserJobs but here the goal is just not to delete them during cache clearing
       // if they are still referenced.
-      if (!CRM_Core_DAO::executeQuery("SELECT count(*) FROM civicrm_user_job WHERE metadata LIKE '%" . $tableDAO->tableName . "%'")) {
-        // drop leftover temporary tables
-        CRM_Core_DAO::executeQuery("DROP TABLE $table");
+      if (!CRM_Core_DAO::singleValueQuery("SELECT count(*) FROM civicrm_user_job WHERE metadata LIKE '%" . $tableDAO->tableName . "%'")) {
+        $tables[] = $tableDAO->tableName;
       }
+    }
+    if (!empty($tables)) {
+      $table = implode(',', $tables);
+      // drop leftover temporary tables
+      CRM_Core_DAO::executeQuery("DROP TABLE $table");
     }
   }
 

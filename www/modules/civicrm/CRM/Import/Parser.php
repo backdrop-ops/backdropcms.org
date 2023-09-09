@@ -91,6 +91,11 @@ abstract class CRM_Import_Parser implements UserJobInterface {
   protected $statesByCountry = [];
 
   /**
+   * @var int|null
+   */
+  protected $siteDefaultCountry = NULL;
+
+  /**
    * @return int|null
    */
   public function getUserJobID(): ?int {
@@ -203,7 +208,7 @@ abstract class CRM_Import_Parser implements UserJobInterface {
    * @return string
    */
   protected function getContactType(): string {
-    return $this->getSubmittedValue('contactType') ?: $this->getContactTypeForEntity('Contact');
+    return $this->getSubmittedValue('contactType') ?: $this->getContactTypeForEntity('Contact') ?? '';
   }
 
   /**
@@ -672,7 +677,7 @@ abstract class CRM_Import_Parser implements UserJobInterface {
     $queue = Civi::queue('user_job_' . $this->getUserJobID(), ['type' => 'Sql', 'error' => 'abort', 'runner' => 'task', 'user_job_id' => $this->getUserJobID(), 'retry_limit' => 5]);
     UserJob::update(FALSE)->setValues(['queue_id.name' => 'user_job_' . $this->getUserJobID()])->addWhere('id', '=', $this->getUserJobID())->execute();
     $offset = 0;
-    $batchSize = 50;
+    $batchSize = Civi::settings()->get('import_batch_size');
     while ($totalRows > 0) {
       if ($totalRows < $batchSize) {
         $batchSize = $totalRows;
@@ -1055,7 +1060,6 @@ abstract class CRM_Import_Parser implements UserJobInterface {
     }
 
     // first add core contact values since for other Civi modules they are not added
-    require_once 'CRM/Contact/BAO/Contact.php';
     $contactFields = CRM_Contact_DAO_Contact::fields();
     _civicrm_api3_store_values($contactFields, $values, $params);
 
@@ -1175,7 +1179,7 @@ abstract class CRM_Import_Parser implements UserJobInterface {
 
       $addressCnt = 1;
       foreach ($params['address'] as $cnt => $addressBlock) {
-        if (CRM_Utils_Array::value('location_type_id', $values) ==
+        if (($values['location_type_id'] ?? NULL) ==
           CRM_Utils_Array::value('location_type_id', $addressBlock)
         ) {
           $addressCnt = $cnt;
@@ -1595,20 +1599,34 @@ abstract class CRM_Import_Parser implements UserJobInterface {
       return CRM_Utils_Rule::email($importedValue) ? $importedValue : 'invalid_import_value';
     }
 
-    if ($fieldMetadata['type'] === CRM_Utils_Type::T_FLOAT) {
+    // DataType is defined on apiv4 metadata - ie what we are moving to.
+    $typeMap = [
+      CRM_Utils_Type::T_FLOAT => 'Float',
+      CRM_Utils_Type::T_MONEY => 'Money',
+      CRM_Utils_Type::T_BOOLEAN => 'Boolean',
+      CRM_Utils_Type::T_DATE => 'Date',
+      (CRM_Utils_Type::T_DATE + CRM_Utils_Type::T_TIME) => 'Timestamp',
+      CRM_Utils_Type::T_TIMESTAMP => 'Timestamp',
+      CRM_Utils_Type::T_INT => 'Integer',
+      CRM_Utils_Type::T_TEXT => 'String',
+      CRM_Utils_Type::T_STRING => 'String',
+    ];
+    $dataType = $fieldMetadata['data_type'] ?? $typeMap[$fieldMetadata['type']];
+
+    if ($dataType === 'Float') {
       return CRM_Utils_Rule::numeric($importedValue) ? $importedValue : 'invalid_import_value';
     }
-    if ($fieldMetadata['type'] === CRM_Utils_Type::T_MONEY) {
+    if ($dataType === 'Money') {
       return CRM_Utils_Rule::money($importedValue, TRUE) ? CRM_Utils_Rule::cleanMoney($importedValue) : 'invalid_import_value';
     }
-    if ($fieldMetadata['type'] === CRM_Utils_Type::T_BOOLEAN) {
+    if ($dataType === 'Boolean') {
       $value = CRM_Utils_String::strtoboolstr($importedValue);
       if ($value !== FALSE) {
-        return (bool) $value;
+        return (int) $value;
       }
       return 'invalid_import_value';
     }
-    if ($fieldMetadata['type'] === CRM_Utils_Type::T_DATE || $fieldMetadata['type'] === (CRM_Utils_Type::T_DATE + CRM_Utils_Type::T_TIME) || $fieldMetadata['type'] === CRM_Utils_Type::T_TIMESTAMP) {
+    if (in_array($dataType, ['Date', 'Timestamp'], TRUE)) {
       $value = CRM_Utils_Date::formatDate($importedValue, (int) $this->getSubmittedValue('dateFormats'));
       return $value ?: 'invalid_import_value';
     }
@@ -1638,10 +1656,10 @@ abstract class CRM_Import_Parser implements UserJobInterface {
           $campaign = Campaign::get()->addClause('OR', ['title', '=', $importedValue], ['name', '=', $importedValue], ['id', '=', $importedValue])->addSelect('id')->execute()->first();
           Civi::$statics[__CLASS__][$fieldName][$importedValue] = $campaign['id'] ?? FALSE;
         }
-        return Civi::$statics[__CLASS__][$fieldName][$importedValue] ?? 'invalid_import_value';
+        return Civi::$statics[__CLASS__][$fieldName][$importedValue] ?: 'invalid_import_value';
       }
     }
-    if ($fieldMetadata['type'] === CRM_Utils_Type::T_INT) {
+    if ($dataType === 'Integer') {
       // We have resolved the options now so any remaining ones should be integers.
       return CRM_Utils_Rule::numeric($importedValue) ? $importedValue : 'invalid_import_value';
     }
@@ -1678,6 +1696,9 @@ abstract class CRM_Import_Parser implements UserJobInterface {
     $fieldMap = $this->getOddlyMappedMetadataFields();
     $fieldMapName = empty($fieldMap[$fieldName]) ? $fieldName : $fieldMap[$fieldName];
     $fieldMapName = str_replace('__', '.', $fieldMapName);
+    // See https://lab.civicrm.org/dev/core/-/issues/4317#note_91322 - a further hack for quickform not
+    // handling dots in field names. One day we will get rid of the Quick form screen...
+    $fieldMapName = str_replace('~~', '_.', $fieldMapName);
     // This whole business of only loading metadata for one type when we actually need it for all is ... dubious.
     if (empty($this->getImportableFieldsMetadata()[$fieldMapName])) {
       if ($loadOptions || !$limitToContactType) {
@@ -1686,7 +1707,7 @@ abstract class CRM_Import_Parser implements UserJobInterface {
     }
 
     $fieldMetadata = $this->getImportableFieldsMetadata()[$fieldMapName];
-    if ($loadOptions && !isset($fieldMetadata['options'])) {
+    if ($loadOptions && (!isset($fieldMetadata['options']) || $fieldMetadata['options'] === TRUE)) {
       if (($fieldMetadata['data_type'] ?? '') === 'StateProvince') {
         // Probably already loaded and also supports abbreviations - eg. NSW.
         // Supporting for core AND custom state fields is more consistent.
@@ -1941,7 +1962,7 @@ abstract class CRM_Import_Parser implements UserJobInterface {
    * @return int
    */
   protected function getSiteDefaultCountry(): int {
-    if (!isset($this->siteDefaultCountry)) {
+    if ($this->siteDefaultCountry === NULL) {
       $this->siteDefaultCountry = (int) Civi::settings()->get('defaultContactCountry');
     }
     return $this->siteDefaultCountry;
@@ -2138,26 +2159,6 @@ abstract class CRM_Import_Parser implements UserJobInterface {
       $this->createdContacts[$createdContactID] = $createdContactID;
     }
     $this->getDataSourceObject()->updateStatus($id, $status, $message, $entityID, $additionalFields);
-  }
-
-  /**
-   * Convert any given date string to default date array.
-   *
-   * @param array $params
-   *   Has given date-format.
-   * @param array $formatted
-   *   Store formatted date in this array.
-   * @param int $dateType
-   *   Type of date.
-   * @param string $dateParam
-   *   Index of params.
-   *
-   * @deprecated
-   */
-  public static function formatCustomDate(&$params, &$formatted, $dateType, $dateParam) {
-    //fix for CRM-2687
-    CRM_Utils_Date::convertToDefaultDate($params, $dateType, $dateParam);
-    $formatted[$dateParam] = CRM_Utils_Date::processDate($params[$dateParam]);
   }
 
   /**

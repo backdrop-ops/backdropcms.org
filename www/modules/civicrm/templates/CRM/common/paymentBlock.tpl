@@ -9,6 +9,7 @@
 *}
 {literal}
 <script type="text/javascript">
+{/literal}{if !$isBackOffice}{literal}
   /**
    * Show or hide payment options.
    *
@@ -68,17 +69,18 @@
     showHidePayment(isHide);
   }
   skipPaymentMethod();
+{/literal}{/if}{literal}
 
   CRM.$(function($) {
     function buildPaymentBlock(type) {
       var $form = $('#billing-payment-block').closest('form');
       {/literal}
-      {if $contributionPageID}
+      {if !$isBackOffice && $contributionPageID}
         {capture assign='contributionPageID'}id={$contributionPageID}&{/capture}
       {else}
-        {capture assign='pageID'}{/capture}
+        {capture assign='contributionPageID'}{/capture}
       {/if}
-      {if $custom_pre_id}
+      {if !$isBackOffice && $custom_pre_id}
         {capture assign='preProfileID'}pre_profile_id={$custom_pre_id}&{/capture}
       {else}
         {capture assign='preProfileID'}{/capture}
@@ -88,7 +90,8 @@
       {else}
         {capture assign='urlPathVar'}{/capture}
       {/if}
-      {if $billing_profile_id}
+      // Billing profile ID is only ever set on front end forms, to force entering address for pay later.
+      {if !$isBackOffice && $billing_profile_id}
         {capture assign='profilePathVar'}billing_profile_id={$billing_profile_id}&{/capture}
       {else}
         {capture assign='profilePathVar'}{/capture}

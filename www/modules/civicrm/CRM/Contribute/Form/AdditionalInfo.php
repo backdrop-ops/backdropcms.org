@@ -127,11 +127,10 @@ class CRM_Contribute_Form_AdditionalInfo {
     }
 
     $form->add('select', 'contribution_page_id',
-      ts('Online Contribution Page'),
-      [
-        '' => ts('- select -'),
-      ] +
-      CRM_Contribute_PseudoConstant::contributionPage()
+      ts('Contribution Page'),
+      ['' => ts('- select -')] + CRM_Contribute_PseudoConstant::contributionPage(),
+      FALSE,
+      ['class' => 'crm-select2']
     );
 
     $form->add('textarea', 'note', ts('Notes'), ["rows" => 4, "cols" => 60]);

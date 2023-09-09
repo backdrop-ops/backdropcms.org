@@ -7,9 +7,6 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
 *}
-{if $action eq 1 or $action eq 2 or $action eq 8}
-   {include file="CRM/Admin/Form/MailSettings.tpl"}
-{else}
 
 <div class="crm-block crm-content-block">
 {if $rows}
@@ -25,7 +22,7 @@
             <th>{ts}Domain{/ts}</th>
             <th>{ts}Return-Path{/ts}</th>
             <th>{ts}Protocol{/ts}</th>
-            <th>{ts}Source{/ts}</th>
+            <th>{ts}Mail Folder{/ts}</th>
             <!--<th>{ts}Port{/ts}</th>-->
             <th>{ts}Use SSL?{/ts}</th>
             <th>{ts}Used For{/ts}</th>
@@ -69,12 +66,10 @@
         </form>
     {else}
         <div class="action-link">
-            {crmButton q="action=add&reset=1" id="newMailSettings"  icon="plus-circle"}{ts}Add Mail Account{/ts}{/crmButton}
+            {crmButton p="civicrm/admin/mailSettings/edit" q="action=add&reset=1" id="newMailSettings"  icon="plus-circle"}{ts}Add Mail Account{/ts}{/crmButton}
             {crmButton p="civicrm/admin" q="reset=1" class="cancel" icon="times"}{ts}Done{/ts}{/crmButton}
         </div>
     {/if}
-
-{/if}
 </div>
 {literal}
     <script type="text/javascript">

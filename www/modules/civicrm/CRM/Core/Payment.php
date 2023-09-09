@@ -150,7 +150,7 @@ abstract class CRM_Core_Payment {
    * Note:
    * We normally SHOULD be returning the payment instrument of the payment processor.
    * However there is an outstanding case where this needs overriding, which is
-   * when using CRM_Core_Payment_Manual which uses the pseudoprocessor (id = 0).
+   * when using CRM_Core_Payment_Manual which uses the pseudo-processor (id = 0).
    *
    * i.e. If you're writing a Payment Processor you should NOT be using
    * setPaymentInstrumentID() at all.
@@ -500,8 +500,7 @@ abstract class CRM_Core_Payment {
   /**
    * Default payment instrument validation.
    *
-   * Implement the usual Luhn algorithm via a static function in the CRM_Core_Payment_Form if it's a credit card
-   * Not a static function, because I need to check for payment_type.
+   * Payment processors should override this.
    *
    * @param array $values
    * @param array $errors
@@ -1511,7 +1510,7 @@ abstract class CRM_Core_Payment {
    * @return string
    *   the error message if any
    */
-  abstract protected function checkConfig();
+  abstract public function checkConfig();
 
   /**
    * Redirect for paypal.
@@ -1529,7 +1528,7 @@ abstract class CRM_Core_Payment {
 
     if (isset($_GET['payment_date']) &&
       isset($_GET['merchant_return_link']) &&
-      CRM_Utils_Array::value('payment_status', $_GET) == 'Completed' &&
+      ($_GET['payment_status'] ?? NULL) == 'Completed' &&
       $paymentProcessor['payment_processor_type'] == "PayPal_Standard"
     ) {
       return TRUE;
@@ -1615,7 +1614,7 @@ abstract class CRM_Core_Payment {
       // This is called when processor_name is passed - passing processor_id instead is recommended.
       $sql .= " WHERE ppt.name = %2 AND pp.is_test = %1";
       $args[1] = [
-        (CRM_Utils_Array::value('mode', $params) == 'test') ? 1 : 0,
+        (($params['mode'] ?? NULL) == 'test') ? 1 : 0,
         'Integer',
       ];
       $args[2] = [$params['processor_name'], 'String'];
@@ -1670,7 +1669,7 @@ abstract class CRM_Core_Payment {
     if (!$extension_instance_found) {
       $message = "No extension instances of the '%1' payment processor were found.<br />" .
         "%2 method is unsupported in legacy payment processors.";
-      throw new CRM_Core_Exception(ts($message, [
+      throw new CRM_Core_Exception(_ts($message, [
         1 => $params['processor_name'],
         2 => $method,
       ]));

@@ -27,6 +27,12 @@ Extension to support General Data Protection Regulation
 * Event settings have a new tab to set Terms and Conditions which are added to the registration form.
 * A Communications Preferences page at civicrm/gdpr/comms-prefs/update allows contacts to update their channels and group subscriptions. The settings for this can be reached from the GDPR Dashboard. There are tokens and an action link available to generate personalized links (with checksum) to the Communications Preferences page.
 
+### Wordpress Shortcode ###
+
+[civicrm component="gdpr" hijack="0" action="update-preferences"]
+
+NOTE: Specify hijack option (hijack="1") to replace all other content on that page rather than being displayed inline.
+
 ### Documentation ###
 
 View the [GDPR
@@ -38,6 +44,27 @@ https://docs.civicrm.org/.
 support (at) vedaconsulting.co.uk
 
 ### Change Log ###
+
+v3.4 Includes:
+ 
+More options for 'Export' functionality in GDPR tab:
+
+- Relationships, GA & GRPR as export options
+- Exclude bulk email activities during export
+
+v3.3 Includes:
+
+- WP Shortcode
+- Fixes in documentation & call to reconcile modules #295
+- Set subject on 'Update Communication Preferences' based on source form
+- Convert to use API4 for creating the activity
+- Add GDPR configuration to Administer menu
+- PHP notice and deprecation fixes
+- Fix template syntax error on dashboard
+
+v3.2
+
+README Updated for failed 3.2 release
 
 v3.1
 

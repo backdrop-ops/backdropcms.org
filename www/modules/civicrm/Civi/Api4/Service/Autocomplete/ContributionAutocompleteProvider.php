@@ -38,6 +38,7 @@ class ContributionAutocompleteProvider extends \Civi\Core\Service\AutoService im
         'total_amount',
         'receive_date',
         'financial_type_id:label',
+        'contribution_status_id:label',
       ],
       'orderBy' => [],
       'where' => [],
@@ -76,6 +77,7 @@ class ContributionAutocompleteProvider extends \Civi\Core\Service\AutoService im
         [
           'type' => 'field',
           'key' => 'receive_date',
+          'rewrite' => '[contribution_status_id:label] [receive_date]',
         ],
       ],
     ];

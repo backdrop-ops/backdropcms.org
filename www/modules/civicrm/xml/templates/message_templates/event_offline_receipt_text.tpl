@@ -8,10 +8,8 @@
 
 {ts}You have been added to the WAIT LIST for this event.{/ts}
 
-{if !empty($isPrimary)}
 {ts}If space becomes available you will receive an email with a link to a web page where you can complete your registration.{/ts}
 
-{/if}
 ==========================================================={if !empty($pricesetFieldsCount) }===================={/if}
 
 {elseif !empty($isRequireApproval)}
@@ -19,10 +17,8 @@
 
 {ts}Your registration has been submitted.{/ts}
 
-{if !empty($isPrimary)}
 {ts}Once your registration has been reviewed, you will receive an email with a link to a web page where you can complete the registration process.{/ts}
 
-{/if}
 ==========================================================={if !empty($pricesetFieldsCount) }===================={/if}
 
 {elseif $is_pay_later}
@@ -52,19 +48,24 @@
 {$location.address.1.display|strip_tags:false}
 {/if}{*End of isShowLocation condition*}
 
-{if !empty($location.phone.1.phone) || !empty($location.email.1.email)}
-
+{if {event.loc_block_id.phone_id.phone|boolean} || {event.loc_block_id.email_id.email|boolean}}
 {ts}Event Contacts:{/ts}
-{foreach from=$location.phone item=phone}
-{if $phone.phone}
 
-{if $phone.phone_type}{$phone.phone_type_display}{else}{ts}Phone{/ts}{/if}: {$phone.phone}{/if} {if $phone.phone_ext} {ts}ext.{/ts} {$phone.phone_ext}{/if}
-{/foreach}
-{foreach from=$location.email item=eventEmail}
-{if $eventEmail.email}
-
-{ts}Email{/ts}: {$eventEmail.email}{/if}{/foreach}
+{if {event.loc_block_id.phone_id.phone|boolean}}
+{if {event.loc_block_id.phone_id.phone_type_id|boolean}}{event.loc_block_id.phone_id.phone_type_id:label}{else}{ts}Phone{/ts}{/if} {event.loc_block_id.phone_id.phone} {if {event.loc_block_id.phone_id.phone_ext|boolean}} {ts}ext.{/ts} {event.loc_block_id.phone_id.phone_ext}{/if}
 {/if}
+
+{if {event.loc_block_id.phone_2_id.phone|boolean}}
+{if {event.loc_block_id.phone_2_id.phone_type_id|boolean}}{event.loc_block_id.phone_2_id.phone_type_id:label}{else}{ts}Phone{/ts}{/if} {event.loc_block_id.phone_2_id.phone} {if {event.loc_block_id.phone_2_id.phone_ext|boolean}} {ts}ext.{/ts} {event.loc_block_id.phone_2_id.phone_ext}{/if}
+{/if}
+
+{if {event.loc_block_id.email_id.email|boolean}}
+{ts}Email {/ts}{event.loc_block_id.email_id.email}
+{/if}
+{if {event.loc_block_id.email_2_id.email|boolean}}
+{ts}Email {/ts}{event.loc_block_id.email_2_id.email}{/if}
+{/if}
+
 
 {if !empty($event.is_public)}
 {capture assign=icalFeed}{crmURL p='civicrm/event/ical' q="reset=1&id=`$event.id`" h=0 a=1 fe=1}{/capture}
@@ -93,7 +94,7 @@
 {if !empty($lineItem)}{foreach from=$lineItem item=value key=priceset}
 
 {if $value neq 'skip'}
-{if !empty($isPrimary)}
+{if {event.is_monetary|boolean}}
 {if $lineItem|@count GT 1} {* Header for multi participant registration cases. *}
 {ts 1=$priceset+1}Participant %1{/ts}
 {/if}
@@ -122,14 +123,12 @@
 
 {if !empty($dataArray)}
 {if $totalAmount and $totalTaxAmount}
-{ts}Amount before Tax{/ts}: {$totalAmount-$totalTaxAmount|crmMoney:$currency}
+{ts}Amount before Tax:{/ts} {$totalAmount-$totalTaxAmount|crmMoney:$currency}
 {/if}
 
 {foreach from=$dataArray item=value key=priceset}
 {if $priceset || $priceset == 0}
 {$taxTerm} {$priceset|string_format:"%.2f"}%: {$value|crmMoney:$currency}
-{else}
-{ts}No{/ts} {$taxTerm}: {$value|crmMoney:$currency}
 {/if}
 {/foreach}
 {/if}
@@ -143,12 +142,11 @@
 {if $totalTaxAmount}
 {ts}Total Tax Amount{/ts}: {$totalTaxAmount|crmMoney:$currency}
 {/if}
-{if !empty($isPrimary)}
+{if {event.is_monetary|boolean}}
 
-{if !empty($balanceAmount)}{ts}Total Paid{/ts}{else}{ts}Total Amount{/ts}{/if}: {if !empty($totalAmount)}{$totalAmount|crmMoney}{/if} {if !empty($hookDiscount.message)}({$hookDiscount.message}){/if}
-
-{if !empty($balanceAmount)}
-{ts}Balance{/ts}: {$balanceAmount|crmMoney}
+{if {contribution.balance_amount|boolean}}{ts}Total Paid{/ts}: {if {contribution.paid_amount|boolean}}{contribution.paid_amount}{/if} {if !empty($hookDiscount.message)}({$hookDiscount.message}){/if}
+{ts}Balance{/ts}: {contribution.balance_amount}
+{else}{ts}Total Amount{/ts}: {if {contribution.total_amount|boolean}}{contribution.total_amount}{/if} {if !empty($hookDiscount.message)}({$hookDiscount.message}){/if}
 {/if}
 
 {if !empty($pricesetFieldsCount) }

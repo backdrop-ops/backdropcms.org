@@ -58,7 +58,7 @@ class CRM_Gdpr_Form_Search_GroupcontactDetails extends CRM_Contact_Form_Search_C
     }
     $form->addGroup($group_contact_status,
       'group_contact_status', E::ts('Group Status')
-    );    
+    );
 
     CRM_Core_Form_Date::buildDateRange($form, 'subscription_date', 1, '_low', '_high', E::ts('From'), FALSE);
     $form->addElement('hidden', 'subscription_date_range_error');
@@ -200,14 +200,19 @@ class CRM_Gdpr_Form_Search_GroupcontactDetails extends CRM_Contact_Form_Search_C
       }
 
       //Date range filter
-      if ($filters[0] == 'subscription_date_low') {
+      if ($filters[0] == 'subscription_date_relative' && !empty($filters[2])) {
+        list($relativeFrom, $relativeTo) = CRM_Utils_Date::getFromTo($filters[2]);
+        $clause[] = "subscription.date >= {$relativeFrom}";
+        $clause[] = "subscription.date <= {$relativeTo}";
+      }
+      elseif ($filters[0] == 'subscription_date_low') {
         $fromDate = $filters[2];
         if ($fromDate) {
           $fromDate = date('YmdHis', strtotime($fromDate));
           $clause[] = "subscription.date >= {$fromDate}";
         }
       }
-      if ($filters[0] == 'subscription_date_high') {
+      elseif ($filters[0] == 'subscription_date_high') {
         $toDate = $filters[2];
         if ($toDate) {
           $toDate = date('YmdHis', strtotime($toDate));

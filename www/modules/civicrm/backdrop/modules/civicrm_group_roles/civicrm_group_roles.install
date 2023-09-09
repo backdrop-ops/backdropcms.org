@@ -44,34 +44,6 @@ function civicrm_group_roles_enable() {
 }
 
 /**
- * Implements hook_schema().
- */
-function civicrm_group_roles_schema() {
-  $schema['civicrm_group_roles_rules'] = array(
-    'fields' => array(
-      'id' => array(
-        'type' => 'serial',
-        'not null' => TRUE,
-      ),
-      'role_name' => array(
-        'type' => 'varchar',
-        'length' => 64,
-        'not null' => TRUE,
-        'default' => '',
-      ),
-      'group_id' => array(
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ),
-    ),
-    'primary key' => array('id'),
-  );
-
-  return $schema;
-}
-
-/**
  * Implements hook_update_last_removed().
  */
 function civicrm_group_roles_update_last_removed() {
@@ -102,5 +74,25 @@ function civicrm_group_roles_update_1001() {
   if ($config->get('civicrm_group_roles_debugging') == NULL) {
     $config->set('civicrm_group_roles_debugging', 0);
     $config->save();
+  }
+}
+
+/**
+ * Convert rules to config.
+ */
+function civicrm_group_roles_update_1002() {
+  $config = config('civicrm_group_roles.settings');
+  if (db_table_exists('civicrm_group_roles_rules')) {
+    $rules = db_select('civicrm_group_roles_rules', 'cgr')->fields('cgr')->execute()->fetchAll();
+    foreach ($rules as $rule) {
+      $config->set('rules.' . $rule->id,
+        array(
+          'role_name' => $rule->role_name,
+          'group_id' => $rule->group_id,
+        )
+      );
+    }
+    $config->save();
+    db_drop_table('civicrm_group_roles_rules');
   }
 }

@@ -58,7 +58,7 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
     $settings = [];
     $defaults = $use_defaults ? self::getSettingsDefaults() : [];
     foreach ([self::SETTING_NAME, self::GROUP_SETTING_NAME] as $setting_name) {
-      $serialized = CRM_Core_BAO_Setting::getItem(self::SETTING_GROUP, $setting_name);
+      $serialized = CRM_Gdpr_Utils::getItem(self::SETTING_GROUP, $setting_name);
       if (!$serialized && $use_defaults)  {
         $settings[$setting_name] = !empty($defaults[$setting_name]) ? $defaults[$setting_name] : [];
       }
@@ -118,7 +118,7 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
     foreach ([self::SETTING_NAME, self::GROUP_SETTING_NAME] as $setting_name) {
       if (isset($settings_array[$setting_name])) {
         $setting_serialized = serialize($settings_array[$setting_name]);
-        CRM_Core_BAO_Setting::setItem($setting_serialized, self::SETTING_GROUP, $setting_name);
+        CRM_Gdpr_Utils::setItem($setting_serialized, self::SETTING_GROUP, $setting_name);
       }
     }
   }
@@ -512,7 +512,7 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
     $commPref = ['id' => $contactId];
 
     // get existing preferred communication methods
-    $existingPreferredMethod = NULL;
+    $existingPreferredMethod = [];
     try {
       $apiResult = civicrm_api3('Contact', 'getsingle', [
         'return' => ["preferred_communication_method"],
@@ -520,6 +520,12 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
       ]);
 
       $existingPreferredMethod = $apiResult['preferred_communication_method'];
+      
+        if( !is_array( $existingPreferredMethod ) ){
+          // create an empty array to avoid error message
+          $existingPreferredMethod = [];
+        }
+      
       $existingPreferredMethod = array_fill_keys($existingPreferredMethod, 1);
     } catch (Exception $e) {
       CRM_Core_Error::debug_var('updateCommsPrefByFormValues', $e);

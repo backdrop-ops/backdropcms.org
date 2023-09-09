@@ -164,7 +164,8 @@ class CRM_Event_Form_ParticipantView extends CRM_Core_Form {
     }
 
     //do check for campaigns
-    if ($campaignId = CRM_Utils_Array::value('campaign_id', $values[$participantID])) {
+    $campaignId = $values[$participantID]['campaign_id'] ?? NULL;
+    if ($campaignId) {
       $campaigns = CRM_Campaign_BAO_Campaign::getCampaigns($campaignId);
       $values[$participantID]['campaign'] = $campaigns[$campaignId];
     }
@@ -210,7 +211,7 @@ class CRM_Event_Form_ParticipantView extends CRM_Core_Form {
     $this->setTitle(ts('View Event Registration for') . ' ' . $displayName);
 
     $roleId = $values[$participantID]['role_id'] ?? NULL;
-    $title = $displayName . ' (' . CRM_Utils_Array::value($roleId, $participantRoles) . ' - ' . $eventTitle . ')';
+    $title = $displayName . ' (' . ($participantRoles[$roleId] ?? '') . ' - ' . $eventTitle . ')';
 
     $sep = CRM_Core_DAO::VALUE_SEPARATOR;
     $viewRoles = [];

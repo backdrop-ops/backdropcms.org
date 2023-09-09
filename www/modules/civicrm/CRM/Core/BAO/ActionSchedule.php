@@ -16,49 +16,96 @@
  */
 
 use Civi\ActionSchedule\Event\MappingRegisterEvent;
+use Civi\Core\HookInterface;
 
 /**
  * This class contains functions for managing Scheduled Reminders
  */
-class CRM_Core_BAO_ActionSchedule extends CRM_Core_DAO_ActionSchedule {
+class CRM_Core_BAO_ActionSchedule extends CRM_Core_DAO_ActionSchedule implements HookInterface {
 
   /**
    * @param array $filters
-   *   Filter by property (e.g. 'id').
+   *   Deprecated get-by-id - use getMapping instead
    *
-   * @return array
-   *   Array(scalar $id => Mapping $mapping).
-   *
-   * @throws \CRM_Core_Exception
+   * @return \Civi\ActionSchedule\MappingInterface[]
    */
-  public static function getMappings($filters = NULL) {
-    static $_action_mapping;
-
-    if ($_action_mapping === NULL) {
+  public static function getMappings($filters = NULL): array {
+    if (!isset(Civi::$statics[__CLASS__]['mappings'])) {
       $event = \Civi::dispatcher()
         ->dispatch('civi.actionSchedule.getMappings',
           new MappingRegisterEvent());
-      $_action_mapping = $event->getMappings();
-    }
-
-    if (empty($filters)) {
-      return $_action_mapping;
+      Civi::$statics[__CLASS__]['mappings'] = $event->getMappings();
     }
     if (isset($filters['id'])) {
-      return [$filters['id'] => $_action_mapping[$filters['id']]];
+      CRM_Core_Error::deprecatedWarning('Use "getMapping" to retrieve a single mapping by id instead of passing a filter to "GetMappings".');
+      return [$filters['id'] => Civi::$statics[__CLASS__]['mappings'][$filters['id']]];
     }
-    throw new CRM_Core_Exception("getMappings() called with unsupported filter: " . implode(', ', array_keys($filters)));
+    return Civi::$statics[__CLASS__]['mappings'];
   }
 
   /**
-   * @param string|int $id
+   * @param string|int $identifier
+   *   Name of the mapping e.g. 'contribpage' or CRM_Contact_ActionMapping::CONTACT_MAPPING_ID
    *
-   * @return \Civi\ActionSchedule\Mapping|NULL
-   * @throws \CRM_Core_Exception
+   * @return \Civi\ActionSchedule\MappingInterface|NULL
    */
-  public static function getMapping($id) {
-    $mappings = self::getMappings();
-    return $mappings[$id] ?? NULL;
+  public static function getMapping($identifier) {
+    return self::getMappings()[$identifier] ?? NULL;
+  }
+
+  /**
+   * Provides the pseudoconstant list for `mapping_id` field.
+   * @return array
+   */
+  public static function getMappingOptions(): array {
+    return CRM_Utils_Array::collectMethod('getLabel', self::getMappings());
+  }
+
+  /**
+   * Provides pseudoconstant list for `entity_value` field.
+   * @return array
+   */
+  public static function getEntityValueOptions(string $fieldName, array $params): array {
+    $values = self::fillValues($params['values'], ['mapping_id']);
+    if (!$values['mapping_id']) {
+      return [];
+    }
+    return self::getMapping($values['mapping_id'])->getValueLabels();
+  }
+
+  /**
+   * Provides pseudoconstant list for `entity_status` field.
+   * @return array
+   */
+  public static function getEntityStatusOptions(string $fieldName, array $params): array {
+    $values = self::fillValues($params['values'], ['mapping_id', 'entity_value']);
+    if (!$values['mapping_id']) {
+      return [];
+    }
+    return self::getMapping($values['mapping_id'])->getStatusLabels($values['entity_value']);
+  }
+
+  /**
+   * Provides pseudoconstant list for `start_action_date` & `end_date` fields.
+   * @return array
+   */
+  public static function getActionDateOptions(string $fieldName, array $params): array {
+    $values = self::fillValues($params['values'], ['mapping_id', 'entity_value']);
+    if (!$values['mapping_id']) {
+      return [];
+    }
+    return self::getMapping($values['mapping_id'])->getDateFields($values['entity_value']);
+  }
+
+  /**
+   * Provides pseudoconstant lists for `start_action_unit`, `repetition_frequency_unit` & `end_frequency_unit`.
+   * @return array
+   */
+  public static function getDateUnits(string $fieldName, array $params): array {
+    $controlField = self::fields()[$fieldName]['html']['controlField'];
+    $values = self::fillValues($params['values'], [$controlField]);
+    $count = $values[$controlField] ?? 0;
+    return CRM_Core_SelectValues::getRecurringFrequencyUnits($count);
   }
 
   /**
@@ -71,7 +118,6 @@ class CRM_Core_BAO_ActionSchedule extends CRM_Core_DAO_ActionSchedule {
   public static function getAllEntityValueLabels() {
     $entityValueLabels = [];
     foreach (CRM_Core_BAO_ActionSchedule::getMappings() as $mapping) {
-      /** @var \Civi\ActionSchedule\Mapping $mapping */
       $entityValueLabels[$mapping->getId()] = $mapping->getValueLabels();
       $valueLabel = ['- ' . strtolower($mapping->getValueHeader()) . ' -'];
       $entityValueLabels[$mapping->getId()] = $valueLabel + $entityValueLabels[$mapping->getId()];
@@ -89,7 +135,6 @@ class CRM_Core_BAO_ActionSchedule extends CRM_Core_DAO_ActionSchedule {
     $entityValueLabels = self::getAllEntityValueLabels();
     $entityStatusLabels = [];
     foreach (CRM_Core_BAO_ActionSchedule::getMappings() as $mapping) {
-      /** @var \Civi\ActionSchedule\Mapping $mapping */
       $statusLabel = ['- ' . strtolower($mapping->getStatusHeader()) . ' -'];
       $entityStatusLabels[$mapping->getId()] = $entityValueLabels[$mapping->getId()];
       foreach ($entityStatusLabels[$mapping->getId()] as $kkey => & $vval) {
@@ -141,16 +186,16 @@ FROM civicrm_action_schedule cas
     $query .= $where;
     $dao = CRM_Core_DAO::executeQuery($query, $queryParams);
     while ($dao->fetch()) {
-      /** @var Civi\ActionSchedule\Mapping $filterMapping */
-      $filterMapping = CRM_Utils_Array::first(self::getMappings([
-        'id' => $dao->mapping_id,
-      ]));
+      $filterMapping = self::getMapping($dao->mapping_id);
       $list[$dao->id]['id'] = $dao->id;
       $list[$dao->id]['title'] = $dao->title;
       $list[$dao->id]['start_action_offset'] = $dao->start_action_offset;
       $list[$dao->id]['start_action_unit'] = $dao->start_action_unit;
       $list[$dao->id]['start_action_condition'] = $dao->start_action_condition;
-      $list[$dao->id]['entityDate'] = ucwords(str_replace('_', ' ', $dao->entityDate));
+      $list[$dao->id]['mapping_id'] = $dao->mapping_id;
+      $list[$dao->id]['entity_value'] = explode(CRM_Core_DAO::VALUE_SEPARATOR, $dao->entityValueIds);
+      $dateOptions = self::getActionDateOptions('start_action_date', ['values' => $list[$dao->id]]);
+      $list[$dao->id]['entityDate'] = $dateOptions[$dao->entityDate] ?? '';
       $list[$dao->id]['absolute_date'] = $dao->absolute_date;
       $list[$dao->id]['entity'] = $filterMapping->getLabel();
       $list[$dao->id]['value'] = implode(', ', CRM_Utils_Array::subset(
@@ -179,7 +224,21 @@ FROM civicrm_action_schedule cas
    * @throws \CRM_Core_Exception
    */
   public static function add(array $params): CRM_Core_DAO_ActionSchedule {
+    CRM_Core_Error::deprecatedFunctionWarning('writeRecord');
     return self::writeRecord($params);
+  }
+
+  /**
+   * @param \Civi\Core\Event\PreEvent $event
+   * @implements hook_civicrm_pre
+   */
+  public static function self_hook_civicrm_pre(\Civi\Core\Event\PreEvent $event) {
+    if (in_array($event->action, ['create', 'edit'])) {
+      if (isset($event->params['limit_to']) && in_array($event->params['limit_to'], [0, '0', FALSE], TRUE)) {
+        CRM_Core_Error::deprecatedWarning('Deprecated value "0" is no longer a valid option for ActionSchedule.limit_to; changed to "2".');
+        $event->params['limit_to'] = 2;
+      }
+    }
   }
 
   /**
@@ -210,21 +269,18 @@ FROM civicrm_action_schedule cas
    * @throws CRM_Core_Exception
    */
   public static function del($id) {
+    CRM_Core_Error::deprecatedFunctionWarning('deleteRecord');
     self::deleteRecord(['id' => $id]);
   }
 
   /**
-   * Update the is_active flag in the db.
-   *
+   * @deprecated - this bypasses hooks.
    * @param int $id
-   *   Id of the database record.
    * @param bool $is_active
-   *   Value we want to set the is_active field.
-   *
    * @return bool
-   *   true if we found and updated the object, else false
    */
   public static function setIsActive($id, $is_active) {
+    CRM_Core_Error::deprecatedFunctionWarning('writeRecord');
     return CRM_Core_DAO::setFieldValue('CRM_Core_DAO_ActionSchedule', $id, 'is_active', $is_active);
   }
 
@@ -235,9 +291,7 @@ FROM civicrm_action_schedule cas
    * @throws CRM_Core_Exception
    */
   public static function sendMailings($mappingID, $now) {
-    $mapping = CRM_Utils_Array::first(self::getMappings([
-      'id' => $mappingID,
-    ]));
+    $mapping = self::getMapping($mappingID);
 
     $actionSchedule = new CRM_Core_DAO_ActionSchedule();
     $actionSchedule->mapping_id = $mappingID;
@@ -249,6 +303,10 @@ FROM civicrm_action_schedule cas
       $dao = CRM_Core_DAO::executeQuery($query,
         [1 => [$actionSchedule->id, 'Integer']]
       );
+
+      if ($dao->N > 0) {
+        Civi::log()->info("Sending Scheduled Reminder {$actionSchedule->id} to {$dao->N} recipients");
+      }
 
       $multilingual = CRM_Core_I18n::isMultilingual();
       $tokenProcessor = self::createTokenProcessor($actionSchedule, $mapping);
@@ -313,9 +371,7 @@ FROM civicrm_action_schedule cas
    * Build a list of the contacts to send to.
    *
    * @param string $mappingID
-   *   Value from the mapping_id field in the civicrm_action_schedule able. It might be a string like
-   *  'contribpage' for an older class like CRM_Contribute_ActionMapping_ByPage of for ones following
-   *   more recent patterns, an integer.
+   *   Identifier of a concrete implementation of MappingInterface
    * @param string $now
    * @param array $params
    *
@@ -332,10 +388,7 @@ FROM civicrm_action_schedule cas
     $actionSchedule->find();
 
     while ($actionSchedule->fetch()) {
-      /** @var \Civi\ActionSchedule\Mapping $mapping */
-      $mapping = CRM_Utils_Array::first(self::getMappings([
-        'id' => $mappingID,
-      ]));
+      $mapping = self::getMapping($mappingID);
       $builder = new \Civi\ActionSchedule\RecipientBuilder($now, $actionSchedule, $mapping);
       $builder->build();
     }
@@ -384,14 +437,10 @@ FROM civicrm_action_schedule cas
    * @return array
    */
   public static function getRecipientListing($mappingID, $recipientType) {
-    if (!$mappingID) {
+    $mapping = CRM_Core_BAO_ActionSchedule::getMapping($mappingID);
+    if (!$mapping) {
       return [];
     }
-
-    /** @var \Civi\ActionSchedule\Mapping $mapping */
-    $mapping = CRM_Utils_Array::first(CRM_Core_BAO_ActionSchedule::getMappings([
-      'id' => $mappingID,
-    ]));
     return $mapping->getRecipientListing($recipientType);
   }
 
@@ -431,7 +480,7 @@ FROM civicrm_action_schedule cas
    * sending the message and pass in the fully rendered text of the message.
    *
    * @param object $tokenRow
-   * @param Civi\ActionSchedule\Mapping $mapping
+   * @param Civi\ActionSchedule\MappingInterface $mapping
    * @param int $contactID
    * @param int $entityID
    * @param int|null $caseID
@@ -440,7 +489,7 @@ FROM civicrm_action_schedule cas
   protected static function createMailingActivity($tokenRow, $mapping, $contactID, $entityID, $caseID) {
     $session = CRM_Core_Session::singleton();
 
-    if ($mapping->getEntity() == 'civicrm_membership') {
+    if ($mapping->getEntityTable() == 'civicrm_membership') {
       // @todo - not required with api
       $activityTypeID
         = CRM_Core_PseudoConstant::getKey('CRM_Activity_BAO_Activity', 'activity_type_id', 'Membership Renewal Reminder');
@@ -483,13 +532,13 @@ FROM civicrm_action_schedule cas
       ->where("reminder.action_date_time IS NULL")
       ->param([
         'casActionScheduleId' => $actionSchedule->id,
-        'casMailingJoinType' => ($actionSchedule->limit_to == 0) ? 'LEFT JOIN' : 'INNER JOIN',
+        'casMailingJoinType' => ($actionSchedule->limit_to == 2) ? 'LEFT JOIN' : 'INNER JOIN',
         'casMappingId' => $mapping->getId(),
-        'casMappingEntity' => $mapping->getEntity(),
+        'casMappingEntity' => $mapping->getEntityTable(),
         'casEntityJoinExpr' => 'e.id = IF(reminder.entity_table = "civicrm_contact", reminder.contact_id, reminder.entity_id)',
       ]);
 
-    if ($actionSchedule->limit_to == 0) {
+    if ($actionSchedule->limit_to == 2) {
       $select->where("e.id = reminder.entity_id OR reminder.entity_table = 'civicrm_contact'");
     }
 
@@ -623,7 +672,7 @@ FROM civicrm_action_schedule cas
 
   /**
    * @param CRM_Core_DAO_ActionSchedule $schedule
-   * @param \Civi\ActionSchedule\Mapping $mapping
+   * @param \Civi\ActionSchedule\MappingInterface $mapping
    * @return \Civi\Token\TokenProcessor
    */
   protected static function createTokenProcessor($schedule, $mapping) {
@@ -631,17 +680,15 @@ FROM civicrm_action_schedule cas
       'controller' => __CLASS__,
       'actionSchedule' => $schedule,
       'actionMapping' => $mapping,
-      'smarty' => TRUE,
+      'smarty' => Civi::settings()->get('scheduled_reminder_smarty'),
       'schema' => ['contactId'],
     ]);
     $tp->addMessage('body_text', $schedule->body_text, 'text/plain');
     $tp->addMessage('body_html', $schedule->body_html, 'text/html');
     $tp->addMessage('sms_body_text', $schedule->sms_body_text, 'text/plain');
     $tp->addMessage('subject', $schedule->subject, 'text/plain');
-    // These 2 are not 'real' tokens - but it tells the processor to load them.
+    // These is not a 'real' token - but it tells the processor to load them.
     $tp->addMessage('toName', '{contact.display_name}', 'text/plain');
-    $tp->addMessage('preferred_mail_format', '{contact.preferred_mail_format}', 'text/plain');
-
     return $tp;
   }
 

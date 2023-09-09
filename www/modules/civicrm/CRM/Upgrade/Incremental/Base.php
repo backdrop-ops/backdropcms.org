@@ -9,6 +9,7 @@
  +--------------------------------------------------------------------+
  */
 
+use Civi\Core\Exception\DBQueryException;
 use Civi\Core\SettingsBag;
 
 /**
@@ -50,7 +51,7 @@ class CRM_Upgrade_Incremental_Base {
     $revList = [];
 
     $sqlGlob = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__), 'sql', $this->getMajorMinor() . '.*.mysql.tpl']);
-    $sqlFiles = glob($sqlGlob);;
+    $sqlFiles = glob($sqlGlob);
     foreach ($sqlFiles as $file) {
       $revList[] = basename($file, '.mysql.tpl');
     }
@@ -76,7 +77,6 @@ class CRM_Upgrade_Incremental_Base {
    * This method will be invoked multiple times. Implementations MUST consult the `$rev`
    * before deciding what messages to add. See the examples linked below.
    *
-   * @see \CRM_Upgrade_Incremental_php_FourSeven::setPreUpgradeMessage()
    * @see \CRM_Upgrade_Incremental_php_FiveTwenty::setPreUpgradeMessage()
    *
    * @param string $preUpgradeMessage
@@ -101,7 +101,6 @@ class CRM_Upgrade_Incremental_Base {
    * This method will be invoked multiple times. Implementations MUST consult the `$rev`
    * before deciding what messages to add. See the examples linked below.
    *
-   * @see \CRM_Upgrade_Incremental_php_FourSeven::setPostUpgradeMessage()
    * @see \CRM_Upgrade_Incremental_php_FiveTwentyOne::setPostUpgradeMessage()
    *
    * @param string $postUpgradeMessage
@@ -565,6 +564,18 @@ class CRM_Upgrade_Incremental_Base {
   }
 
   /**
+   * Drop a table if it exists.
+   *
+   * @param CRM_Queue_TaskContext $ctx
+   * @param string $tableName
+   * @return bool
+   */
+  public static function dropTable($ctx, $tableName) {
+    CRM_Core_BAO_SchemaHandler::dropTable($tableName);
+    return TRUE;
+  }
+
+  /**
    * Drop a table... but only if it's empty.
    *
    * @param CRM_Queue_TaskContext $ctx
@@ -611,7 +622,12 @@ class CRM_Upgrade_Incremental_Base {
       $queries[] = "ALTER TABLE `$table` CHANGE `$column` `$column` $properties";
     }
     foreach ($queries as $query) {
-      CRM_Core_DAO::executeQuery($query, [], TRUE, NULL, FALSE, FALSE);
+      try {
+        CRM_Core_DAO::executeQuery($query, [], TRUE, NULL, FALSE, FALSE);
+      }
+      catch (DBQueryException $e) {
+        throw new CRM_Core_Exception($e->getSQLErrorCode() . "\n" . $e->getDebugInfo());
+      }
     }
     $schema = new CRM_Logging_Schema();
     if ($schema->isEnabled()) {

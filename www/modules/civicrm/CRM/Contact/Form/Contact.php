@@ -319,7 +319,8 @@ class CRM_Contact_Form_Contact extends CRM_Core_Form {
     if (!empty($_POST['hidden_custom'])) {
       $customGroupCount = $_POST['hidden_custom_group_count'] ?? NULL;
 
-      if ($contactSubType = CRM_Utils_Array::value('contact_sub_type', $_POST)) {
+      $contactSubType = $_POST['contact_sub_type'] ?? NULL;
+      if ($contactSubType) {
         $paramSubType = implode(',', $contactSubType);
       }
 
@@ -686,7 +687,8 @@ class CRM_Contact_Form_Contact extends CRM_Core_Form {
       ) {
         $invalidStreetNumbers = [];
         foreach ($fields['address'] as $cnt => $address) {
-          if ($streetNumber = CRM_Utils_Array::value('street_number', $address)) {
+          $streetNumber = $address['street_number'] ?? NULL;
+          if ($streetNumber) {
             $parsedAddress = CRM_Core_BAO_Address::parseStreetAddress($address['street_number']);
             if (empty($parsedAddress['street_number'])) {
               $invalidStreetNumbers[] = $cnt;
@@ -728,7 +730,7 @@ class CRM_Contact_Form_Contact extends CRM_Core_Form {
         CRM_Core_Action::DELETE => [
           'name' => ts('Delete Contact Image'),
           'url' => 'civicrm/contact/image',
-          'qs' => 'reset=1&cid=%%id%%&action=delete',
+          'qs' => 'reset=1&cid=%%id%%&action=delete&&qfKey=%%key%%',
           'extra' => 'onclick = "' . htmlspecialchars("if (confirm($deleteExtra)) this.href+='&confirmed=1'; else return false;") . '"',
         ],
       ];
@@ -736,6 +738,7 @@ class CRM_Contact_Form_Contact extends CRM_Core_Form {
         CRM_Core_Action::DELETE,
         [
           'id' => $this->_contactId,
+          'key' => $this->controller->_key,
         ],
         ts('more'),
         FALSE,
@@ -890,7 +893,7 @@ class CRM_Contact_Form_Contact extends CRM_Core_Form {
       CRM_Contact_BAO_Contact::processImageParams($params);
     }
 
-    if (is_numeric(CRM_Utils_Array::value('current_employer_id', $params)) && !empty($params['current_employer'])) {
+    if (is_numeric($params['current_employer_id'] ?? '') && !empty($params['current_employer'])) {
       $params['current_employer'] = $params['current_employer_id'];
     }
 
@@ -956,11 +959,15 @@ class CRM_Contact_Form_Contact extends CRM_Core_Form {
     }
     elseif (!empty($params['contact_id']) && ($this->_action & CRM_Core_Action::UPDATE)) {
       // figure out which all groups are intended to be removed
-      $contactGroupList = CRM_Contact_BAO_GroupContact::getContactGroup($params['contact_id'], 'Added');
+      $contactGroupList = CRM_Contact_BAO_GroupContact::getContactGroup($params['contact_id'], 'Added', NULL, FALSE, TRUE, FALSE, TRUE, NULL, TRUE);
       if (is_array($contactGroupList)) {
         foreach ($contactGroupList as $key) {
           if ((!array_key_exists($key['group_id'], $params['group']) || $params['group'][$key['group_id']] != 1) && empty($key['is_hidden'])) {
             $params['group'][$key['group_id']] = -1;
+          }
+          // don't try to add to groups that the contact is already Added to
+          elseif (array_key_exists($key['group_id'], $params['group']) && $params['group'][$key['group_id']] == 1) {
+            unset($params['group'][$key['group_id']]);
           }
         }
       }

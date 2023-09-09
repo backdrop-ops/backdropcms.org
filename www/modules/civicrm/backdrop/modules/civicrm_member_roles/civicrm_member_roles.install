@@ -25,38 +25,6 @@ function civicrm_member_roles_enable() {
 }
 
 /**
- * Implements hook_schema().
- */
-function civicrm_member_roles_schema() {
-  $schema['civicrm_member_roles_rules'] = array(
-    'fields' => array(
-      'rule_id' => array(
-        'type' => 'serial',
-        'not null' => TRUE,
-      ),
-      'role_name' => array(
-        'type' => 'varchar',
-        'length' => 64,
-        'not null' => TRUE,
-        'default' => '',
-      ),
-      'type_id' => array(
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ),
-      'status_codes' => array(
-        'type' => 'text',
-        'not null' => TRUE,
-      ),
-    ),
-    'primary key' => array('rule_id'),
-  );
-
-  return $schema;
-}
-
-/**
  * Migrate settings from Drupal to Backdrop.
  */
 function civicrm_member_roles_update_1000() {
@@ -123,5 +91,25 @@ function civicrm_member_roles_update_1003() {
   if ($config->get('civicrm_member_roles_cron_limit') == NULL) {
     $config->set('civicrm_member_roles_cron_limit', 150);
     $config->save();
+  }
+}
+
+/**
+ * Convert rules to config.
+ */
+function civicrm_member_roles_update_1004() {
+  $config = config('civicrm_member_roles.settings');
+  if (db_table_exists('civicrm_member_roles_rules')) {
+    $rules = db_select('civicrm_member_roles_rules', 'cmr')->fields('cmr')->execute()->fetchAll();
+    foreach ($rules as $rule) {
+      $config->set('rules.' . $rule->rule_id,
+        array(
+          'role_name' => $rule->role_name,
+          'type_id' => $rule->type_id,
+          'status_codes' => unserialize($rule->status_codes),
+        ));
+    }
+    $config->save();
+    db_drop_table('civicrm_member_roles_rules');
   }
 }

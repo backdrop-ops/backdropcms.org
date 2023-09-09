@@ -93,14 +93,14 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
     }
     elseif (!empty($fields['amount']) &&
       (isset($form->_values['discount'][$fields['amount']])
-        && CRM_Utils_Array::value('value', $form->_values['discount'][$fields['amount']]) == 0
+        && ($form->_values['discount'][$fields['amount']]['value'] ?? NULL) == 0
       )
     ) {
       $isZeroAmount = TRUE;
     }
     elseif (!empty($fields['amount']) &&
       (isset($form->_values['fee'][$fields['amount']])
-        && CRM_Utils_Array::value('value', $form->_values['fee'][$fields['amount']]) == 0
+        && ($form->_values['fee'][$fields['amount']]['value'] ?? NULL) == 0
       )
     ) {
       $isZeroAmount = TRUE;
@@ -355,17 +355,6 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
     // CRM-18399: used by template to pass pre profile id as a url arg
     $this->assign('custom_pre_id', $this->_values['custom_pre_id']);
 
-    // Required for currency formatting in the JS layer
-
-    // Required for currency formatting in the JS layer
-    // this is a temporary fix intended to resolve a regression quickly
-    // And assigning moneyFormat for js layer formatting
-    // will only work until that is done.
-    // https://github.com/civicrm/civicrm-core/pull/19151
-    $this->assign('moneyFormat', CRM_Utils_Money::format(1234.56));
-
-    CRM_Core_Payment_ProcessorForm::buildQuickForm($this);
-
     $contactID = $this->getContactID();
     $this->assign('contact_id', $contactID);
     if ($contactID) {
@@ -432,7 +421,17 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
     $this->assign('isAdditionalParticipants', $isAdditionalParticipants);
 
     if ($this->_values['event']['is_monetary']) {
+      // Required for currency formatting in the JS layer
+      // this is a temporary fix intended to resolve a regression quickly
+      // And assigning moneyFormat for js layer formatting
+      // will only work until that is done.
+      // https://github.com/civicrm/civicrm-core/pull/19151
+      $this->assign('moneyFormat', CRM_Utils_Money::format(1234.56));
       self::buildAmount($this);
+      if (!$this->showPaymentOnConfirm) {
+        CRM_Core_Payment_ProcessorForm::buildQuickForm($this);
+        $this->addPaymentProcessorFieldsToForm();
+      }
     }
 
     if ($contactID === 0 && !$this->_values['event']['is_multiple_registrations']) {
@@ -440,12 +439,7 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
       $this->addCIDZeroOptions();
     }
 
-    if ($this->_values['event']['is_monetary']) {
-      $this->addPaymentProcessorFieldsToForm();
-    }
-
     $this->addElement('hidden', 'bypass_payment', NULL, ['id' => 'bypass_payment']);
-
     $this->assign('bypassPayment', $bypassPayment);
 
     if (!$contactID) {
@@ -477,6 +471,12 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
       if ($createCMSUser) {
         CRM_Core_BAO_CMSUser::buildForm($this, $profileID, TRUE);
       }
+      else {
+        $this->assign('showCMS', FALSE);
+      }
+    }
+    else {
+      $this->assign('showCMS', FALSE);
     }
 
     //we have to load confirm contribution button in template
@@ -513,11 +513,7 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
         'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
         'isDefault' => TRUE,
       ];
-      if (
-        !$this->_values['event']['is_multiple_registrations']
-        && !$this->_values['event']['is_monetary']
-        && !$this->_values['event']['is_confirm_enabled']
-      ) {
+      if (!$this->_values['event']['is_monetary'] && !$this->_values['event']['is_confirm_enabled']) {
         $buttonParams['name'] = ts('Register');
       }
       else {
@@ -534,6 +530,9 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
     // add pcp fields
     if ($this->_pcpId) {
       CRM_PCP_BAO_PCP::buildPcp($this->_pcpId, $this);
+    }
+    else {
+      $this->assign('pcp', FALSE);
     }
   }
 
@@ -618,8 +617,8 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
 
       foreach ($form->_feeBlock as $field) {
         // public AND admin visibility fields are included for back-office registration and back-office change selections
-        if (CRM_Utils_Array::value('visibility', $field) == 'public' ||
-          (CRM_Utils_Array::value('visibility', $field) == 'admin' && $adminFieldVisible == TRUE) ||
+        if (($field['visibility'] ?? NULL) == 'public' ||
+          (($field['visibility'] ?? NULL) == 'admin' && $adminFieldVisible == TRUE) ||
           $className == 'CRM_Event_Form_Participant' ||
           $className === 'CRM_Event_Form_Task_Register' ||
           $className == 'CRM_Event_Form_ParticipantFeeSelection'
@@ -899,7 +898,8 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
       }
     }
     foreach (CRM_Contact_BAO_Contact::$_greetingTypes as $greeting) {
-      if ($greetingType = CRM_Utils_Array::value($greeting, $fields)) {
+      $greetingType = $fields[$greeting] ?? NULL;
+      if ($greetingType) {
         $customizedValue = CRM_Core_PseudoConstant::getKey('CRM_Contact_BAO_Contact', $greeting . '_id', 'Customized');
         if ($customizedValue == $greetingType && empty($fields[$greeting . '_custom'])) {
           $errors[$greeting . '_custom'] = ts('Custom %1 is a required field if %1 is of type Customized.',
@@ -913,7 +913,9 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
     if ($form->_values['event']['is_monetary']) {
       if (empty($form->_requireApproval) && !empty($fields['amount']) && $fields['amount'] > 0 &&
         !isset($fields['payment_processor_id'])) {
-        $errors['payment_processor_id'] = ts('Please select a Payment Method');
+        if (!$form->showPaymentOnConfirm) {
+          $errors['payment_processor_id'] = ts('Please select a Payment Method');
+        }
       }
 
       if (self::isZeroAmount($fields, $form)) {
@@ -926,12 +928,15 @@ class CRM_Event_Form_Registration_Register extends CRM_Event_Form_Registration {
       ) {
         return empty($errors) ? TRUE : $errors;
       }
-      CRM_Core_Payment_Form::validatePaymentInstrument(
-        $fields['payment_processor_id'],
-        $fields,
-        $errors,
-        (!$form->_isBillingAddressRequiredForPayLater ? NULL : 'billing')
-      );
+
+      if (!$form->showPaymentOnConfirm) {
+        CRM_Core_Payment_Form::validatePaymentInstrument(
+          $fields['payment_processor_id'],
+          $fields,
+          $errors,
+          (!$form->_isBillingAddressRequiredForPayLater ? NULL : 'billing')
+        );
+      }
     }
 
     return empty($errors) ? TRUE : $errors;
