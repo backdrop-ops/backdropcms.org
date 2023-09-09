@@ -37,7 +37,7 @@
         "footer": [
             "fc9fa856-985f-4331-af07-7f722323d873",
             "601ea147-042a-41d2-8b00-0fb6f09efa75",
-            "eb13eba6-894b-4429-aa00-a23157e7ff24",
+            "e56e4ba3-58b3-4061-a100-efca389b4bb7",
             "adbfd2de-2e24-4231-9a3b-59f08178a53e"
         ],
         "title": []
@@ -392,23 +392,22 @@
                 }
             }
         },
-        "eb13eba6-894b-4429-aa00-a23157e7ff24": {
-            "plugin": "block:3",
+        "e56e4ba3-58b3-4061-a100-efca389b4bb7": {
+            "plugin": "borg_signup:newsletter",
             "data": {
-                "status": 0,
-                "module": "block",
-                "delta": "3",
+                "status": 1,
+                "module": "borg_signup",
+                "delta": "newsletter",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": {
-                        "delta": "3",
-                        "reusable": true
-                    },
-                    "contexts": []
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "eb13eba6-894b-4429-aa00-a23157e7ff24",
+                "uuid": "e56e4ba3-58b3-4061-a100-efca389b4bb7",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -416,19 +415,7 @@
                             "classes": "col-sm-6"
                         }
                     }
-                },
-                "conditions": [
-                    {
-                        "plugin": "path",
-                        "data": {
-                            "settings": {
-                                "visibility_setting": "0",
-                                "paths": "security",
-                                "load_condition_nojs": "Load condition"
-                            }
-                        }
-                    }
-                ]
+                }
             }
         },
         "adbfd2de-2e24-4231-9a3b-59f08178a53e": {

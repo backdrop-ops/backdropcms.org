@@ -4,6 +4,7 @@
     "name": "search_themes",
     "title": "Search Themes",
     "description": null,
+    "renderer_name": "standard",
     "module": null,
     "weight": -1,
     "storage": 1,
@@ -33,15 +34,18 @@
         "footer": [
             "985896a0-b0f0-4cd8-8200-c7b571d641f1",
             "7165b9a8-723c-4d24-ad5c-929e239f006d",
-            "8cfef68d-7527-4538-b026-3826cad24eee",
+            "01c83d72-ef26-4a16-b561-9757a941d45f",
             "344bae9a-c1a0-40f4-8e5c-924436cb4b17"
         ],
         "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "7644abf7-1b15-49e5-b305-5afeb39d23c2": {
             "plugin": "borg_blocks:branding",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "branding",
                 "settings": {
@@ -65,6 +69,7 @@
         "53f29240-9891-4740-8b00-a113d1713a1a": {
             "plugin": "system:user-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "user-menu",
                 "settings": {
@@ -95,6 +100,7 @@
         "81f6346a-fb64-4a5d-8605-5ded96d0202e": {
             "plugin": "system:main-menu",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main-menu",
                 "settings": {
@@ -124,6 +130,7 @@
         "b64db2d9-cf4a-4d7d-8a00-bb4b4c933471": {
             "plugin": "system:page_components:title",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "page_components",
                 "settings": {
@@ -150,6 +157,7 @@
         "b4a543af-a6d0-43b8-a700-b6609a864251": {
             "plugin": "layout:custom_block",
             "data": {
+                "status": 1,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -175,6 +183,7 @@
         "da25183b-3733-4e10-9502-2f38e825936a": {
             "plugin": "views:-exp-modules-themes",
             "data": {
+                "status": 1,
                 "module": "views",
                 "delta": "-exp-modules-themes",
                 "settings": {
@@ -198,6 +207,7 @@
         "1370551a-8ba1-435e-ab15-21f558c45013": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {
@@ -221,6 +231,7 @@
         "b0f361db-2ba6-437c-8906-061b8e351f10": {
             "plugin": "borg_blocks:rss",
             "data": {
+                "status": 1,
                 "module": "borg_blocks",
                 "delta": "rss",
                 "settings": {
@@ -244,6 +255,7 @@
         "985896a0-b0f0-4cd8-8200-c7b571d641f1": {
             "plugin": "system:powered-by",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "powered-by",
                 "settings": {
@@ -267,6 +279,7 @@
         "7165b9a8-723c-4d24-ad5c-929e239f006d": {
             "plugin": "on_the_web:social_links",
             "data": {
+                "status": 1,
                 "module": "on_the_web",
                 "delta": "social_links",
                 "settings": {
@@ -298,22 +311,22 @@
                 }
             }
         },
-        "8cfef68d-7527-4538-b026-3826cad24eee": {
-            "plugin": "block:3",
+        "01c83d72-ef26-4a16-b561-9757a941d45f": {
+            "plugin": "borg_signup:newsletter",
             "data": {
-                "module": "block",
-                "delta": "3",
+                "status": 1,
+                "module": "borg_signup",
+                "delta": "newsletter",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": {
-                        "delta": "3",
-                        "reusable": true
-                    },
-                    "contexts": []
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "8cfef68d-7527-4538-b026-3826cad24eee",
+                "uuid": "01c83d72-ef26-4a16-b561-9757a941d45f",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -327,6 +340,7 @@
         "344bae9a-c1a0-40f4-8e5c-924436cb4b17": {
             "plugin": "menu:menu-footer-menu",
             "data": {
+                "status": 1,
                 "module": "menu",
                 "delta": "menu-footer-menu",
                 "settings": {

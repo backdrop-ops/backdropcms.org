@@ -40,7 +40,7 @@
         ],
         "footer": [
             "e2dae38b-2711-419d-a200-f2e32ce8ed33",
-            "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
+            "46cc2497-b2d6-4e0c-8400-ade44b21f02c",
             "ae9d462d-018b-4cb0-ad00-d520b595ff6e",
             "07a7ba84-7b76-4d2a-b808-8c23b57253b2"
         ],
@@ -452,23 +452,22 @@
                 }
             }
         },
-        "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35": {
-            "plugin": "block:3",
+        "46cc2497-b2d6-4e0c-8400-ade44b21f02c": {
+            "plugin": "borg_signup:newsletter",
             "data": {
-                "status": 0,
-                "module": "block",
-                "delta": "3",
+                "status": 1,
+                "module": "borg_signup",
+                "delta": "newsletter",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": {
-                        "delta": "3",
-                        "reusable": true
-                    },
-                    "contexts": []
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "16d668bc-1cf9-4fe0-9102-2feb1c9c8e35",
+                "uuid": "46cc2497-b2d6-4e0c-8400-ade44b21f02c",
                 "style": {
                     "plugin": "default",
                     "data": {

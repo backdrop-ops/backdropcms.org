@@ -34,8 +34,8 @@
         "footer": [
             "bda6004b-ceec-4c17-ba00-ad4119056007",
             "2a11faa0-46dc-4f68-8500-f8054b88db28",
-            "1585d5ba-c4e2-4fa6-8300-c249536f4461",
-            "dcb7ca26-a05c-4b94-9900-d282f527c424"
+            "15b24d09-5de0-4364-8c08-8f2aa617439f",
+            "1585d5ba-c4e2-4fa6-8300-c249536f4461"
         ],
         "title": []
     },
@@ -308,6 +308,32 @@
                 }
             }
         },
+        "15b24d09-5de0-4364-8c08-8f2aa617439f": {
+            "plugin": "borg_signup:newsletter",
+            "data": {
+                "status": 1,
+                "module": "borg_signup",
+                "delta": "newsletter",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "15b24d09-5de0-4364-8c08-8f2aa617439f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "col-sm-6"
+                        }
+                    }
+                }
+            }
+        },
         "1585d5ba-c4e2-4fa6-8300-c249536f4461": {
             "plugin": "menu:menu-footer-menu",
             "data": {
@@ -333,33 +359,6 @@
                     "data": {
                         "settings": {
                             "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "dcb7ca26-a05c-4b94-9900-d282f527c424": {
-            "plugin": "block:3",
-            "data": {
-                "status": 0,
-                "module": "block",
-                "delta": "3",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "3",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "dcb7ca26-a05c-4b94-9900-d282f527c424",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": "col-sm-6"
                         }
                     }
                 }

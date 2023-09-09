@@ -35,7 +35,7 @@
         "footer": [
             "c7ccbbc8-88b7-4bb9-b602-2aa0cd8ffba2",
             "64bdf01d-9dca-41f6-a409-9c1cad74b569",
-            "36cd5d88-99a8-4081-b209-9bb6a0aec408",
+            "27737d42-9bf5-4bc2-b900-aadac7a40eaa",
             "46204d4d-20f9-4ca9-8a00-a5308247fbee"
         ],
         "title": []
@@ -338,23 +338,22 @@
                 }
             }
         },
-        "36cd5d88-99a8-4081-b209-9bb6a0aec408": {
-            "plugin": "block:3",
+        "27737d42-9bf5-4bc2-b900-aadac7a40eaa": {
+            "plugin": "borg_signup:newsletter",
             "data": {
                 "status": 1,
-                "module": "block",
-                "delta": "3",
+                "module": "borg_signup",
+                "delta": "newsletter",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": {
-                        "delta": "3",
-                        "reusable": true
-                    },
-                    "contexts": []
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "36cd5d88-99a8-4081-b209-9bb6a0aec408",
+                "uuid": "27737d42-9bf5-4bc2-b900-aadac7a40eaa",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -362,19 +361,7 @@
                             "classes": "col-sm-6"
                         }
                     }
-                },
-                "conditions": [
-                    {
-                        "plugin": "path",
-                        "data": {
-                            "settings": {
-                                "visibility_setting": "0",
-                                "paths": "security",
-                                "load_condition_nojs": "Load condition"
-                            }
-                        }
-                    }
-                ]
+                }
             }
         },
         "46204d4d-20f9-4ca9-8a00-a5308247fbee": {
