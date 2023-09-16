@@ -28,3 +28,13 @@ function borg_signup_requirements($phase) {
   }
   return $requirements;
 }
+
+/**
+ * Initialize flood control settings.
+ */
+function borg_signup_update_1000() {
+  $config = config('borg_signup.settings');
+  $config->set('borg_signup_threshold_limit', 5);
+  $config->set('borg_signup_threshold_window', 3600);
+  $config->save();
+}

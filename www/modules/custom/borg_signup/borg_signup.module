@@ -15,6 +15,15 @@ define('BORG_SIGNUP_GROUP_NEWSLETTER', 'Newsletter_5');
 function borg_signup_menu() {
   $items = array();
 
+  $items['admin/config/system/borg-signup'] = array(
+    'title' => 'Signups',
+    'description' => 'Signup flood control settings',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('borg_signup_settings_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'borg_signup.admin.inc',
+  );
+
   $items['borg-signup'] = array(
     'title' => 'Newsletter Signup',
     'description' => 'Menu callback for signing up for the Newsletter',
@@ -79,10 +88,24 @@ function borg_signup_newsletter_form($form, &$form_state) {
     '#type' => 'submit',
     '#description' => t('Sign up for the BackdropCMS Newsletter.'),
     '#value' => t('Sign up'),
+    '#validate' => array('borg_signup_newsletter_form_validate'),
     '#submit' => array('borg_signup_newsletter_form_submit'),
   );
 
   return $form;
+}
+
+/**
+ * Validation function for the Newsletter signup form.
+ */
+function borg_signup_newsletter_form_validate($form, &$form_state) {
+  // Check flood control limits on signups.
+  $config = config('borg_signup.settings');
+  $limit = $config->get('borg_signup_threshold_limit');
+  $window = $config->get('borg_signup_threshold_window');
+  if (!flood_is_allowed('borg_signup', $limit, $window)) {
+    form_set_error('email', t("You cannot sign up more than %limit times in @interval. Try again later.", array('%limit' => $limit, '@interval' => format_interval($window))));
+  }
 }
 
 /**
@@ -111,10 +134,9 @@ function borg_signup_newsletter_form_submit($form, &$form_state) {
   $benign_reponse_codes = array('200', '301', '302', '307');
   global $base_url;
   if (isset($request->code) && !in_array($request->code, $benign_reponse_codes)) {
-    $log_msg = 'A signup request to %url from %base_url returned a \'%code\' code, which is a different HTTP response code than expected. Please check whether the post was received in the remote system.';
     watchdog(
       'borg_signup',
-      $log_msg,
+      'A signup request to %url from %base_url returned a \'%code\' code, which is a different HTTP response code than expected. Please check whether the post was received in the remote system.',
       array(
         '%url'  => BORG_SIGNUP_URL,
         '%base_url' => $base_url,
@@ -127,6 +149,9 @@ function borg_signup_newsletter_form_submit($form, &$form_state) {
   if (isset($request->data)) {
     $result = _borg_signup_info($request->data, $email);
     backdrop_set_message($result['message'], $result['status']);
+    // Register the attempt with flood control if we successfully communicated
+    // with the server.
+    flood_register_event('borg_signup', config_get('borg_signup.settings', 'borg_signup_threshold_window'));
   }
   else {
     backdrop_set_message(t('Unable to communicate with the server.'), 'error');
