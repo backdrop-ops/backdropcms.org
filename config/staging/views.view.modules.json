@@ -63,7 +63,7 @@
                     }
                 },
                 "style_plugin": "list",
-                "row_plugin": "node",
+                "row_plugin": "fields",
                 "fields": {
                     "title": {
                         "id": "title",
@@ -73,7 +73,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
                             "alter_text": 0,
                             "text": "",
@@ -114,7 +114,7 @@
                         "hide_empty": 0,
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
-                        "link_to_node": 1
+                        "link_to_node": 0
                     },
                     "name": {
                         "id": "name",
@@ -166,110 +166,6 @@
                         "empty_zero": 0,
                         "hide_alter_empty": 1
                     },
-                    "created_1": {
-                        "id": "created_1",
-                        "table": "node",
-                        "field": "created",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "posted ",
-                        "exclude": 1,
-                        "alter": {
-                            "alter_text": 0,
-                            "text": "",
-                            "make_link": 0,
-                            "path": "",
-                            "absolute": 0,
-                            "external": 0,
-                            "replace_spaces": 0,
-                            "path_case": "none",
-                            "trim_whitespace": 0,
-                            "alt": "",
-                            "rel": "",
-                            "link_class": "",
-                            "prefix": "",
-                            "suffix": "",
-                            "target": "",
-                            "nl2br": 0,
-                            "max_length": "",
-                            "word_boundary": 1,
-                            "ellipsis": 1,
-                            "more_link": 0,
-                            "more_link_text": "",
-                            "more_link_path": "",
-                            "strip_tags": 0,
-                            "trim": 0,
-                            "preserve_tags": "",
-                            "html": 0
-                        },
-                        "element_type": "",
-                        "element_class": "",
-                        "element_label_type": "",
-                        "element_label_class": "",
-                        "element_label_colon": 0,
-                        "element_wrapper_type": "",
-                        "element_wrapper_class": "",
-                        "element_default_classes": 1,
-                        "empty": "",
-                        "hide_empty": 0,
-                        "empty_zero": 0,
-                        "hide_alter_empty": 1,
-                        "date_format": "short",
-                        "custom_date_format": "",
-                        "timezone": ""
-                    },
-                    "view_node": {
-                        "id": "view_node",
-                        "table": "views_entity_node",
-                        "field": "view_node",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "exclude": 0,
-                        "alter": {
-                            "alter_text": 0,
-                            "text": "",
-                            "make_link": 0,
-                            "path": "",
-                            "absolute": 0,
-                            "external": false,
-                            "replace_spaces": 0,
-                            "path_case": "none",
-                            "trim_whitespace": 0,
-                            "alt": "",
-                            "rel": "",
-                            "link_class": "",
-                            "prefix": "",
-                            "suffix": "",
-                            "target": "",
-                            "nl2br": 0,
-                            "max_length": "",
-                            "word_boundary": 1,
-                            "ellipsis": 1,
-                            "more_link": 0,
-                            "more_link_text": "",
-                            "more_link_path": "",
-                            "strip_tags": 0,
-                            "trim": 0,
-                            "preserve_tags": "",
-                            "html": 0
-                        },
-                        "element_type": "",
-                        "element_class": "",
-                        "element_label_type": "",
-                        "element_label_class": "",
-                        "element_label_colon": false,
-                        "element_wrapper_type": "",
-                        "element_wrapper_class": "",
-                        "element_default_classes": 1,
-                        "empty": "",
-                        "hide_empty": 0,
-                        "empty_zero": 0,
-                        "hide_alter_empty": 1,
-                        "text": "More Info"
-                    },
                     "body": {
                         "id": "body",
                         "table": "field_data_body",
@@ -278,7 +174,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
                             "alter_text": 0,
                             "text": "[body]...",
@@ -320,7 +216,7 @@
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
                         "click_sort_column": "value",
-                        "type": "text_trimmed",
+                        "type": "text_default",
                         "settings": {
                             "trim_length": "300"
                         },
@@ -335,64 +231,14 @@
                         "separator": ", ",
                         "field_api_classes": 0
                     },
-                    "version": {
-                        "id": "version",
-                        "table": "project_release",
-                        "field": "version",
-                        "relationship": "project_releases",
+                    "rendered_entity": {
+                        "id": "rendered_entity",
+                        "table": "views_entity_node",
+                        "field": "rendered_entity",
+                        "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
-                        "alter": {
-                            "alter_text": 1,
-                            "text": "v [version]",
-                            "make_link": 0,
-                            "path": "",
-                            "absolute": 0,
-                            "external": 0,
-                            "replace_spaces": 0,
-                            "path_case": "none",
-                            "trim_whitespace": 0,
-                            "alt": "",
-                            "rel": "",
-                            "link_class": "",
-                            "prefix": "",
-                            "suffix": "",
-                            "target": "",
-                            "nl2br": 0,
-                            "max_length": "",
-                            "word_boundary": 1,
-                            "ellipsis": 1,
-                            "more_link": 0,
-                            "more_link_text": "",
-                            "more_link_path": "",
-                            "strip_tags": 0,
-                            "trim": 0,
-                            "preserve_tags": "",
-                            "html": 0
-                        },
-                        "element_type": "",
-                        "element_class": "",
-                        "element_label_type": "",
-                        "element_label_class": "",
-                        "element_label_colon": false,
-                        "element_wrapper_type": "",
-                        "element_wrapper_class": "",
-                        "element_default_classes": 1,
-                        "empty": "",
-                        "hide_empty": 0,
-                        "empty_zero": 0,
-                        "hide_alter_empty": 1
-                    },
-                    "created": {
-                        "id": "created",
-                        "table": "node",
-                        "field": "created",
-                        "relationship": "latest_release",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "latest release ",
                         "exclude": 0,
                         "alter": {
                             "alter_text": 0,
@@ -422,123 +268,22 @@
                             "preserve_tags": "",
                             "html": 0
                         },
-                        "element_type": "",
+                        "element_type": "0",
                         "element_class": "",
-                        "element_label_type": "",
-                        "element_label_class": "",
-                        "element_label_colon": 0,
-                        "element_wrapper_type": "",
-                        "element_wrapper_class": "",
-                        "element_default_classes": 1,
-                        "empty": "",
-                        "hide_empty": 0,
-                        "empty_zero": 0,
-                        "hide_alter_empty": 1,
-                        "date_format": "short",
-                        "custom_date_format": "",
-                        "timezone": ""
-                    },
-                    "download_link": {
-                        "id": "download_link",
-                        "table": "project_release",
-                        "field": "download_link",
-                        "relationship": "project_releases",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "exclude": 0,
-                        "alter": {
-                            "alter_text": 1,
-                            "text": "<a class=\"button button-small\" href=\"[download_link]\">Download</a>",
-                            "make_link": 0,
-                            "path": "",
-                            "absolute": 0,
-                            "external": 0,
-                            "replace_spaces": 0,
-                            "path_case": "none",
-                            "trim_whitespace": 0,
-                            "alt": "",
-                            "rel": "",
-                            "link_class": "",
-                            "prefix": "",
-                            "suffix": "",
-                            "target": "",
-                            "nl2br": 0,
-                            "max_length": "",
-                            "word_boundary": 1,
-                            "ellipsis": 1,
-                            "more_link": 0,
-                            "more_link_text": "",
-                            "more_link_path": "",
-                            "strip_tags": 0,
-                            "trim": 0,
-                            "preserve_tags": "",
-                            "html": 0
-                        },
-                        "element_type": "",
-                        "element_class": "",
-                        "element_label_type": "",
+                        "element_label_type": "0",
                         "element_label_class": "",
                         "element_label_colon": false,
-                        "element_wrapper_type": "",
+                        "element_wrapper_type": "0",
                         "element_wrapper_class": "",
                         "element_default_classes": 1,
                         "empty": "",
                         "hide_empty": 0,
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
-                        "display_as_link": 0
-                    },
-                    "download_size": {
-                        "id": "download_size",
-                        "table": "project_release",
-                        "field": "download_size",
-                        "relationship": "project_releases",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "label": "",
-                        "exclude": 0,
-                        "alter": {
-                            "alter_text": 1,
-                            "text": "<span class=\"result-version\">[download_size]</span>",
-                            "make_link": 0,
-                            "path": "",
-                            "absolute": 0,
-                            "external": 0,
-                            "replace_spaces": 0,
-                            "path_case": "none",
-                            "trim_whitespace": 0,
-                            "alt": "",
-                            "rel": "",
-                            "link_class": "",
-                            "prefix": "",
-                            "suffix": "",
-                            "target": "",
-                            "nl2br": 0,
-                            "max_length": "",
-                            "word_boundary": 1,
-                            "ellipsis": 1,
-                            "more_link": 0,
-                            "more_link_text": "",
-                            "more_link_path": "",
-                            "strip_tags": 0,
-                            "trim": 0,
-                            "preserve_tags": "",
-                            "html": 0
-                        },
-                        "element_type": "",
-                        "element_class": "",
-                        "element_label_type": "",
-                        "element_label_class": "",
-                        "element_label_colon": false,
-                        "element_wrapper_type": "",
-                        "element_wrapper_class": "",
-                        "element_default_classes": 1,
-                        "empty": "",
-                        "hide_empty": 0,
-                        "empty_zero": 0,
-                        "hide_alter_empty": 1,
-                        "file_size_display": "formatted"
+                        "link_to_entity": 0,
+                        "display": "view",
+                        "view_mode": "project_search",
+                        "bypass_access": 0
                     }
                 },
                 "filters": {
@@ -633,24 +378,24 @@
                             "group_items": []
                         }
                     },
-                    "keys": {
-                        "id": "keys",
-                        "table": "search_index",
-                        "field": "keys",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "optional",
+                        "operator": "contains",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "keys_op",
+                            "operator_id": "combine_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "keys_op",
-                            "identifier": "s",
+                            "operator": "combine_op",
+                            "identifier": "combine",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -658,6 +403,7 @@
                                 "authenticated": "authenticated",
                                 "anonymous": 0,
                                 "4": 0,
+                                "civi": 0,
                                 "3": 0
                             }
                         },
@@ -674,23 +420,14 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "remove_score": 0
+                        "fields": {
+                            "title": "title",
+                            "name": "name",
+                            "body": "body"
+                        }
                     }
                 },
                 "sorts": {
-                    "score": {
-                        "id": "score",
-                        "table": "search_index",
-                        "field": "score",
-                        "relationship": "none",
-                        "group_type": "group",
-                        "ui_name": "",
-                        "order": "DESC",
-                        "exposed": false,
-                        "expose": {
-                            "label": ""
-                        }
-                    },
                     "promote": {
                         "id": "promote",
                         "table": "node",
@@ -763,17 +500,17 @@
                     }
                 },
                 "row_options": {
-                    "relationship": "none",
-                    "view_mode": "project_search",
-                    "links": 1,
-                    "comments": 0
+                    "default_field_elements": 1,
+                    "inline": [],
+                    "separator": "",
+                    "hide_empty": 0
                 },
                 "use_ajax": false,
                 "header": [],
                 "style_options": {
                     "grouping": [],
                     "row_class": "result",
-                    "default_row_class": 0,
+                    "default_row_class": 1,
                     "row_class_special": 1,
                     "type": "ol",
                     "wrapper_class": "project-search__results-wrapper l-content-wrapper",
@@ -933,24 +670,24 @@
                             "group_items": []
                         }
                     },
-                    "keys": {
-                        "id": "keys",
-                        "table": "search_index",
-                        "field": "keys",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "optional",
+                        "operator": "contains",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "keys_op",
+                            "operator_id": "combine_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "keys_op",
-                            "identifier": "s",
+                            "operator": "combine_op",
+                            "identifier": "combine",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -958,6 +695,7 @@
                                 "authenticated": "authenticated",
                                 "anonymous": 0,
                                 "4": 0,
+                                "civi": 0,
                                 "3": 0
                             }
                         },
@@ -974,7 +712,11 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "remove_score": 0
+                        "fields": {
+                            "title": "title",
+                            "name": "name",
+                            "body": "body"
+                        }
                     }
                 },
                 "filter_groups": {
@@ -993,12 +735,12 @@
                     "wrapper_class": "project-search__results-wrapper l-content-wrapper",
                     "class": "project-search__results"
                 },
-                "row_plugin": "node",
+                "row_plugin": "fields",
                 "row_options": {
-                    "relationship": "none",
-                    "view_mode": "project_search",
-                    "links": 1,
-                    "comments": 0
+                    "default_field_elements": 1,
+                    "inline": [],
+                    "separator": "",
+                    "hide_empty": 0
                 }
             }
         },
@@ -1104,24 +846,24 @@
                             "group_items": []
                         }
                     },
-                    "keys": {
-                        "id": "keys",
-                        "table": "search_index",
-                        "field": "keys",
+                    "combine": {
+                        "id": "combine",
+                        "table": "views",
+                        "field": "combine",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "operator": "optional",
+                        "operator": "contains",
                         "value": "",
                         "group": "1",
                         "exposed": true,
                         "expose": {
-                            "operator_id": "keys_op",
+                            "operator_id": "combine_op",
                             "label": "",
                             "description": "",
                             "use_operator": 0,
-                            "operator": "keys_op",
-                            "identifier": "s",
+                            "operator": "combine_op",
+                            "identifier": "combine",
                             "required": 0,
                             "remember": 0,
                             "multiple": false,
@@ -1129,6 +871,7 @@
                                 "authenticated": "authenticated",
                                 "anonymous": 0,
                                 "4": 0,
+                                "civi": 0,
                                 "3": 0
                             }
                         },
@@ -1145,7 +888,11 @@
                             "default_group_multiple": [],
                             "group_items": []
                         },
-                        "remove_score": 0
+                        "fields": {
+                            "title": "title",
+                            "name": "name",
+                            "body": "body"
+                        }
                     }
                 },
                 "defaults": {

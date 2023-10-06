@@ -229,7 +229,7 @@ form.views-exposed-form,
   padding: 0;
 }
 
-.result__info li {
+.result__info > li {
   margin: 0 5px 0 0;
   display: inline-block;
 }
@@ -281,4 +281,20 @@ form.views-exposed-form,
   .result h3 {
     margin-top: 45px;
   }
+}
+
+/**
+ * Rendered entity field on Project listings
+ * @todo Seems like result__info is no longer useful so
+ * could remove it from views-view-fields--modules.tpl.php and here.
+ */
+.view-modules .views-row li.rendered-entity {
+  max-width: unset !important;
+  display: block;
+}
+
+.view-modules .views-row ul.result__info {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
