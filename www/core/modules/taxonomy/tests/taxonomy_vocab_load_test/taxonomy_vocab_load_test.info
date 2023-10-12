@@ -1,0 +1,12 @@
+name = Taxonomy vocabulary load test
+type = module
+description = Test for hook_taxonomy_vocabulary_load.
+package = Testing
+version = VERSION
+backdrop = 1.x
+hidden = TRUE
+
+; Added by Backdrop CMS packaging script on 2023-10-06
+project = backdrop
+version = 1.26.1
+timestamp = 1696627719
