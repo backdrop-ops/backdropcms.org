@@ -164,11 +164,13 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "description": "Security email list",
                         "delta": "security_email_list",
+                        "description": "Security email list",
                         "reusable": true
                     },
-                    "contexts": []
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "b8427bc4-e7df-4ac0-9900-b596da28bf59",
                 "style": {

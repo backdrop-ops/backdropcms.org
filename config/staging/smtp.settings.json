@@ -18,7 +18,7 @@
         "default-system": "SmtpMailSystem"
     },
     "smtp_deliver": "1",
-    "smtp_queue_fail": 0,
+    "smtp_queue_fail": 1,
     "smtp_client_hostname": "",
     "smtp_client_helo": "",
     "smtp_reroute_address": ""
