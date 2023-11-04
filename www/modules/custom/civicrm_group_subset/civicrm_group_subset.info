@@ -1,0 +1,8 @@
+name = CiviCRM Group Subset
+description = Populates a CiviCRM group from a subset of another group.
+type = module
+backdrop = 1.x
+package = CiviCRM-Contrib
+configure = admin/config/system/civicrm-group-subset
+
+dependencies[] = civicrm

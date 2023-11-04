@@ -1,0 +1,173 @@
+<?php
+/**
+ * @file
+ * CiviCRM Group Subset
+ *
+ * Populates a CiviCRM group from a subset of another CiviCRM group.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function civicrm_group_subset_menu() {
+  $items['admin/config/system/civicrm-group-subset'] = array(
+    'title' => 'CiviCRM group subset',
+    'description' => 'Populate a CiviCRM group from a subset of another CiviCRM group.',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('civicrm_group_subset_form'),
+    'access arguments' => array('administer site configuration'),
+  );
+  return $items;
+}
+
+/**
+ * Returns the configuration page.
+ */
+function civicrm_group_subset_form($form, &$form_state) {
+  $form[] = array(
+    '#type' => 'help',
+    '#markup' => t('Select the groups, the number of contacts to choose, and the offset. Each group must be a "Regular Group", not a "Smart Group."'),
+  );
+
+  $groups = _civicrm_group_subset_groups();
+  $form['source_gid'] = array(
+    '#type' => 'select',
+    '#title' => t('Source group'),
+    '#description' => t('Select the group to choose contacts from.'),
+    '#options' => $groups,
+    '#required' => TRUE,
+  );
+  $form['target_gid'] = array(
+    '#type' => 'select',
+    '#title' => t('Target group'),
+    '#description' => t('Select the group to add the contacts to.'),
+    '#options' => $groups,
+    '#required' => TRUE,
+  );
+  $form['num_contacts'] = array(
+    '#type' => 'number',
+    '#title' => t('Number of contacts'),
+    '#description' => t('Select the number of contacts to choose.'),
+    '#min' => 0,
+    '#step' => 1,
+    '#default_value' => 0,
+    '#required' => TRUE,
+  );
+  $form['offset'] = array(
+    '#type' => 'number',
+    '#title' => t('Offset'),
+    '#description' => t('Select the offset in the group order. Contacts are ordered by the GroupContact ID.'),
+    '#min' => 0,
+    '#step' => 1,
+    '#default_value' => 0,
+    '#required' => TRUE,
+  );
+  $form['actions'][] = array(
+    '#type' => 'help',
+    '#markup' => t('These actions are taken immediately upon submission (no confirmation page).'),
+  );
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add contacts'),
+    '#submit' => array('civicrm_group_subset_form_submit_add'),
+  );
+  $form['actions']['clear'] = array(
+    '#type' => 'submit',
+    '#value' => t('Clear target'),
+    '#submit' => array('civicrm_group_subset_form_submit_clear'),
+    '#attributes' => array(
+      'class' => array('btn-danger', 'button-danger'),
+    ),
+  );
+  return $form;
+}
+
+/**
+ * Submission function for adding contacts to a group.
+ */
+function civicrm_group_subset_form_submit_add($form, &$form_state) {
+  $source_gid = $form_state['values']['source_gid'];
+  $target_gid = $form_state['values']['target_gid'];
+  $num_contacts = $form_state['values']['num_contacts'];
+  $offset = $form_state['values']['offset'];
+
+  civicrm_initialize();
+
+  // Get the subset from the group.
+  $groupContacts = civicrm_api4('GroupContact', 'get', [
+    'select' => [
+      'id',
+      'contact_id',
+    ],
+    'where' => [
+      ['group_id', '=', $source_gid],
+    ],
+    'orderBy' => [
+      'id' => 'ASC',
+    ],
+    'limit' => $num_contacts,
+    'offset' => $offset,
+    'checkPermissions' => FALSE,
+  ]);
+  $cids = array();
+  foreach ($groupContacts as $data) {
+    $cids[] = $data['contact_id'];
+  }
+
+  // Add them to the target group.
+  foreach ($cids as $cid) {
+    $results = civicrm_api4('GroupContact', 'create', [
+      'values' => [
+        'contact_id' => $cid,
+        'group_id' => $target_gid,
+        'status' => 'Added',
+      ],
+      'checkPermissions' => FALSE,
+    ]);
+  }
+
+  backdrop_set_message(t('The contacts have been added to the target group.'));
+}
+
+/**
+ * Submission function for clearing the target group.
+ */
+function civicrm_group_subset_form_submit_clear($form, &$form_state) {
+  $target_gid = $form_state['values']['target_gid'];
+
+  $results = civicrm_api4('GroupContact', 'delete', [
+    'where' => [
+      ['group_id', '=', $target_gid],
+    ],
+    'checkPermissions' => FALSE,
+  ]);
+
+  backdrop_set_message(t('The target group has been cleared.'));
+}
+
+/**
+ * Return a list of CiviCRM groups.
+ */
+function _civicrm_group_subset_groups() {
+  $groups = &backdrop_static(__FUNCTION__);
+  if (isset($groups)) {
+    return $groups;
+  }
+  civicrm_initialize();
+  $civicrmGroups = civicrm_api4('Group', 'get', [
+    'select' => [
+      'id',
+      'title',
+    ],
+    'where' => [
+      ['is_active', '=', TRUE],
+      ['is_hidden', '=', FALSE],
+    ],
+    'checkPermissions' => FALSE,
+  ]);
+  $groups = array();
+  foreach ($civicrmGroups as $row) {
+    $groups[$row['id']] = $row['title'];
+  };
+  return $groups;
+}
