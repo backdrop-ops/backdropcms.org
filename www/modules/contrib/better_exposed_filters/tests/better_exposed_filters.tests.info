@@ -1,0 +1,76 @@
+[BEF_TestOptions]
+name = BEF Options tests
+description = Checks that BEF options appear when should.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestRadios]
+name = BEF radio button tests
+description = Verifies rendering filters as radio buttons.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestCheckboxes]
+name = BEF checkbox tests
+description = Verifies rendering filter options as checkboxes.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestHidden]
+name = BEF hidden tests
+description = Verifies rendering filter options as hidden elements.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestTaxonomyFilters]
+name = BEF taxonomy filter tests
+description = Verifies rendering of taxonomy filters.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestSort]
+name = BEF sort tests
+description = Verifies rendering exposed sort options.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestSliders]
+name = BEF slider tests
+description = Verifies rendering filters jQueryUI sliders.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestDatepicker]
+name = BEF datepicker tests
+description = Verifies rendering filter options as a jQueryUI Datepicker.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestLinks]
+name = BEF links tests
+description = Verifies rendering filter options as toggle links.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestSecondaryFilters]
+name = BEF secondary filter tests
+description = Verifies rendering filter options within the secondary filter fieldset.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestRewrite]
+name = BEF rewrite tests
+description = Verifies rewriting filter and sort options.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+[BEF_TestMisc]
+name = BEF miscellaneous tests
+description = Verifies misc BEF functional.
+group = Better Exposed Filters
+file = better_exposed_filters.test
+
+; Added by Backdrop CMS packaging script on 2017-09-11
+project = better_exposed_filters
+version = 1.x-3.4.1
+timestamp = 1505197398
