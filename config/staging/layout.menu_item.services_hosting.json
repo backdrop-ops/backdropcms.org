@@ -1,0 +1,20 @@
+{
+    "_config_name": "layout.menu_item.services_hosting",
+    "name": "services_hosting",
+    "title": "",
+    "path": "support/services/hosting",
+    "menu": {
+        "type": "normal",
+        "title": "Hosting Providers",
+        "name": "main-menu",
+        "weight": "0",
+        "parent": {
+            "type": "none",
+            "title": "",
+            "name": "main-menu",
+            "weight": "0"
+        }
+    },
+    "conditions": [],
+    "arguments": []
+}
