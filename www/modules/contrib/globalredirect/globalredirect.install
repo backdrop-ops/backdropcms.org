@@ -1,0 +1,61 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the globalredirect module.
+ */
+
+/**
+ * Upgrade settings from Drupal 7 if needed.
+ */
+function globalredirect_update_1000() {
+  $old_settings = update_variable_get('globalredirect_settings', array());
+  $config = config('globalredirect.settings');
+
+  // Only replace the settings if none have been set at all yet.
+  if ($config->get('globalredirect_settings') === NULL) {
+    $config->set('globalredirect_settings', $old_settings);
+    $config->save();
+    return t('Updated Global Redirect from Drupal 7 settings.');
+  }
+
+  // Old settings can now be removed.
+  update_variable_del('globalredirect_settings');
+}
+
+/**
+ * Remove the unused "trailing_zero" redirect setting.
+ */
+function globalredirect_update_1001() {
+  config_clear('globalredirect.settings', 'globalredirect_settings.trailing_zero');
+}
+
+// This is an ugly work-around because the Drupal 7 version of Global Redirect
+// still contains Drupal 6 update hooks. Backdrop will consider these newer than
+// any updates named globalredirect_update_1000() or higher. As such, we need
+// to somehow reset the update hook number back to what it should be. Once this
+// has executed, it should never be run again.
+if (function_exists('state_get') &&
+    backdrop_bootstrap() > BACKDROP_BOOTSTRAP_LOCK &&
+    state_get('globalredirect_update_fix') === NULL) {
+  /**
+   * Reset Global Redirect module's update numbers.
+   */
+  function globalredirect_update_6999() {
+    register_shutdown_function('_globalredirect_update_6999');
+    state_set('globalredirect_update_fix', TRUE);
+
+    // Manually execute remaining updates.
+    globalredirect_update_1000();
+    globalredirect_update_1001();
+  }
+
+  /**
+   * Shutdown function that sets the schema version to the most current number.
+   *
+   * This has to be done after the real update has finished, so that the schema
+   * number is updated after update.php has executed update 6999.
+   */
+  function _globalredirect_update_6999() {
+    db_query("UPDATE {system} SET schema_version = 1001 WHERE name = 'globalredirect'");
+  }
+}

@@ -1,0 +1,11 @@
+name = Global Redirect
+description = "Searches for an alias of the current URL and 301 redirects if found. Stops duplicate content arising when path module is enabled."
+type = module
+package = Path management
+backdrop = 1.x
+configure = admin/config/urls/globalredirect
+
+; Added by Backdrop CMS packaging script on 2022-11-02
+project = globalredirect
+version = 1.x-1.6.0
+timestamp = 1667443038
