@@ -6,7 +6,6 @@
     "permissions": [
         "access content",
         "access site-wide contact form",
-        "create supporter content",
         "search article content",
         "search book content",
         "access project browser server",
@@ -16,8 +15,6 @@
         "edit own post content",
         "edit own quote content",
         "delete own quote content",
-        "edit own supporter content",
-        "delete own supporter content",
         "create quote content",
         "create event content",
         "edit own event content",
@@ -68,7 +65,10 @@
         "view event participants",
         "access CiviMail subscribe/unsubscribe pages",
         "view my contact",
-        "edit my contact"
+        "edit my contact",
+        "create supporter content",
+        "edit own supporter content",
+        "delete own supporter content"
     ],
     "description": ""
 }
