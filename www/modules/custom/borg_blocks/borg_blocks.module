@@ -140,11 +140,11 @@ function borg_blocks_tagline($settings) {
 
 function borg_blocks_upgrade($settings) {
   // Included in core
-  $modules_core = 70;
+  $modules_core = 75;
   // Percent ready
-  $modules_top = 96;
+  $modules_top = 97;
   // Number of modules
-  $projects_available = 1000;
+  $projects_available = 1100;
 
   $path = backdrop_get_path('module', 'borg_blocks');
   $button = l(t('Upgrade from Drupal'), 'node/4967', array('attributes' => array('class' => array('button'))));
