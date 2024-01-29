@@ -126,4 +126,4 @@
       </div>
     </footer>
   <?php endif; ?>
-</div><!-- /.layout--simmons -->
+</div><!-- /.layout-/-simmons -->

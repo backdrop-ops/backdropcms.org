@@ -95,4 +95,4 @@
       </div>
     </footer>
   <?php endif; ?>
-</div><!-- /.layout--harris -->
+</div><!-- /.layout-/-harris -->

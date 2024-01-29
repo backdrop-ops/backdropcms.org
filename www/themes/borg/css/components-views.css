@@ -473,3 +473,42 @@
 .view-events .item-list {
   margin-top: 15px;
 }
+
+/*******************************************************************************
+ * Default Home page cards view
+ ******************************************************************************/
+.view-promoted-cards .view-content {
+  margin: 0 0 3em 0;
+}
+.view-promoted-cards .views-grid-box {
+  background-color: #fff;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .view-promoted-cards .views-grid-box {
+    margin: 0 .25rem;
+  }
+}
+
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .view-promoted-cards .views-grid-box {
+    margin: 0 .5rem;
+  }
+}
+
+
+/*******************************************************************************
+ * All grid views
+ ******************************************************************************/
+.views-view-grid-cols-3 {
+  -ms-grid-columns: 1fr;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .views-view-grid-cols-3 {
+    -ms-grid-columns: (1fr)[3];
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

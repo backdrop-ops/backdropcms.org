@@ -67,6 +67,9 @@ body.front .l-top {
   border-top: .01px solid #E8E6E5;
   background: linear-gradient(to top right, #00FFA6, #45BEB1, #F317CD);
 }
+body.front .l-top .view-promoted-cards .views-grid-box {
+  color: #15141A;
+}
 
 body.front .l-bottom {
   background: #000;
@@ -139,12 +142,17 @@ body.front .l-top h2 {
     font-size: 3.75rem; /* 60px */
     font-weight: normal;
   }
-  body.front .l-top h2 {
-    font-size: 2rem; /* 32px */
-  }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   body.front .l-top h2 {
+    font-size: 2.625rem; /* 42px */
+  }
+  body.front .l-top .view-promoted-cards .views-grid-box h2 {
+    font-size: 1.25rem; /* 20px */
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  body.front .l-top .view-promoted-cards .views-grid-box h2 {
     font-size: 2.625rem; /* 42px */
   }
 }

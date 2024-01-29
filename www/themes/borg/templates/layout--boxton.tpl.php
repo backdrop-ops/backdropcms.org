@@ -87,4 +87,5 @@
       </div><!-- /.container -->
     </footer>
   <?php endif; ?>
-</div><!-- /.layout--boxton -->
+
+</div><!-- /.layout-/-boxton -->

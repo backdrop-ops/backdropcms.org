@@ -95,4 +95,4 @@
       </div><!-- /.container -->
     </footer>
   <?php endif; ?>
-</div><!-- /.layout--geary -->
+</div><!-- /.layout-/-geary -->
