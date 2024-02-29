@@ -33,19 +33,43 @@ function borg_mailers_security_node_update($node) {
  */
 function borg_mailers_security_mail($key, &$message, $params) {
   if ($key == 'borg_mailers_security_email') {
-    // Just copy over the subject and body as provided.
-    $message['subject'] = $params['node']->title;
-    $body = field_get_items('node', $params['node'], 'body');
-    $field_sa_versions = field_get_items('node', $params['node'], 'field_sa_versions');
-    $field_sa_solution = field_get_items('node', $params['node'], 'field_sa_solution');
-
-    $message['body'][] = backdrop_html_to_text(
-      '<p>' .
-        t('View online: !url', array('!url' => url('node/' . $params['node']->nid, array('absolute' => TRUE)))) .
-      '</p>' . $body[0]['value'] .
-      '<p>' . $field_sa_versions[0]['value'] . ' </p>' .
-      '<p>' . $field_sa_solution[0]['value'] . '</p>'
+    $node = $params['node'];
+    $message['subject'] = $node->title;
+    $text = '<p>' . t('View online: !url', array('!url' => url('node/' . $params['node']->nid, array('absolute' => TRUE)))) . '</p>';
+    $fields = array(
+      'field_sa_date',
+      'field_sa_id',
+      'field_sa_risk',
+      'field_sa_vulnerability',
+      'field_sa_versions',
+      'body',
+      'field_sa_solution',
+      'field_sa_reported_by',
+      'field_sa_fixed_by',
+      'field_sa_coordinated_by',
     );
+    $info = field_info_instances('node', 'sa');
+    foreach ($fields as $field) {
+      $label = $info[$field]['label'] . ': ';
+      $items = field_get_items('node', $node, $field);
+      $view_values = array();
+      foreach ($items as $item) {
+        $view_value = field_view_value('node', $node, $field, $item, 'default');
+        $view_values[] = backdrop_render($view_value);
+      }
+      if (count($view_values) > 1) {
+        $value = theme('item_list', array('items' => $view_values));
+      }
+      else {
+        $value = $view_values[0];
+      }
+      // If it can't fit on one line, break after the label.
+      if (strlen(backdrop_html_to_text($label)) + strlen(backdrop_html_to_text($value)) > 79) {
+        $label .= '<br>';
+      }
+      $text .= '<p>' . $label . $value . '</p>';
+    }
+    $message['body'][] = backdrop_html_to_text($text);
   }
 }
 
