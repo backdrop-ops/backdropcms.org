@@ -107,12 +107,14 @@ function _borg_mailers_security_subscribers() {
       exit;
     }
   }
-
-  $groupContacts = \Civi\Api4\GroupContact::get()
-    ->addSelect('uf_match.uf_id', 'email.email')
+  $groupContacts = \Civi\Api4\GroupContact::get(TRUE)
+    ->addSelect('uf_match.id', 'email.email')
     ->addJoin('Email AS email', 'LEFT', ['email.contact_id', '=', 'contact_id'])
     ->addJoin('UFMatch AS uf_match', 'LEFT', ['uf_match.contact_id', '=', 'contact_id'])
+    ->addJoin('GroupContact AS group_contact', 'LEFT', ['group_contact.id', '=', 'contact_id'])
     ->addWhere('group_id', '=', 6)
+    ->addWhere('group_contact.status', '=', 'Added')
+    ->addWhere('contact_id.is_opt_out', '=', FALSE)
     ->execute();
   $to = [];
   foreach ($groupContacts as $groupContact) {
