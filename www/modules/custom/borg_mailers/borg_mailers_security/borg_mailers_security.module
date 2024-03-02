@@ -108,7 +108,7 @@ function _borg_mailers_security_subscribers() {
     }
   }
   $groupContacts = \Civi\Api4\GroupContact::get(TRUE)
-    ->addSelect('uf_match.id', 'email.email')
+    ->addSelect('uf_match.uf_id', 'email.email')
     ->addJoin('Email AS email', 'LEFT', ['email.contact_id', '=', 'contact_id'])
     ->addJoin('UFMatch AS uf_match', 'LEFT', ['uf_match.contact_id', '=', 'contact_id'])
     ->addJoin('GroupContact AS group_contact', 'LEFT', ['group_contact.id', '=', 'contact_id'])
