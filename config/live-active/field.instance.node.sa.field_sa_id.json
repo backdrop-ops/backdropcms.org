@@ -16,6 +16,7 @@
     },
     "settings": {
         "text_processing": "0",
+        "allowed_formats": [],
         "user_register_form": false
     },
     "display": {
@@ -35,10 +36,10 @@
         }
     },
     "required": 0,
-    "description": "Either BACKDROP-SA-CORE-YYYY-XXX or BACKDROP-SA-CONTRIB-YYYY-XXX",
+    "description": "For contrib: <code>BACKDROP-SA-CONTRIB-YYYY-XXX</code>",
     "default_value": [
         {
-            "value": "BACKDROP-SA-CORE-2023-0XX"
+            "value": "BACKDROP-SA-CORE-2024-0XX"
         }
     ],
     "default_value_function": null
