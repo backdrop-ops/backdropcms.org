@@ -114,7 +114,6 @@ function _borg_mailers_security_subscribers() {
     ->addJoin('GroupContact AS group_contact', 'LEFT', ['group_contact.id', '=', 'contact_id'])
     ->addWhere('group_id', '=', 6)
     ->addWhere('group_contact.status', '=', 'Added')
-    ->addWhere('contact_id.is_opt_out', '=', FALSE)
     ->execute();
   $to = [];
   foreach ($groupContacts as $groupContact) {
