@@ -47,7 +47,7 @@ class CRM_Airmail_Utils {
         $twoDigitString = $twoDigitStringMin . $verpSeperator;
         // $string ex: b.179.46.731d881bbb3f9aad@sestest.garrison.aghstrategies.net
         // Based off of CRM/Utils/Mail/EmailProcessor.php
-        $regex = '/^' . preg_quote($dao->localpart) . '(b|c|e|o|r|u)' . $twoDigitString . '([0-9a-f]{16})@' . preg_quote($dao->domain) . '$/';
+        $regex = '/^' . preg_quote($dao->localpart) . '(b|c|e|o|r|u)' . $twoDigitString . '([0-9a-z]{16})@' . preg_quote($dao->domain) . '$/';
         if (preg_match($regex, $string, $matches)) {
           list($match, $action, $job, $queue, $hash) = $matches;
           $bounceEvent = array(
