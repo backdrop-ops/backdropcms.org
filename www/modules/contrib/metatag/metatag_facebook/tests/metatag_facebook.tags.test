@@ -3,6 +3,9 @@
  * @file
  * Tests that each of the Metatag Facebook tags work correctly.
  */
+
+include_once __DIR__ . '/../../tests/metatag.tags.test';
+
 class MetatagFacebookTagsTest extends MetatagTagsTestBase {
 
   /**

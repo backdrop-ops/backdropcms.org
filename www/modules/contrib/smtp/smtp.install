@@ -35,9 +35,19 @@ function smtp_requirements($phase) {
 /**
  * Implements hook_install().
  */
- function smtp_install() {
+function smtp_install() {
    config_set('smtp.settings', 'smtp_on', 0);
- }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function smtp_uninstall() {
+  // Restore mail system to previous when module is uninstalled.
+  $mail_system = $config->get('smtp_previous_mail_system');
+  // Update system wide config value for mail_system.
+  config_set('system.mail', 'default-system', $mail_system);
+}
 
 /**
  * Implements hook_disable().
@@ -45,6 +55,7 @@ function smtp_requirements($phase) {
 function smtp_disable() {
   $mail_system = config_get('smtp.settings', 'smtp_previous_mail_system');
   config_set('system.mail', 'default-system', $mail_system);
+
 }
 
 /**
@@ -106,22 +117,59 @@ function smtp_update_1000() {
  * implemented.
  */
 function smtp_update_1301() {
+
+  // Redefine constants for update purposes.
+  $logging_none = 0;
+  $logging_all = 1;
+  $logging_errors = 2;
+
+  $logging = $logging_none;
+
   $old_debugging_value = config_get('smtp.settings', 'smtp_debugging');
-
-  $logging = SMTP_LOGGING_NONE;
-
   if ($old_debugging_value == 1) {
-    $logging = SMTP_LOGGING_ERRORS;
+    $logging = $logging_errors;
   }
 
   config_set('smtp.settings', 'smtp_debugging', $logging);
 }
 
 /**
- * Delete the variable "smtp_test_address". It is unlikely that this would
- * actually be set in the normal course of events, and it's no longer needed as
- * it was replaced with a form submit handler.
+ * Delete the variable "smtp_test_address".
  */
 function smtp_update_1302() {
+  // It is unlikely that this would be set in the normal course of events, and
+  // it's no longer needed as it was replaced with a form submit handler.
   config_clear('smtp.settings', 'smtp_test_address');
+}
+
+/**
+ * Update new config variables from the default config file if they haven't been
+ * set yet.
+ */
+function smtp_update_1303() {
+  $vars = array(
+    'smtp_queue_fail' => FALSE,
+    'smtp_client_hostname' => '',
+    'smtp_client_helo' => '',
+    'smtp_deliver' => TRUE,
+    'smtp_reroute_address' => '',
+  );
+  $config = config('smtp.settings');
+  $dirty = FALSE;
+  foreach ($vars as $var => $value) {
+    if (is_null($config->get($var))) {
+      $config->set($var, $value);
+      $dirty = TRUE;
+    }
+  }
+  if ($dirty) {
+    $config->save();
+  }
+}
+
+/**
+ * Placeholder update function just incase some people have run it already.
+ */
+function smtp_update_1304() {
+  // This was an accdidental (but less good) duplicate of smtp_update_1303().
 }

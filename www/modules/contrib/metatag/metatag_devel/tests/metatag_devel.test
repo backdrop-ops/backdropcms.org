@@ -4,6 +4,8 @@
  * Tests for the Metatag Devel module.
  */
 
+include_once __DIR__ . '/../../tests/metatag.helper.test';
+
 class MetatagDevelest extends MetatagTestHelper {
 
   /**

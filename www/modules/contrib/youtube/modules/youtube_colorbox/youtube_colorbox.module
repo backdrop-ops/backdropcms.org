@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Provides Colorbox support to YouTube Field display settings.
@@ -23,7 +22,7 @@ function youtube_colorbox_form_youtube_settings_form_alter(&$form, &$form_state)
   // Provide warning about the need to set 'Enable Colorbox load' to TRUE in the
   // Colorbox module settings. Otherwise links provided by YouTube Colorbox will
   // not work as expected. This warning appears in the YouTube module settings.
-  if (!config_get('colorbox.settings','colorbox_load', FALSE)) {
+  if (!config_get('colorbox.settings', 'colorbox_load', FALSE)) {
     $args = array('!colorbox_settings' => l('Colorbox module settings', 'admin/config/media/colorbox'));
     $message = t('Please enable \'Enable Colorbox load\' in the !colorbox_settings for thumbnails linked by YouTube Field Colorbox to work as expected.', $args);
     backdrop_set_message($message, 'warning');
@@ -44,7 +43,7 @@ function youtube_colorbox_form_youtube_settings_form_alter(&$form, &$form_state)
  *
  * @see youtube_field_formatter_settings_form()
  */
-function youtube_colorbox_thumbnail_field_formatter_settings(&$element, $instance, $settings, $field_name) {
+function youtube_colorbox_thumbnail_field_formatter_settings(array &$element, array $instance, array $settings, $field_name) {
   $colorbox = $settings['colorbox'];
 
   // Set the states input name variable. JS states functionality will otherwise
@@ -57,7 +56,7 @@ function youtube_colorbox_thumbnail_field_formatter_settings(&$element, $instanc
     '#type' => 'fieldset',
     '#title' => t('Colorbox Settings'),
     '#states' => array(
-     'visible' => array(
+      'visible' => array(
         ':input[name="' . $input_name . '"]' => array('value' => 'colorbox'),
       ),
     ),
@@ -148,7 +147,7 @@ function youtube_colorbox_element_is_int($element, $form_state, $form) {
  * @param array $settings
  *   The field item's display settings.
  */
-function youtube_colorbox_field_item_uri($item, $settings) {
+function youtube_colorbox_field_item_uri(array $item, array $settings) {
   // Field display settings.
   $parameters = $settings['colorbox']['parameters'];
 

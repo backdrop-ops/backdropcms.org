@@ -140,7 +140,8 @@ function metatag_tokens($type, $tokens, array $data = array(), array $options = 
  */
 function metatag_token_generate_array($entity, $entity_type, $bundle) {
   if (metatag_entity_supports_metatags($entity_type, $bundle)) {
-    $token_type = token_get_entity_mapping('entity', $entity_type);
+    $entity_info = entity_get_info($entity_type);
+    $token_type = !empty($entity_info['token type']) ? $entity_info['token type'] : $entity_type;
 
     $instance = metatag_get_entity_metatags_instance($entity, $entity_type, $bundle);
     $options = array();

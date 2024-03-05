@@ -86,6 +86,20 @@ function googleanalytics_menu() {
 }
 
 /**
+ * Implements hook_preprocess_page().
+ *
+ * Adds a link tag to preconnect to google.
+ */
+function googleanalytics_preprocess_page(&$variables) {
+  $attributes = array(
+    'rel' => 'preconnect',
+    'href' => 'https://www.google-analytics.com',
+    'crossorigin' => 'crossorigin',
+  );
+  backdrop_add_html_head_link($attributes);
+}
+
+/**
  * Implements hook_preprocess_layout().
  *
  * Insert JavaScript to the appropriate scope/region of the page.
@@ -227,6 +241,11 @@ function googleanalytics_preprocess_layout() {
       if (!empty($googleanalytics_custom_vars)) {
         // Add all the configured variables to the content.
         foreach ($googleanalytics_custom_vars as $googleanalytics_custom_var) {
+          // Suppress empty values.
+          if (!backdrop_strlen(trim($googleanalytics_custom_var['value']))) {
+            continue;
+          }
+
           // Replace tokens in values.
           $types = array();
           $node = menu_get_object();
@@ -234,11 +253,6 @@ function googleanalytics_preprocess_layout() {
             $types += array('node' => $node);
           }
           $googleanalytics_custom_var['value'] = token_replace($googleanalytics_custom_var['value'], $types, array('clear' => TRUE));
-
-          // Suppress empty values.
-          if (!backdrop_strlen(trim($googleanalytics_custom_var['value']))) {
-            continue;
-          }
 
           // Per documentation the max length of a dimension is 150 bytes.
           // A metric has no length limitation. It's not documented if this
@@ -313,7 +327,7 @@ function googleanalytics_preprocess_layout() {
       $create_only_fields['user_id'] = google_analytics_user_id_hash($user->uid);
     }
 
-    if (variable_get('googleanalytics_tracker_anonymizeip', 1)) {
+    if ($config->get('tracker_anonymizeip')) {
       $create_only_fields['anonymize_ip'] = TRUE;
     }
     
@@ -372,9 +386,9 @@ function googleanalytics_preprocess_layout() {
       // @FIXME: Cannot find the debug URL!???
       $library = 'https://www.googletagmanager.com/gtag/js?id=' . $id_list[0];
     }
-    elseif (variable_get('googleanalytics_cache', 0) && $url = _googleanalytics_cache('https://www.googletagmanager.com/gtag/js')) {
+    elseif ($config->get('cache') && $url = _googleanalytics_cache('https://www.googletagmanager.com/gtag/js')) {
       // Should a local cached copy of gtag.js be used?
-      $query_string = '?' . variable_get('css_js_query_string', '0');
+      $query_string = '?' . state_get('css_js_query_string', base_convert(REQUEST_TIME, 10, 36));
       $library = $url . $query_string;
     }
     else {
@@ -405,7 +419,7 @@ function googleanalytics_preprocess_layout() {
  *   User id hash.
  */
 function google_analytics_user_id_hash($uid) {
-  return backdrop_hmac_base64($uid, backdrop_get_private_key() . backdrop_get_hash_salt());
+  return backdrop_hmac_base64($uid, drupal_get_private_key() . drupal_get_hash_salt());
 }
 
 /**
@@ -429,8 +443,9 @@ function googleanalytics_field_extra_fields() {
 function googleanalytics_form_user_profile_form_alter(&$form, &$form_state) {
   $account = $form['#user'];
   $config = config('googleanalytics.settings');
+  $custom = $config->get('custom');
 
-  if (user_access('opt-in or out of tracking') && ($custom = $config->get('custom')) != 0 && _googleanalytics_visibility_roles($account)) {
+  if (user_access('opt-in or out of tracking') && $custom != 0 && _googleanalytics_visibility_roles($account)) {
     $form['googleanalytics'] = array(
       '#type' => 'fieldset',
       '#title' => t('Google Analytics configuration'),
@@ -454,8 +469,13 @@ function googleanalytics_form_user_profile_form_alter(&$form, &$form_state) {
     if ($config->get('privacy_donottrack') && !empty($_SERVER['HTTP_DNT'])) {
       $disabled = TRUE;
 
+      // Ensure account data is an array.
+      if (!is_array($account->data)) {
+        $account->data = array();
+      }
+
       // Override settings value.
-      $account->data['googleanalytics']['custom'] = FALSE;
+      $account->data['googleanalytics'] = array('custom' => FALSE);
 
       $description .= '<span class="admin-disabled">';
       $description .= ' ' . t('You have opted out from tracking via browser privacy settings.');

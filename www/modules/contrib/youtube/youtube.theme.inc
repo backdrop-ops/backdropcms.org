@@ -9,6 +9,7 @@
  */
 function theme_youtube_video($variables) {
   $id = $variables['video_id'];
+  $start_time = $variables['video_start_time'];
 
   // Get field display settings.
   $size = $variables['size'];
@@ -73,6 +74,9 @@ function theme_youtube_video($variables) {
   }
   if ($iv_load_policy) {
     $query['iv_load_policy'] = '3';
+  }
+  if ($start_time) {
+    $query['start'] = $start_time;
   }
 
   // Domain changes based on settings.
@@ -146,7 +150,7 @@ function theme_youtube_thumbnail($variables) {
     $image = theme('image', array('uri' => $uri, 'alt' => $alt));
   }
 
-  // Check if an url path is provided
+  // Check if an url path is provided.
   if ($variables['image_link'] != NULL) {
     $url_path = $variables['image_link']['path'];
     $options = $variables['image_link']['options'];

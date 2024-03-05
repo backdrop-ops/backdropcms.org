@@ -16,3 +16,13 @@
 tr.field-group input.form-submit {
   float: none;
 }
+
+#field-display-overview .field-formatter-settings-edit-wrapper a {
+  display: block;
+}
+
+#field-overview input.field-formatter-settings-edit {
+  margin: 0;
+  padding: 0.4em 1em;
+  line-height: 1.2;
+}

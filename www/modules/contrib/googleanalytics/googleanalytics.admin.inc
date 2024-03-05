@@ -19,7 +19,7 @@ function googleanalytics_admin_settings_form($form_state) {
     '#type' => 'textfield',
     '#default_value' => $config->get('account'),
     '#attributes' => array('placeholder' => 'UA- or G-'),
-    '#size' => 20,
+    '#size' => 40,
     '#required' => TRUE,
     '#description' => t('This ID is unique to each site you want to track separately, and is in the form UA-xxxxxxx-yy, G-XXXXXXX, DC-XXXXXXX, or AW-XXXXXXX. To get a Web Property ID, <a href="@analytics">register your site with Google Analytics</a>, or if you already have registered your site, go to your Google Analytics Settings page to see the ID next to every site profile. <a href="@webpropertyid">Find more information in the documentation</a>. If you want to track with multiple IDs (for example, using both GA4 and UA for legacy tracking) seperate them with commas.', array('@analytics' => 'https://marketingplatform.google.com/about/analytics/', '@webpropertyid' => url('https://developers.google.com/analytics/resources/concepts/gaConceptsAccounts', array('fragment' => 'webProperty')))),
   );
@@ -302,7 +302,7 @@ function googleanalytics_admin_settings_form($form_state) {
   $form['tracking']['privacy']['googleanalytics_privacy_donottrack'] = array(
     '#type' => 'checkbox',
     '#title' => t('Universal web tracking opt-out'),
-    '#description' => t('WARNING: Enabling this option will prevent the tracking code from appearing in Goole Chome.<br><br>
+    '#description' => t('WARNING: Enabling this option will prevent the tracking code from appearing in Google Chrome.<br><br>
       If enabled and your server receives the <a href="@donottrack">Do-Not-Track</a> header from the client browser, the Google Analytics module will not embed any tracking code into your site. Compliance with Do Not Track could be purely voluntary, enforced by industry self-regulation, or mandated by state or federal law. Please accept your visitors privacy. If they have opt-out from tracking and advertising, you should accept their personal decision. This feature is currently limited to logged in users and disabled page caching.', array('@donottrack' => 'https://donottrack.us/')),
     '#default_value' => $config->get('privacy_donottrack'),
   );

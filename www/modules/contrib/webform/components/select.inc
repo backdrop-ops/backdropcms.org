@@ -848,7 +848,7 @@ function _webform_csv_data_select($component, $export_options, $value) {
 
     // Any remaining items in the $value array will be user-added options.
     if ($component['extra']['other_option']) {
-      $return[] = count($value) ? implode(',', $value) : '';
+      $return[] = is_array($value) ? implode(',', $value) : '';
     }
   }
   else {

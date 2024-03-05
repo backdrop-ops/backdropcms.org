@@ -4,6 +4,8 @@
  * Contains the tests for Metatag's string handling.
  */
 
+include_once __DIR__ . '/metatag.string_handling.test';
+
 /**
  * Tests the Metatag string handling.
  */

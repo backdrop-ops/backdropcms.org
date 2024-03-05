@@ -4,6 +4,8 @@
  * Tests for the Metatag module and taxonomy term entities.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 class MetatagCoreTermTest extends MetatagTestHelper {
 
   /**

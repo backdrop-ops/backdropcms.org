@@ -1,20 +1,13 @@
 Akismet
 =======
 
-Integrates with the [https://akismet.com](Akismet) content moderation service.
-
-Requirements
-------------
-
-None.
-
+Integrates with the [Akismet](https://akismet.com) content moderation service.
 
 Installation
 ------------
 
-* Install this module using the official Backdrop CMS instructions at
-  <https://backdropcms.org/guide/modules>
-* Go to <https://akismet.com>,
+* Install this module using the official [Backdrop CMS instructions](https://backdropcms.org/guide/modules).
+* Go to [Akismet](https://akismet.com),
   * sign up or log in with your account
   * go to your Account Overview
   * Find your Akismet API key at the top of the page.
@@ -85,28 +78,28 @@ A: Out of the box, the Akismet module allows to protect Backdrop CMS core forms 
 
    To protect a custom form, you need to integrate with the Akismet module API.
    If you have a completely custom form (not even using Backdrop's Form API), see
-   the Akismet developer documentation: <https://akismet.com/development/api/>
+   the [Akismet developer documentation](https://akismet.com/development/api)
 
 Issues
 ------
 
 To submit bug reports and feature suggestions, or to track changes:
-  <https://github.com/project/akismet/issues>
+  <https://github.com/backdrop-contrib/akismet/issues>
 
-For issues pertaining to the Akismet service, contact [https://akismet.com/contact](Akismet Support),
+For issues pertaining to the Akismet service, contact [Akismet Support](https://akismet.com/contact),
 for example, inappropriately blocked posts, spam posts getting through, etc.
 
 Current Maintainers
 -------------------
 
-* Herb v/d Dool <https://github.com/herbdool/>
+* [Herb v/d Dool](https://github.com/herbdool)
 * Seeking additional maintainers.
 
 Credits
 -------
 
-* Ported to Backdrop by Herb v/d Dool <https://github.com/herbdool/>
-* Originally developed for Drupal by [Katherine Senzee (ksenzee)](http://drupal.org/u/ksenzee)
+* Ported to Backdrop by [Herb v/d Dool](https://github.com/herbdool)
+* Originally [developed for Drupal](https://www.drupal.org/project/akismet) by [Katherine Senzee (ksenzee)](http://drupal.org/u/ksenzee)
 
 This module is a fork of the Mollom module. The Mollom spam-control service was
 discontinued in 2018. This module attempts to serve as a drop-in replacement

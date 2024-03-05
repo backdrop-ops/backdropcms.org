@@ -4,6 +4,8 @@
  * Tests for the Metatag Favicons module.
  */
 
+include_once __DIR__ . '/../../tests/metatag.helper.test';
+
 class MetatagFaviconsTest extends MetatagTestHelper {
 
   /**

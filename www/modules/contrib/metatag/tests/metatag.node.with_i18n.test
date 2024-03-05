@@ -4,6 +4,8 @@
  * Tests for the Metatag module to ensure i18n integration doesn't break.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 class MetatagCoreNodeWithI18nTest extends MetatagTestHelper {
   /**
    * {@inheritdoc}

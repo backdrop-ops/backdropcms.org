@@ -379,7 +379,10 @@ class BackdropTextMetaTag extends BackdropDefaultMetaTag {
 
 /**
  * Link type meta tag controller.
+ *
  * <link rel="canonical" href="https://moz.com/blog" />
+ *
+ * This can also add an HTTP "Link" header.
  */
 class BackdropLinkMetaTag extends BackdropTextMetaTag {
 

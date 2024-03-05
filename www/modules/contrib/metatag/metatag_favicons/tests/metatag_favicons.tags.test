@@ -4,6 +4,8 @@
  * Tests that each of the Metatag Favicons tags work correctly.
  */
 
+include_once __DIR__ . '/../../tests/metatag.tags.test';
+
 class MetatagFaviconsTagsTest extends MetatagTagsTestBase {
 
   /**

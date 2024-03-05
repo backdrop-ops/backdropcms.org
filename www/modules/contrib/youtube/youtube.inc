@@ -1,21 +1,21 @@
 <?php
 /**
- * @ file
+ * @file
  * YouTube field helper functions.
  */
 
 /**
  * Extracts the video_id from the submitted field value.
  *
- * @param $input
+ * @param string $input
  *   The input submitted to the field.
  *
- * @return
+ * @return string
  *   Returns the video_id if available, or FALSE if not.
  */
 function youtube_get_video_id($input) {
   // See README.txt for accepted URL formats.
-  preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'<> #]+)/", $input, $matches);
+  preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/live\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'<> #]+)/", $input, $matches);
 
   if (!empty($matches[1])) {
     $video_id = $matches[1];
@@ -23,6 +23,40 @@ function youtube_get_video_id($input) {
   }
 
   return FALSE;
+}
+
+/**
+ * Extracts the start time from the submitted field value.
+ *
+ * @param string $input
+ *   The input submitted to the field.
+ *
+ * @return int
+ *   Returns the video start time if set, or '0' if not.
+ */
+function youtube_get_start_time($input) {
+  $url = backdrop_parse_url($input);
+  $time_query = isset($url['query']['t']) ? $url['query']['t'] : 0;
+  if (is_numeric($time_query)) {
+    // If the time is expressed just in seconds, just set time directly.
+    $time = intval($time_query);
+  }
+  else {
+    // Define array to capture hours, minutes and seconds from query string.
+    $minutes = $seconds = $hours = array();
+    // Find any seconds.
+    preg_match("/(\d*)s/", $time_query, $seconds);
+    $seconds = !empty($seconds[1]) ? $seconds[1] : 0;
+    // Find any minutes.
+    preg_match("/(\d*)m/", $time_query, $minutes);
+    $minutes = !empty($minutes[1]) ? $minutes[1] : 0;
+    // Find any hours.
+    preg_match("/(\d*)h/", $time_query, $hours);
+    $hours = !empty($hours[1]) ? $hours[1] : 0;
+    // Add together to get full time in seconds.
+    $time = ($hours * 3600) + ($minutes * 60) + $seconds;
+  }
+  return $time;
 }
 
 /**
@@ -85,9 +119,9 @@ function youtube_get_dimensions($size = NULL, $width = NULL, $height = NULL) {
  *
  * TODO add error messaging if something goes wrong, and return FALSE.
  *
- * @param $id
+ * @param string $id
  *   The video_id of the particular YouTube video.
- * @param $force_small
+ * @param bool $force_small
  *   When TRUE, this function should return the standard size image regardless
  *   of what the thumb_hires variable is set to. This is used should
  *   the high resolution image be found to not exist for a particular video.
@@ -149,9 +183,8 @@ function youtube_thumb_delete_all($form, &$form_state) {
   $youtube_dir = config_get('youtube.settings', 'youtube_thumb_dir');
   $youtube_path = $files . '/' . $youtube_dir;
 
-  $imagestyleflush = t('Derivatives generated with image styles were not
-    deleted. <a href="@imagestyleflush">Image style flush</a> may help with that.',
-    array('@imagestyleflush' => 'https://www.drupal.org/project/imagestyleflush'));
+  $imagestyleflush = t("Derivatives generated with image styles were not deleted. The 'Image Styles Admin' submodule of the <a href='@image_effects'>'Image Effects'</a> module may help with that.",
+    array('@image_effects' => 'https://backdropcms.org/project/image_effects'));
 
   if (file_prepare_directory($youtube_path) && file_unmanaged_delete_recursive($youtube_path)) {
     backdrop_set_message(t('All YouTube Field thumbnail image files have been
@@ -167,9 +200,9 @@ function youtube_thumb_delete_all($form, &$form_state) {
 /**
  * Get YouTube image path by building correctly formed URL.
  *
- * @param $video_id
+ * @param string $video_id
  *   The ID of the video to grab the thumbnail from.
- * @param  $version
+ * @param string $version
  *   Which version of the thumbnail to grab.
  * @return string
  *   The youtube.com image path to the specified version/video.
@@ -201,16 +234,16 @@ function youtube_build_remote_image_path($video_id = NULL, $version = '0') {
  *
  * Adds a target option for YouTube fields to Feeds mapping options.
  *
- * @param &$targets
+ * @param array &$targets
  *   Array containing the targets to be offered to the user. Add to this array
  *   to expose additional options. Remove from this array to suppress options.
  *   Remove with caution.
- * @param $entity_type
+ * @param string $entity_type
  *   The entity type of the target, for instance a 'node' entity.
- * @param $bundle_name
+ * @param string $bundle_name
  *   The bundle name for which to alter targets.
  */
-function youtube_feeds_processor_targets_alter(&$targets, $entity_type, $bundle_name) {
+function youtube_feeds_processor_targets_alter(array &$targets, $entity_type, $bundle_name) {
   foreach (field_info_instances($entity_type, $bundle_name) as $name => $instance) {
     $info = field_info_field($name);
 
@@ -227,19 +260,19 @@ function youtube_feeds_processor_targets_alter(&$targets, $entity_type, $bundle_
 /**
  * Callback to set the Feeds target for a YouTube field.
  *
- * @param $source
+ * @param FeedsSource $source
  *   Field mapper source settings.
- * @param $entity
+ * @param object $entity
  *   An entity object, for instance a node object.
- * @param $target
+ * @param string $target
  *   A string identifying the target on the node.
- * @param $value
+ * @param string $value
  *   The value to populate the target with.
- * @param $mapping
+ * @param array $mapping
  *   Associative array of the mapping settings from the per mapping
  *   configuration form.
  */
-function youtube_set_target($source, $entity, $target, $value, $mapping) {
+function youtube_set_target(FeedsSource $source, $entity, $target, $value, array $mapping) {
   if (empty($value)) {
     return;
   }

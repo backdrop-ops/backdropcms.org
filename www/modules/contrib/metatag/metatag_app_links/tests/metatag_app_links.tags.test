@@ -4,6 +4,8 @@
  * Tests that each of the Metatag App Links tags work correctly.
  */
 
+include_once __DIR__ . '/metatag.tags.test';
+
 class MetatagAppLinksTagsTest extends MetatagTagsTestBase {
 
   /**

@@ -4,6 +4,8 @@
  * Tests for the Metatag Verification module.
  */
 
+include_once __DIR__ . '/../../tests/metatag.helper.test';
+
 class MetatagVerificationTest extends MetatagTestHelper {
 
   /**

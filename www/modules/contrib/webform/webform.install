@@ -1471,3 +1471,10 @@ function webform_update_1607() {
   $config->clear('webform_email_replyto');
   $config->save();
 }
+
+/**
+ * Clear cache for new link component.
+ */
+function webform_update_1608() {
+  backdrop_flush_all_caches();
+}

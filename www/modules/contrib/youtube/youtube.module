@@ -3,6 +3,7 @@
  * @file
  * Youtube field module adds a field for YouTube videos.
  */
+
 require_once (dirname(__FILE__) . '/youtube.inc');
 
 /**
@@ -117,7 +118,7 @@ function youtube_settings_form($form) {
     '#default_value' => config_get('youtube.settings', 'youtube_player_class'),
     '#description' => t('The iframe of every player will be given this class. They will also be given IDs based off of this value.'),
   );
-  // Add a submit button
+  // Add a submit button.
   $form['actions']['#type'] = 'actions';
   $form['actions']['submit'] = array(
     '#type' => 'submit',
@@ -133,16 +134,16 @@ function youtube_settings_form($form) {
 function youtube_settings_form_submit($form, &$form_state) {
   $config = config('youtube.settings');
   $values = $form_state['values'];
-  $config->set('youtube_suggest', (bool)$values['youtube_suggest']);
-  $config->set('youtube_modestbranding', (bool)$values['youtube_modestbranding']);
-  $config->set('youtube_theme', (bool)$values['youtube_theme']);
-  $config->set('youtube_color', (bool)$values['youtube_color']);
-  $config->set('youtube_enablejsapi', (bool)$values['youtube_enablejsapi']);
-  $config->set('youtube_wmode', (bool)$values['youtube_wmode']);
+  $config->set('youtube_suggest', (bool) $values['youtube_suggest']);
+  $config->set('youtube_modestbranding', (bool) $values['youtube_modestbranding']);
+  $config->set('youtube_theme', (bool) $values['youtube_theme']);
+  $config->set('youtube_color', (bool) $values['youtube_color']);
+  $config->set('youtube_enablejsapi', (bool) $values['youtube_enablejsapi']);
+  $config->set('youtube_wmode', (bool) $values['youtube_wmode']);
   $config->set('youtube_thumb_dir', $values['youtube_thumb_dir']);
-  $config->set('youtube_thumb_hires', (bool)$values['youtube_thumb_hires']);
+  $config->set('youtube_thumb_hires', (bool) $values['youtube_thumb_hires']);
   $config->set('youtube_player_class', $values['youtube_player_class']);
-  $config->set('youtube_privacy', (bool)$values['youtube_privacy']);
+  $config->set('youtube_privacy', (bool) $values['youtube_privacy']);
   $config->save();
   backdrop_set_message(t('The configuration options have been saved.'));
 }
@@ -167,7 +168,7 @@ function youtube_field_info() {
 /**
  * Callback to alter the property info of youtube fields.
  *
- * @see hook_field_info().
+ * @see hook_field_info()
  */
 function youtube_property_info_callback(&$info, $entity_type, $field, $instance, $field_type) {
   $name = $field['field_name'];
@@ -233,8 +234,8 @@ function youtube_field_is_empty($item, $field) {
  * Implements hook_field_formatter_info().
  */
 function youtube_field_formatter_info() {
-  $formatters =  array(
-    // This formatter displays your youtube video.
+  $formatters = array(
+    // This formatter displays your YouTube video.
     'youtube_video' => array(
       'label' => t('YouTube video'),
       'field types' => array('youtube'),
@@ -460,8 +461,9 @@ function youtube_field_formatter_view($entity_type, $entity, $field, $instance, 
         $element[$delta] = array(
           '#theme' => 'youtube_video',
           '#video_id' => $item['video_id'],
+          '#video_start_time' => youtube_get_start_time($item['input']),
           '#entity_title' => !empty($entity->title) ? check_plain($entity->title) : NULL,
-          '#size' => array_key_exists('youtube_size', $display['settings']) ? $display['settings']['youtube_size']: NULL,
+          '#size' => array_key_exists('youtube_size', $display['settings']) ? $display['settings']['youtube_size'] : NULL,
           '#width' => array_key_exists('youtube_width', $display['settings']) ? $display['settings']['youtube_width'] : NULL,
           '#height' => array_key_exists('youtube_height', $display['settings']) ? $display['settings']['youtube_height'] : NULL,
           '#autoplay' => array_key_exists('youtube_autoplay', $display['settings']) ? $display['settings']['youtube_autoplay'] : FALSE,
@@ -494,7 +496,8 @@ function youtube_field_formatter_view($entity_type, $entity, $field, $instance, 
       }
 
       foreach ($items as $delta => $item) {
-        // If the thumbnail is linked to it's youtube page, take the original url.
+        // If the thumbnail is linked to it's YouTube page, take the original
+        // url.
         if (!empty($link_youtube)) {
           $uri = array(
             'path' => $item['input'],
@@ -532,7 +535,7 @@ function youtube_field_formatter_view($entity_type, $entity, $field, $instance, 
             '#options' => array(
               'attributes' => array(
                 'class' => array('youtube-url'),
-                'id'    => drupal_html_class($item['video_id']),
+                'id'    => backdrop_html_class($item['video_id']),
               ),
               'html'       => TRUE,
             ),
@@ -567,7 +570,13 @@ function youtube_field_widget_info() {
  * Implements hook_field_widget_form().
  */
 function youtube_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
-  $value = isset($items[$delta]['input']) ? $items[$delta]['input'] : '';
+  if (isset($items[$delta]['input'])) {
+    $value = $items[$delta]['input'];
+    $start_time = youtube_get_start_time($value);
+  }
+  else {
+    $value = '';
+  }
 
   $element['input'] = $element + array(
     '#type' => 'textfield',
@@ -579,7 +588,19 @@ function youtube_field_widget_form(&$form, &$form_state, $field, $instance, $lan
 
   // Add our own description if one is not provided by the UI.
   if ($element['#description'] == '') {
-    $element['input']['#description'] = t('Valid URL formats include: http://www.youtube.com/watch?v=1SqBdS0XkV4 and http://youtu.be/1SqBdS0XkV4');
+    // Define example URLs.
+    $url_examples = array(
+      'https://www.youtube.com/watch?v=1SqBdS0XkV4&t=120',
+      'https://youtube.com/live/1SqBdS0XkV4',
+      'https://youtu.be/1SqBdS0XkV4&t=1h30m20s',
+    );
+    // Combine into an unordered (bullet points) list.
+    $url_list = '<ul>';
+    foreach ($url_examples as $url) {
+      $url_list .= "<li>$url</li>";
+    }
+    $url_list .= '</ul>';
+    $element['input']['#description'] = t('Valid URL formats include:') . $url_list;
   }
 
   if (isset($items[$delta]['video_id'])) {
@@ -589,8 +610,44 @@ function youtube_field_widget_form(&$form, &$form_state, $field, $instance, $lan
       '#suffix' => '</div>',
       '#weight' => 1,
     );
-  }
 
+  }
+  if (isset($start_time) && $start_time > 0) {
+    // Extract hours.
+    $hours = floor($start_time / (60 * 60));
+    // Extract minutes.
+    $divisor_for_minutes = $start_time % (60 * 60);
+    $minutes = floor($divisor_for_minutes / 60);
+    // Extract the remaining seconds.
+    $divisor_for_seconds = $divisor_for_minutes % 60;
+    $seconds = ceil($divisor_for_seconds);
+    // Compile to a string in the format hh:mm:ss.
+    $start_time_string = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+    $element['video_start_time'] = array(
+      '#prefix' => '<div class="youtube-video-start-time">',
+      '#markup' => t('YouTube video start time: !video_start_time', array(
+        '!video_start_time' => $start_time_string,
+      )),
+      '#suffix' => '</div>',
+      '#weight' => 1,
+    );
+  }
+  // If Video ID, and optionally start time, are shown, show text to explain
+  // that values will be updated after the node is saved.
+  if (isset($element['video_id'])) {
+    if (isset($element['video_start_time'])) {
+      $explainer_text = t('Video ID and start time will reflect any changes in the URL after the form is saved.');
+    }
+    else {
+      $explainer_text = t('Video ID will reflect any changes in the URL after the form is saved.');
+    }
+    $element['video_info_explainer'] = array(
+      '#prefix' => '<div class="youtube-video-explainer">',
+      '#markup' => $explainer_text,
+      '#suffix' => '</div>',
+      '#weight' => 1.5,
+    );
+  }
   return $element;
 }
 
@@ -653,13 +710,14 @@ function youtube_theme($existing, $type, $theme, $path) {
         'video_id' => NULL,
         'entity_title' => NULL,
         'image_style' => NULL,
-        'image_link' => NULL
+        'image_link' => NULL,
       ),
       'file' => 'youtube.theme.inc',
     ),
     'youtube_video' => array(
       'variables' => array(
         'video_id' => NULL,
+        'video_start_time' => NULL,
         'entity_title' => NULL,
         'size' => NULL,
         'width' => NULL,

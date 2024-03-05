@@ -4,6 +4,8 @@
  * Tests for the Search API integration.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 /**
  * Class for testing the Search API integration.
  */

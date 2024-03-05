@@ -33,7 +33,7 @@ $(document).ready(function() {
           // Keep the internal URL for Google Analytics website overlay intact.
           // @todo: May require tracking ID
           var target = this;
-          $.each(backdropSettings.google_analytics.account, function () {
+          $.each(Backdrop.settings.google_analytics.account, function () {
             gtag('config', this, {
               page_path: Backdrop.googleanalytics.getPageUrl(target.href),
               transport_type: 'beacon'
@@ -67,7 +67,7 @@ $(document).ready(function() {
   // Track hash changes as unique pageviews, if this option has been enabled.
   if (Backdrop.settings.googleanalytics.trackUrlFragments) {
     window.onhashchange = function() {
-      $.each(backdropSettings.google_analytics.account, function () {
+      $.each(Backdrop.settings.google_analytics.account, function () {
         gtag('config', this, {
           page_path: location.pathname + location.search + location.hash
         });
@@ -81,7 +81,7 @@ $(document).ready(function() {
     $(document).bind("cbox_complete", function () {
       var href = $.colorbox.element().attr("href");
       if (href) {
-        $.each(backdropSettings.google_analytics.account, function () {
+        $.each(Backdrop.settings.google_analytics.account, function () {
           gtag('config', this, {
             page_path: Backdrop.googleanalytics.getPageUrl(href)
           });

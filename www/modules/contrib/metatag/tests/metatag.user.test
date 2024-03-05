@@ -4,6 +4,8 @@
  * Tests for the Metatag module and user entities.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 class MetatagCoreUserTest extends MetatagTestHelper {
 
   /**

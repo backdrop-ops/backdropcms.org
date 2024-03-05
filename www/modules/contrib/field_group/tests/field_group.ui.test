@@ -10,6 +10,9 @@
  */
 class GroupTestCase extends BackdropWebTestCase {
   protected $admin_user;
+  protected $group_label;
+  protected $group_name;
+  protected $group_name_input;
 
   function setUp() {
     $modules[] = 'node';
@@ -353,7 +356,6 @@ class GroupDisplayTestCase extends GroupTestCase {
     $this->assertFieldByXPath("//div[contains(@class, 'test-class-wrapper')]", NULL, t('Test class set on tabs wrapper'));
     $this->assertFieldByXPath("//fieldset[contains(@class, 'test-class-2')]", NULL, t('Test class set on second tab'));
     $this->assertRaw('<div class="fieldset-description">description of second tab</div>', t('Description of tab is shown'));
-    $this->assertRaw('class="collapsible collapsed test-class-2', t('Second tab is default collapsed'));
 
     // Test if correctly nested
     $this->assertFieldByXPath("//div[contains(@class, 'test-class-wrapper')]//fieldset[contains(@class, 'test-class')]", NULL, 'First tab is displayed as child of the wrapper.');
@@ -429,7 +431,6 @@ class GroupDisplayTestCase extends GroupTestCase {
     $this->assertFieldByXPath("//div[contains(@class, 'test-class-wrapper')]", NULL, t('Test class set on tabs wrapper'));
     $this->assertFieldByXPath("//fieldset[contains(@class, 'test-class-2')]", NULL, t('Test class set on second tab'));
     $this->assertRaw('<div class="fieldset-description">description of second tab</div>', t('Description of tab is shown'));
-    $this->assertRaw('class="collapsible collapsed test-class-2', t('Second tab is default collapsed'));
 
     // Test if correctly nested
     $this->assertFieldByXPath("//div[contains(@class, 'test-class-wrapper')]//fieldset[contains(@id, '$first_tab_id')]", NULL, 'First tab is displayed as child of the wrapper.');
@@ -528,6 +529,7 @@ class GroupDisplayTestCase extends GroupTestCase {
         'instance_settings' => array(
           'required_fields' => 0,
           'id' => 'detail-id',
+          'label_element' => 'strong',
           'classes' => 'test-class',
           'description' => 'description of details',
         ),
@@ -544,7 +546,7 @@ class GroupDisplayTestCase extends GroupTestCase {
     $this->assertFieldByXPath("//details[contains(@class, 'test-class')]", NULL, t('Test class set on details') . ' class="' . $group->group_name . ' test-class');
 
     // Test group label.
-    $this->assertRaw('<summary><span>' . $data['label'] . '</span></summary>', t('Label is shown'));
+    $this->assertRaw('<summary><span><strong>' . $data['label'] . '</strong></span></summary>', t('Label is shown'));
     $this->assertRaw('<div class="details-content-wrapper">description of details</div>', t('Description of details is shown'));
 
     $this->assertFieldByXPath("//details[contains(@open, '1')]", NULL, t('Open attribute is set'));

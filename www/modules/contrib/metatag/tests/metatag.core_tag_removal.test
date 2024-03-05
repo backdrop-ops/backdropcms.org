@@ -4,6 +4,8 @@
  * Tests for the Metatag module to ensure removal of core tags works correctly.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 class MetatagCoreTagRemovalTest extends MetatagTestHelper {
 
   /**
@@ -26,6 +28,9 @@ class MetatagCoreTagRemovalTest extends MetatagTestHelper {
     $xpath = $this->xpath("//meta[@name='generator']");
     $this->assertEqual(count($xpath), 1, 'Exactly one generator meta tag found.');
     $this->assertEqual($xpath[0]['content'], $generator_global);
+
+    // Confirm the Generator tag is also added as an HTTP header.
+    $this->assertEqual($this->backdropGetHeader('X-Generator'), $generator_global, 'X-Generator HTTP header added.');
 
     // Update the global config to remove the 'generator' value.
     $config = metatag_config_load('global');
@@ -65,6 +70,9 @@ class MetatagCoreTagRemovalTest extends MetatagTestHelper {
     $xpath = $this->xpath("//meta[@name='Generator']");
     $this->assertEqual(count($xpath), 1, 'Exactly one generator meta tag found.');
     $this->assertEqual($xpath[0]['content'], $generator_core);
+
+    // Check that core's X-Generator header is the default.
+    $this->assertEqual($this->backdropGetHeader('X-Generator'), $generator_core, 'Default X-Generator HTTP header set.');
   }
 
 }

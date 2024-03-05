@@ -9,10 +9,10 @@
  *
  * Alters and adds tokens for each youtube field.
  *
- * @param $data
+ * @param array $data
  *   The associative array of token definitions from hook_token_info().
  */
-function youtube_token_info_alter(&$data) {
+function youtube_token_info_alter(array &$data) {
   // Get all youtube fields. Gather entity_type and bundle information.
   $fields = field_info_fields();
   $youtube_fields = array();
@@ -34,13 +34,13 @@ function youtube_token_info_alter(&$data) {
     if (isset($data['tokens'][$field['entity_type']])) {
       $field_info = field_info_instance($field['entity_type'], $field['field_name'], $field['bundle']);
       $field_label = $field_info['label'];
-  
+
       // Modify the default field token.
       $data['tokens'][$field['entity_type']][$field['field_name']] = array(
         'name' => $field_label . t(": Default"),
         'description' => t("The YouTube video field value's Default (or Token if exists) view mode output."),
       );
-  
+
       // Add two new tokens.
       $data['tokens'][$field['entity_type']][$field['field_name'] . '__youtube_video_url'] = array(
         'name' => $field_label . t(": Video URL"),
@@ -59,28 +59,28 @@ function youtube_token_info_alter(&$data) {
  *
  * Replaces youtube_video_url and youtube_image_url tokens.
  *
- * @param $type
+ * @param string $type
  *   The machine-readable name of the type (group) of token being replaced, such
  *   as 'node', 'user', or another type defined by a hook_token_info()
  *   implementation.
- * @param $tokens
+ * @param array $tokens
  *   An array of tokens to be replaced. The keys are the machine-readable token
  *   names, and the values are the raw [type:token] strings that appeared in the
  *   original text.
- * @param $data
+ * @param array $data
  *   (optional) An associative array of data objects to be used when generating
  *   replacement values, as supplied in the $data parameter to token_replace().
- * @param $options
+ * @param array $options
  *   (optional) An associative array of options for token replacement; see
  *   token_replace() for possible values.
  *
- * @return
+ * @return array
  *   An associative array of replacement values, keyed by the raw [type:token]
  *   strings from the original text.
  *
  * @see youtube_tokens_info_alter()
  */
-function youtube_tokens($type, $tokens, array $data = array(), array $options = array()) {
+function youtube_tokens($type, array $tokens, array $data = array(), array $options = array()) {
   $url_options = array('absolute' => TRUE);
   if (isset($options['language'])) {
     $url_options['language'] = $options['language'];

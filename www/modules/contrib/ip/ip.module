@@ -37,6 +37,7 @@ function ip_permission() {
  * Implements hook_user_login().
  */
 function ip_user_login(&$edit, $account) {
+  _ip_demasquerade($account);
   ip_tracker_user_save($account->uid);
 }
 
@@ -47,7 +48,32 @@ function ip_user_insert($account) {
   global $user;
   // Track anonymous registration (Do not track administration account creation).
   if (empty($user->uid) || $user->uid == $account->uid) {
+    _ip_demasquerade($account);
     ip_tracker_user_save($account->uid);
+  }
+}
+
+/**
+ * If the account is masquerading as another via the Masquerade module, set
+ * $account to the real account.
+ */
+function _ip_demasquerade(&$account) {
+  if (module_exists('masquerade')) {
+    // If the user is masquerading as $account, get the real user from the
+    // {masquerade} table. In case multiple users are masquerading as the same
+    // user, match on on the current user's IP address, which we get from the
+    // {sessions} table.
+    $uid_from = db_query('
+      SELECT m.uid_from
+      FROM {masquerade} m
+      JOIN {sessions} s ON s.sid = m.sid
+      WHERE m.uid_as = :uid_as
+      AND s.hostname = :ip_address
+      ', array(':uid_as' => $account->uid, ':ip_address' => ip_address()))
+      ->fetchField();
+    if ($uid_from) {
+      $account = user_load($uid_from);
+    }
   }
 }
 

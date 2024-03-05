@@ -5,6 +5,8 @@
  * Tests Metatag module to ensure there are no XSS scripting vulnerabilities.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 /**
  * MetatagCoreXSSTest extends MetatagTestHelper.
  */

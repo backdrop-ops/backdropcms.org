@@ -3,6 +3,9 @@
  * @file
  * Tests that each of the Metatag OpenGraph tags work correctly.
  */
+
+include_once __DIR__ . '/../../tests/metatag.tags.test';
+
 class MetatagOpenGraphTagsTest extends MetatagTagsTestBase {
 
   /**

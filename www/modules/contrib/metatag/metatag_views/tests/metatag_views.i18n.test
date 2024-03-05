@@ -4,6 +4,8 @@
  * Tests for the Metatag module for the direct Views integration.
  */
 
+include_once __DIR__ . '/../../tests/metatag.helper.test';
+
 class MetatagViewsI18nTest extends MetatagTestHelper {
   /**
    * {@inheritdoc}

@@ -4,6 +4,8 @@
  * Tests that each of the Metatag Verification tags work correctly.
  */
 
+include_once __DIR__ . '/../../tests/metatag.tags.test';
+
 class MetatagVerificationTagsTest extends MetatagTagsTestBase {
 
   /**

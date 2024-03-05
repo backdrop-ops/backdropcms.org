@@ -4,6 +4,8 @@
  * Tests for the Metatag module to ensure image handling doesn't break.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 class MetatagCoreImageTest extends MetatagTestHelper {
   /**
    * {@inheritdoc}

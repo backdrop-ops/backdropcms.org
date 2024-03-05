@@ -2129,11 +2129,11 @@ function metatag_preprocess_page(&$variables) {
             // Account for multi-valued tags.
             if (!isset($data['#tag']) && !empty($data[0])) {
               foreach($data as $delta => $subdata) {
-                backdrop_add_html_head($subdata, $tag . '-' . $delta);
+                backdrop_add_html_head($subdata, 'metatag_' . $tag . '-' . $delta);
               }
             }
             else {
-              backdrop_add_html_head($data, $tag);
+              backdrop_add_html_head($data, 'metatag_' . $tag);
             }
           }
         }
@@ -2229,9 +2229,12 @@ function metatag_html_head_alter(&$elements) {
     // Examine the other meta tags to see if we have any duplicates.
     foreach ($closer_inspection as $key => $data) {
       // Check attributes.
-      if (isset($closer_inspection[$key]['#attributes'])) {
-        foreach ($closer_inspection[$key]['#attributes'] as $attr_key => $attr_value) {
-          $attr_value = strtolower($attr_value); // Account for G in generator.
+      if (isset($data['#attributes'])) {
+        foreach ($data['#attributes'] as $attr_key => $attr_value) {
+          // Account for "G" in "generator" in string comparisons.
+          if (is_string($attr_value)) {
+            $attr_value = strtolower($attr_value);
+          }
           // Only hide the metatag if it's one we care about.
           if (in_array($attr_key, $metatag_attrs) && in_array($attr_value, $core_tags)) {
             // Only hide metatag if another is provided.

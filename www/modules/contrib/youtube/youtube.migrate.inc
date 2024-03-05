@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * YouTube Field support for use with the migrate module.
@@ -16,6 +15,9 @@ function youtube_migrate_api() {
   return $api;
 }
 
+/**
+ * {@inheritdoc}
+ */
 class MigrateYoutubeFieldHandler extends MigrateFieldHandler {
 
   /**
@@ -35,23 +37,23 @@ class MigrateYoutubeFieldHandler extends MigrateFieldHandler {
    * @return array
    *   An array of the defined variables in this scope.
    */
-  static function arguments($input = NULL) {
+  static public function arguments($input = NULL) {
     return get_defined_vars();
   }
 
   /**
    * Implementation of MigrateFieldHandler::fields().
    *
-   * @param $type
+   * @param string $type
    *   The field type.
-   * @param $instance
+   * @param array $instance
    *   Instance info for the field.
    * @param Migration $migration
    *   The migration context for the parent field. We can look at the mappings
    *   and determine which subfields are relevant.
    * @return array
    */
-  public function fields($type, $instance, $migration = NULL) {
+  public function fields($type, array $instance, Migration $migration = NULL) {
     return array(
       'input' => t('Subfield: The full YouTube video URL'),
     );
@@ -72,7 +74,7 @@ class MigrateYoutubeFieldHandler extends MigrateFieldHandler {
    * @return array|null
    *   An array of YouTube fields.
    */
-  public function prepare($entity, array $field_info, array $instance, array $values) {
+  public function prepare(object $entity, array $field_info, array $instance, array $values) {
     if (isset($values['arguments'])) {
       $arguments = $values['arguments'];
       unset($values['arguments']);

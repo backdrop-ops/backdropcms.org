@@ -36,7 +36,7 @@ $(document).ready(function() {
         else if (Backdrop.googleanalytics.isInternalSpecial(this.href)) {
           // Keep the internal URL for Google Analytics website overlay intact.
           console.info("Click on internal special link '%s' has been tracked.", Backdrop.googleanalytics.getPageUrl(this.href));
-          gtag('config', backdropSettings.google_analytics.account, {
+          gtag('config', Backdrop.settings.google_analytics.account, {
             page_path: Backdrop.googleanalytics.getPageUrl(this.href),
             transport_type: 'beacon'
           });
@@ -80,7 +80,7 @@ $(document).ready(function() {
   if (Backdrop.settings.googleanalytics.trackUrlFragments) {
     window.onhashchange = function() {
       console.info("Track URL '%s' as pageview. Hash '%s' has changed.", location.pathname + location.search + location.hash, location.hash);
-      gtag('config', backdropSettings.google_analytics.account, {
+      gtag('config', Backdrop.settings.google_analytics.account, {
         page_path: location.pathname + location.search + location.hash
       });
     };
@@ -93,7 +93,7 @@ $(document).ready(function() {
       var href = $.colorbox.element().attr("href");
       if (href) {
         console.info("Colorbox transition to url '%s' has been tracked.", Backdrop.googleanalytics.getPageUrl(href));
-        gtag('config', backdropSettings.google_analytics.account, {
+        gtag('config', Backdrop.settings.google_analytics.account, {
           page_path: Backdrop.googleanalytics.getPageUrl(href)
         });
       }

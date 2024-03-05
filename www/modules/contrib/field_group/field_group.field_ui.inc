@@ -9,6 +9,14 @@
 /**
  * Helper function to get the form parameters to use while
  * building the fields and display overview form.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param bool $display_overview
+ *   Set to TRUE to get display overview form parameters.
+ *
+ * @return object
+ *   Group parameters.
  */
 function field_group_field_ui_form_params($form, $display_overview) {
 
@@ -41,7 +49,16 @@ function field_group_field_ui_form_params($form, $display_overview) {
 }
 
 /**
- * Function to alter the fields overview and display overview screen.
+ * Alter the fields overview and display overview screen.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form, which is passed
+ *   by reference.
+ * @param array $form_state
+ *   An associative array containing the current state of the form, which is
+ *   passed by reference.
+ * @param bool $display_overview
+ *   Set to TRUE if altering the display overview.
  */
 function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display_overview = FALSE) {
 
@@ -297,34 +314,18 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
   $form['#validate'][] = 'field_group_field_overview_validate';
   $form['#submit'][] = 'field_group_field_overview_submit';
 
-  // Create the settings for fieldgroup as vertical tabs (merged with DS).
+  // Create the settings for fieldgroup as vertical tabs.
   field_group_field_ui_create_vertical_tabs($form, $form_state, $params);
 
   // Show a warning if the user has not set up required containers
   if ($form['#groups']) {
 
-    $parent_requirements = array(
-      'multipage' => array(
-        'parent' => 'multipage-group',
-        'message' => 'Each Multipage element needs to have a parent Multipage group element.',
-      ),
-      'htab' => array(
-        'parent' => 'htabs',
-        'message' => 'Each Horizontal tab element needs to have a parent Horizontal tabs group element.',
-      ),
-      'accordion-item' => array(
-        'parent' => 'accordion',
-        'message' => 'Each Accordion item element needs to have a parent Accordion group element.',
-      ),
+    $parent_requirements = array();
+    $context = array(
+      'form' => $form,
+      'display_overview' => $display_overview,
     );
-
-    // On display overview tabs need to be checked.
-    if ($display_overview) {
-      $parent_requirements['tab'] = array(
-        'parent' => 'tabs',
-        'message' => 'Each Vertical tab element needs to have a parent Vertical tabs group element.',
-      );
-    }
+    backdrop_alter('field_group_field_ui_parent_requirements', $parent_requirements, $context);
 
     foreach ($form['#groups'] as $group_name) {
       $group_check = field_group_load_field_group($group_name, $params->entity_type, $params->bundle, $params->mode);
@@ -339,6 +340,12 @@ function field_group_field_ui_overview_form_alter(&$form, &$form_state, $display
 
 /**
  * Return an array of field_group_formatter options.
+ *
+ * @param string $type
+ *   Name of field group type.
+ *
+ * @return array
+ *   Array of field group formatter options.
  */
 function field_group_field_formatter_options($type) {
   $options = &backdrop_static(__FUNCTION__);
@@ -355,6 +362,13 @@ function field_group_field_formatter_options($type) {
 
 /**
  * Helper function to add a row in the overview forms.
+ *
+ * @param string $name
+ *   Machine name.
+ * @param array $parent_options
+ *   An array of field group parents.
+ * @param object $params
+ *   Group parameters.
  */
 function field_group_add_row($name, $parent_options, $params) {
   return array(
@@ -423,7 +437,12 @@ function field_group_add_row($name, $parent_options, $params) {
 
 /**
  * Creates a form for field_group formatters.
- * @param Object $group The FieldGroup object.
+ *
+ * @param object $group
+ *   The Field Group object, which is passed by reference.
+ *
+ * @return array
+ *   An associative array containing the structure of the form.
  */
 function field_group_format_settings_form(&$group) {
   $form = array();
@@ -435,6 +454,9 @@ function field_group_format_settings_form(&$group) {
     '#element_validate' => array('field_group_format_settings_label_validate'),
   );
   $addition = module_invoke_all('field_group_format_settings', $group);
+
+  backdrop_alter('field_group_format_settings', $addition, $group);
+
   $form += $addition;
   // Give fieldgroup implementations the chance to alter the description.
   if (!empty($addition['label']['#description'])) {
@@ -446,6 +468,11 @@ function field_group_format_settings_form(&$group) {
 
 /**
  * Validate the label. Label is required for fieldsets that are collapsible.
+ *
+ * @param array $element
+ *
+ * @param array $form_state
+ *   An associative array containing the current state of the form.
  */
 function field_group_format_settings_label_validate($element, &$form_state) {
 
@@ -464,12 +491,15 @@ function field_group_format_settings_label_validate($element, &$form_state) {
 
 /**
  * Update the row so that the group variables are updated.
- * The rendering of the elements needs the updated defaults.
- * @param Object $group
+ *   The rendering of the elements needs the updated defaults.
+ *
+ * @param object $group
+ *   Group definition, passed by reference.
  * @param array $settings
+ *   Configuration settings.
  */
-function field_group_formatter_row_update(& $group, $settings) {
-  // if the row has changed formatter type, update the group object
+function field_group_formatter_row_update(&$group, $settings) {
+  // If the row has changed formatter type, update the group object.
   if (!empty($settings['format']['type']) && $settings['format']['type'] != $group->format_type) {
     $group->format_type = $settings['format']['type'];
     field_group_formatter_settings_update($group, $settings);
@@ -478,12 +508,15 @@ function field_group_formatter_row_update(& $group, $settings) {
 
 /**
  * Update handler for field_group configuration settings.
- * @param Object $group The group object
- * @param Array $settings Configuration settings
+ *
+ * @param object $group
+ *   The group definition object.
+ * @param array $settings
+ *   Configuration settings
  */
-function field_group_formatter_settings_update(& $group, $settings) {
+function field_group_formatter_settings_update(&$group, $settings) {
 
-  // for format changes we load the defaults.
+  // For format changes we load the defaults.
   if (empty($settings['format_settings']['settings'])) {
     $mode = $group->mode == 'form' ? 'form' : 'display';
     $group->format_settings = _field_group_get_default_formatter_settings($group->format_type, $mode);
@@ -497,9 +530,14 @@ function field_group_formatter_settings_update(& $group, $settings) {
 
 /**
  * Creates a summary for the field format configuration summary.
- * @param String $group_name The name of the group
- * @param Object $group The group object
- * @return Array ready to be rendered.
+ *
+ * @param string $group_name
+ *   The name of the group.
+ * @param object $group
+ *   The group definition.
+ *
+ * @return array
+ *   Array of summary ready to be rendered.
  */
 function field_group_format_settings_summary($group_name, $group) {
   $summary = implode('<br />', module_invoke_all('field_group_format_summary', $group));
@@ -511,8 +549,12 @@ function field_group_format_settings_summary($group_name, $group) {
 
 /**
  * Returns the region to which a row in the 'Manage fields' screen belongs.
- * @param Array $row A field or field_group row
- * @return String the current region.
+ *
+ * @param array $row
+ *   A field or field_group row.
+ *
+ * @return string
+ *   The current region.
  */
 function field_group_field_overview_row_region($row) {
   switch ($row['#row_type']) {
@@ -530,8 +572,12 @@ function field_group_field_overview_row_region($row) {
 
 /**
  * Returns the region to which a row in the 'Manage display' screen belongs.
- * @param Array $row A field or field_group row
- * @return String the current region.
+ *
+ * @param array $row
+ *   A field or field_group row.
+ *
+ * @return string
+ *  The current region.
  */
 function field_group_display_overview_row_region($row) {
   switch ($row['#row_type']) {
@@ -550,11 +596,11 @@ function field_group_display_overview_row_region($row) {
 /**
  * Render API callback: Checks if a group machine name is taken.
  *
- * @param $value
+ * @param string $value
  *   The machine name, not prefixed with 'group_'.
  *
- * @return
- *   Whether or not the group machine name is taken.
+ * @return bool
+ *   Always FALSE.
  *
  * @todo
  *   This callback can only check the name globally without context.
@@ -568,8 +614,11 @@ function field_group_display_overview_row_region($row) {
 
 /**
  * Validate handler for the overview screens.
- * @param Array $form The complete form.
- * @param Array $form_state The state of the form.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param array $form_state
+ *   The state of the form.
  */
 function field_group_field_overview_validate($form, &$form_state) {
   $form_values = $form_state['values']['fields'];
@@ -614,8 +663,11 @@ function field_group_field_overview_validate($form, &$form_state) {
 
 /**
  * Submit handler for the overview screens.
- * @param Array $form The complete form.
- * @param Array $form_state The state of the form.
+ *
+ * @param array $form
+ *   The complete form.
+ * @param array $form_state
+ *   The state of the form.
  */
 function field_group_field_overview_submit($form, &$form_state) {
 
@@ -712,8 +764,11 @@ function field_group_field_overview_submit($form, &$form_state) {
 
 /**
  * Validate the entered css class from the submitted format settings.
- * @param Array $element The validated element
- * @param Array $form_state The state of the form.
+ *
+ * @param array $element
+ *   The validated element.
+ * @param array $form_state
+ *   The state of the form.
  */
 function field_group_validate_css_class($element, &$form_state) {
   if (!empty($form_state['values']['fields'][$form_state['formatter_settings_edit']]['format_settings']['settings']['instance_settings']['classes']) && !preg_match('!^[A-Za-z0-9-_ ]+$!', $form_state['values']['fields'][$form_state['formatter_settings_edit']]['format_settings']['settings']['instance_settings']['classes'])) {
@@ -723,8 +778,11 @@ function field_group_validate_css_class($element, &$form_state) {
 
 /**
  * Validate the entered id attribute from the submitted format settings.
- * @param Array $element The validated element
- * @param Array $form_state The state of the form.
+ *
+ * @param array $element
+ *   The validated element.
+ * @param array $form_state
+ *   The state of the form.
  */
 function field_group_validate_id($element, &$form_state) {
   if (!empty($form_state['values']['fields'][$form_state['formatter_settings_edit']]['format_settings']['settings']['instance_settings']['id']) && !preg_match('!^[A-Za-z0-9-_]+$!', $form_state['values']['fields'][$form_state['formatter_settings_edit']]['format_settings']['settings']['instance_settings']['id'])) {
@@ -745,6 +803,19 @@ function field_group_field_info_max_weight($entity_type, $bundle, $context) {
 
 /**
  * Menu callback; present a form for removing a group.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param array $form_state
+ *   An associative array containing the current state of the form, which is
+ *   passed by reference.
+ * @param object $group
+ *   A group definition.
+ * @param string $view_mode
+ *   The display mode.
+ *
+ * @return array
+ *   A form render array.
  */
 function field_group_delete_form($form, &$form_state, $group, $view_mode = 'form') {
 
@@ -770,7 +841,13 @@ function field_group_delete_form($form, &$form_state, $group, $view_mode = 'form
 /**
  * Remove group from bundle.
  *
- * @todo we'll have to reset all view mode settings - that will be fun :)
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param array $form_state
+ *   An associative array containing the current state of the form, which is
+ *   passed by reference.
+ *
+ * @todo we'll have to reset all view mode settings.
  */
 function field_group_delete_form_submit($form, &$form_state) {
 
@@ -793,6 +870,14 @@ function field_group_delete_form_submit($form, &$form_state) {
 
 /**
  * Create vertical tabs.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form, which is passed
+ *   by reference.
+ * @param array $form_state
+ *   An associative array containing the current state of the form.
+ * @param object $params
+ *   Group parameters.
  */
 function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params) {
 
@@ -859,13 +944,20 @@ function field_group_field_ui_create_vertical_tabs(&$form, &$form_state, $params
 
 /**
  * Validate handler to validate saving existing fieldgroups from one view mode or form to another.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param array $form_state
+ *   An associative array containing the current state of the form, which is
+ *   passed by reference.
  */
 function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
 
   $source_mode = $form_state['#source_mode'] = $form_state['values']['additional_settings']['fieldgroup_clone'] == '0' ? 'form' : $form_state['values']['additional_settings']['fieldgroup_clone'];
-  $groups_to_clone = $form_state['#groups_to_clone'] = field_group_read_groups(array('bundle' => $form_state['field_group_params']->bundle, 'entity_type' => $form_state['field_group_params']->entity_type));
+  $groups_to_clone = $form_state['#groups_to_clone'] = field_group_read_groups(array('bundle' => $form_state['field_group_params']->bundle, 'entity_type' => $form_state['field_group_params']->entity_type, 'mode' => $source_mode));
 
   $form_state['#source_groups'] = array();
+  // @todo this is probably not necessary since field_group_read_groups already filters by these.
   if (!empty($groups_to_clone) && isset($groups_to_clone[$form_state['field_group_params']->entity_type], $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle], $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode])) {
     $form_state['#source_groups'] = $groups_to_clone[$form_state['field_group_params']->entity_type][$form_state['field_group_params']->bundle][$source_mode];
   }
@@ -874,8 +966,16 @@ function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
   if ($form_state['field_group_params']->mode != 'form') {
     $non_existing_types = array('multipage', 'multipage-group');
   }
-  else {
-    $non_existing_types = array('div');
+
+  if (!empty($form_state['#source_groups'])) {
+    $field_instances = field_info_instances($form_state['field_group_params']->entity_type, $form_state['field_group_params']->bundle);
+    $visible_fields = array();
+    foreach ($field_instances as $field_name => $field_instance) {
+      if ($field_instance['display'][$form_state['field_group_params']->mode]['type'] != 'hidden') {
+        $visible_fields[] = $field_name;
+      }
+    }
+    $form_state['#visible_fields'] = $visible_fields;
   }
 
   foreach ($form_state['#source_groups'] as $key => $group) {
@@ -895,15 +995,18 @@ function field_group_field_ui_clone_field_groups_validate($form, &$form_state) {
 
 /**
  * Submit handler to save existing fieldgroups from one view mode or form to another.
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form.
+ * @param array $form_state
+ *   An associative array containing the current state of the form, which is
+ *   passed by reference.
  */
 function field_group_field_ui_clone_field_groups($form, &$form_state) {
 
-  $source_mode = $form_state['#source_mode'];
-  $groups_to_clone = $form_state['#groups_to_clone'];
-
   $fields = array_keys($form_state['values']['fields']);
-  if (!empty($form_state['#source_groups'])) {
 
+  if (!empty($form_state['#source_groups'])) {
     foreach ($form_state['#source_groups'] as $source_group) {
       if (in_array($source_group->group_name, $fields)) {
         backdrop_set_message(t('Fieldgroup @group is not cloned since a group already exists with the same name.', array('@group' => $source_group->group_name)), 'warning');
@@ -912,7 +1015,7 @@ function field_group_field_ui_clone_field_groups($form, &$form_state) {
 
       // Reset
       $source_group->mode = $form_state['field_group_params']->mode;
-      $source_group->children = array();
+      $source_group->children = array_intersect($source_group->children, $form_state['#visible_fields']);
 
       field_group_group_save($source_group, TRUE);
 

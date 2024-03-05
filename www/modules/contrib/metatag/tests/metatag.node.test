@@ -4,6 +4,8 @@
  * Tests for the Metatag module and node entities.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 class MetatagCoreNodeTest extends MetatagTestHelper {
 
   /**
@@ -126,6 +128,10 @@ class MetatagCoreNodeTest extends MetatagTestHelper {
     $this->assertEqual(count($xpath), 1, 'Exactly one canonical meta tag found.');
     $this->assertEqual($xpath[0]['href'], $new_canonical);
     $this->assertNotEqual($xpath[0]['href'], $old_canonical);
+
+    // Confirm the canonical tag is also added as an HTTP header.
+    $http_link_header = "<$new_canonical>; rel=\"canonical\"";
+    $this->assertEqual($this->backdropGetHeader('Link'), $http_link_header, 'Canonical Link HTTP header set.');
 
     // Try loading the node revisions page.
     $this->backdropGet('node/' . $node->nid . '/revisions');

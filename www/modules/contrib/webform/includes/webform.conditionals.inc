@@ -1544,7 +1544,7 @@ function webform_conditional_operator_string_equal($input_values, $rule_value) {
   foreach ($input_values as $value) {
     // Checkbox values come in as 0 integers for unchecked boxes.
     // Radio values come in as NULL if none of the options are selected.
-    $value = in_array($value, [0, NULL], TRUE) ? '' : $value;
+    $value = in_array($value, array(0, NULL), TRUE) ? '' : $value;
     if (strcasecmp($value, $rule_value) === 0) {
       return TRUE;
     }

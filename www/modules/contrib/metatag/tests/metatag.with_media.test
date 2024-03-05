@@ -4,6 +4,8 @@
  * Tests for the Metatag module for Media integration.
  */
 
+include_once __DIR__ . '/metatag.helper.test';
+
 class MetatagCoreWithMediaTest extends MetatagTestHelper {
 
   /**

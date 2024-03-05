@@ -3,6 +3,9 @@
  * @file
  * Tests for the Metatag Facebook module.
  */
+
+include_once __DIR__ . '/../../tests/metatag.helper.test';
+
 class MetatagFacebookTest extends MetatagTestHelper {
 
   /**

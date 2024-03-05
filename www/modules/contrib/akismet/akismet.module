@@ -2382,7 +2382,7 @@ function akismet_form_user_multiple_cancel_confirm_alter(&$form, &$form_state) {
  */
 function akismet_form_user_multiple_cancel_confirm_submit($form, &$form_state) {
   $uids = array_keys($form_state['accounts']);
-  if (!empty($form_state['values']['akismet']['feedback'])) {
+  if (isset($uids) && !empty($form_state['values']['akismet']['feedback'])) {
     if (akismet_data_report_multiple('user', $uids, $form_state['values']['akismet']['feedback'])) {
       backdrop_set_message(t('The users were successfully reported.'));
     }

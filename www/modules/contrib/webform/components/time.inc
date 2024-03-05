@@ -361,7 +361,7 @@ function _webform_submit_time($component, $value) {
   }
 
   // Convert the value into a ISO 8601 string.
-  return $value['hour'] !== '' ? webform_date_string($value, 'time') : '';
+  return ($value['hour'] ?? '') !== '' ? webform_date_string($value, 'time') : '';
 }
 
 /**
@@ -504,7 +504,7 @@ function _webform_csv_data_time($component, $export_options, $value) {
  *   An array with hour, minute, second, and ampm (if using "12-hour").
  */
 function webform_time_convert($array, $format) {
-  if ($array['hour'] !== '') {
+  if (($array['hour'] ?? '') !== '') {
     if ($format == '12-hour') {
       $array['ampm'] = ($array['hour'] >= 12 && $array['hour'] < 24) ? 'pm' : 'am';
       $array['hour'] = ($array['hour'] > 12 || $array['hour'] == 0) ? abs($array['hour'] - 12) : (int) $array['hour'];

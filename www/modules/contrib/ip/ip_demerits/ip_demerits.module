@@ -21,7 +21,7 @@ function ip_demerits_menu() {
 
   // Admin page (in addition to pages created by Views)
   $items['admin/people/ip-demerits/create'] = array(
-    'title' => 'IP demerits',
+    'title' => 'Add IP demerit',
     'description' => 'Create an IP demerit.',
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('ip_demerits_create_form'),

@@ -54,7 +54,7 @@
  *       // required, Array of available formatter options.
  *       'format_types' => array('open', 'collapsible', 'collapsed'),
  *       // required, String with default value of the style.
-        'default_formatter' => 'collapsible',
+ *       'default_formatter' => 'collapsible',
  *       // optional, Array with key => default_value pairs.
  *       'instance_settings' => array('key' => 'value'),
  *     ),
@@ -68,7 +68,7 @@
  *       // required, Array of available formatter options.
  *       'format_types' => array('open', 'collapsible', 'collapsed'),
  *       // required, String with default value of the style.
-        'default_formatter' => 'collapsible',
+ *       'default_formatter' => 'collapsible',
  *       // optional, Array with key => default_value pairs.
  *       'instance_settings' => array('key' => 'value'),
  *     ),
@@ -76,7 +76,7 @@
  * ),
  * @endcode
  *
- * @return $formatters
+ * @return array
  *   A collection of available formatting html controls for form
  *   and display overview type.
  *
@@ -111,8 +111,10 @@ function hook_field_group_formatter_info() {
  * Defines configuration widget for the settings on a field group
  * formatter. Each formatter can have different elements and storage.
  *
- * @params Object $group The group object.
- * @return Array $form The form element for the format settings.
+ * @param object $group
+ *   The Group definition.
+ * @return array
+ *   The form element for the format settings.
  */
 function hook_field_group_format_settings($group) {
   // Add a wrapper for extra settings to use by others.
@@ -209,7 +211,7 @@ function hook_field_group_format_settings($group) {
  * This function gives you the opportunity to create the given
  * wrapper element that can contain the fields.
  * In the example beneath, some variables are prepared and used when building the
- * actual wrapper element. All elements in backdrop fapi can be used.
+ * actual wrapper element. All elements in Backdrop FAPI can be used.
  *
  * Note that at this point, the field group has no notion of the fields in it.
  *
@@ -217,8 +219,10 @@ function hook_field_group_format_settings($group) {
  * within field_group calls "field_group_pre_render_<format_type>".
  * @see field_group_pre_render_fieldset.
  *
- * @param Array $elements by address.
- * @param Object $group The Field group info.
+ * @param array $elements
+ *   Elements by address.
+ * @param object $group
+ *   The field group info.
  */
 function hook_field_group_pre_render(&$element, $group, &$form) {
 
@@ -226,6 +230,7 @@ function hook_field_group_pre_render(&$element, $group, &$form) {
   $view_mode = isset($form['#view_mode']) ? $form['#view_mode'] : 'form';
   $id = $form['#entity_type'] . '_' . $form['#bundle'] . '_' . $view_mode . '_' . $group->group_name;
 
+  $classes = '';
   // Each formatter type can have whole different set of element properties.
   switch ($group->format_type) {
 
@@ -266,7 +271,7 @@ function hook_field_group_pre_render(&$element, $group, &$form) {
 /**
  * Implements hook_field_group_pre_render().
  *
- * Function that fungates as last resort to alter the pre_render build.
+ * Last resort to alter the pre_render build.
  */
 function hook_field_group_pre_render_alter(&$element, $group, &$form) {
 
@@ -279,11 +284,12 @@ function hook_field_group_pre_render_alter(&$element, $group, &$form) {
 /**
  * Implements hook_field_group_build_pre_render_alter().
  *
- * Function that fungates as last resort where you can alter things. It is
- * expected that when you need this function, you have most likely a very custom
- * case or it is a fix that can be put in field_group core.
+ * Last resort where you can alter things. It is expected that when you need
+ * this function, you have most likely a very custom case or it is a fix that
+ * can be put in field_group core.
  *
- * @param Array $elements by address.
+ * @param array $elements
+ *   Elements by address.
  */
 function hook_field_group_build_pre_render_alter(&$element) {
 
@@ -293,13 +299,7 @@ function hook_field_group_build_pre_render_alter(&$element) {
 
   // Example from field_group itself to unset empty elements.
   if ($display) {
-    foreach (element_children($element) as $name) {
-      if (in_array($name, $groups)) {
-        if (field_group_field_group_is_empty($element[$name], $groups)) {
-          unset($element[$name]);
-        }
-      }
-    }
+    field_group_remove_empty_display_groups($element, $groups);
   }
 
   // You might include additional javascript files and stylesheets.
@@ -316,20 +316,17 @@ function hook_field_group_build_pre_render_alter(&$element) {
  *
  * TODO It might be better to change this hook with already created summaries,
  * giving the ability to alter or add it later on.
+ *
+ * @param object $group
+ *   Group definition.
+ *
+ * @return string
+ *   HTML of the format summary.
  */
 function hook_field_group_format_summary($group) {
   $output = '';
   // Create additional summary or change the default setting.
   return $output;
-}
-
-/**
- * Implements hook_field_group_info().
- *
- * Called when reading all the groups.
- */
-function hook_field_group_info() {
-
 }
 
 /**
@@ -347,8 +344,8 @@ function hook_field_group_info_alter(&$groups) {
 /**
  * Implements hook_field_group_update_field_group().
  *
- * @param $object $group
- *   The FieldGroup object.
+ * @param object $group
+ *   The Field Group definition.
  */
 function hook_field_group_update_field_group($group) {
   // Update data depending on the group.
@@ -357,8 +354,8 @@ function hook_field_group_update_field_group($group) {
 /**
  * Implements hook_field_group_delete_field_group().
  *
- * @param $object $group
- *   The FieldGroup object.
+ * @param object $group
+ *   The Field Group definition.
  */
 function hook_field_group_delete_field_group($group) {
   // Delete extra data depending on the group.
@@ -367,13 +364,50 @@ function hook_field_group_delete_field_group($group) {
 /**
  * Implements hook_field_group_create_field_group().
  *
- * @param $object $group
- *   The FieldGroup object.
+ * @param object $group
+ *   The Field Group definition.
  */
 function hook_field_group_create_field_group($group) {
   // Create extra data depending on the group.
 }
 
+/**
+ * Implements hook_field_group_format_settings_alter().
+ *
+ * @param array $form
+ *   An associative array containing the structure of the form, which is passed
+ *   by reference.
+ * @param object $group
+ *   The Group definition.
+ */
+function hook_field_group_format_settings_alter(&$form, &$group) {
+  // Alter the group format settings that appear in the summary and form.
+}
+
+/**
+ * Implements hook_field_group_field_ui_parent_requirements_alter().
+ *
+ * @param array $parent_requirements
+ *   An associative array keyed by group type of a group parent.
+ * @param array $context
+ *   Array of the form structure and display overview.
+ */
+function hook_field_group_field_ui_parent_requirements_alter(&$parent_requirements, &$context) {
+  // Alter the parent requirements array used to display warning if a container
+  // has not been set up.
+}
+
+/**
+ * Implements hook_field_group_html_classes_alter().
+ *
+ * @param object $classes
+ *   An object of required and optional classes.
+ * @param object $group
+ *   The Group definition.
+ */
+function hook_field_group_html_classes_alter(&$classes, &$group) {
+  // Alter the required or optional classes on a field group.
+}
 
 
 /**
@@ -412,7 +446,6 @@ function field_group_info_groups($entity_type = NULL, $bundle = NULL, $view_mode
  *   Return enabled or disabled groups.*
  *
  * @see field_group_info_groups()
- * @see ctools_export_load_object()
  */
 function field_group_read_groups($conditions = array()) {
   // This function loads the requested groups

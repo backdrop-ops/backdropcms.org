@@ -1016,6 +1016,11 @@ function webform_element_info() {
     '#theme' => 'webform_email',
     '#size' => 60,
   );
+  $elements['webform_link'] = array(
+    '#input' => TRUE,
+    '#theme' => 'webform_link',
+    '#size' => 60,
+  );
   $elements['webform_number'] = array(
     '#input' => TRUE,
     '#theme' => 'webform_number',
@@ -1101,6 +1106,25 @@ function webform_webform_component_info() {
         'private' => FALSE,
         'wrapper_classes' => FALSE,
         'css_classes' => FALSE,
+        'conditional_action_set' => TRUE,
+      ),
+    ),
+    'link' => array(
+      'label' => t('Link'),
+      'description' => t('A special textfield that accepts URLs.'),
+      'file' => 'components/link.inc',
+      'features' => array(
+        'email' => TRUE,
+        'email_address' => FALSE,
+        'email_name' => FALSE,
+        'required' => TRUE,
+        'title_display' => TRUE,
+        'title_inline' => TRUE,
+        'conditional' => TRUE,
+        'group' => FALSE,
+        'spam_analysis' => FALSE,
+        'attachment' => FALSE,
+        'placeholder' => TRUE,
         'conditional_action_set' => TRUE,
       ),
     ),
@@ -2180,7 +2204,7 @@ function theme_webform_view_messages(array $variables) {
   }
 
   // If the user has exceeded the limit of submissions, explain the limit.
-  elseif ($user_limit_exceeded && !$cached) {
+  elseif ($user_limit_exceeded) {
     if ($node->webform['submit_interval'] == -1 && $node->webform['submit_limit'] > 1) {
       $message = t('You have submitted this form the maximum number of times (@count).', array('@count' => $node->webform['submit_limit']));
     }
@@ -2191,7 +2215,7 @@ function theme_webform_view_messages(array $variables) {
       $message = t('You may not submit another entry at this time.');
     }
   }
-  elseif ($total_limit_exceeded && !$cached) {
+  elseif ($total_limit_exceeded) {
     if ($node->webform['total_submit_interval'] == -1 && $node->webform['total_submit_limit'] > 1) {
       $message = t('This form has received the maximum number of entries.');
     }
@@ -5574,6 +5598,7 @@ function webform_count_input_vars(array $element) {
     'hidden' => 1,
     'value' => 1,
     'webform_email' => 1,
+    'webform_link' => 1,
     'webform_number' => 1,
   );
   $children = array_intersect_key($element, array_flip(element_children($element)));
