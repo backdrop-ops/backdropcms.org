@@ -135,7 +135,6 @@ $civicrm_table_prefixes = array(
   'civicrm_uf_field' => 'civicrm.',
   'civicrm_menu' => 'civicrm.',
   'civicrm_mailing_event_confirm' => 'civicrm.',
-  'civicrm_action_mapping' => 'civicrm.',
   'civicrm_mailing_event_bounce' => 'civicrm.',
   'civicrm_mailing_recipients' => 'civicrm.',
   'civicrm_product' => 'civicrm.',
@@ -168,4 +167,5 @@ $civicrm_table_prefixes = array(
   'civicrm_entity_file' => 'civicrm.',
   'civicrm_relationship_type' => 'civicrm.',
   'civicrm_payment_processor' => 'civicrm.',
+  'civicrm_afform_submission' => 'civicrm.',
 );
