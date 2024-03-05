@@ -44,5 +44,5 @@ On the *Create Subscription* screen the Topic ARN should be populated.  Set the 
 At first the Subscription will show up as pendingConfirmation, you may need to wait a minute and then refresh the page before it confirms... SNS sends a subscribe URL to your site which this extension responds to.. that process takes a minute or two.
 
 ## Useful resources
-+ Amazon's Testing Email Addresses: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/mailbox-simulator.html
-+ Amazon Documentation on SNS messages to HTTP: http://docs.aws.amazon.com/sns/latest/dg/SendMessageToHttp.html
++ Amazon's Testing Email Addresses: https://docs.aws.amazon.com/ses/latest/dg/send-an-email-from-console.html#send-email-simulator
++ Amazon Documentation on SNS messages to HTTP: https://docs.aws.amazon.com/sns/latest/dg/sns-http-https-endpoint-as-subscriber.html

@@ -15,10 +15,7 @@ class CRM_Airmail_Backend_Elastic implements CRM_Airmail_Backend {
 
   public function processMessages($event) {
     // Keep a log to check what we're being sent.
-    file_put_contents("/var/www/support.opendemocracy.net/sites/default/files/private/elasticemail-events.json",
-      json_encode($event),
-      FILE_APPEND
-    );
+    // file_put_contents("/path/to/somewhere/private/elasticemail-events.json", json_encode($event), FILE_APPEND);
 
     // Parse postback url to get all required mailing information.
     $mailingJobInfo = E::parseSourceString($event['postback']);
@@ -274,14 +271,17 @@ class CRM_Airmail_Backend_Elastic implements CRM_Airmail_Backend {
       'Unknown'               => 2,  // Away    30 tries
     ];
 
+    $category = $event['category'];
     $bounce_type_id = $mapElasticCategoryToCiviBounceType[$event['category']] ?? NULL;
-    $category = $bounce_type_id ?? 'Undocumented';
+    if (!$bounce_type_id) {
+      $category = 'Undocumented';
+    }
 
     // Add a description for the cause of the bounce (map from Elastic Email bounce category).
     // see https://help.elasticemail.com/en/articles/2300650-what-are-the-bounce-error-categories-and-filters
     $mapCategoryToMessage = [
       'AccountProblem'        => 'There is something wrong with the mailbox of the recipient, eg. the mailbox is full and cannot accept more emails',
-      'Blacklisted'           => 'Email is black listed',
+      'BlackListed'           => 'Email is black listed',
       'CodeError'             => 'Error at Elastic Email; will be retried; Contact Elastic Email if a recurring problem.',
       'ConnectionProblem'     => 'The email was not delivered because of a connection problem',
       'ConnectionTerminated'  => 'The status of the email is not known for sure because the recipient server terminated the connection without returning a message code or status',

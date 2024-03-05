@@ -32,10 +32,6 @@ class CRM_Airmail_Backend_Ses implements CRM_Airmail_Backend {
       case 'Notification':
         // If the message is a notification of a mailing event
         $responseMessage = json_decode($events->Message);
-        CRM_Core_Error::debug_log_message(
-          "SES DEBUG POST\n" . file_get_contents('php://input'),
-          'airmail'
-        );
 
         if (!empty($responseMessage->mail->headers)) {
           foreach ($responseMessage->mail->headers as $header) {

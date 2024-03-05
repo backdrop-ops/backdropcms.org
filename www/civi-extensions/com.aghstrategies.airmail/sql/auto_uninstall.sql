@@ -1,0 +1,1 @@
+DELETE FROM civicrm_mailing_bounce_pattern WHERE pattern IN ('Dropped: Bounced Address', 'Dropped: Invalid', 'Dropped: Spam Reporting Address');
