@@ -1,0 +1,13 @@
+type = module
+name = CKEditor 5 Upgrade
+description = Provides assisting code for testing a CKEditor 4 to CKEditor 5 upgrade.
+package = Testing
+backdrop = 1.x
+version = BACKDROP_VERSION
+dependencies[] = ckeditor5
+hidden = TRUE
+
+; Added by Backdrop CMS packaging script on 2024-01-15
+project = backdrop
+version = 1.27.0
+timestamp = 1705369759

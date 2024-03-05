@@ -958,6 +958,12 @@ description = Tests form API checkbox handling of various combinations of #defau
 group = Form API
 file = form.test
 
+[FormResizableTextareaTestCase]
+name = Form API resizable textarea
+description = Tests transition from old JS-based textarea resize to new CSS approach.
+group = Form API
+file = form.test
+
 [FormEmailTestCase]
 name = Form API email
 description = Tests the form API email element.
@@ -1372,7 +1378,7 @@ description = Test the file tokens.
 group = Token
 file = token.test
 
-; Added by Backdrop CMS packaging script on 2023-10-06
+; Added by Backdrop CMS packaging script on 2024-01-15
 project = backdrop
-version = 1.26.1
-timestamp = 1696627719
+version = 1.27.0
+timestamp = 1705369759
