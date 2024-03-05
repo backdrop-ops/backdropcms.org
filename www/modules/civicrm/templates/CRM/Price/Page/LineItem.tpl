@@ -72,7 +72,7 @@
         <td></td>
         <td></td>
       {/if}
-      <td class="right">{$line.line_total+$line.tax_amount|crmMoney:$currency}</td>
+      <td class="right">{assign var=totalWithTax value=$line.line_total+$line.tax_amount}{$totalWithTax|crmMoney:$currency}</td>
     {/if}
           {if $pricesetFieldsCount}
             <td class="right">{$line.participant_count}</td>
@@ -92,9 +92,10 @@
       {ts}Contribution Total{/ts}:
     {elseif $context EQ "Event"}
       {if $totalTaxAmount}
-        {ts}Event SubTotal: {$totalAmount-$totalTaxAmount|crmMoney:$currency}{/ts}<br />
+        {assign var=eventSubTotal value=$totalAmount-$totalTaxAmount}
+        {ts 1=$eventSubTotal|crmMoney:$currency}Event SubTotal: %1{/ts}<br />
       {/if}
-      {ts}Event Total{/ts}:
+      {ts}Total Amount{/ts}:
     {elseif $context EQ "Membership"}
       {ts}Membership Fee Total{/ts}:
     {else}
@@ -114,7 +115,7 @@
           {assign var="intPCount" value=$p_count.participant_count|intval}
           {assign var="lineItemCount" value=$lineItemCount+$intPCount}
         {/foreach}
-        {if $lineItemCount < 1 }
+        {if $lineItemCount < 1}
           {assign var="lineItemCount" value=1}
         {/if}
         {assign var="totalcount" value=$totalcount+$lineItemCount}

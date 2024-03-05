@@ -38,6 +38,30 @@ trait CRM_Event_WorkflowMessage_ParticipantTrait {
   public $isPrimary;
 
   /**
+   * Should a participant count column be shown.
+   *
+   * This would be true if there is a line item on the receipt
+   * with more than one participant in it. Otherwise it's confusing to
+   * show.
+   *
+   * @var bool
+   *
+   * @scope tplParams as isShowParticipantCount
+   */
+  public $isShowParticipantCount;
+
+  /**
+   * What is the participant count, if 'specifically configured'.
+   *
+   * See getter notes.
+   *
+   * @var bool
+   *
+   * @scope tplParams as participantCount
+   */
+  public $participantCount;
+
+  /**
    * @var int
    *
    * @scope tokenContext as eventId, tplParams as eventID
@@ -57,6 +81,17 @@ trait CRM_Event_WorkflowMessage_ParticipantTrait {
    * @scope tplParams as participants
    */
   public $participants;
+
+  /**
+   * The current participant (if there are multiple this is the one being emailed).
+   *
+   * This uses the same format as the participants array.
+   *
+   * @var array
+   *
+   * @scope tplParams as participant
+   */
+  public $currentParticipant;
 
   /**
    * Details of the participant contacts.
@@ -114,7 +149,7 @@ trait CRM_Event_WorkflowMessage_ParticipantTrait {
         $participantPayment = civicrm_api3('ParticipantPayment', 'get', ['participant_id' => $participantID])['values'];
         if (!empty($participantPayment)) {
           // no ts() since this should be rare
-          CRM_Core_Session::setStatus('There might be a data problem, contribution id could not be loaded from the line item');
+          CRM_Core_Error::deprecatedWarning('There might be a data problem, contribution id could not be loaded from the line item');
           $participantPayment = reset($participantPayment);
           $this->setContributionID((int) $participantPayment['contribution_id']);
         }
@@ -141,7 +176,42 @@ trait CRM_Event_WorkflowMessage_ParticipantTrait {
   }
 
   /**
-   * Set contribution object.
+   * It is a good idea to show the participant count column.
+   *
+   * This would be true if there is a line item on the receipt
+   * with more than one participant in it. Otherwise it's confusing to
+   * show.
+   *
+   * @return bool
+   * @throws \CRM_Core_Exception
+   */
+  public function getIsShowParticipantCount(): bool {
+    return (bool) $this->getParticipantCount();
+  }
+
+  /**
+   * Get the count of participants, where count is used in the line items.
+   *
+   * This might be the case where a line item represents a table of 6 people.
+   *
+   * Where the price field value does not record the participant count we ignore.
+   *
+   * This lack of specifying it is a bit unclear but seems to be 'presumed 1'.
+   * From the templates point of view it is not information to present if not
+   * configured.
+   *
+   * @throws \CRM_Core_Exception
+   */
+  public function getParticipantCount() {
+    $count = 0;
+    foreach ($this->getLineItems() as $lineItem) {
+      $count += $lineItem['participant_count'];
+    }
+    return $count;
+  }
+
+  /**
+   * Set participant object.
    *
    * @param array $participant
    *
@@ -168,9 +238,32 @@ trait CRM_Event_WorkflowMessage_ParticipantTrait {
     if (!$this->participant) {
       $this->participant = Participant::get(FALSE)
         ->addWhere('id', '=', $this->participantID)
-        ->addSelect('registered_by_id')->execute()->first();
+        ->setSelect($this->getFieldsToLoadForParticipant())->execute()->first();
     }
     return $this->participant;
+  }
+
+  /**
+   * Get the participant fields we need to load.
+   */
+  protected function getFieldsToLoadForParticipant(): array {
+    return ['registered_by_id'];
+  }
+
+  /**
+   * Get the line items and tax information indexed by participant.
+   *
+   * We will likely add profile data to this too. This is so we can iterate through
+   * participants as the primary participant needs to show them all (and the others
+   * need to be able to filter).
+   *
+   * @return array
+   * @throws \CRM_Core_Exception
+   */
+  public function getCurrentParticipant(): array {
+    // @todo - it is only because of some messed up tests which use
+    // the legacy testSubmit function we have ?? []
+    return $this->getParticipants()[$this->participantID] ?? [];
   }
 
   /**

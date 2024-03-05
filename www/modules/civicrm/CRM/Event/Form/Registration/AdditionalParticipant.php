@@ -22,10 +22,49 @@
 class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_Registration {
 
   /**
-   * Pre-registered additional participant id.
+   * Additional participant id.
+   *
    * @var int
+   * @internal
    */
-  public $additionalParticipantId = NULL;
+  public $_additionalParticipantId = NULL;
+
+  /**
+   * Tracks whether we are at the last participant.
+   *
+   * @var bool
+   * @internal
+   */
+  public $_lastParticipant = FALSE;
+
+  /**
+   * @var bool
+   * @internal
+   */
+  public $_resetAllowWaitlist = FALSE;
+
+  /**
+   * @var int
+   * @internal
+   */
+  public $_contactId;
+
+  /**
+   * Used within CRM_Event_Form_EventFees
+   *
+   * @var int
+   * @internal
+   */
+  public $_discountId;
+
+  /**
+   * Alias of $this->_additionalParticipantId,
+   * Used within CRM_Event_Form_EventFees
+   *
+   * @var int
+   * @internal
+   */
+  public $_pId;
 
   /**
    * Get the active UFGroups (profiles) on this form
@@ -51,6 +90,7 @@ class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_R
    * Set variables up before form is built.
    *
    * @return void
+   * @throws CRM_Core_Exception
    */
   public function preProcess() {
     parent::preProcess();
@@ -110,7 +150,7 @@ class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_R
         $optionsFull = CRM_Utils_Array::value('option_full_ids', $val, []);
         foreach ($val['options'] as $keys => $values) {
           if ($values['is_default'] && !in_array($keys, $optionsFull)) {
-            if ($val['html_type'] == 'CheckBox') {
+            if ($val['html_type'] === 'CheckBox') {
               $defaults["price_{$key}"][$keys] = 1;
             }
             else {
@@ -179,7 +219,7 @@ class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_R
     $button = substr($this->controller->getButtonName(), -4);
 
     if ($this->_values['event']['is_monetary']) {
-      CRM_Event_Form_Registration_Register::buildAmount($this);
+      CRM_Event_Form_Registration_Register::buildAmount($this, TRUE, NULL, $this->_priceSetId);
     }
 
     //Add pre and post profiles on the form.
@@ -395,7 +435,7 @@ class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_R
       $realPayLater = $self->_params[0]['is_pay_later'] ?? NULL;
     }
 
-    if ($button != 'skip') {
+    if ($button !== 'skip') {
       //Check that either an email or firstname+lastname is included in the form(CRM-9587)
       CRM_Event_Form_Registration_Register::checkProfileComplete($fields, $errors, $self->_eventId);
 
@@ -673,6 +713,7 @@ class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_R
           $params['amount'] = $this->_values['discount'][$discountId][$params['amount']]['value'];
         }
         elseif (empty($params['priceSetId'])) {
+          CRM_Core_Error::deprecatedWarning('unreachable code, prices set always passed as hidden field for monetary events');
           $params['amount'] = $this->_values['fee'][$params['amount']]['value'];
         }
         else {
@@ -720,7 +761,7 @@ class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_R
     }
 
     $participantNo = count($this->_params);
-    if ($button != 'skip') {
+    if ($button !== 'skip') {
       $statusMsg = ts('Registration information for participant %1 has been saved.', [1 => $participantNo]);
       CRM_Core_Session::setStatus($statusMsg, ts('Registration Saved'), 'success');
     }
@@ -759,7 +800,7 @@ class CRM_Event_Form_Registration_AdditionalParticipant extends CRM_Event_Form_R
    * @param bool $isButtonJs
    *
    * @return bool
-   *   ture on success.
+   *   true on success.
    */
   public function isLastParticipant($isButtonJs = FALSE) {
     $participant = $isButtonJs ? $this->_params[0]['additional_participants'] : $this->_params[0]['additional_participants'] + 1;

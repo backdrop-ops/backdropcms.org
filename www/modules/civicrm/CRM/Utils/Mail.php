@@ -43,8 +43,8 @@ class CRM_Utils_Mail {
         throw new CRM_Core_Exception(ts('There is no valid smtp server setting. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the SMTP Server.', [1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1')]));
       }
 
-      $params['host'] = $mailingInfo['smtpServer'] ? $mailingInfo['smtpServer'] : 'localhost';
-      $params['port'] = $mailingInfo['smtpPort'] ? $mailingInfo['smtpPort'] : 25;
+      $params['host'] = $mailingInfo['smtpServer'] ?: 'localhost';
+      $params['port'] = $mailingInfo['smtpPort'] ?: 25;
 
       if ($mailingInfo['smtpAuth']) {
         $params['username'] = $mailingInfo['smtpUsername'];
@@ -190,7 +190,7 @@ class CRM_Utils_Mail {
       $htmlMessage = FALSE;
     }
     $attachments = $params['attachments'] ?? NULL;
-    if (!empty($params['text'])) {
+    if (!empty($params['text']) && trim($params['text'])) {
       $textMessage = $params['text'];
     }
     else {
@@ -276,7 +276,13 @@ class CRM_Utils_Mail {
           TRUE,
           'base64',
           'attachment',
-          (isset($attach['charset']) ? $attach['charset'] : '')
+          (isset($attach['charset']) ? $attach['charset'] : ''),
+          '',
+          '',
+          NULL,
+          NULL,
+          '',
+          'utf-8'
         );
       }
     }
@@ -355,16 +361,6 @@ class CRM_Utils_Mail {
     ]) . '</p>';
 
     return $message;
-  }
-
-  /**
-   * @param $to
-   * @param $headers
-   * @param $message
-   * @deprecated
-   */
-  public static function logger(&$to, &$headers, &$message) {
-    CRM_Utils_Mail_Logger::log($to, $headers, $message);
   }
 
   /**

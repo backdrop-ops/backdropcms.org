@@ -8,11 +8,6 @@
  +--------------------------------------------------------------------+
 *}
 <div class="crm-block crm-content-block crm-contribution-view-form-block">
-<div class="action-link">
-  <div class="crm-submit-buttons">
-    {include file="CRM/common/formButtons.tpl" location="top"}
-  </div>
-</div>
 <table class="crm-info-panel">
   {if $is_test}
     <div class="help">
@@ -87,7 +82,7 @@
       <td>{$revenue_recognition_date|crmDate:"%B, %Y"}</td>
     </tr>
   {/if}
-  {if $to_financial_account }
+  {if $to_financial_account}
     <tr class="crm-contribution-form-block-to_financial_account">
       <td class="label">{ts}Received Into{/ts}</td>
       <td>{$to_financial_account}</td>
@@ -151,7 +146,7 @@
     </tr>
   {/if}
   {foreach from=$note item="rec"}
-    {if $rec }
+    {if $rec}
       <tr class="crm-contribution-form-block-note">
         <td class="label">{ts}Note{/ts}</td>
         <td>{$rec}</td>

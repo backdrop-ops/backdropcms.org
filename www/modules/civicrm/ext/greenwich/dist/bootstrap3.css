@@ -7294,6 +7294,10 @@
 	font-weight: normal;
 }
 
+#bootstrap-theme summary {
+	display: list-item;
+}
+
 #bootstrap-theme .form-control .select2-choice {
 	border: 0;
 	border-radius: 2px;

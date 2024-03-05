@@ -151,7 +151,7 @@ class CRM_ACL_Form_ACL extends CRM_Admin_Form {
     $event = [
       '-1' => ts('- select event -'),
       '0' => ts('All Events'),
-    ] + CRM_Event_PseudoConstant::event(NULL, FALSE, "( is_template IS NULL OR is_template != 1 )");
+    ] + CRM_Event_PseudoConstant::event(NULL, FALSE, "is_template = 0");
 
     $this->add('select', 'group_id', ts('Group'), $group);
     $this->add('select', 'custom_group_id', ts('Custom Data'), $customGroup);
@@ -256,7 +256,7 @@ class CRM_ACL_Form_ACL extends CRM_Admin_Form {
     }
     else {
       $params = $this->controller->exportValues($this->_name);
-      $params['is_active'] = CRM_Utils_Array::value('is_active', $params, FALSE);
+      $params['is_active'] ??= FALSE;
       $params['entity_table'] = 'civicrm_acl_role';
 
       // Figure out which type of object we're permissioning on and set object_table and object_id.

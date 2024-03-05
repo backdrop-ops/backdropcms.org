@@ -69,7 +69,7 @@ class CRM_Contact_BAO_ContactType extends CRM_Contact_DAO_ContactType implements
    * @throws \CRM_Core_Exception
    * @throws \Civi\API\Exception\UnauthorizedException
    */
-  public static function basicTypes($all = FALSE) {
+  public static function basicTypes($all = FALSE): array {
     return array_keys(self::basicTypeInfo($all));
   }
 
@@ -693,11 +693,7 @@ LIMIT 1";
 
     $relationshipCount = CRM_Core_DAO::singleValueQuery($relationshipQuery);
 
-    if (!empty($relationshipCount)) {
-      return TRUE;
-    }
-
-    return FALSE;
+    return (bool) $relationshipCount;
   }
 
   /**
@@ -841,6 +837,8 @@ WHERE ($subtypeClause)";
     $contactTypes = $cache->get($cacheKey);
     if ($contactTypes === NULL) {
       $query = CRM_Utils_SQL_Select::from('civicrm_contact_type');
+      // Ensure stable order
+      $query->orderBy('id');
       $dao = CRM_Core_DAO::executeQuery($query->toSQL());
       $contactTypes = array_column($dao->fetchAll(), NULL, 'name');
       $parents = array_column($contactTypes, NULL, 'id');
@@ -849,13 +847,24 @@ WHERE ($subtypeClause)";
         $contactTypes[$name]['parent_label'] = $contactType['parent_id'] ? $parents[$contactType['parent_id']]['label'] : NULL;
         // Cast int/bool types.
         $contactTypes[$name]['id'] = (int) $contactType['id'];
-        $contactTypes[$name]['parent_id'] = $contactType['parent_id'] ? (int) $contactType['parent_id'] : NULL;
+        $contactTypes[$name]['parent_id'] = ((int) $contactType['parent_id']) ?: NULL;
         $contactTypes[$name]['is_active'] = (bool) $contactType['is_active'];
         $contactTypes[$name]['is_reserved'] = (bool) $contactType['is_reserved'];
+        $contactTypes[$name]['icon'] = $contactType['icon'] ?? $parents[$contactType['parent_id']]['icon'] ?? NULL;
       }
       $cache->set($cacheKey, $contactTypes);
     }
     return $contactTypes;
+  }
+
+  /**
+   * Get contact type by name
+   *
+   * @param string $name
+   * @return array|null
+   */
+  public static function getContactType(string $name): ?array {
+    return self::getAllContactTypes()[$name] ?? NULL;
   }
 
   /**
@@ -864,7 +873,7 @@ WHERE ($subtypeClause)";
    * @param array $record
    * @param $userID
    * @return bool
-   * @see CRM_Core_DAO::checkAccess
+   * @see \Civi\Api4\Utils\CoreUtil::checkAccessRecord
    */
   public static function _checkAccess(string $entityName, string $action, array $record, $userID): bool {
     // Only records with a parent may be deleted

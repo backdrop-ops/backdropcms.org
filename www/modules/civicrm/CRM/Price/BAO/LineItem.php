@@ -257,13 +257,6 @@ WHERE li.contribution_id = %1";
         $getTaxDetails = TRUE;
       }
     }
-    if (Civi::settings()->get('invoicing')) {
-      // @todo - this is an inappropriate place to be doing form level assignments.
-      $taxTerm = Civi::settings()->get('tax_term');
-      $smarty = CRM_Core_Smarty::singleton();
-      $smarty->assign('taxTerm', $taxTerm);
-      $smarty->assign('getTaxDetails', $getTaxDetails);
-    }
     return $lineItems;
   }
 
@@ -311,7 +304,7 @@ WHERE li.contribution_id = %1";
       $qty = (float) $qty;
       $price = (float) ($amount_override === NULL ? $options[$oid]['amount'] : $amount_override);
 
-      $participantsPerField = (int) CRM_Utils_Array::value('count', $options[$oid], 0);
+      $participantsPerField = (int) ($options[$oid]['count'] ?? 0);
 
       $values[$oid] = [
         'price_field_id' => $fid,
@@ -326,15 +319,15 @@ WHERE li.contribution_id = %1";
         'max_value' => $options[$oid]['max_value'] ?? NULL,
         'membership_type_id' => $options[$oid]['membership_type_id'] ?? NULL,
         'membership_num_terms' => $options[$oid]['membership_num_terms'] ?? NULL,
-        'auto_renew' => $options[$oid]['auto_renew'] ?? NULL,
+        'auto_renew' => !empty($options[$oid]['auto_renew']) ? (int) $options[$oid]['auto_renew'] : NULL,
         'html_type' => $fields['html_type'],
         'financial_type_id' => $options[$oid]['financial_type_id'] ?? NULL,
-        'tax_amount' => CRM_Utils_Array::value('tax_amount', $options[$oid], 0),
+        'tax_amount' => $options[$oid]['tax_amount'] ?? 0,
         'non_deductible_amount' => $options[$oid]['non_deductible_amount'] ?? NULL,
       ];
 
       if ($values[$oid]['membership_type_id'] && empty($values[$oid]['auto_renew'])) {
-        $values[$oid]['auto_renew'] = CRM_Core_DAO::getFieldValue('CRM_Member_DAO_MembershipType', $values[$oid]['membership_type_id'], 'auto_renew');
+        $values[$oid]['auto_renew'] = (int) CRM_Core_DAO::getFieldValue('CRM_Member_DAO_MembershipType', $values[$oid]['membership_type_id'], 'auto_renew');
       }
     }
   }
@@ -1256,7 +1249,7 @@ WHERE li.contribution_id = %1";
    * @return string
    */
   protected function getSalesTaxTerm() {
-    return CRM_Contribute_BAO_Contribution::checkContributeSettings('tax_term');
+    return \Civi::settings()->get('tax_term');
   }
 
   /**
@@ -1279,11 +1272,14 @@ WHERE li.contribution_id = %1";
    * clauses being added. Additional filters joining on the participant
    * and membership tables just seem too non-performant.
    *
+   * @param string|null $entityName
+   * @param int|null $userId
+   * @param array $conditions
    * @inheritDoc
    */
-  public function addSelectWhereClause(): array {
+  public function addSelectWhereClause(string $entityName = NULL, int $userId = NULL, array $conditions = []): array {
     $clauses['contribution_id'] = CRM_Utils_SQL::mergeSubquery('Contribution');
-    CRM_Utils_Hook::selectWhereClause($this, $clauses);
+    CRM_Utils_Hook::selectWhereClause($this, $clauses, $userId, $conditions);
     return $clauses;
   }
 

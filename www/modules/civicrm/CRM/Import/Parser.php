@@ -848,7 +848,7 @@ abstract class CRM_Import_Parser implements UserJobInterface {
    */
   protected function checkContactDuplicate(&$formatValues) {
     //retrieve contact id using contact dedupe rule
-    $formatValues['contact_type'] = $formatValues['contact_type'] ?? $this->getContactType();
+    $formatValues['contact_type'] ??= $this->getContactType();
     $formatValues['version'] = 3;
     $params = $formatValues;
     static $cIndieFields = NULL;
@@ -1128,11 +1128,6 @@ abstract class CRM_Import_Parser implements UserJobInterface {
 
     // get the formatted location blocks into params - w/ 3.0 format, CRM-4605
     if (!empty($values['location_type_id'])) {
-      static $fields = NULL;
-      if ($fields == NULL) {
-        $fields = [];
-      }
-
       foreach (['Phone', 'Email', 'IM', 'OpenID', 'Phone_Ext'] as $block) {
         $name = strtolower($block);
         if (!array_key_exists($name, $values)) {
@@ -1641,7 +1636,7 @@ abstract class CRM_Import_Parser implements UserJobInterface {
       $comparisonValue = $this->getComparisonValue($importedValue);
       return $options[$comparisonValue] ?? 'invalid_import_value';
     }
-    if (!empty($fieldMetadata['FKClassName']) || !empty($fieldMetadata['pseudoconstant']['prefetch'])) {
+    if (!empty($fieldMetadata['FKClassName']) || ($fieldMetadata['pseudoconstant']['prefetch'] ?? NULL) === 'disabled') {
       // @todo - make this generic - for fields where getOptions doesn't fetch
       // getOptions does not retrieve these fields with high potential results
       if ($fieldName === 'event_id') {
@@ -2219,7 +2214,9 @@ abstract class CRM_Import_Parser implements UserJobInterface {
     }
     //check if external identifier exists in database
     if ($contactID && $foundContact['id'] !== $contactID) {
-      throw new CRM_Core_Exception(ts('Existing external ID does not match the imported contact ID.'), CRM_Import_Parser::ERROR);
+      throw new CRM_Core_Exception(
+        ts('Imported external ID already belongs to an existing contact with a different contact ID than the imported contact ID or than the contact ID of the contact matched on the entity imported.'),
+        CRM_Import_Parser::ERROR);
     }
     return (int) $foundContact['id'];
   }
