@@ -181,8 +181,8 @@ function _borg_mailers_security_worker($node) {
     $queue->createItem($node->nid);
 
     // Set a watchdog message and print a message for the user.
-    watchdog('borg_mailers_security', 'Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.');
-    backdrop_set_message(t('Mail is queued to be sent Backdrop CMS Security list subscribers on next cron run.'));
+    watchdog('borg_mailers_security', 'Mail is queued to be sent to Backdrop CMS Security list subscribers on the next cron run.');
+    backdrop_set_message(t('Mail is queued to be sent to Backdrop CMS Security list subscribers on the next cron run.'));
   }
 }
 
