@@ -34,3 +34,10 @@ function on_the_web_update_1000() {
   update_variable_del('on_the_web_display');
   update_variable_del('on_the_web_enabled');
 }
+
+/**
+ * Add FontAwesome version.
+ */
+function on_the_web_update_1001() {
+  config_set('on_the_web.settings', 'version', '4.7.0');
+}
