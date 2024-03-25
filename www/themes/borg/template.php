@@ -780,6 +780,90 @@ function borg_menu_local_tasks($variables) {
 }
 
 /**
+ * Theme function
+ *
+ * @param $service
+ *    Icon for appropriate service.
+ * @param $link
+ *    URL where link should point.
+ * @param $title
+ *    Title attribute for the link tag.
+ *
+ * @return
+ *    Linked icon with wrapper markup.
+ */
+function borg_on_the_web_item($variables) {
+  $service = $variables['service'];
+  $link = $variables['link'];
+  $icon = $variables['icon'];
+  $size = $variables['size'];
+  $title = $variables['title'];
+  $link_classes = $variables['classes'];
+  $icon_classes = $variables['icon_classes'];
+
+  $config = config('on_the_web.settings');
+  $type = $config->get('type');
+  $target = $config->get('target');
+
+  // Add a new link class for SVG masks.
+  $link_classes[] = 'otw-svg-mask';
+
+  // Determine attributes for the link
+  $attributes = array(
+    'class' => $link_classes,
+    'title' => $title,
+    'aria-label' => $title,
+    'rel' => 'nofollow',
+  );
+  if ($target == TRUE) {
+    $attributes['target'] = '_blank';
+    $attributes['aria-label'] .= ' (' . t('opens in new window') . ')';
+  }
+
+  $text = '';
+  if ($type == 'font') {
+    // Add the font awesome icon classes with support for v5.
+    $icon_classes[] = $icon;
+    $icon_classes[] = 'fa-fw';
+
+    if ((!module_exists('font_awesome') && $config->get('version') == '5.x.x')
+       || (module_exists('font_awesome') && config_get('font_awesome.settings', 'fontawesome') == 'v5')) {
+
+      if (!in_array('fas', $icon_classes)) {
+        $icon_classes[] = 'fab';
+      }
+    }
+    else {
+      $icon_classes[] = 'fa';
+    }
+
+    // Add the font awesome size classes.
+    if ($size == 'lg') {
+      $icon_classes[] = 'fa-3x';
+    }
+    else {
+      $icon_classes[] = 'fa-2x';
+    }
+
+    $text = '<i aria-hidden="true" class="' . implode(' ', $icon_classes) . '"></i>';
+  }
+
+  elseif ($type == 'image') {
+    $text = '<img src="' . $icon . '" />';
+  }
+
+  elseif ($type == 'anchor') {
+    //$style = 'background: transparent url(' . $icon . ') no-repeat top left;';
+    //$style .= ' -webkit-mask-image: url(' . $icon . ');';
+    $style .= ' mask-image: url(' . $icon . ');';
+    $attributes['style'] = $style;
+  }
+
+  $options = array('attributes' => $attributes, 'html' => TRUE);
+  return l($text, $link, $options);
+}
+
+/**
  * Overrides theme_github_info().
  */
 function borg_github_info($variables) {

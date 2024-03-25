@@ -644,12 +644,28 @@ a.feed-icon {
   color: #000;
 }
 
+a.otw-svg-mask {
+  margin: 5px;
+  background: #007CBA;
+  width: 28px;
+  height: 32px;
+}
+a.otw-svg-mask:first-child {
+  margin-left: 0;
+}
+a.otw-svg-mask:last-child {
+  margin-right: 0;
+}
+
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .block-on-the-web-social-links {
     padding-bottom: 0;
   }
   .block-on-the-web-social-links a i.fa-2x {
     font-size: 1.66em;
+  }
+  a.otw-svg-mask {
+    margin: 3px;
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
@@ -658,6 +674,9 @@ a.feed-icon {
   }
   .block-on-the-web-social-links a i.fa-2x {
     font-size: 2em;
+  }
+  a.otw-svg-mask {
+    margin: 10px;
   }
 }
 
