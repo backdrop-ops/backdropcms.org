@@ -190,7 +190,7 @@
                     "title": "",
                     "style": "default",
                     "block_settings": {
-                        "version": "1.27.0"
+                        "version": "1.27.1"
                     },
                     "contexts": [],
                     "admin_label": "",
@@ -373,9 +373,12 @@
                     "style": "default",
                     "block_settings": {
                         "delta": "resources",
+                        "description": "",
                         "reusable": true
                     },
-                    "contexts": []
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "f763943b-8712-44ff-ba00-e45044734b4b",
                 "style": {

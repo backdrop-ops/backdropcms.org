@@ -17,13 +17,14 @@
     "settings": {
         "text_processing": "1",
         "display_summary": 0,
-        "user_register_form": false
+        "user_register_form": false,
+        "allowed_formats": []
     },
     "display": {
         "default": {
             "label": "hidden",
             "type": "text_default",
-            "weight": "2",
+            "weight": "0",
             "settings": [],
             "module": "text"
         },

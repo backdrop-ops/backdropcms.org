@@ -36,15 +36,15 @@
             "title": ""
         },
         "rel_remove": "default",
-        "user_register_form": false
+        "user_register_form": false,
+        "type": "both"
     },
     "display": {
         "default": {
             "label": "inline",
-            "type": "link_url",
-            "weight": "0",
-            "settings": [],
-            "module": "link"
+            "type": "hidden",
+            "weight": "2",
+            "settings": []
         },
         "teaser": {
             "label": "above",

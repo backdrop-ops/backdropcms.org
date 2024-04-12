@@ -16,6 +16,7 @@
     },
     "settings": {
         "text_processing": "1",
+        "allowed_formats": [],
         "user_register_form": false
     },
     "display": {
@@ -34,7 +35,7 @@
         }
     },
     "required": 0,
-    "description": "",
+    "description": "For contrib: <code>Upgrade your site to use the most recent version of ABC module. Download available on the <a href=\"https://github.com/backdrop-contrib\">ABC releases</a> page.</code>",
     "default_value": [
         {
             "value": "<p>Upgrade your site to the most recent version of Backdrop core. Download available on the&nbsp;<a href=\"https://github.com/backdrop/backdrop/releases/tag/1.x.x\">Backdrop CMS 1.x.x release page</a>.&nbsp;See the <a href=\"https://backdropcms.org/upgrade#from-previous-versions\">update instructions</a>, if needed.</p>\r\n",
