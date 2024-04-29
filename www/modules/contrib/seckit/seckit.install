@@ -1,0 +1,109 @@
+<?php
+/**
+ * @file
+ * Install/update/uninstall actions for SecKit.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function seckit_install() {
+  // Unlimited CSP reports are likely to be necessary during the initial
+  // development of a content security policy, but this should be treated as
+  // an override of the default value of zero.
+  config_set('seckit.settings', 'advanced', array(
+    'unlimited_csp_reports' => 1,
+  ));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function seckit_uninstall() {
+  // Reset defaults.
+  $config = config('system.core');
+  $config->set('x_frame_options', 'SAMEORIGIN');
+  $config->save();
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function seckit_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    $options = _seckit_get_options();
+    $csp_options = $options['xss']['csp'];
+
+    if ($csp_options['report-only']) {
+      $requirements['seckit'] = array(
+        'title' => $t('Security Kit'),
+        'value' => $t("Content Security Policy (CSP) is in 'report only' mode. Policy violations will <em>not</em> be blocked. !configure.", array('!configure' => l($t('Configure Security Kit'), 'admin/config/system/seckit'))),
+        'severity' => REQUIREMENT_WARNING,
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function seckit_update_last_removed() {
+  return 7107;
+}
+
+/**
+ * Convert variables to CMI.
+ */
+function seckit_update_1000() {
+  include_once backdrop_get_path('module', 'seckit') . '/seckit.module';
+  $defaults = _seckit_get_options_defaults();
+  // Convert variables to CMI.
+  $config = config('seckit.settings');
+  // Special case for XSS since we've made a slight adjustment to the structure.
+  $xss = update_variable_get('seckit_xss', $defaults['xss']);
+  if (empty($xss['csp']['directives'])) {
+    $directives = array(
+      'use-policy-uri',
+      'policy-uri',
+      'default-src',
+      'script-src',
+      'object-src',
+      'style-src',
+      'img-src',
+      'media-src',
+      'frame-src',
+      'frame-ancestors',
+      'child-src',
+      'font-src',
+      'connect-src',
+      'report-uri',
+    );
+    foreach ($directives as $directive) {
+      $xss['csp']['directives'][$directive] = (!empty($xss['csp'][$directive])) ? $xss['csp'][$directive] : $defaults['xss']['csp'][$directive];
+    }
+  }
+  $config->set('xss', $xss);
+  $config->set('csrf', update_variable_get('seckit_csrf', $defaults['csrf']));
+  $config->set('clickjacking', update_variable_get('seckit_clickjacking', $defaults['clickjacking']));
+  $config->set('ssl', update_variable_get('seckit_ssl', $defaults['ssl']));
+  $config->set('ct', update_variable_get('seckit_ct', $defaults['ct']));
+  $config->set('various', update_variable_get('seckit_various', $defaults['various']));
+  $config->set('advanced', update_variable_get('seckit_advanced', $defaults['advanced']));
+  $config->set('fp', update_variable_get('seckit_fp', $defaults['fp']));
+  $config->save();
+  // Remove old variables.
+  update_variable_del('seckit_xss');
+  update_variable_del('seckit_csrf');
+  update_variable_del('seckit_clickjacking');
+  update_variable_del('seckit_ssl');
+  update_variable_del('seckit_ct');
+  update_variable_del('seckit_various');
+  update_variable_del('seckit_advanced');
+  update_variable_del('seckit_fp');
+}

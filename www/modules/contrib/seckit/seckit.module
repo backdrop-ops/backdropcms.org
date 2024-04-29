@@ -1,0 +1,928 @@
+<?php
+/**
+ * @file
+ * Allows administrators to improve security of the website.
+ */
+
+/**
+ * Define the flags/values for certain options.
+ */
+// X-XSS-Protection HTTP header.
+define('SECKIT_X_XSS_DISABLE', 0);
+define('SECKIT_X_XSS_0', 1);
+define('SECKIT_X_XSS_1_BLOCK', 2);
+define('SECKIT_X_XSS_1', 3);
+// X-Frame-Options HTTP header.
+define('SECKIT_X_FRAME_DISABLE', 0);
+define('SECKIT_X_FRAME_SAMEORIGIN', 1);
+define('SECKIT_X_FRAME_DENY', 2);
+define('SECKIT_X_FRAME_ALLOW_FROM', 3);
+// Default CSP violation report URL.  Do not change this without adding
+// support for the previous default to seckit_menu().
+define('SECKIT_CSP_REPORT_URL', 'report-csp-violation');
+
+/**
+ * Default limits for CSP violation reports.
+ */
+// Max accepted byte count.
+define('SECKIT_CSP_REPORT_MAX_SIZE', 4096);
+// Max reports per IP address...
+define('SECKIT_CSP_REPORT_FLOOD_LIMIT_USER', 100);
+// ...per time window (in seconds)
+define('SECKIT_CSP_REPORT_FLOOD_WINDOW_USER', 900);
+// Max reports globally...
+define('SECKIT_CSP_REPORT_FLOOD_LIMIT_GLOBAL', 1000);
+// ...per time window (in seconds)
+define('SECKIT_CSP_REPORT_FLOOD_WINDOW_GLOBAL', 3600);
+
+/**
+ * Implements hook_config_info().
+ */
+function seckit_config_info() {
+  $prefixes['seckit.settings'] = array(
+    'label' => t('Security Kit (SecKit) settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function seckit_permission() {
+  return array(
+    'administer seckit' => array(
+      'title' => t('Administer SecKit'),
+      'description' => t('Configure security features of your Backdrop installation.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function seckit_menu() {
+  // Settings page.
+  $items['admin/config/system/seckit'] = array(
+    'title'            => 'Security Kit',
+    'page callback'    => 'backdrop_get_form',
+    'page arguments'   => array('seckit_admin_form'),
+    'description'      => 'Configure various options to improve security of your website.',
+    'access arguments' => array('administer seckit'),
+    'file'             => 'includes/seckit.form.inc',
+  );
+
+  // Menu callback for CSP reporting.
+  $items[SECKIT_CSP_REPORT_URL] = array(
+    'page callback'   => '_seckit_csp_report',
+    // We nominally accept all CSP violation reports (no access callback)
+    // but the page callback avoids processing invalid or unwanted requests.
+    'access callback' => TRUE,
+    'type'            => MENU_CALLBACK,
+  );
+  // Original path for the above; deprecated in 7.x-1.10. It is important
+  // that this remains valid for now, as the CSP headers in cached pages
+  // will report the path as it was at the time they were cached.
+  //
+  // @todo Remove this in some future release. There is no hurry to do this;
+  // it is better that we maintain this for a few releases (because not
+  // everyone will upgrade at every release), than risk that any CSP
+  // violation reports hit invalid URLs. Note that pages may be cached for
+  // long periods of time. It is probably reasonable to remove this after
+  // minimums of one year and two intervening releases.
+  $items['admin/config/system/seckit/csp-report'] = $items[SECKIT_CSP_REPORT_URL];
+
+  return $items;
+}
+
+/**
+ * Implements hook_init().
+ */
+function seckit_init() {
+  // Do nothing for command-line requests.
+  if (backdrop_is_cli()) {
+    return;
+  }
+
+  // Get default/set options.
+  $options = _seckit_get_options();
+
+  if ($options['advanced']['disable_seckit']) {
+    return;
+  }
+
+  // Execute necessary functions.
+  if ($options['csrf']['origin']) {
+    _seckit_origin();
+  }
+  if ($options['xss']['csp']['checkbox']) {
+    _seckit_csp();
+  }
+  if ($options['xss']['x_xss']['select']) {
+    _seckit_x_xss($options['xss']['x_xss']['select']);
+  }
+
+  // Always call this (regardless of the setting) since if it's disabled it may
+  // be necessary to actively disable the Backdrop core clickjacking defense.
+  _seckit_x_frame($options['clickjacking']['x_frame']);
+
+  if ($options['clickjacking']['js_css_noscript']) {
+    _seckit_js_css_noscript();
+  }
+  if ($options['ssl']['hsts']) {
+    _seckit_hsts();
+  }
+  if ($options['ct']['expect_ct']) {
+    _seckit_expect_ct();
+  }
+  if ($options['various']['from_origin']) {
+    _seckit_from_origin();
+  }
+  if ($options['various']['referrer_policy']) {
+    _seckit_referrer_policy();
+  }
+  if ($options['fp']['feature_policy']) {
+    _seckit_fp();
+  }
+}
+
+/**
+ * Implements hook_boot().
+ *
+ * When multiple 'ALLOW-FROM' values are configured for X-Frame-Options,
+ * we dynamically set the header so that it is correct even when pages are
+ * served from the page cache.
+ *
+ * In other circumstances, Backdrop does not see this implementation.
+ *
+ * @see seckit_module_implements_alter()
+ */
+function seckit_boot() {
+  $options = _seckit_get_options();
+  if ($options['clickjacking']['x_frame'] != SECKIT_X_FRAME_ALLOW_FROM) {
+    return;
+  }
+
+  // If this request's Origin is allowed, we specify that value.
+  // If the origin is not allowed, we can use any other value to prevent
+  // the client from framing the page.
+  $allowed = $options['clickjacking']['x_frame_allow_from'];
+  $origin = !empty($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+  if (!in_array($origin, $allowed, TRUE)) {
+    $origin = array_pop($allowed);
+  }
+
+  backdrop_add_http_header('X-Frame-Options', "ALLOW-FROM $origin");
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * The 'ALLOW-FROM' field of X-Frame-Options supports a single origin only.
+ * https://tools.ietf.org/html/rfc7034#section-2.3.2.3
+ *
+ * Consequently, when multiple values are configured we must resort to
+ * hook_boot() to dynamically set the header to the Origin of the current
+ * request, if that is one of the allowed values.
+ *
+ * Conversely, when we do not require hook_boot(), we unset our
+ * implementation, preventing _system_update_bootstrap_status() from
+ * registering it, and anything from invoking it.
+ *
+ * @see seckit_admin_form_submit()
+ */
+function seckit_module_implements_alter(&$implementations, $hook) {
+  if ($hook != 'boot') {
+    return;
+  }
+
+  $options = _seckit_get_options(TRUE);
+  if (
+    $options['clickjacking']['x_frame'] != SECKIT_X_FRAME_ALLOW_FROM
+    || count($options['clickjacking']['x_frame_allow_from']) <= 1
+  ) {
+    // seckit_boot() is not needed.
+    unset($implementations['seckit']);
+    // In this case, _seckit_x_frame() will generate the header
+    // (which will be cacheable), if it is required.
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for 'user_login'.
+ */
+function seckit_form_user_login_alter(&$form, &$form_state) {
+  _seckit_form_alter_login_form($form, $form_state);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for 'user_login_block'.
+ */
+function seckit_form_user_login_block_alter(&$form, &$form_state) {
+  _seckit_form_alter_login_form($form, $form_state);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for 'user_register'.
+ */
+function seckit_form_user_register_form_alter(&$form, &$form_state) {
+  _seckit_form_alter_login_form($form, $form_state);
+}
+
+/**
+ * Form alteration helper for user login forms.
+ */
+function _seckit_form_alter_login_form(&$form, &$form_state) {
+  $options = _seckit_get_options();
+  if ($options['various']['disable_autocomplete']) {
+    $form['#attributes']['autocomplete'] = 'off';
+    if (isset($form['pass'])) {
+      $form['pass']['#attributes']['autocomplete'] = 'off';
+    }
+  }
+}
+
+/**
+ * Sends Content Security Policy HTTP headers.
+ *
+ * Header specifies Content Security Policy (CSP) for a website,
+ * which is used to allow/block content from selected sources.
+ *
+ * Based on specification:
+ *
+ * @see https://www.w3.org/TR/CSP/
+ */
+function _seckit_csp() {
+  $options = _seckit_get_options();
+  $options = $options['xss']['csp'];
+  foreach ($options['directives'] as $key => $value) {
+    $options[$key] = $value;
+  }
+  unset($options['directives']);
+  $directives = array();
+
+  // Process the options (special-cases and CSP directives).  All of
+  // the special cases will be present in $options, with the default
+  // values being defined by _seckit_get_options_defaults(), so we can
+  // trust that every case will be executed.
+  foreach ($options as $option_key => $option_value) {
+    switch ($option_key) {
+      case 'checkbox':
+        // This option only determined whether this function was called.
+        break;
+
+      case 'report-only':
+        $csp_report_only = $option_value;
+        break;
+
+      case 'vendor-prefix':
+        $csp_vendor_prefix_x = $option_value['x'];
+        $csp_vendor_prefix_webkit = $option_value['webkit'];
+        break;
+
+      case 'policy-uri':
+        if ($option_value) {
+          $csp_policy_uri = base_path() . $option_value;
+          $csp_policy_uri_directive = $option_key . ' ' . $csp_policy_uri;
+        }
+        break;
+
+      case 'report-uri':
+        if ($option_value) {
+          $directives[] = $option_key . ' ' . url($option_value);
+        }
+        break;
+
+      case 'upgrade-req':
+        if ($option_value) {
+          $directives[] = 'upgrade-insecure-requests';
+        }
+        break;
+
+      default:
+        // All other entries represent verbatim CSP directives.
+        // Custom directives can be added via hook_seckit_options_alter().
+        if ($option_value) {
+          $directives[] = $option_key . ' ' . $option_value;
+        }
+        break;
+    }
+  }
+
+  // If policy-uri is declared, no other directives are permitted.
+  if (isset($csp_policy_uri_directive)) {
+    $directives_string = $csp_policy_uri_directive;
+  } else {
+    $directives_string = implode('; ', $directives);
+  }
+
+  // Send HTTP response header if any directives were configured.
+  if ($directives_string) {
+    if ($csp_report_only) {
+      // Use report-only mode.
+      backdrop_add_http_header('Content-Security-Policy-Report-Only', $directives_string);
+      if ($csp_vendor_prefix_x) {
+        backdrop_add_http_header('X-Content-Security-Policy-Report-Only', $directives_string);
+      }
+      if ($csp_vendor_prefix_webkit) {
+        backdrop_add_http_header('X-WebKit-CSP-Report-Only', $directives_string);
+      }
+    } else {
+      backdrop_add_http_header('Content-Security-Policy', $directives_string);
+      if ($csp_vendor_prefix_x) {
+        backdrop_add_http_header('X-Content-Security-Policy', $directives_string);
+      }
+      if ($csp_vendor_prefix_webkit) {
+        backdrop_add_http_header('X-WebKit-CSP', $directives_string);
+      }
+    }
+  }
+}
+
+/**
+ * Log CSP violation reports to watchdog.
+ */
+function _seckit_csp_report() {
+  // Only allow POST data with Content-Type application/csp-report
+  // or application/json (the latter to support older user agents).
+  // n.b. The CSP spec (1.0, 1.1) mandates this Content-Type header/value.
+  // n.b. Content-Length is optional, so we don't check it.
+  if (empty($_SERVER['CONTENT_TYPE']) || empty($_SERVER['REQUEST_METHOD'])) {
+    return;
+  }
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    return;
+  }
+  $pattern = '~^application/(csp-report|json)\h*(;|$)~';
+  if (!preg_match($pattern, $_SERVER['CONTENT_TYPE'])) {
+    return;
+  }
+  $options = _seckit_get_options();
+
+  // If SecKit is disabled, do not process the report.
+  if ($options['advanced']['disable_seckit']) {
+    return;
+  }
+
+  // If the CSP feature is currently disabled, do not process the report.
+  // This could be considered inaccurate (violation reports for a cached page
+  // which was generated with CSP headers might be expected to be processed);
+  // but a single on/off switch for both aspects of CSP support seemed sanest,
+  // and this approach ensures that we do not process requests sent to this URL
+  // before CSP headers have ever been enabled (prior to which reporting limits
+  // are usually ignored to facilitate initial CSP development).
+  if (!$options['xss']['csp']['checkbox']) {
+    return;
+  }
+
+  // If the report-uri value is empty, do not process the report.
+  if (empty($options['xss']['csp']['report-uri'])) {
+    return;
+  }
+
+  // Check for flooding.
+  // Do not write to watchdog when our limits are exceeded.
+  $enforce_limits = !$options['advanced']['unlimited_csp_reports'];
+  if ($enforce_limits && _seckit_csp_report_flooding_detected()) {
+    return;
+  }
+
+  // Read the report data.
+  if ($enforce_limits) {
+    $max_size = (int) $options['advanced']['csp_limits']['max_size'];
+    $reports = file_get_contents('php://input', FALSE, NULL, 0, $max_size + 1);
+    if (strlen($reports) > $max_size) {
+      return;
+    }
+  } else {
+    $reports = file_get_contents('php://input');
+  }
+
+  $reports = json_decode($reports);
+  if (!is_object($reports)) {
+    return;
+  }
+
+  // Log the report data to watchdog.
+  foreach ($reports as $report) {
+    if (!isset($report->{'violated-directive'})) {
+      continue;
+    }
+
+    // Log the violation to watchdog.
+    $info = array(
+      '@directive'   => $report->{'violated-directive'},
+      '@blocked_uri' => $report->{'blocked-uri'},
+      '@data'        => print_r($report, TRUE),
+    );
+    watchdog('seckit', 'CSP: Directive @directive violated.<br /> Blocked URI: @blocked_uri.<br /> <pre>Data: @data</pre>', $info, WATCHDOG_WARNING);
+  }
+}
+
+/**
+ * Check for CSP violation report flooding.
+ *
+ * @return bool
+ *   TRUE if flooding is detected (report logging should be inhibited).
+ *   FALSE if it is safe to proceed with logging the report.
+ */
+function _seckit_csp_report_flooding_detected() {
+  $options = _seckit_get_options();
+  $flood_options = $options['advanced']['csp_limits']['flood'];
+
+  // The global limit provides some DDOS protection.
+  $global_limit = $flood_options['limit_global'];
+  $global_window = $flood_options['window_global'];
+  // flood_is_allowed() does not presently allow us to ignore the identifier,
+  // meaning we would need to log two flood events per CSP report in order to
+  // check both the global and per-user counts using the API function. This
+  // query enables us to do this while only registering one event per report.
+  // @see https://www.drupal.org/project/drupal/issues/2472941
+  $sql = "
+    SELECT COUNT(*)
+      FROM {flood}
+     WHERE event = 'seckit_csp_report'
+       AND timestamp > :timestamp
+  ";
+  $args = array(':timestamp' => REQUEST_TIME - $global_window);
+  $global_count = db_query($sql, $args)->fetchField();
+  if ($global_count >= $global_limit) {
+    // Flooding is in effect.
+    return TRUE;
+  }
+
+  // Per-user limit.
+  $user_limit = $flood_options['limit_user'];
+  $user_window = $flood_options['window_user'];
+  if (!flood_is_allowed('seckit_csp_report', $user_limit, $user_window)) {
+    // Flooding is in effect.
+    return TRUE;
+  }
+
+  // Flooding is not in effect. Log this event, and return the status.
+  flood_register_event('seckit_csp_report', $user_window);
+
+  // No flooding.
+  return FALSE;
+}
+
+/**
+ * Sends X-XSS-Protection HTTP header.
+ *
+ * X-XSS-Protection controls IE8/Safari/Chrome internal XSS filter.
+ */
+function _seckit_x_xss($setting) {
+  switch ($setting) {
+    case SECKIT_X_XSS_0:
+      backdrop_add_http_header('X-XSS-Protection', '0');
+      break;
+
+    case SECKIT_X_XSS_1:
+      backdrop_add_http_header('X-XSS-Protection', '1');
+      break;
+
+    case SECKIT_X_XSS_1_BLOCK:
+      backdrop_add_http_header('X-XSS-Protection', '1; mode=block');
+      break;
+
+    case SECKIT_X_XSS_DISABLE:
+    default:
+      // Do nothing.
+      break;
+  }
+}
+
+/**
+ * Aborts HTTP request upon invalid 'Origin' HTTP request header.
+ *
+ * When included in an HTTP request, the Origin header indicates the origin(s)
+ * that caused the user agent to issue the request. This helps to protect
+ * against CSRF attacks, as we can abort requests with an unapproved origin.
+ *
+ * Applies to all HTTP request methods except GET and HEAD.
+ *
+ * Requests which do not include an 'Origin' header must always be allowed,
+ * as (a) not all user-agents support the header, and (b) those that do may
+ * include it or omit it at their discretion.
+ *
+ * Note that (a) will become progressively less of a factor over time --
+ * CSRF attacks depend upon convincing a user agent to send a request, and
+ * there is no particular motivation for users to prevent their web browsers
+ * from sending this header; so as people upgrade to browsers which support
+ * 'Origin', its effectiveness increases.
+ *
+ * Implementation of Origin is based on specification draft:
+ *
+ * @see https://tools.ietf.org/html/draft-abarth-origin-09
+ */
+function _seckit_origin() {
+
+  // Allow requests without an 'Origin' header, or with a 'null' origin.
+  $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+  if (!$origin || $origin === 'null') {
+    return;
+  }
+  // Allow GET and HEAD requests.
+  $method = $_SERVER['REQUEST_METHOD'];
+  if (in_array($method, array('GET', 'HEAD'), TRUE)) {
+    return;
+  }
+  // Allow requests from localhost.
+  if (in_array(ip_address(), array('localhost', '127.0.0.1', '::1'), TRUE)) {
+    // Unless this is a test.
+    if (!backdrop_valid_test_ua()) {
+      return;
+    }
+  }
+
+  // Allow requests from whitelisted Origins.
+  global $base_root;
+  $options = _seckit_get_options();
+  $whitelist = $options['csrf']['origin_whitelist'];
+  // Default origin is always allowed.
+  $whitelist[] = $base_root;
+  if (in_array($origin, $whitelist, TRUE)) {
+    return;
+    // n.b. RFC 6454 allows Origins to have more than one value (each
+    // separated by a single space).  All values must be on the whitelist
+    // (order is not important).  We intentionally do not handle this
+    // because the feature has been confirmed as a design mistake which
+    // user agents do not utilise in practice.  For details, see
+    // https://lists.w3.org/Archives/Public/www-archive/2012Jun/0001.html
+    // and https://www.drupal.org/project/seckit/issues/2406075
+  }
+
+  // The Origin is invalid, so we deny the request.
+  // Clean the POST data first, as backdrop_access_denied() may render a page
+  // with forms which check for their submissions.
+  $_POST = array();
+
+  // Log the blocked attack.
+  $args = array(
+    '@ip'     => ip_address(),
+    '@origin' => $origin,
+  );
+  watchdog('seckit', 'Possible CSRF attack was blocked. IP address: @ip, Origin: @origin.', $args, WATCHDOG_WARNING);
+
+  // Deliver the 403 (access denied) error page to the user.
+  backdrop_access_denied();
+  // Abort this request.
+  backdrop_exit();
+}
+
+/**
+ * Sends X-Frame-Options HTTP header.
+ *
+ * This header specifies whether or not the browser should show frames.
+ * More information can be found at the following article:
+ *
+ * @see https://blogs.msdn.com/ie/archive/2009/01/27/ie8-security-part-vii-clickjacking-defenses.aspx
+ *
+ * Implementation is based on specification draft:
+ *
+ * @see https://tools.ietf.org/html/draft-ietf-websec-x-frame-options-01
+ */
+function _seckit_x_frame($setting) {
+  switch ($setting) {
+    case SECKIT_X_FRAME_SAMEORIGIN:
+      backdrop_add_http_header('X-Frame-Options', 'SAMEORIGIN');
+      break;
+
+    case SECKIT_X_FRAME_DENY:
+      backdrop_add_http_header('X-Frame-Options', 'DENY');
+      break;
+
+    case SECKIT_X_FRAME_ALLOW_FROM:
+      $options = _seckit_get_options();
+      $allowed = $options['clickjacking']['x_frame_allow_from'];
+      if (count($allowed) == 1) {
+        $value = array_pop($allowed);
+        backdrop_add_http_header('X-Frame-Options', "ALLOW-FROM $value");
+      }
+      // If there were multiple values, then seckit_boot() took care of it.
+      break;
+
+    case SECKIT_X_FRAME_DISABLE:
+      // Make sure Backdrop core does not set the header either. See
+      // backdrop_deliver_html_page().
+      $GLOBALS['conf']['x_frame_options'] = '';
+      break;
+  }
+}
+
+/**
+ * Enables JavaScript + CSS + Noscript Clickjacking defense.
+ *
+ * Closes inline JavaScript and allows loading of any inline HTML elements.
+ * After, it starts new inline JavaScript to avoid breaking syntax.
+ * We need it, because Backdrop API doesn't allow to init HTML elements in
+ * desired sequence.
+ */
+function _seckit_js_css_noscript() {
+  backdrop_add_js(_seckit_get_js_css_noscript_code(), array('type' => 'inline'));
+}
+
+/**
+ * Gets JavaScript and CSS code.
+ *
+ * @return string
+ *   Returns the JavaScript and CSS code.
+ */
+function _seckit_get_js_css_noscript_code() {
+  $options = _seckit_get_options();
+  $message = filter_xss($options['clickjacking']['noscript_message']);
+  $path = base_path() . backdrop_get_path('module', 'seckit');
+  return <<< EOT
+      // close script tag for SecKit protection
+      //--><!]]>
+      </script>
+      <script type="text/javascript" src="$path/js/seckit.document_write.js"></script>
+      <link type="text/css" rel="stylesheet" id="seckit-clickjacking-no-body" media="all" href="$path/css/seckit.no_body.css" />
+      <!-- stop SecKit protection -->
+      <noscript>
+      <link type="text/css" rel="stylesheet" id="seckit-clickjacking-noscript-tag" media="all" href="$path/css/seckit.noscript_tag.css" />
+      <div id="seckit-noscript-tag">
+        $message
+      </div>
+      </noscript>
+      <script type="text/javascript">
+      <!--//--><![CDATA[//><!--
+      // open script tag to avoid syntax errors
+EOT;
+}
+
+/**
+ * Sends Expect-CT HTTP response header.
+ *
+ * Implementation is based on specification draft:
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expect-CT
+ */
+function _seckit_expect_ct() {
+  $options = _seckit_get_options();
+  if ($options['ct']['expect_ct']) {
+
+    $header[] = sprintf("max-age=%d", $options['ct']['max_age']);
+    if ($options['ct']['enforce']) {
+      $header[] = 'enforce';
+    }
+
+    if ($options['ct']['report-uri']) {
+      $header[] = 'report-uri="' . $options['ct']['report-uri'] . '"';
+    }
+
+    $header = implode(', ', $header);
+    backdrop_add_http_header('Expect-CT', $header);
+  }
+}
+
+/**
+ * Sends From-Origin HTTP response header.
+ *
+ * Implementation is based on specification draft:
+ *
+ * @see https://www.w3.org/TR/from-origin
+ */
+function _seckit_from_origin() {
+  $options = _seckit_get_options();
+  $value = $options['various']['from_origin_destination'];
+  backdrop_add_http_header('From-Origin', $value);
+}
+
+/**
+ * Sends Feature-Policy HTTP response header.
+ *
+ * Implementation is based on specification draft:
+ *
+ * @see https://developers.google.com/web/updates/2018/06/feature-policy
+ */
+function _seckit_fp() {
+  $options = _seckit_get_options();
+  $value = $options['fp']['feature_policy_policy'];
+  backdrop_add_http_header('Feature-Policy', $value);
+}
+
+/**
+ * Sends Referrer-Policy HTTP response header.
+ *
+ * Implementation is based on specification draft:
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
+ */
+function _seckit_referrer_policy() {
+  $options = _seckit_get_options();
+  $value = $options['various']['referrer_policy_policy'];
+  backdrop_add_http_header('Referrer-Policy', $value);
+}
+
+/**
+ * Sends HTTP Strict-Transport-Security header (HSTS).
+ *
+ * The HSTS header prevents certain eavesdropping and MITM attacks like
+ * SSLStrip. It forces the user-agent to send requests in HTTPS-only mode.
+ * e.g.: http:// links are treated as https://
+ *
+ * Implementation of HSTS is based on the specification draft:
+ *
+ * @see https://tools.ietf.org/html/draft-hodges-strict-transport-sec-02
+ */
+function _seckit_hsts() {
+  $options = _seckit_get_options();
+
+  $header[] = sprintf("max-age=%d", $options['ssl']['hsts_max_age']);
+  if ($options['ssl']['hsts_subdomains']) {
+    $header[] = 'includeSubDomains';
+  }
+  if ($options['ssl']['hsts_preload']) {
+    $header[] = 'preload';
+  }
+  $header = implode('; ', $header);
+
+  backdrop_add_http_header('Strict-Transport-Security', $header);
+}
+
+/**
+ * Converts a multi-line (or otherwise delimited) string to an array of strings.
+ *
+ * Sanitises each value by trimming whitespace, and filters empty
+ * values from the array.
+ *
+ * @param string $text
+ *   String of delimited values.
+ * @param string $delimiter
+ *   Value delimiter. Defaults to newline for handling multi-line strings.
+ */
+function _seckit_explode_value($text, $delimiter = "\n") {
+  $values = explode($delimiter, $text);
+  return array_values(array_filter(array_map('trim', $values)));
+}
+
+/**
+ * Define the default values for our settings variables.
+ *
+ * @see _seckit_get_options()
+ */
+function _seckit_get_options_defaults() {
+  $defaults = array();
+
+  // Defaults for config_get('seckit.settings','xss').
+  $defaults['xss'] = array(
+    // Content Security Policy (CSP).
+    'csp' => array(
+      // CSP disabled by default.
+      'checkbox' => 0,
+      'vendor-prefix' => array(
+        'x' => 0,
+        'webkit' => 0,
+      ),
+      'report-only' => 0,
+      'directives' => array(
+        'use-policy-uri' => 0,
+        'policy-uri' => '',
+        'default-src' => "'self'",
+        'script-src' => '',
+        'script-src-elem' => '',
+        'object-src' => '',
+        'style-src' => '',
+        'style-src-elem' => '',
+        'img-src' => '',
+        'media-src' => '',
+        'frame-src' => '',
+        'frame-ancestors' => '',
+        'child-src' => '',
+        'font-src' => '',
+        'connect-src' => '',
+        'worker-src' => '',
+        'report-uri' => SECKIT_CSP_REPORT_URL,
+      ),
+      'upgrade-req' => '',
+    ),
+    // X-XSS-Protection header.
+    'x_xss' => array(
+      // Disabled by default.
+      'select' => SECKIT_X_XSS_DISABLE,
+    ),
+  );
+
+  // Defaults for config_get('seckit.settings','csrf').
+  // Enable Origin-based protection.
+  $defaults['csrf'] = array(
+    'origin' => 1,
+    'origin_whitelist' => '',
+  );
+
+  // Defaults for config_get('seckit.settings','clickjacking').
+  $defaults['clickjacking'] = array(
+    'x_frame' => SECKIT_X_FRAME_SAMEORIGIN,
+    'x_frame_allow_from' => '',
+    // Do not require Javascript by default!
+    'js_css_noscript' => 0,
+    'noscript_message' => t('Sorry, you need to enable JavaScript to visit this website.'),
+  );
+
+  // Defaults for config_get('seckit.settings','ssl').
+  $defaults['ssl'] = array(
+    'hsts' => 0,
+    'hsts_max_age' => 1000,
+    'hsts_subdomains' => 0,
+    'hsts_preload' => 0,
+  );
+
+  // Defaults for config_get('seckit.settings','ct').
+  $defaults['ct'] = array(
+    'expect_ct' => 0,
+    'max_age' => 1000,
+    'report-uri' => '',
+    'enforce' => 0,
+  );
+
+  // Defaults for config_get('seckit.settings','fp').
+  $defaults['fp'] = array(
+    'feature_policy' => 0,
+    'feature_policy_policy' => '',
+  );
+
+  // Defaults for config_get('seckit.settings','various').
+  $defaults['various'] = array(
+    'referrer_policy' => 0,
+    'referrer_policy_policy' => '',
+    'from_origin' => 0,
+    'from_origin_destination' => 'same',
+    'disable_autocomplete' => 0,
+  );
+
+  // Advanced / Development options.
+  // Defaults for config_get('seckit.settings','advanced').
+  $defaults['advanced'] = array(
+    'disable_seckit' => 0,
+    'unlimited_csp_reports' => 0,
+    'csp_limits' => array(
+      'max_size' => SECKIT_CSP_REPORT_MAX_SIZE,
+      'flood' => array(
+        'limit_user' => SECKIT_CSP_REPORT_FLOOD_LIMIT_USER,
+        'window_user' => SECKIT_CSP_REPORT_FLOOD_WINDOW_USER,
+        'limit_global' => SECKIT_CSP_REPORT_FLOOD_LIMIT_GLOBAL,
+        'window_global' => SECKIT_CSP_REPORT_FLOOD_WINDOW_GLOBAL,
+      ),
+    ),
+  );
+
+  return $defaults;
+}
+
+/**
+ * Return the current SecKit settings.
+ *
+ * @param bool $reset
+ *   If TRUE then re-generate (and re-cache) the options.
+ * @param bool $alter
+ *   Whether to invoke hook_seckit_options_alter().
+ *   (Used internally to prevent altered values being used
+ *   in the admin settings form.)
+ */
+function _seckit_get_options($reset = FALSE, $alter = TRUE) {
+  $options = &backdrop_static(__FUNCTION__, array());
+  if ($reset) {
+    $options = array();
+  }
+  elseif ($options) {
+    return $options;
+  }
+
+  // Merge the defaults into their associated saved variables, as necessary.
+  // Each (scalar) value will be used only if its key does not exist in the
+  // saved value (if any) for that variable.
+  //
+  // This means that we can introduce new settings with default values,
+  // without affecting the saved values from earlier versions (which do
+  // not yet contain the new keys).
+  $defaults = _seckit_get_options_defaults();
+  $config = config('seckit.settings');
+  foreach (array_keys($defaults) as $option) {
+    $config_value = (array) $config->get($option);
+    $options[$option] = array_replace_recursive(
+      $defaults[$option],
+      $config_value
+    );
+  }
+
+  // Ensure there is a non-empty value for the CSP default-src.
+  $csp_defaults = $defaults['xss']['csp'];
+  if (!$options['xss']['csp']['directives']['default-src']) {
+    $options['xss']['csp']['directives']['default-src'] = $csp_defaults['directives']['default-src'];
+  }
+
+  // Convert ['clickjacking']['x_frame_allow_from'] to an array.
+  $x_frame_allow_from = &$options['clickjacking']['x_frame_allow_from'];
+  $x_frame_allow_from = _seckit_explode_value($x_frame_allow_from);
+
+  // Convert $options['csrf']['origin_whitelist'] to an array.
+  $whitelist = &$options['csrf']['origin_whitelist'];
+  $whitelist = _seckit_explode_value($whitelist, ',');
+
+  // Process alterations and return.
+  if ($alter) {
+    backdrop_alter('seckit_options', $options);
+  }
+  return $options;
+}

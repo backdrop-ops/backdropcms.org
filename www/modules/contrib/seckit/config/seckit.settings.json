@@ -1,0 +1,82 @@
+{
+  "_config_name": "seckit.settings",
+  "xss": {
+    "csp": {
+      "checkbox": 0,
+      "vendor-prefix": {
+        "x": 0,
+        "webkit": 0
+      },
+      "upgrade-req": 0,
+      "report-only": 0,
+      "directives": {
+        "use-policy-uri": 0,
+        "policy-uri": "",
+        "default-src": "'self'",
+        "script-src": "",
+        "script-src-elem": "",
+        "object-src": "",
+        "style-src": "",
+        "style-src-elem": "",
+        "img-src": "",
+        "media-src": "",
+        "frame-src": "",
+        "frame-ancestors": "",
+        "child-src": "",
+        "font-src": "",
+        "connect-src": "",
+        "worker-src": "",
+        "report-uri": "report-csp-violation"
+      }
+    },
+    "x_xss": {
+      "select": "0"
+    }
+  },
+  "csrf": {
+    "origin": 1,
+    "origin_whitelist": ""
+  },
+  "ssl": {
+    "hsts": 0,
+    "hsts_max_age": "1000",
+    "hsts_subdomains": 0,
+    "hsts_preload": 0
+  },
+  "ct": {
+    "expect_ct": 0,
+    "max_age": "1000",
+    "report-uri": "",
+    "enforce": 0
+  },
+  "fp": {
+    "feature_policy": 0,
+    "feature_policy_policy": ""
+  },
+  "various": {
+    "referrer_policy": 0,
+    "referrer_policy_policy": "no-referrer",
+    "from_origin": 0,
+    "from_origin_destination": "same",
+    "disable_autocomplete": 0
+  },
+  "advanced": {
+    "disable_seckit": 0,
+    "unlimited_csp_reports": 0,
+    "csp_limits": {
+      "max_size": "4096",
+      "flood": {
+        "limit_user": "100",
+        "window_user": "900",
+        "limit_global": "1000",
+        "window_global": "3600"
+      }
+    }
+  },
+  "clickjacking": {
+    "x_frame": 1,
+    "x_frame_allow_from": "",
+    "js_css_noscript": 0,
+    "noscript_message": "Sorry, you need to enable JavaScript to visit this website."
+  }
+}
