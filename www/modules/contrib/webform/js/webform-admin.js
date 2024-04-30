@@ -30,10 +30,10 @@
   Backdrop.webform = Backdrop.webform || {};
 
   Backdrop.webform.setActive = function (context) {
-    $('.webform-inline-radio', context).click(function (e) {
+    $('.webform-inline-radio', context).on('click', function (e) {
       $(this).closest('.form-type-radio').find('input[type=radio]').webformProp('checked', true);
     });
-    $('.webform-set-active', context).change(function (e) {
+    $('.webform-set-active', context).on('change', function (e) {
       if ($(this).val()) {
         $(this).closest('.form-type-radio').find('input[type=radio]').webformProp('checked', true);
       }
@@ -75,8 +75,8 @@
       }
     };
 
-    $templateTextarea.keyup(updateTemplateSelect);
-    $templateSelect.change(updateTemplateText);
+    $templateTextarea.on('keyup', updateTemplateSelect);
+    $templateSelect.on('change', updateTemplateText);
   };
 
   Backdrop.webform.selectCheckboxesLink = function (context) {
@@ -90,19 +90,19 @@
       $checkboxes.trigger('change');
       return false;
     }
-    $('a.webform-select-link', context).click(selectCheckboxes);
+    $('a.webform-select-link', context).on('click', selectCheckboxes);
   };
 
   Backdrop.webform.tableSelectIndentation = function (context) {
     var $tables = $('th.select-all', context).parents('table');
-    $tables.find('input.form-checkbox').change(function () {
+    $tables.find('input.form-checkbox').on('change', function () {
       var $rows = $(this).parents('table:first').find('tr');
       var row = $(this).parents('tr:first').get(0);
       var rowNumber = $rows.index(row);
-      var rowTotal = $rows.size();
-      var indentLevel = $(row).find('div.indentation').size();
+      var rowTotal = $rows.length;
+      var indentLevel = $(row).find('div.indentation').length;
       for (var n = rowNumber + 1; n < rowTotal; n++) {
-        if ($rows.eq(n).find('div.indentation').size() <= indentLevel) {
+        if ($rows.eq(n).find('div.indentation').length <= indentLevel) {
           break;
         }
         $rows.eq(n).find('input.form-checkbox').webformProp('checked', this.checked);
@@ -129,7 +129,7 @@
     // saves a lot of processing when new conditions are added/removed.
     $context.find('#webform-conditionals-ajax:not(.webform-conditional-processed)')
       .addClass('webform-conditional-processed')
-      .bind('change', function (e) {
+      .on('change', function (e) {
 
         var $target = $(e.target);
         if ($target.is('.webform-conditional-source select')) {
@@ -150,11 +150,11 @@
       });
 
     // Add event handlers to delete the entire row if the last rule or action is removed.
-    $context.find('.webform-conditional-rule-remove:not(.webform-conditional-processed)').bind('click', function () {
+    $context.find('.webform-conditional-rule-remove:not(.webform-conditional-processed)').on('click', function () {
       this.webformRemoveClass = '.webform-conditional-rule-remove';
       window.setTimeout($.proxy(Backdrop.webform.conditionalRemove, this), 100);
     }).addClass('webform-conditional-processed');
-    $context.find('.webform-conditional-action-remove:not(.webform-conditional-processed)').bind('click', function () {
+    $context.find('.webform-conditional-action-remove:not(.webform-conditional-processed)').on('click', function () {
       this.webformRemoveClass = '.webform-conditional-action-remove';
       window.setTimeout($.proxy(Backdrop.webform.conditionalRemove, this), 100);
     }).addClass('webform-conditional-processed');
@@ -322,8 +322,8 @@
    * FAPI states.
    */
   Backdrop.webform.radioLabelAutoClick = function (context) {
-    $('label').once('webform-label').click(function () {
-      $(this).prev('input:radio').change();
+    $('label').once('webform-label').on('click', function () {
+      $(this).prev('input:radio').trigger('change');
     });
   };
 

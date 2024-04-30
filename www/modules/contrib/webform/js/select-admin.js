@@ -10,7 +10,7 @@
   Backdrop.behaviors.webformSelectLoadOptions = {};
   Backdrop.behaviors.webformSelectLoadOptions.attach = function (context) {
 
-    $('#edit-extra-options-source', context).change(function () {
+    $('#edit-extra-options-source', context).on('change', function () {
       var url = Backdrop.settings.webform.selectOptionsUrl + '/' + this.value;
       $.ajax({
         url: url,

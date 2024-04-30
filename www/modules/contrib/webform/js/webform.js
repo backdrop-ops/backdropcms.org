@@ -83,7 +83,7 @@
       });
 
       // Prevent the calendar button from submitting the form.
-      $calendar.click(function (event) {
+      $calendar.on('click', function (event) {
         // This event is triggered also when pressing enter when the focus is on
         // previous webform components, but we only want to do something when
         // we are on the calendar component. By checking the event client x/y
@@ -99,7 +99,7 @@
       });
 
       // Clear date on backspace or delete.
-      $calendar.keyup(function (e) {
+      $calendar.on('keyup', function (e) {
         if (e.keyCode == 8 || e.keyCode == 46) {
           $.datepicker._clearDate(this);
         }
@@ -114,7 +114,7 @@
       $form.each(function (index, currentForm) {
         var $currentForm = $(currentForm);
         $currentForm.addClass('webform-conditional-processed');
-        $currentForm.bind('change', {'settings': settings}, Backdrop.webform.conditionalCheck);
+        $currentForm.on('change', {'settings': settings}, Backdrop.webform.conditionalCheck);
 
         // Trigger all the elements that cause conditionals on this form.
         Backdrop.webform.doConditions($currentForm, settings);

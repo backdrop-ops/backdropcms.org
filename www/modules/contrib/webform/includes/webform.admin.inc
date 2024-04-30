@@ -66,7 +66,7 @@ function webform_admin_settings() {
     '#type' => 'checkbox',
     '#title' => t('HTML mail system'),
     '#default_value' => webform_variable_get('webform_email_html_capable'),
-    '#description' => t('Whether the mail system configured for webform is capable of sending mail in HTML format.'),
+    '#description' => t('Whether the mail system configured for webform is capable of sending mail in HTML format. Enabling this will also provide an option on webforms to include files as attachments.'),
   );
 
   $form['email']['webform_default_format'] = array(
@@ -344,22 +344,74 @@ function theme_webform_admin_settings($variables) {
  * Menu callback for admin/content/webform. Displays all webforms on the site.
  */
 function webform_admin_content() {
-  // Determine whether views or hard-coded tables should be used for the
-  // webforms table.
+  // Determine whether the webforms listing will be provided by Views or a
+  // hard-coded table.
   if (!webform_variable_get('webform_table')) {
     $view = views_get_view('webform_webforms');
-    return $view->preview('default');
+
+    // Programmatically add the empty text if there are no webforms available.
+    // This is the same text that's generated if a hard-code table is used.
+    if (!$view->disabled) {
+      if (empty($view->result)) {
+        $empty_content = _webform_admin_empty_text();
+        $options = array(
+          'id' => 'area',
+          'table' => 'views',
+          'field' => 'area',
+          'empty' => TRUE,
+          'content' => $empty_content,
+          'tokenize' => 0,
+        );
+        $view->set_item('default', 'empty', 'area', $options);
+      }
+
+      return $view->preview('default');
+    }
   }
 
-  $query = db_select('webform', 'w');
+  $header = array(
+    array(
+      'data' => t('Title'),
+      'field' => 'n.title',
+    ),
+    array(
+      'data' => t('Created'),
+      'field' => 'n.created',
+      'sort' => 'desc',
+    ),
+    array(
+      'data' => t('Status'),
+      'field' => 'w.status',
+    ),
+    array(
+      'data' => t('View'),
+    ),
+    array(
+      'data' => t('Operations'),
+    ),
+  );
+
+  $nodes_per_page = 25;
+
+  $query = db_select('webform', 'w')->extend('PagerDefault')->extend('TableSort');
   $query->join('node', 'n', 'w.nid = n.nid');
+  $query->fields('w');
   $query->fields('n');
-  $nodes = $query->execute()->fetchAllAssoc('nid');
-  return theme('webform_admin_content', array('nodes' => $nodes));
+  $query->limit($nodes_per_page);
+  $query->orderByHeader($header);
+  $result = $query->execute()->fetchAllAssoc('nid');
+  // The db query fetches stdClass objects, which causes issues with tasks like
+  // trying to use node_access() on them. Load the actual Node objects instead.
+  $nodes = node_load_multiple(array_keys($result));
+
+  return theme('webform_admin_content', array('nodes' => $nodes, 'header' => $header));
 }
 
 /**
- * Create a comma-separate list of content types that are webform enabled.
+ * Create a comma-separated list of content types that are webform-enabled.
+ *
+ * @return string
+ *   Comma-separated list of content types.
  */
 function webform_admin_type_list() {
   $webform_types = webform_node_types();
@@ -380,43 +432,137 @@ function webform_admin_type_list() {
 
 /**
  * Generate a list of all webforms available on this site.
+ *
+ * This is used as a fallback for when the default view that provides
+ * the webform listing is disabled.
  */
 function theme_webform_admin_content($variables) {
   $nodes = $variables['nodes'];
-  $header = array(
-    t('Title'),
-    array('data' => t('View'), 'colspan' => '4'),
-    array('data' => t('Operations'), 'colspan' => '3'),
-  );
+  $header = $variables['header'];
 
   $rows = array();
   foreach ($nodes as $node) {
-    $rows[] = array(
-      l($node->title, 'node/' . $node->nid),
-      l(t('Submissions'), 'node/' . $node->nid . '/webform-results'),
-      l(t('Analysis'), 'node/' . $node->nid . '/webform-results/analysis'),
-      l(t('Table'), 'node/' . $node->nid . '/webform-results/table'),
-      l(t('Download'), 'node/' . $node->nid . '/webform-results/download'),
-      node_access('update', $node) ? l(t('Edit'), 'node/' . $node->nid . '/edit') : '',
-      node_access('update', $node) ? l(t('Components'), 'node/' . $node->nid . '/webform') : '',
-      user_access('delete all webform submissions') ? l(t('Clear'), 'node/' . $node->nid . '/webform-results/clear') : '',
+    $row = array();
+
+    $row[] = array(
+      'data' => l($node->title, 'node/' . $node->nid),
+      'class' => array('webform-titles'),
+      'data-label' => t('Title'),
+    );
+    $row[] = array(
+      'data' => format_date($node->created, 'short'),
+      'class' => array('webform-created'),
+      'data-label' => t('Created'),
+    );
+    $row[] = array(
+      'data' => $node->webform['status'] ? t('Open') : t ('Closed'),
+      'class' => array('webform-status'),
+      'data-label' => t('Status'),
+    );
+    $row[] = array(
+      'data' => array(
+        '#type' => 'operations',
+        '#links' => _webform_admin_get_webform_view_links($node),
+      ),
+      'class' => array('webform-view'),
+      'data-label' => t('View'),
+    );
+    $row[] = array(
+      'data' => array(
+        '#type' => 'operations',
+        '#links' => _webform_admin_get_webform_operations($node),
+      ),
+      'class' => array('webform-operations'),
+      'data-label' => t('Operations'),
+    );
+
+    $rows[] = $row;
+  }
+
+  return theme('table', array('header' => $header, 'rows' => $rows, 'empty' => _webform_admin_empty_text())) . theme('pager');
+}
+
+/**
+ * The text to be shown in the webforms listing when there are no webforms.
+ *
+ * This is used when the webforms listing is provided either by Views or by a
+ * hard-coded table.
+ *
+ * @see webform_admin_content()
+ *
+ * @return string
+ *   Empty list message.
+ */
+function _webform_admin_empty_text() {
+  $webform_types = webform_node_types();
+  if (empty($webform_types)) {
+    $message = t('Webform is currently not enabled on any content type.') . ' ' . t('Visit the <a href="!url">Webform settings</a> page and enable Webform on at least one content type.', array('!url' => url('admin/config/content/webform')));
+  }
+  else {
+    $webform_type_list = webform_admin_type_list();
+    $message = t('There are currently no webforms on your site. Create a !types piece of content.', array('!types' => $webform_type_list));
+  }
+  return $message;
+}
+
+/**
+ * Given a webform, return a list of links for its various "Results" sub-pages.
+ *
+ * @param Node $node
+ *
+ * @return array
+ *   List of operation links.
+ */
+function _webform_admin_get_webform_view_links(Node $node) {
+  $links = array();
+
+  $links['submissions'] = array(
+    'title' => t('Submissions'),
+    'href' => 'node/' . $node->nid . '/webform-results',
+  );
+  $links['analysis'] = array(
+    'title' => t('Analysis'),
+    'href' => 'node/' . $node->nid . '/webform-results/analysis',
+  );
+  $links['table'] = array(
+    'title' => t('Table'),
+    'href' => 'node/' . $node->nid . '/webform-results/table',
+  );
+  $links['download'] = array(
+    'title' => t('Download'),
+    'href' => 'node/' . $node->nid . '/webform-results/download',
+  );
+
+  return $links;
+}
+
+/**
+ * Given a webform, return a list of operations that can be performed on it.
+ *
+ * @param Node $node
+ *
+ * @return array
+ *   List of operation links.
+ */
+function _webform_admin_get_webform_operations(Node $node) {
+  $links = array();
+
+  if (node_access('update', $node)) {
+    $links['edit'] = array(
+      'title' => t('Edit'),
+      'href' => 'node/' . $node->nid . '/edit',
+    );
+    $links['components'] = array(
+      'title' => t('Components'),
+      'href' => 'node/' . $node->nid . '/webform',
+    );
+  }
+  if (user_access('delete all webform submissions')) {
+    $links['clear'] = array(
+      'title' => t('Clear'),
+      'href' => 'node/' . $node->nid . '/webform-results/clear',
     );
   }
 
-  if (empty($rows)) {
-    $webform_types = webform_node_types();
-    if (empty($webform_types)) {
-      $message = t('Webform is currently not enabled on any content types.') . ' ' . t('Visit the <a href="!url">Webform settings</a> page and enable Webform on at least one content type.', array('!url' => url('admin/config/content/webform')));
-    }
-    else {
-      $webform_type_list = webform_admin_type_list();
-      $message = t('There are currently no webforms on your site. Create a !types piece of content.', array('!types' => $webform_type_list));
-    }
-
-    $rows[] = array(
-      array('data' => $message, 'colspan' => 7),
-    );
-  }
-
-  return theme('table', array('header' => $header, 'rows' => $rows));
+  return $links;
 }
