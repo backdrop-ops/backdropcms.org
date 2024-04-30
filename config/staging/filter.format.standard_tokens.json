@@ -2,55 +2,27 @@
     "_config_name": "filter.format.standard_tokens",
     "format": "standard_tokens",
     "name": "Standard+Tokens",
-    "editor": "ckeditor",
+    "editor": "ckeditor5",
     "editor_settings": {
         "toolbar": [
-            [
-                {
-                    "name": "Formatting",
-                    "items": [
-                        "Bold",
-                        "Italic",
-                        "Blockquote",
-                        "Format"
-                    ]
-                },
-                {
-                    "name": "Lists",
-                    "items": [
-                        "BulletedList",
-                        "NumberedList"
-                    ]
-                },
-                {
-                    "name": "Alignment",
-                    "items": [
-                        "JustifyLeft",
-                        "JustifyCenter",
-                        "JustifyRight"
-                    ]
-                },
-                {
-                    "name": "Linking",
-                    "items": [
-                        "BackdropLink",
-                        "BackdropUnlink"
-                    ]
-                },
-                {
-                    "name": "Media",
-                    "items": [
-                        "BackdropImage"
-                    ]
-                },
-                {
-                    "name": "Tools",
-                    "items": [
-                        "Source",
-                        "Maximize"
-                    ]
-                }
-            ]
+            "bold",
+            "italic",
+            "blockQuote",
+            "heading",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "alignment:left",
+            "alignment:center",
+            "alignment:right",
+            "|",
+            "backdropLink",
+            "|",
+            "backdropImage",
+            "|",
+            "sourceEditing",
+            "maximize"
         ],
         "image_upload": {
             "status": 1,
@@ -70,106 +42,97 @@
             "max_size": "",
             "file_extensions": "txt pdf"
         },
-        "plugins": {
-            "style": {
-                "style_list": [
-                    {
-                        "name": "Link",
-                        "element": "span",
-                        "attributes": {
-                            "class": "link"
-                        }
-                    },
-                    {
-                        "name": "Navigation",
-                        "element": "span",
-                        "attributes": {
-                            "class": "navigation"
-                        }
-                    },
-                    {
-                        "name": "Button (primary)",
-                        "element": "span",
-                        "attributes": {
-                            "class": "button"
-                        }
-                    },
-                    {
-                        "name": "Button (secondary)",
-                        "element": "span",
-                        "attributes": {
-                            "class": "button-secondary"
-                        }
-                    },
-                    {
-                        "name": "Drop Button",
-                        "element": "span",
-                        "attributes": {
-                            "class": "dropbutton"
-                        }
-                    },
-                    {
-                        "name": "Local Navigation (tab)",
-                        "element": "span",
-                        "attributes": {
-                            "class": "local-tab"
-                        }
-                    },
-                    {
-                        "name": "Vertical tab",
-                        "element": "span",
-                        "attributes": {
-                            "class": "vartical-tab "
-                        }
-                    },
-                    {
-                        "name": "Select Option",
-                        "element": "span",
-                        "attributes": {
-                            "class": "select-option"
-                        }
-                    },
-                    {
-                        "name": "Table Header",
-                        "element": "span",
-                        "attributes": {
-                            "class": "table-header"
-                        }
-                    },
-                    {
-                        "name": "Monospace",
-                        "element": "span",
-                        "attributes": {
-                            "class": "monospace"
-                        }
-                    },
-                    {
-                        "name": "Call-Out",
-                        "element": "span",
-                        "attributes": {
-                            "class": "callout"
-                        }
-                    },
-                    {
-                        "name": "Example",
-                        "element": "span",
-                        "attributes": {
-                            "class": "example"
-                        }
-                    }
+        "style_list": [
+            {
+                "name": "Link",
+                "element": "span",
+                "classes": [
+                    "link"
+                ]
+            },
+            {
+                "name": "Navigation",
+                "element": "span",
+                "classes": [
+                    "navigation"
+                ]
+            },
+            {
+                "name": "Button (primary)",
+                "element": "span",
+                "classes": [
+                    "button"
+                ]
+            },
+            {
+                "name": "Button (secondary)",
+                "element": "span",
+                "classes": [
+                    "button-secondary"
+                ]
+            },
+            {
+                "name": "Drop Button",
+                "element": "span",
+                "classes": [
+                    "dropbutton"
+                ]
+            },
+            {
+                "name": "Local Navigation (tab)",
+                "element": "span",
+                "classes": [
+                    "local-tab"
+                ]
+            },
+            {
+                "name": "Vertical tab",
+                "element": "span",
+                "classes": [
+                    "vartical-tab "
+                ]
+            },
+            {
+                "name": "Select Option",
+                "element": "span",
+                "classes": [
+                    "select-option"
+                ]
+            },
+            {
+                "name": "Table Header",
+                "element": "span",
+                "classes": [
+                    "table-header"
+                ]
+            },
+            {
+                "name": "Monospace",
+                "element": "span",
+                "classes": [
+                    "monospace"
+                ]
+            },
+            {
+                "name": "Call-Out",
+                "element": "span",
+                "classes": [
+                    "callout"
+                ]
+            },
+            {
+                "name": "Example",
+                "element": "span",
+                "classes": [
+                    "example"
                 ]
             }
-        },
-        "format_list": [
-            "p",
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6"
         ],
-        "style_list": []
+        "heading_list": {
+            "h3": "h3",
+            "h4": "h4",
+            "h5": "h5"
+        }
     },
     "cache": false,
     "status": 1,
