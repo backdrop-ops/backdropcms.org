@@ -853,6 +853,7 @@ function borg_on_the_web_item($variables) {
   }
 
   elseif ($type == 'anchor') {
+    $style = '';
     //$style = 'background: transparent url(' . $icon . ') no-repeat top left;';
     //$style .= ' -webkit-mask-image: url(' . $icon . ');';
     $style .= ' mask-image: url(' . $icon . ');';

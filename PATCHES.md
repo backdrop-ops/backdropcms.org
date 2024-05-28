@@ -12,6 +12,9 @@ borg theme: (committed to HEAD)
   - Update CSS for newsletter signup block.
   - Remove upgrade block css from base theme (in subtheme)
 
+borg -  https://github.com/backdrop-contrib/borg/issues/41
+  - HOTFIX for PHP errors in logs www/themes/borg/template.php
+
 ---
 
 akismet - prevent PHP fatal when bulk deleting users
