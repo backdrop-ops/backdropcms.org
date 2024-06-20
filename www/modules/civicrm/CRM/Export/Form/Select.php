@@ -74,7 +74,7 @@ class CRM_Export_Form_Select extends CRM_Core_Form_Task {
     $this->_componentClause = NULL;
 
     // FIXME: This should use a modified version of CRM_Contact_Form_Search::getModeValue but it doesn't have all the contexts
-    // FIXME: Or better still, use CRM_Core_DAO_AllCoreTables::getBriefName($daoName) to get the $entityShortName
+    // FIXME: Or better still, use CRM_Core_DAO_AllCoreTables::getEntityNameForClass($daoName) to get the $entityShortName
     $entityShortname = $this->getEntityShortName();
 
     if (!in_array($entityShortname, ['Contact', 'Contribute', 'Member', 'Event', 'Pledge', 'Case', 'Grant', 'Activity'], TRUE)) {
@@ -91,7 +91,7 @@ class CRM_Export_Form_Select extends CRM_Core_Form_Task {
     $this->_matchingContacts = FALSE;
     if (($values['radio_ts'] ?? NULL) == 'ts_sel') {
       foreach ($values as $key => $value) {
-        if (strstr($key, 'mark_x')) {
+        if (str_contains($key, 'mark_x')) {
           $count++;
         }
         if ($count > 2) {

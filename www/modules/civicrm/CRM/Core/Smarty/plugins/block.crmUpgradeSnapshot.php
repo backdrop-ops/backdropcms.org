@@ -32,18 +32,20 @@
  * @param string|null $text
  *   The SELECT query which supplies the interesting data to be stored in the snapshot.
  * @param CRM_Core_Smarty $smarty
+ * @param bool $repeat
+ *   Repeat is true for the opening tag, false for the closing tag
  * @return string|null
  * @throws \CRM_Core_Exception
  */
-function smarty_block_crmUpgradeSnapshot($params, $text, &$smarty) {
-  if ($text === NULL) {
+function smarty_block_crmUpgradeSnapshot($params, $text, &$smarty, &$repeat) {
+  if ($repeat || $text === NULL) {
     return NULL;
   }
 
   if (empty($params['name'])) {
     throw new \CRM_Core_Exception('Failed to process {crmUpgradeSnapshot}: Missing name');
   }
-  if (empty($smarty->get_template_vars('upgradeRev'))) {
+  if (empty($smarty->getTemplateVars('upgradeRev'))) {
     throw new \CRM_Core_Exception('Failed to process {crmUpgradeSnapshot}: Upgrade context required. $upgradeRev missing.');
   }
   if (!preg_match(';^\s*select\s;i', $text)) {
@@ -51,7 +53,7 @@ function smarty_block_crmUpgradeSnapshot($params, $text, &$smarty) {
   }
 
   $owner = $params['owner'] ?? 'civicrm';
-  $revParts = explode('.', $smarty->get_template_vars('upgradeRev'));
+  $revParts = explode('.', $smarty->getTemplateVars('upgradeRev'));
   $queries = CRM_Upgrade_Snapshot::createSingleTask($owner, $revParts[0] . '.' . $revParts[1], $params['name'], $text);
   return $queries ? (implode(";\n", $queries) . ";\n") : "";
 }

@@ -56,6 +56,16 @@ abstract class CRM_Utils_System_Base {
     }
   }
 
+  /**
+   * Determine if the UF/CMS has been loaded already.
+   *
+   * This is generally TRUE. If using the "extern" boot protocol, then this may initially be false (until loadBootStrap runs).
+   *
+   * @internal
+   * @return bool
+   */
+  abstract public function isLoaded(): bool;
+
   abstract public function loadBootStrap($params = [], $loadUser = TRUE, $throwError = TRUE, $realPath = NULL);
 
   /**
@@ -98,14 +108,12 @@ abstract class CRM_Utils_System_Base {
    *   The url to post the form.
    */
   public function postURL($action) {
-    $config = CRM_Core_Config::singleton();
     if (!empty($action)) {
       return $action;
     }
 
-    return $this->url(CRM_Utils_Array::value($config->userFrameworkURLVar, $_GET),
-      NULL, TRUE, NULL, FALSE
-    );
+    $current_path = CRM_Utils_System::currentPath();
+    return (string) Civi::url('current://' . $current_path, 'a');
   }
 
   /**
@@ -135,6 +143,42 @@ abstract class CRM_Utils_System_Base {
     $frontend = FALSE,
     $forceBackend = FALSE
   );
+
+  /**
+   * Compose the URL for a page/route.
+   *
+   * @internal
+   * @see \Civi\Core\Url::__toString
+   * @param string $scheme
+   *   Ex: 'frontend', 'backend', 'service'
+   * @param string $path
+   *   Ex: 'civicrm/event/info'
+   * @param string|null $query
+   *   Ex: 'id=100&msg=Hello+world'
+   * @return string|null
+   *   Absolute URL, or NULL if scheme is unsupported.
+   *   Ex: 'https://subdomain.example.com/index.php?q=civicrm/event/info&id=100&msg=Hello+world'
+   */
+  public function getRouteUrl(string $scheme, string $path, ?string $query): ?string {
+    switch ($scheme) {
+      case 'frontend':
+        return $this->url($path, $query, TRUE, NULL, TRUE, FALSE, FALSE);
+
+      case 'service':
+        // The original `url()` didn't have an analog for "service://". But "frontend" is probably the closer bet?
+        // Or maybe getNotifyUrl() makes sense?
+        return $this->url($path, $query, TRUE, NULL, TRUE, FALSE, FALSE);
+
+      case 'backend':
+        return $this->url($path, $query, TRUE, NULL, FALSE, TRUE, FALSE);
+
+      // If the UF defines other major UI/URL conventions, then you might hypothetically handle
+      // additional schemes.
+
+      default:
+        return NULL;
+    }
+  }
 
   /**
    * Return the Notification URL for Payments.
@@ -173,6 +217,17 @@ abstract class CRM_Utils_System_Base {
   }
 
   /**
+   * Path of the current page e.g. 'civicrm/contact/view'
+   *
+   * @return string|null
+   *   the current menu path
+   */
+  public static function currentPath() {
+    $config = CRM_Core_Config::singleton();
+    return isset($_GET[$config->userFrameworkURLVar]) ? trim($_GET[$config->userFrameworkURLVar], '/') : NULL;
+  }
+
+  /**
    * Authenticate the user against the CMS db.
    *
    * @param string $name
@@ -204,11 +259,11 @@ abstract class CRM_Utils_System_Base {
   /**
    * Load user into session.
    *
-   * @param obj $user
+   * @param string $username
    *
    * @return bool
    */
-  public function loadUser($user) {
+  public function loadUser($username) {
     return TRUE;
   }
 
@@ -910,6 +965,27 @@ abstract class CRM_Utils_System_Base {
   }
 
   /**
+   * Whether to allow access to CMS user sync action
+   * @return bool
+   */
+  public function allowSynchronizeUsers() {
+    return TRUE;
+  }
+
+  /**
+   * Run CMS user sync if allowed, otherwise just returns empty array
+   * @return array
+   */
+  public function synchronizeUsersIfAllowed() {
+    if ($this->allowSynchronizeUsers()) {
+      return $this->synchronizeUsers();
+    }
+    else {
+      return [];
+    }
+  }
+
+  /**
    * Send an HTTP Response base on PSR HTTP RespnseInterface response.
    *
    * @param \Psr\Http\Message\ResponseInterface $response
@@ -920,7 +996,7 @@ abstract class CRM_Utils_System_Base {
       CRM_Utils_System::setHttpHeader($name, implode(', ', (array) $values));
     }
     echo $response->getBody();
-    CRM_Utils_System::civiExit();
+    CRM_Utils_System::civiExit(0, ['response' => $response]);
   }
 
   /**

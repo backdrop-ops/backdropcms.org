@@ -66,6 +66,7 @@ return [
         'saved_search_id.name' => 'ACL_Roles',
         'type' => 'table',
         'settings' => [
+          'actions' => TRUE,
           'description' => NULL,
           'sort' => [],
           'limit' => 50,
@@ -126,11 +127,7 @@ return [
                   'style' => 'default',
                   'path' => '',
                   'action' => '',
-                  'condition' => [
-                    'is_active',
-                    '=',
-                    FALSE,
-                  ],
+                  'condition' => [],
                 ],
                 [
                   'task' => 'disable',
@@ -142,11 +139,7 @@ return [
                   'style' => 'default',
                   'path' => '',
                   'action' => '',
-                  'condition' => [
-                    'is_active',
-                    '=',
-                    TRUE,
-                  ],
+                  'condition' => [],
                 ],
                 [
                   'entity' => 'ACLEntityRole',
@@ -161,11 +154,11 @@ return [
                   'condition' => [],
                 ],
               ],
-              'type' => 'buttons',
+              'type' => 'menu',
+              'icon' => 'fa-bars',
               'alignment' => 'text-right',
             ],
           ],
-          'actions' => FALSE,
           'classes' => [
             'table',
             'table-striped',
@@ -178,10 +171,15 @@ return [
               FALSE,
             ],
           ],
-          'addButton' => [
-            'path' => 'civicrm/acl/entityrole/edit?reset=1&action=add',
-            'text' => E::ts('Add ACL Role Assignment'),
-            'icon' => 'fa-plus',
+          'toolbar' => [
+            [
+              'entity' => 'ACLEntityRole',
+              'action' => 'add',
+              'target' => 'crm-popup',
+              'style' => 'primary',
+              'text' => E::ts('Add ACL Role Assignment'),
+              'icon' => 'fa-plus',
+            ],
           ],
         ],
         'acl_bypass' => FALSE,

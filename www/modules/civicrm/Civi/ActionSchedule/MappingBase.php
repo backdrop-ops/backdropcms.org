@@ -11,6 +11,7 @@
 
 namespace Civi\ActionSchedule;
 
+use Civi\Api4\Service\Spec\RequestSpec;
 use Civi\Api4\Utils\CoreUtil;
 use Civi\Core\Service\AutoSubscriber;
 
@@ -21,6 +22,10 @@ use Civi\Core\Service\AutoSubscriber;
  * Note: When choosing a value to return from `getId()`, use a "machine name" style string.
  */
 abstract class MappingBase extends AutoSubscriber implements MappingInterface {
+
+  public function getId() {
+    return $this->getName();
+  }
 
   public static function getSubscribedEvents(): array {
     return [
@@ -37,7 +42,7 @@ abstract class MappingBase extends AutoSubscriber implements MappingInterface {
     $registrations->register(new static());
   }
 
-  public function getEntityTable(): string {
+  public function getEntityTable(\CRM_Core_DAO_ActionSchedule $actionSchedule): string {
     return \CRM_Core_DAO_AllCoreTables::getTableForEntityName($this->getEntityName());
   }
 
@@ -48,30 +53,44 @@ abstract class MappingBase extends AutoSubscriber implements MappingInterface {
    */
   public function getEntity(): string {
     \CRM_Core_Error::deprecatedFunctionWarning('getEntityTable');
-    return $this->getEntityTable();
+    return \CRM_Core_DAO_AllCoreTables::getTableForEntityName($this->getEntityName());
   }
 
   public function getLabel(): string {
     return CoreUtil::getInfoItem($this->getEntityName(), 'title') ?: ts('Unknown');
   }
 
-  public function getValueHeader(): string {
-    return $this->getLabel();
+  public static function getLimitToOptions(): array {
+    return [
+      [
+        'id' => 1,
+        'name' => 'limit',
+        'label' => ts('Limit to'),
+      ],
+      [
+        'id' => 2,
+        'name' => 'add',
+        'label' => ts('Also include'),
+      ],
+    ];
   }
 
   public function getRecipientListing($recipientType): array {
     return [];
   }
 
-  public function getRecipientTypes(): array {
-    return [];
+  public static function getRecipientTypes(): array {
+    return [
+      'manual' => ts('Choose Recipient(s)'),
+      'group' => ts('Select Group'),
+    ];
   }
 
-  public function validateSchedule($schedule): array {
-    return [];
+  public function checkAccess(array $entityValue): bool {
+    return FALSE;
   }
 
-  public function getDateFields(): array {
+  public function getDateFields(?array $entityValue = NULL): array {
     return [];
   }
 
@@ -81,6 +100,19 @@ abstract class MappingBase extends AutoSubscriber implements MappingInterface {
 
   public function sendToAdditional($entityId): bool {
     return TRUE;
+  }
+
+  abstract public function modifyApiSpec(RequestSpec $spec);
+
+  final public function modifySpec(RequestSpec $spec) {
+    if ($this->getId() == $spec->getValue('mapping_id')) {
+      $this->modifyApiSpec($spec);
+    }
+  }
+
+  final public function applies(string $entity, string $action): bool {
+    return $entity === 'ActionSchedule' &&
+      in_array($action, ['create', 'get', 'update', 'save'], TRUE);
   }
 
 }

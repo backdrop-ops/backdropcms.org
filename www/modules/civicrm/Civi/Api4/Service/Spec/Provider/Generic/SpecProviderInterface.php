@@ -32,6 +32,6 @@ interface SpecProviderInterface {
    *
    * @return bool
    */
-  public function applies($entity, $action);
+  public function applies(string $entity, string $action);
 
 }

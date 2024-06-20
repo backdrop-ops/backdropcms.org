@@ -11,23 +11,18 @@
     {include file="CRM/Event/Form/Registration/PreviewHeader.tpl"}
 {/if}
 
-{include file="CRM/common/TrackingFields.tpl"}
-
 <div class="crm-event-id-{$event.id} crm-block crm-event-confirm-form-block">
     <div class="messages status section continue_message-section"><p>
+    {capture assign=register}{ts}Register{/ts}{/capture}
     {if $isOnWaitlist}
         {ts}Please verify your information.{/ts} <strong>{ts}If space becomes available you will receive an email with a link to complete your registration.{/ts}</strong>
-        {ts 1=$form.buttons._qf_Confirm_next.html|strip_tags}Click <strong>%1</strong> to be added to the WAIT LIST for this event.{/ts}
+        {ts 1=$register}Click <strong>%1</strong> to be added to the WAIT LIST for this event.{/ts}
     {elseif $isRequireApproval}
         {ts}Please verify your information.{/ts} <strong>{ts}Once approved, you will receive an email with a link to complete the registration process.{/ts}</strong>
-        {ts 1=$form.buttons._qf_Confirm_next.html|strip_tags}Click <strong>%1</strong> to submit your registration for approval.{/ts}
+        {ts 1=$register}Click <strong>%1</strong> to submit your registration for approval.{/ts}
     {else}
         {ts}Please verify your information.{/ts}
-        {if $contributeMode EQ 'notify' and !$is_pay_later and !$isAmountzero}
-            {ts 1=$form.buttons._qf_Confirm_next.html|strip_tags 2=$paymentProcessor.frontend_title}Click <strong>%1</strong> to checkout with %2.{/ts}
-        {else}
-            {ts 1=$form.buttons._qf_Confirm_next.html|strip_tags}Click <strong>%1</strong> to complete your registration.{/ts}
-        {/if}
+        {$verifyText}
     {/if}
     </p></div>
     {if $is_pay_later and !$isAmountzero and !$isOnWaitlist and !$isRequireApproval}
@@ -38,9 +33,9 @@
       {include file="CRM/common/formButtons.tpl" location="top"}
     </div>
 
-    {if $event.confirm_text}
+    {if $confirm_text}
         <div id="intro_text" class="crm-section event_confirm_text-section">
-          <p>{$event.confirm_text}</p>
+          <p>{$confirm_text|purify}</p>
         </div>
     {/if}
 
@@ -50,29 +45,29 @@
                 {$event.fee_label}
             </div>
             {if $lineItem}
-                {include file="CRM/Price/Page/LineItem.tpl" context="Event"}
+                {include file="CRM/Price/Page/LineItem.tpl" context="Event" displayLineItemFinancialType=false getTaxDetails=$totalTaxAmount}
             {elseif $amounts || $amount == 0}
           <div class="crm-section no-label amount-item-section">
-                    {foreach from= $amounts item=amount key=level}
+                    {foreach from=$amounts item=amount key=level}
               <div class="content">
-                  {$amount.amount|crmMoney}&nbsp;&nbsp;{$amount.label}
+                  {$amount.amount|crmMoney:$currency}&nbsp;&nbsp;{$amount.label}
               </div>
                   <div class="clear"></div>
                     {/foreach}
             </div>
                 {if $totalTaxAmount}
                   <div class="crm-section no-label total-amount-section">
-                  <div class="content bold">{ts}Total {$taxTerm} Amount{/ts}:&nbsp;&nbsp;{$totalTaxAmount|crmMoney}</div>
+                  <div class="content bold">{ts}Total {$taxTerm} Amount{/ts}:&nbsp;&nbsp;{$totalTaxAmount|crmMoney:$currency}</div>
                   <div class="clear"></div>
                   </div>
                 {/if}
                 {if $totalAmount}
                 <div class="crm-section no-label total-amount-section">
-                    <div class="content bold">{ts}Total Amount{/ts}:&nbsp;&nbsp;{$totalAmount|crmMoney}</div>
+                    <div class="content bold">{ts}Total Amount{/ts}:&nbsp;&nbsp;{$totalAmount|crmMoney:$currency}</div>
                     <div class="clear"></div>
                   </div>
                 {/if}
-                {if $hookDiscount.message}
+                {if $hookDiscount}
                     <div class="crm-section hookDiscount-section">
                         <em>({$hookDiscount.message})</em>
                     </div>
@@ -185,10 +180,9 @@
       {include file="CRM/common/formButtons.tpl" location="bottom"}
     </div>
 
-    {if $event.confirm_footer_text}
+    {if array_key_exists('confirm_footer_text', $event) && $event.confirm_footer_text}
         <div id="footer_text" class="crm-section event_confirm_footer-section">
-            <p>{$event.confirm_footer_text}</p>
+            <p>{$event.confirm_footer_text|purify}</p>
         </div>
     {/if}
 </div>
-{include file="CRM/common/showHide.tpl"}

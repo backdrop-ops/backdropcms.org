@@ -1,10 +1,9 @@
 <!DOCTYPE html >
-<html lang="{$config->lcMessages|substr:0:2}">
+<html lang="{$config->lcMessages|substr:0:2}" class="crm-standalone" >
  <head>
-  <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-  <link rel="Shortcut Icon" type="image/x-icon" href="{$config->resourceBase}i/widget/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="{$config->resourceBase}i/logo_lg.png" >
 
   {* @todo crmRegion below should replace this, but not working? *}
   {if isset($pageHTMLHead)}
@@ -16,19 +15,14 @@
   {crmRegion name='html-header'}
   {/crmRegion}
 
-{* @todo This is probably not required? *}
-{if isset($buildNavigation) and !$urlIsPublic }
-    {include file="CRM/common/Navigation.tpl" }
-{/if}
-
-  <title>{$docTitle}</title>
+  <title>{if isset($docTitle)}{$docTitle}{else}CiviCRM{/if}</title>
 </head>
 <body>
   {if $config->debug}
   {include file="CRM/common/debug.tpl"}
   {/if}
 
-  <div id="crm-container" class="crm-container" lang="{$config->lcMessages|substr:0:2}" xml:lang="{$config->lcMessages|substr:0:2}">
+  <div id="crm-container" class="crm-container standalone-page-padding" lang="{$config->lcMessages|substr:0:2}" xml:lang="{$config->lcMessages|substr:0:2}">
     {if $breadcrumb}
       <nav aria-label="{ts}Breadcrumb{/ts}" class="breadcrumb"><ol>
         <li><a href="/civicrm/dashboard?reset=1" >{ts}Home{/ts}</a></li>
@@ -38,9 +32,15 @@
       </ol></nav>
     {/if}
 
+    {if $standaloneErrors}
+      <div class="standalone-errors">
+        <ul>{$standaloneErrors}</ul>
+      </div>
+    {/if}
+
     {if $pageTitle}
-      <div class="crm-title">
-        <h1 class="title">{if $isDeleted}<del>{/if}{$pageTitle}{if $isDeleted}</del>{/if}</h1>
+      <div class="crm-page-title-wrapper">
+        <h1 class="crm-page-title">{$pageTitle}</h1>
       </div>
     {/if}
 
@@ -50,7 +50,7 @@
     <div class="clear"></div>
 
     <div id="crm-main-content-wrapper">
-      {* include file="CRM/common/status.tpl" @todo FIXME *}
+      {include file="CRM/common/status.tpl"}
       {crmRegion name='page-body'}
         {if isset($isForm) and $isForm and isset($formTpl)}
           {include file="CRM/Form/$formTpl.tpl"}
@@ -59,10 +59,6 @@
         {/if}
       {/crmRegion}
     </div>
-
-    {if isset($localTasks)}
-      {include file="CRM/common/localNav.tpl"}
-    {/if}
 
     {crmRegion name='page-footer'}
       {if !empty($urlIsPublic)}

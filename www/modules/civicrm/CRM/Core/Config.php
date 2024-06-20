@@ -87,11 +87,27 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
       \Civi\Core\Container::boot($loadFromDB);
       if ($loadFromDB && self::$_singleton->dsn) {
         $domain = \CRM_Core_BAO_Domain::getDomain();
+        if (CIVICRM_UF === 'Standalone') {
+          // Standalone's session cannot be initialized until CiviCRM is booted,
+          // since it is defined in an extension, and we need the session
+          // initialized before calling applyLocale.
+          $sess = \CRM_Core_Session::singleton();
+          $sess->initialize();
+          if ($sess->getLoggedInContactID()) {
+            // Apply user's timezone.
+            if (is_callable([self::$_singleton->userSystem, 'setMySQLTimeZone'])) {
+              self::$_singleton->userSystem->setMySQLTimeZone();
+            }
+          }
+        }
         \CRM_Core_BAO_ConfigSetting::applyLocale(\Civi::settings($domain->id), $domain->locales);
 
         unset($errorScope);
 
-        CRM_Utils_Hook::config(self::$_singleton);
+        CRM_Utils_Hook::config(self::$_singleton, [
+          'civicrm' => TRUE,
+          'uf' => self::$_singleton->userSystem->isLoaded(),
+        ]);
         self::$_singleton->authenticate();
 
         // Extreme backward compat: $config binds to active domain at moment of setup.
@@ -265,13 +281,16 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
    *
    * @param bool $sessionReset
    */
-  public function cleanupCaches($sessionReset = TRUE) {
+  public function cleanupCaches($sessionReset = FALSE) {
     // cleanup templates_c directory
     $this->cleanup(1, FALSE);
     UserJob::delete(FALSE)->addWhere('expires_date', '<', 'now')->execute();
     // clear all caches
     self::clearDBCache();
-    Civi::cache('session')->clear();
+    // Avoid clearing QuickForm sessions unless explicitly requested
+    if ($sessionReset) {
+      Civi::cache('session')->clear();
+    }
     Civi::cache('metadata')->clear();
     CRM_Core_DAO_AllCoreTables::flush();
     CRM_Utils_System::flushCache();
@@ -333,7 +352,8 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
     $queries = [
       'TRUNCATE TABLE civicrm_acl_cache',
       'TRUNCATE TABLE civicrm_acl_contact_cache',
-      'TRUNCATE TABLE civicrm_cache',
+      // Do not truncate, reduce risks of losing a quickform session
+      'DELETE FROM civicrm_cache WHERE group_name NOT LIKE "CiviCRM%Session"',
       'TRUNCATE TABLE civicrm_prevnext_cache',
       'UPDATE civicrm_group SET cache_date = NULL',
       'TRUNCATE TABLE civicrm_group_contact_cache',
@@ -344,6 +364,11 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
     foreach ($queries as $query) {
       CRM_Core_DAO::executeQuery($query);
     }
+
+    // Clear the Redis prev-next cache, if there is one.
+    // Since we truncated the civicrm_cache table it is logical to also remove
+    // the same from the Redis cache here.
+    \Civi::service('prevnext')->deleteItem();
 
     // also delete all the import and export temp tables
     self::clearTempTables();
@@ -423,11 +448,7 @@ class CRM_Core_Config extends CRM_Core_Config_MagicMerge {
       $path = $_GET[$urlVar] ?? NULL;
     }
 
-    if ($path && preg_match('/^civicrm\/upgrade(\/.*)?$/', $path)) {
-      return TRUE;
-    }
-
-    return FALSE;
+    return ($path && preg_match('/^civicrm\/upgrade(\/.*)?$/', $path));
   }
 
   /**

@@ -23,7 +23,7 @@ class CRM_Contribute_ActionMapping_ByType extends CRM_Contribute_ActionMapping {
   /**
    * @return string
    */
-  public function getId() {
+  public function getName(): string {
     return 'contribtype';
   }
 
@@ -36,13 +36,12 @@ class CRM_Contribute_ActionMapping_ByType extends CRM_Contribute_ActionMapping {
     return ts('Contribution Type');
   }
 
-  /**
-   * Get a printable label to use as the header on the 'value' filter.
-   *
-   * @return string
-   */
-  public function getValueHeader(): string {
-    return ts('Financial Type');
+  public function modifyApiSpec(\Civi\Api4\Service\Spec\RequestSpec $spec) {
+    parent::modifyApiSpec($spec);
+    $spec->getFieldByName('entity_value')
+      ->setLabel(ts('Financial Type'));
+    $spec->getFieldByName('recipient_listing')
+      ->setRequired($spec->getValue('limit_to') && $spec->getValue('recipient') === 'soft_credit_type');
   }
 
   /**
@@ -67,10 +66,10 @@ class CRM_Contribute_ActionMapping_ByType extends CRM_Contribute_ActionMapping {
    *   array(string $value => string $label).
    *   Ex: array('assignee' => 'Activity Assignee').
    */
-  public function getRecipientTypes(): array {
-    return [
-      'soft_credit_type' => ts('Soft Credit Role'),
-    ];
+  public static function getRecipientTypes(): array {
+    $types = parent::getRecipientTypes();
+    $types['soft_credit_type'] = ts('Soft Credit Role');
+    return $types;
   }
 
   /**
@@ -120,11 +119,13 @@ class CRM_Contribute_ActionMapping_ByType extends CRM_Contribute_ActionMapping {
     $query['casContactTableAlias'] = NULL;
 
     // $schedule->start_action_date is user-supplied data. validate.
-    if (!array_key_exists($schedule->start_action_date, $this->getDateFields())) {
+    if (empty($schedule->absolute_date) && !array_key_exists($schedule->start_action_date, $this->getDateFields())) {
       throw new CRM_Core_Exception("Invalid date field");
     }
-    $query['casDateField'] = $schedule->start_action_date;
-
+    $query['casDateField'] = $schedule->start_action_date ?? '';
+    if (empty($query['casDateField']) && $schedule->absolute_date) {
+      $query['casDateField'] = "'" . CRM_Utils_Type::escape($schedule->absolute_date, 'String') . "'";
+    }
     // build where clause
     if (!empty($selectedValues)) {
       $query->where("e.financial_type_id IN (@selectedValues)")

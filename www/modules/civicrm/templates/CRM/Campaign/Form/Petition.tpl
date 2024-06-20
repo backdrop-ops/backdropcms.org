@@ -31,10 +31,12 @@
         <td class="label">{$form.campaign_id.label}</td>
         <td>{$form.campaign_id.html}
       </tr>
+      {if array_key_exists('activity_type_id', $form)}
       <tr class="crm-campaign-survey-form-block-activity_type_id">
         <td class="label">{$form.activity_type_id.label}</td>
         <td>{$form.activity_type_id.html}
       </tr>
+      {/if}
       <tr class="crm-campaign-survey-form-block-profile_id">
         <td class="label">{$form.contact_profile_id.label}</td>
         <td>{$form.contact_profile_id.html}&nbsp;<span class="profile-links"></span>
@@ -92,7 +94,7 @@
         </td>
       </tr>
     </table>
-    {include file="CRM/common/customDataBlock.tpl"}
+    {include file="CRM/common/customDataBlock.tpl"  groupID='' customDataType='Survey' customDataSubType=false entityID=$surveyId cid=false}
   {/if}
   <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
 </div>

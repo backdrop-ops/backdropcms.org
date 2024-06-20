@@ -43,7 +43,7 @@ define('CIVICRM_UF_HEAD', TRUE);
  * @see CRM_Upgrade_Incremental_General::MIN_INSTALL_PHP_VER
  * @see CiviBackdrop\PhpVersionTest::testConstantMatch()
  */
-define('CIVICRM_BACKDROP_PHP_MINIMUM', '7.3.0');
+define('CIVICRM_BACKDROP_PHP_MINIMUM', '7.4.0');
 
 /**
  * Adds CiviCRM CSS and JS resources into the header.
@@ -74,14 +74,12 @@ function civicrm_permission() {
   CRM_Core_Config::singleton();
 
   $permissions = CRM_Core_Permission::basicPermissions(FALSE, TRUE);
-  $perms_array = array();
+  $perms_array = [];
   foreach ($permissions as $perm => $attr) {
-    $title = array_shift($attr);
-    $description = array_shift($attr);
     //order matters here, but we deal with that later
-    $perms_array[$perm] = array('title' => $title);
-    if ($description) {
-      $perms_array[$perm]['description'] = $description;
+    $perms_array[$perm] = ['title' => $attr['label']];
+    if (!empty($attr['description'])) {
+      $perms_array[$perm]['description'] = $attr['description'];
     }
   }
   return $perms_array;
@@ -166,6 +164,32 @@ function civicrm_menu_alter(&$items) {
       'type' => MENU_LOCAL_TASK,
       'weight' => 10,
     );
+  }
+}
+
+/**
+ * Implements hook_telemetry_info().
+ */
+function civicrm_telemetry_info() {
+  $info['civicrm_version'] = array(
+    'label' => t('CiviCRM Version'),
+    'description' => t('The current version of CiviCRM in use.'),
+    'project' => 'civicrm',
+  );
+  return $info;
+}
+
+/**
+ * Implements hook_telemetry_data().
+ */
+function civicrm_telemetry_data($telemetry_key) {
+  if (!civicrm_initialize()) {
+    return;
+  }
+
+  switch ($telemetry_key) {
+    case 'civicrm_version':
+      return CRM_Utils_System::majorVersion();
   }
 }
 
@@ -827,27 +851,6 @@ function civicrm_translated_menu_link_alter(&$item) {
 }
 
 /**
- * Implements hook_admin_bar_output_alter().
- */
-function civicrm_admin_bar_output_alter(&$content) {
-  if (!civicrm_initialize()) {
-    return;
-  }
-
-  $weight = 10;
-  $content['menu']['menu']['civicrm'] = array(
-    '#title' => t('CiviCRM'),
-    '#attributes' => array('class' => array('civicrm')),
-    '#href' => 'civicrm',
-    '#options' => array(
-      'query' => array('reset' => 1),
-    ),
-    // #weight controls the order of links in the resulting item list.
-    '#weight' => $weight,
-  );
-}
-
-/**
  * Implements hook_autoload_info().
  */
 function civicrm_autoload_info() {
@@ -993,6 +996,46 @@ function civicrm_add_jquery(&$html) {
   CRM_Core_Resources::singleton()->addCoreResources('html-header');
   // JS/CSS markup will be rendered in theme('page') by preprocess function
   return $html;
+}
+
+/**
+ * Implements hook_admin_bar_output_alter().
+ */
+function civicrm_admin_bar_output_alter(&$content) {
+  if (!civicrm_initialize()) {
+    return;
+  }
+
+  $classes = array('civicrm');
+  if (!function_exists('icon')) {
+    $classes[] = 'civicrm-icon-original';
+  }
+
+  $content['menu']['menu']['civicrm'] = array(
+    '#title' => t('CiviCRM'),
+    '#attributes' => array('class' => $classes),
+    '#href' => 'civicrm',
+    '#options' => array(
+      'query' => array('reset' => 1),
+      'icon' => 'civicrm-civicrm',
+    ),
+    '#weight' => 10,
+  );
+}
+
+/**
+ * Implements hook_icon_info().
+ */
+function civicrm_icon_info() {
+  $icons = array();
+  $module_path = backdrop_get_path('module', 'civicrm');
+
+  $icons['civicrm-civicrm'] = array(
+    'directory' => $module_path . '/icons',
+    'name' => 'civicrm',
+  );
+
+  return $icons;
 }
 
 /**

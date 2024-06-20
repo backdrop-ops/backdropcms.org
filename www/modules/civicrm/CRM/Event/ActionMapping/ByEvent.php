@@ -19,12 +19,16 @@ class CRM_Event_ActionMapping_ByEvent extends CRM_Event_ActionMapping {
     return self::EVENT_NAME_MAPPING_ID;
   }
 
+  public function getName(): string {
+    return 'event_id';
+  }
+
   public function getLabel(): string {
-    return ts('Event Name');
+    return ts('Event');
   }
 
   public function getValueLabels(): array {
-    return CRM_Event_PseudoConstant::event(NULL, FALSE, "( is_template IS NULL OR is_template != 1 )");
+    return CRM_Event_PseudoConstant::event(NULL, FALSE, "is_template = 0");
   }
 
 }

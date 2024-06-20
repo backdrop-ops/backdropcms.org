@@ -13,6 +13,7 @@
  * @package CRM
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
+use Civi\Api4\Event;
 
 /**
  * This class generates form components for processing Event.
@@ -33,10 +34,10 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
    * Set variables up before form is built.
    */
   public function preProcess() {
-    $this->_addProfileBottom = CRM_Utils_Array::value('addProfileBottom', $_GET, FALSE);
-    $this->_profileBottomNum = CRM_Utils_Array::value('addProfileNum', $_GET, 0);
-    $this->_addProfileBottomAdd = CRM_Utils_Array::value('addProfileBottomAdd', $_GET, FALSE);
-    $this->_profileBottomNumAdd = CRM_Utils_Array::value('addProfileNumAdd', $_GET, 0);
+    $this->_addProfileBottom = $_GET['addProfileBottom'] ?? FALSE;
+    $this->_profileBottomNum = $_GET['addProfileNum'] ?? 0;
+    $this->_addProfileBottomAdd = $_GET['addProfileBottomAdd'] ?? FALSE;
+    $this->_profileBottomNumAdd = $_GET['addProfileNumAdd'] ?? 0;
 
     parent::preProcess();
     $this->setSelectedChild('registration');
@@ -92,9 +93,7 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
         'entity_id' => $eventId,
       ];
 
-      list($defaults['custom_pre_id'],
-        $defaults['custom_post']
-        ) = CRM_Core_BAO_UFJoin::getUFGroupIds($ufJoinParams);
+      [$defaults['custom_pre_id'], $defaults['custom_post']] = CRM_Core_BAO_UFJoin::getUFGroupIds($ufJoinParams);
 
       // Get the id for the event registration profile
       $eventRegistrationIdParams = $eventRegistrationIdDefaults = [
@@ -133,9 +132,7 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
           'entity_id' => $eventId,
         ];
 
-        list($defaults['additional_custom_pre_id'],
-          $defaults['additional_custom_post']
-          ) = CRM_Core_BAO_UFJoin::getUFGroupIds($ufJoinAddParams);
+        [$defaults['additional_custom_pre_id'], $defaults['additional_custom_post']] = CRM_Core_BAO_UFJoin::getUFGroupIds($ufJoinAddParams);
 
         if (isset($defaults['additional_custom_post']) && is_numeric($defaults['additional_custom_post'])) {
           $defaults['additional_custom_post_id'] = $defaults['additional_custom_post'];
@@ -162,10 +159,10 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
     }
 
     // provide defaults for required fields if empty (and as a 'hint' for approval message field)
-    $defaults['registration_link_text'] = $defaults['registration_link_text'] ?? ts('Register Now');
-    $defaults['confirm_title'] = $defaults['confirm_title'] ?? ts('Confirm Your Registration Information');
-    $defaults['thankyou_title'] = $defaults['thankyou_title'] ?? ts('Thank You for Registering');
-    $defaults['approval_req_text'] = $defaults['approval_req_text'] ?? ts('Participation in this event requires approval. Submit your registration request here. Once approved, you will receive an email with a link to a web page where you can complete the registration process.');
+    $defaults['registration_link_text'] ??= ts('Register Now');
+    $defaults['confirm_title'] ??= ts('Confirm Your Registration Information');
+    $defaults['thankyou_title'] ??= ts('Thank You for Registering');
+    $defaults['approval_req_text'] ??= ts('Participation in this event requires approval. Submit your registration request here. Once approved, you will receive an email with a link to a web page where you can complete the registration process.');
 
     return $defaults;
   }
@@ -398,7 +395,7 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
     $form->registerRule('emailList', 'callback', 'emailList', 'CRM_Utils_Rule');
     $attributes = CRM_Core_DAO::getAttribute('CRM_Event_DAO_Event');
     $form->addYesNo('is_email_confirm', ts('Send Confirmation Email?'), NULL, NULL, ['onclick' => "return showHideByValue('is_email_confirm','','confirmEmail','block','radio',false);"]);
-    $form->add('textarea', 'confirm_email_text', ts('Text'), $attributes['confirm_email_text']);
+    $form->add('wysiwyg', 'confirm_email_text', ts('Text'), $attributes['confirm_email_text']);
     $form->add('text', 'cc_confirm', ts('CC Confirmation To'), CRM_Core_DAO::getAttribute('CRM_Event_DAO_Event', 'cc_confirm'));
     $form->addRule('cc_confirm', ts('Please enter a valid list of comma delimited email addresses'), 'emailList');
     $form->add('text', 'bcc_confirm', ts('BCC Confirmation To'), CRM_Core_DAO::getAttribute('CRM_Event_DAO_Event', 'bcc_confirm'));
@@ -783,22 +780,20 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
     $params['id'] = $this->_id;
 
     // format params
-    $params['is_online_registration'] = CRM_Utils_Array::value('is_online_registration', $params, FALSE);
+    $params['is_online_registration'] ??= FALSE;
     // CRM-11182
-    $params['is_confirm_enabled'] = CRM_Utils_Array::value('is_confirm_enabled', $params, FALSE);
-    $params['is_multiple_registrations'] = CRM_Utils_Array::value('is_multiple_registrations', $params, FALSE);
-    $params['allow_same_participant_emails'] = CRM_Utils_Array::value('allow_same_participant_emails', $params, FALSE);
-    $params['requires_approval'] = CRM_Utils_Array::value('requires_approval', $params, FALSE);
+    $params['is_confirm_enabled'] ??= FALSE;
+    $params['is_multiple_registrations'] ??= FALSE;
+    $params['allow_same_participant_emails'] ??= FALSE;
+    $params['requires_approval'] ??= FALSE;
 
     // reset is_email confirm if not online reg
     if (!$params['is_online_registration']) {
       $params['is_email_confirm'] = FALSE;
     }
-    if (!empty($params['allow_selfcancelxfer'])) {
-      $params['selfcancelxfer_time'] = !empty($params['selfcancelxfer_time']) ? $params['selfcancelxfer_time'] : 0;
-    }
+    $params['selfcancelxfer_time'] = !empty($params['selfcancelxfer_time']) ? $params['selfcancelxfer_time'] : 0;
 
-    CRM_Event_BAO_Event::add($params);
+    Event::save(FALSE)->addRecord($params)->execute();
 
     // also update the ProfileModule tables
     $ufJoinParams = [
@@ -922,7 +917,7 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
     self::addMultipleProfiles($additionalProfileIds, $params, 'additional_custom_post_id_multiple');
 
     $cantDedupe = FALSE;
-    $rgId = CRM_Utils_Array::value('dedupe_rule_group_id', $params, 0);
+    $rgId = $params['dedupe_rule_group_id'] ?? 0;
 
     switch (self::canProfilesDedupe($profileIds, $rgId)) {
       case 0:

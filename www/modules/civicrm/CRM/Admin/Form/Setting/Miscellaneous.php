@@ -20,7 +20,16 @@
  */
 class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
 
+  /**
+   * Subset of settings on the page as defined using the legacy method.
+   *
+   * @var array
+   *
+   * @deprecated - do not add new settings here - the page to display
+   * settings on should be defined in the setting metadata.
+   */
   protected $_settings = [
+    // @todo remove these, define any not yet defined in the setting metadata.
     'max_attachments' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'max_attachments_backend' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'contact_undelete' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
@@ -35,6 +44,7 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
     'dompdf_font_dir' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'dompdf_chroot' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'dompdf_enable_remote' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
+    'weasyprint_path' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'wkhtmltopdfPath' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'recentItemsMaxCount' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'recentItemsProviders' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
@@ -48,9 +58,13 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
   /**
    * Basic setup.
    */
-  public function preProcess() {
-    // check for post max size
-    CRM_Utils_Number::formatUnitSize(ini_get('post_max_size'), TRUE);
+  public function preProcess(): void {
+    $maxImportFileSize = CRM_Utils_Number::formatUnitSize(ini_get('upload_max_filesize'));
+    $postMaxSize = CRM_Utils_Number::formatUnitSize(ini_get('post_max_size'));
+    if ($maxImportFileSize > $postMaxSize) {
+      CRM_Core_Session::setStatus(ts("Note: Upload max filesize ('upload_max_filesize') should not exceed Post max size ('post_max_size') as defined in PHP.ini, please check with your system administrator."), ts("Warning"), "alert");
+    }
+
     // This is a temp hack for the fact we really don't need to hard-code each setting in the tpl but
     // we haven't worked through NOT doing that. These settings have been un-hardcoded.
     $this->assign('pure_config_settings', [
@@ -62,7 +76,6 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
       'recentItemsMaxCount',
       'recentItemsProviders',
       'dedupe_default_limit',
-      'esm_loader',
       'prevNextBackend',
       'import_batch_size',
     ]);
@@ -101,8 +114,8 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
     $errors = [];
 
     // validate max file size
-    $iniBytes = CRM_Utils_Number::formatUnitSize(ini_get('upload_max_filesize'), FALSE);
-    $inputBytes = CRM_Utils_Number::formatUnitSize($fields['maxFileSize'] . 'M', FALSE);
+    $iniBytes = CRM_Utils_Number::formatUnitSize(ini_get('upload_max_filesize'));
+    $inputBytes = ((int) $fields['maxFileSize']) * 1024 * 1024;
 
     if ($inputBytes > $iniBytes) {
       $errors['maxFileSize'] = ts("Maximum file size cannot exceed limit defined in \"php.ini\" (\"upload_max_filesize=%1\").", [
@@ -115,6 +128,20 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
       $errors['recentItemsMaxCount'] = ts("Illegal stack size. Use values between 1 and %1.", [1 => CRM_Utils_Recent::MAX_ITEMS]);
     }
 
+    if (!empty($fields['weasyprint_path'])) {
+      // check and ensure that this path leads to the weasyprint binary
+      // and it is a valid executable binary
+      // Only check the first space separated piece to allow for a value
+      // such as /usr/bin/xvfb-run -- weasyprint (CRM-13292)
+      $pieces = explode(' ', $fields['weasyprint_path']);
+      $path = $pieces[0];
+      if (
+        !file_exists($path) ||
+        !is_executable($path)
+      ) {
+        $errors['weasyprint_path'] = ts('The path for %1 does not exist or is not valid', [1 => 'weasyprint']);
+      }
+    }
     if (!empty($fields['wkhtmltopdfPath'])) {
       // check and ensure that this path leads to the wkhtmltopdf binary
       // and it is a valid executable binary
@@ -126,7 +153,7 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
         !file_exists($path) ||
         !is_executable($path)
       ) {
-        $errors['wkhtmltopdfPath'] = ts('The wkhtmltodfPath does not exist or is not valid');
+        $errors['wkhtmltopdfPath'] = ts('The path for %1 does not exist or is not valid', [1 => 'wkhtmltopdf']);
       }
     }
     return $errors;

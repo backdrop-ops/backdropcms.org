@@ -192,7 +192,7 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
       CRM_Core_BAO_UFField::retrieve($params, $defaults);
 
       // set it to null if so (avoids crappy E_NOTICE errors below
-      $defaults['location_type_id'] = $defaults['location_type_id'] ?? NULL;
+      $defaults['location_type_id'] ??= NULL;
 
       //CRM-20861 - Include custom fields defined for address to set its default location type to 0.
       $specialFields = array_merge(CRM_Core_BAO_UFGroup::getLocationFields(), $addressCustomFields);
@@ -240,8 +240,7 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
       foreach ($value as $key1 => $value1) {
         //CRM-2676, replacing the conflict for same custom field name from different custom group.
         if ($customFieldId = CRM_Core_BAO_CustomField::getKeyID($key1)) {
-          $customGroupId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $customFieldId, 'custom_group_id');
-          $customGroupName = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $customGroupId, 'title');
+          $customGroupName = CRM_Core_BAO_CustomField::getField($customFieldId)['custom_group']['title'];
           $this->_mapperFields[$key][$key1] = $value1['title'] . ' :: ' . $customGroupName;
           if (in_array($key1, $addressCustomFields)) {
             $noSearchable[] = $value1['title'] . ' :: ' . $customGroupName;
@@ -578,12 +577,7 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
    *   List of errors to be posted back to the form.
    */
   public static function formRuleSubType($fieldType, $groupType, &$errors) {
-    if (in_array($fieldType, [
-      'Participant',
-      'Contribution',
-      'Membership',
-      'Activity',
-    ])) {
+    if (in_array($fieldType, ['Participant', 'Contribution', 'Membership', 'Activity'])) {
       $individualSubTypes = CRM_Contact_BAO_ContactType::subTypes('Individual');
       foreach ($groupType as $value) {
         if (!in_array($value, $individualSubTypes) &&
@@ -725,11 +719,11 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
    *   list of errors to be posted back to the form
    */
   public static function formRule($fields, $files, $self) {
-    $is_required = CRM_Utils_Array::value('is_required', $fields, FALSE);
-    $is_registration = CRM_Utils_Array::value('is_registration', $fields, FALSE);
-    $is_view = CRM_Utils_Array::value('is_view', $fields, FALSE);
-    $in_selector = CRM_Utils_Array::value('in_selector', $fields, FALSE);
-    $is_active = CRM_Utils_Array::value('is_active', $fields, FALSE);
+    $is_required = $fields['is_required'] ?? FALSE;
+    $is_registration = $fields['is_registration'] ?? FALSE;
+    $is_view = $fields['is_view'] ?? FALSE;
+    $in_selector = $fields['in_selector'] ?? FALSE;
+    $is_active = $fields['is_active'] ?? FALSE;
 
     $errors = [];
     if ($is_view && $is_registration) {
@@ -744,12 +738,7 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
       $errors['field_name'] = ts('Please select a field name');
     }
 
-    if ($in_selector && in_array($entityName, [
-      'Contribution',
-      'Participant',
-      'Membership',
-      'Activity',
-    ])
+    if ($in_selector && in_array($entityName, ['Contribution', 'Participant', 'Membership', 'Activity'])
     ) {
       $errors['in_selector'] = ts("'Results Column' cannot be checked for %1 fields.", [1 => $entityName]);
     }
@@ -760,9 +749,7 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
       //get custom field id
       $customFieldId = explode('_', $profileFieldName);
       if ($customFieldId[0] == 'custom') {
-        $customField = new CRM_Core_DAO_CustomField();
-        $customField->id = $customFieldId[1];
-        $customField->find(TRUE);
+        $customField = CRM_Core_BAO_CustomField::getFieldObject($customFieldId[1]);
         $isCustomField = TRUE;
         if (!empty($fields['field_id']) && !$customField->is_active && $is_active) {
           $errors['field_name'] = ts('Cannot set this field "Active" since the selected custom field is disabled.');
@@ -979,10 +966,8 @@ class CRM_UF_Form_Field extends CRM_Core_Form {
   protected function setMessageIfCountryNotAboveState($fieldName, $locationTypeID, $weight, $ufGroupID) {
     $message = ts('For best results, the Country field should precede the State-Province field in your Profile form. You can use the up and down arrows on field listing page for this profile to change the order of these fields or manually edit weight for Country/State-Province Field.');
 
-    if (in_array($fieldName, [
-      'country',
-      'state_province',
-    ]) && count(CRM_Core_Config::singleton()->countryLimit) > 1
+    if (in_array($fieldName, ['country', 'state_province']) &&
+      count(CRM_Core_Config::singleton()->countryLimit) > 1
     ) {
       // get state or country field weight if exists
       $ufFieldDAO = new CRM_Core_DAO_UFField();

@@ -362,7 +362,7 @@ class CRM_Iats_Transaction {
           $result['message'] = $result['auth_response'] = empty($data['authResponse']) ? '' : trim($data['authResponse']);
         }
         else {
-          $result['message'] = $result['result']['errorMessages'];
+          $result['message'] = implode(',', $result['result']['errorMessages']);
         }
         /* in case of critical failure set the series to pending */
         switch ($result['auth_code']) {
@@ -448,7 +448,8 @@ class CRM_Iats_Transaction {
         $key = ''; // date('YmdHis');
       }
       else {
-        $display = strftime('%B %e, %Y', $start_date);
+        // display of the future date option to the user
+        $display = CRM_Utils_Date::customFormatTs($start_date,Civi::settings()->get('dateformatFull'));
       }
       $start_dates[$key] = $display;
       $start_date += (24 * 60 * 60);

@@ -32,6 +32,11 @@ abstract class CRM_Import_Form_MapField extends CRM_Import_Forms {
   protected $_mapperFields;
 
   /**
+   * @var bool
+   */
+  protected $shouldSortMapperFields = TRUE;
+
+  /**
    * Column headers, if we have them
    *
    * @var array
@@ -64,10 +69,17 @@ abstract class CRM_Import_Form_MapField extends CRM_Import_Forms {
     $this->addExpectedSmartyVariables(['highlightedRelFields', 'initHideBoxes']);
     $this->assign('columnNames', $this->getColumnHeaders());
     $this->assign('showColumnNames', $this->getSubmittedValue('skipColumnHeader') || $this->getSubmittedValue('dataSource') !== 'CRM_Import_DataSource');
-    $this->assign('highlightedFields', $this->getHighlightedFields());
+    $this->assign('highlightedFields', json_encode($this->getHighlightedFields()));
     $this->assign('dataValues', array_values($this->getDataRows([], 2)));
     $this->_mapperFields = $this->getAvailableFields();
-    asort($this->_mapperFields);
+    $fieldMappings = $this->getFieldMappings();
+    // Check if the import file headers match the selected import mappings, throw an error if it doesn't.
+    if (empty($_POST) && count($fieldMappings) > 0 && count($this->getColumnHeaders()) !== count($fieldMappings)) {
+      CRM_Core_Session::singleton()->setStatus(ts('The data columns in this import file appear to be different from the saved mapping. Please verify that you have selected the correct saved mapping before continuing.'));
+    }
+    if ($this->shouldSortMapperFields) {
+      asort($this->_mapperFields);
+    }
     parent::preProcess();
   }
 
@@ -228,7 +240,7 @@ abstract class CRM_Import_Form_MapField extends CRM_Import_Forms {
       // Eventually we hope to phase out the use of the civicrm_mapping data &
       // just use UserJob and Import Templates (UserJob records with 'is_template' = 1
       $mappedFieldData = $this->userJob['metadata']['import_mappings'][$columnNumber];
-      $mappedField = array_intersect_key(array_fill_keys(['name', 'column_number', 'entity_data'], TRUE), $mappedFieldData);
+      $mappedField = array_intersect_key($mappedFieldData, array_fill_keys(['name', 'column_number', 'entity_data'], TRUE));
       $mappedField['mapping_id'] = $mappingID;
     }
     else {
@@ -296,9 +308,6 @@ abstract class CRM_Import_Form_MapField extends CRM_Import_Forms {
         ->execute()
         ->indexBy('column_number');
 
-      if ((count($this->getColumnHeaders()) !== count($fieldMappings))) {
-        CRM_Core_Session::singleton()->setStatus(ts('The data columns in this import file appear to be different from the saved mapping. Please verify that you have selected the correct saved mapping before continuing.'));
-      }
       return (array) $fieldMappings;
     }
     return [];
@@ -500,6 +509,53 @@ abstract class CRM_Import_Form_MapField extends CRM_Import_Forms {
     }
     // Infer the default from the column names if we have them
     return $this->defaultFromHeader($columnHeader, $headerPatterns);
+  }
+
+  /**
+   * Get default values for the mapping.
+   *
+   * @return array
+   *
+   * @throws \CRM_Core_Exception
+   */
+  protected function getDefaults(): array {
+    $defaults = $mappingFailures = [];
+    $headerPatterns = $this->getHeaderPatterns();
+    $fieldMappings = $this->getFieldMappings();
+    foreach ($this->getColumnHeaders() as $i => $columnHeader) {
+      if ($this->getSubmittedValue('savedMapping')) {
+        $fieldMapping = $fieldMappings[$i] ?? NULL;
+        if (isset($fieldMappings[$i])) {
+          if (($fieldMapping['name'] === 'do_not_import')) {
+            $defaults["mapper[$i]"] = NULL;
+          }
+          elseif (array_key_exists($fieldMapping['name'], $this->getAvailableFields())) {
+            $defaults["mapper[$i]"] = $fieldMapping['name'];
+          }
+          else {
+            // The field from the saved mapping does not map to an available field.
+            // This could be because of an old, not-upgraded mapping or
+            // something we have failed to anticipate.
+            // In this case we should let the user know, but not
+            // set the default to the invalid field.
+            // See https://lab.civicrm.org/dev/core/-/issues/4781
+            // Note that we have made attempts (e.g 5.51) to upgrade mappings and
+            // there is code to remove a mapping if a custom field is deleted
+            // (but perhaps not disabled or acl-restricted) but we should also
+            // handle it here rather than rely on our other efforts.
+            $mappingFailures[] = $columnHeader;
+            $defaults["mapper[$i]"] = NULL;
+          }
+        }
+      }
+      if (!isset($defaults["mapper[$i]"]) && $this->getSubmittedValue('skipColumnHeader')) {
+        $defaults["mapper[$i]"] = $this->defaultFromHeader($columnHeader, $headerPatterns);
+      }
+    }
+    if (!$this->isSubmitted() && $mappingFailures) {
+      CRM_Core_Session::setStatus(ts('Unable to load saved mapping. Please ensure all fields are correctly mapped'));
+    }
+    return $defaults;
   }
 
 }

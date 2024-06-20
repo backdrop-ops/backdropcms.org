@@ -171,7 +171,7 @@ class CRM_Core_BAO_UFField extends CRM_Core_DAO_UFField {
     $ufField->field_type = $params['field_type'] ?? NULL;
     $ufField->field_name = $params['field_name'] ?? NULL;
     $ufField->website_type_id = $params['website_type_id'] ?? NULL;
-    if (is_null(CRM_Utils_Array::value('location_type_id', $params, ''))) {
+    if (array_key_exists('location_type_id', $params) && is_null($params['location_type_id'])) {
       // primary location type have NULL value in DB
       $ufField->whereAdd("location_type_id IS NULL");
     }
@@ -188,11 +188,11 @@ class CRM_Core_BAO_UFField extends CRM_Core_DAO_UFField {
   }
 
   /**
-   * Does profile consists of a multi-record custom field.
+   * Returns the id of the first multi-record custom group in this profile (if any).
    *
    * @param int $gId
    *
-   * @return bool
+   * @return int|false
    */
   public static function checkMultiRecordFieldExists($gId) {
     $queryString = "SELECT f.field_name
@@ -201,36 +201,18 @@ class CRM_Core_BAO_UFField extends CRM_Core_DAO_UFField {
                           AND  g.id = %1 AND f.field_name LIKE 'custom%'";
     $p = [1 => [$gId, 'Integer']];
     $dao = CRM_Core_DAO::executeQuery($queryString, $p);
-    $customFieldIds = [];
-    $isMultiRecordFieldPresent = FALSE;
+
     while ($dao->fetch()) {
-      if ($customId = CRM_Core_BAO_CustomField::getKeyID($dao->field_name)) {
-        if (is_numeric($customId)) {
-          $customFieldIds[] = $customId;
+      $customId = CRM_Core_BAO_CustomField::getKeyID($dao->field_name);
+      if ($customId && is_numeric($customId)) {
+        $multiRecordGroupId = CRM_Core_BAO_CustomField::isMultiRecordField($customId);
+        if ($multiRecordGroupId) {
+          return $multiRecordGroupId;
         }
       }
     }
 
-    if (!empty($customFieldIds) && count($customFieldIds) == 1) {
-      $customFieldId = array_pop($customFieldIds);
-      $isMultiRecordFieldPresent = CRM_Core_BAO_CustomField::isMultiRecordField($customFieldId);
-    }
-    elseif (count($customFieldIds) > 1) {
-      $customFieldIds = implode(", ", $customFieldIds);
-      $queryString = "
-      SELECT cg.id as cgId
- FROM civicrm_custom_group cg
- INNER JOIN civicrm_custom_field cf
- ON cg.id = cf.custom_group_id
-WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
-
-      $dao = CRM_Core_DAO::executeQuery($queryString);
-      if ($dao->fetch()) {
-        $isMultiRecordFieldPresent = ($dao->cgId) ? $dao->cgId : FALSE;
-      }
-    }
-
-    return $isMultiRecordFieldPresent;
+    return FALSE;
   }
 
   /**
@@ -248,7 +230,7 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
       $oldWeight = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFField', !empty($params['id']) ? $params['id'] : $params['field_id'], 'weight', 'id');
     }
     $fieldValues = ['uf_group_id' => !empty($params['uf_group_id']) ? $params['uf_group_id'] : $params['group_id']];
-    return CRM_Utils_Weight::updateOtherWeights('CRM_Core_DAO_UFField', $oldWeight, CRM_Utils_Array::value('weight', $params, 0), $fieldValues);
+    return CRM_Utils_Weight::updateOtherWeights('CRM_Core_DAO_UFField', $oldWeight, $params['weight'] ?? 0, $fieldValues);
   }
 
   /**

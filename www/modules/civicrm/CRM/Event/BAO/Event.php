@@ -9,6 +9,8 @@
  +--------------------------------------------------------------------+
  */
 
+use Civi\Api4\Event\AuthorizeRecordEvent;
+
 /**
  *
  * @package CRM
@@ -102,7 +104,7 @@ class CRM_Event_BAO_Event extends CRM_Event_DAO_Event implements \Civi\Core\Hook
         // unless we are explicitly trying to create a new template
         // we want to set the `is_template` flag on the clone to false
         // so that the copy is a new event rather than a new template
-        $params['is_template'] = $params['is_template'] ?? 0;
+        $params['is_template'] ??= 0;
 
         //fix for api from template creation bug
         civicrm_api4('ActionSchedule', 'update', [
@@ -121,10 +123,6 @@ class CRM_Event_BAO_Event extends CRM_Event_DAO_Event implements \Civi\Core\Hook
 
     $event = self::add($params);
     CRM_Price_BAO_PriceSet::setPriceSets($params, $event, 'event');
-    if (is_a($event, 'CRM_Core_Error')) {
-      CRM_Core_DAO::transaction('ROLLBACK');
-      return $event;
-    }
 
     $contactId = CRM_Core_Session::getLoggedInContactID();
     if (!$contactId) {
@@ -178,8 +176,10 @@ class CRM_Event_BAO_Event extends CRM_Event_DAO_Event implements \Civi\Core\Hook
   public static function self_hook_civicrm_pre(\Civi\Core\Event\PreEvent $event) {
     if ($event->action === 'delete' && $event->id) {
 
-      $extends = ['event'];
+      $extends = ['Event'];
       $groupTree = CRM_Core_BAO_CustomGroup::getGroupDetail(NULL, NULL, $extends);
+      // @todo is this custom field loop necessary? The cascade delete on the
+      // db foreign key should do it already.
       foreach ($groupTree as $values) {
         $query = "DELETE FROM %1 WHERE entity_id = %2";
         CRM_Core_DAO::executeQuery($query, [
@@ -268,7 +268,7 @@ class CRM_Event_BAO_Event extends CRM_Event_DAO_Event implements \Civi\Core\Hook
     $query = "
 SELECT `id`, `title`, `start_date`
 FROM   `civicrm_event`
-WHERE  ( civicrm_event.is_template IS NULL OR civicrm_event.is_template = 0 )";
+WHERE  ( civicrm_event.is_template  = 0 )";
 
     if (!empty($id)) {
       $op = is_array($id) ? 'IN' : '=';
@@ -277,11 +277,15 @@ WHERE  ( civicrm_event.is_template IS NULL OR civicrm_event.is_template = 0 )";
     }
     elseif ($all == 0) {
       // find only events ending in the future
+      // The STR_TO_DATE is because in mariadb with strict mode off you can
+      // have dates like '0000-00-00' and we want to include those here, but a
+      // comparison to '' or '0000-00-00' directly will error in mysql8 with
+      // strict mode on. So this works for both.
       $endDate = date('YmdHis');
       $query .= "
         AND ( `end_date` >= {$endDate} OR
           (
-            ( end_date IS NULL OR end_date = '' ) AND start_date >= {$endDate}
+            ( end_date IS NULL OR end_date = STR_TO_DATE('', '%Y%m%d%H%i%s') ) AND start_date >= {$endDate}
           )
         )";
     }
@@ -363,8 +367,8 @@ WHERE  ( civicrm_event.is_template IS NULL OR civicrm_event.is_template = 0 )";
 SELECT     count(id) as total_events
 FROM       civicrm_event
 WHERE      civicrm_event.is_active = 1 AND
-           ( civicrm_event.is_template IS NULL OR civicrm_event.is_template = 0) AND
-           civicrm_event.start_date >= DATE_SUB( NOW(), INTERVAL 7 day )
+           civicrm_event.is_template = 0 AND
+           (civicrm_event.start_date >= DATE_SUB(NOW(), INTERVAL 7 day) OR (civicrm_event.end_date IS NOT NULL AND civicrm_event.end_date >= NOW()))
            $validEventIDs";
 
     $dao = CRM_Core_DAO::executeQuery($query);
@@ -373,9 +377,7 @@ WHERE      civicrm_event.is_active = 1 AND
       $eventSummary['total_events'] = $dao->total_events;
     }
 
-    if (empty($eventSummary) ||
-      $dao->total_events == 0
-    ) {
+    if (empty($eventSummary['total_events'])) {
       return $eventSummary;
     }
 
@@ -425,8 +427,8 @@ LEFT JOIN  civicrm_tell_friend ON ( civicrm_tell_friend.entity_id = civicrm_even
 LEFT JOIN  civicrm_pcp_block ON ( civicrm_pcp_block.entity_id = civicrm_event.id AND civicrm_pcp_block.entity_table = 'civicrm_event')
 LEFT JOIN  civicrm_recurring_entity ON ( civicrm_event.id = civicrm_recurring_entity.entity_id AND civicrm_recurring_entity.entity_table = 'civicrm_event' )
 WHERE      civicrm_event.is_active = 1 AND
-           ( civicrm_event.is_template IS NULL OR civicrm_event.is_template = 0) AND
-           civicrm_event.start_date >= DATE_SUB( NOW(), INTERVAL 7 day )
+           civicrm_event.is_template = 0 AND
+           (civicrm_event.start_date >= DATE_SUB(NOW(), INTERVAL 7 day) OR (civicrm_event.end_date IS NOT NULL AND civicrm_event.end_date >= NOW()))
            $validEventIDs
 ORDER BY   civicrm_event.start_date ASC
 $event_summary_limit
@@ -579,7 +581,7 @@ $event_summary_limit
     $countedRoles = CRM_Event_PseudoConstant::participantRole(NULL, 'filter = 1');
     $nonCountedRoles = CRM_Event_PseudoConstant::participantRole(NULL, '( filter = 0 OR filter IS NULL )');
     $countedStatus = CRM_Event_PseudoConstant::participantStatus(NULL, 'is_counted = 1');
-    $nonCountedStatus = CRM_Event_PseudoConstant::participantStatus(NULL, '( is_counted = 0 OR is_counted IS NULL )');
+    $nonCountedStatus = CRM_Event_PseudoConstant::participantStatus(NULL, 'is_counted = 0');
 
     $countedStatusANDRoles = array_merge($countedStatus, $countedRoles);
     $nonCountedStatusANDRoles = array_merge($nonCountedStatus, $nonCountedRoles);
@@ -669,9 +671,9 @@ $event_summary_limit
    *
    * @return array
    */
-  public static function &getMapInfo(&$id) {
+  public static function getMapInfo($id): array {
 
-    $sql = "
+    $sql = '
 SELECT
    civicrm_event.id AS event_id,
    civicrm_event.title AS display_name,
@@ -693,10 +695,9 @@ FROM
    LEFT JOIN civicrm_location_type ON ( civicrm_location_type.id = civicrm_address.location_type_id )
 WHERE civicrm_address.geo_code_1 IS NOT NULL
   AND civicrm_address.geo_code_2 IS NOT NULL
-  AND civicrm_event.id = " . CRM_Utils_Type::escape($id, 'Integer');
+  AND civicrm_event.id = ' . CRM_Utils_Type::escape($id, 'Integer');
 
-    $dao = new CRM_Core_DAO();
-    $dao->query($sql);
+    $dao = CRM_Core_DAO::executeQuery($sql);
 
     $locations = [];
 
@@ -827,7 +828,7 @@ LEFT JOIN civicrm_option_value ON (
                                     civicrm_event.event_type_id = civicrm_option_value.value AND
                                     civicrm_option_value.option_group_id = %1 )
 WHERE civicrm_event.is_active = 1
-      AND (is_template = 0 OR is_template IS NULL)
+      AND is_template = 0
       {$publicCondition}
       {$dateCondition}";
 
@@ -1149,8 +1150,6 @@ WHERE civicrm_event.is_active = 1
           $participantParams
         );
 
-        $sessions = CRM_Event_Cart_BAO_Conference::get_participant_sessions($participantId);
-
         // @todo - the goal is that all params available to the message template are explicitly defined here rather than
         // 'in a smattering of places'. Note that leakage can happen between mailings when not explicitly defined.
         if ($postProfileID) {
@@ -1166,15 +1165,12 @@ WHERE civicrm_event.is_active = 1
           'email' => $notifyEmail,
           'confirm_email_text' => $values['event']['confirm_email_text'] ?? NULL,
           'isShowLocation' => $values['event']['is_show_location'] ?? NULL,
-          // The concept of contributeMode is deprecated.
-          'contributeMode' => $template->_tpl_vars['contributeMode'] ?? NULL,
           'customPre' => $profilePre[0],
           'customPre_grouptitle' => empty($profilePre[1]) ? NULL : [CRM_Core_BAO_UFGroup::getFrontEndTitle((int) $preProfileID)],
           'customPost' => $profilePost[0],
           'customPost_grouptitle' => $customPostTitles,
           'participantID' => $participantId,
           'contactID' => $contactID,
-          'conference_sessions' => $sessions,
           'credit_card_number' => CRM_Utils_System::mungeCreditCard(CRM_Utils_Array::value('credit_card_number', $participantParams)),
           'credit_card_exp_date' => CRM_Utils_Date::mysqlToIso(CRM_Utils_Date::format(CRM_Utils_Array::value('credit_card_exp_date', $participantParams))),
           'selfcancelxfer_time' => abs($values['event']['selfcancelxfer_time']),
@@ -1195,13 +1191,13 @@ WHERE civicrm_event.is_active = 1
 
         $sendTemplateParams = [
           'workflow' => 'event_online_receipt',
-          'contactId' => $contactID,
           'isTest' => $isTest,
           'tplParams' => $tplParams,
           'PDFFilename' => ts('confirmation') . '.pdf',
           'modelProps' => [
             'participantID' => (int) $participantId,
             'eventID' => (int) $values['event']['id'],
+            'contactID' => (int) $contactID,
           ],
         ];
 
@@ -1209,8 +1205,6 @@ WHERE civicrm_event.is_active = 1
         $displayAddress = $values['address'] ?? NULL;
         if ($displayAddress) {
           $sendTemplateParams['tplParams']['address'] = $displayAddress;
-          // The concept of contributeMode is deprecated.
-          $sendTemplateParams['tplParams']['contributeMode'] = NULL;
         }
 
         // set lineItem details
@@ -1271,7 +1265,7 @@ WHERE civicrm_event.is_active = 1
    * Add the custom fields OR array of participant's profile info.
    *
    * @param int $id
-   * @param string $name
+   * @param string $name eg. customPre or additionalCustomPost to denote the profile location.
    * @param int $cid
    * @param \CRM_Core_Smarty $template
    * @param int $participantId
@@ -1378,9 +1372,7 @@ WHERE civicrm_event.is_active = 1
             while ($grp->fetch()) {
               $grpTitles[] = $grp->title;
             }
-            if (!empty($grpTitles) &&
-              CRM_Utils_Array::value('title', CRM_Utils_Array::value('group', $fields))
-            ) {
+            if (!empty($grpTitles) && !empty($fields['group']['title'])) {
               $values[$fields['group']['title']] = implode(', ', $grpTitles);
             }
             unset($fields['group']);
@@ -1443,22 +1435,15 @@ WHERE civicrm_event.is_active = 1
       }
     }
 
-    if (count($val)) {
-      $template->assign($name, $val);
-    }
-
-    if (count($groupTitles)) {
-      $template->assign($name . '_grouptitle', $groupTitles);
-    }
+    $template->assign($name, $val);
+    $template->assign($name . '_grouptitle', $groupTitles);
 
     //return if we only require array of participant's info.
     if ($returnResults) {
-      if (count($val)) {
+      if ($val) {
         return [$val, $groupTitles];
       }
-      else {
-        return NULL;
-      }
+      return NULL;
     }
   }
 
@@ -1616,10 +1601,11 @@ WHERE civicrm_event.is_active = 1
             $idx = $detailName . '_id';
             $values[$index] = $params[$idx];
           }
-          elseif ($fieldName == 'im') {
+          elseif ($fieldName === 'im') {
             $providerName = NULL;
             if ($providerId = $detailName . '-provider_id') {
-              $providerName = $imProviders[$params[$providerId]] ?? NULL;
+              $inputProvider = $params[$providerId] ?? '';
+              $providerName = $imProviders[$inputProvider] ?? NULL;
             }
             if ($providerName) {
               $values[$index] = $params[$detailName] . " (" . $providerName . ")";
@@ -1628,7 +1614,7 @@ WHERE civicrm_event.is_active = 1
               $values[$index] = $params[$detailName];
             }
           }
-          elseif ($fieldName == 'phone') {
+          elseif ($fieldName === 'phone') {
             $phoneExtField = str_replace('phone', 'phone_ext', $detailName);
             if (isset($params[$phoneExtField])) {
               $values[$index] = $params[$detailName] . " (" . $params[$phoneExtField] . ")";
@@ -1697,8 +1683,6 @@ WHERE  id = $cfID
                   $customVal = $params[$name];
                 }
                 //take the custom field options
-                $returnProperties = [$name => 1];
-                $query = new CRM_Contact_BAO_Query($params, $returnProperties, $fields);
                 if (!$skip) {
                   $displayValue = CRM_Core_BAO_CustomField::displayValue($customVal, $cfID);
                 }
@@ -2038,7 +2022,7 @@ WHERE  ce.loc_block_id = $locBlockId";
     $participant = new CRM_Event_DAO_Participant();
     $participant->copyValues($params);
 
-    $participant->is_test = CRM_Utils_Array::value('is_test', $params, 0);
+    $participant->is_test = $params['is_test'] ?? 0;
     $participant->selectAdd();
     $participant->selectAdd('status_id');
     if ($participant->find(TRUE) && array_key_exists($participant->status_id, $statusTypes)) {
@@ -2055,66 +2039,68 @@ WHERE  ce.loc_block_id = $locBlockId";
    *
    * @param int $eventId
    * @param int $permissionType
+   * @param int $userId
    *
    * @return bool|array
    *   Whether the user has permission for this event (or if eventId=NULL an array of permissions)
    * @throws \CRM_Core_Exception
    */
-  public static function checkPermission(int $eventId, $permissionType = CRM_Core_Permission::VIEW) {
+  public static function checkPermission(int $eventId, $permissionType = CRM_Core_Permission::VIEW, $userId = NULL) {
+    $userId ??= CRM_Core_Session::getLoggedInContactID();
     switch ($permissionType) {
       case CRM_Core_Permission::EDIT:
         // We also set the cached "view" permission to TRUE if "edit" is TRUE
-        if (isset(Civi::$statics[__CLASS__]['permission']['edit'][$eventId])) {
-          return Civi::$statics[__CLASS__]['permission']['edit'][$eventId];
+        if (isset(Civi::$statics[__CLASS__]["perm_$userId"]['edit'][$eventId])) {
+          return Civi::$statics[__CLASS__]["perm_$userId"]['edit'][$eventId];
         }
-        Civi::$statics[__CLASS__]['permission']['edit'][$eventId] = FALSE;
+        Civi::$statics[__CLASS__]["perm_$userId"]['edit'][$eventId] = FALSE;
 
         [$allEvents, $createdEvents] = self::checkPermissionGetInfo($eventId);
         // Note: for a multisite setup, a user with edit all events, can edit all events
         // including those from other sites
-        if (($permissionType == CRM_Core_Permission::EDIT) && CRM_Core_Permission::check('edit all events')) {
-          Civi::$statics[__CLASS__]['permission']['edit'][$eventId] = TRUE;
-          Civi::$statics[__CLASS__]['permission']['view'][$eventId] = TRUE;
+        if (($permissionType == CRM_Core_Permission::EDIT) && CRM_Core_Permission::check('edit all events', $userId)) {
+          Civi::$statics[__CLASS__]["perm_$userId"]['edit'][$eventId] = TRUE;
+          Civi::$statics[__CLASS__]["perm_$userId"]['view'][$eventId] = TRUE;
         }
-        elseif (in_array($eventId, CRM_ACL_API::group(CRM_Core_Permission::EDIT, NULL, 'civicrm_event', $allEvents, $createdEvents))) {
-          Civi::$statics[__CLASS__]['permission']['edit'][$eventId] = TRUE;
-          Civi::$statics[__CLASS__]['permission']['view'][$eventId] = TRUE;
+        elseif (in_array($eventId, CRM_ACL_API::group(CRM_Core_Permission::EDIT, $userId, 'civicrm_event', $allEvents, $createdEvents))) {
+          Civi::$statics[__CLASS__]["perm_$userId"]['edit'][$eventId] = TRUE;
+          Civi::$statics[__CLASS__]["perm_$userId"]['view'][$eventId] = TRUE;
         }
-        return Civi::$statics[__CLASS__]['permission']['edit'][$eventId];
+        return Civi::$statics[__CLASS__]["perm_$userId"]['edit'][$eventId];
 
       case CRM_Core_Permission::VIEW:
-        if (isset(Civi::$statics[__CLASS__]['permission']['view'][$eventId])) {
-          return Civi::$statics[__CLASS__]['permission']['view'][$eventId];
+        if (isset(Civi::$statics[__CLASS__]["perm_$userId"]['view'][$eventId])) {
+          return Civi::$statics[__CLASS__]["perm_$userId"]['view'][$eventId];
         }
-        Civi::$statics[__CLASS__]['permission']['view'][$eventId] = FALSE;
+        Civi::$statics[__CLASS__]["perm_$userId"]['view'][$eventId] = FALSE;
 
         [$allEvents, $createdEvents] = self::checkPermissionGetInfo($eventId);
-        if (CRM_Core_Permission::check('access CiviEvent')) {
-          if (in_array($eventId, CRM_ACL_API::group(CRM_Core_Permission::VIEW, NULL, 'civicrm_event', $allEvents, array_keys($createdEvents)))) {
+        if (CRM_Core_Permission::check('access CiviEvent', $userId)) {
+          if (in_array($eventId, CRM_ACL_API::group(CRM_Core_Permission::VIEW, $userId, 'civicrm_event', $allEvents, array_keys($createdEvents)))) {
             // User created this event so has permission to view it
-            return Civi::$statics[__CLASS__]['permission']['view'][$eventId] = TRUE;
+            return Civi::$statics[__CLASS__]["perm_$userId"]['view'][$eventId] = TRUE;
           }
-          if (CRM_Core_Permission::check('view event participants')) {
+          if (CRM_Core_Permission::check('view event participants', $userId)) {
             // User has permission to view all events
             // use case: allow "view all events" but NOT "edit all events"
             // so for a normal site allow users with these two permissions to view all events AND
             // at the same time also allow any hook to override if needed.
-            if (in_array($eventId, CRM_ACL_API::group(CRM_Core_Permission::VIEW, NULL, 'civicrm_event', $allEvents, array_keys($allEvents)))) {
-              Civi::$statics[__CLASS__]['permission']['view'][$eventId] = TRUE;
+            if (in_array($eventId, CRM_ACL_API::group(CRM_Core_Permission::VIEW, $userId, 'civicrm_event', $allEvents, array_keys($allEvents)))) {
+              Civi::$statics[__CLASS__]["perm_$userId"]['view'][$eventId] = TRUE;
             }
           }
         }
-        return Civi::$statics[__CLASS__]['permission']['view'][$eventId];
+        return Civi::$statics[__CLASS__]["perm_$userId"]['view'][$eventId];
 
       case CRM_Core_Permission::DELETE:
-        if (isset(Civi::$statics[__CLASS__]['permission']['delete'][$eventId])) {
-          return Civi::$statics[__CLASS__]['permission']['delete'][$eventId];
+        if (isset(Civi::$statics[__CLASS__]["perm_$userId"]['delete'][$eventId])) {
+          return Civi::$statics[__CLASS__]["perm_$userId"]['delete'][$eventId];
         }
-        Civi::$statics[__CLASS__]['permission']['delete'][$eventId] = FALSE;
-        if (CRM_Core_Permission::check('delete in CiviEvent')) {
-          Civi::$statics[__CLASS__]['permission']['delete'][$eventId] = TRUE;
+        Civi::$statics[__CLASS__]["perm_$userId"]['delete'][$eventId] = FALSE;
+        if (CRM_Core_Permission::check('delete in CiviEvent', $userId)) {
+          Civi::$statics[__CLASS__]["perm_$userId"]['delete'][$eventId] = TRUE;
         }
-        return Civi::$statics[__CLASS__]['permission']['delete'][$eventId];
+        return Civi::$statics[__CLASS__]["perm_$userId"]['delete'][$eventId];
 
       default:
         return FALSE;
@@ -2203,6 +2189,35 @@ WHERE  ce.loc_block_id = $locBlockId";
     }
 
     return Civi::$statics[__CLASS__]['permissions'];
+  }
+
+  /**
+   * Check event access.
+   * @see \Civi\Api4\Utils\CoreUtil::checkAccessRecord
+   */
+  public static function self_civi_api4_authorizeRecord(AuthorizeRecordEvent $e): void {
+    $record = $e->getRecord();
+    $userID = $e->getUserID();
+
+    switch ($e->getActionName()) {
+      case 'create':
+        $e->setAuthorized(CRM_Core_Permission::check('access CiviEvent', $userID));
+        return;
+
+      case 'get':
+        $actionType = CRM_Core_Permission::VIEW;
+        break;
+
+      case 'delete':
+        $actionType = CRM_Core_Permission::DELETE;
+        break;
+
+      default:
+        $actionType = CRM_Core_Permission::EDIT;
+        break;
+    }
+
+    $e->setAuthorized(self::checkPermission($record['id'], $actionType, $userID));
   }
 
   /**

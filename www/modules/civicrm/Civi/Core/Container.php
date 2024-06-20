@@ -188,6 +188,7 @@ class Container {
     foreach ($basicCaches as $cacheSvc => $cacheGrp) {
       $definitionParams = [
         'name' => $cacheGrp . (in_array($cacheGrp, $verSuffixCaches) ? $verSuffix : ''),
+        'service' => $cacheSvc,
         'type' => ['*memory*', 'SqlGroup', 'ArrayCache'],
       ];
       // For Caches that we don't really care about the ttl for and/or maybe accessed
@@ -239,20 +240,23 @@ class Container {
     $container->setDefinition('pear_mail', new Definition('Mail'))
       ->setFactory('CRM_Utils_Mail::createMailer')->setPublic(TRUE);
 
-    $container->setDefinition('crypto.registry', new Definition('Civi\Crypto\CryptoRegistry'))
-      ->setFactory('Civi\Crypto\CryptoRegistry::createDefaultRegistry')->setPublic(TRUE);
-
-    $container->setDefinition('crypto.token', new Definition('Civi\Crypto\CryptoToken', []))
-      ->setPublic(TRUE);
-
-    $container->setDefinition('crypto.jwt', new Definition('Civi\Crypto\CryptoJwt', []))
-      ->setPublic(TRUE);
-
+    $bootServiceTypes = [
+      'cache.settings' => \CRM_Utils_Cache_Interface::class,
+      'dispatcher.boot' => CiviEventDispatcher::class,
+      'lockManager' => LockManager::class,
+      'paths' => Paths::class,
+      'runtime' => \CRM_Core_Config_Runtime::class,
+      'settings_manager' => SettingsManager::class,
+      'userPermissionClass' => \CRM_Core_Permission_Base::class,
+      'userSystem' => \CRM_Utils_System_Base::class,
+    ];
     if (empty(\Civi::$statics[__CLASS__]['boot'])) {
       throw new \RuntimeException('Cannot initialize container. Boot services are undefined.');
     }
     foreach (\Civi::$statics[__CLASS__]['boot'] as $bootService => $def) {
-      $container->setDefinition($bootService, new Definition())->setSynthetic(TRUE)->setPublic(TRUE);
+      $container->setDefinition($bootService, new Definition($bootServiceTypes[$bootService] ?? NULL))
+        ->setSynthetic(TRUE)
+        ->setPublic(TRUE);
     }
 
     // Expose legacy singletons as services in the container.
@@ -352,6 +356,11 @@ class Container {
         []
       ))->addTag('kernel.event_subscriber')->setPublic(TRUE);
     }
+    $container->setDefinition("crm_financial_trxn_tokens", new Definition(
+      'CRM_Financial_FinancialTrxnTokens',
+      []
+    ))->addTag('kernel.event_subscriber')->setPublic(TRUE);
+
     $container->setDefinition('civi_token_impliedcontext', new Definition(
       'Civi\Token\ImpliedContextSubscriber',
       []
@@ -386,7 +395,13 @@ class Container {
     ))->addTag('kernel.event_subscriber')->setPublic(TRUE);
 
     $dispatcherDefn = $container->getDefinition('dispatcher');
-    foreach (\CRM_Core_DAO_AllCoreTables::getBaoClasses() as $baoEntity => $baoClass) {
+    // Get all declared BAO classes
+    $baoClasses = \CRM_Core_DAO_AllCoreTables::getBaoClasses();
+    // "Extra" BAO classes that don't have a DAO but still need to listen to hooks
+    $baoClasses[] = \CRM_Core_BAO_CustomValue::class;
+    foreach ($baoClasses as $key => $baoClass) {
+      // Key will be a valid entity name for all but the "extra" classes which don't have a DAO entity.
+      $baoEntity = is_numeric($key) ? NULL : $key;
       $listenerMap = EventScanner::findListeners($baoClass, $baoEntity);
       if ($listenerMap) {
         $file = (new \ReflectionClass($baoClass))->getFileName();
@@ -415,7 +430,15 @@ class Container {
    * @return \Civi\Angular\Manager
    */
   public function createAngularManager() {
-    return new \Civi\Angular\Manager(\CRM_Core_Resources::singleton());
+    $moduleEnvId = md5(\CRM_Core_Config_Runtime::getId());
+    $angCache = \CRM_Utils_Cache::create([
+      'name' => substr('angular_' . $moduleEnvId, 0, 32),
+      'service' => 'angular_manager',
+      'type' => ['*memory*', 'SqlGroup', 'ArrayCache'],
+      'withArray' => 'fast',
+      'prefetch' => TRUE,
+    ]);
+    return new \Civi\Angular\Manager(\CRM_Core_Resources::singleton(), $angCache);
   }
 
   /**

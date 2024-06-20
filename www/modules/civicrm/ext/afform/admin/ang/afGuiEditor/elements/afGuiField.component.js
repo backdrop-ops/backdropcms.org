@@ -47,6 +47,19 @@
             inputTypes.push(type);
           }
         });
+        // Quick-add links for autocompletes
+        this.quickAddLinks = [];
+        let allowedEntity = (ctrl.getFkEntity() || {}).entity;
+        let allowedEntities = (allowedEntity === 'Contact') ? ['Individual', 'Household', 'Organization'] : [allowedEntity];
+        (CRM.config.quickAdd || []).forEach((link) => {
+          if (allowedEntities.includes(link.entity)) {
+            this.quickAddLinks.push({
+              id: link.path,
+              icon: link.icon,
+              text: link.title,
+            });
+          }
+        });
         this.searchOperators = CRM.afAdmin.search_operators;
         // If field has limited operators, set appropriately
         if (ctrl.fieldDefn.operators && ctrl.fieldDefn.operators.length) {
@@ -124,7 +137,7 @@
 
       $scope.hasOptions = function() {
         var inputType = $scope.getProp('input_type');
-        return _.contains(['CheckBox', 'Radio', 'Select'], inputType) && !(inputType === 'CheckBox' && !ctrl.getDefn().options);
+        return _.contains(['CheckBox', 'Radio', 'Select'], inputType) && !(inputType === 'CheckBox' && ctrl.getDefn().data_type === 'Boolean');
       };
 
       this.getOptions = function() {
@@ -142,7 +155,7 @@
           }
           return entityRefOptions;
         }
-        return ctrl.getDefn().options || ($scope.getProp('input_type') === 'CheckBox' ? null : yesNo);
+        return ctrl.getDefn().options || (ctrl.getDefn().data_type === 'Boolean' ? yesNo : null);
       };
 
       $scope.resetOptions = function() {
@@ -165,7 +178,7 @@
             return defn.options || defn.data_type === 'Boolean';
 
           case 'Select':
-            return defn.options || defn.data_type === 'Boolean' || defn.input_type === 'EntityRef' || (defn.input_type === 'Date' && ctrl.isSearch());
+            return defn.options || defn.data_type === 'Boolean' || (defn.input_type === 'EntityRef' && !ctrl.isSearch()) || (defn.input_type === 'Date' && ctrl.isSearch());
 
           case 'Date':
             return defn.input_type === 'Date';
@@ -181,6 +194,7 @@
             return !(defn.options || defn.data_type === 'Boolean');
 
           case 'DisplayOnly':
+          case 'Hidden':
             return true;
 
           default:
@@ -266,6 +280,52 @@
         }
       };
 
+      this.defaultDateType = function(newValue) {
+        if (arguments.length) {
+          if (newValue === 'relative') {
+            getSet('afform_default', 'now +0 day');
+          }
+          if (newValue === 'now') {
+            getSet('afform_default', 'now');
+          }
+          if (newValue === 'fixed') {
+            getSet('afform_default', '');
+          }
+        }
+        if (this.fieldDefn.input_type === 'Date') {
+          const defaultVal = getSet('afform_default');
+          if (defaultVal === 'now') {
+            return 'now';
+          }
+          else if (typeof defaultVal === 'string' && defaultVal.startsWith('now')) {
+            return 'relative';
+          }
+        }
+        return 'fixed';
+      };
+
+      this.defaultDateOffset = function(newValue) {
+        let defaultVals = getSet('afform_default').split(' ');
+        if (arguments.length) {
+          defaultVals[1] = newValue < 0 ? newValue : '+' + newValue;
+          getSet('afform_default', defaultVals.join(' '));
+        }
+        return parseInt(defaultVals[1], 10);
+      };
+
+      this.defaultDateUnit = function(newValue) {
+        let defaultVals = getSet('afform_default').split(' ');
+        if (arguments.length) {
+          defaultVals[2] = newValue;
+          getSet('afform_default', defaultVals.join(' '));
+        }
+        return defaultVals[2];
+      };
+
+      this.defaultDatePlural = function() {
+        return Math.abs(this.defaultDateOffset()) !== 1;
+      };
+
       $scope.defaultValueContains = function(val) {
         val = '' + val;
         var defaultVal = getSet('afform_default');
@@ -276,6 +336,7 @@
         val = '' + val;
         if (defaultValueShouldBeArray()) {
           if (!_.isArray(getSet('afform_default'))) {
+            ctrl.node.defn = ctrl.node.defn || {};
             ctrl.node.defn.afform_default = [];
           }
           if (_.includes(ctrl.node.defn.afform_default, val)) {
@@ -340,6 +401,10 @@
             if (ctrl.node.defn && ctrl.node.defn.input_attrs && 'multiple' in ctrl.node.defn.input_attrs && !ctrl.canBeMultiple()) {
               delete ctrl.node.defn.input_attrs.multiple;
               clearOut(ctrl.node, ['defn', 'input_attrs']);
+            }
+            // Boolean checkbox has no options
+            if (val === 'CheckBox' && ctrl.getDefn().data_type === 'Boolean' && ctrl.node.defn) {
+              delete ctrl.node.defn.options;
             }
           }
           setFieldDefn();

@@ -64,6 +64,16 @@ class SKEntity {
 
   /**
    * @param string $displayEntity
+   * @param bool $checkPermissions
+   * @return \Civi\Api4\Action\GetLinks
+   */
+  public static function getLinks(string $displayEntity, bool $checkPermissions = TRUE): Action\GetLinks {
+    return (new Action\GetLinks('SK_' . $displayEntity, __FUNCTION__))
+      ->setCheckPermissions($checkPermissions);
+  }
+
+  /**
+   * @param string $displayEntity
    * @return \Civi\Api4\Generic\CheckAccessAction
    * @throws \CRM_Core_Exception
    */
@@ -77,8 +87,8 @@ class SKEntity {
   public static function permissions(): array {
     return [
       'meta' => ['access CiviCRM'],
-      'refresh' => [['administer CiviCRM data', 'administer search_kit']],
-      'getRefreshDate' => [['administer CiviCRM data', 'administer search_kit']],
+      'refresh' => ['administer search_kit'],
+      'getRefreshDate' => ['administer search_kit'],
     ];
   }
 

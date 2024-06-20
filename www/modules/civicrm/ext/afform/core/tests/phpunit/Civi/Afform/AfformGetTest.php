@@ -34,6 +34,10 @@ class AfformGetTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
     $this->assertEquals($this->formName, $result['name']);
     $this->assertArrayNotHasKey('directive_name', $result);
     $this->assertArrayNotHasKey('has_base', $result);
+    // Check modified date is reasonable
+    $this->assertGreaterThan('2023-01-01 12:00:00', $result['modified_date']);
+    // Hopefully this test won't need updating for the next 2000 years or so...
+    $this->assertLessThan('4000-01-01 12:00:00', $result['modified_date']);
 
     // Select * should also return regular fields only
     $result = Afform::get()
@@ -71,8 +75,43 @@ class AfformGetTest extends \PHPUnit\Framework\TestCase implements HeadlessInter
     $this->assertArrayNotHasKey('#children', $layout[0]['#children'][0]);
   }
 
+  public function testGetHtmlEncoding(): void {
+    Afform::create(FALSE)
+      ->setLayoutFormat('shallow')
+      ->addValue('name', $this->formName)
+      ->addValue('title', 'Test Form')
+      ->addValue('layout', [
+        [
+          '#tag' => 'af-form',
+          'ctrl' => 'afform',
+          '#children' => [
+            [
+              '#tag' => 'af-entity',
+              'data' => "{contact_type: 'Individual', source: 'This isn\\'t \"quotes\"'}",
+              'type' => 'Contact',
+              'name' => 'Individual1',
+            ],
+          ],
+        ],
+      ])
+      ->execute();
+
+    $html = Afform::get(FALSE)
+      ->addWhere('name', '=', $this->formName)
+      ->setLayoutFormat('html')
+      ->execute()->single()['layout'];
+
+    $expected = <<<HTML
+data="{contact_type: 'Individual', source: 'This isn\'t &quot;quotes&quot;'}"
+HTML;
+
+    $this->assertStringContainsString($expected, $html);
+  }
+
   public function testAfformAutocomplete(): void {
-    $title = uniqid();
+    // Use a numeric title to test that the "search by id" feature
+    // doesn't kick in for Afforms (which don't have a numeric "id")
+    $title = (string) rand(1000, 999999);
     Afform::create()
       ->addValue('name', $this->formName)
       ->addValue('title', $title)

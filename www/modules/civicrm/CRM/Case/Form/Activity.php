@@ -50,6 +50,32 @@ class CRM_Case_Form_Activity extends CRM_Activity_Form_Activity {
   public $_caseTypeDefinition;
 
   /**
+   * This is here to avoid php 8 warnings but it should be converted to
+   * some mechanism more local to ChangeCaseStatus. It also doesn't make sense
+   * that it's an array.
+   *
+   * @var array
+   * @internal
+   */
+  public $_oldCaseStatus;
+
+  /**
+   * This is here to avoid php 8 warnings but it should be converted to
+   * some mechanism more local to ChangeCaseStatus. It also doesn't make sense
+   * that it's an array.
+   *
+   * @var array
+   * @internal
+   */
+  public $_defaultCaseStatus;
+
+  /**
+   * @var int
+   * Used by ChangeCaseStartDate. See getter/setter below.
+   */
+  private $openCaseActivityId;
+
+  /**
    * Build the form object.
    */
   public function preProcess() {
@@ -203,10 +229,7 @@ class CRM_Case_Form_Activity extends CRM_Activity_Form_Activity {
       }
       $this->assign('targetContactValues', empty($targetContactValues) ? FALSE : $targetContactValues);
 
-      if (isset($this->_encounterMedium)) {
-        $this->_defaults['medium_id'] = $this->_encounterMedium;
-      }
-      elseif (empty($this->_defaults['medium_id'])) {
+      if (empty($this->_defaults['medium_id'])) {
         // set default encounter medium CRM-4816
         $medium = CRM_Core_OptionGroup::values('encounter_medium', FALSE, FALSE, FALSE, 'AND is_default = 1');
         if (count($medium) == 1) {
@@ -266,22 +289,13 @@ class CRM_Case_Form_Activity extends CRM_Activity_Form_Activity {
 
     $this->assign('urlPath', 'civicrm/case/activity');
 
-    $encounterMediums = CRM_Case_PseudoConstant::encounterMedium();
-
     if ($this->_activityTypeFile == 'OpenCase' && $this->_action == CRM_Core_Action::UPDATE) {
       $this->getElement('activity_date_time')->freeze();
-
-      if ($this->_activityId) {
-        // Fixme: what's the justification for this? It seems like it is just re-adding an option in case it is the default and disabled.
-        // Is that really a big problem?
-        $this->_encounterMedium = CRM_Core_DAO::getFieldValue('CRM_Activity_DAO_Activity', $this->_activityId, 'medium_id');
-        if (!array_key_exists($this->_encounterMedium, $encounterMediums)) {
-          $encounterMediums[$this->_encounterMedium] = CRM_Core_PseudoConstant::getLabel('CRM_Activity_BAO_Activity', 'medium_id', $this->_encounterMedium);
-        }
-      }
     }
 
-    $this->add('select', 'medium_id', ts('Medium'), $encounterMediums, TRUE);
+    $this->addSelect('medium_id');
+
+    // Related contacts
     $i = 0;
     foreach ($this->_caseId as $key => $val) {
       $this->_relatedContacts[] = $rgc = CRM_Case_BAO_Case::getRelatedAndGlobalContacts($val);
@@ -394,7 +408,7 @@ class CRM_Case_Form_Activity extends CRM_Activity_Form_Activity {
     // store the submitted values in an array
     // Explanation for why we only check the is_unittest element: Prior to adding that check, there was no check and so any $params passed in would have been overwritten. Just in case somebody is passing in some non-null params and that broken code would have inadvertently been working, we can maintain backwards compatibility by only checking for the is_unittest parameter, and so that broken code will still work. At the same time this allows unit tests to pass in a $params without it getting overwritten. See also PR #2077 for some discussion of when the $params parameter was added as a passed in variable.
     if (empty($params['is_unittest'])) {
-      $params = $this->controller->exportValues($this->_name);
+      $params = $this->getSubmittedValues();
     }
 
     //set parent id if its edit mode
@@ -413,34 +427,32 @@ class CRM_Case_Form_Activity extends CRM_Activity_Form_Activity {
     }
 
     // format activity custom data
-    if (!empty($params['hidden_custom'])) {
-      if ($this->_activityId) {
-        // retrieve and include the custom data of old Activity
-        $oldActivity = civicrm_api3('Activity', 'getsingle', ['id' => $this->_activityId]);
-        $params = array_merge($oldActivity, $params);
+    if ($this->_activityId) {
+      // retrieve and include the custom data of old Activity
+      $oldActivity = civicrm_api3('Activity', 'getsingle', ['id' => $this->_activityId]);
+      $params = array_merge($oldActivity, $params);
 
-        // unset custom fields-id from params since we want custom
-        // fields to be saved for new activity.
-        foreach ($params as $key => $value) {
-          $match = [];
-          if (preg_match('/^(custom_\d+_)(\d+)$/', $key, $match)) {
-            $params[$match[1] . '-1'] = $params[$key];
+      // unset custom fields-id from params since we want custom
+      // fields to be saved for new activity.
+      foreach ($params as $key => $value) {
+        $match = [];
+        if (preg_match('/^(custom_\d+_)(\d+)$/', $key, $match)) {
+          $params[$match[1] . '-1'] = $params[$key];
 
-            // for autocomplete transfer hidden value instead of label
-            if ($params[$key] && isset($params[$key . '_id'])) {
-              $params[$match[1] . '-1_id'] = $params[$key . '_id'];
-              unset($params[$key . '_id']);
-            }
-            unset($params[$key]);
+          // for autocomplete transfer hidden value instead of label
+          if ($params[$key] && isset($params[$key . '_id'])) {
+            $params[$match[1] . '-1_id'] = $params[$key . '_id'];
+            unset($params[$key . '_id']);
           }
+          unset($params[$key]);
         }
       }
-
-      $params['custom'] = CRM_Core_BAO_CustomField::postProcess($params,
-        $this->_activityId,
-        'Activity'
-      );
     }
+
+    $params['custom'] = CRM_Core_BAO_CustomField::postProcess($params,
+      $this->_activityId,
+      'Activity'
+    );
 
     // assigning formatted value
     if (!empty($params['assignee_contact_id'])) {
@@ -457,7 +469,7 @@ class CRM_Case_Form_Activity extends CRM_Activity_Form_Activity {
       }
 
       // @todo This is called newActParams because it USED TO create new activity revisions. But at the moment just changing the part that is broken.
-      // hidden_custom is always 1, so see above where $params gets merged with the existing activity data every time, including the activity id.
+      // $params gets merged with the existing activity data every time, including the activity id.
       $newActParams = $params;
 
       // add target contact values in update mode
@@ -808,6 +820,24 @@ class CRM_Case_Form_Activity extends CRM_Activity_Form_Activity {
       }
     }
     return $bounceMessage;
+  }
+
+  /**
+   * Getter used by ChangeCaseStartDate
+   * @return int|null
+   * @internal
+   */
+  public function getOpenCaseActivityId(): ?int {
+    return $this->openCaseActivityId;
+  }
+
+  /**
+   * Setter used by ChangeCaseStartDate
+   * @param int $id
+   * @internal
+   */
+  public function setOpenCaseActivityId(int $id): void {
+    $this->openCaseActivityId = $id;
   }
 
 }

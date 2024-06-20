@@ -7,8 +7,8 @@
 <body>
 
 {capture assign=headerStyle}colspan="2" style="text-align: left; padding: 4px; border-bottom: 1px solid #999; background-color: #eee;"{/capture}
-{capture assign=labelStyle }style="padding: 4px; border-bottom: 1px solid #999; background-color: #f7f7f7;"{/capture}
-{capture assign=valueStyle }style="padding: 4px; border-bottom: 1px solid #999;"{/capture}
+{capture assign=labelStyle}style="padding: 4px; border-bottom: 1px solid #999; background-color: #f7f7f7;"{/capture}
+{capture assign=valueStyle}style="padding: 4px; border-bottom: 1px solid #999;"{/capture}
 
 <table id="crm-event_receipt" style="font-family: Arial, Verdana, sans-serif; text-align: left; width:100%; max-width:700px; padding:0; margin:0; border:0px;">
 
@@ -21,9 +21,11 @@
   <tr>
    <td>
      {assign var="greeting" value="{contact.email_greeting_display}"}{if $greeting}<p>{$greeting},</p>{/if}
-    {if !empty($receipt_text)}
-     <p>{$receipt_text|htmlize}</p>
-    {/if}
+     {if $userText}
+       <p>{$userText}</p>
+     {elseif {contribution.contribution_page_id.receipt_text|boolean}}
+       <p>{contribution.contribution_page_id.receipt_text}</p>
+     {/if}
 
     {if $is_pay_later}
      <p>{$pay_later_receipt}</p> {* FIXME: this might be text rather than HTML *}
@@ -61,7 +63,7 @@
                 <td>{$line.qty}</td>
                 <td>{$line.unit_price|crmMoney:$currency}</td>
                 {if $isShowTax && {contribution.tax_amount|boolean}}
-                  <td>{$line.unit_price*$line.qty|crmMoney:$currency}</td>
+                  <td>{$line.line_total|crmMoney:$currency}</td>
                   {if $line.tax_rate || $line.tax_amount != ""}
                     <td>{$line.tax_rate|string_format:"%.2f"}%</td>
                     <td>{$line.tax_amount|crmMoney:$currency}</td>
@@ -71,7 +73,7 @@
                   {/if}
                 {/if}
                 <td>
-                  {$line.line_total+$line.tax_amount|crmMoney:$currency}
+                  {$line.line_total_inclusive|crmMoney:$currency}
                 </td>
               </tr>
             {/foreach}
@@ -85,7 +87,7 @@
             {ts} Amount before Tax : {/ts}
           </td>
           <td {$valueStyle}>
-            {$amount-$totalTaxAmount|crmMoney:$currency}
+            {contribution.tax_exclusive_amount}
           </td>
         </tr>
 
@@ -151,13 +153,13 @@
       </tr>
      {/if}
 
-     {if !empty($is_monetary) and !empty($trxn_id)}
+     {if {contribution.trxn_id|boolean}}
       <tr>
        <td {$labelStyle}>
         {ts}Transaction #{/ts}
        </td>
        <td {$valueStyle}>
-        {$trxn_id}
+         {contribution.trxn_id}
        </td>
       </tr>
      {/if}
@@ -277,10 +279,10 @@
       {/foreach}
      {/if}
 
-     {if !empty($isShare)}
+     {if {contribution.contribution_page_id.is_share|boolean}}
       <tr>
         <td colspan="2" {$valueStyle}>
-            {capture assign=contributionUrl}{crmURL p='civicrm/contribute/transact' q="reset=1&id=`$contributionPageId`" a=true fe=1 h=1}{/capture}
+            {capture assign=contributionUrl}{crmURL p='civicrm/contribute/transact' q="reset=1&id={contribution.contribution_page_id}" a=true fe=1 h=1}{/capture}
             {include file="CRM/common/SocialNetwork.tpl" emailMode=true url=$contributionUrl title=$title pageURL=$contributionUrl}
         </td>
       </tr>
@@ -407,7 +409,6 @@
        </th>
       </tr>
       {foreach from=$customPre item=customValue key=customName}
-       {if (!empty($trackingFields) and ! in_array($customName, $trackingFields)) or empty($trackingFields)}
         <tr>
          <td {$labelStyle}>
           {$customName}
@@ -416,7 +417,6 @@
           {$customValue}
          </td>
         </tr>
-       {/if}
       {/foreach}
      {/if}
 
@@ -427,7 +427,6 @@
        </th>
       </tr>
       {foreach from=$customPost item=customValue key=customName}
-       {if (!empty($trackingFields) and ! in_array($customName, $trackingFields)) or empty($trackingFields)}
         <tr>
          <td {$labelStyle}>
           {$customName}
@@ -436,7 +435,6 @@
           {$customValue}
          </td>
         </tr>
-       {/if}
       {/foreach}
      {/if}
 

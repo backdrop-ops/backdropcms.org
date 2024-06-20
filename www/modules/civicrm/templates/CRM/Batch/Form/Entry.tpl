@@ -95,7 +95,7 @@
           {elseif $n eq 'total_amount'}
              <div class="compressed crm-grid-cell">
                {$form.field.$rowNumber.$n.html}
-               {if $batchType eq 3 }
+               {if $batchType eq 3}
 		 {ts}<span id={$rowNumber} class="pledge-adjust-option"><a href='#'>adjust payment amount</a></span>{/ts}
                  <span id="adjust-select-{$rowNumber}" class="adjust-selectbox">{$form.option_type.$rowNumber.html}</span>
                {/if}
@@ -112,7 +112,7 @@
       </div>
     {/section}
   </div>
-  <div class="crm-submit-buttons">{if $fields}{$form._qf_Batch_refresh.html}{/if} &nbsp; {$form.buttons.html}</div>
+  <div class="crm-submit-buttons">{if $fields && array_key_exists('_qf_Batch_refresh', $form) && is_array($form._qf_Batch_refresh)}{$form._qf_Batch_refresh.html}{/if} &nbsp; {$form.buttons.html}</div>
 </div>
 {literal}
 <script type="text/javascript">
@@ -155,7 +155,7 @@ CRM.$(function($) {
     calculateActualTotal();
   });
 
-  {/literal}{if $batchType eq 1 }{literal}
+  {/literal}{if $batchType eq 1}{literal}
   // hide all dates if send receipt is checked
   hideSendReceipt();
 

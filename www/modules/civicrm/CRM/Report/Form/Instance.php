@@ -102,7 +102,7 @@ class CRM_Report_Form_Instance {
       $form->freeze('is_reserved');
     }
 
-    $getPerms = \Civi\Api4\Permission::get(0)
+    $getPerms = \Civi\Api4\Permission::get(FALSE)
       ->addWhere('is_active', '=', 1)
       ->addWhere('group', 'IN', ['civicrm', 'cms', 'const'])
       ->setOrderBy(['title' => 'ASC'])
@@ -134,7 +134,7 @@ class CRM_Report_Form_Instance {
     // navigation field
     $parentMenu = CRM_Core_BAO_Navigation::getNavigationList();
 
-    $form->add('select', 'parent_id', ts('Parent Menu'), ['' => ts('- select -')] + $parentMenu, FALSE, ['class' => 'crm-select2 huge']);
+    $form->add('select', 'parent_id', ts('Parent Menu'), ['' => ts('- select -')] + $parentMenu);
 
     // For now we only providing drilldown for one primary detail report only. In future this could be multiple reports
     foreach ($form->_drilldownReport as $reportUrl => $drillLabel) {
@@ -246,7 +246,7 @@ class CRM_Report_Form_Instance {
 
     if ($instanceID) {
       // this is already retrieved via Form.php
-      $defaults['description'] = $defaults['description'] ?? NULL;
+      $defaults['description'] ??= NULL;
       if (!empty($defaults['header'])) {
         $defaults['report_header'] = $defaults['header'];
       }
@@ -318,7 +318,7 @@ class CRM_Report_Form_Instance {
       // Delete navigation if exists.
       $navId = CRM_Core_DAO::getFieldValue('CRM_Report_DAO_ReportInstance', $instanceID, 'navigation_id', 'id');
       if ($navId) {
-        CRM_Core_BAO_Navigation::processDelete($navId);
+        CRM_Core_BAO_Navigation::deleteRecord(['id' => $navId]);
         CRM_Core_BAO_Navigation::resetNavigation();
       }
     }

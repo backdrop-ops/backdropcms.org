@@ -7,19 +7,16 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
 *}
-  <div class="crm-accordion-wrapper crm-block crm-form-block crm-event-searchevent-form-block">
-    <div class="crm-accordion-header">
+  <details class="crm-accordion-bold crm-block crm-form-block crm-event-searchevent-form-block" open>
+    <summary>
       {ts}Find Events{/ts}
-    </div>
+    </summary>
     <div class="crm-accordion-body">
   <table class="form-layout">
     <tr class="crm-event-searchevent-form-block-title">
         <td>
           <label>{$form.title.label}</label>
           {$form.title.html|crmAddClass:twenty}
-          <div class="description font-italic">
-                 {ts}Complete OR partial Event name.{/ts}
-          </div>
         </td>
         <td><label>{ts}Event Type{/ts}</label>
           {$form.event_type_id.html}
@@ -50,7 +47,7 @@
     <td class="right">{include file="CRM/common/formButtons.tpl" location=''}</td>
   </table>
     </div>
-  </div>
+  </details>
 
 {include file="CRM/common/showHide.tpl"}
 

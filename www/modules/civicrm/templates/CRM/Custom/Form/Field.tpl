@@ -29,11 +29,15 @@
       <td class="label">{$form.fk_entity.label} <span class="crm-marker">*</span></td>
       <td class="html-adjust">{$form.fk_entity.html}</td>
     </tr>
+    <tr class="crm-custom-field-form-block-fk_entity_on_delete">
+      <td class="label">{$form.fk_entity_on_delete.label} <span class="crm-marker">*</span></td>
+      <td class="html-adjust">{$form.fk_entity_on_delete.html}</td>
+    </tr>
     <tr class="crm-custom-field-form-block-serialize">
       <td class="label">{$form.serialize.label}</td>
       <td class="html-adjust">{$form.serialize.html}</td>
     </tr>
-    {if !empty($form.in_selector)}
+    {if array_key_exists('in_selector', $form)}
       <tr class='crm-custom-field-form-block-in_selector'>
         <td class='label'>{$form.in_selector.label}</td>
         <td class='html-adjust'>{$form.in_selector.html} {help id="id-in_selector"}</td>
@@ -44,7 +48,7 @@
       <td class="html-adjust">{$form.text_length.html}</td>
     </tr>
 
-    <tr id='showoption' {if $action eq 1 or $action eq 2 }class="hiddenElement"{/if}>
+    <tr id='showoption' {if $action eq 1 or $action eq 2}class="hiddenElement"{/if}>
       <td colspan="2">
         <table class="form-layout-compressed">
           {* Conditionally show table for setting up selection options - for field types = radio, checkbox or select *}
@@ -173,11 +177,7 @@
       </td>
     </tr>
   </table>
-  {if $action ne 4}
-    <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
-  {else}
-    <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
-  {/if}
+  <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
 </div>
 {literal}
 <script type="text/javascript">
@@ -206,6 +206,7 @@
 
       // Show/hide entityReference selector
       $('.crm-custom-field-form-block-fk_entity').toggle(dataType === 'EntityReference');
+      $('.crm-custom-field-form-block-fk_entity_on_delete').toggle(dataType === 'EntityReference');
     }
 
     function onChangeHtmlType() {
@@ -270,7 +271,7 @@
       }
 
       if (_.includes(['String', 'Int', 'Float', 'Money'], dataType)) {
-        if (htmlType !== "Text") {
+        if (!['Text', 'Hidden'].includes(htmlType)) {
           $("#showoption, #searchable", $form).show();
           $("#hideDefault, #hideDesc, #searchByRange", $form).hide();
         } else {
@@ -289,7 +290,7 @@
         $("#showoption").hide();
       }
 
-      if (_.includes(['String', 'Int', 'Float', 'Money'], dataType) && htmlType !== 'Text') {
+      if (_.includes(['String', 'Int', 'Float', 'Money'], dataType) && !['Text', 'Hidden'].includes(htmlType)) {
         if (serialize) {
           $('div[id^=checkbox]', '#optionField').show();
           $('div[id^=radio]', '#optionField').hide();
@@ -354,7 +355,7 @@
 </script>
 {/literal}
 {* Give link to view/edit option group *}
-{if $action eq 2 && !empty($hasOptionGroup) }
+{if $action eq 2 && !empty($hasOptionGroup)}
   <div class="action-link">
     {crmButton p="civicrm/admin/custom/group/field/option" q="reset=1&action=browse&fid=`$id`&gid=`$gid`" icon="pencil"}{ts}View / Edit Multiple Choice Options{/ts}{/crmButton}
   </div>

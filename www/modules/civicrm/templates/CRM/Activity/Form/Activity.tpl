@@ -11,8 +11,8 @@
   {if $action eq 4}
     <div class="crm-block crm-content-block crm-activity-view-block">
   {else}
-    {if $activityTypeDescription }
-      <div class="help">{$activityTypeDescription}</div>
+    {if $activityTypeDescription}
+      <div class="help">{$activityTypeDescription|purify}</div>
     {/if}
     <div class="crm-block crm-form-block crm-activity-form-block">
   {/if}
@@ -28,8 +28,8 @@
   <table class="{if $action eq 4}crm-info-panel{else}form-layout{/if}">
 
   {if $action eq 4}
-    {if $activityTypeDescription }
-    <div class="help">{$activityTypeDescription}</div>
+    {if $activityTypeDescription}
+    <div class="help">{$activityTypeDescription|purify}</div>
     {/if}
   {else}
     {if $context eq 'standalone' or $context eq 'search' or $context eq 'smog'}
@@ -147,7 +147,7 @@
   <tr class="crm-activity-form-block-priority_id">
     <td class="label">{$form.priority_id.label}</td><td class="view-value">{$form.priority_id.html}</td>
   </tr>
-  {if !empty($surveyActivity) }
+  {if !empty($surveyActivity)}
   <tr class="crm-activity-form-block-result">
     <td class="label">{$form.result.label}</td><td class="view-value">{$form.result.html}</td>
   </tr>
@@ -173,7 +173,7 @@
       {if $action eq 4}
         {include file="CRM/Custom/Page/CustomDataView.tpl"}
       {else}
-        {include file="CRM/common/customDataBlock.tpl"}
+        {include file="CRM/common/customDataBlock.tpl" groupID='' customDataType='Activity'}
       {/if}
     </td>
   </tr>
@@ -208,7 +208,7 @@
             $('.crm-accordion-body', $form).each( function() {
               //open tab if form rule throws error
               if ( $(this).children( ).find('span.crm-error').text( ).length > 0 ) {
-                $(this).parent('.collapsed').crmAccordionToggle();
+                $(this).parent('details').prop('open', true);
               }
             });
             function toggleMultiActivityCheckbox() {
@@ -232,7 +232,7 @@
   </table>
   <div class="crm-submit-buttons">
   {if $action eq 4 && ($activityTypeNameAndLabel.machineName neq 'Inbound Email' || $allow_edit_inbound_emails == 1)}
-    {if !$context }
+    {if !$context}
       {assign var="context" value='activity'}
     {/if}
     {if $permission EQ 'edit'}

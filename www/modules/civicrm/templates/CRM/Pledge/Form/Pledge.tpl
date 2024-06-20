@@ -8,13 +8,13 @@
  +--------------------------------------------------------------------+
 *}
 {* this template is used for adding/editing/deleting pledge *}
-{if $showAdditionalInfo and $formType }
+{if $showAdditionalInfo and $formType}
   {include file="CRM/Contribute/Form/AdditionalInfo/$formType.tpl"}
 {else}
 {if !$email and $action neq 8 and $context neq 'standalone'}
 <div class="messages status no-popup">
   {icon icon="fa-info-circle"}{/icon}
-  <p>{ts}You will not be able to send an acknowledgment for this pledge because there is no email address recorded for this contact. If you want a acknowledgment to be sent when this pledge is recorded, click Cancel and then click Edit from the Summary tab to add an email address before recording the pledge.{/ts}</p>
+  {ts}You will not be able to send an acknowledgment for this pledge because there is no email address recorded for this contact. If you want a acknowledgment to be sent when this pledge is recorded, click Cancel and then click Edit from the Summary tab to add an email address before recording the pledge.{/ts}
 </div>
 {/if}
 {if $action EQ 2}
@@ -22,7 +22,7 @@
     {math equation="x / y" x=$amount y=$installments format="%.2f" assign="currentInstallment"}
     {* Check if current Total Pledge Amount is different from original pledge amount. *}
     {if $currentInstallment NEQ $eachPaymentAmount}
-      {assign var=originalPledgeAmount value=`$installments*$eachPaymentAmount`}
+      {assign var=originalPledgeAmount value=$installments*$eachPaymentAmount}
     {/if}
 {/if}
 <div class="crm-block crm-form-block crm-pledge-form-block">
@@ -42,7 +42,7 @@
             <td class="label">{$form.amount.label}</td>
             <td>
               <span>{$form.currency.html|crmAddClass:eight}&nbsp;{$form.amount.html|crmAddClass:eight}</span>
-              {if $originalPledgeAmount}<div class="messages status no-popup">{icon icon="fa-info-circle"}{/icon}{ts 1=$originalPledgeAmount|crmMoney:$currency} Pledge total has changed due to payment adjustments. Original pledge amount was %1.{/ts}</div>{/if}
+              {if $action EQ 2 && $originalPledgeAmount}<div class="messages status no-popup">{icon icon="fa-info-circle"}{/icon}{ts 1=$originalPledgeAmount|crmMoney:$currency} Pledge total has changed due to payment adjustments. Original pledge amount was %1.{/ts}</div>{/if}
             </td>
           </tr>
           <tr class="crm-pledge-form-block-installments">
@@ -85,7 +85,7 @@
             </td>
           </tr>
             {/if}
-        {elseif $context eq 'standalone' and $outBound_option != 2 }
+        {elseif $context eq 'standalone' and $outBound_option != 2}
           <tr id="acknowledgment-receipt" style="display:none;">
             <td class="label">{$form.is_acknowledge.label}</td>
             <td>
@@ -96,7 +96,7 @@
         {/if}
           <tr id="fromEmail" style="display:none;">
             <td class="label">{$form.from_email_address.label}</td>
-            <td>{$form.from_email_address.html}  {help id="id-from_email" file="CRM/Contact/Form/Task/Help/Email/id-from_email.hlp"}</td>
+            <td>{$form.from_email_address.html}  {help id="id-from_email" file="CRM/Contact/Form/Task/Help/Email/id-from_email.hlp" title=$form.from_email_address.label}</td>
           </tr>
           <tr id="acknowledgeDate">
             <td class="label" class="crm-pledge-form-block-acknowledge_date">{$form.acknowledge_date.label}</td>
@@ -105,7 +105,7 @@
             </td>
           </tr>
           <tr class="crm-pledge-form-block-financial_type_id">
-            <td class="label">{$form.financial_type_id.label} {help id='id-financial_type_id'}
+            <td class="label">{$form.financial_type_id.label} {help id='id-financial_type_id' file="CRM/Pledge/Form/Pledge.hlp"}
 </td>
             <td>{$form.financial_type_id.html}</td>
           </tr>
@@ -115,7 +115,7 @@
       campaignTrClass="crm-pledge-form-block-campaign_id"}
 
           <tr class="crm-pledge-form-block-contribution_page_id">
-            <td class="label">{$form.contribution_page_id.label} {help id='id-contribution_page_id'}</td>
+            <td class="label">{$form.contribution_page_id.label} {help id='id-contribution_page_id' file="CRM/Pledge/Form/Pledge.hlp"}</td>
             <td>{$form.contribution_page_id.html}</td>
           </tr>
 
@@ -126,7 +126,7 @@
             </td>
           </tr>
           <tr>
-            <td colspan=2>{include file="CRM/Custom/Form/CustomData.tpl"}</td>
+            <td colspan=2>{include file="CRM/common/customDataBlock.tpl" groupID='' customDataType='Pledge' customDataSubType=false entityID=$pledgeID cid=false}</td>
           </tr>
        </table>
 {literal}
@@ -134,13 +134,13 @@
   // bind first click of accordion header to load crm-accordion-body with snippet
   // everything else taken care of by $().crm-accordions()
   CRM.$(function($) {
-    $('.crm-ajax-accordion .crm-accordion-header').one('click', function() {
+    $('.crm-ajax-accordion summary').one('click', function() {
       loadPanes($(this).attr('id'));
     });
     $('#currency').on('change', function() {
       replaceCurrency($('#currency option:selected').text());
     });
-    $('.crm-ajax-accordion:not(.collapsed) .crm-accordion-header').each(function(index) {
+    $('.crm-ajax-accordion[open] summary').each(function(index) {
       loadPanes($(this).attr('id'));
     });
 
@@ -157,11 +157,6 @@
     // load panes function calls for snippet based on id of crm-accordion-header
     function loadPanes( id ) {
       var url = "{/literal}{crmURL p='civicrm/contact/view/pledge' q='snippet=4&formType=' h=0}{literal}" + id;
-      {/literal}
-        {if $contributionMode}
-          url = url + "&mode={$contributionMode}";
-        {/if}
-      {literal}
       if ( ! $('div.'+id).html() ) {
         var loading = '<img src="{/literal}{$config->resourceBase}i/loading.gif{literal}" alt="{/literal}{ts escape='js'}loading{/ts}{literal}" />&nbsp;{/literal}{ts escape='js'}Loading{/ts}{literal}...';
         $('div.'+id).html(loading);
@@ -178,14 +173,14 @@
 
 <div class="accordion ui-accordion ui-widget ui-helper-reset">
 {foreach from=$allPanes key=paneName item=paneValue}
-<div class="crm-accordion-wrapper crm-ajax-accordion crm-{$paneValue.id}-accordion {if $paneValue.open neq 'true'}collapsed{/if}">
-<div class="crm-accordion-header" id="{$paneValue.id}">
+<details class="crm-accordion-bold crm-ajax-accordion crm-{$paneValue.id}-accordion" {if $paneValue.open neq 'true'}{else}open{/if}>
+<summary  id="{$paneValue.id}">
         {$paneName}
-  </div><!-- /.crm-accordion-header -->
+  </summary>
  <div class="crm-accordion-body">
        <div class="{$paneValue.id}"></div>
- </div><!-- /.crm-accordion-body -->
-</div><!-- /.crm-accordion-wrapper -->
+ </div>
+</details>
 
 {/foreach}
 </div>
@@ -233,7 +228,7 @@
      };
 
     {/literal}
-    {if $context eq 'standalone' and $outBound_option != 2 }
+    {if $context eq 'standalone' and $outBound_option != 2}
     {literal}
     CRM.$(function($) {
       var $form = $("form.{/literal}{$form.formClass}{literal}");

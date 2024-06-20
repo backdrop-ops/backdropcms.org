@@ -15,6 +15,7 @@
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
 trait CRM_Core_Form_EntityFormTrait {
+  use CRM_Custom_Form_CustomDataTrait;
 
   /**
    * The id of the object being edited / created.
@@ -156,9 +157,45 @@ trait CRM_Core_Form_EntityFormTrait {
     if ($this->isSuppressCustomData()) {
       return TRUE;
     }
-    $customisableEntities = CRM_Core_SelectValues::customGroupExtends();
-    if (isset($customisableEntities[$this->getDefaultEntity()])) {
-      CRM_Custom_Form_CustomData::addToForm($this, $this->getEntitySubTypeId());
+
+    /*
+    @todo - this would be the preferred code here to better support
+    php8.2 & take advantage of code improvements
+    Note in this example an additional filter (membership_type_id)
+    is relevant although for most entities it isn't.
+    if ($this->isSubmitted()) {
+    // The custom data fields are added to the form by an ajax form.
+    // However, if they are not present in the element index they will
+    // not be available from `$this->getSubmittedValue()` in post process.
+    // We do not have to set defaults or otherwise render - just add to the element index.
+    $this->addCustomDataFieldsToForm($this->getDefaultEntity(), array_filter([
+    'id' => $this->getEntityId(),
+    'membership_type_id' => $this->getSubmittedValue('membership_type_id')
+    ]));
+    }
+     */
+    $this->assign('customDataType', $this->getDefaultEntity());
+    $this->assign('customDataSubType', $this->getEntitySubTypeId());
+    $this->assign('entityID', $this->getEntityId());
+    $this->assign('cid', NULL);
+    if ($this->isSubmitted()) {
+      $customisableEntities = CRM_Core_SelectValues::customGroupExtends();
+      if (isset($customisableEntities[$this->getDefaultEntity()])) {
+        if ($this->getEntitySubTypeId()) {
+          // Supporting entity subtypes form the EntityFormTrait is not
+          // used in core & is likely not used anywhere / was a good idea that
+          // didn't fully happen. If anyone is winding up here they should override
+          // the entire addCustomDataToForm function - e.g like the backoffice membership
+          // forms do
+          // @todo - add some noisy deprecation at some point.
+          CRM_Custom_Form_CustomData::addToForm($this, $this->getEntitySubTypeId());
+        }
+        else {
+          $this->addCustomDataFieldsToForm($this->getDefaultEntity(), array_filter([
+            'id' => $this->getEntityId(),
+          ]));
+        }
+      }
     }
   }
 
@@ -176,17 +213,15 @@ trait CRM_Core_Form_EntityFormTrait {
       $this->entityFields[$index] = array_replace_recursive([
         'template' => '',
         'help' => ['id' => '', 'file' => ''],
-        'pre_html_text' => '',
         'post_html_text' => '',
         'description' => '',
         'documentation_link' => ['page' => '', 'resource' => ''],
-        'place_holder' => '',
       ], $fields);
     }
     $this->assign('entityFields', $this->entityFields);
     $this->assign('entityID', $this->getEntityId());
     $this->assign('entityInClassFormat', strtolower(str_replace('_', '-', $this->getDefaultEntity())));
-    $this->assign('entityTable', CRM_Core_DAO_AllCoreTables::getTableForClass(CRM_Core_DAO_AllCoreTables::getFullName($this->getDefaultEntity())));
+    $this->assign('entityTable', CRM_Core_DAO_AllCoreTables::getTableForClass(CRM_Core_DAO_AllCoreTables::getDAONameForEntity($this->getDefaultEntity())));
     $this->addCustomDataToForm();
     $this->addFormButtons();
 

@@ -102,11 +102,7 @@ class CRM_Case_Audit_Audit {
 
               //CRM-4570
               if ($printReport) {
-                if (!in_array($label, [
-                  'Activity Type',
-                  'Status',
-                ])
-                ) {
+                if (!in_array($label, ['Activity Type', 'Status'])) {
                   $caseActivities[$activityindex][$fieldindex] = [];
                   $caseActivities[$activityindex][$fieldindex]['name'] = $name;
                   $caseActivities[$activityindex][$fieldindex]['label'] = $label;
@@ -229,7 +225,7 @@ class CRM_Case_Audit_Audit {
     $activities = $audit->getActivities(TRUE);
 
     $template = CRM_Core_Smarty::singleton();
-    $template->assign_by_ref('activities', $activities);
+    $template->assign('activities', $activities);
 
     $reportDate = CRM_Utils_Date::customFormat(date('Y-m-d H:i'));
     $template->assign('reportDate', $reportDate);

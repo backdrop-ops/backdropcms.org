@@ -11,14 +11,14 @@
   <urls>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
-  <releaseDate>2020-01-09</releaseDate>
-  <version>5.65.1</version>
+  <releaseDate>2024-06-19</releaseDate>
+  <version>5.74.4</version>
   <tags>
     <tag>mgmt:hidden</tag>
   </tags>
   <develStage>alpha</develStage>
   <compatibility>
-    <ver>5.65</ver>
+    <ver>5.74</ver>
   </compatibility>
   <requires>
     <ext>org.civicrm.afform</ext>
@@ -29,6 +29,9 @@
   </mixins>
   <civix>
     <namespace>CRM/AfformMock</namespace>
-    <format>22.10.0</format>
+    <format>23.02.1</format>
   </civix>
+  <classloader>
+    <psr4 prefix="Civi\" path="Civi"/>
+  </classloader>
 </extension>

@@ -15,6 +15,8 @@
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
 
+use Civi\Api4\Utils\ReflectionUtils;
+
 /**
  * Base class for admin forms.
  */
@@ -42,6 +44,12 @@ class CRM_Admin_Form extends CRM_Core_Form {
   protected $_BAOName;
 
   /**
+   * Whether to use the legacy `retrieve` method or APIv4 to load values.
+   * @var string
+   */
+  protected $retrieveMethod = 'retrieve';
+
+  /**
    * Explicitly declare the form context.
    */
   public function getDefaultContext() {
@@ -66,7 +74,7 @@ class CRM_Admin_Form extends CRM_Core_Form {
     $this->_BAOName = $this->get('BAOName');
     // Otherwise, look it up from the api entity name
     if (!$this->_BAOName) {
-      $this->_BAOName = CRM_Core_DAO_AllCoreTables::getBAOClassName(CRM_Core_DAO_AllCoreTables::getFullName($this->getDefaultEntity()));
+      $this->_BAOName = CRM_Core_DAO_AllCoreTables::getBAOClassName(CRM_Core_DAO_AllCoreTables::getDAONameForEntity($this->getDefaultEntity()));
     }
     $this->retrieveValues();
     $this->setPageTitle($this->_BAOName::getEntityTitle());
@@ -139,18 +147,31 @@ class CRM_Admin_Form extends CRM_Core_Form {
   }
 
   /**
-   * Retrieve entity from the database.
-   *
-   * TODO: Add flag to allow forms to opt-in to using API::get instead of BAO::retrieve
+   * Retrieve entity from the database using legacy retrieve method (default) or APIv4.
    *
    * @return array
    */
   protected function retrieveValues(): array {
     $this->_values = [];
     if (isset($this->_id) && CRM_Utils_Rule::positiveInteger($this->_id)) {
-      $params = ['id' => $this->_id];
-      // FIXME: `retrieve` function is deprecated :(
-      $this->_BAOName::retrieve($params, $this->_values);
+      if ($this->retrieveMethod === 'retrieve') {
+        $params = ['id' => $this->_id];
+        if (!empty(ReflectionUtils::getCodeDocs((new \ReflectionMethod($this->_BAOName, 'retrieve')), 'Method')['deprecated'])) {
+          CRM_Core_DAO::commonRetrieve($this->_BAOName, $params, $this->_values);
+        }
+        else {
+          // Are there still some out there?
+          $this->_BAOName::retrieve($params, $this->_values);
+        }
+      }
+      elseif ($this->retrieveMethod === 'api4') {
+        $this->_values = civicrm_api4($this->getDefaultEntity(), 'get', [
+          'where' => [['id', '=', $this->_id]],
+        ])->single();
+      }
+      else {
+        throw new CRM_Core_Exception("Unknown retrieve method '$this->retrieveMethod' in " . get_class($this));
+      }
     }
     return $this->_values;
   }

@@ -165,15 +165,12 @@ class CRM_Import_ImportProcessor {
    * @throws \CRM_Core_Exception
    */
   public function setMetadata(array $metadata) {
-    $fieldDetails = civicrm_api3('CustomField', 'get', [
-      'return' => ['custom_group_id.title'],
-      'options' => ['limit' => 0],
-    ])['values'];
     foreach ($metadata as $index => $field) {
       if (!empty($field['custom_field_id'])) {
+        $fieldDetails = CRM_Core_BAO_CustomField::getField($field['custom_field_id']);
         // The 'label' format for import is custom group title :: custom name title
         $metadata[$index]['name'] = $index;
-        $metadata[$index]['title'] .= ' :: ' . $fieldDetails[$field['custom_field_id']]['custom_group_id.title'];
+        $metadata[$index]['title'] .= ' :: ' . $fieldDetails['custom_group']['title'];
       }
     }
     $this->metadata = $metadata;
@@ -582,11 +579,6 @@ class CRM_Import_ImportProcessor {
    */
   public function getSavedQuickformDefaultsForColumn($column) {
     $fieldMapping = [];
-
-    // $sel1 is either unmapped, a relationship or a target field.
-    if ($this->getFieldName($column) === 'do_not_import') {
-      return $fieldMapping;
-    }
 
     if ($this->getValidRelationshipKey($column)) {
       $fieldMapping[] = $this->getValidRelationshipKey($column);

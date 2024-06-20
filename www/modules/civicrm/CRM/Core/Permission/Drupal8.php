@@ -33,6 +33,7 @@ class CRM_Core_Permission_Drupal8 extends CRM_Core_Permission_DrupalBase {
   public function check($str, $userId = NULL) {
     $str = $this->translatePermission($str, 'Drupal', [
       'view user account' => 'access user profiles',
+      'administer users' => 'administer users',
     ]);
 
     if ($str == CRM_Core_Permission::ALWAYS_DENY_PERMISSION) {
@@ -60,7 +61,7 @@ class CRM_Core_Permission_Drupal8 extends CRM_Core_Permission_DrupalBase {
     $dperms = \Drupal::service('user.permissions')->getPermissions();
     $modules = \Drupal::service('extension.list.module')->getAllInstalledInfo();
 
-    $permissions = [];
+    $permissions = parent::getAvailablePermissions();
     foreach ($dperms as $permName => $dperm) {
       if (isset($allCorePerms[$permName])) {
         continue;

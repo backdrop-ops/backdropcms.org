@@ -277,6 +277,10 @@ class CRM_Core_CodeGen_GenerateData {
 
   private $deceasedContactIds = [];
 
+  private $time;
+
+  private $relTypes;
+
   /*********************************
    * private methods
    * *******************************
@@ -1253,7 +1257,7 @@ class CRM_Core_CodeGen_GenerateData {
       'name' => 'Advisory Board',
       'label' => 'Advisory Board',
     ])
-      ->execute()->first()['id'];
+      ->execute()->first()['value'];
     $advisoryGroupID = Group::get(FALSE)
       ->addWhere('name', '=', 'Advisory Board')
       ->execute()->first()['id'];
@@ -1270,7 +1274,7 @@ class CRM_Core_CodeGen_GenerateData {
       'name' => 'Advisory board access to volunteers',
       'entity_table' => 'civicrm_acl_role',
       'operation' => 'Edit',
-      'object_table' => 'civicrm_saved_search',
+      'object_table' => 'civicrm_group',
       'entity_id' => $roleID,
       'object_id' => $volunteerID,
     ])->execute();
@@ -1556,6 +1560,9 @@ VALUES
    * @return string
    */
   public static function repairDate($date) {
+    if ($date === NULL) {
+      return '';
+    }
     $dropArray = ['-' => '', ':' => '', ' ' => ''];
     return strtr($date, $dropArray);
   }

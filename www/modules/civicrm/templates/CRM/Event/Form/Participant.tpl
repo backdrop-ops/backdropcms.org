@@ -7,7 +7,7 @@
  | and copyright information, see https://civicrm.org/licensing       |
  +--------------------------------------------------------------------+
 *}
-{* This template is used for adding/editing/deleting offline Event Registrations *}
+{* This template is used for adding/editing offline Event Registrations *}
 
 {* Ajax callback for showing event fee snippet  - to be moved to separate form *}
 {if $showFeeBlock}
@@ -33,22 +33,7 @@
       {/if}
       <div id="eventFullMsg" class="messages status no-popup" style="display:none;"></div>
 
-      {if $action eq 8} {* If action is Delete *}
-        <div class="crm-participant-form-block-delete messages status no-popup">
-          <div class="crm-content">
-            {icon icon="fa-info-circle"}{/icon}
-            {ts}WARNING: Deleting this registration will result in the loss of related payment records (if any).{/ts} {ts}Do you want to continue?{/ts}
-          </div>
-          {if $additionalParticipant}
-            <div class="crm-content">
-              {ts 1=$additionalParticipant} There are %1 more Participant(s) registered by this participant.{/ts}
-            </div>
-          {/if}
-        </div>
-        {if $additionalParticipant}
-          {$form.delete_participant.html}
-        {/if}
-        {else} {* If action is other than Delete *}
+      {if 1} {* If action is other than Delete *}
         <table class="form-layout-compressed">
           {if $context EQ 'standalone' OR $context EQ 'participant' OR $action EQ 2}
             <tr class="crm-participant-form-contact-id">
@@ -129,10 +114,10 @@
         </fieldset>
 
         <div class="crm-participant-form-block-customData">
-          <div id="customData" class="crm-customData-block"></div>  {* Participant Custom data *}
-          <div id="customData{$eventNameCustomDataTypeID}" class="crm-customData-block"></div> {* Event Custom Data *}
-          <div id="customData{$roleCustomDataTypeID}" class="crm-customData-block"></div> {* Role Custom Data *}
-          <div id="customData{$eventTypeCustomDataTypeID}" class="crm-customData-block"></div> {* Role Custom Data *}
+          <div id="customData_Participant" class="crm-customData-block"></div>  {* Participant Custom data *}
+          <div id="customData_Participant{$eventNameCustomDataTypeID}" class="crm-customData-block"></div> {* Event Custom Data *}
+          <div id="customData_Participant{$roleCustomDataTypeID}" class="crm-customData-block"></div> {* Role Custom Data *}
+          <div id="customData_Participant{$eventTypeCustomDataTypeID}" class="crm-customData-block"></div> {* Role Custom Data *}
         </div>
       {/if}
 
@@ -197,7 +182,9 @@
 
         function buildRoleCustomData() {
           var roleId = $('select[name^=role_id]', $form).val() || [];
-          CRM.buildCustomData('Participant', roleId.join(), {/literal}{$roleCustomDataTypeID}{literal});
+          // If -1 is passed this will avoid https://lab.civicrm.org/dev/core/-/issues/5253
+          // as it is not a valid role ID but it is not 'empty'
+          CRM.buildCustomData('Participant', roleId.join() || -1, {/literal}{$roleCustomDataTypeID}{literal});
         }
 
         //build fee block

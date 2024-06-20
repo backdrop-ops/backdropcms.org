@@ -4,6 +4,7 @@
     "name": "civicrm_admin_default",
     "title": "Default CiviCRM Layout",
     "description": null,
+    "renderer_name": "standard",
     "module": "civicrmtheme",
     "weight": 1,
     "storage": 4,
@@ -11,24 +12,28 @@
     "disabled": false,
     "settings": {
         "title": "",
-        "title_display": "none",
-        "title_block": null
+        "title_display": "default",
+        "title_block": "55f542fe-0763-453b-ba3e-62677ea559e5"
     },
     "positions": {
-        "header": [
+        "header": [],
+        "top": [
             "55f542fe-0763-453b-ba3e-62677ea559e5"
         ],
-        "top": [],
         "content": [
             "default"
         ],
         "bottom": [],
-        "footer": []
+        "footer": [],
+        "title": []
     },
+    "contexts": [],
+    "relationships": [],
     "content": {
         "55f542fe-0763-453b-ba3e-62677ea559e5": {
             "plugin": "system:breadcrumb",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "breadcrumb",
                 "settings": {
@@ -52,6 +57,7 @@
         "default": {
             "plugin": "system:main",
             "data": {
+                "status": 1,
                 "module": "system",
                 "delta": "main",
                 "settings": {

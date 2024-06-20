@@ -27,38 +27,35 @@ class CRM_Member_ActionMapping extends \Civi\ActionSchedule\MappingBase {
     return self::MEMBERSHIP_TYPE_MAPPING_ID;
   }
 
+  public function getName(): string {
+    return 'membership_type';
+  }
+
   public function getEntityName(): string {
     return 'Membership';
   }
 
-  public function getValueHeader(): string {
-    return ts('Membership Type');
+  public function modifyApiSpec(\Civi\Api4\Service\Spec\RequestSpec $spec) {
+    $spec->getFieldByName('entity_value')
+      ->setLabel(ts('Membership Type'));
+    $spec->getFieldByName('entity_status')
+      ->setLabel(ts('Auto Renew Options'));
   }
 
   public function getValueLabels(): array {
     return CRM_Member_PseudoConstant::membershipType();
   }
 
-  public function getStatusHeader(): string {
-    return ts('Auto Renew Options');
+  public function getStatusLabels(?array $entityValue): array {
+    foreach (array_filter($entityValue ?? []) as $membershipType) {
+      if (\CRM_Core_DAO::getFieldValue('CRM_Member_DAO_MembershipType', $membershipType, 'auto_renew')) {
+        return \CRM_Core_OptionGroup::values('auto_renew_options');
+      }
+    }
+    return [];
   }
 
-  public function getStatusLabels($value): array {
-    if ($value && \CRM_Core_DAO::getFieldValue('CRM_Member_DAO_MembershipType', $value, 'auto_renew')) {
-      return \CRM_Core_OptionGroup::values('auto_renew_options');
-    }
-    else {
-      return [];
-    }
-  }
-
-  /**
-   * Get a list of available date fields.
-   *
-   * @return array
-   *   Array(string $fieldName => string $fieldLabel).
-   */
-  public function getDateFields(): array {
+  public function getDateFields(?array $entityValue = NULL): array {
     return [
       'join_date' => ts('Member Since'),
       'start_date' => ts('Membership Start Date'),
@@ -83,7 +80,7 @@ class CRM_Member_ActionMapping extends \Civi\ActionSchedule\MappingBase {
     $selectedValues = (array) \CRM_Utils_Array::explodePadded($schedule->entity_value);
     $selectedStatuses = (array) \CRM_Utils_Array::explodePadded($schedule->entity_status);
 
-    $query = \CRM_Utils_SQL_Select::from("{$this->getEntityTable()} e")->param($defaultParams);
+    $query = \CRM_Utils_SQL_Select::from('civicrm_membership e')->param($defaultParams);
     $query['casAddlCheckFrom'] = 'civicrm_membership e';
     $query['casContactIdField'] = 'e.contact_id';
     $query['casEntityIdField'] = 'e.id';
@@ -98,13 +95,29 @@ class CRM_Member_ActionMapping extends \Civi\ActionSchedule\MappingBase {
       $query['casDateField'] = 'e.' . $query['casDateField'];
     }
 
+    $recurStatuses = \Civi\Api4\ContributionRecur::getFields(FALSE)
+      ->setLoadOptions(TRUE)
+      ->addWhere('name', '=', 'contribution_status_id')
+      ->addSelect('options')
+      ->execute()
+      ->first()['options'];
+    // Exclude the renewals that are cancelled or failed.
+    $nonRenewStatusIds = array_keys(array_intersect($recurStatuses, ['Cancelled', 'Failed']));
     // FIXME: Numbers should be constants.
     if (in_array(2, $selectedStatuses)) {
       //auto-renew memberships
-      $query->where("e.contribution_recur_id IS NOT NULL");
+      $query->join('cr', 'INNER JOIN civicrm_contribution_recur cr on e.contribution_recur_id = cr.id');
+      $query->where("cr.contribution_status_id NOT IN (#nonRenewStatusIds)")
+        ->param('nonRenewStatusIds', $nonRenewStatusIds);
     }
     elseif (in_array(1, $selectedStatuses)) {
-      $query->where("e.contribution_recur_id IS NULL");
+      // non-auto-renew memberships
+      // Include the renewals that were cancelled or Failed.
+      $query->join('cr', 'LEFT JOIN civicrm_contribution_recur cr on e.contribution_recur_id = cr.id');
+      $query->where("e.contribution_recur_id IS NULL OR (
+        e.contribution_recur_id IS NOT NULL AND cr.contribution_status_id IN (#nonRenewStatusIds)
+        )")
+        ->param('nonRenewStatusIds', $nonRenewStatusIds);
     }
 
     if (!empty($selectedValues)) {
@@ -123,7 +136,7 @@ class CRM_Member_ActionMapping extends \Civi\ActionSchedule\MappingBase {
     // scheduling another kind of reminder might not expect members to be
     // excluded if they have status overrides.  Ideally there would be some kind
     // of setting per reminder.
-    $query->where("( e.is_override IS NULL OR e.is_override = 0 )");
+    $query->where("e.is_override = 0");
 
     // FIXME: Similarly to overrides, excluding contacts who can't edit the
     // primary member makes sense in the context of renewals (see CRM-11342) but

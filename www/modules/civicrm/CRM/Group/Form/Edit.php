@@ -21,6 +21,7 @@
 class CRM_Group_Form_Edit extends CRM_Core_Form {
 
   use CRM_Core_Form_EntityFormTrait;
+  use CRM_Custom_Form_CustomDataTrait;
 
   /**
    * The group object, if an id is present
@@ -44,13 +45,6 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
   protected $_groupValues;
 
   /**
-   * What blocks should we show and hide.
-   *
-   * @var CRM_Core_ShowHideBlocks
-   */
-  protected $_showHide;
-
-  /**
    * The civicrm_group_organization table id
    *
    * @var int
@@ -60,7 +54,7 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
   /**
    * Set entity fields to be assigned to the form.
    */
-  protected function setEntityFields() {
+  protected function setEntityFields(): void {
     $this->entityFields = [
       'frontend_title' => ['name' => 'frontend_title', 'required' => TRUE],
       'frontend_description' => ['name' => 'frontend_description'],
@@ -131,6 +125,7 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
           }
         }
         $this->assign('count', $count ?? NULL);
+        $this->assign('smartGroupsUsingThisGroup', CRM_Contact_BAO_SavedSearch::getSmartGroupsUsingGroup($this->_id));
         $this->setTitle(ts('Confirm Group Delete'));
       }
       if ($this->_groupValues['is_reserved'] == 1 && !CRM_Core_Permission::check('administer reserved groups')) {
@@ -159,9 +154,6 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
       $session->pushUserContext(CRM_Utils_System::url('civicrm/group', 'reset=1'));
     }
     $this->addExpectedSmartyVariables(['freezeMailingList', 'hideMailingList']);
-
-    //build custom data
-    CRM_Custom_Form_CustomData::preProcess($this, NULL, NULL, 1, 'Group', $this->_id);
   }
 
   /**
@@ -201,12 +193,11 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
       }
     }
 
+    $parentGroupIds = explode(',', ($this->_groupValues['parents'] ?? ''));
+    $defaults['parents'] = $parentGroupIds;
     if (empty($defaults['parents'])) {
       $defaults['parents'] = CRM_Core_BAO_Domain::getGroupId();
     }
-
-    // custom data set defaults
-    $defaults += CRM_Custom_Form_CustomData::setDefaultValues($this);
     return $defaults;
   }
 
@@ -214,7 +205,7 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
    * Build the form object.
    */
   public function buildQuickForm() {
-    self::buildQuickEntityForm();
+    $this->buildQuickEntityForm();
     if ($this->_action & CRM_Core_Action::DELETE) {
       return;
     }
@@ -251,18 +242,13 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
     }
     $this->addElement('checkbox', 'is_active', ts('Is active?'));
 
-    //build custom data
-    CRM_Custom_Form_CustomData::buildQuickForm($this);
-
-    $doParentCheck = FALSE;
-    if (CRM_Core_Permission::isMultisiteEnabled()) {
-      $doParentCheck = !($this->_id && CRM_Core_BAO_Domain::isDomainGroup($this->_id));
+    if ($this->isSubmitted()) {
+      $this->addCustomDataFieldsToForm('Group');
     }
 
     $options = [
       'selfObj' => $this,
       'parentGroups' => $parentGroups,
-      'doParentCheck' => $doParentCheck,
     ];
     $this->addFormRule(['CRM_Group_Form_Edit', 'formRule'], $options);
   }
@@ -275,34 +261,13 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
    * @param array $fileParams
    * @param array $options
    *
-   * @return array
+   * @return array|true
    *   list of errors to be posted back to the form
    */
   public static function formRule($fields, $fileParams, $options) {
     $errors = [];
 
-    $doParentCheck = $options['doParentCheck'];
     $self = &$options['selfObj'];
-
-    if ($doParentCheck) {
-      $parentGroups = $options['parentGroups'];
-
-      $grpRemove = 0;
-      foreach ($fields as $key => $val) {
-        if (substr($key, 0, 20) == 'remove_parent_group_') {
-          $grpRemove++;
-        }
-      }
-
-      $grpAdd = 0;
-      if (!empty($fields['parents'])) {
-        $grpAdd++;
-      }
-
-      if ((count($parentGroups) >= 1) && (($grpRemove - $grpAdd) >= count($parentGroups))) {
-        $errors['parents'] = ts('Make sure at least one parent group is set.');
-      }
-    }
 
     // do check for both name and title uniqueness
     if (!empty($fields['title'])) {
@@ -356,9 +321,9 @@ WHERE  title = %1
         $params['group_type'] = [];
       }
 
-      $params['is_reserved'] = CRM_Utils_Array::value('is_reserved', $params, FALSE);
-      $params['is_active'] = CRM_Utils_Array::value('is_active', $params, FALSE);
-      $params['custom'] = CRM_Core_BAO_CustomField::postProcess($params,
+      $params['is_reserved'] ??= FALSE;
+      $params['is_active'] ??= FALSE;
+      $params['custom'] = CRM_Core_BAO_CustomField::postProcess($this->getSubmittedValues(),
         $this->_id,
         'Group'
       );
@@ -402,16 +367,17 @@ WHERE  title = %1
         $parentGroups[$parentGroupId] = $groupNames[$parentGroupId];
         if (array_key_exists($parentGroupId, $groupNames)) {
           $parentGroupElements[$parentGroupId] = $groupNames[$parentGroupId];
-          $form->addElement('checkbox', "remove_parent_group_$parentGroupId",
-            $groupNames[$parentGroupId]
-          );
         }
       }
     }
-    $form->assign_by_ref('parent_groups', $parentGroupElements);
+    $form->assign('parent_groups', $parentGroupElements);
 
     if (isset($form->_id)) {
       $potentialParentGroupIds = CRM_Contact_BAO_GroupNestingCache::getPotentialCandidates($form->_id, $groupNames);
+      // put back current groups because they are selected by default
+      if (!empty($parentGroupIds)) {
+        $potentialParentGroupIds = array_merge($potentialParentGroupIds, $parentGroupIds);
+      }
     }
     else {
       $potentialParentGroupIds = array_keys($groupNames);
@@ -431,7 +397,7 @@ WHERE  title = %1
       else {
         $required = FALSE;
       }
-      $form->add('select', 'parents', ts('Add Parent'), $parentGroupSelectValues, $required, ['class' => 'crm-select2', 'multiple' => TRUE]);
+      $form->add('select', 'parents', ts('Parents'), $parentGroupSelectValues, $required, ['class' => 'crm-select2', 'multiple' => TRUE]);
     }
 
     return $parentGroups;
@@ -445,7 +411,7 @@ WHERE  title = %1
    *
    * @param CRM_Core_Form $form
    */
-  public static function buildGroupOrganizations(&$form) {
+  public static function buildGroupOrganizations($form) {
     if (CRM_Core_Permission::check('administer Multiple Organizations') && CRM_Core_Permission::isMultisiteEnabled()) {
       //group organization Element
       $props = ['api' => ['params' => ['contact_type' => 'Organization']]];

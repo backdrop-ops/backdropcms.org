@@ -11,6 +11,8 @@
 
 namespace Civi\Test;
 
+use Civi\Core\Exception\DBQueryException;
+
 /**
  * Helper for tracking entities created in tests.
  */
@@ -47,16 +49,19 @@ trait EntityTrait {
    * Create an entity, recording it's details for tearDown.
    *
    * @param string $entity
-   * @param array $params
+   * @param array $values
    * @param string $identifier
    *
    * @return array
    */
-  protected function createTestEntity(string $entity, array $params, string $identifier = 'default'): array {
+  protected function createTestEntity(string $entity, array $values, string $identifier = 'default'): array {
     $result = NULL;
     try {
-      $result = \civicrm_api4($entity, 'create', ['values' => $params, 'checkPermissions' => FALSE])->first();
+      $result = \civicrm_api4($entity, 'create', ['values' => $values, 'checkPermissions' => FALSE])->single();
       $this->setTestEntityID($entity, $result['id'], $identifier);
+    }
+    catch (DBQueryException $e) {
+      $this->fail('sql error when trying to create ' . $entity . ' : ' . "\n" . $e->getUserInfo());
     }
     catch (\CRM_Core_Exception $e) {
       $this->fail('Failed to create ' . $entity . ' : ' . $e->getMessage());

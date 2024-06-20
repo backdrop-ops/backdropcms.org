@@ -22,7 +22,7 @@ CRM.$(function ($) {
   $('#cad_bank_number').blur(function(eventObj) {
     var myCount = onlyNumbers($(this));
     if ((myCount > 0) && (myCount != 3)) {
-      $(this).crmError(ts('Your Bank Number requires three digits, use a leading "0" if necessary')); 
+      $(this).crmError(ts('Your Bank No. requires three digits, use a leading "0" if necessary'));
     }
     switch($(this).val()) {
       case '001': $('#bank_name').val('Bank of Montreal'); break;
@@ -49,7 +49,7 @@ CRM.$(function ($) {
   $('#cad_transit_number').blur(function(eventObj) {
     var myCount = onlyNumbers($(this));
     if ((myCount > 0) && (myCount != 5)) {
-      $(this).crmError(ts('Your Bank Transit Number requires exactly five digits')); 
+      $(this).crmError(ts('Your Transit No. requires exactly five digits'));
     }
     iatsSetBankIdenficationNumber();
   });

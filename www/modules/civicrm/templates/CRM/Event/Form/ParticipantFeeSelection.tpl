@@ -114,7 +114,7 @@ CRM.$(function($) {
       <table class='form-layout'>
         <tr class="crm-event-eventfees-form-block-price_set_amount">
           <td class="label" style="padding-top: 10px;">{$form.amount.label}</td>
-          <td class="view-value"><table class="form-layout">{include file="CRM/Price/Form/PriceSet.tpl" extends="Event" noCalcValueDisplay=0 context="participant"}</table></td>
+          <td class="view-value"><table class="form-layout">{include file="CRM/Price/Form/PriceSet.tpl" extends="Event" hideTotal=false context="participant"}</table></td>
         </tr>
      {if $paymentInfo}
        <tr><td></td><td>
@@ -126,7 +126,7 @@ CRM.$(function($) {
          </div>
          <div class='label'><strong>{ts}Balance Owed{/ts}</strong></div><div class='content'><strong id='balance-fee'></strong></div>
           </div>
-       {include file='CRM/Price/Form/Calculate.tpl' currencySymbol=$currencySymbol noCalcValueDisplay=1 displayOveride='true'}
+       {include file='CRM/Price/Form/Calculate.tpl' currencySymbol=$currencySymbol hideTotal=1 displayOveride='true'}
        {/if}
       </table>
     </fieldset>
@@ -141,7 +141,7 @@ CRM.$(function($) {
        </tr>
        <tr id="from-email" class="crm-event-eventfees-form-block-from_email_address">
          <td class="label">{$form.from_email_address.label}</td>
-         <td>{$form.from_email_address.html}  {help id="id-from_email" file="CRM/Contact/Form/Task/Help/Email/id-from_email.hlp"}</td>
+         <td>{$form.from_email_address.html}  {help id="id-from_email" file="CRM/Contact/Form/Task/Help/Email/id-from_email.hlp" title=$form.from_email_address.label}</td>
        </tr>
        <tr id='notice' class="crm-event-eventfees-form-block-receipt_text">
          <td class="label">{$form.receipt_text.label}</td>

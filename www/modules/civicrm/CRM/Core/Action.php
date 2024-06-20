@@ -20,12 +20,11 @@
 class CRM_Core_Action {
 
   /**
-   * Different possible actions are defined here. Keep in sync with the
-   * constant from CRM_Core_Form for various modes.
+   * Different possible actions are defined here.
    *
    * @var int
    */
-  const
+  public const
     NONE = 0,
     ADD = 1,
     UPDATE = 2,
@@ -77,10 +76,11 @@ class CRM_Core_Action {
     'revert' => self::REVERT,
     'close' => self::CLOSE,
     'reopen' => self::REOPEN,
+    'advanced' => self::ADVANCED,
   ];
 
   private static function getInfo(): array {
-    Civi::$statics[__CLASS__ . 'Info'] = Civi::$statics[__CLASS__ . 'Info'] ?? [
+    Civi::$statics[__CLASS__ . 'Info'] ??= [
       self::ADD => [
         'name' => 'add',
         'label' => ts('Add'),
@@ -309,13 +309,17 @@ class CRM_Core_Action {
     }
 
     if ($op && $objectName && $objectId) {
+      $oldLinks = $seqLinks;
       CRM_Utils_Hook::links($op, $objectName, $objectId, $seqLinks, $mask, $values);
+      if ($oldLinks !== $seqLinks) {
+        Civi::log()->warning('Tabular screens that call hook_civicrm_links are being replaced by SearchKit. See https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_links/#notes', ['civi.tag' => 'deprecated']);
+      }
     }
 
     $url = [];
 
     usort($seqLinks, static function ($a, $b) {
-      return (int) ((int) ($a['weight'] ?? 0) > (int) ($b['weight'] ?? 0));
+      return (int) ((int) ($a['weight']) > (int) ($b['weight']));
     });
 
     foreach ($seqLinks as $i => $link) {

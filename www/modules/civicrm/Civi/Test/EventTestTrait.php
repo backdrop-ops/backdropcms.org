@@ -13,20 +13,13 @@ namespace Civi\Test;
 
 use Civi\Api4\Event;
 use Civi\Api4\ExampleData;
-use Civi\Api4\PriceField;
 use Civi\Api4\PriceFieldValue;
-use Civi\Api4\PriceSet;
-use Civi\Api4\PriceSetEntity;
 use Civi\Api4\UFField;
 use Civi\Api4\UFGroup;
 use Civi\Api4\UFJoin;
 
 /**
  * Helper for event tests.
- *
- * WARNING - this trait ships with core from 5.63 but I wasn't able to resolve
- * all the core tests onto it for 5.63 - hence the signatures may not yet be stable
- * and it is worth assuming that they will not be stable until 5.65.
  *
  * This provides functions to set up valid events
  * for unit tests.
@@ -57,24 +50,52 @@ trait EventTestTrait {
   protected function eventCreatePaid(array $eventParameters = [], array $priceSetParameters = [], string $identifier = 'PaidEvent'): array {
     $eventParameters = array_merge($this->getEventExampleData(), $eventParameters);
     $event = $this->eventCreate($eventParameters, $identifier);
-    if (array_keys($priceSetParameters) !== ['id']) {
-      try {
-        $this->eventCreatePriceSet([], $identifier);
-        $this->setTestEntityID('PriceSetEntity', PriceSetEntity::create(FALSE)
-          ->setValues([
-            'entity_table' => 'civicrm_event',
-            'entity_id' => $event['id'],
-            'price_set_id' => $this->ids['PriceSet'][$identifier],
-          ])
-          ->execute()
-          ->first()['id'], $identifier);
+    try {
+      if (empty($priceSetParameters['id'])) {
+        $this->eventCreatePriceSet($priceSetParameters, $identifier);
+        $priceSetParameters['id'] = $this->ids['PriceSet'][$identifier];
       }
-
-      catch (\CRM_Core_Exception $e) {
-        $this->fail('Failed to create PriceSetEntity: ' . $e->getMessage());
-      }
+      $this->createTestEntity('PriceSetEntity', [
+        'entity_table' => 'civicrm_event',
+        'entity_id' => $event['id'],
+        'price_set_id' => $priceSetParameters['id'],
+      ], $identifier);
+    }
+    catch (\CRM_Core_Exception $e) {
+      $this->fail('Failed to create PriceSetEntity: ' . $e->getMessage());
     }
     return $event;
+  }
+
+  /**
+   * Add a discount price set to the given event.
+   *
+   * @param string $eventIdentifier
+   * @param array $discountParameters
+   * @param array $priceSetParameters
+   * @param string $identifier
+   * @param float $fraction
+   *
+   * @noinspection PhpUnhandledExceptionInspection
+   * @noinspection PhpDocMissingThrowsInspection
+   */
+  public function addDiscountPriceSet(string $eventIdentifier = 'PaidEvent', array $discountParameters = [], array $priceSetParameters = [], string $identifier = 'discount', $fraction = .5): void {
+    $this->eventCreatePriceSet($priceSetParameters, $identifier);
+    $discountParameters = array_merge([
+      'start_date' => '1 week ago',
+      'end_date' => 'tomorrow',
+      'entity_id' => $this->getEventID($eventIdentifier),
+      'entity_table' => 'civicrm_event',
+      'price_set_id' => $this->ids['PriceSet'][$identifier],
+    ], $discountParameters);
+    $this->createTestEntity('Discount', $discountParameters, $identifier);
+    $priceOptions = PriceFieldValue::get(FALSE)
+      ->addWhere('price_field_id.price_set_id', '=', $this->ids['PriceSet'][$identifier])
+      ->execute();
+    foreach ($priceOptions as $price) {
+      PriceFieldValue::update(FALSE)->addWhere('id', '=', $price['id'])
+        ->setValues(['amount' => round($price['amount'] * $fraction)])->execute();
+    }
   }
 
   /**
@@ -267,7 +288,9 @@ trait EventTestTrait {
     try {
       $this->setTestEntity('UFJoin', UFJoin::create(FALSE)->setValues([
         'module' => $additionalSuffix ? 'CiviEvent_Additional' : 'CiviEvent',
+        'entity_table' => 'civicrm_event',
         'uf_group_id:name' => $profileName,
+        'entity_table' => 'civicrm_event',
         'entity_id' => $this->getEventID($identifier),
       ])->execute()->first(), $profileIdentifier);
     }
@@ -281,20 +304,18 @@ trait EventTestTrait {
    *
    * @param array $priceSetParameters
    * @param string $identifier
-   *
-   * @throws \CRM_Core_Exception
    */
   private function eventCreatePriceSet(array $priceSetParameters, string $identifier): void {
-    $priceSetParameters = array_merge($priceSetParameters, [
+    $priceSetParameters = array_merge([
       'min_amount' => 0,
       'title' => 'Fundraising dinner',
-      'name' => 'fundraising_dinner',
+      'name' => $identifier,
       'extends:name' => 'CiviEvent',
       'financial_type_id:name' => 'Event Fee',
-    ]);
+    ], $priceSetParameters);
 
-    $this->setTestEntityID('PriceSet', PriceSet::create(FALSE)->setValues($priceSetParameters)->execute()->first()['id'], $identifier);
-    $this->setTestEntityID('PriceField', PriceField::create(FALSE)->setValues([
+    $this->createTestEntity('PriceSet', $priceSetParameters, $identifier);
+    $this->createTestEntity('PriceField', [
       'label' => 'Fundraising Dinner',
       'name' => 'fundraising_dinner',
       'html_type' => 'Radio',
@@ -303,15 +324,14 @@ trait EventTestTrait {
       'price_set_id' => $this->ids['PriceSet'][$identifier],
       'is_enter_qty' => 1,
       'financial_type_id:name' => 'Event Fee',
-    ])->execute()->first()['id'], $identifier);
+    ], $identifier);
 
     foreach ($this->getPriceFieldOptions() as $optionIdentifier => $priceFieldOption) {
-      $this->setTestEntityID('PriceFieldValue', PriceFieldValue::create(FALSE)->setValues(
+      $this->createTestEntity('PriceFieldValue',
         array_merge([
           'price_field_id' => $this->ids['PriceField'][$identifier],
           'financial_type_id:name' => 'Event Fee',
-        ], $priceFieldOption),
-      )->execute()->first()['id'], $identifier . '_' . $optionIdentifier);
+        ], $priceFieldOption), $identifier . '_' . $optionIdentifier);
     }
   }
 
@@ -323,12 +343,10 @@ trait EventTestTrait {
    *   functions and would allow over-riding.
    *
    * @return array[]
-   *
-   * @throws \CRM_Core_Exception
    */
   protected function getPriceFieldOptions(string $identifier = 'PaidEvent'): array {
     if ($identifier !== 'PaidEvent') {
-      throw new \CRM_Core_Exception('Only paid event currently supported');
+      $this->fail('Only paid event currently supported');
     }
     return [
       'free' => ['name' => 'free', 'label' => 'Complementary', 'amount' => 0],

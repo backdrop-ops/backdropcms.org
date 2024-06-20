@@ -17,6 +17,7 @@ use Civi\Token\TokenRow;
 use Civi\ActionSchedule\Event\MailingQueryEvent;
 use Civi\Token\TokenProcessor;
 use Brick\Money\Money;
+use Brick\Math\RoundingMode;
 
 /**
  * Class CRM_Core_EntityTokens
@@ -99,7 +100,7 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
     $fieldValue = $this->getFieldValue($row, $field);
     if (is_array($fieldValue)) {
       // eg. role_id for participant would be an array here.
-      $fieldValue = implode(',', $fieldValue);
+      $fieldValue = implode(', ', $fieldValue);
     }
 
     if ($this->isPseudoField($field)) {
@@ -126,7 +127,7 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
       }
 
       return $row->format('text/plain')->tokens($entity, $field,
-        Money::of($fieldValue, $currency));
+        Money::of($fieldValue, $currency, NULL, RoundingMode::HALF_UP));
 
     }
     if ($this->isDateField($field)) {
@@ -137,6 +138,9 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
       catch (Exception $e) {
         Civi::log()->info('invalid date token');
       }
+    }
+    if ($this->isHTMLTextField($field)) {
+      return $row->format('text/html')->tokens($entity, $field, (string) $fieldValue);
     }
     $row->format('text/plain')->tokens($entity, $field, (string) $fieldValue);
   }
@@ -149,7 +153,6 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
    * @return bool
    */
   public function isHTMLTextField(string $fieldName): bool {
-    $metadata = $this->getMetadataForField($fieldName);
     return ($this->getMetadataForField($fieldName)['input_type'] ?? NULL) === 'RichTextEditor';
   }
 
@@ -304,7 +307,7 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
    * @internal function will likely be protected soon.
    */
   protected function getPseudoValue(string $realField, string $pseudoKey, $fieldValue): string {
-    $bao = CRM_Core_DAO_AllCoreTables::getFullName($this->getMetadataForField($realField)['entity']);
+    $bao = CRM_Core_DAO_AllCoreTables::getDAONameForEntity($this->getMetadataForField($realField)['entity']);
     if ($pseudoKey === 'name') {
       // There is a theoretical possibility fieldValue could be an array but
       // specifically for preferred communication type - but real world usage
@@ -362,8 +365,7 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
   public function checkActive(TokenProcessor $processor) {
     return ((!empty($processor->context['actionMapping'])
         // This makes the 'schema context compulsory - which feels accidental
-        // since recent discu
-      && $processor->context['actionMapping']->getEntityTable()) || in_array($this->getEntityIDField(), $processor->context['schema'])) && in_array($this->getApiEntityName(), array_keys(\Civi::service('action_object_provider')->getEntities()));
+      && $processor->context['actionMapping']->getEntityName()) || in_array($this->getEntityIDField(), $processor->context['schema'])) && in_array($this->getApiEntityName(), array_keys(\Civi::service('action_object_provider')->getEntities()));
   }
 
   /**
@@ -372,7 +374,7 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
    * @param \Civi\ActionSchedule\Event\MailingQueryEvent $e
    */
   public function alterActionScheduleQuery(MailingQueryEvent $e): void {
-    if ($e->mapping->getEntityTable() !== $this->getExtendableTableName()) {
+    if ($e->mapping->getEntityTable($e->actionSchedule) !== $this->getExtendableTableName()) {
       return;
     }
     $e->query->select('e.id AS tokenContext_' . $this->getEntityIDField());
@@ -640,7 +642,7 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
     if ($field['type'] !== 'Custom' && !$isExposed) {
       return;
     }
-    $field['audience'] = $field['audience'] ?? 'user';
+    $field['audience'] ??= 'user';
     if ($field['name'] === 'contact_id') {
       // Since {contact.id} is almost always present don't confuse users
       // by also adding (e.g {participant.contact_id)
@@ -698,6 +700,40 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
       $cacheKey .= '__' . CRM_Core_Session::getLoggedInContactID();
     }
     return $cacheKey;
+  }
+
+  /**
+   * Get metadata for tokens for a related entity joined by a field on the main entity.
+   *
+   * @param string $entity
+   * @param string $joinField
+   * @param array $tokenList
+   * @param array $hiddenTokens
+   *
+   * @return array
+   * @throws \CRM_Core_Exception
+   */
+  protected function getRelatedTokensForEntity(string $entity, string $joinField, array $tokenList, $hiddenTokens = []): array {
+    if (!array_key_exists($entity, \Civi::service('action_object_provider')->getEntities())) {
+      return [];
+    }
+    $apiParams = ['checkPermissions' => FALSE];
+    if ($tokenList !== ['*']) {
+      $apiParams['where'] = [['name', 'IN', $tokenList]];
+    }
+    $relatedTokens = civicrm_api4($entity, 'getFields', $apiParams);
+    $tokens = [];
+    foreach ($relatedTokens as $relatedToken) {
+      $tokens[$joinField . '.' . $relatedToken['name']] = [
+        'title' => $relatedToken['title'],
+        'name' => $joinField . '.' . $relatedToken['name'],
+        'type' => 'mapped',
+        'data_type' => $relatedToken['data_type'],
+        'input_type' => $relatedToken['input_type'],
+        'audience' => in_array($relatedToken['name'], $hiddenTokens, TRUE) ? 'hidden' : 'user',
+      ];
+    }
+    return $tokens;
   }
 
 }

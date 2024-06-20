@@ -359,6 +359,32 @@ class CRM_Upgrade_Incremental_MessageTemplates {
           ['name' => 'petition_sign', 'type' => 'subject'],
         ],
       ],
+      [
+        'version' => '5.68.alpha1',
+        'upgrade_descriptor' => ts('Significant changes to the template and available variables. Text version is discontinued'),
+        'templates' => [
+          ['name' => 'event_offline_receipt', 'type' => 'text'],
+          ['name' => 'event_offline_receipt', 'type' => 'html'],
+          ['name' => 'event_offline_receipt', 'type' => 'subject'],
+        ],
+      ],
+      [
+        'version' => '5.69.alpha1',
+        'upgrade_descriptor' => ts('Significant changes to the template and available variables. Text version is discontinued'),
+        'templates' => [
+          ['name' => 'membership_online_receipt', 'type' => 'text'],
+          ['name' => 'membership_online_receipt', 'type' => 'html'],
+          ['name' => 'membership_online_receipt', 'type' => 'subject'],
+        ],
+      ],
+      [
+        'version' => '5.74.alpha1',
+        'upgrade_descriptor' => ts('Minor space issue in string'),
+        'templates' => [
+          ['name' => 'event_online_receipt', 'type' => 'text'],
+          ['name' => 'event_online_receipt', 'type' => 'html'],
+        ],
+      ],
     ];
   }
 
@@ -510,10 +536,10 @@ class CRM_Upgrade_Incremental_MessageTemplates {
   /**
    * Update message templates.
    */
-  public function updateTemplates() {
+  public function updateTemplates(): void {
     $templates = $this->getTemplatesToUpdate();
     foreach ($templates as $template) {
-      $workFlowID = CRM_Core_DAO::singleValueQuery("SELECT MAX(id) as id FROM civicrm_option_value WHERE name = %1", [
+      $workFlowID = CRM_Core_DAO::singleValueQuery('SELECT MAX(id) as id FROM civicrm_option_value WHERE name = %1', [
         1 => [$template['name'], 'String'],
       ]);
       $content = file_get_contents(\Civi::paths()->getPath('[civicrm.root]/xml/templates/message_templates/' . $template['name'] . '_' . $template['type'] . '.tpl'));
@@ -572,7 +598,7 @@ class CRM_Upgrade_Incremental_MessageTemplates {
           continue;
         }
         $content = file_get_contents($filePath);
-        if ($content) {
+        if ($content !== FALSE) {
           CRM_Core_DAO::executeQuery(
             "UPDATE civicrm_msg_template SET msg_{$type} = %1 WHERE id = %2", [
               1 => [$content, 'String'],

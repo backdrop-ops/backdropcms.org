@@ -8,7 +8,7 @@
  +--------------------------------------------------------------------+
 *}
 {* this template is used for renewing memberships for a contact  *}
-  {if $membershipMode == 'test' }
+  {if $membershipMode == 'test'}
     {assign var=registerMode value="TEST"}
   {elseif $membershipMode == 'live'}
     {assign var=registerMode value="LIVE"}
@@ -21,7 +21,7 @@
   {/if}
   {if $membershipMode}
     <div class="help">
-      {ts 1=$displayName}Use this form to Renew Membership Record on behalf of %1.{/ts}
+      {ts 1=$displayName|escape}Use this form to renew membership on behalf of %1.{/ts}
       {if $registerMode == 'LIVE'}
         {ts}<strong>A LIVE transaction will be submitted</strong> using the selected payment processor.{/ts}
       {else}
@@ -109,7 +109,7 @@
         </tr>
         <tr id="fromEmail">
           <td class="label">{$form.from_email_address.label}</td>
-          <td>{$form.from_email_address.html}  {help id="id-from_email" file="CRM/Contact/Form/Task/Help/Email/id-from_email.hlp"}</td>
+          <td>{$form.from_email_address.html}  {help id="id-from_email" file="CRM/Contact/Form/Task/Help/Email/id-from_email.hlp" title=$form.from_email_address.label}</td>
         </tr>
         <tr id="notice" class="crm-member-membershiprenew-form-block-receipt_text">
           <td class="label">{$form.receipt_text.label}</td>
@@ -122,7 +122,7 @@
       </table>
     {/if}
 
-    {include file="CRM/common/customDataBlock.tpl"}
+    {include file="CRM/common/customDataBlock.tpl" groupID='' customDataType='Membership' cid=false}
 
     <div>{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
 

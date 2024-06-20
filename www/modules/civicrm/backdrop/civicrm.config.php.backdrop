@@ -41,10 +41,6 @@ function civicrm_conf_init() {
     return $conf;
   }
 
-  /**
-   * We are within the civicrm module, the backdrop root is 2 links
-   * above us, so use that
-   */
   $currentDir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
   if (file_exists($currentDir . 'settings_location.php')) {
     include $currentDir . 'settings_location.php';
@@ -59,8 +55,18 @@ function civicrm_conf_init() {
     $moduleDir  = 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'modules';
     $contribDir = $moduleDir . DIRECTORY_SEPARATOR . 'contrib';
     $profileDir = DIRECTORY_SEPARATOR . 'profiles' . DIRECTORY_SEPARATOR;
+
+    // check to see if civicrm is under modules/contrib or modules, and if so,
+    // see if settings file is at site root.
+    if (file_exists($currentDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'civicrm.settings.php')) {
+      return $currentDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
+    }
+    elseif (file_exists($currentDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'civicrm.settings.php')) {
+      return $currentDir . '..' . DIRECTORY_SEPARATOR . '..';
+    }
+
     // check to see if this is under sites/all/modules/contrib or subdir civicrm-core
-    if (strpos($currentDir, $contribDir) !== FALSE || strpos($currentDir, 'civicrm-core') !== FALSE) {
+    elseif (strpos($currentDir, $contribDir) !== FALSE || strpos($currentDir, 'civicrm-core') !== FALSE) {
       $confdir = $currentDir . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
     }
     // check to see if this is under sites/all/modules

@@ -68,7 +68,7 @@ return [
         'saved_search_id.name' => 'User_defined_Profiles',
         'type' => 'table',
         'settings' => [
-          'actions' => FALSE,
+          'actions' => TRUE,
           'limit' => 50,
           'classes' => [
             'table',
@@ -235,7 +235,7 @@ return [
                   'icon' => 'fa-toggle-on',
                   'text' => E::ts('Enable'),
                   'style' => 'default',
-                  'condition' => ['is_active', '=', FALSE],
+                  'condition' => [],
                 ],
                 [
                   'task' => 'disable',
@@ -244,7 +244,17 @@ return [
                   'icon' => 'fa-toggle-off',
                   'text' => E::ts('Disable'),
                   'style' => 'default',
-                  'condition' => ['is_active', '=', TRUE],
+                  'condition' => [],
+                ],
+                [
+                  'icon' => 'fa-copy',
+                  'text' => E::ts('Copy'),
+                  'style' => 'default',
+                  'condition' => [],
+                  'entity' => 'UFGroup',
+                  'action' => 'copy',
+                  'join' => '',
+                  'target' => '',
                 ],
                 [
                   'icon' => 'fa-trash',
@@ -262,10 +272,15 @@ return [
               'label' => '',
             ],
           ],
-          'addButton' => [
-            'path' => 'civicrm/admin/uf/group/add?action=add&reset=1',
-            'text' => E::ts('Add Profile'),
-            'icon' => 'fa-plus',
+          'toolbar' => [
+            [
+              'entity' => 'UFGroup',
+              'action' => 'add',
+              'target' => 'crm-popup',
+              'style' => 'primary',
+              'text' => E::ts('Add Profile'),
+              'icon' => 'fa-plus',
+            ],
           ],
           'cssRules' => [
             [

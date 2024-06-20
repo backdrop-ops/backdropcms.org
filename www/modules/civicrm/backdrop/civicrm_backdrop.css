@@ -3,14 +3,29 @@
   */
 
 /* Override Backdrop's CSS for CRM-provided UI. */
-#crm-container .ui-state-default, 
-#crm-container .ui-widget-content .ui-state-default, 
+#crm-container .ui-state-default,
+#crm-container .ui-widget-content .ui-state-default,
 #crm-container .ui-widget-header .ui-state-default {
-  background: #e6e6e6 url(/modules/civicrm/bower_components/jquery-ui/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+  background: #e6e6e6 url(../bower_components/jquery-ui/themes/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
 }
 
-/* Backdrop main navigation icon. */
-#admin-bar #admin-bar-menu > li > .dropdown > li > a.civicrm {
+/* Display old icon */
+/* Support Backdrop < 1.28.0 without Icon API */
+#admin-bar #admin-bar-menu > li > .dropdown > li.civicrm-icon-original > a.civicrm {
   background: transparent url(../i/logo_sm.png) 5% center no-repeat;
   background-size: 16px;
+}
+#admin-bar #admin-bar-menu>li>.dropdown>li.civicrm-icon-original>a.civicrm span.admin-bar-link-icon {
+  display: none;
+}
+#admin-bar #admin-bar-menu>li>.dropdown>li.civicrm-icon-original>a.civicrm span.admin-bar-link-text {
+  margin-left: 18px;
+}
+
+/**
+ * Prevent contact name overlapping the breadcrumb.
+ * @see https: //lab.civicrm.org/dev/backdrop/-/issues/84
+ */
+#crm-container div.crm-summary-contactname-block {
+  margin-top: 0px !important;
 }
