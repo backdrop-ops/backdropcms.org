@@ -834,6 +834,7 @@ function project_release_autoload_info() {
     'project_release_handler_filter_release_node_nid' => 'views/project_release_handler_filter_release_node_nid.inc',
     'project_release_handler_filter_update_status' => 'views/project_release_handler_filter_update_status.inc',
     'project_release_handler_filter_version_api' => 'views/project_release_handler_filter_version_api.inc',
+    'project_release_handler_num_installs' => 'views/project_release_handler_num_installs.inc',
   );
 }
 

@@ -1,0 +1,16 @@
+/*******************************************************************************
+ * views.view.project_browser.css
+ *
+ * Contains custom formatting for the Project Browser View.
+ ******************************************************************************/
+
+/**
+ * View project_browser: tighten up the listing vertically.
+**/
+
+.view-project-browser table td {
+  padding: 0 1em;
+}
+.view-project-browser table td a.button {
+  margin: 5px 10px;
+}
