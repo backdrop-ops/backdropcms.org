@@ -107,10 +107,14 @@
         "site_slogan",
         "maintenance_mode_message"
     ],
-    "block_interest_cohort": 1,
     "messages_dismissible": 1,
     "file_additional_public_schemes": [],
     "log_max_length": 56,
     "file_not_normalized_schemes": [],
-    "user_editor_role": ""
+    "user_editor_role": "",
+    "jquery_version": "legacy",
+    "backdrop_http_request": {
+        "strip_sensitive_headers_on_host_change": true,
+        "strip_sensitive_headers_on_https_downgrade": true
+    }
 }
