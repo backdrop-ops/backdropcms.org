@@ -916,7 +916,10 @@ AND    u.status = 1
    * @inheritDoc
    */
   public function clearResourceCache() {
-    _backdrop_flush_css_js();
+    // Sometimes metadata gets cleared while the cms isn't bootstrapped.
+    if (function_exists('_backdrop_flush_css_js')) {
+      _backdrop_flush_css_js();
+    }
   }
 
   /**
@@ -1103,7 +1106,7 @@ AND    u.status = 1
    * CMS's drupal views expectations, if any.
    */
   public function getCRMDatabasePrefix(): string {
-    return str_replace(parent::getCRMDatabasePrefix(), '`', '');
+    return str_replace('`', '', parent::getCRMDatabasePrefix());
   }
 
   /**

@@ -158,10 +158,10 @@ class CRM_Gdpr_Form_ManageEvent_TermsAndConditions extends CRM_Event_Form_Manage
         'Terms &amp; Conditions File'
       );
       $tc_current = [
-        'url' => $tc_field['element_value'],
-        'label' => basename($tc_field['element_value']),
+        'url' => $tc_field['element_value'] ?? '',
+        'label' => basename($tc_field['element_value'] ?? ''),
       ];
-      $tc_value = $tc_field['element_value'];
+      $tc_value = $tc_field['element_value'] ?? '';
       // Provide some variables so the template can display the upload field in
       // place of the link field.
       $this->assign('terms_conditions_link_element_name', $tc_field['element_name']);

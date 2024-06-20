@@ -403,7 +403,9 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
   }
 
   public function testEnableDisableTaskLinks():void {
-    $contributionPage = $this->createTestRecord('ContributionPage');
+    $contributionPage = $this->createTestRecord('ContributionPage', [
+      'is_active' => TRUE,
+    ]);
     $params = [
       'checkPermissions' => FALSE,
       'return' => 'page:1',
@@ -452,11 +454,12 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
     ];
     $result = civicrm_api4('SearchDisplay', 'run', $params);
     $this->assertEquals(1, $result->count());
+    $this->assertCount(1, $result[0]['columns'][1]['links']);
     // Native SK tasks should not have a url
-    $this->assertArrayNotHasKey('url', $result[0]['columns'][1]['links'][1]);
-    $this->assertArrayNotHasKey('action', $result[0]['columns'][1]['links'][1]);
-    $this->assertEquals('disable', $result[0]['columns'][1]['links'][1]['task']);
-    $this->assertEquals('fa-pencil', $result[0]['columns'][1]['links'][1]['icon']);
+    $this->assertArrayNotHasKey('url', $result[0]['columns'][1]['links'][0]);
+    $this->assertArrayNotHasKey('action', $result[0]['columns'][1]['links'][0]);
+    $this->assertEquals('disable', $result[0]['columns'][1]['links'][0]['task']);
+    $this->assertEquals('fa-pencil', $result[0]['columns'][1]['links'][0]['icon']);
   }
 
   public function testRelationshipCacheLinks():void {
@@ -515,12 +518,10 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
                 [
                   'entity' => 'Relationship',
                   'task' => 'enable',
-                  'condition' => ['is_active', '=', FALSE],
                 ],
                 [
                   'entity' => 'Relationship',
                   'task' => 'disable',
-                  'condition' => ['is_active', '=', TRUE],
                 ],
                 [
                   'entity' => 'Case',
@@ -609,13 +610,13 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
               'key' => 'first_name',
               'label' => 'Name',
               'type' => 'field',
-              'rewrite' => '{if "[nick_name]"}[nick_name]{else}[first_name]{/if} [last_name]',
+              'rewrite' => '{if $nick_name}{$nick_name}{else}[first_name]{/if} [last_name]',
             ],
             [
               'key' => 'Contact_Email_contact_id_01.email',
               'label' => 'Email',
               'type' => 'field',
-              'rewrite' => '{if "[Contact_Email_contact_id_01.email]"}[Contact_Email_contact_id_01.email] ([Contact_Email_contact_id_01.location_type_id:label]){/if}',
+              'rewrite' => '{if $Contact_Email_contact_id_01.email}{$Contact_Email_contact_id_01.email} ({$Contact_Email_contact_id_01.location_type_id_label}){/if}',
             ],
           ],
           'sort' => [
@@ -638,6 +639,49 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
     }
     catch (\Exception $e) {
     }
+
+    // Start with email as base entity and use implicit join
+
+    $params = [
+      'checkPermissions' => FALSE,
+      'return' => 'page:1',
+      'savedSearch' => [
+        'api_entity' => 'Email',
+        'api_params' => [
+          'version' => 4,
+          'select' => ['id', 'email', 'contact_id', 'contact_id.first_name', 'contact_id.last_name', 'contact_id.nick_name'],
+          'where' => [['contact_id.last_name', '=', $lastName]],
+        ],
+      ],
+      'display' => [
+        'type' => 'table',
+        'label' => 'testDisplay',
+        'settings' => [
+          'limit' => 20,
+          'pager' => TRUE,
+          'columns' => [
+            [
+              'key' => 'contact_id',
+              'label' => 'Contact ID',
+              'type' => 'field',
+              'rewrite' => '#{$contact_id.id} is #{$contact_id}',
+            ],
+            [
+              'key' => 'first_name',
+              'label' => 'Name',
+              'type' => 'field',
+              'rewrite' => '{if $contact_id.nick_name}{$contact_id.nick_name}{else}[contact_id.first_name]{/if} {$contact_id.last_name}',
+            ],
+          ],
+          'sort' => [
+            ['id', 'ASC'],
+          ],
+        ],
+      ],
+    ];
+    $result = civicrm_api4('SearchDisplay', 'run', $params);
+    $this->assertEquals("#{$contacts[0]['id']} is #{$contacts[0]['id']}", $result[0]['columns'][0]['val']);
+    $this->assertEquals("Uno $lastName", $result[0]['columns'][1]['val']);
   }
 
   /**
@@ -1059,7 +1103,7 @@ class SearchRunTest extends Api4TestBase implements TransactionalInterface {
     }
     $this->assertStringContainsString('failed', $error);
 
-    $config->userPermissionClass->permissions = ['access CiviCRM', 'administer search_kit'];
+    $config->userPermissionClass->permissions = ['administer CiviCRM'];
 
     // Admins can edit the search and the display
     SavedSearch::update()->addWhere('name', '=', $searchName)

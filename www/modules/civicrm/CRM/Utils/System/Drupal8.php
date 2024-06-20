@@ -188,6 +188,15 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
   public function appendBreadCrumb($breadcrumbs) {
     $civicrmPageState = \Drupal::service('civicrm.page_state');
     foreach ($breadcrumbs as $breadcrumb) {
+      if (stripos($breadcrumb['url'], 'id%%')) {
+        $args = ['cid', 'mid'];
+        foreach ($args as $a) {
+          $val = CRM_Utils_Request::retrieve($a, 'Positive');
+          if ($val) {
+            $breadcrumb['url'] = str_ireplace("%%{$a}%%", $val, $breadcrumb['url']);
+          }
+        }
+      }
       $civicrmPageState->addBreadcrumb($breadcrumb['title'], $breadcrumb['url']);
     }
   }
@@ -296,6 +305,8 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
         'fragment' => $fragment,
         'absolute' => $absolute,
       ])->toString();
+      // Decode %% for better readability, e.g., %%cid%%.
+      $url = str_replace('%25%25', '%%', $url);
     }
     catch (Exception $e) {
       \Drupal::logger('civicrm')->error($e->getMessage());
@@ -663,8 +674,8 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
     if (!empty($action)) {
       return $action;
     }
-    $current_path = \Drupal::service('path.current')->getPath();
-    return $this->url($current_path);
+    $current_path = ltrim(\Drupal::service('path.current')->getPath(), '/');
+    return (string) Civi::url('current://' . $current_path);
   }
 
   /**
@@ -962,6 +973,29 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
     $enableWorkflow = Civi::settings()->get('civimail_workflow');
 
     return (bool) $enableWorkflow;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function clearResourceCache() {
+    $cleared = FALSE;
+    // @todo When only drupal 10.2+ is supported can remove the try catch
+    // and the fallback to drupal_flush_css_js. Still need the class_exists.
+    try {
+      // Sometimes metadata gets cleared while the cms isn't bootstrapped.
+      if (class_exists('\Drupal')) {
+        \Drupal::service('asset.query_string')->reset();
+        $cleared = TRUE;
+      }
+    }
+    catch (\Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException $e) {
+      // probably < drupal 10.2 - fall thru
+    }
+    // Sometimes metadata gets cleared while the cms isn't bootstrapped.
+    if (!$cleared && function_exists('_drupal_flush_css_js')) {
+      _drupal_flush_css_js();
+    }
   }
 
 }

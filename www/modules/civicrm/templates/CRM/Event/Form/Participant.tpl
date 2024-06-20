@@ -114,10 +114,10 @@
         </fieldset>
 
         <div class="crm-participant-form-block-customData">
-          <div id="customData" class="crm-customData-block"></div>  {* Participant Custom data *}
-          <div id="customData{$eventNameCustomDataTypeID}" class="crm-customData-block"></div> {* Event Custom Data *}
-          <div id="customData{$roleCustomDataTypeID}" class="crm-customData-block"></div> {* Role Custom Data *}
-          <div id="customData{$eventTypeCustomDataTypeID}" class="crm-customData-block"></div> {* Role Custom Data *}
+          <div id="customData_Participant" class="crm-customData-block"></div>  {* Participant Custom data *}
+          <div id="customData_Participant{$eventNameCustomDataTypeID}" class="crm-customData-block"></div> {* Event Custom Data *}
+          <div id="customData_Participant{$roleCustomDataTypeID}" class="crm-customData-block"></div> {* Role Custom Data *}
+          <div id="customData_Participant{$eventTypeCustomDataTypeID}" class="crm-customData-block"></div> {* Role Custom Data *}
         </div>
       {/if}
 
@@ -182,7 +182,9 @@
 
         function buildRoleCustomData() {
           var roleId = $('select[name^=role_id]', $form).val() || [];
-          CRM.buildCustomData('Participant', roleId.join(), {/literal}{$roleCustomDataTypeID}{literal});
+          // If -1 is passed this will avoid https://lab.civicrm.org/dev/core/-/issues/5253
+          // as it is not a valid role ID but it is not 'empty'
+          CRM.buildCustomData('Participant', roleId.join() || -1, {/literal}{$roleCustomDataTypeID}{literal});
         }
 
         //build fee block

@@ -144,10 +144,6 @@ class Admin {
         if ($links) {
           $entity['links'] = array_values($links);
         }
-        $paths = CoreUtil::getInfoItem($entity['name'], 'paths');
-        if (!empty($paths['add'])) {
-          $entity['addPath'] = $paths['add'];
-        }
         try {
           $getFields = civicrm_api4($entity['name'], 'getFields', [
             'select' => ['name', 'title', 'label', 'description', 'type', 'options', 'input_type', 'input_attrs', 'data_type', 'serialize', 'entity', 'fk_entity', 'readonly', 'operators', 'suffixes', 'nullable'],
@@ -310,25 +306,21 @@ class Admin {
             $dynamicCol = $reference->getTypeColumn();
 
             // For dynamic references getTargetEntities will return multiple targets; for normal joins this loop will only run once
-            foreach ($reference->getTargetEntities() as $targetTable => $targetEntityName) {
-              if (
-                !isset($allowedEntities[$targetEntityName]) ||
-                // What to do with self-references? They're weird but sometimes useful.
-                // For now, only allowing it for dynamic columns since they're explicitly declared
-                // (e.g. a Note can be a comment on a Note), and only the 1-n join since n-1 can be done with implicit joins.
-                ($targetEntityName === $entity['name'] && !$dynamicCol)
-              ) {
+            foreach ($reference->getTargetEntities() as $dynamicValue => $targetEntityName) {
+              if (!isset($allowedEntities[$targetEntityName])) {
+                // Skip if target entity doesn't exist
                 continue;
               }
               $targetEntity = $allowedEntities[$targetEntityName];
-              // Add the straight 1-1 join (but only if it's not a reference to itself, see above)
-              if ($targetEntityName !== $entity['name']) {
+              $isSelf = $targetEntityName === $entity['name'];
+              // Add the straight 1-1 join (but only if it's not a reference to itself, those can be done with implicit joins)
+              if (!$isSelf) {
                 $alias = $entity['name'] . '_' . $targetEntityName . '_' . $keyField['name'];
                 $joins[$entity['name']][] = [
                   'label' => $entity['title'] . ' ' . ($dynamicCol ? $targetEntity['title'] : $keyField['label']),
                   'description' => '',
                   'entity' => $targetEntityName,
-                  'conditions' => self::getJoinConditions($keyField['name'], $alias . '.' . $reference->getTargetKey(), $targetTable, $dynamicCol),
+                  'conditions' => self::getJoinConditions($keyField['name'], $alias . '.' . $reference->getTargetKey(), $dynamicValue, $dynamicCol),
                   'defaults' => self::getJoinDefaults($alias, $targetEntity),
                   'alias' => $alias,
                   'multi' => FALSE,
@@ -337,10 +329,10 @@ class Admin {
               // Flip the conditions & add the reverse (1-n) join
               $alias = $targetEntityName . '_' . $entity['name'] . '_' . $keyField['name'];
               $joins[$targetEntityName][] = [
-                'label' => $targetEntity['title'] . ' ' . $entity['title_plural'],
-                'description' => $dynamicCol ? '' : $keyField['label'],
+                'label' => ($isSelf ? $keyField['label'] : $targetEntity['title']) . ' ' . $entity['title_plural'],
+                'description' => $dynamicCol || $isSelf ? '' : $keyField['label'],
                 'entity' => $entity['name'],
-                'conditions' => self::getJoinConditions($reference->getTargetKey(), $alias . '.' . $keyField['name'], $targetTable, $dynamicCol ? $alias . '.' . $dynamicCol : NULL),
+                'conditions' => self::getJoinConditions($reference->getTargetKey(), $alias . '.' . $keyField['name'], $dynamicValue, $dynamicCol ? $alias . '.' . $dynamicCol : NULL),
                 'defaults' => self::getJoinDefaults($alias, $entity),
                 'alias' => $alias,
                 'multi' => TRUE,
@@ -355,7 +347,7 @@ class Admin {
             $reference = self::getReference($targetKey, $references);
             $dynamicCol = $reference->getTypeColumn();
             $keyField = $fields[$reference->getReferenceKey()] ?? NULL;
-            foreach ($reference->getTargetEntities() as $targetTable => $targetEntityName) {
+            foreach ($reference->getTargetEntities() as $dynamicValue => $targetEntityName) {
               $targetEntity = $allowedEntities[$targetEntityName] ?? NULL;
               $baseEntity = $allowedEntities[$fields[$baseKey]['fk_entity']] ?? NULL;
               if (!$targetEntity || !$baseEntity) {
@@ -370,7 +362,7 @@ class Admin {
                 'entity' => $targetEntityName,
                 'conditions' => array_merge(
                   [$bridge],
-                  self::getJoinConditions('id', $alias . '.' . $baseKey, NULL, NULL)
+                  self::getJoinConditions('id', $alias . '.' . $baseKey)
                 ),
                 'defaults' => self::getJoinDefaults($alias, $targetEntity, $entity),
                 'bridge' => $bridge,
@@ -386,7 +378,7 @@ class Admin {
                   'entity' => $baseEntity['name'],
                   'conditions' => array_merge(
                     [$bridge],
-                    self::getJoinConditions($reference->getTargetKey(), $alias . '.' . $keyField['name'], $targetTable, $dynamicCol ? $alias . '.' . $dynamicCol : NULL)
+                    self::getJoinConditions($reference->getTargetKey(), $alias . '.' . $keyField['name'], $dynamicValue, $alias . '.' . $dynamicCol)
                   ),
                   'defaults' => self::getJoinDefaults($alias, $baseEntity, $entity),
                   'bridge' => $bridge,
@@ -467,11 +459,11 @@ class Admin {
    *
    * @param string $nearCol
    * @param string $farCol
-   * @param string|null $targetTable
+   * @param string|null $dynamicValue
    * @param string|null $dynamicCol
    * @return array[]
    */
-  private static function getJoinConditions(string $nearCol, string $farCol, string $targetTable = NULL, string $dynamicCol = NULL):array {
+  private static function getJoinConditions(string $nearCol, string $farCol, string $dynamicValue = NULL, string $dynamicCol = NULL):array {
     $conditions = [
       [
         $nearCol,
@@ -483,7 +475,7 @@ class Admin {
       $conditions[] = [
         $dynamicCol,
         '=',
-        "'$targetTable'",
+        "'$dynamicValue'",
       ];
     }
     return $conditions;

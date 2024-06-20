@@ -23,7 +23,7 @@ class CRM_Gdpr_Form_ContributionPage_TermsAndConditions extends CRM_Contribute_F
     $this->_id = $this->id = $this->_entityId = CRM_Utils_Request::retrieve('id', 'Positive');
     $group_id = $this->getGroupId();
     if (method_exists('CRM_Custom_Form_CustomData', 'setGroupTree')) {
-      CRM_Custom_Form_CustomData::setGroupTree($this, '', $group_id, $this->_onlySubtype);
+      CRM_Custom_Form_CustomData::setGroupTree($this, '', $group_id);
     }
     else {
       // 4.6
@@ -37,7 +37,7 @@ class CRM_Gdpr_Form_ContributionPage_TermsAndConditions extends CRM_Contribute_F
       $this->_groupTree = $formatted_tree;
     }
   }
-  
+
   /**
    * Get the Id of the custom group for terms and conditions.
    */
@@ -52,7 +52,7 @@ class CRM_Gdpr_Form_ContributionPage_TermsAndConditions extends CRM_Contribute_F
     }
     return $this->groupId;
   }
-  
+
   /**
    * Gets Custom field from the group tree by name.
    */
@@ -83,7 +83,7 @@ class CRM_Gdpr_Form_ContributionPage_TermsAndConditions extends CRM_Contribute_F
     }
     return $fields[$field_name] ? $fields[$field_name] : [];
   }
-  
+
   /**
    * Fetches a Custom Field definition from the API.
    */
@@ -153,10 +153,10 @@ class CRM_Gdpr_Form_ContributionPage_TermsAndConditions extends CRM_Contribute_F
         'Terms &amp; Conditions File'
       );
       $tc_current = [
-        'url' => $tc_field['element_value'],
-        'label' => basename($tc_field['element_value']),
+        'url' => $tc_field['element_value'] ?? '',
+        'label' => basename($tc_field['element_value'] ?? ''),
       ];
-      $tc_value = $tc_field['element_value'];
+      $tc_value = $tc_field['element_value'] ?? '';
       // Provide some variables so the template can display the upload field in
       // place of the link field.
       $this->assign('terms_conditions_link_element_name', $tc_field['element_name']);
@@ -184,7 +184,7 @@ class CRM_Gdpr_Form_ContributionPage_TermsAndConditions extends CRM_Contribute_F
   }
   public function postProcess() {
     $this->saveValues();
-    
+
     // Calling parent::endPostProcess() will not direct to the right url since
     // this form is not included in the ContributionPage State Machine.
     CRM_Core_Session::setStatus(E::ts("Terms & Conditions information has been saved."), E::ts('Saved'), 'success');

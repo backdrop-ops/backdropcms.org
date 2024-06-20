@@ -10,7 +10,7 @@
       <div class="crm-section">
         <div class="label">{$form.$terms_conditions_file_element_name.label}</div>
         <div class="content">{$form.$terms_conditions_file_element_name.html}
-        {if {$terms_conditions_current.url}
+        {if $terms_conditions_current.url}
           <div class="terms-conditions-file-url">{ts}Current: <a href="{$terms_conditions_current.url}">{$terms_conditions_current.label}{/ts}</a>
         {/if}
 

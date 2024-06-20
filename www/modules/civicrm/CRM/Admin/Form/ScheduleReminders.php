@@ -56,6 +56,13 @@ class CRM_Admin_Form_ScheduleReminders extends CRM_Admin_Form {
   }
 
   /**
+   * @return array
+   */
+  protected function getFieldsToExcludeFromPurification(): array {
+    return ['body_html', 'html_message'];
+  }
+
+  /**
    * Because `CRM_Mailing_BAO_Mailing::commonCompose` uses different fieldNames than `CRM_Core_DAO_ActionSchedule`.
    * @var array
    */
@@ -179,7 +186,7 @@ class CRM_Admin_Form_ScheduleReminders extends CRM_Admin_Form {
     $this->add('select', 'absolute_or_relative_date', ts('When (trigger date)'), ['relative' => ts('Relative Date'), 'absolute' => ts('Choose Date')], TRUE);
 
     // SMS-only fields
-    $providersCount = CRM_SMS_BAO_Provider::activeProviderCount();
+    $providersCount = CRM_SMS_BAO_SmsProvider::activeProviderCount();
     $this->assign('sms', $providersCount);
     if ($providersCount) {
       $this->addField('mode', ['placeholder' => FALSE, 'option_url' => FALSE], TRUE)->setAttribute('class', 'crm-form-select');
@@ -190,8 +197,10 @@ class CRM_Admin_Form_ScheduleReminders extends CRM_Admin_Form {
     $multilingual = CRM_Core_I18n::isMultilingual();
     $this->assign('multilingual', $multilingual);
     if ($multilingual) {
-      $this->addField('filter_contact_language', ['placeholder' => ts('Any language')]);
-      $this->addField('communication_language', ['placeholder' => 'System default language']);
+      $filterLanguages = \CRM_Core_BAO_ActionSchedule::getFilterContactLanguageOptions();
+      $this->addField('filter_contact_language', ['placeholder' => ts('Any language'), 'options' => $filterLanguages]);
+      $communicationLanguages = \CRM_Core_BAO_ActionSchedule::getCommunicationLanguageOptions();
+      $this->addField('communication_language', ['placeholder' => 'System default language', 'options' => $communicationLanguages]);
     }
 
     // Message fields

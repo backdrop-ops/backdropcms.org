@@ -19,7 +19,7 @@ use Civi\Api4\LineItem;
  * @package CRM
  * @copyright CiviCRM LLC https://civicrm.org/licensing
  */
-class CRM_Contribute_BAO_ContributionRecur extends CRM_Contribute_DAO_ContributionRecur implements Civi\Test\HookInterface {
+class CRM_Contribute_BAO_ContributionRecur extends CRM_Contribute_DAO_ContributionRecur implements Civi\Core\HookInterface {
 
   /**
    * Create recurring contribution.
@@ -333,12 +333,11 @@ class CRM_Contribute_BAO_ContributionRecur extends CRM_Contribute_DAO_Contributi
   }
 
   /**
-   * @param int $entityID
-   * @param string $entity
+   * @param int $recurringContributionID
    *
    * @return null|Object
    */
-  public static function getSubscriptionDetails($entityID, $entity = 'recur') {
+  public static function getSubscriptionDetails($recurringContributionID) {
     // Note: processor_id used to be aliased as subscription_id so we include it here
     // both as processor_id and subscription_id for legacy compatibility.
     $sql = "
@@ -360,35 +359,13 @@ SELECT rec.id                   as recur_id,
        con.id as contribution_id,
        con.contribution_page_id,
        rec.contact_id,
-       mp.membership_id";
-
-    if ($entity == 'recur') {
-      // This should be always true now.
-      $sql .= "
+       mp.membership_id
       FROM civicrm_contribution_recur rec
 LEFT JOIN civicrm_contribution       con ON ( con.contribution_recur_id = rec.id )
 LEFT  JOIN civicrm_membership_payment mp  ON ( mp.contribution_id = con.id )
      WHERE rec.id = %1";
-    }
-    elseif ($entity == 'contribution') {
-      CRM_Core_Error::deprecatedWarning('no longer used');
-      $sql .= "
-      FROM civicrm_contribution       con
-INNER JOIN civicrm_contribution_recur rec ON ( con.contribution_recur_id = rec.id )
-LEFT  JOIN civicrm_membership_payment mp  ON ( mp.contribution_id = con.id )
-     WHERE con.id = %1";
-    }
-    elseif ($entity == 'membership') {
-      CRM_Core_Error::deprecatedWarning('no longer used');
-      $sql .= "
-      FROM civicrm_membership_payment mp
-INNER JOIN civicrm_membership         mem ON ( mp.membership_id = mem.id )
-INNER JOIN civicrm_contribution_recur rec ON ( mem.contribution_recur_id = rec.id )
-INNER JOIN civicrm_contribution       con ON ( con.id = mp.contribution_id )
-     WHERE mp.membership_id = %1";
-    }
 
-    $dao = CRM_Core_DAO::executeQuery($sql, [1 => [$entityID, 'Integer']]);
+    $dao = CRM_Core_DAO::executeQuery($sql, [1 => [$recurringContributionID, 'Integer']]);
     if ($dao->fetch()) {
       return $dao;
     }
@@ -919,38 +896,33 @@ INNER JOIN civicrm_contribution       con ON ( con.id = mp.contribution_id )
    *
    * @throws \CRM_Core_Exception
    */
-  public static function updateOnNewPayment($recurringContributionID, $paymentStatus, string $effectiveDate = 'now') {
-
+  public static function updateOnNewPayment($recurringContributionID, string $paymentStatus, string $effectiveDate = 'now') {
     if (!in_array($paymentStatus, ['Completed', 'Failed'])) {
       return;
     }
-    $params = [
-      'id' => $recurringContributionID,
-      'return' => [
-        'contribution_status_id',
-        'next_sched_contribution_date',
-        'frequency_unit',
-        'frequency_interval',
-        'installments',
-        'failure_count',
-      ],
-    ];
 
-    $existing = civicrm_api3('ContributionRecur', 'getsingle', $params);
+    $existingRecur = \Civi\Api4\ContributionRecur::get(FALSE)
+      ->addSelect('contribution_status_id:name', 'next_sched_contribution_date', 'frequency_unit', 'frequency_interval', 'installments', 'failure_count')
+      ->addWhere('id', '=', $recurringContributionID)
+      ->execute()
+      ->first();
 
-    if ($paymentStatus == 'Completed'
-      && CRM_Contribute_PseudoConstant::contributionStatus($existing['contribution_status_id'], 'name') == 'Pending') {
-      $params['contribution_status_id'] = 'In Progress';
+    $updatedRecurParams['id'] = $recurringContributionID;
+    if (($paymentStatus === 'Completed')
+      && ($existingRecur['contribution_status_id:name'] === 'Pending')) {
+      // Update Recur to "In Progress"
+      $updatedRecurParams['contribution_status_id'] = CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_ContributionRecur', 'contribution_status_id', 'In Progress');
     }
     if ($paymentStatus == 'Failed') {
-      $params['failure_count'] = $existing['failure_count'];
+      $updatedRecurParams['failure_count'] = $existingRecur['failure_count'];
     }
-    $params['modified_date'] = date('Y-m-d H:i:s');
+    $updatedRecurParams['modified_date'] = date('Y-m-d H:i:s');
 
-    if (!empty($existing['installments']) && self::isComplete($recurringContributionID, $existing['installments'])) {
-      $params['contribution_status_id'] = 'Completed';
-      $params['next_sched_contribution_date'] = 'null';
-      $params['end_date'] = 'now';
+    if (!empty($existingRecur['installments']) && self::isComplete($recurringContributionID, $existingRecur['installments'])) {
+      // Update Recur to "Completed"
+      $updatedRecurParams['contribution_status_id'] = CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_ContributionRecur', 'contribution_status_id', 'Completed');
+      $updatedRecurParams['next_sched_contribution_date'] = 'null';
+      $updatedRecurParams['end_date'] = 'now';
     }
     else {
       // Only update next sched date if it's empty or up to 48 hours away because payment processors may be managing
@@ -960,12 +932,12 @@ INNER JOIN civicrm_contribution       con ON ( con.id = mp.contribution_id )
       // Note 48 hours is a bit aribtrary but means that we can hopefully ignore the time being potentially
       // rounded down to midnight.
       $upperDateToConsiderProcessed = strtotime('+ 48 hours', ($effectiveDate ? strtotime($effectiveDate) : time()));
-      if (empty($existing['next_sched_contribution_date']) || strtotime($existing['next_sched_contribution_date']) <=
+      if (empty($existingRecur['next_sched_contribution_date']) || strtotime($existingRecur['next_sched_contribution_date']) <=
         $upperDateToConsiderProcessed) {
-        $params['next_sched_contribution_date'] = date('Y-m-d', strtotime('+' . $existing['frequency_interval'] . ' ' . $existing['frequency_unit'], strtotime($effectiveDate)));
+        $updatedRecurParams['next_sched_contribution_date'] = date('Y-m-d', strtotime('+' . $existingRecur['frequency_interval'] . ' ' . $existingRecur['frequency_unit'], strtotime($effectiveDate)));
       }
     }
-    civicrm_api3('ContributionRecur', 'create', $params);
+    civicrm_api3('ContributionRecur', 'create', $updatedRecurParams);
   }
 
   /**

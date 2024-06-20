@@ -520,12 +520,12 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
       ]);
 
       $existingPreferredMethod = $apiResult['preferred_communication_method'];
-      
+
         if( !is_array( $existingPreferredMethod ) ){
           // create an empty array to avoid error message
           $existingPreferredMethod = [];
         }
-      
+
       $existingPreferredMethod = array_fill_keys($existingPreferredMethod, 1);
     } catch (Exception $e) {
       CRM_Core_Error::debug_var('updateCommsPrefByFormValues', $e);
@@ -540,7 +540,7 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
       $name  = str_replace($containerPrefix, '', $key);
       if (!empty($submittedValues[$key])) {
         $channelValue = $submittedValues[$key];
-        $commPref = array_merge($commPref, $commPrefMapper[$name][$channelValue]);
+        $commPref = array_merge($commPref, ($commPrefMapper[$name][$channelValue] ?? []));
 
         if ($name == 'post') {
           $name = 'postal mail';

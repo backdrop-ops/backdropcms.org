@@ -672,6 +672,9 @@ class Smarty
         }
     }
 
+    public function clearAssign($tpl_var) {
+      $this->clear_assign($tpl_var);
+    }
 
     /**
      * clear the given assigned template variable.
@@ -1068,6 +1071,118 @@ class Smarty
         }
     }
 
+  /**
+   * Returns a single or all template variables
+   *
+   * @api  Smarty::getTemplateVars()
+   * @link http://www.smarty.net/docs/en/api.get.template.vars.tpl
+   *
+   * @param string $varName variable name or NULL
+   * @param \Smarty_Internal_Data|\Smarty_Internal_Template|\Smarty $_ptr optional pointer to data object
+   * @param bool $searchParents include parent templates?
+   *
+   * @return mixed variable value or or array of variables
+   */
+  public function getTemplateVars($varName = NULL, Smarty_Internal_Data $_ptr = NULL, $searchParents = TRUE) {
+    return $this->get_template_vars($varName);
+  }
+
+  /**
+   * Check if a template resource exists
+   *
+   * @param string $resource_name template name
+   *
+   * @return bool status
+   * @throws \SmartyException
+   */
+  public function templateExists($resource_name) {
+    return $this->template_exists($resource_name);
+  }
+
+  /**
+   * Set template directory
+   *
+   * @param string|array $template_dir directory(s) of template sources
+   * @param bool $isConfig true for config_dir
+   *
+   * @return \Smarty current Smarty instance for chaining
+   */
+  public function setTemplateDir($template_dir) {
+    $this->template_dir = (array) $template_dir;
+    return $this;
+  }
+
+  /**
+   * Add template directory(s).
+   *
+   * @param string|array $template_dir directory(s) of template sources
+   * @param string $key (Smarty3+) of the array element to assign the template dir to
+   * @param bool $isConfig (Smarty3+) true for config_dir
+   *
+   * @return Smarty          current Smarty instance for chaining
+   */
+  public function addTemplateDir($template_dir, $key = NULL, $isConfig = FALSE) {
+    if (is_array($this->template_dir)) {
+      if (!in_array($template_dir, $this->template_dir)) {
+        array_unshift($this->template_dir, $template_dir);
+      }
+    }
+    else {
+      $this->template_dir = [$template_dir, $this->template_dir];
+    }
+    return $this;
+  }
+
+  public function loadFilter($type, $name) {
+    $this->load_filter($type, $name);
+  }
+
+  public function getPluginsDir() {
+    return (array) $this->plugins_dir;
+  }
+
+  public function clearAllCache() {
+    $this->clear_all_cache();
+  }
+
+  public function setPluginsDir(array $directory) {
+    $this->plugins_dir = $directory;
+  }
+
+  public function setCompileDir($compileDirectory) {
+    $this->compile_dir = $compileDirectory;
+  }
+
+  public function registerPlugin($type, $name, $callback, $cacheable = TRUE, $cache_attr = NULL) {
+    if ($type === 'modifier') {
+      $this->register_modifier($name, $callback);
+    }
+    if ($type === 'block') {
+      $this->register_block('localize', 'smarty_block_localize');
+    }
+  }
+
+  /**
+   * Get template directories
+   *
+   * @param mixed $index    index of directory to get, null to get all
+   * @param bool  $isConfig true for config_dir
+   *
+   * @return array|string list of template directories, or directory of $index
+   */
+  public function getTemplateDir($index = null, $isConfig = false)
+  {
+    if ($isConfig) {
+      $dir = &$this->config_dir;
+    } else {
+      $dir = &$this->template_dir;
+    }
+    if ($index !== null) {
+      return isset($dir[ $index ]) ? $dir[ $index ] : null;
+    }
+    return $dir;
+  }
+
     /**
      * Returns an array containing config variables
      *
@@ -1126,9 +1241,10 @@ class Smarty
      */
     function fetch($resource_name, $cache_id = null, $compile_id = null, $display = false)
     {
-      if (preg_match('/^(\s+)?string:/', $resource_name)) {
-        $old_security = $this->security;
-        $this->security = TRUE;
+      // Do we need this forked? Seems like recipe for confusion.
+      $useSecurityPolicy = preg_match('/^(\s+)?string:/', $resource_name) && empty($smarty->security);
+      if ($useSecurityPolicy) {
+        Civi::service('civi.smarty.userContent')->enable();
       }
       try {
         static $_cache_info = [];
@@ -1242,8 +1358,8 @@ class Smarty
               error_reporting($_smarty_old_error_level);
               // restore initial cache_info
               $this->_cache_info = array_pop($_cache_info);
-              if (isset($old_security)) {
-                $this->security = $old_security;
+              if ($useSecurityPolicy) {
+                Civi::service('civi.smarty.userContent')->disable();
               }
               return TRUE;
             }
@@ -1336,24 +1452,24 @@ class Smarty
             echo smarty_core_display_debug_console($_params, $this);
           }
           error_reporting($_smarty_old_error_level);
-          if (isset($old_security)) {
-            $this->security = $old_security;
+          if ($useSecurityPolicy) {
+            Civi::service('civi.smarty.userContent')->disable();
           }
           return;
         }
         else {
           error_reporting($_smarty_old_error_level);
           if (isset($_smarty_results)) {
-            if (isset($old_security)) {
-              $this->security = $old_security;
+            if ($useSecurityPolicy) {
+              Civi::service('civi.smarty.userContent')->disable();
             }
             return $_smarty_results;
           }
         }
       }
       finally {
-        if (isset($old_security)) {
-          $this->security = $old_security;
+        if ($useSecurityPolicy) {
+          Civi::service('civi.smarty.userContent')->disable();
         }
       }
     }
@@ -2035,6 +2151,19 @@ class Smarty
 			return $function;
 		}
 	}
+
+  /**
+   * Adds directory of plugin files
+   *
+   * @param null|array|string $plugins_dir
+   *
+   * @return Smarty current Smarty instance for chaining
+   */
+  public function addPluginsDir($plugins_dir)
+  {
+    $this->plugins_dir = array_merge($this->plugins_dir, (array) $plugins_dir);
+    return $this;
+  }
 
     /**#@-*/
 

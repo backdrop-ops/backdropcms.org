@@ -200,7 +200,7 @@
 		<br />
 	      {if $sla_tc_version}
 	        <span class="description">Version: {$sla_tc_version}. <br />
-	          {if $sla_tc_updated}
+	          {if isset($sla_tc_updated) && $sla_tc_updated}
 	             Updated: {$sla_tc_updated}
 	          {/if}
 	        </span>
@@ -268,11 +268,10 @@
 <div class="crm-block crm-form-block crm-gdpr-settings-form-block">
   <div class="help">{ts}Set defaults for Terms &amp Conditions. You can override these in the settings for individual Events and Contribution Pages.{/ts}
   </div>{* end .help *}
- {foreach from="$entity_tc_elements" item="elem"}
+ {foreach from=$entity_tc_elements item="elem"}
   <div class="crm-section">
     <div class="label">{$form.$elem.label}</div>
     <div class="content">{$form.$elem.html}
-      <br /><span class="description"><i></i></span>
     </div>{* end .content *}
   </div>{* end .section *}
   <div class="clear"></div>

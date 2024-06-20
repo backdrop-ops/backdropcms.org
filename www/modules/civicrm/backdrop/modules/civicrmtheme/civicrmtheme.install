@@ -65,6 +65,101 @@ function civicrmtheme_update_1000() {
 }
 
 /**
+ * Enable title on civicrm admin layout.
+ */
+function civicrmtheme_update_1001() {
+  $admin_config = config('layout.layout.civicrm_admin_default');
+  if ($admin_config->get('storage') != 4) {
+    return;
+  }
+
+  $admin_layout = [
+    "_config_name" => "layout.layout.civicrm_admin_default",
+    "path" => "civicrm",
+    "name" => "civicrm_admin_default",
+    "title" => "Default CiviCRM Layout",
+    "description" => NULL,
+    "renderer_name" => "standard",
+    "module" => "civicrmtheme",
+    "weight" => 1,
+    "storage" => 4,
+    "layout_template" => "boxton",
+    "disabled" => FALSE,
+    "settings" => [
+      "title" => "",
+      "title_display" => "default",
+      "title_block" => "55f542fe-0763-453b-ba3e-62677ea559e5",
+    ],
+    "positions" => [
+      "header" => [],
+      "top" => ["55f542fe-0763-453b-ba3e-62677ea559e5"],
+      "content" => ["default"],
+      "bottom" => [],
+      "footer" => [],
+      "title" => [],
+    ],
+    "contexts" => [],
+    "relationships" => [],
+    "content" => [
+      "55f542fe-0763-453b-ba3e-62677ea559e5" => [
+        "plugin" => "system:breadcrumb",
+        "data" => [
+          "status" => 1,
+          "module" => "system",
+          "delta" => "breadcrumb",
+          "settings" => [
+            "title_display" => "default",
+            "title" => "",
+            "style" => "default",
+            "block_settings" => [],
+            "contexts" => [],
+          ],
+          "uuid" => "55f542fe-0763-453b-ba3e-62677ea559e5",
+          "style" => [
+            "plugin" => "default",
+            "data" => ["settings" => ["classes" => ""]],
+          ],
+        ],
+      ],
+      "default" => [
+        "plugin" => "system:main",
+        "data" => [
+          "status" => 1,
+          "module" => "system",
+          "delta" => "main",
+          "settings" => [
+            "title_display" => "default",
+            "title" => "",
+            "style" => "default",
+            "block_settings" => [],
+            "contexts" => [],
+          ],
+          "uuid" => "default",
+          "style" => [
+            "plugin" => "default",
+            "data" => ["settings" => ["classes" => ""]],
+          ],
+        ],
+      ],
+    ],
+    "conditions" => [
+      [
+        "plugin" => "civicrm",
+        "data" => [
+          "settings" => [
+            "civicrm" => ["admin"],
+            "load_condition_nojs" => "Load condition",
+          ],
+        ],
+      ],
+    ],
+  ];
+
+  $admin_config->setData($admin_layout);
+  $admin_config->save();
+}
+
+/**
  * @} End of "defgroup updates-7.x-to-1.x"
  * The next series of updates should start at 2000.
  */

@@ -17,6 +17,7 @@ use Civi\Token\TokenRow;
 use Civi\ActionSchedule\Event\MailingQueryEvent;
 use Civi\Token\TokenProcessor;
 use Brick\Money\Money;
+use Brick\Math\RoundingMode;
 
 /**
  * Class CRM_Core_EntityTokens
@@ -126,7 +127,7 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
       }
 
       return $row->format('text/plain')->tokens($entity, $field,
-        Money::of($fieldValue, $currency));
+        Money::of($fieldValue, $currency, NULL, RoundingMode::HALF_UP));
 
     }
     if ($this->isDateField($field)) {
@@ -306,7 +307,7 @@ class CRM_Core_EntityTokens extends AbstractTokenSubscriber {
    * @internal function will likely be protected soon.
    */
   protected function getPseudoValue(string $realField, string $pseudoKey, $fieldValue): string {
-    $bao = CRM_Core_DAO_AllCoreTables::getFullName($this->getMetadataForField($realField)['entity']);
+    $bao = CRM_Core_DAO_AllCoreTables::getDAONameForEntity($this->getMetadataForField($realField)['entity']);
     if ($pseudoKey === 'name') {
       // There is a theoretical possibility fieldValue could be an array but
       // specifically for preferred communication type - but real world usage

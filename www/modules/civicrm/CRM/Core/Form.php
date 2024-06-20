@@ -202,6 +202,11 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
   public $_tagsetInfo;
 
   /**
+   * @var true
+   */
+  private bool $isValidated = FALSE;
+
+  /**
    * @return string
    */
   public function getContext() {
@@ -396,7 +401,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     // Workaround for CRM-15153 - give each form a reasonably unique css class
     $this->addClass(CRM_Utils_System::getClassName($this));
 
-    $this->assign('snippet', CRM_Utils_Array::value('snippet', $_GET));
+    $this->assign('snippet', $_GET['snippet'] ?? NULL);
     $this->setTranslatedFields();
   }
 
@@ -665,6 +670,23 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
   }
 
   /**
+   * Register a field with quick form as supporting a file upload.
+   *
+   * @param array $fieldNames
+   *
+   * @return void
+   */
+  public function registerFileField(array $fieldNames): void {
+    // hack for field type File
+    $formUploadNames = $this->get('uploadNames');
+    if (is_array($formUploadNames)) {
+      $fieldNames = array_unique(array_merge($formUploadNames, $fieldNames));
+    }
+
+    $this->set('uploadNames', $fieldNames);
+  }
+
+  /**
    * This virtual function is used to build the form.
    *
    * It replaces the buildForm associated with QuickForm_Page. This allows us to put
@@ -717,7 +739,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     if (!empty($hookErrors)) {
       $this->_errors += $hookErrors;
     }
-
+    $this->isValidated = TRUE;
     return (0 == count($this->_errors));
   }
 
@@ -757,7 +779,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     }
 
     if (!empty($defaults)) {
-      $this->setDefaults($defaults);
+      $this->setPurifiedDefaults($defaults);
     }
 
     // call the form hook
@@ -786,6 +808,33 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     self::$_template->ensureVariablesAreAssigned($this->expectedSmartyVariables);
     self::$_template->addExpectedTabHeaderKeys();
     $this->_formBuilt = TRUE;
+  }
+
+  /**
+   * Override this in a subclass to prevent fields intended to contain
+   * "raw html" from getting broken. E.g. system message templates
+   * @return array
+   */
+  protected function getFieldsToExcludeFromPurification(): array {
+    return [];
+  }
+
+  public function setPurifiedDefaults($defaults) {
+    $exclude = $this->getFieldsToExcludeFromPurification();
+    foreach ($defaults as $index => $default) {
+      if (!in_array($index, $exclude, TRUE) && is_string($default) && !is_numeric($default)) {
+        $hasEncodedAmp = str_contains('&amp;', $default);
+        $hasEncodedQuote = str_contains('&quot;', $default);
+        $defaults[$index] = CRM_Utils_String::purifyHTML($default);
+        if (!$hasEncodedAmp) {
+          $defaults[$index] = str_replace('&amp;', '&', $defaults[$index]);
+        }
+        if (!$hasEncodedQuote) {
+          $defaults[$index] = str_replace('&quot;', '"', $defaults[$index]);
+        }
+      }
+    }
+    $this->setDefaults($defaults);
   }
 
   /**
@@ -851,7 +900,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
           $attrs['accesskey'] = 'S';
         }
         $buttonContents = CRM_Core_Page::crmIcon($button['icon'] ?? $defaultIcon) . ' ' . $button['name'];
-        $buttonName = $this->getButtonName($button['type'], CRM_Utils_Array::value('subName', $button));
+        $buttonName = $this->getButtonName($button['type'], $button['subName'] ?? NULL);
         $attrs['class'] .= " crm-button crm-button-type-{$button['type']} crm-button{$buttonName}";
         $attrs['type'] = 'submit';
         $prevnext[] = $this->createElement('xbutton', $buttonName, $buttonContents, $attrs);
@@ -907,7 +956,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    * @return string
    */
   public function getTitle() {
-    return $this->_title ? $this->_title : ts('ERROR: Title is not Set');
+    return $this->_title ?: ts('ERROR: Title is not Set');
   }
 
   /**
@@ -1374,9 +1423,12 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    *   Name of variable.
    * @param mixed $value
    *   Value of variable.
+   *
+   * @deprecated since 5.72 will be removed around 5.84
    */
   public function assign_by_ref($var, &$value) {
-    self::$_template->assign_by_ref($var, $value);
+    CRM_Core_Error::deprecatedFunctionWarning('assign');
+    self::$_template->assign($var, $value);
   }
 
   /**
@@ -2112,8 +2164,12 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    */
   public function getVar($name) {
     try {
-      if (!empty(ReflectionUtils::getCodeDocs((new ReflectionProperty($this, $name)), 'Property')['deprecated'])) {
+      $property = ReflectionUtils::getCodeDocs((new ReflectionProperty($this, $name)), 'Property');
+      if (!empty($property['deprecated'])) {
         CRM_Core_Error::deprecatedWarning('deprecated property accessed :' . $name);
+      }
+      if (!empty($property['internal'])) {
+        CRM_Core_Error::deprecatedWarning('internal property accessed (this property could change without warning):' . $name);
       }
     }
     catch (\ReflectionException $e) {
@@ -2390,7 +2446,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    */
   public function addEntityRef($name, $label = '', $props = [], $required = FALSE) {
     // Default properties
-    $props['api'] = CRM_Utils_Array::value('api', $props, []);
+    $props['api'] = $props['api'] ?? [];
     $props['entity'] = CRM_Core_DAO_AllCoreTables::convertEntityNameToCamel($props['entity'] ?? 'Contact');
     $props['class'] = ltrim(($props['class'] ?? '') . ' crm-form-entityref');
 
@@ -2404,7 +2460,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     if (!empty($props['multiple'])) {
       $defaults['multiple'] = TRUE;
     }
-    $props['select'] = CRM_Utils_Array::value('select', $props, []) + $defaults;
+    $props['select'] = ($props['select'] ?? []) + $defaults;
 
     $this->formatReferenceFieldAttributes($props, get_class($this));
     return $this->add('text', $name, $label, $props, $required);
@@ -3070,8 +3126,12 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    *
    * These values have been validated against the fields added to the form.
    * https://pear.php.net/manual/en/package.html.html-quickform.html-quickform.exportvalues.php
+   * unless the function is being called during before the submission has
+   * been validated. In which the values are not yet validated & hence
+   * taking directly from $_POST.
    *
-   * Any money processing has also been done.
+   * Fields with money or number formats are converted from localised formats
+   * before returning.
    *
    * @param string $fieldName
    *
@@ -3083,6 +3143,18 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    */
   public function getSubmittedValue(string $fieldName) {
     if (empty($this->exportedValues)) {
+      if (!$this->isValidated) {
+        // Trying to access the submitted value before during during validate.
+        // In this case we get the submitValue which is equivalent to the value
+        // in $_POST. By contrast exportValues will filter out fields
+        // that have not been added to QuickForm.
+        $value = $this->getSubmitValue($fieldName);
+        if (is_string($value)) {
+          // Precaution since we are dealing with values directly in $_POST.
+          $value = CRM_Utils_String::purifyHTML($value);
+        }
+        return $this->getUnLocalizedSubmittedValue($fieldName, $value);
+      }
       $this->exportedValues = $this->controller->exportValues($this->_name);
     }
     $value = $this->exportedValues[$fieldName] ?? NULL;

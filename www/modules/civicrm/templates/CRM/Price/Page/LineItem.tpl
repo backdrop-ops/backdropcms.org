@@ -8,10 +8,7 @@
  +--------------------------------------------------------------------+
 *}
 
-{* Displays contribution/event fees when price set is used. *}
-{if !$currency && $fee_currency}
-  {assign var=currency value="$fee_currency"}
-{/if}
+{* Displays contribution/event fees. *}
 
 {foreach from=$lineItem item=value key=priceset}
   {if $value neq 'skip'}
@@ -112,7 +109,7 @@
         {assign var="lineItemCount" value=0}
 
         {foreach from=$pcount item=p_count}
-          {assign var="intPCount" value=$p_count.participant_count|intval}
+          {assign var="intPCount" value=$p_count.participant_count|string_format:"%d"}
           {assign var="lineItemCount" value=$lineItemCount+$intPCount}
         {/foreach}
         {if $lineItemCount < 1}
@@ -132,22 +129,3 @@
     <em>({$hookDiscount.message})</em>
   </div>
 {/if}
-{literal}
-<script type="text/javascript">
-CRM.$(function($) {
-  {/literal}
-    var comma = '{$config->monetaryThousandSeparator}';
-    var dot = '{$config->monetaryDecimalPoint}';
-    var format = '{$config->moneyformat}';
-    var currency = '{$currency}';
-    var currencySymbol = '{$currencySymbol}';
-  {literal}
-  // Todo: This function should be a utility
-  function moneyFormat(amount) {
-    amount = parseFloat(amount).toFixed(2);
-    amount = amount.replace(',', 'comma').replace('.', 'dot');
-    amount = amount.replace('comma', comma).replace('dot', dot);
-    return format.replace('%C', currency).replace('%c', currencySymbol).replace('%a', amount);
-  }});
-</script>
-{/literal}

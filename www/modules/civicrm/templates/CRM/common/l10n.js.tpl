@@ -100,7 +100,7 @@
     ignoreTitle: true,
     errorPlacement: function(error, element) {
       if (element.prop('type') === 'radio') {
-        error.appendTo(element.parent('div.content'));
+        error.appendTo(element.parents('div.content')[0]);
       }
       else {
         error.insertAfter(element);
@@ -115,6 +115,7 @@
     if ($('#crm-notification-container').length) {
       $.each(validator.errorList, function(k, error) {
         $(error.element).parents('.crm-custom-accordion.collapsed').crmAccordionToggle();
+        $(error.element).parents('.crm-custom-accordion').prop('open', true);
         $(error.element).crmError(error.message);
       });
     }

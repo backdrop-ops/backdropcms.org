@@ -100,6 +100,7 @@ function civicrm_group_roles_add_groups_oncreate($account, $roles) {
 
   $config = config('civicrm_group_roles.settings');
   $result = $config->get('rules');
+  $group_ids = [];
   foreach ($result as $rule) {
     if (in_array($rule['role_name'], array_keys($roles))) {
       $group_ids[] = $rule['group_id'];

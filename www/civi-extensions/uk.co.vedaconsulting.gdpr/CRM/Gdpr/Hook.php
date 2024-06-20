@@ -41,7 +41,7 @@ class CRM_Gdpr_Hook {
    */
   static function alterAnonymizeContactParams(&$params) {
     return CRM_Utils_Hook::singleton()
-      ->invoke(1, $params, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject,
+      ->invoke(['params'], $params, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject,
         CRM_Utils_Hook::$_nullObject, CRM_Utils_Hook::$_nullObject, 'civicrm_gdpr_alterAnonymizeContactParams');
   }
 

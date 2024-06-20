@@ -312,7 +312,7 @@ class CRM_Gdpr_Form_CommunicationsPreferences extends CRM_Core_Form {
       // If value is missing in the setting, take the corresponding value from the
       // group.
       foreach($map as $setting_key => $group_key) {
-        $item[$setting_key] = $item[$setting_key] ?? $grp['frontend_' . $group_key] ?? $grp[$group_key];
+        $item[$setting_key] = $item[$setting_key] ?? $grp['frontend_' . $group_key] ?? $grp[$group_key] ?? '';
       }
       // Set default weight.
       if (empty($item['group_weight'])) {

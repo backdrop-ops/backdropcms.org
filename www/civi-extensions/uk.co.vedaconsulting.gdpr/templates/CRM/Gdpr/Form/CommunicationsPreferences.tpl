@@ -3,7 +3,7 @@
 
 <div>
    <div class="help">
-   {if $communications_preferences_page_url }
+   {if $communications_preferences_page_url}
    {ts}Configure the display of the <a title="Your personalised GDPR page. Do not distribute this URL as it allows access to your data. Use tokens or the Contact Action link instead." href="{$communications_preferences_page_url}" target="blank">Communications Preferences page</a>.{/ts}
    {/if}
    </div>
@@ -12,7 +12,7 @@
     <div class="crm-section">
       <div class="label">{$form.$elementName.label}</div>
       <div class="content">{$form.$elementName.html}
-      {if $descriptions.$elementName}
+      {if array_key_exists($elementName, $descriptions)}
         <div class="description">{$descriptions.$elementName}</div>
       {/if}
       </div>
@@ -27,7 +27,7 @@
   {* Channels block *}
   <div class="crm-block crm-form-block crm-gdpr-comms-prefs-form-block">
     <div class="crm-section">
-      <div class="label">{ $form.enable_channels.label }</div>
+      <div class="label">{$form.enable_channels.label}</div>
       <div class="content">{$form.enable_channels.html}
       </div>
       <div class="clear"></div>
@@ -151,7 +151,7 @@
     <div class="clear"></div>
   </div> {* end Completion block *}
     {* Confirmation Email Block *}
-  <fieldset id="mail" class="crm-collapsible {if $defaultsEmpty}collapsed{/if}">
+  <fieldset id="mail" class="crm-collapsible {if isset($defaultsEmpty) && $defaultsEmpty}collapsed{/if}">
     <legend class="collapsible-title">{ts}Confirmation Email{/ts}</legend>
     <div>
       <table class="form-layout-compressed">

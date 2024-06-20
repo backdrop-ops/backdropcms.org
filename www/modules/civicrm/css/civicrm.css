@@ -2106,7 +2106,7 @@ a.crm-i:hover {
   content: "\f059";
 }
 
-div.crm-accordion-header a.helpicon {
+details > summary a.helpicon {
   color: inherit;
 }
 div.crm-master-accordion-header a.helpicon {
@@ -2193,6 +2193,10 @@ div.crm-master-accordion-header a.helpicon {
 }
 
 /* Specific types of headers */
+
+.crm-container details {
+  margin: 0.25rem 0;
+}
 
 .crm-container summary { /* default summary setting*/
   display: list-item;
@@ -2290,6 +2294,11 @@ div.crm-master-accordion-header a.helpicon {
   padding: 0 0.25rem; /* adds padding for nested accordions */
 }
 
+.crm-container details table.dataTable {
+  width: 100% !important; /* stops collapsed dataTables: dev/user-interface/-/issues/73 */
+  box-sizing: border-box;
+}
+
 /* Collapse icon */
 
 /* General icon settings for all collapsible things */
@@ -2321,7 +2330,7 @@ div.crm-master-accordion-header a.helpicon {
 /* Accordion bodies */
 
 .crm-container .crm-accordion-wrapper .crm-accordion-body,
-.crm-container details.crm-accordion-bold .crm-accordion-body {
+.crm-container details.crm-accordion-bold > .crm-accordion-body {
   border-radius: 0 0 4px 4px;
   border: 1px solid #70716b;
   border-top: 0;

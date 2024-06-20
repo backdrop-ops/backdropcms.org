@@ -84,6 +84,7 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
         $tasks[$entity['name']]['enable'] = [
           'title' => E::ts('Enable %1', [1 => $entity['title_plural']]),
           'icon' => 'fa-toggle-on',
+          'conditions' => [['is_active', '=', FALSE]],
           'apiBatch' => [
             'action' => 'update',
             'params' => ['values' => ['is_active' => TRUE]],
@@ -95,6 +96,7 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
         $tasks[$entity['name']]['disable'] = [
           'title' => E::ts('Disable %1', [1 => $entity['title_plural']]),
           'icon' => 'fa-toggle-off',
+          'conditions' => [['is_active', '=', TRUE]],
           'apiBatch' => [
             'action' => 'update',
             'params' => ['values' => ['is_active' => FALSE]],
@@ -192,36 +194,6 @@ class GetSearchTasks extends \Civi\Api4\Generic\AbstractAction {
             'query' => '{reset: 1, cid: ids[0], oid: ids[1], action: "update"}',
           ],
         ];
-      }
-      if (\CRM_Core_Component::isEnabled('CiviMail') && (
-        \CRM_Core_Permission::access('CiviMail') || !$this->checkPermissions ||
-        (\CRM_Mailing_Info::workflowEnabled() && \CRM_Core_Permission::check('create mailings'))
-      )) {
-        $tasks[$entity['name']]['contact.mailing'] = [
-          'title' => E::ts('Email - schedule/send via CiviMail'),
-          'uiDialog' => ['templateUrl' => '~/crmSearchTasks/crmSearchTaskMailing.html'],
-          'icon' => 'fa-paper-plane',
-        ];
-      }
-    }
-
-    if ($entity['name'] === 'Contribution') {
-      // FIXME: tasks() function always checks permissions, should respect `$this->checkPermissions`
-      foreach (\CRM_Contribute_Task::tasks() as $id => $task) {
-        if (!empty($task['url'])) {
-          $path = explode('?', $task['url'], 2)[0];
-          $menu = \CRM_Core_Menu::get($path);
-          $key = \CRM_Core_Key::get($menu['page_callback'], TRUE);
-
-          $tasks[$entity['name']]['contribution.' . $id] = [
-            'title' => $task['title'],
-            'icon' => $task['icon'] ?? 'fa-gear',
-            'crmPopup' => [
-              'path' => "'{$task['url']}'",
-              'data' => "{id: ids.join(','), qfKey: '$key'}",
-            ],
-          ];
-        }
       }
     }
 

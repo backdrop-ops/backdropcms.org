@@ -169,7 +169,7 @@ function afform_civicrm_tabset($tabsetName, &$tabs, $context) {
   }
   $existingTabs = array_combine(array_keys($tabs), array_column($tabs, 'id'));
   $contactTypes = array_merge((array) ($context['contact_type'] ?? []), $context['contact_sub_type'] ?? []);
-  $afforms = Civi\Api4\Afform::get(FALSE)
+  $afforms = Civi\Api4\Afform::get()
     ->addSelect('name', 'title', 'icon', 'module_name', 'directive_name', 'summary_contact_type', 'summary_weight')
     ->addWhere('placement', 'CONTAINS', 'contact_summary_tab')
     ->addOrderBy('title')
@@ -213,7 +213,7 @@ function afform_civicrm_pageRun(&$page) {
   if (!in_array(get_class($page), ['CRM_Contact_Page_View_Summary', 'CRM_Contact_Page_View_Print'])) {
     return;
   }
-  $afforms = Civi\Api4\Afform::get(FALSE)
+  $afforms = Civi\Api4\Afform::get()
     ->addSelect('name', 'title', 'icon', 'module_name', 'directive_name', 'summary_contact_type')
     ->addWhere('placement', 'CONTAINS', 'contact_summary_block')
     ->addOrderBy('summary_weight')
@@ -257,7 +257,7 @@ function afform_civicrm_pageRun(&$page) {
  * @link https://github.com/civicrm/org.civicrm.contactlayout
  */
 function afform_civicrm_contactSummaryBlocks(&$blocks) {
-  $afforms = \Civi\Api4\Afform::get(FALSE)
+  $afforms = \Civi\Api4\Afform::get()
     ->setSelect(['name', 'title', 'directive_name', 'module_name', 'type', 'type:icon', 'type:label', 'summary_contact_type'])
     ->addWhere('placement', 'CONTAINS', 'contact_summary_block')
     ->addOrderBy('title')
@@ -333,6 +333,12 @@ function _afform_hook_civicrm_angularModules($e) {
       'bundles' => ['bootstrap3'],
       'exports' => [
         $afform['directive_name'] => 'E',
+      ],
+      // Permissions needed for conditionally displaying edit-links
+      'permissions' => [
+        'administer afform',
+        'administer search_kit',
+        'all CiviCRM permissions and ACLs',
       ],
     ];
   }
@@ -432,8 +438,9 @@ function afform_civicrm_alterMenu(&$items) {
  */
 function afform_civicrm_permission(&$permissions) {
   $permissions['administer afform'] = [
-    E::ts('FormBuilder: edit and delete forms'),
-    E::ts('Allows non-admin users to create, update and delete forms'),
+    'label' => E::ts('FormBuilder: edit and delete forms'),
+    'description' => E::ts('Allows non-admin users to create, update and delete forms'),
+    'implied_by' => ['administer CiviCRM'],
   ];
 }
 

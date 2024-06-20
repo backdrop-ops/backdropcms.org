@@ -781,7 +781,6 @@ WHERE url.time_stamp > '{$date}'";
     } else {
       CRM_Core_BAO_Setting::setItem($value, $group, $name);
     }
-    return $settingValue;
   }
 
 }//End Class

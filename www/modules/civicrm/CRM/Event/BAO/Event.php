@@ -9,6 +9,8 @@
  +--------------------------------------------------------------------+
  */
 
+use Civi\Api4\Event\AuthorizeRecordEvent;
+
 /**
  *
  * @package CRM
@@ -121,10 +123,6 @@ class CRM_Event_BAO_Event extends CRM_Event_DAO_Event implements \Civi\Core\Hook
 
     $event = self::add($params);
     CRM_Price_BAO_PriceSet::setPriceSets($params, $event, 'event');
-    if (is_a($event, 'CRM_Core_Error')) {
-      CRM_Core_DAO::transaction('ROLLBACK');
-      return $event;
-    }
 
     $contactId = CRM_Core_Session::getLoggedInContactID();
     if (!$contactId) {
@@ -178,8 +176,10 @@ class CRM_Event_BAO_Event extends CRM_Event_DAO_Event implements \Civi\Core\Hook
   public static function self_hook_civicrm_pre(\Civi\Core\Event\PreEvent $event) {
     if ($event->action === 'delete' && $event->id) {
 
-      $extends = ['event'];
+      $extends = ['Event'];
       $groupTree = CRM_Core_BAO_CustomGroup::getGroupDetail(NULL, NULL, $extends);
+      // @todo is this custom field loop necessary? The cascade delete on the
+      // db foreign key should do it already.
       foreach ($groupTree as $values) {
         $query = "DELETE FROM %1 WHERE entity_id = %2";
         CRM_Core_DAO::executeQuery($query, [
@@ -277,11 +277,15 @@ WHERE  ( civicrm_event.is_template  = 0 )";
     }
     elseif ($all == 0) {
       // find only events ending in the future
+      // The STR_TO_DATE is because in mariadb with strict mode off you can
+      // have dates like '0000-00-00' and we want to include those here, but a
+      // comparison to '' or '0000-00-00' directly will error in mysql8 with
+      // strict mode on. So this works for both.
       $endDate = date('YmdHis');
       $query .= "
         AND ( `end_date` >= {$endDate} OR
           (
-            ( end_date IS NULL OR end_date = '' ) AND start_date >= {$endDate}
+            ( end_date IS NULL OR end_date = STR_TO_DATE('', '%Y%m%d%H%i%s') ) AND start_date >= {$endDate}
           )
         )";
     }
@@ -1187,13 +1191,13 @@ WHERE civicrm_event.is_active = 1
 
         $sendTemplateParams = [
           'workflow' => 'event_online_receipt',
-          'contactId' => $contactID,
           'isTest' => $isTest,
           'tplParams' => $tplParams,
           'PDFFilename' => ts('confirmation') . '.pdf',
           'modelProps' => [
             'participantID' => (int) $participantId,
             'eventID' => (int) $values['event']['id'],
+            'contactID' => (int) $contactID,
           ],
         ];
 
@@ -1597,10 +1601,11 @@ WHERE civicrm_event.is_active = 1
             $idx = $detailName . '_id';
             $values[$index] = $params[$idx];
           }
-          elseif ($fieldName == 'im') {
+          elseif ($fieldName === 'im') {
             $providerName = NULL;
             if ($providerId = $detailName . '-provider_id') {
-              $providerName = $imProviders[$params[$providerId]] ?? NULL;
+              $inputProvider = $params[$providerId] ?? '';
+              $providerName = $imProviders[$inputProvider] ?? NULL;
             }
             if ($providerName) {
               $values[$index] = $params[$detailName] . " (" . $providerName . ")";
@@ -1609,7 +1614,7 @@ WHERE civicrm_event.is_active = 1
               $values[$index] = $params[$detailName];
             }
           }
-          elseif ($fieldName == 'phone') {
+          elseif ($fieldName === 'phone') {
             $phoneExtField = str_replace('phone', 'phone_ext', $detailName);
             if (isset($params[$phoneExtField])) {
               $values[$index] = $params[$detailName] . " (" . $params[$phoneExtField] . ")";
@@ -1678,8 +1683,6 @@ WHERE  id = $cfID
                   $customVal = $params[$name];
                 }
                 //take the custom field options
-                $returnProperties = [$name => 1];
-                $query = new CRM_Contact_BAO_Query($params, $returnProperties, $fields);
                 if (!$skip) {
                   $displayValue = CRM_Core_BAO_CustomField::displayValue($customVal, $cfID);
                 }
@@ -2189,17 +2192,17 @@ WHERE  ce.loc_block_id = $locBlockId";
   }
 
   /**
-   * @param string $entityName
-   * @param string $action
-   * @param array $record
-   * @param int $userID
-   * @return bool
+   * Check event access.
    * @see \Civi\Api4\Utils\CoreUtil::checkAccessRecord
    */
-  public static function _checkAccess(string $entityName, string $action, array $record, $userID): bool {
-    switch ($action) {
+  public static function self_civi_api4_authorizeRecord(AuthorizeRecordEvent $e): void {
+    $record = $e->getRecord();
+    $userID = $e->getUserID();
+
+    switch ($e->getActionName()) {
       case 'create':
-        return CRM_Core_Permission::check('access CiviEvent', $userID);
+        $e->setAuthorized(CRM_Core_Permission::check('access CiviEvent', $userID));
+        return;
 
       case 'get':
         $actionType = CRM_Core_Permission::VIEW;
@@ -2214,7 +2217,7 @@ WHERE  ce.loc_block_id = $locBlockId";
         break;
     }
 
-    return self::checkPermission($record['id'], $actionType, $userID);
+    $e->setAuthorized(self::checkPermission($record['id'], $actionType, $userID));
   }
 
   /**

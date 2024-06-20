@@ -820,7 +820,7 @@ class CRM_Report_Form extends CRM_Core_Form {
 
       $expFields = [];
       // higher preference to bao object
-      $daoOrBaoName = CRM_Utils_Array::value('bao', $table, CRM_Utils_Array::value('dao', $table));
+      $daoOrBaoName = $table['bao'] ?? $table['dao'] ?? NULL;
 
       if ($daoOrBaoName) {
         if (method_exists($daoOrBaoName, 'exportableFields')) {
@@ -1083,7 +1083,7 @@ class CRM_Report_Form extends CRM_Core_Form {
           ) {
             $order_by = [
               'column' => $fieldName,
-              'order' => CRM_Utils_Array::value('default_order', $field, 'ASC'),
+              'order' => $field['default_order'] ?? 'ASC',
               'section' => $field['default_is_section'] ?? 0,
             ];
 
@@ -2525,7 +2525,7 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
     if ($chartEnabled) {
       $this->buildChart($rows);
       $this->_chartId = "{$this->_params['charts']}_" .
-        ($this->_id ? $this->_id : substr(get_class($this), 16)) . '_' .
+        ($this->_id ?: substr(get_class($this), 16)) . '_' .
         CRM_Core_Config::singleton()->userSystem->getSessionId();
       $this->assign('chartId', $this->_chartId);
     }
@@ -3366,7 +3366,7 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
    */
   public function doTemplateAssignment(&$rows) {
     $this->assign('columnHeaders', $this->_columnHeaders);
-    $this->assign_by_ref('rows', $rows);
+    $this->assign('rows', $rows);
     $this->assign('statistics', $this->statistics($rows));
   }
 
@@ -3762,7 +3762,7 @@ WHERE cg.extends IN ('" . implode("','", $this->_customGroupExtends) . "') AND
       }
 
       $pager = new CRM_Utils_Pager($params);
-      $this->assign_by_ref('pager', $pager);
+      $this->assign('pager', $pager);
       $this->ajaxResponse['totalRows'] = $this->_rowsFound;
     }
   }
@@ -4171,13 +4171,7 @@ ORDER BY cg.weight, cf.weight";
       return;
     }
     $mapper = CRM_Core_BAO_CustomQuery::$extendsMap;
-    //CRM-18276 GROUP_CONCAT could be used with singleValueQuery and then exploded,
-    //but by default that truncates to 1024 characters, which causes errors with installs with lots of custom field sets
-    $customTables = [];
-    $customTablesDAO = CRM_Core_DAO::executeQuery("SELECT table_name FROM civicrm_custom_group");
-    while ($customTablesDAO->fetch()) {
-      $customTables[] = $customTablesDAO->table_name;
-    }
+    $customTables = array_column(CRM_Core_BAO_CustomGroup::getAll(), 'table_name');
 
     foreach ($this->_columns as $table => $prop) {
       if (in_array($table, $customTables)) {
@@ -4186,7 +4180,7 @@ ORDER BY cg.weight, cf.weight";
         if ((!$this->isFieldSelected($prop)) || ($joinsForFiltersOnly && !$this->isFieldFiltered($prop))) {
           continue;
         }
-        $baseJoin = CRM_Utils_Array::value($prop['extends'], $this->_customGroupExtendsJoin, "{$this->_aliases[$extendsTable]}.id");
+        $baseJoin = $this->_customGroupExtendsJoin[$prop['extends']] ?? "{$this->_aliases[$extendsTable]}.id";
 
         $customJoin = is_array($this->_customGroupJoin) ? $this->_customGroupJoin[$table] : $this->_customGroupJoin;
         $this->_from .= "
@@ -4194,10 +4188,8 @@ ORDER BY cg.weight, cf.weight";
         // handle for ContactReference
         if (array_key_exists('fields', $prop)) {
           foreach ($prop['fields'] as $fieldName => $field) {
-            if (($field['dataType'] ?? NULL) ==
-              'ContactReference'
-            ) {
-              $columnName = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', CRM_Core_BAO_CustomField::getKeyID($fieldName), 'column_name');
+            if (($field['dataType'] ?? NULL) === 'ContactReference') {
+              $columnName = CRM_Core_BAO_CustomField::getField(CRM_Core_BAO_CustomField::getKeyID($fieldName))['column_name'];
               $this->_from .= "
 LEFT JOIN civicrm_contact {$field['alias']} ON {$field['alias']}.id = {$this->_aliases[$table]}.{$columnName} ";
             }

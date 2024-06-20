@@ -163,7 +163,7 @@ trait SavedSearchInspectorTrait {
    * @return array
    */
   private function getEntityFields() {
-    if (!isset($this->_searchEntityFields)) {
+    if (!isset($this->_searchEntityFields) && !empty($this->savedSearch['api_entity'])) {
       $this->_searchEntityFields = Request::create($this->savedSearch['api_entity'], 'get', $this->savedSearch['api_params'])
         ->entityFields();
     }
@@ -372,7 +372,7 @@ trait SavedSearchInspectorTrait {
   protected function checkPermissionToLoadSearch() {
     if (
       (is_array($this->savedSearch) || (isset($this->display) && is_array($this->display))) && $this->checkPermissions &&
-      !\CRM_Core_Permission::check([['administer CiviCRM data', 'administer search_kit']])
+      !\CRM_Core_Permission::check('administer search_kit')
     ) {
       throw new UnauthorizedException('Access denied');
     }

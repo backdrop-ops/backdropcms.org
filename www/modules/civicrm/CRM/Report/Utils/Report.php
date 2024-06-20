@@ -236,7 +236,8 @@ WHERE  inst.report_id = %1";
     // Replace internal header names with friendly ones, where available.
     foreach ($columnHeaders as $header) {
       if (isset($form->_columnHeaders[$header])) {
-        $headers[] = '"' . html_entity_decode(strip_tags($form->_columnHeaders[$header]['title'])) . '"';
+        $title = $form->_columnHeaders[$header]['title'] ?? '';
+        $headers[] = '"' . html_entity_decode(strip_tags($title)) . '"';
       }
     }
     // Add the headers.
@@ -390,7 +391,7 @@ WHERE  inst.report_id = %1";
     $_REQUEST['sendmail'] = CRM_Utils_Array::value('sendmail', $params, 1);
 
     // if cron is run from terminal --output is reserved, and therefore we would provide another name 'format'
-    $_REQUEST['output'] = CRM_Utils_Array::value('format', $params, CRM_Utils_Array::value('output', $params, 'pdf'));
+    $_REQUEST['output'] = $params['format'] ?? $params['output'] ?? 'pdf';
     $_REQUEST['reset'] = CRM_Utils_Array::value('reset', $params, 1);
 
     $optionVal = self::getValueFromUrl($instanceId);

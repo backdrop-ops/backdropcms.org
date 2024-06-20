@@ -12,16 +12,6 @@ function gdpr_civicrm_config(&$config) {
   _gdpr_civix_civicrm_config($config);
 }
 
-
-/**
- * Implements hook_civicrm_xmlMenu().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
- */
-function gdpr_civicrm_xmlMenu(&$files) {
-  _gdpr_civix_civicrm_xmlMenu($files);
-}
-
 /**
  * Implements hook_civicrm_install().
  *
@@ -47,15 +37,6 @@ function gdpr_civicrm_install() {
 }
 
 /**
- * Implements hook_civicrm_postInstall().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_postInstall
- */
-function gdpr_civicrm_postInstall() {
-  _gdpr_civix_civicrm_postInstall();
-}
-
-/**
  * Implements hook_civicrm_uninstall().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
@@ -77,7 +58,6 @@ function gdpr_civicrm_uninstall() {
       ]);
     }
   }
-  _gdpr_civix_civicrm_uninstall();
 }
 
 /**
@@ -88,73 +68,6 @@ function gdpr_civicrm_uninstall() {
 function gdpr_civicrm_enable() {
   _gdpr_civix_civicrm_enable();
 }
-
-/**
- * Implements hook_civicrm_disable().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
- */
-function gdpr_civicrm_disable() {
-  _gdpr_civix_civicrm_disable();
-}
-
-/**
- * Implements hook_civicrm_upgrade().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
- */
-function gdpr_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _gdpr_civix_civicrm_upgrade($op, $queue);
-}
-
-/**
- * Implements hook_civicrm_managed().
- *
- * Generate a list of entities to create/deactivate/delete when this module
- * is installed, disabled, uninstalled.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
- */
-function gdpr_civicrm_managed(&$entities) {
-  _gdpr_civix_civicrm_managed($entities);
-}
-
-/**
- * Implements hook_civicrm_caseTypes().
- *
- * Generate a list of case-types.
- *
- * Note: This hook only runs in CiviCRM 4.4+.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
- */
-function gdpr_civicrm_caseTypes(&$caseTypes) {
-  _gdpr_civix_civicrm_caseTypes($caseTypes);
-}
-
-/**
- * Implements hook_civicrm_angularModules().
- *
- * Generate a list of Angular modules.
- *
- * Note: This hook only runs in CiviCRM 4.5+. It may
- * use features only available in v4.6+.
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_angularModules
- */
-function gdpr_civicrm_angularModules(&$angularModules) {
-  _gdpr_civix_civicrm_angularModules($angularModules);
-}
-
-/**
- * Implements hook_civicrm_alterSettingsFolders().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
- */
-function gdpr_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _gdpr_civix_civicrm_alterSettingsFolders($metaDataFolders);
-}
-
 
 /**
  * Implementation of hook_civicrm_alterContent
@@ -334,7 +247,6 @@ function gdpr_civicrm_postProcess($formName, $form) {
   }
 }
 
-
 /**
  * Implements hook_civicrm_post().
  */
@@ -371,7 +283,6 @@ function gdpr_civicrm_tabset($tabsetName, &$tabs, $context) {
     _gdpr_addTermsConditionsTab($tabs, 'contribution_page', $context['contribution_page_id']);
   }
 }
-
 
 /**
  * Implements hook_civicrm_export().
@@ -578,16 +489,16 @@ function gdpr_civicrm_permission(&$permissions) {
   $prefix = E::ts('CiviGDPR') . ': ';
   $permissions += [
     'access GDPR' => [
-      $prefix . E::ts('access GDPR'),
-      E::ts('View GDPR related information'),
+      'label' => $prefix . E::ts('access GDPR'),
+      'description' => E::ts('View GDPR related information'),
     ],
     'forget contact' => [
-      $prefix . E::ts('forget contact'),
-      E::ts('Anonymize contacts'),
+      'label' => $prefix . E::ts('forget contact'),
+      'description' => E::ts('Anonymize contacts'),
     ],
     'administer GDPR' => [
-      $prefix . E::ts('administer GDPR'),
-      E::ts('Manage GDPR settings'),
+      'label' => $prefix . E::ts('administer GDPR'),
+      'description' => E::ts('Manage GDPR settings'),
     ],
   ];
 }

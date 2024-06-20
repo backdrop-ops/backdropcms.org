@@ -46,6 +46,15 @@ trait FormTrait {
   }
 
   /**
+   * Assert that the sent mail included the supplied string.
+   *
+   * @param array $errors
+   */
+  protected function assertValidationError(array $errors): void {
+    $this->assertEquals($errors, $this->form->getValidationOutput());
+  }
+
+  /**
    * Assert that the sent mail included the supplied strings.
    *
    * @param array $strings
@@ -63,7 +72,7 @@ trait FormTrait {
    * @param array $strings
    * @param int $mailIndex
    */
-  protected function assertMailSentNotContainStrings(array $strings, int $mailIndex = 0): void {
+  protected function assertMailSentNotContainingStrings(array $strings, int $mailIndex = 0): void {
     foreach ($strings as $string) {
       $this->assertMailSentNotContainingString($string, $mailIndex);
     }

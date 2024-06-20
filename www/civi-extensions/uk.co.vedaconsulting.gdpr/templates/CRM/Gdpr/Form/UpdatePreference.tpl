@@ -86,7 +86,7 @@
       <div class="clear"></div>
       <!-- GDPR Terms and conditions url link and checkbox -->
       <fieldset id="crm-communications-preferences-datapolicy" class="data-policy-fieldset">
-          {if $isContactDueAcceptance}
+          {if isset($isContactDueAcceptance) && $isContactDueAcceptance}
             <div class="data-policy-intro section-sescription">
                 {$tcIntro}
             </div>
@@ -114,7 +114,7 @@
     </div>
     </fieldset>
 
-      {if $isCaptcha}
+      {if isset($isCaptcha) && $isCaptcha}
           {include file='CRM/common/ReCAPTCHA.tpl'}
       {/if}
 

@@ -159,14 +159,13 @@ SELECT  survey.id    as id,
   }
 
   /**
-   * Get Surveys custom groups.
+   * @deprecated since 5.71 will be removed around 5.85.
    *
    * @param array $surveyTypes
-   *   an array of survey type id.
-   *
    * @return array
    */
   public static function getSurveyCustomGroups($surveyTypes = []) {
+    CRM_Core_Error::deprecatedFunctionWarning('API');
     $customGroups = [];
     if (!is_array($surveyTypes)) {
       $surveyTypes = [$surveyTypes];
@@ -311,7 +310,7 @@ SELECT  survey.id    as id,
         foreach ($returnProperties as $property => $ignore) {
           $voterDetails[$contact->contactId][$property] = $contact->$property;
         }
-        $image = CRM_Contact_BAO_Contact_Utils::getImage($contact->contact_sub_type ? $contact->contact_sub_type : $contact->contact_type,
+        $image = CRM_Contact_BAO_Contact_Utils::getImage($contact->contact_sub_type ?: $contact->contact_type,
           FALSE,
           $contact->contactId
         );

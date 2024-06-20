@@ -125,8 +125,8 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
     // Make the contributionPageID available to the template
     $this->assign('contributionPageID', $this->_id);
     $this->assign('ccid', $this->_ccid);
-    $this->assign('isShare', CRM_Utils_Array::value('is_share', $this->_values));
-    $this->assign('isConfirmEnabled', CRM_Utils_Array::value('is_confirm_enabled', $this->_values));
+    $this->assign('isShare', $this->_values['is_share'] ?? NULL);
+    $this->assign('isConfirmEnabled', $this->_values['is_confirm_enabled'] ?? NULL);
 
     // Required for currency formatting in the JS layer
     // this is a temporary fix intended to resolve a regression quickly
@@ -243,13 +243,14 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
     $memtypeID = NULL;
     if ($this->_priceSetId) {
       if ($this->getFormContext() === 'membership') {
+        $existingMembershipTypeID = $this->getRenewableMembershipValue('membership_type_id');
         $selectedCurrentMemTypes = [];
         foreach ($this->_priceSet['fields'] as $key => $val) {
-          foreach ($val['options'] as $keys => $values) {
-            $opMemTypeId = $values['membership_type_id'] ?? NULL;
-            $priceFieldName = 'price_' . $values['price_field_id'];
+          foreach ($val['options'] as $keys => $priceFieldOption) {
+            $opMemTypeId = $priceFieldOption['membership_type_id'] ?? NULL;
+            $priceFieldName = 'price_' . $priceFieldOption['price_field_id'];
             $priceFieldValue = CRM_Price_BAO_PriceSet::getPriceFieldValueFromURL($this, $priceFieldName);
-            if (!empty($priceFieldValue) && !$this->isDefined('RenewableMembership')) {
+            if (!empty($priceFieldValue)) {
               CRM_Price_BAO_PriceSet::setDefaultPriceSetField($priceFieldName, $priceFieldValue, $val['html_type'], $this->_defaults);
               // break here to prevent overwriting of default due to 'is_default'
               // option configuration or setting of current membership or
@@ -257,23 +258,20 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
               // The value sent via URL get's higher priority.
               break;
             }
-            if ($opMemTypeId &&
-              // @todo - maybe use the defined renewable membership to avoid lifetime memberships.
-              !empty($this->getExistingMembership($opMemTypeId)) &&
-              !in_array($opMemTypeId, $selectedCurrentMemTypes)
+            if ($existingMembershipTypeID && $existingMembershipTypeID === $priceFieldOption['membership_type_id']
+              && !in_array($opMemTypeId, $selectedCurrentMemTypes)
             ) {
               CRM_Price_BAO_PriceSet::setDefaultPriceSetField($priceFieldName, $keys, $val['html_type'], $this->_defaults);
-              $memtypeID = $selectedCurrentMemTypes[] = $values['membership_type_id'];
+              $memtypeID = $selectedCurrentMemTypes[] = $priceFieldOption['membership_type_id'];
             }
-            elseif (!empty($values['is_default']) && !$opMemTypeId && (!isset($this->_defaults[$priceFieldName]) ||
+            elseif (!empty($priceFieldOption['is_default']) && (!isset($this->_defaults[$priceFieldName]) ||
               ($val['html_type'] === 'CheckBox' && !isset($this->_defaults[$priceFieldName][$keys])))) {
               CRM_Price_BAO_PriceSet::setDefaultPriceSetField($priceFieldName, $keys, $val['html_type'], $this->_defaults);
-              $memtypeID = CRM_Core_DAO::getFieldValue('CRM_Price_DAO_PriceFieldValue', $this->_defaults[$priceFieldName], 'membership_type_id');
             }
           }
         }
-        $membershipID = CRM_Utils_Array::value('id', CRM_Member_BAO_Membership::getContactMembership($contactID, $memtypeID, NULL));
-        if ($contactID) {
+
+        if ($contactID && $existingMembershipTypeID) {
           // Set the default values for any membership custom fields on the page via a profile.
           // Note that this will have been done further up if the contact ID was not determined.
           foreach ($this->_fields as $name => $field) {
@@ -283,7 +281,7 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
               if (!CRM_Core_BAO_CustomGroup::checkCustomField($customFieldID, ['Membership'])
               ) {
                 CRM_Core_BAO_CustomField::setProfileDefaults($customFieldID, $name, $this->_defaults,
-                  $membershipID, CRM_Profile_Form::MODE_REGISTER
+                  $existingMembershipTypeID, CRM_Profile_Form::MODE_REGISTER
                 );
               }
             }
@@ -342,7 +340,7 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
     }
 
     $this->applyFilter('__ALL__', 'trim');
-    $this->assign('showMainEmail', empty($this->_ccid));
+    $this->assign('showMainEmail', (empty($this->_ccid) && $this->_emailExists === FALSE));
     if (empty($this->_ccid)) {
       if ($this->_emailExists == FALSE) {
         $this->add('text', "email-{$this->_bltID}",
@@ -816,13 +814,16 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
    *   true if no errors, else array of errors
    */
   public static function formRule($fields, $files, $self) {
+    foreach ($fields as $key => $field) {
+      $fields[$key] = $self->getUnLocalizedSubmittedValue($key, $field);
+    }
     $self->resetOrder($fields);
     $errors = array_filter(['auto_renew' => $self->getAutoRenewError($fields)]);
     // @todo - should just be $this->getOrder()->getTotalAmount()
     $amount = $self->computeAmount($fields, $self->_values);
 
     if ((!empty($fields['selectMembership']) &&
-        $fields['selectMembership'] != 'no_thanks'
+        $fields['selectMembership'] !== 'no_thanks'
       ) ||
       (!empty($fields['priceSetId']) &&
         $self->_useForMember
@@ -864,7 +865,7 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
             $otherAmount = $priceField->id;
           }
           elseif (!empty($fields["price_{$priceField->id}"])) {
-            $otherAmountVal = CRM_Utils_Rule::cleanMoney($fields["price_{$priceField->id}"]);
+            $otherAmountVal = $fields["price_{$priceField->id}"];
             $min = $self->_values['min_amount'] ?? NULL;
             $max = $self->_values['max_amount'] ?? NULL;
             if ($min && $otherAmountVal < $min) {
@@ -1133,21 +1134,20 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
    */
   private function computeAmount($params, $formValues) {
     $amount = 0;
-    // First clean up the other amount field if present.
-    if (isset($params['amount_other'])) {
-      $params['amount_other'] = CRM_Utils_Rule::cleanMoney($params['amount_other']);
-    }
 
     if (($params['amount'] ?? NULL) == 'amount_other_radio' || !empty($params['amount_other'])) {
+      // @todo - probably unreachable - field would be (e.) price_12 now....
       $amount = $params['amount_other'];
     }
     elseif (!empty($params['pledge_amount'])) {
       foreach ($params['pledge_amount'] as $paymentId => $dontCare) {
+        // @todo - why would this be a good thing? Is it reachable.
         $amount += CRM_Core_DAO::getFieldValue('CRM_Pledge_DAO_PledgePayment', $paymentId, 'scheduled_amount');
       }
     }
     else {
       if (!empty($formValues['amount'])) {
+        // @todo - probably unreachable.
         $amountID = $params['amount'] ?? NULL;
 
         if ($amountID) {
@@ -1317,8 +1317,7 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
 
     // build the confirm page
     $confirmForm = &$this->controller->_pages['Confirm'];
-    $confirmForm->preProcess();
-    $confirmForm->buildQuickForm();
+    $confirmForm->buildForm();
 
     // the confirmation page is valid
     $data = &$this->controller->container();
@@ -1667,21 +1666,21 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
       if (!empty($overduePayments)) {
         foreach ($overduePayments as $id => $payment) {
           $label = ts("%1 - due on %2 (overdue)", [
-            1 => CRM_Utils_Money::format(CRM_Utils_Array::value('scheduled_amount', $payment), CRM_Utils_Array::value('scheduled_amount_currency', $payment)),
+            1 => CRM_Utils_Money::format($payment['scheduled_amount'] ?? NULL, $payment['scheduled_amount_currency'] ?? NULL),
             2 => $payment['scheduled_date'] ?? NULL,
           ]);
           $paymentID = $payment['id'] ?? NULL;
-          $payments[] = $this->createElement('checkbox', $paymentID, NULL, $label, ['amount' => CRM_Utils_Array::value('scheduled_amount', $payment)]);
+          $payments[] = $this->createElement('checkbox', $paymentID, NULL, $label, ['amount' => $payment['scheduled_amount'] ?? NULL]);
         }
       }
 
       if (!empty($nextPayment)) {
         $label = ts("%1 - due on %2", [
-          1 => CRM_Utils_Money::format(CRM_Utils_Array::value('scheduled_amount', $nextPayment), CRM_Utils_Array::value('scheduled_amount_currency', $nextPayment)),
+          1 => CRM_Utils_Money::format($nextPayment['scheduled_amount'] ?? NULL, $nextPayment['scheduled_amount_currency'] ?? NULL),
           2 => $nextPayment['scheduled_date'] ?? NULL,
         ]);
         $paymentID = $nextPayment['id'] ?? NULL;
-        $payments[] = $this->createElement('checkbox', $paymentID, NULL, $label, ['amount' => CRM_Utils_Array::value('scheduled_amount', $nextPayment)]);
+        $payments[] = $this->createElement('checkbox', $paymentID, NULL, $label, ['amount' => $nextPayment['scheduled_amount'] ?? NULL]);
       }
       // give error if empty or build form for payment.
       if (empty($payments)) {
@@ -1981,6 +1980,19 @@ class CRM_Contribute_Form_Contribution_Main extends CRM_Contribute_Form_Contribu
     $this->set('lineItem', NULL);
     $this->order->setPriceSelectionFromUnfilteredInput($fields);
     $this->order->recalculateLineItems();
+  }
+
+  /**
+   * @param string $value
+   *
+   * @return mixed
+   * @throws \CRM_Core_Exception
+   */
+  public function getRenewableMembershipValue(string $value) {
+    if (!$this->isDefined('RenewableMembership')) {
+      return NULL;
+    }
+    return $this->lookup('RenewableMembership', $value);
   }
 
 }

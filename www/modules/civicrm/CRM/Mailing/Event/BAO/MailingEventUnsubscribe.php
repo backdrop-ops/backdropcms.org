@@ -392,7 +392,7 @@ WHERE  email = %2
       }
     }
 
-    [$addresses, $urls] = CRM_Mailing_BAO_Mailing::getVerpAndUrls($job, $queue_id, $eq->hash, $eq->email);
+    [$addresses, $urls] = CRM_Mailing_BAO_Mailing::getVerpAndUrls($job, $queue_id, $eq->hash);
     $bao = new CRM_Mailing_BAO_Mailing();
     $bao->body_text = $text;
     $bao->body_html = $html;
@@ -501,7 +501,7 @@ WHERE  email = %2
       return $dao->N;
     }
     else {
-      return $dao->unsubs ? $dao->unsubs : 0;
+      return $dao->unsubs ?: 0;
     }
   }
 

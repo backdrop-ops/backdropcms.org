@@ -13,9 +13,11 @@
         {if ($help_text)}
             <div class="help">{$help_text}</div>
         {/if}
-        {foreach from=$fields item=field}
-            {include file=$field.template field=$field}
-        {/foreach}
+        {if isset($fields)}
+            {foreach from=$fields item=field}
+                {include file=$field.template field=$field}
+            {/foreach}
+        {/if}
     </div>
 
     <div class="crm-submit-buttons">
