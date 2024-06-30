@@ -117,3 +117,23 @@ function borg_cleanup_module_implements_alter(&$implementations, $hook) {
     $implementations['borg_cleanup'] = $group;
   }
 }
+
+/**
+ * Implements hook_form_external_mention_node_form_alter().
+ *
+ * Add requirement for quote author if quotes field is non-empty.
+ */
+function borg_cleanup_form_external_mention_node_form_alter(&$form, &$form_state, $form_id) {
+  $form['#validate'][] = 'borg_cleanup_form_external_mention_node_form_validate';
+}
+
+/**
+ * Validation function for external mention node form.
+ */
+function borg_cleanup_form_external_mention_node_form_validate($form, &$form_state) {
+  if (!empty($form_state['values']['field_mention_quotes'][LANGUAGE_NONE][0]['value'])) {
+    if (empty($form_state['values']['field_mention_quote_author'][LANGUAGE_NONE][0]['title'])) {
+      form_set_error('field_mention_quote_author', t('If you provide one or more quotes, you must provide the quote author.'));
+    }
+  }
+}
