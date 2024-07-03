@@ -114,7 +114,7 @@ The sanitized `civicrm` database
 
 * keeps group membership intact
 * replaces all contact address information with generic values
-* replaces all derived contact names (but not the original name) with unique generic values
+* replaces all contact names with unique generic values
 * replaces all emails with unique generic values
 * replaces user account names with unique generic values
 
