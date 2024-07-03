@@ -45,16 +45,32 @@ You may wish to name your local databases differently (for example, if you alrea
 
 Read in the Backdrop database `backdropcmsorg-latest-sanitized.sql` and, if you will be using CiviCRM, read in the CiviCRM database `civicrm-latest-sanitized.sql`.
 
+For the `backdropcmsorg` database, grant these permissions:
+
+```
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER,
+CREATE TEMPORARY TABLES ON backdropcmsorg.*
+TO 'username'@'127.0.0.1' IDENTIFIED BY 'password';
+```
+
+The CiviCRM database requires a higher level of permissions for its user. If you are running CiviCRM, grant these permissions on the `civicrm` database:
+
+```
+GRANT ALL ON civicrm.*
+TO 'username'@'127.0.0.1' IDENTIFIED BY 'password';
+```
+
 ## Configure settings files
 
 ### `settings.local.php`
 
 Most of the settings values you will need are set in `settings.php`, but you will need to customize for your local instance by creating a `settings.local.php` file. 
 
-* Copy the file `settings.local.generic.php`, which is at the root of the repo
+* Copy the file `settings.local.example.php`, which is at the root of the repo
 * Rename it to `settings.local.php`
 * Move it into the `www` directory
 * Edit the file and fill in the values applicable to your local site in the places where you see empty strings.
+* Note that there are two ways to specify the database connection, depending on whether you will be running CiviCRM or not.
 
 Note that the second half of that file contains "PRIVATE Environment specific settings," which are various secret keys and access tokens for the site when interacting with third-party sites. You can leave most of these as empty strings, however, interactions with third-party sites will be disabled as described further below.
 
@@ -62,7 +78,7 @@ Note that the second half of that file contains "PRIVATE Environment specific se
 
 If you will be running with CiviCRM enabled, you will need to create a `civicrm.settings.local.php` file. 
 
-* Copy the file `civicrm.settings.local.generic.php`, which is at the root of the repo
+* Copy the file `civicrm.settings.local.example.php`, which is at the root of the repo
 * Rename it to `civicrm.settings.local.php`
 * Move it into the `www` directory
 * Edit the file and fill in the values applicable to your local site where you see empty strings, also the username and password for the Backdrop and CiviCRM database connections.
@@ -102,6 +118,12 @@ The sanitized `civicrm` database
 * replaces all emails with unique generic values
 * replaces user account names with unique generic values
 
+### Things that won't work on the local site
+
+* Interactions with Tugboat are disabled (see next). If you need to investigate this, in addition to enabling the modules you'll need to enter the `tugboat_access_token` in `settings.local.php`.
+* You can't send out emails without filling in the `smtp_pasword` in `settings.local.php`. (We recommend leaving SMTP disabled unless you really know what you're doing, because we don't want a local site to be sending out random emails—and remember that all user account emails have been sanitized).
+* The `borg_signup_*` values in `settings.local.php` allow a site to send a request to the BackdropCMS.org site to sign someone up for the newsletter (this includes signups directly from BackdropCMS.org). Without the credentials, that functionality won't work.
+
 ### Touch-up
 
 You should disable the `tugboat` and `borg_tugboat` modules so that the local site doesn't try to query Tugboat (and put errors into the dblog). You can do this with `bee` as follows:
@@ -110,13 +132,6 @@ You should disable the `tugboat` and `borg_tugboat` modules so that the local si
 bee dis -y borg_tugboat
 bee dis -y tugboat
 ```
-
-### Things that won't work on the local site
-
-* Interactions with Tugboat are disabled. If you need to investigate this, in addition to enabling the modules you'll need to enter the `tugboat_access_token` in `settings.local.php`.
-* You can't send out emails without filling in the `smtp_pasword` in `settings.local.php`. (We recommend leaving SMTP disabled unless you really know what you're doing, because we don't want a local site to be sending out random emails—and remember that all user account emails have been sanitized).
-* The `borg_signup_*` values in `settings.local.php` allow a site to send a request to the BackdropCMS.org site to sign someone up for the newsletter (this includes signups directly from BackdropCMS.org). Without the credentials, that functionality won't work.
-* MORE TO COME
 
 ## Running without CiviCRM
 

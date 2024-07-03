@@ -5,12 +5,16 @@
  */
 
 /**
- * Simple database settings:
- *
- * Most sites can configure their database by entering the connection string
- * below. If using master/slave or multiple connections, see the advanced
- * database settings.
+ * Database settings. Use only one of these and comment out or remove the other.
  */
+
+// If you are not running CiviCRM, you can use the simple database setting.
+$database = 'mysql://username:password@127.0.0.1/backdropcmsorg';
+
+// If you are running CiviCRM, you must use the advanced database setting, which
+// includes prefixes that make the CiviCRM database tables visible to Backdrop.
+// See https://backdropcms.org/project/civicrm_table_prefixes for more
+// information about this.
 require_once __DIR__ . '/civicrm_table_prefixes.php';
 $databases = array(
   'default' => array (
@@ -37,9 +41,7 @@ $config_directories['staging'] = '../config/staging';
 /**
  * Trusted host configuration (needed to avoid a status warning).
  */
-$settings['trusted_host_patterns'] = array(
-  '', // this should be your local site, like '^backdropcms\.org$'
-);
+$settings['trusted_host_patterns'] = array('.*');
 
 /**
  * PRIVATE Environment specific settings.
