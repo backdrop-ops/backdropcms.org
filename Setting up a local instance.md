@@ -14,7 +14,7 @@ Do not run the Backdrop installer.
 
 ## Download/install the sanitized databases and files
 
-There are sanitized nightly backups of the Backdrop database, CiviCRM database, and files directory (which includes config files), at https://sanitize.backdropcms.org. That site is password-protected; you will need to get the username and password from a Backdrop administrator.
+There are sanitized nightly backups of the Backdrop database, CiviCRM database, and files directory at https://sanitize.backdropcms.org. That site is password-protected; you will need to get the username and password from a Backdrop administrator.
 
 Once on that page, you will see backups for Backdropcms.org (first section), as well as for docs.backdropcms.org, forum.backdropcms.org, and events.backdropcms.org. Download the latest backups for backdropcms.org (first row), links to "Database", "CiviCRM", and "Files." The download files will have these names:
 
