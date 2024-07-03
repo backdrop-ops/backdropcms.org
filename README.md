@@ -44,3 +44,5 @@ See the `/config/README.md` file for instructions on setting up Backdrop's
 config workflow.
 
 See the `Updating BackdropCMS.org.md` file for instructions on updating Backdrop core.
+
+See the `Setting up a local instance.md` for instructions on how to set up a local instance of BackdropCMS.org using sanitized data.
