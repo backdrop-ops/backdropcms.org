@@ -14,15 +14,13 @@
  * Get all the project_module, project_theme and project_layout nodes.
  */
 function borg_project_metrics_get_project_nodes() {
-  $or = db_or();
-  $or->condition('type', 'project_module');
-  $or->condition('type', 'project_theme');
-  $or->condition('type', 'project_layout');
-  $or->condition('type', 'core');
-  $result = db_select('node', 'n')
-    ->fields('n')
-    ->condition($or)
-    ->execute();
+  $types = array('project_module', 'project_theme', 'project_layout', 'core');
+  $one_day_ago = time() - 3600 * 24;
+  $result = db_query_range("SELECT nid FROM {node} WHERE type IN (:types) AND status = 1 AND changed < :one_day_ago ORDER BY changed ASC", 0, 200, array(
+    ':types' => $types,
+    ':one_day_ago' => $one_day_ago,
+  ))->fetchAll();
+
   $project_modules = array();
   foreach($result as $r) {
     $nid = $r->nid;
@@ -115,8 +113,8 @@ function borg_project_metrics_cron() {
   }
   state_set('borg_project_metrics_cron', REQUEST_TIME);
 
-  // Run at ~2AM EST.
-  if (date('G') == 22) {
+  // Prevent overlap with weekly job.
+  if (date('G') != 23) {
     $project_nodes = borg_project_metrics_get_project_nodes();
     foreach ($project_nodes as $m) {
       $num = borg_project_metrics_get_downloads($m[0]);
