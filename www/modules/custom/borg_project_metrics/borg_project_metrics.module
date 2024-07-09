@@ -66,7 +66,7 @@ function borg_project_metrics_get_downloads($project = '') {
     curl_close($ch);
     // Repository moved or deleted.
     if ($http_code != '200') {
-      continue;
+      break;
     }
     $myHeader = explode("\n", $header);
 
