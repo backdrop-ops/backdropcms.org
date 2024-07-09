@@ -55,6 +55,11 @@ function borg_project_metrics_get_downloads($project = '') {
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
     curl_setopt($ch, CURLOPT_HEADER, 1);
     $content = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    // Repository moved or deleted.
+    if ($http_code != '200') {
+      continue;
+    }
     $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     $header = substr($content, 0, $header_size);
     $body = substr($content, $header_size);
@@ -118,16 +123,14 @@ function borg_project_metrics_cron() {
     $project_nodes = borg_project_metrics_get_project_nodes();
     foreach ($project_nodes as $m) {
       $num = borg_project_metrics_get_downloads($m[0]);
-      if ($num) {
-        try {
-          $node = node_load($m[1]);
-          $node->field_download_count['und'][0]['value'] = $num;
-          $node->save();
-        }
-        catch(Exception $e) {
-          $message = $e->getMessage();
-          watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
-        }
+      try {
+        $node = node_load($m[1]);
+        $node->field_download_count['und'][0]['value'] = $num;
+        $node->save();
+      }
+      catch(Exception $e) {
+        $message = $e->getMessage();
+        watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
       }
     }
   }
