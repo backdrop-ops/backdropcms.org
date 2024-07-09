@@ -64,8 +64,12 @@ function borg_project_metrics_get_downloads($project = '') {
     $header = substr($content, 0, $header_size);
     $body = substr($content, $header_size);
     curl_close($ch);
-    // Repository moved or deleted.
+    // Repository moved or deleted, or other HTTP problems.
     if ($http_code != '200') {
+      watchdog('borg_project_metrics', 'Attempt to fetch download count from %url resulted in HTTP @code.', array(
+        '%url' => $nextUrl,
+        '@code' => $http_code,
+      ), WATCHDOG_WARNING);
       break;
     }
     $myHeader = explode("\n", $header);
