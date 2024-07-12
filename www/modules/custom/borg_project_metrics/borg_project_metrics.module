@@ -64,6 +64,14 @@ function borg_project_metrics_get_downloads($project = '') {
     $header = substr($content, 0, $header_size);
     $body = substr($content, $header_size);
     curl_close($ch);
+    // Network problem unrelated to the repository.
+    if ($http_code == '0') {
+      watchdog('borg_project_metrics', 'Network problem while fetching %url. Another attempt will be made next cron run.', array(
+        '%url' => $nextUrl,
+      ), WATCHDOG_WARNING);
+      $total = -1;
+      break;
+    }
     // Repository moved or deleted, or other HTTP problems.
     if ($http_code != '200') {
       watchdog('borg_project_metrics', 'Attempt to fetch download count from %url resulted in HTTP @code.', array(
@@ -126,19 +134,22 @@ function borg_project_metrics_cron() {
   }
   state_set('borg_project_metrics_cron', REQUEST_TIME);
 
-  // Prevent overlap with weekly job.
+  // Prevent overlap with weekly jobs.
   if (date('G') != 23) {
     $project_nodes = borg_project_metrics_get_project_nodes();
     foreach ($project_nodes as $m) {
       $num = borg_project_metrics_get_downloads($m[0]);
-      try {
-        $node = node_load($m[1]);
-        $node->field_download_count['und'][0]['value'] = $num;
-        $node->save();
-      }
-      catch(Exception $e) {
-        $message = $e->getMessage();
-        watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
+      // The value "-1" indicates some sort of network problem.
+      if ($num != -1) {
+        try {
+          $node = node_load($m[1]);
+          $node->field_download_count['und'][0]['value'] = $num;
+          $node->save();
+        }
+        catch(Exception $e) {
+          $message = $e->getMessage();
+          watchdog('borg_project_metrics', $message, array(), WATCHDOG_ERROR);
+        }
       }
     }
   }
