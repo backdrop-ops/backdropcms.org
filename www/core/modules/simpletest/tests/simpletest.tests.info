@@ -298,6 +298,12 @@ description = Performs tests on Backdrop's HTTP request mechanism.
 group = Common
 file = common.test
 
+[CommonBackdropHTTPRedirectTest]
+name = Backdrop HTTP Redirect Processing
+description = Perform unit tests on processing of http redirects.
+group = Common
+file = common.test
+
 [CommonBackdropHTTPResponseStatusLineTest]
 name = Backdrop HTTP Response Status
 description = Performs unit tests on Backdrop's HTTP Response Status.
@@ -1006,6 +1012,12 @@ description = Graph handling unit tests.
 group = System
 file = graph.test
 
+[IconTestCase]
+name = Icon API
+description = Tests the providing and path matching of SVG icons.
+group = System
+file = icon.test
+
 [ImageToolkitUnitTest]
 name = Image toolkit tests
 description = Check image toolkit functions.
@@ -1378,7 +1390,7 @@ description = Test the file tokens.
 group = Token
 file = token.test
 
-; Added by Backdrop CMS packaging script on 2024-03-07
+; Added by Backdrop CMS packaging script on 2024-07-03
 project = backdrop
-version = 1.27.1
-timestamp = 1709862662
+version = 1.28.2
+timestamp = 1720046843

@@ -64,6 +64,12 @@ description = Upload a file using the multi-step wizard.
 group = File
 file = file.test
 
+[FileUploadSvgTestCase]
+name = File upload SVG validation tests
+description = Tests validation functions for SVG files.
+group = File
+file = file.test
+
 [FileAdminTestCase]
 name = File administration
 description = Test file administration page functionality.
@@ -136,7 +142,7 @@ description = Test overriding file entity attributes.
 group = File
 file = file.test
 
-; Added by Backdrop CMS packaging script on 2024-03-07
+; Added by Backdrop CMS packaging script on 2024-07-03
 project = backdrop
-version = 1.27.1
-timestamp = 1709862662
+version = 1.28.2
+timestamp = 1720046843
