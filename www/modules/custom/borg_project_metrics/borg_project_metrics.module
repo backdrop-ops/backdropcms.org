@@ -11,18 +11,20 @@
  */
 
 /**
- * Get all the project_module, project_theme and project_layout nodes.
+ * Get project_module, project_theme and project_layout nodes.
+ *
+ * Only published nodes that haven't been updated in the past 24 hours, and only
+ * a range, not all. Nodes not updated for the longest time come first.
  */
 function borg_project_metrics_get_project_nodes() {
-  $or = db_or();
-  $or->condition('type', 'project_module');
-  $or->condition('type', 'project_theme');
-  $or->condition('type', 'project_layout');
-  $or->condition('type', 'core');
-  $result = db_select('node', 'n')
-    ->fields('n')
-    ->condition($or)
-    ->execute();
+  $types = array('project_module', 'project_theme', 'project_layout', 'core');
+  $one_day_ago = time() - 3600 * 24;
+  $max_per_cron = 200;
+  $result = db_query_range("SELECT nid FROM {node} WHERE type IN (:types) AND status = 1 AND changed < :one_day_ago ORDER BY changed ASC", 0, $max_per_cron, array(
+    ':types' => $types,
+    ':one_day_ago' => $one_day_ago,
+  ))->fetchAll();
+
   $project_modules = array();
   foreach($result as $r) {
     $nid = $r->nid;
@@ -57,10 +59,27 @@ function borg_project_metrics_get_downloads($project = '') {
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
     curl_setopt($ch, CURLOPT_HEADER, 1);
     $content = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
     $header = substr($content, 0, $header_size);
     $body = substr($content, $header_size);
     curl_close($ch);
+    // Network problem unrelated to the repository.
+    if ($http_code == '0') {
+      watchdog('borg_project_metrics', 'Network problem while fetching %url. Another attempt will be made next cron run.', array(
+        '%url' => $nextUrl,
+      ), WATCHDOG_WARNING);
+      $total = -1;
+      break;
+    }
+    // Repository moved or deleted, or other HTTP problems.
+    if ($http_code != '200') {
+      watchdog('borg_project_metrics', 'Attempt to fetch download count from %url resulted in HTTP @code.', array(
+        '%url' => $nextUrl,
+        '@code' => $http_code,
+      ), WATCHDOG_WARNING);
+      break;
+    }
     $myHeader = explode("\n", $header);
 
     if (isset($myHeader[16])
@@ -115,12 +134,13 @@ function borg_project_metrics_cron() {
   }
   state_set('borg_project_metrics_cron', REQUEST_TIME);
 
-  // Run at ~2AM EST.
-  if (date('G') == 22) {
+  // Prevent overlap with weekly jobs.
+  if (date('G') != 23) {
     $project_nodes = borg_project_metrics_get_project_nodes();
     foreach ($project_nodes as $m) {
       $num = borg_project_metrics_get_downloads($m[0]);
-      if ($num) {
+      // The value "-1" indicates some sort of network problem.
+      if ($num != -1) {
         try {
           $node = node_load($m[1]);
           $node->field_download_count['und'][0]['value'] = $num;
