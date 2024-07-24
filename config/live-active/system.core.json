@@ -113,5 +113,9 @@
     "dblog_max_length": "128",
     "file_not_normalized_schemes": [],
     "user_editor_role": "",
-    "jquery_version": "default"
+    "jquery_version": "default",
+    "backdrop_http_request": {
+        "strip_sensitive_headers_on_host_change": true,
+        "strip_sensitive_headers_on_https_downgrade": true
+    }
 }
