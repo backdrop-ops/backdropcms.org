@@ -178,9 +178,9 @@ function project_telemetry_theme() {
  *
  * @param int $stale_age
  *   The number of seconds by which data will be considered stale. Defaults
- *   to 604800 seconds (2 weeks).
+ *   to 1209600 seconds (2 weeks).
  */
-function project_telemetry_delete_stale_data($stale_age = 3600) {
+function project_telemetry_delete_stale_data($stale_age = 1209600) {
   db_delete('project_telemetry_raw')
     ->condition('timestamp', REQUEST_TIME - $stale_age, '<')
     ->execute();

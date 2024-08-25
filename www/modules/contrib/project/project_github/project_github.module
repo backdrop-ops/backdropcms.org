@@ -25,7 +25,7 @@ function project_github_githubapi_payload($event_name, $record, $repo) {
       if (project_github_update_readme($project_node)) {
         $project_node->save();
       }
-    break;
+      break;
     case 'release':
       if ($payload['action'] === 'published') {
         $errors = [];
@@ -47,7 +47,6 @@ function project_github_githubapi_payload($event_name, $record, $repo) {
         }
       }
       break;
-
   }
 }
 
