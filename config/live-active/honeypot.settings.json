@@ -4,7 +4,7 @@
     "expire": 300,
     "log": 1,
     "element_name": "url",
-    "time_limit": "5",
+    "time_limit": "3",
     "unprotected_forms": [
         "user_login_form",
         "search_form",
@@ -18,7 +18,7 @@
         "honeypot_form_user_profile_form": 0,
         "honeypot_form_contact_personal_form": 1,
         "honeypot_form_contact_site_form": 1,
-        "honeypot_form_webforms": 0,
+        "honeypot_form_webforms": 1,
         "honeypot_form_book_node_form": 0,
         "honeypot_form_core_node_form": 0,
         "honeypot_form_core_release_node_form": 0,
@@ -38,7 +38,9 @@
         "honeypot_form_showcase_node_form": 1,
         "honeypot_form_external_mention_node_form": 1,
         "honeypot_form_project_dummy_node_form": 0,
-        "honeypot_form_platform_node_form": 0
+        "honeypot_form_platform_node_form": 0,
+        "honeypot_form_notification_node_form": 0,
+        "honeypot_form_webform_node_form": 0
     },
     "use_js_for_cached_pages": 1
 }

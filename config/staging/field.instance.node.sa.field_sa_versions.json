@@ -39,7 +39,7 @@
     "description": "For contrib: <code>All coffee versions prior to 1.x-a.b.c</code>",
     "default_value": [
         {
-            "value": "<ul>\r\n\t<li>Backdrop Core 1.24.x versions prior to 1.22.?</li>\r\n\t<li>Backdrop Core 1.23.x versions prior to 1.21.?</li>\r\n</ul>\r\n\r\n<p>Backdrop versions 1.22 and prior do not receive security coverage.</p>\r\n",
+            "value": "<ul>\r\n    <li>\r\n        Backdrop Core 1.28.x versions prior to 1.28.?\r\n    </li>\r\n    <li>\r\n        Backdrop Core 1.27.x versions prior to 1.27.?\r\n    </li>\r\n</ul>\r\n<p>\r\n    Backdrop versions 1.26 and prior do not receive security coverage.\r\n</p>",
             "format": "filtered_html"
         }
     ],
