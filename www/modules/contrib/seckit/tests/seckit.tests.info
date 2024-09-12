@@ -4,7 +4,13 @@ description = Tests functionality and settings page of Security Kit module.
 group = Security Kit
 file = seckit.test
 
-; Added by Backdrop CMS packaging script on 2024-02-21
+[SecKitReportCspViolationTest]
+name = Security Kit CSP violation reports
+description = Tests the CSP violation report functionality of Security Kit module.
+group = Security Kit
+file = seckit.test
+
+; Added by Backdrop CMS packaging script on 2024-09-11
 project = seckit
-version = 1.x-1.12.1
-timestamp = 1708525127
+version = 1.x-1.13.0
+timestamp = 1726092465

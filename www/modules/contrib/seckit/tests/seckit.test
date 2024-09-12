@@ -633,3 +633,136 @@ class SecKitTestCase extends BackdropWebTestCase {
   }
 
 }
+
+/**
+ * Tests CSP violation report functionality.
+ */
+class SecKitReportCspViolationTest extends BackdropWebTestCase {
+
+  /**
+   * An example CSP violation report.
+   *
+   * @var array
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only#sample_violation_report
+   */
+  protected $validReport = array(
+    'csp-report' => array(
+      'blocked-uri' => 'http://example.com/css/style.css',
+      'disposition' => 'report',
+      'document-uri' => 'http://example.com/signup.html',
+      'effective-directive' => 'style-src-elem',
+      'original-policy' => "default-src 'none'; style-src cdn.example.com; report-uri /report-csp-violation",
+      'referrer' => '',
+      'status-code' => 200,
+      'violated-directive' => 'style-src-elem',
+    ),
+  );
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    parent::setUp(array('seckit', 'dblog'));
+
+    // Defaults from _seckit_get_options_defaults() but with CSP switched on.
+    config_set('seckit.settings', 'xss', array(
+      // Content Security Policy (CSP).
+      'csp' => array(
+        'checkbox' => 1,
+        'vendor-prefix' => array(
+          'x' => 0,
+          'webkit' => 0,
+        ),
+        'report-only' => 0,
+        'default-src' => "'self'",
+        'script-src' => '',
+        'object-src' => '',
+        'style-src' => '',
+        'img-src' => '',
+        'media-src' => '',
+        'frame-src' => '',
+        'frame-ancestors' => '',
+        'child-src' => '',
+        'font-src' => '',
+        'connect-src' => '',
+        'report-uri' => SECKIT_CSP_REPORT_URL,
+        'policy-uri' => '',
+        'upgrade-req' => '',
+      ),
+      // X-XSS-Protection header.
+      'x_xss' => array(
+        // Disabled by default.
+        'select' => SECKIT_X_XSS_DISABLE,
+      ),
+    ));
+  }
+
+  /**
+   * Test a valid report.
+   */
+  public function testValidReportCspViolation() {
+    $this->submitReportCspViolation(SECKIT_CSP_REPORT_URL, $this->validReport);
+    $this->assertResponse(200);
+    $last_log = db_query_range('SELECT message FROM {watchdog} WHERE type = :type ORDER BY wid DESC', 0, 1, array(':type' => 'seckit'))->fetchField();
+    $this->assertEqual('CSP: Directive @directive violated.<br /> Blocked URI: @blocked_uri.<br /> <pre>Data: @data</pre>', $last_log, 'A message was logged for the valid CSP violation report.');
+  }
+
+  /**
+   * Test an invalid report with a missing field in the json payload.
+   */
+  public function testInvalidReportCspViolationMissingField() {
+    $report = $this->validReport;
+    unset($report['csp-report']['violated-directive']);
+    $this->submitReportCspViolation(SECKIT_CSP_REPORT_URL, $report);
+    $this->assertResponse(200);
+    $last_log = db_query_range('SELECT message FROM {watchdog} WHERE type = :type ORDER BY wid DESC', 0, 1, array(':type' => 'seckit'))->fetchField();
+    $this->assertFalse($last_log, 'No message was logged for an invalid CSP violation report.');
+  }
+
+  /**
+   * Test an invalid report with the wrong content type.
+   */
+  public function testInvalidReportCspViolationWrongContentType() {
+    $headers['content-type'] = 'application/x-www-form-urlencoded';
+    $this->submitReportCspViolation(SECKIT_CSP_REPORT_URL, $this->validReport, $headers);
+    // Note: The 2.x branch returns a 404 when the submitted content-type is
+    // invalid, but 7.x-1.x just quietly returns a 200.
+    $this->assertResponse(200);
+    $last_log = db_query_range('SELECT message FROM {watchdog} WHERE type = :type ORDER BY wid DESC', 0, 1, array(':type' => 'seckit'))->fetchField();
+    $this->assertFalse($last_log, 'No message was logged for an invalid CSP violation report.');
+  }
+
+  /**
+   * Submit a test CSP violation report.
+   *
+   * @param string $path
+   *   Path to send the report to.
+   * @param array $report
+   *   Array of report data to send.
+   * @param array $headers
+   *   Non-default headers to include.
+   *
+   * @return string
+   *   The content returned from the call to curl_exec().
+   *
+   * @see \ViewsAjaxTest::simpleAjaxPost()
+   */
+  public function submitReportCspViolation($path, $report, $headers = array()) {
+    $options['absolute'] = TRUE;
+    $postfields = json_encode($report);
+    $headers += array(
+      'content-type' => 'application/csp-report',
+    );
+    foreach ($headers as $header => $value) {
+      $curl_headers[] = $header . ': ' . $value;
+    }
+    return $this->curlExec(array(
+      CURLOPT_URL => url($path, $options),
+      CURLOPT_POST => TRUE,
+      CURLOPT_POSTFIELDS => $postfields,
+      CURLOPT_HTTPHEADER => $curl_headers,
+    ));
+  }
+
+}
