@@ -8,24 +8,28 @@
  * Implements hook_admin_paths().
  */
 function borg_civicrm_admin_paths() {
-  // The CiviCRM profile edit pages should be rendered in the front-end theme.
-  return array(
-    'user/*/edit/name_and_address' => FALSE,
-    'user/*/edit/Subscriptions_15' => FALSE,
-  );
+  if (module_exists('civicrm')) {
+    // The CiviCRM profile edit pages should be rendered in the front-end theme.
+    return array(
+      'user/*/edit/name_and_address' => FALSE,
+      'user/*/edit/Subscriptions_15' => FALSE,
+    );
+  }
 }
 
 /**
  * Implements hook_menu_alter().
  */
 function borg_civicrm_menu_alter(&$items) {
-  // Make the CiviCRM profile edit page a sub-tab of the main user edit page.
-  $items['user/%user/edit/main'] = $items['user/%user/edit'];
-  $items['user/%user/edit/main']['type'] = MENU_DEFAULT_LOCAL_TASK;
-  $items['user/%user/edit/main']['title'] = t('Account Information');
+  if (module_exists('civicrm')) {
+    // Make the CiviCRM profile edit page a sub-tab of the main user edit page.
+    $items['user/%user/edit/main'] = $items['user/%user/edit'];
+    $items['user/%user/edit/main']['type'] = MENU_DEFAULT_LOCAL_TASK;
+    $items['user/%user/edit/main']['title'] = t('Account Information');
 
-  // Change the Subscriptions weight so it comes last in the row of sub-tabs.
-  $items['user/%user/edit/Subscriptions_15']['weight']++;
+    // Change the Subscriptions weight so it comes last in the row of sub-tabs.
+    $items['user/%user/edit/Subscriptions_15']['weight']++;
+  }
 }
 
 /**
@@ -34,7 +38,7 @@ function borg_civicrm_menu_alter(&$items) {
  * Make sure our hook_menu_alter() runs after CiviCRM's.
  */
 function borg_civicrm_module_implements_alter(&$implementations, $hook) {
-  if ($hook == 'menu_alter') {
+  if (module_exists('civicrm') && $hook == 'menu_alter') {
     $group = $implementations['borg_civicrm'];
     unset($implementations['borg_civicrm']);
     $implementations['borg_civicrm'] = $group;
