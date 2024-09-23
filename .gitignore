@@ -1,18 +1,38 @@
-# OS and IDE files.
-/.idea
-.DS_Store
+# Ignore this file so it can be changed as needed.
+.gitignore
 
 # Ignore the private files directory.
 private-files
-
-# Ignore developer modules
-www/modules/contrib/devel
 
 # Backups. Don't ignore .sql files because CiviCRM uses some of those.
 *.sql.gz
 *.tgz
 *.tar
 *.tar.gz
+*.zip
+
+# Ignore modules for development.
+www/modules/contrib/devel
+
+# Ignore config for modules for development.
+www/modules/contrib/devel
+www/modules/contrib/backup_migrate
+config/*/devel.settings.json
+config/*/backup_migrate.settings.json
+
+# Ignore local development settings
+www/settings.local.dev.php
+www/sites/*/settings.local.dev.php
 
 # Ignore env vars.
+i.env
 .env
+
+# Ignore .ddev files
+.ddev
+www/settings.ddev.php
+www/drushrc.php
+
+# OS and IDE files.
+/.idea
+.DS_Store
