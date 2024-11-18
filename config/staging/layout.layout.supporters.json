@@ -1,12 +1,12 @@
 {
-    "_config_name": "layout.layout.search_layouts",
-    "path": "layouts",
-    "name": "search_layouts",
-    "title": "Search layouts",
+    "_config_name": "layout.layout.supporters",
+    "path": "support/supporters",
+    "name": "supporters",
+    "title": "Supporters",
     "description": null,
     "renderer_name": "standard",
     "module": null,
-    "weight": -3,
+    "weight": -4,
     "storage": 1,
     "layout_template": "boxton",
     "disabled": false,
@@ -17,29 +17,30 @@
     },
     "positions": {
         "header": [
-            "75caabc2-e0d6-4967-b000-ff477e009c65",
-            "89e6bcdf-c411-46e0-a800-ced20400a45f",
-            "0b7ea9cd-3070-46d8-8d4d-772314d6c5d2"
+            "b5164e84-6ca4-45d5-8541-654dc5b32402",
+            "376a2a17-c3b7-4b21-b015-21a8805ed5b4",
+            "00b98b81-cbb6-4e19-aa03-3d3ee9e2cf31"
         ],
         "top": [
-            "7114186c-8a88-4b7a-9e09-9be41b70cee1",
-            "18b0e429-9f03-4123-8500-0c42e40bc9d0",
-            "cbc1dd62-a711-4e29-9f06-06ce4da74e29"
+            "86666531-cdf9-4304-9100-fe4cd7194668"
         ],
         "content": [
-            "6c84409f-e0f6-45f2-a705-5bf43bc4fce2",
-            "4fe4a3d9-b554-428b-9121-334210ebc050"
+            "a0617d4a-cc09-437b-9113-19e35aa31ba7",
+            "608e3eb7-a305-4bd4-9100-cbc17cc75c55",
+            "9f438500-04a0-4b0d-9b00-0e8d6c19c1eb",
+            "8be90190-498b-4330-8b07-077074012855",
+            "359aa779-bd01-4f04-b800-eda8ca87ad4f"
         ],
         "bottom": [],
         "footer": [
-            "aed89cc4-c41a-446d-9d00-0b9f67a191c6"
+            "965f93f6-5b0b-41cf-8641-6525e95eee36"
         ],
         "title": []
     },
     "contexts": [],
     "relationships": [],
     "content": {
-        "75caabc2-e0d6-4967-b000-ff477e009c65": {
+        "b5164e84-6ca4-45d5-8541-654dc5b32402": {
             "plugin": "borg_blocks:branding",
             "data": {
                 "status": 1,
@@ -52,7 +53,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "75caabc2-e0d6-4967-b000-ff477e009c65",
+                "uuid": "b5164e84-6ca4-45d5-8541-654dc5b32402",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -63,7 +64,7 @@
                 }
             }
         },
-        "89e6bcdf-c411-46e0-a800-ced20400a45f": {
+        "376a2a17-c3b7-4b21-b015-21a8805ed5b4": {
             "plugin": "system:user-menu",
             "data": {
                 "status": 1,
@@ -83,7 +84,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "89e6bcdf-c411-46e0-a800-ced20400a45f",
+                "uuid": "376a2a17-c3b7-4b21-b015-21a8805ed5b4",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -94,7 +95,7 @@
                 }
             }
         },
-        "0b7ea9cd-3070-46d8-8d4d-772314d6c5d2": {
+        "00b98b81-cbb6-4e19-aa03-3d3ee9e2cf31": {
             "plugin": "system:main-menu",
             "data": {
                 "status": 1,
@@ -113,7 +114,7 @@
                     },
                     "contexts": []
                 },
-                "uuid": "0b7ea9cd-3070-46d8-8d4d-772314d6c5d2",
+                "uuid": "00b98b81-cbb6-4e19-aa03-3d3ee9e2cf31",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -124,7 +125,7 @@
                 }
             }
         },
-        "7114186c-8a88-4b7a-9e09-9be41b70cee1": {
+        "86666531-cdf9-4304-9100-fe4cd7194668": {
             "plugin": "system:page_components:title",
             "data": {
                 "status": 1,
@@ -140,7 +141,7 @@
                     "title_classes": "page-title",
                     "tab_type": "both"
                 },
-                "uuid": "7114186c-8a88-4b7a-9e09-9be41b70cee1",
+                "uuid": "86666531-cdf9-4304-9100-fe4cd7194668",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -151,7 +152,7 @@
                 }
             }
         },
-        "18b0e429-9f03-4123-8500-0c42e40bc9d0": {
+        "a0617d4a-cc09-437b-9113-19e35aa31ba7": {
             "plugin": "layout:custom_block",
             "data": {
                 "status": 1,
@@ -163,12 +164,12 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<h2>\r\n    Layout templates divide pages on your site into different regions where content can be placed.\r\n</h2>",
+                    "content": "<p>\r\n    These organizations support Backdrop CMS, by contributing staff time, services and/or financial support.\r\n</p>",
                     "format": "filtered_html",
                     "admin_label": "",
                     "admin_description": ""
                 },
-                "uuid": "18b0e429-9f03-4123-8500-0c42e40bc9d0",
+                "uuid": "a0617d4a-cc09-437b-9113-19e35aa31ba7",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -179,20 +180,24 @@
                 }
             }
         },
-        "cbc1dd62-a711-4e29-9f06-06ce4da74e29": {
-            "plugin": "views:-exp-modules-layouts",
+        "608e3eb7-a305-4bd4-9100-cbc17cc75c55": {
+            "plugin": "layout:custom_block",
             "data": {
                 "status": 1,
-                "module": "views",
-                "delta": "-exp-modules-layouts",
+                "module": "layout",
+                "delta": "custom_block",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "content": "<p>\r\n    <a href=\"/node/add/supporter\">Add your own organization to this list.</a>\r\n</p>",
+                    "format": "filtered_html",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "cbc1dd62-a711-4e29-9f06-06ce4da74e29",
+                "uuid": "608e3eb7-a305-4bd4-9100-cbc17cc75c55",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -200,10 +205,66 @@
                             "classes": ""
                         }
                     }
-                }
+                },
+                "conditions": [
+                    {
+                        "plugin": "user_role",
+                        "data": {
+                            "settings": {
+                                "negate": false,
+                                "roles": [
+                                    "authenticated"
+                                ],
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
             }
         },
-        "6c84409f-e0f6-45f2-a705-5bf43bc4fce2": {
+        "9f438500-04a0-4b0d-9b00-0e8d6c19c1eb": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "status": 1,
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>\r\n    <span>To add your organization to this list, </span><a href=\"/user/login\">log in or create an account</a><span>, then return to this page.</span>\r\n</p>",
+                    "format": "filtered_html",
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "9f438500-04a0-4b0d-9b00-0e8d6c19c1eb",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                },
+                "conditions": [
+                    {
+                        "plugin": "user_role",
+                        "data": {
+                            "settings": {
+                                "negate": false,
+                                "roles": [
+                                    "anonymous"
+                                ],
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "8be90190-498b-4330-8b07-077074012855": {
             "plugin": "system:main",
             "data": {
                 "status": 1,
@@ -216,7 +277,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "6c84409f-e0f6-45f2-a705-5bf43bc4fce2",
+                "uuid": "8be90190-498b-4330-8b07-077074012855",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -227,7 +288,7 @@
                 }
             }
         },
-        "4fe4a3d9-b554-428b-9121-334210ebc050": {
+        "359aa779-bd01-4f04-b800-eda8ca87ad4f": {
             "plugin": "borg_blocks:rss",
             "data": {
                 "status": 1,
@@ -240,7 +301,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "4fe4a3d9-b554-428b-9121-334210ebc050",
+                "uuid": "359aa779-bd01-4f04-b800-eda8ca87ad4f",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -251,7 +312,7 @@
                 }
             }
         },
-        "aed89cc4-c41a-446d-9d00-0b9f67a191c6": {
+        "965f93f6-5b0b-41cf-8641-6525e95eee36": {
             "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
@@ -267,7 +328,7 @@
                     "admin_description": "",
                     "source_region": "default:footer"
                 },
-                "uuid": "aed89cc4-c41a-446d-9d00-0b9f67a191c6",
+                "uuid": "965f93f6-5b0b-41cf-8641-6525e95eee36",
                 "style": {
                     "plugin": "default",
                     "data": {

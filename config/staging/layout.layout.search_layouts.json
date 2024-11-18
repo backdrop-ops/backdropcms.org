@@ -163,8 +163,10 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<h2>Layouts divide pages on your site into different columns or regions where content can be placed.</h2>\r\n",
-                    "format": "filtered_html"
+                    "content": "<h2>\r\n    Layout templates divide pages on your site into different regions where content can be placed.\r\n</h2>",
+                    "format": "filtered_html",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "18b0e429-9f03-4123-8500-0c42e40bc9d0",
                 "style": {
