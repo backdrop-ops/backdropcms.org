@@ -239,7 +239,7 @@ class CoreUtil {
    * @return bool|null
    * @throws \CRM_Core_Exception
    */
-  public static function checkAccessRecord(AbstractAction $apiRequest, array $record, int $userID = NULL): ?bool {
+  public static function checkAccessRecord(AbstractAction $apiRequest, array $record, ?int $userID = NULL): ?bool {
     $userID ??= \CRM_Core_Session::getLoggedInContactID() ?? 0;
     $idField = self::getIdFieldName($apiRequest->getEntityName());
 
@@ -324,6 +324,22 @@ class CoreUtil {
     $dao = new $daoName();
     $dao->id = $entityId;
     return $dao->getReferenceCounts();
+  }
+
+  /**
+   * Gets total number of references
+   *
+   * @param string $entityName
+   * @param $entityId
+   * @return int
+   * @throws NotImplementedException
+   */
+  public static function getRefCountTotal(string $entityName, $entityId): int {
+    $total = 0;
+    foreach ((array) self::getRefCount($entityName, $entityId) as $ref) {
+      $total += $ref['count'] ?? 0;
+    }
+    return $total;
   }
 
   /**
@@ -413,6 +429,33 @@ class CoreUtil {
       $formatted[] = array_intersect_key($option, array_flip($format));
     }
     return $formatted;
+  }
+
+  public static function formatViewValue(string $entityName, string $fieldName, array $values, string $action = 'get') {
+    if (!isset($values[$fieldName]) || $values[$fieldName] === '') {
+      return '';
+    }
+    $params = [
+      'action' => $action,
+      'where' => [['name', '=', $fieldName]],
+      'loadOptions' => ['id', 'label'],
+      'checkPermissions' => FALSE,
+      'values' => $values,
+    ];
+    $fieldInfo = civicrm_api4($entityName, 'getFields', $params)->single();
+    $dataType = $fieldInfo['data_type'] ?? NULL;
+    if (!empty($fieldInfo['options'])) {
+      return FormattingUtil::replacePseudoconstant(array_column($fieldInfo['options'], 'label', 'id'), $values[$fieldName]);
+    }
+    elseif ($dataType === 'Boolean') {
+      return $values[$fieldName] ? ts('Yes') : ts('No');
+    }
+    elseif ($dataType === 'Date' || $dataType === 'Timestamp') {
+      $values[$fieldName] = \CRM_Utils_Date::customFormat($values[$fieldName]);
+    }
+    if (is_array($values[$fieldName])) {
+      $values[$fieldName] = implode(', ', $values[$fieldName]);
+    }
   }
 
   /**

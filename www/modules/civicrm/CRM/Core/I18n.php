@@ -688,7 +688,6 @@ class CRM_Core_I18n {
     // For self::getLocale()
     global $tsLocale;
     $tsLocale = $civicrmLocale->ts;
-
     CRM_Core_I18n::singleton()->reactivate();
   }
 
@@ -774,7 +773,7 @@ class CRM_Core_I18n {
    *   Ex: $stringTable['enabled']['wildcardMatch']['foo'] = 'bar';
    */
   private function getWordReplacements() {
-    if (isset(Civi\Test::$statics['testPreInstall'])) {
+    if (defined('CIVI_SETUP') || isset(Civi\Test::$statics['testPreInstall'])) {
       return [];
     }
 

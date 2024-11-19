@@ -197,9 +197,9 @@ class CRM_Utils_System_Standalone extends CRM_Utils_System_Base {
    *   the current menu path
    */
   public static function currentPath() {
-    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $path = trim($path, '/');
-    return $path;
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+
+    return $path ? trim($path, '/') : NULL;
   }
 
   /**
@@ -243,6 +243,22 @@ class CRM_Utils_System_Standalone extends CRM_Utils_System_Base {
    */
   public function logout() {
     return Security::singleton()->logoutUser();
+  }
+
+  /**
+   * @inheritDoc
+   *
+   * Standalone offers different HTML templates for front and back-end routes.
+   *
+   */
+  public static function getContentTemplate($print = 0): string {
+    if ($print) {
+      return parent::getContentTemplate($print);
+    }
+    else {
+      $isPublic = CRM_Utils_System::isFrontEndPage();
+      return $isPublic ? 'CRM/common/standalone-frontend.tpl' : 'CRM/common/standalone.tpl';
+    }
   }
 
   /**
@@ -352,7 +368,7 @@ class CRM_Utils_System_Standalone extends CRM_Utils_System_Base {
     }
 
     return [
-      'url' => CRM_Utils_File::addTrailingSlash(CIVICRM_UF_BASEURL, '/') . '/core/',
+      'url' => CRM_Utils_File::addTrailingSlash(CIVICRM_UF_BASEURL, '/') . 'core/',
       'path' => CRM_Utils_File::addTrailingSlash($civicrm_root),
     ];
   }
@@ -370,6 +386,10 @@ class CRM_Utils_System_Standalone extends CRM_Utils_System_Base {
       return $civicrm_paths['cms.root']['path'];
     }
     throw new \RuntimeException("Standalone requires the path is set for now. Set \$civicrm_paths['cms.root']['path'] in civicrm.settings.php to the webroot.");
+  }
+
+  public function isFrontEndPage() {
+    return CRM_Core_Menu::isPublicRoute(CRM_Utils_System::currentPath() ?? '');
   }
 
   /**
@@ -495,15 +515,14 @@ class CRM_Utils_System_Standalone extends CRM_Utils_System_Base {
    * @inheritDoc
    */
   public function getTimeZoneString() {
-    $timezone = date_default_timezone_get();
     $userId = Security::singleton()->getLoggedInUfID();
     if ($userId) {
       $user = Security::singleton()->loadUserByID($userId);
       if ($user && !empty($user['timezone'])) {
-        $timezone = $user['timezone'];
+        return $user['timezone'];
       }
     }
-    return $timezone;
+    return date_default_timezone_get();
   }
 
   /**
@@ -531,11 +550,27 @@ class CRM_Utils_System_Standalone extends CRM_Utils_System_Base {
     return Security::singleton()->getCMSPermissionsUrlParams();
   }
 
+  /**
+   * Respond that permission has been denied.
+   *
+   * Note that there are a few subtle variations on this:
+   *
+   * - For authenticated users with a session/cookie, it uses "statusBounce()" to show popup (on prior page or dashboard page).
+   * - For authenticated users with stateless requests, it shows formatted error page.
+   * - For unauthenticated users, it shows login screen with an error blurb.
+   */
   public function permissionDenied() {
-    // If not logged in, they need to.
-    if (CRM_Core_Session::singleton()->get('ufID')) {
+    $session = CRM_Core_Session::singleton();
+    $isAuthenticated = (bool) $session->get('ufID');
+    $useSession = ($session->get('authx')['useSession'] ?? TRUE);
+
+    if ($isAuthenticated && $useSession) {
       // They are logged in; they're just not allowed this page.
       CRM_Core_Error::statusBounce(ts("Access denied"), CRM_Utils_System::url('civicrm'));
+      return;
+    }
+    elseif ($isAuthenticated && !$useSession) {
+      return (new CRM_Standaloneusers_Page_PermissionDenied())->run();
     }
     else {
       http_response_code(403);
@@ -568,7 +603,8 @@ class CRM_Utils_System_Standalone extends CRM_Utils_System_Base {
       $session_cookie_name = 'SESSCIVISO';
     }
 
-    $session_max_lifetime = Civi::settings()->get('standaloneusers_session_max_lifetime') ?? 1440;
+    // session lifetime in seconds (default = 24 minutes)
+    $session_max_lifetime = (Civi::settings()->get('standaloneusers_session_max_lifetime') ?? 24) * 60;
 
     session_start([
       'cookie_httponly'  => 1,
@@ -579,6 +615,31 @@ class CRM_Utils_System_Standalone extends CRM_Utils_System_Base {
       'use_only_cookies' => 1,
       'use_strict_mode'  => 1,
     ]);
+  }
+
+  /**
+   * Standalone's session cannot be initialized until CiviCRM is booted,
+   * since it is defined in an extension,
+   *
+   * This is also when we set timezone
+   */
+  public function postContainerBoot(): void {
+    $sess = \CRM_Core_Session::singleton();
+    $sess->initialize();
+
+    // We want to apply timezone for this session
+    // However - our implementation relies on checks against standaloneusers
+    // so we need a guard if this is called in install
+    //
+    // Doesn't the session handler started above also need standalonusers?
+    // Yes it does - but we put in some guards further into those functions
+    // to use a fake session instead for this install bit.
+    // Maybe they could get moved up here
+    if (class_exists(\Civi\Standalone\Security::class)) {
+      $sessionTime = $this->getTimeZoneString();
+      date_default_timezone_set($sessionTime);
+      $this->setMySQLTimeZone();
+    }
   }
 
 }

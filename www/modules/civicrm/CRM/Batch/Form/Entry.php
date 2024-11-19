@@ -232,7 +232,7 @@ class CRM_Batch_Form_Entry extends CRM_Core_Form {
 
     $this->addElement('hidden', 'batch_id', $this->_batchId);
 
-    $batchTypes = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'type_id', ['flip' => 1], 'validate');
+    $batchTypes = array_flip(CRM_Batch_DAO_Batch::buildOptions('type_id', 'validate'));
     // get the profile information
     if ($this->_batchInfo['type_id'] == $batchTypes['Contribution']) {
       $this->setTitle(ts('Batch Data Entry for Contributions'));
@@ -382,7 +382,7 @@ class CRM_Batch_Form_Entry extends CRM_Core_Form {
    */
   public static function formRule($params, $files, $self) {
     $errors = [];
-    $batchTypes = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'type_id', ['flip' => 1], 'validate');
+    $batchTypes = array_flip(CRM_Batch_DAO_Batch::buildOptions('type_id', 'validate'));
     $fields = [
       'total_amount' => ts('Amount'),
       'financial_type' => ts('Financial Type'),
@@ -508,7 +508,7 @@ class CRM_Batch_Form_Entry extends CRM_Core_Form {
     $params['actualBatchTotal'] = 0;
 
     // get the profile information
-    $batchTypes = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'type_id', ['flip' => 1], 'validate');
+    $batchTypes = array_flip(CRM_Batch_DAO_Batch::buildOptions('type_id', 'validate'));
     if (in_array($this->_batchInfo['type_id'], [$batchTypes['Pledge Payment'], $batchTypes['Contribution']])) {
       $this->processContribution($params);
     }
@@ -667,7 +667,7 @@ class CRM_Batch_Form_Entry extends CRM_Core_Form {
         if ($retrieveRequired == 1) {
           $contribution->find(TRUE);
         }
-        $batchTypes = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'type_id', ['flip' => 1], 'validate');
+        $batchTypes = array_flip(CRM_Batch_DAO_Batch::buildOptions('type_id', 'validate'));
         if (!empty($this->_batchInfo['type_id']) && ($this->_batchInfo['type_id'] == $batchTypes['Pledge Payment'])) {
           $adjustTotalAmount = FALSE;
           if (isset($params['option_type'][$key])) {
@@ -900,32 +900,18 @@ class CRM_Batch_Form_Entry extends CRM_Core_Form {
    *
    */
   protected function emailReceipt($form, &$formValues): bool {
-    $membership = new CRM_Member_BAO_Membership();
-    $membership->id = $this->getCurrentRowMembershipID();
-    $membership->find(TRUE);
     // @todo figure out how much of the stuff below is genuinely shared with the batch form & a logical shared place.
     if (!empty($formValues['payment_instrument_id'])) {
       $paymentInstrument = CRM_Contribute_PseudoConstant::paymentInstrument();
       $formValues['paidBy'] = $paymentInstrument[$formValues['payment_instrument_id']];
     }
 
+    // @todo - as of 5.74 module is noisy deprecated - can stop assigning around 5.80.
     $form->assign('module', 'Membership');
-    $form->assign('contactID', $formValues['contact_id']);
-
-    if (!empty($formValues['contribution_status_id'])) {
-      $form->assign('contributionStatusID', $formValues['contribution_status_id']);
-      $form->assign('contributionStatus', CRM_Core_PseudoConstant::getName('CRM_Contribute_BAO_Contribution', 'contribution_status_id', $formValues['contribution_status_id']));
-    }
 
     $form->assign('receiptType', $this->currentRowIsRenew() ? 'membership renewal' : 'membership signup');
-    $form->assign('receive_date', $formValues['receive_date'] ?? NULL);
+    // @todo - as of 5.74 form values is noisy deprecated - can stop assigning around 5.80.
     $form->assign('formValues', $formValues);
-
-    $form->assign('mem_start_date', CRM_Utils_Date::formatDateOnlyLong($membership->start_date));
-    if (!CRM_Utils_System::isNull($membership->end_date)) {
-      $form->assign('mem_end_date', CRM_Utils_Date::formatDateOnlyLong($membership->end_date));
-    }
-    $form->assign('membership_name', CRM_Member_PseudoConstant::membershipType($membership->membership_type_id));
 
     [$contributorDisplayName, $contributorEmail]
       = CRM_Contact_BAO_Contact_Location::getEmailDetails($formValues['contact_id']);

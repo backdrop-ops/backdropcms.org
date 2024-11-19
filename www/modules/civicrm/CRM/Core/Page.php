@@ -270,7 +270,7 @@ class CRM_Core_Page {
       CRM_Core_Resources::singleton()->addScriptFile('civicrm', 'js/crm.livePage.js', 1, 'html-header');
     }
 
-    $content = self::$_template->fetch('CRM/common/' . strtolower($config->userFramework) . '.tpl');
+    $content = self::$_template->fetch(CRM_Utils_System::getContentTemplate());
 
     // Render page header
     if (!defined('CIVICRM_UF_HEAD') && $region = CRM_Core_Region::instance('html-header', FALSE)) {
@@ -571,6 +571,11 @@ class CRM_Core_Page {
       // Duplicates don't actually matter....
       $this->addExpectedSmartyVariable($elementName);
     }
+  }
+
+  public function invalidKey() {
+    $msg = ts("We can't load the requested web page. This page requires cookies to be enabled in your browser settings. Please check this setting and enable cookies (if they are not enabled). Then try again. If this error persists, contact the site administrator for assistance.") . '<br /><br />' . ts('Site Administrators: This error may indicate that users are accessing this page using a domain or URL other than the configured Base URL. EXAMPLE: Base URL is http://example.org, but some users are accessing the page via http://www.example.org or a domain alias like http://myotherexample.org.') . '<br /><br />' . ts('Error type: Could not find a valid session key.');
+    throw new CRM_Core_Exception($msg);
   }
 
 }

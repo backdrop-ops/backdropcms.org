@@ -263,8 +263,8 @@
 
 @font-face {
 	font-family: "Glyphicons Halflings";
-	src: url("../extern/bootstrap3/assets/fonts/bootstrap/glyphicons-halflings-regular.eot");
-	src: url("../extern/bootstrap3/assets/fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../extern/bootstrap3/assets/fonts/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), url("../extern/bootstrap3/assets/fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("../extern/bootstrap3/assets/fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("../extern/bootstrap3/assets/fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
+	src: url("https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/fonts/glyphicons-halflings-regular.eot");
+	src: url("https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/fonts/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/fonts/glyphicons-halflings-regular.woff2") format("woff2"), url("https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/fonts/glyphicons-halflings-regular.woff") format("woff"), url("https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/fonts/glyphicons-halflings-regular.ttf") format("truetype"), url("https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
 }
 
 #bootstrap-theme .glyphicon {

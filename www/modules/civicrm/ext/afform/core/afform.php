@@ -25,17 +25,6 @@ function _afform_fields_filter($params) {
 }
 
 /**
- * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
- */
-function afform_civicrm_container($container) {
-  $container->addResource(new \Symfony\Component\Config\Resource\FileResource(__FILE__));
-  $container->setDefinition('afform_scanner', new \Symfony\Component\DependencyInjection\Definition(
-    'CRM_Afform_AfformScanner',
-    []
-  ))->setPublic(TRUE);
-}
-
-/**
  * Implements hook_civicrm_config().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
@@ -421,7 +410,7 @@ function afform_civicrm_alterMenu(&$items) {
   foreach ($afforms as $name => $meta) {
     if (!empty($meta['server_route'])) {
       $items[$meta['server_route']] = [
-        'title' => $meta['title'],
+        'title' => $meta['title'] ?? NULL,
         'page_callback' => 'CRM_Afform_Page_AfformBase',
         'page_arguments' => 'afform=' . urlencode($name),
         'access_arguments' => [["@afform:$name"], 'and'],
@@ -457,18 +446,22 @@ function afform_civicrm_permission(&$permissions) {
  * @see CRM_Utils_Hook::permission_check()
  */
 function afform_civicrm_permission_check($permission, &$granted, $contactId) {
-  if (!str_starts_with($permission, '@afform:') || strlen($permission) < 9) {
-    // Micro-optimization - this function may get hit a lot.
-    return;
+  // This function may get hit a lot. Try to keep the conditionals efficient.
+  if (str_starts_with($permission, '@afform:') && strlen($permission) >= 9) {
+    [, $name] = explode(':', $permission, 2);
+    // Delegate permission check to APIv4
+    $check = \Civi\Api4\Afform::checkAccess()
+      ->addValue('name', $name)
+      ->setAction('get')
+      ->execute()
+      ->first();
+    $granted = $check['access'];
   }
-  [, $name] = explode(':', $permission, 2);
-  // Delegate permission check to APIv4
-  $check = \Civi\Api4\Afform::checkAccess()
-    ->addValue('name', $name)
-    ->setAction('get')
-    ->execute()
-    ->first();
-  $granted = $check['access'];
+  elseif ($permission === '@afformPageToken') {
+    $session = CRM_Core_Session::singleton();
+    $data = $session->get('authx');
+    $granted = isset($data['jwt']['scope'], $data['flow']) && $data['jwt']['scope'] === 'afform' && $data['flow'] === 'afformpage';
+  }
 }
 
 /**
@@ -477,6 +470,11 @@ function afform_civicrm_permission_check($permission, &$granted, $contactId) {
  * @see CRM_Utils_Hook::permissionList()
  */
 function afform_civicrm_permissionList(&$permissions) {
+  $permissions['@afformPageToken'] = [
+    'group' => 'const',
+    'title' => E::ts('Generic: Anyone with secret link'),
+    'description' => E::ts('If you link to the form with a secure token, then no other permission is needed.'),
+  ];
   $scanner = Civi::service('afform_scanner');
   foreach ($scanner->getMetas() as $name => $meta) {
     $permissions['@afform:' . $name] = [

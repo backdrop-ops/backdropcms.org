@@ -586,7 +586,7 @@ function civicrm_group_roles_add_rule_form_submit($form, &$form_state) {
   if (empty($form_state['values']['edit_flag'])) {
     $id = 1;
     $rules = ($config->get('rules') ?? []);
-    if (!empty(rules)) {
+    if (!empty($rules)) {
       $id += max(array_keys($rules));
     }
   }

@@ -208,8 +208,8 @@ class CRM_Member_Form_Membership extends CRM_Member_Form {
         $resources->addScriptFile('civicrm', 'templates/CRM/Member/Form/MembershipStandalone.js');
         $passthru = [
           'typeorgs' => CRM_Member_BAO_MembershipType::getMembershipTypeOrganization(),
-          'memtypes' => CRM_Core_PseudoConstant::get('CRM_Member_BAO_Membership', 'membership_type_id'),
-          'statuses' => CRM_Core_PseudoConstant::get('CRM_Member_BAO_Membership', 'status_id'),
+          'memtypes' => CRM_Member_BAO_Membership::buildOptions('membership_type_id'),
+          'statuses' => CRM_Member_BAO_Membership::buildOptions('status_id'),
         ];
         $resources->addSetting(['existingMems' => $passthru]);
       }
@@ -224,7 +224,7 @@ class CRM_Member_Form_Membership extends CRM_Member_Form {
     }
 
     $this->assign('customDataType', 'Membership');
-    $this->assign('customDataSubType', $this->_memType);
+    $this->assign('customDataSubType', $this->getMembershipValue('membership_type_id'));
 
     $this->setPageTitle(ts('Membership'));
   }
@@ -341,7 +341,7 @@ DESC limit 1");
           continue;
         }
         foreach ($pField['options'] as $opId => $opValues) {
-          $optionsMembershipTypes[$opId] = CRM_Utils_Array::value('membership_type_id', $opValues, 0);
+          $optionsMembershipTypes[$opId] = $opValues['membership_type_id'] ?: 0;
         }
       }
 
@@ -408,24 +408,21 @@ DESC limit 1");
     // retrieve all memberships
     $allMembershipInfo = [];
     foreach ($this->allMembershipTypeDetails as $key => $values) {
-      if ($this->_mode && empty($values['minimum_fee'])) {
-        continue;
-      }
-      else {
-        $memberOfContactId = $values['member_of_contact_id'] ?? NULL;
-        if (empty($selMemTypeOrg[$memberOfContactId])) {
-          $selMemTypeOrg[$memberOfContactId] = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Contact',
-            $memberOfContactId,
-            'display_name',
-            'id'
-          );
 
-          $selOrgMemType[$memberOfContactId][0] = ts('- select -');
-        }
-        if (empty($selOrgMemType[$memberOfContactId][$key])) {
-          $selOrgMemType[$memberOfContactId][$key] = $values['name'] ?? NULL;
-        }
+      $memberOfContactId = $values['member_of_contact_id'] ?? NULL;
+      if (empty($selMemTypeOrg[$memberOfContactId])) {
+        $selMemTypeOrg[$memberOfContactId] = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Contact',
+          $memberOfContactId,
+          'display_name',
+          'id'
+        );
+
+        $selOrgMemType[$memberOfContactId][0] = ts('- select -');
       }
+      if (empty($selOrgMemType[$memberOfContactId][$key])) {
+        $selOrgMemType[$memberOfContactId][$key] = $values['name'] ?? NULL;
+      }
+
       $totalAmount = $values['minimum_fee'] ?? 0;
       // build membership info array, which is used when membership type is selected to:
       // - set the payment information block
@@ -942,7 +939,6 @@ DESC limit 1");
    *
    */
   protected function emailReceipt($formValues) {
-    $membership = $this->getMembership();
     // retrieve 'from email id' for acknowledgement
     $receiptFrom = $formValues['from_email_address'] ?? NULL;
 
@@ -951,20 +947,8 @@ DESC limit 1");
       $paymentInstrument = CRM_Contribute_PseudoConstant::paymentInstrument();
       $formValues['paidBy'] = $paymentInstrument[$formValues['payment_instrument_id']];
     }
-
+    // @todo - as of 5.74 module is noisy deprecated - can stop assigning around 5.80.
     $this->assign('module', 'Membership');
-
-    if (!empty($formValues['contribution_id'])) {
-      $this->assign('currency', CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_Contribution', $formValues['contribution_id'], 'currency'));
-    }
-    else {
-      $this->assign('currency', CRM_Core_Config::singleton()->defaultCurrency);
-    }
-
-    if (!empty($formValues['contribution_status_id'])) {
-      $this->assign('contributionStatusID', $formValues['contribution_status_id']);
-      $this->assign('contributionStatus', CRM_Contribute_PseudoConstant::contributionStatus($formValues['contribution_status_id'], 'name'));
-    }
 
     if (!empty($formValues['is_renew'])) {
       $this->assign('receiptType', 'membership renewal');
@@ -972,14 +956,8 @@ DESC limit 1");
     else {
       $this->assign('receiptType', 'membership signup');
     }
-    $this->assign('receive_date', $formValues['receive_date'] ?? NULL);
+    // @todo - as of 5.74 form values is noisy deprecated - can stop assigning around 5.80.
     $this->assign('formValues', $formValues);
-
-    $this->assign('mem_start_date', CRM_Utils_Date::formatDateOnlyLong($membership['start_date']));
-    if (!CRM_Utils_System::isNull($membership['end_date'])) {
-      $this->assign('mem_end_date', CRM_Utils_Date::formatDateOnlyLong($membership['end_date']));
-    }
-    $this->assign('membership_name', CRM_Member_PseudoConstant::membershipType($membership['membership_type_id']));
 
     if ((empty($this->_contributorDisplayName) || empty($this->_contributorEmail))) {
       // in this case the form is being called statically from the batch editing screen
@@ -1444,7 +1422,7 @@ DESC limit 1");
         $this->getMembershipID(),
         'membership',
         $contributionID,
-        $priceSetDetails['fields']
+        $this
       );
       CRM_Core_Session::setStatus(ts('Associated contribution is updated on membership type change.'), ts('Success'), 'success');
     }
@@ -1878,7 +1856,7 @@ DESC limit 1");
     // be called on ADD
     foreach ($this->order->getMembershipLineItems() as $membershipLineItem) {
       if ($this->getAction() === CRM_Core_Action::ADD && $this->isQuickConfig()) {
-        $memTypeNumTerms = $this->getSubmittedValue('num_terms');
+        $memTypeNumTerms = $this->getSubmittedValue('num_terms') ?: 1;
       }
       else {
         // The submitted value is hidden when a price set is selected so
@@ -1907,6 +1885,7 @@ DESC limit 1");
    */
   protected function getContributionSource(): string {
     [$userName] = CRM_Contact_BAO_Contact_Location::getEmailDetails(CRM_Core_Session::getLoggedInContactID());
+    $userName = htmlentities($userName);
     if ($this->_mode) {
       return ts('%1 Membership Signup: Credit card or direct debit (by %2)',
         [1 => $this->getSelectedMembershipLabels(), 2 => $userName]

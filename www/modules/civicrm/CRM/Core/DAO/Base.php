@@ -14,6 +14,16 @@
  */
 abstract class CRM_Core_DAO_Base extends CRM_Core_DAO {
 
+  public function __construct() {
+    parent::__construct();
+    // Historically a generated DAO would have one class variable per field.
+    // To prevent undefined property warnings, this dynamic DAO mimics that by
+    // initializing the object with a property for each field.
+    foreach (static::getEntityDefinition()['getFields']() as $name => $field) {
+      $this->$name = NULL;
+    }
+  }
+
   /**
    * @inheritDoc
    */
@@ -71,7 +81,7 @@ abstract class CRM_Core_DAO_Base extends CRM_Core_DAO {
   /**
    * @inheritDoc
    */
-  public static function getEntityIcon(string $entityName, int $entityId = NULL): ?string {
+  public static function getEntityIcon(string $entityName, ?int $entityId = NULL): ?string {
     return static::getEntityInfo()['icon'] ?? NULL;
   }
 
@@ -103,7 +113,11 @@ abstract class CRM_Core_DAO_Base extends CRM_Core_DAO {
   }
 
   private static function getSchemaFields(): array {
-    return (Civi::$statics[static::class]['fields'] ??= static::loadSchemaFields());
+    if (!isset(Civi::$statics[static::class]['fields'])) {
+      Civi::$statics[static::class]['fields'] = static::loadSchemaFields();
+      CRM_Core_DAO_AllCoreTables::invoke(static::class, 'fields_callback', Civi::$statics[static::class]['fields']);
+    }
+    return Civi::$statics[static::class]['fields'];
   }
 
   private static function loadSchemaFields(): array {
@@ -114,7 +128,7 @@ abstract class CRM_Core_DAO_Base extends CRM_Core_DAO {
     foreach ($entityDef['getFields']() as $fieldName => $fieldSpec) {
       $field = [
         'name' => $fieldName,
-        'type' => !empty($fieldSpec['data_type']) ? \CRM_Utils_Type::getValidTypes()[$fieldSpec['data_type']] : constant(\CRM_Utils_Schema::getCrmTypeFromSqlType($fieldSpec['sql_type'])),
+        'type' => !empty($fieldSpec['data_type']) ? \CRM_Utils_Type::getValidTypes()[$fieldSpec['data_type']] : CRM_Utils_Schema::getCrmTypeFromSqlType($fieldSpec['sql_type']),
         'title' => $fieldSpec['title'],
         'description' => $fieldSpec['description'] ?? NULL,
       ];
@@ -123,7 +137,7 @@ abstract class CRM_Core_DAO_Base extends CRM_Core_DAO {
       }
       if (str_starts_with($fieldSpec['sql_type'], 'decimal(')) {
         $precision = self::getFieldLength($fieldSpec['sql_type']);
-        $field['precision'] = explode(',', $precision);
+        $field['precision'] = array_map('intval', explode(',', $precision));
       }
       foreach (['maxlength', 'size', 'rows', 'cols'] as $attr) {
         if (isset($fieldSpec['input_attrs'][$attr])) {
@@ -131,9 +145,14 @@ abstract class CRM_Core_DAO_Base extends CRM_Core_DAO {
           unset($fieldSpec['input_attrs'][$attr]);
         }
       }
-      if (!isset($field['size']) && str_contains($fieldSpec['sql_type'], 'char')) {
+      if (str_contains($fieldSpec['sql_type'], 'char(')) {
         $length = self::getFieldLength($fieldSpec['sql_type']);
-        $field['size'] = constant(CRM_Utils_Schema::getDefaultSize($length));
+        if (!isset($field['size'])) {
+          $field['size'] = constant(CRM_Utils_Schema::getDefaultSize($length));
+        }
+        if (!isset($field['maxlength'])) {
+          $field['maxlength'] = $length;
+        }
       }
       $usage = $fieldSpec['usage'] ?? [];
       $field['usage'] = [
@@ -187,7 +206,7 @@ abstract class CRM_Core_DAO_Base extends CRM_Core_DAO {
         $field['uniqueName'] = $fieldSpec['unique_name'];
       }
       if (!empty($fieldSpec['unique_title'])) {
-        $field['uniqueTitle'] = $fieldSpec['unique_title'];
+        $field['unique_title'] = $fieldSpec['unique_title'];
       }
       if (!empty($fieldSpec['deprecated'])) {
         $field['deprecated'] = TRUE;
@@ -204,13 +223,12 @@ abstract class CRM_Core_DAO_Base extends CRM_Core_DAO {
           $field['pseudoconstant']['optionEditPath'] = 'civicrm/admin/options/' . $field['pseudoconstant']['optionGroupName'];
         }
       }
-      if (!empty($fieldSpec['primary_key']) || !empty($field['readonly'])) {
+      if (!empty($fieldSpec['primary_key']) || !empty($fieldSpec['readonly'])) {
         $field['readonly'] = TRUE;
       }
       $field['add'] = $fieldSpec['add'] ?? NULL;
       $fields[$fieldName] = $field;
     }
-    CRM_Core_DAO_AllCoreTables::invoke(static::class, 'fields_callback', $fields);
     return $fields;
   }
 

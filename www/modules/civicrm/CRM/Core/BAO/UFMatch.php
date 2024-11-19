@@ -29,7 +29,7 @@ class CRM_Core_BAO_UFMatch extends CRM_Core_DAO_UFMatch {
    */
   public static function create($params) {
     $hook = empty($params['id']) ? 'create' : 'edit';
-    CRM_Utils_Hook::pre($hook, 'UFMatch', CRM_Utils_Array::value('id', $params), $params);
+    CRM_Utils_Hook::pre($hook, 'UFMatch', $params['id'] ?? NULL, $params);
     if (empty($params['domain_id'])) {
       $params['domain_id'] = CRM_Core_Config::domainID();
     }
@@ -620,7 +620,7 @@ AND    domain_id    = %4
    * @param array $conditions
    * @inheritDoc
    */
-  public function addSelectWhereClause(string $entityName = NULL, int $userId = NULL, array $conditions = []): array {
+  public function addSelectWhereClause(?string $entityName = NULL, ?int $userId = NULL, array $conditions = []): array {
     // Prevent default behavior of joining ACLs onto the contact_id field.
     $clauses = [];
     CRM_Utils_Hook::selectWhereClause($this, $clauses, $userId, $conditions);

@@ -24,6 +24,7 @@
  *
  * @method static void getCMSPermissionsUrlParams() Immediately stop script execution and display a 401 "Access Denied" page.
  * @method static mixed permissionDenied() Show access denied screen.
+ * @method static string getContentTemplate(int|string $print = 0) Get the template path to render whole content.
  * @method static mixed logout() Log out the current user.
  * @method static mixed updateCategories() Clear CMS caches related to the user registration/profile forms.
  * @method static void appendBreadCrumb(array $breadCrumbs) Append an additional breadcrumb link to the existing breadcrumbs.
@@ -1148,6 +1149,10 @@ class CRM_Utils_System {
    * @throws CRM_Core_Exception
    */
   public static function version() {
+    return static::versionXml()['version_no'];
+  }
+
+  public static function versionXml(): array {
     static $version;
 
     if (!$version) {
@@ -1157,11 +1162,11 @@ class CRM_Utils_System {
       if (file_exists($verFile)) {
         $str = file_get_contents($verFile);
         $xmlObj = simplexml_load_string($str);
-        $version = (string) $xmlObj->version_no;
+        $version = CRM_Utils_XML::xmlObjToArray($xmlObj);
       }
 
       // pattern check
-      if (!CRM_Utils_System::isVersionFormatValid($version)) {
+      if (!$version || !CRM_Utils_System::isVersionFormatValid($version['version_no'])) {
         throw new CRM_Core_Exception('Unknown codebase version.');
       }
     }
@@ -1524,6 +1529,11 @@ class CRM_Utils_System {
 
     CRM_Core_OptionGroup::flushAll();
     CRM_Utils_PseudoConstant::flushAll();
+
+    if (Civi\Core\Container::isContainerBooted()) {
+      Civi::dispatcher()->dispatch('civi.core.clearcache');
+    }
+
   }
 
   /**
