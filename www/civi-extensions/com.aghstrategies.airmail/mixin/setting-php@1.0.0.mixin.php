@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Auto-register "**.mgd.php" files.
+ * Auto-register "settings/*.setting.php" files.
  *
- * @mixinName mgd-php
+ * @mixinName setting-php
  * @mixinVersion 1.0.0
  *
  * @param CRM_Extension_MixInfo $mixInfo
@@ -15,27 +15,17 @@ return function ($mixInfo, $bootCache) {
 
   /**
    * @param \Civi\Core\Event\GenericHookEvent $e
-   * @see CRM_Utils_Hook::managed()
+   * @see CRM_Utils_Hook::alterSettingsFolders()
    */
-  Civi::dispatcher()->addListener('hook_civicrm_managed', function ($event) use ($mixInfo) {
+  Civi::dispatcher()->addListener('hook_civicrm_alterSettingsFolders', function ($e) use ($mixInfo) {
     // When deactivating on a polyfill/pre-mixin system, listeners may not cleanup automatically.
     if (!$mixInfo->isActive()) {
       return;
     }
 
-    $mgdFiles = CRM_Utils_File::findFiles($mixInfo->getPath(), '*.mgd.php');
-    sort($mgdFiles);
-    foreach ($mgdFiles as $file) {
-      $es = include $file;
-      foreach ($es as $e) {
-        if (empty($e['module'])) {
-          $e['module'] = $mixInfo->longName;
-        }
-        if (empty($e['params']['version'])) {
-          $e['params']['version'] = '3';
-        }
-        $event->entities[] = $e;
-      }
+    $settingsDir = $mixInfo->getPath('settings');
+    if (!in_array($settingsDir, $e->settingsFolders) && is_dir($settingsDir)) {
+      $e->settingsFolders[] = $settingsDir;
     }
   });
 

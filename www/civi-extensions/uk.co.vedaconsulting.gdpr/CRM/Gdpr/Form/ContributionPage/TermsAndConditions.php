@@ -8,6 +8,9 @@ use CRM_Gdpr_ExtensionUtil as E;
  * @see https://wiki.civicrm.org/confluence/display/CRMDOC/QuickForm+Reference
  */
 class CRM_Gdpr_Form_ContributionPage_TermsAndConditions extends CRM_Contribute_Form_ContributionPage {
+
+  use CRM_Gdpr_Form_GroupTreeTrait;
+
   /**
    * We use a custom field group to store values for this event.
    */
@@ -22,20 +25,7 @@ class CRM_Gdpr_Form_ContributionPage_TermsAndConditions extends CRM_Contribute_F
     $this->_subName = '';
     $this->_id = $this->id = $this->_entityId = CRM_Utils_Request::retrieve('id', 'Positive');
     $group_id = $this->getGroupId();
-    if (method_exists('CRM_Custom_Form_CustomData', 'setGroupTree')) {
-      CRM_Custom_Form_CustomData::setGroupTree($this, '', $group_id);
-    }
-    else {
-      // 4.6
-      $tree = CRM_Core_BAO_CustomGroup::getTree(
-        $this->_type,
-        $this,
-        $this->_id,
-        $group_id
-      );
-      $formatted_tree = CRM_Core_BAO_CustomGroup::formatGroupTree($tree, 1, $this);
-      $this->_groupTree = $formatted_tree;
-    }
+    $this->setGroupTree('', $group_id);
   }
 
   /**

@@ -101,7 +101,7 @@ class CRM_Airmail_Backend_Elastic implements CRM_Airmail_Backend {
     // Has Track Stats Only been negotiated?
     $settings = E::getSettings();
     $trackStatsOnly = !empty($settings['ee_wrapunsubscribe']);
-    $preUnsubscribeText = E::ts(trim($settings['ee_unsubscribe'], " \r\n"));
+    $preUnsubscribeText = E::ts(trim($settings['ee_unsubscribe'] ?? '', " \r\n"));
     $contactID = $params['contactId'] ?? $params['contactID'] ?? $params['contact_id'] ?? NULL;
 
     //file_put_contents("/var/www/support.opendemocracy.net/sites/default/files/private/alterMailParams.json", json_encode($params + ['trackStatsOnly' => $trackStatsOnly , 'settings' => $settings, 'contactID' => $contactID]));

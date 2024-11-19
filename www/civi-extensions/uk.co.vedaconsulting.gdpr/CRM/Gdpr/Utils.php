@@ -428,22 +428,11 @@ WHERE url.time_stamp > '{$date}'";
     ];
 
     // Loop through fields and set them empty
-    $isCiviCRMVersion47 = _gdpr_isCiviCRMVersion47();
     foreach ($fields as $key => $field) {
       //Fix me : skipping if not a core field. We may need to clear the custom fields later
-      if ($isCiviCRMVersion47) {
-        if ( !array_key_exists('is_core_field', $field) || $field['is_core_field'] != 1 ) {
-          continue;
-        }
-      } else {
-        // is_core_field is not supported in 4.6, so we only anonymize fields with
-        // 'where' clause that start with 'civicrm_contact.' since they are usually
-        // the core civi fields.
-        if ( !array_key_exists('where', $field) || strpos($field['where'], 'civicrm_contact.') != 0) {
-          continue;
-        }
+      if ( !array_key_exists('is_core_field', $field) || $field['is_core_field'] != 1 ) {
+        continue;
       }
-
 
       $fieldName = $field['name'];
 
@@ -752,35 +741,31 @@ WHERE url.time_stamp > '{$date}'";
 
   /**
    * Function to retrieve values from civicrm_setting
-   * https://github.com/veda-consulting-company/uk.co.vedaconsulting.gdpr/issues/249
-   * From v4.7 deprecated warning added in CRM_Core_BAO_Setting::getItem. Civi::settings() has been introduced. We check CiviCRM version and use the supported method to retrieve the setting values
    *
-   * @return settingValue
+   * @param $group
+   * @param $settingName
+   * @param $componentID
+   * @param $defaultValue
+   * @param $contactID
+   * @param $domainID
+   *
+   * @return mixed|null
    */
   public static function getItem($group, $settingName = NULL, $componentID = NULL, $defaultValue = NULL, $contactID = NULL, $domainID = NULL) {
-    $settingValue = NULL;
-    $isCiviCRMVersion47 = _gdpr_isCiviCRMVersion47();
-    if ($isCiviCRMVersion47) {
-      $settingValue = Civi::settings()->get($settingName);
-    } else {
-      $settingValue = CRM_Core_BAO_Setting::getItem($group, $settingName, $componentID, $defaultValue, $contactID, $domainID);
-    }
-    return $settingValue;
+    return \Civi::settings()->get($settingName);
   }
 
   /**
    * Function to set values to civicrm_setting
-   * https://github.com/veda-consulting-company/uk.co.vedaconsulting.gdpr/issues/249
-   * From v4.7 deprecated warning added in CRM_Core_BAO_Setting::setItem. Civi::settings() has been introduced. We check CiviCRM version and use the supported method to set the setting values
    *
+   * @param $value
+   * @param $group
+   * @param $name
+   *
+   * @return void
    */
   public static function setItem($value, $group, $name) {
-    $isCiviCRMVersion47 = _gdpr_isCiviCRMVersion47();
-    if ($isCiviCRMVersion47) {
-      Civi::settings()->set($name, $value);
-    } else {
-      CRM_Core_BAO_Setting::setItem($value, $group, $name);
-    }
+    \Civi::settings()->set($name, $value);
   }
 
-}//End Class
+}

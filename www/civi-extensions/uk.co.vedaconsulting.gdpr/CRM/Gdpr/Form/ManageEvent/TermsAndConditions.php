@@ -8,6 +8,8 @@ use CRM_Gdpr_ExtensionUtil as E;
  * @see https://wiki.civicrm.org/confluence/display/CRMDOC/QuickForm+Reference
  */
 class CRM_Gdpr_Form_ManageEvent_TermsAndConditions extends CRM_Event_Form_ManageEvent {
+  use CRM_Gdpr_Form_GroupTreeTrait;
+
   /**
    * We use a custom field group to store values for this event.
    */
@@ -25,20 +27,7 @@ class CRM_Gdpr_Form_ManageEvent_TermsAndConditions extends CRM_Event_Form_Manage
     $this->_onlySubtype = FALSE;
     $this->assign('cdType', FALSE);
     $this->assign('cgCount', $this->_groupCount);
-    if (method_exists('CRM_Custom_Form_CustomData', 'setGroupTree')) {
-      CRM_Custom_Form_CustomData::setGroupTree($this, '', $group_id, $this->_onlySubtype);
-    }
-    else {
-      // 4.6
-      $tree = CRM_Core_BAO_CustomGroup::getTree(
-        $this->_type,
-        $this,
-        $this->_id,
-        $group_id
-      );
-      $formatted_tree = CRM_Core_BAO_CustomGroup::formatGroupTree($tree, 1, $this);
-      $this->_groupTree = $formatted_tree;
-    }
+    $this->setGroupTree('', $group_id, $this->_onlySubtype);
   }
 
   /**

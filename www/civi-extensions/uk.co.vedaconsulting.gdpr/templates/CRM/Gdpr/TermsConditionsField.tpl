@@ -1,3 +1,4 @@
+{crmScope extensionKey='uk.co.vedaconsulting.gdpr'}
 {* Template for terms and conditions field to insert into Event and Contribution forms *}
 <fieldset class="crm-gdpr-terms-conditions" id="gdpr-terms-conditions">
   <div class="crm-section">
@@ -63,3 +64,4 @@
   })(CRM.$ || cj || jQuery);
 </script>
 {/literal}
+{/crmScope}

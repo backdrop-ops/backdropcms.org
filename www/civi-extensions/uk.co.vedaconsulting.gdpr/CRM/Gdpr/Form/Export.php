@@ -88,10 +88,6 @@ class CRM_Gdpr_Form_Export extends CRM_Core_Form {
         'name' => E::ts('Cancel'),
       ],
     ]);
-    $currentVer = CRM_Core_BAO_Domain::version(TRUE);
-    if (version_compare($currentVer, '4.7') < 0) {
-      $this->assign('lowerVersion', TRUE);
-    }
     // Defaults
     // Export Contact - Checked
     // Export Format - CSV

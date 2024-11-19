@@ -42,10 +42,6 @@ class CRM_Gdpr_Form_Forgetme extends CRM_Core_Form {
         'name' => E::ts('Cancel'),
       ],
     ]);
-    $currentVer = CRM_Core_BAO_Domain::version(TRUE);
-    if (version_compare($currentVer, '4.7') < 0) {
-      $this->assign('lowerVersion', TRUE);
-    }
     parent::buildQuickForm();
   }
 
@@ -72,18 +68,11 @@ class CRM_Gdpr_Form_Forgetme extends CRM_Core_Form {
     self::removeEntityRecords('Address', $params);
 
     // Remove all the IM records of this contact
-    // On Civi 4.6,
-    // api IM get breaks and returning 500 error, because IM get api trying to check api/v3/IM.php instead of api/v3/Im.php.
-    // on civi 4.7 IM get is working fine.n Need more investigation on this issue.
-    // check civi Version if its below than 4.7 then skip executing IM API.
-    $currentVer = CRM_Core_BAO_Domain::version(TRUE);
-    if (version_compare($currentVer, '4.7') >= 0) {
-      $params = [
-        'sequential' => 1,
-        'contact_id' => $this->_contactID,
-      ];
-      self::removeEntityRecords('Im', $params);
-    }
+    $params = [
+      'sequential' => 1,
+      'contact_id' => $this->_contactID,
+    ];
+    self::removeEntityRecords('Im', $params);
 
     // Finally make contact as anonymous
     self::makeContactAnonymous();

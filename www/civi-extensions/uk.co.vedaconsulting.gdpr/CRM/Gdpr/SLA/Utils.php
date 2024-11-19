@@ -4,6 +4,7 @@ require_once 'CRM/Core/Page.php';
 
 class CRM_Gdpr_SLA_Utils {
 
+  const cacheKeySLA = 'uk.co.vedaconsulting.gdpr/sla_acceptance';
   static protected $activityTypeName = 'SLA Acceptance';
 
   static protected $customGroupName = 'SLA_Acceptance';
@@ -106,25 +107,35 @@ EOT;
    * Gets the last Acceptance activity for a contact.
    */
   static function getContactLastAcceptance($contactId) {
-    static $cache = [];
-    if (empty($cache[$contactId])) {
+    static $cache = null;
+    if (is_null($cache)) {
+      $cache = Civi::cache()->get( self::cacheKeySLA, [] );
+    }
+    if (empty($cache[$contactId]) || $cache[$contactId]['expires'] < time()) {
       $field = CRM_Gdpr_SLA_Utils::getTermsConditionsField();
-      $result = civicrm_api3('Activity', 'get', [
-        'sequential' => 1,
-        'return' => ['subject', 'activity_date_time', "custom_{$field['id']}"],
-        'activity_type_id' => self::$activityTypeName,
-        'target_contact_id' => $contactId,
-        'options' => [
-          'sort' => 'activity_date_time desc',
-          'limit' => 1,
-        ],
-      ]);
-      if (!empty($result['values'])) {
-        $cache[$contactId] = $result['values'][0];
+      $result = \Civi\Api4\Activity::get(FALSE)
+        ->addSelect('subject', 'activity_date_time', 'SLA_Acceptance.Terms_Conditions')
+        ->addWhere('activity_type_id:name', '=', self::$activityTypeName)
+        ->addWhere('target_contact_id', '=', $contactId)
+        ->addOrderBy('activity_date_time', 'DESC')
+        ->setLimit(1)
+        ->execute();
+
+      if ($result->count()) {
+        $result = $result->first();
+        $cache[$contactId] = [
+          'subject' => $result['subject'],
+          'activity_date_time' => $result['activity_date_time'],
+          "custom_{$field['id']}" => $result['SLA_Acceptance.Terms_Conditions'],
+          'expires' => strtotime('+ 1 day'),
+        ];
       }
       else {
-        $cache[$contactId] = [];
+        $cache[$contactId] = [
+          'expires' => ($cache[$contactId]['expires'] ?? 0 < time()) ? strtotime('+ 1 day') : $cache[$contactId]['expires'],
+        ];
       }
+      Civi::cache()->set( self::cacheKeySLA, $cache, new DateInterval('P1D'));
     }
     return $cache[$contactId];
   }

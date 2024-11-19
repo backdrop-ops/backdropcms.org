@@ -378,6 +378,15 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
         }
       }
     }
+
+    // groupChannel was derived from channelEleNames using smarty but ucwords is not supported
+    //   in smarty5 so this is a quick refactor to move it to the PHP side without checking
+    //   if we can simplify/cleanup.
+    foreach ($form->channelEleNames as $channelName) {
+      $groupChannel[str_replace($containerPrefix, '', $channelName)] = ucwords($channelName);
+    }
+    $form->assign('groupChannel', $groupChannel ?? []);
+
     $form->assign('channelEleNames', $form->channelEleNames);
     $form->assign('channelEleNamesJSON', json_encode($form->channelEleNames));
 

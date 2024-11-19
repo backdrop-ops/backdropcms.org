@@ -61,12 +61,9 @@
               <span class="group-description">
               {$commPrefGroupsetting.$elementName.group_description}
               <br>
-              {foreach from=$channelEleNames item=channelName}
-                {assign var=groupChannel value=$channelName|replace:$containerPrefix:''}
-                {if $commPrefGroupsetting.$elementName.$groupChannel}
-                  <span class="group-channel-matrix" style="display:none;">
-                  {$groupChannel|ucwords}
-                  </span>
+              {foreach from=$groupChannel key=channelNoPrefix item=channelUCWords}
+                {if $commPrefGroupsetting.$elementName.$channelNoPrefix}
+                  <span class="group-channel-matrix" style="display:none;">{$channelUCWords}</span>
                 {/if}
               {/foreach}
             </span>
@@ -79,18 +76,14 @@
     <div class="submit-buttons">
       <input type="button" name="comm_pref_submit" id="comm_pref_submit" value="Submit" class="crm-button" />
     </div>
-
   </div>
-
 
 {literal}
   <script type="text/javascript">
     (function($) {
       var entity = "{/literal}{$entity}{literal}";
-      var channels_intro = "{/literal}{$channels_intro}{literal}";
       var contactId = "{/literal}{$contactId}{literal}";
       var checksum = "{/literal}{$contact_cs}{literal}";
-      var containerPrefix = "{/literal}{$containerPrefix}{literal}";
       var channelEleNames = {/literal}{$channelEleNamesJSON}{literal};
       var groupEleNames = {/literal}{$groupEleNamesJSON}{literal};
       if (entity === 'Event') {

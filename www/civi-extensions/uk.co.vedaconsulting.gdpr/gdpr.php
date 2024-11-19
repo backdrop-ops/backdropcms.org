@@ -289,7 +289,7 @@ function gdpr_civicrm_tabset($tabsetName, &$tabs, $context) {
  */
 function gdpr_civicrm_export($exportTempTable, $headerRows, $sqlColumns, $exportMode, $componentTable = '', $ids = []) {
   $trackExports = CRM_Gdpr_Utils::getItem(CRM_Gdpr_Constants::GDPR_SETTING_GROUP, 'track_exports', NULL, FALSE);
-  if (version_compare(CRM_Utils_System::version(), '5.8.0', '>=') && $trackExports) {
+  if ($trackExports) {
     switch ($exportMode) {
       case CRM_Export_Form_Select::CONTACT_EXPORT:
         CRM_Gdpr_Export::contact($ids);
@@ -334,20 +334,9 @@ function _gdpr_addTermsConditionsTab(&$tabs, $entityType, $id) {
     'title' => E::ts('Terms &amp; Conditions'),
     'url' => $url,
     'active' => TRUE,
+    'valid' => TRUE,
     'class' => 'ajaxForm',
   ];
-}
-
-/*
- * Add a tab to show group subscription
- */
-function gdpr_civicrm_tabs(&$tabs, $contactID) {
-  if (_gdpr_isCiviCRMVersion47()) {
-    return;
-  }
-  if (CRM_Core_Permission::check('access GDPR')) {
-    _gdpr_addGDPRTab($tabs, $contactID);
-  }
 }
 
 function _gdpr_addGDPRTab(&$tabs, $contactID) {
@@ -357,18 +346,11 @@ function _gdpr_addGDPRTab(&$tabs, $contactID) {
     'url'   => $url,
     'title' => E::ts('GDPR'),
     'weight' => 300,
+    'valid' => TRUE,
     'class'  => 'livePage',
   ];
 }
 
-/**
- * Checks if civicrm version is 4.7
- *
- * @return mixed
- */
-function _gdpr_isCiviCRMVersion47(){
-  return version_compare(CRM_Utils_System::version(), '4.7', '>');
-}
 /**
  * Add navigation for GDPR Dashboard
  *
@@ -531,8 +513,8 @@ function gdpr_civicrm_pageRun(&$page) {
     $accept_date = NULL;
     if (!empty($accept_activity['activity_date_time'])) {
       $accept_date = date('d/m/Y', strtotime($accept_activity['activity_date_time']));
-      $page->assign('lastAcceptanceDate', $accept_date);
     }
+    $page->assign('lastAcceptanceDate', $accept_date);
   }
   if ($pageName == 'CRM_Event_Page_EventInfo') {
     CRM_Core_Resources::singleton()->addStyleFile('uk.co.vedaconsulting.gdpr', 'css/gdpr.css');

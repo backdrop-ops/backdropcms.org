@@ -167,6 +167,7 @@ class CRM_Gdpr_SLA_Entity {
       $intro = $this->getIntroduction();
       $links = $this->getLinks();
       $position = $this->getCheckboxPosition();
+      $checkboxText = $this->getCheckboxText();
     }
     elseif (!empty($settings['entity_tc']) || !empty($settings['entity_tc_link'])) {
       // If enabled for the type, use the defaults.
@@ -174,6 +175,7 @@ class CRM_Gdpr_SLA_Entity {
         // Use sitewide defaults for terms and conditions.
         $intro = $settings['entity_tc_intro'];
         $position = $settings['entity_tc_position'];
+        $checkboxText = $settings['entity_tc_checkbox_text'];
         $links = $this->getLinks();
         $links['entity']['label'] = $settings['entity_tc_link_label'];
         if (array_key_exists('entity_tc_option', $settings)) {
@@ -194,8 +196,7 @@ class CRM_Gdpr_SLA_Entity {
     }
 
     if (!empty($links['entity'])) {
-      $text = $settings['entity_tc_checkbox_text'];
-      $form->add('checkbox', 'accept_entity_tc', $text, NULL, TRUE);
+      $form->add('checkbox', 'accept_entity_tc', $checkboxText, NULL, TRUE);
     }
 
     if (!empty($links['global'])) {

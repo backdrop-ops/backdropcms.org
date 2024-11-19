@@ -64,17 +64,14 @@
                       {if $commPrefGroupsetting.$elementName.group_description}
                         <br>
                         <span class="group-description">
-  {$commPrefGroupsetting.$elementName.group_description}
-  <br>
-  {foreach from=$channelEleNames item=channelName}
-      {assign var=groupChannel value=$channelName|replace:$containerPrefix:''}
-      {if $commPrefGroupsetting.$elementName.$groupChannel}
-        <span class="group-channel-matrix">
-      {$groupChannel|ucwords}
-    </span>
-      {/if}
-  {/foreach}
-</span>
+                        {$commPrefGroupsetting.$elementName.group_description}
+                        <br>
+                        {foreach from=$groupChannel key=channelNoPrefix item=channelUCWords}
+                          {if $commPrefGroupsetting.$elementName.$channelNoPrefix}
+                            <span class="group-channel-matrix">{$channelUCWords}</span>
+                          {/if}
+                      {/foreach}
+                      </span>
                       {/if}
                   </div>
                   <div class="clear"></div>
