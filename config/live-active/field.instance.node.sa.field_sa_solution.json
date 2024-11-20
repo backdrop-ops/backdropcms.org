@@ -38,7 +38,7 @@
     "description": "For contrib: <code>Upgrade your site to use the most recent version of ABC module. Download available on the <a href=\"https://github.com/backdrop-contrib\">ABC releases</a> page.</code>",
     "default_value": [
         {
-            "value": "<p>Upgrade your site to the most recent version of Backdrop core. Download available on the&nbsp;<a href=\"https://github.com/backdrop/backdrop/releases/tag/1.x.x\">Backdrop CMS 1.x.x release page</a>.&nbsp;See the <a href=\"https://backdropcms.org/upgrade#from-previous-versions\">update instructions</a>, if needed.</p>\r\n",
+            "value": "<p>\r\n    Upgrade your site to the most recent version of Backdrop core. Download available on the&nbsp;<a href=\"https://github.com/backdrop/backdrop/releases/tag/1.x.x\">Backdrop CMS 1.x.x release page</a>.&nbsp;See the <a href=\"https://docs.backdropcms.org/documentation/core-updates\">update instructions</a>, if needed.\r\n</p>",
             "format": "filtered_html"
         }
     ],
