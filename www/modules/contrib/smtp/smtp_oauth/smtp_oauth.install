@@ -8,9 +8,11 @@
 * Implements hook_uninstall().
 */
 function smtp_oauth_uninstall() {
-  // We also delete the gauth account.
-  $gauth_id = config_get('smtp_oauth.settings', 'smtp_oauth_google_api_client_id');
-  gauth_account_delete($gauth_id, FALSE);
+  // We also delete the gauth account if we can.
+  if (module_exists('gauth')) {
+    $gauth_id = config_get('smtp_oauth.settings', 'smtp_oauth_google_api_client_id');
+    gauth_account_delete($gauth_id, FALSE);
+  }
 }
 
 /**

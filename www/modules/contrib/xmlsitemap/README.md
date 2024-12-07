@@ -4,10 +4,9 @@ Adds a configurable XML sitemap that conforms to the sitemaps.org specification.
 
 An XML sitemap helps search engines to more intelligently crawl a website and
 keep their results up to date. The sitemap created by the module can be
-automatically submitted to Ask, Google, Bing (formerly Windows Live Search),
-and Yahoo! search engines. The module also comes with several submodules that
-can add sitemap links for content, menu items, taxonomy terms, and user
-profiles.
+submitted automatically to the Google search engine. The module also comes with
+several submodules that can add sitemap links for content, menu items, taxonomy
+terms, and user profiles.
 
 ## Installation and Usage
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Additional text filter for token input.
@@ -11,8 +10,13 @@
 function token_filter_filter_info() {
   $filters['filter_tokens'] = array(
     'title' => t('Replace tokens'),
-    'description' => t('The usage of this filter should be restricted to trusted users only as tokens with sensitive data could be exposed.'),
+    'description' => t('The usage of this filter might need to be restricted to trusted users only, as tokens with sensitive data could be exposed. You can also limit the tokens replaced by this filter in its configuration.'),
     'process callback' => '_token_filter_filter_tokens',
+    'settings callback' => '_token_filter_settings',
+    'default settings' => array(
+      'replace' => 0,
+      'tokens' => '',
+    ),
     'tips callback' => '_token_filter_filter_tips',
     'cache' => FALSE,
   );
@@ -64,9 +68,123 @@ function _token_filter_filter_tokens($text, $filter, $format, $langcode, $cache,
     $data['user'] = $user;
   }
 
-  return token_replace($text, $data, $options);
+  // The rest of this function comes from token_replace(), but we insert our own
+  // additional filtering of the tokens to be replaced.
+  $text_tokens = token_scan($text);
+  if (empty($text_tokens)) {
+    return $text;
+  }
+
+  $replace = $filter->settings['replace'];
+
+  // Convert the token list to a regular expression.
+  $to_replace = array(
+    '/(\r\n?|\n)/', // newlines
+    '/\\\\\*/', // asterisks
+  );
+  $replacements = array(
+    '|', // logical OR
+    '[a-zA-Z0-9_\-\:]*', // alphanumeric, hyphen, underscore, or colon
+  );
+  $tokens_quoted = preg_quote($filter->settings['tokens']);
+  $regexps = '/^' . preg_replace($to_replace, $replacements, $tokens_quoted) . '$/';
+
+  // Compare each found token against our list to find matches. If there's a
+  // match, see whether we replace the token and if not, remove it from the list.
+  foreach ($text_tokens as $type => $value) {
+    foreach ($value as $name => $token) {
+      $matched = (bool) preg_match($regexps, $token);
+      if (($matched && !$replace) || (!$matched && $replace)) {
+        unset($text_tokens[$type][$name]);
+        if (empty($text_tokens[$type])) {
+          unset($text_tokens[$type]);
+        }
+      }
+    }
+  }
+
+  // Continue with the default behavior and code of token_replace().
+  $replacements = array();
+  foreach ($text_tokens as $type => $tokens) {
+    $replacements += token_generate($type, $tokens, $data, $options);
+    if (!empty($options['clear'])) {
+      $replacements += array_fill_keys($tokens, '');
+    }
+  }
+
+  // Optionally alter the list of replacement values.
+  if (!empty($options['callback'])) {
+    $function = $options['callback'];
+    $function($replacements, $data, $options);
+  }
+
+  $tokens = array_keys($replacements);
+  $values = array_values($replacements);
+
+  return str_replace($tokens, $values, $text);
 }
 
+/**
+ * Implements callback_filter_settings().
+ *
+ * Filter settings callback for the token text filter.
+ */
+function _token_filter_settings($form, &$form_state, $filter, $format) {
+  $settings['replace'] = array(
+    '#type' => 'radios',
+    '#options' => array(
+      0 => t('Ignore these tokens'),
+      1 => t('Replace only these tokens'),
+    ),
+    '#default_value' => isset($filter->settings['replace']) ? $filter->settings['replace'] : 0,
+    '#required' => TRUE,
+  );
+  $settings['tokens'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Tokens'),
+    '#default_value' => isset($filter->settings['tokens']) ? $filter->settings['tokens'] : '',
+    '#description' => t('Enter tokens to ignore or replace, one per line, including the brackets. You can use "*" as a wildcard, for example, [user:*]. Select "Ignore" above and leave this blank to replace all recognized tokens. Ignored tokens will be left unaltered in the text.'),
+  );
+  return $settings;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for filter_admin_format_form.
+ */
+function token_filter_form_filter_admin_format_form_alter(&$form, &$form_state, $form_id) {
+  array_unshift($form['#submit'], '_token_filter_filter_admin_form_submit_pre');
+  $form['#submit'][] = '_token_filter_filter_admin_form_submit_post';
+}
+
+/**
+ * Extra processing before saving or updating a filter.
+ */
+function _token_filter_filter_admin_form_submit_pre($form, &$form_state) {
+  // Keep a copy of the previous format before it changed.
+  $form_state['format_prev'] = clone $form_state['format'];
+}
+
+/**
+ * Extra processing after saving or updating a filter.
+ */
+function _token_filter_filter_admin_form_submit_post($form, &$form_state) {
+  $old_format = $form_state['format_prev'];
+  $old_filter = isset($old_format->filters['filter_tokens']) ? $old_format->filters['filter_tokens'] : NULL;
+  $old_status = isset($old_filter->status) ? $old_filter->status : -1;
+  $old_settings = isset($old_filter->status) ? $old_filter->settings : NULL;
+
+  $new_format = $form_state['format'];
+  $new_filter = isset($new_format->filters['filter_tokens']) ? $new_format->filters['filter_tokens'] : NULL;
+  $new_status = isset($new_filter->status) ? $new_filter->status : -1;
+  $new_settings = isset($new_filter->status) ? $new_filter->settings : NULL;
+
+  $is_new = isset($old_format->is_new);
+
+  // Grounds for a warning.
+  if (($is_new && $new_status == 1) || ($old_status != $new_status) || ($new_status == 1 && $old_settings !== $new_settings)) {
+    backdrop_set_message(t('If you have existing content that may contain tokens affected by the changes to the "Replace tokens" filter, you should clear all caches that might contain text with those tokens.'), 'warning');
+  }
+}
 
 /**
  * Return an array of entity type to token type mappings.
@@ -78,7 +196,7 @@ function _token_filter_filter_tokens($text, $filter, $format, $langcode, $cache,
  * This function is the replacement for token_get_entity_mapping() in D7.
  */
 function _token_filter_get_entity_mapping($value_type = 'token', $value = NULL, $fallback = FALSE) {
-  $mapping = &drupal_static(__FUNCTION__, array());
+  $mapping = &backdrop_static(__FUNCTION__, array());
 
   if (empty($mapping)) {
     foreach (entity_get_info() as $entity_type => $info) {
@@ -97,17 +215,50 @@ function _token_filter_get_entity_mapping($value_type = 'token', $value = NULL, 
   }
 }
 
-
 /**
  * Filter tip callback for the token input filter.
  */
 function _token_filter_filter_tips($filter, $format, $long = FALSE) {
+  $replace = isset($filter->settings['replace']) ? $filter->settings['replace'] : 0;
+  $tokens = isset($filter->settings['tokens']) ? $filter->settings['tokens'] : '';
+  $token_list = implode(', ', array_map('trim', explode("\n", $tokens)));
+  $qualifier = '';
+  $text = t('Browse tokens.');
+  if (!empty($token_list)) {
+    if ($replace) {
+      $qualifier = t(', but only tokens of these forms are replaced: ' . check_plain($token_list));
+    }
+    else {
+      $qualifier = t(', but tokens of these forms are ignored: ' . check_plain($token_list));
+    }
+    $text = t('Browse tokens (not all of these may be available).');
+  }
   if ($long) {
-    $output = t('Global tokens will be replaced with their respective token values (e.g. [site:name] or [current-page:title]). The following is a list of the tokens that are available:');
-    $output .= theme('token_tree', array('click_insert' => FALSE));
+    // The "long" description appears on the page filter/tips.
+    $output = t('Global tokens will be replaced with their respective token values (e.g. [site:name] or [current-page:title])!qualifier.', array('!qualifier' => $qualifier));
+    // Only show the token tree once on a page, even if the token filter is used
+    // in multiple text formats.
+    $token_tree = &backdrop_static(__FUNCTION__);
+    if (!isset($token_tree)) {
+      $token_tree = '<br>' . t('The following is a partial list of tokens (more may be available in specific contexts).');
+      $output .= $token_tree . theme('token_tree', array(
+        'click_insert' => FALSE,
+        'text' => $text,
+        'token_types' => array('user'),
+      ));
+    }
     return $output;
   }
   else {
-    return t('Global tokens will be replaced with their respective token values (e.g. [site:name] or [current-page:title]).');
+    // The "short" description appears on the edit page for text formats, e.g.,
+    // admin/config/content/formats/<format>, and in the expanded description
+    // under a text field that uses that format.
+    $output = t('Global tokens will be replaced with their respective token values (e.g. [site:name] or [current-page:title])!qualifier.', array('!qualifier' => $qualifier)) . ' ';
+    $output .= theme('token_tree_link', array(
+      'click_insert' => FALSE,
+      'text' => $text,
+      'token_types' => array('user'),
+    ));
+    return $output;
   }
 }

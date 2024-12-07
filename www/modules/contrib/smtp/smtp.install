@@ -44,7 +44,7 @@ function smtp_install() {
  */
 function smtp_uninstall() {
   // Restore mail system to previous when module is uninstalled.
-  $mail_system = $config->get('smtp_previous_mail_system');
+  $mail_system = config_get('smtp.settings', 'smtp_previous_mail_system');
   // Update system wide config value for mail_system.
   config_set('system.mail', 'default-system', $mail_system);
 }

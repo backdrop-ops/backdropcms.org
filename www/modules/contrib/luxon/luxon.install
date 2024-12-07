@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Luxon module.
+ *
+ * @ingroup markdown
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function luxon_requirements($phase) {
+  if ($phase != 'runtime') {
+    return array();
+  }
+  return array(
+    'luxon' => array(
+      'title' => t('Luxon'),
+      'value' => t('Version: !link', array('!link' => l(LUXON_VERSION, 'https://moment.github.io/luxon/index.html'))),
+      'severity' => REQUIREMENT_INFO,
+    ),
+  );
+}

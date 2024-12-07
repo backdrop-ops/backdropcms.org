@@ -1,0 +1,24 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the token_filter module.
+ */
+
+/**
+ * Initialize the token filter settings for formats from previous versions.
+ */
+function token_filter_update_1000() {
+  $format_configs = config_get_names_with_prefix('filter.format.');
+  foreach ($format_configs as $config_name) {
+    $config = config($config_name);
+    $data = $config->getData();
+    if (in_array('filter_tokens', array_keys($data['filters']))) {
+      $data['filters']['filter_tokens']['settings'] += array(
+        'replace' => 0,
+        'tokens' => '',
+      );
+      $config->setData($data);
+      $config->save();
+    }
+  }
+}

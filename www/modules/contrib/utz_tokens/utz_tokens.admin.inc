@@ -19,9 +19,8 @@ function utz_tokens_admin_form($form, &$form_state) {
     $msg = t('Luxon module is not enabled. Using the default detection method.');
   }
   $form[] = array(
+    '#type' => 'help',
     '#markup' => $msg,
-    '#prefix' => '<p>',
-    '#suffix' => '</p>',
   );
 
   $options = array(

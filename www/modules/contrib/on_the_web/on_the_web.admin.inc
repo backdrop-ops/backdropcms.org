@@ -9,41 +9,33 @@
  */
 function on_the_web_settings_form($form, &$form_state) {
   $config = config('on_the_web.settings');
+  $size_setting = $config->get('size');
   $form = array();
 
   $form['settngs'] = array(
     '#type' => 'fieldset',
     '#title' => t('Display Options'),
     '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
 
   $form['settngs']['type'] = array(
     '#type' => 'radios',
     '#title' => t('Icon type'),
     '#options' => array(
+      'icon' => t('SVG icons'),
       'font' => t('Icon font tags'),
-      'anchor' => t('SVGs as CSS background images'),
-      'image' => t('Legacy image tags (may appear blurry)'),
+      'anchor' => t('SVGs as CSS background images (legacy)'),
     ),
     '#default_value' => $config->get('type'),
+    'icon' => array(
+      '#description' => t('SVG icons are from the Backdrop core Icon API.'),
+    ),
     'font' => array(
       '#description' => t('Options for icon font variations are provided below.'),
     ),
     'anchor' => array(
       '#description' => t('SVG icons will approximately match the icon fonts.'),
-    ),
-    'image' => array(
-      '#description' => t('Note: Not all icons are available as legacy images. This option will be rmeoved in the future.'),
-    ),
-  );
-  $form['settngs']['square'] = array(
-    '#type' => 'checkbox',
-    '#title' => t("Use 'square' icons when available."),
-    '#default_value' => $config->get('square'),
-    '#states' => array(
-      'invisible' => array(
-        ':input[name="type"]' => array('value' => 'image'),
-      ),
     ),
   );
 
@@ -79,9 +71,10 @@ function on_the_web_settings_form($form, &$form_state) {
     ),
   );
 
+  $attributes = array('attributes' => array('target' => '_blank'));
   $source_options = array();
   foreach ($sources as $source) {
-    $icons_link = l('see all icons', $source['icons_url']);
+    $icons_link = l('see all icons', $source['icons_url'], $attributes);
     $source_options[$source['key']] = $source['label'] . ' &mdash; ' . $icons_link;
     $form['version']['key']['#description'] = $source['description'];
   }
@@ -98,7 +91,7 @@ function on_the_web_settings_form($form, &$form_state) {
     '#attributes' => array(
       'placeholder' => 'abcdefghij',
     ),
-    '#description' => t('A 10-digit hash from the FontAwesome Kit code. <a href=":faurl">Register with FontAwesome</a> to generate a Kit.', array(':faurl' => '')),
+    '#description' => t('A 10-digit hash from the FontAwesome Kit code. <a href="@faurl">Register with FontAwesome</a> to generate a Kit.', array('@faurl' => 'https://fontawesome.com/start')),
     '#states' => array(
       'visible' => array(
         ':input[name="type"]' => array('value' => 'font'),
@@ -114,7 +107,17 @@ function on_the_web_settings_form($form, &$form_state) {
       'sm' => t('Small: ~32px square'),
       'lg' => t('Large: ~64px square'),
     ),
-    '#default_value' => $config->get('size'),
+    '#default_value' => $size_setting,
+  );
+  $form['settngs']['square'] = array(
+    '#type' => 'checkbox',
+    '#title' => t("Use a 'square' icon when available."),
+    '#default_value' => $config->get('square'),
+    '#states' => array(
+      'invisible' => array(
+        ':input[name="type"]' => array('value' => 'image'),
+      ),
+    ),
   );
   $form['settngs']['sitename'] = array(
     '#type' => 'radios',
@@ -122,7 +125,7 @@ function on_the_web_settings_form($form, &$form_state) {
     '#default_value' => (int)$config->get('sitename'),
     '#description' => t('This setting will update the title attribute for each social media link.'),
     '#options' => array(
-      1 => t('Use the <strong><a href="!url">Site name</a></strong>, for example: <em>Find !us on Facebook</em>', array('!us' => config_get('system.core', 'site_name'), '!url' => url('admin/config/system/site-information'))),
+      1 => t('Use the <strong><a href="!url" target="_blank">Site name</a></strong>, for example: <em>Find !us on Facebook</em>', array('!us' => config_get('system.core', 'site_name'), '!url' => url('admin/config/system/site-information'))),
       0 => t('Use <strong>us</strong>, for example: <em>Find us on Facebook</em>'),
       2 => t('Use <strong>me</strong>, for example: <em>Find me on Facebook</em>'),
     ),
@@ -131,10 +134,18 @@ function on_the_web_settings_form($form, &$form_state) {
     '#type' => 'checkbox',
     '#title' => t('Open links in new windows'),
     '#default_value' => $config->get('target'),
-    '#description' => t('Unchecking this box his will remove the target="_blank" attribute from each link.'),
+    '#description' => t('Not recommended. Using the target="_blank" attribute outside a form is less accessible.'),
   );
 
   $path = backdrop_get_path('module', 'on_the_web');
+  $css_path = $path . '/css/on_the_web.css';
+  $form['services'] = array(
+    '#attached' => array('css' => array($css_path)),
+  );
+
+  // Get the relevant settings.
+  $square = $config->get('square');
+  $size = $config->get('size');
 
   // Get all the services.
   $services = on_the_web_get_services();
@@ -150,19 +161,37 @@ function on_the_web_settings_form($form, &$form_state) {
 
     $form['services'][$service]['title'] = array('#markup' => $info['name']);
 
-    $square = $config->get('square');
-    $svg = array();
-    if (isset($info['svg'])) {
-      // Only use a square icon if it exists.
-      if ($square == TRUE && isset($info['svg-square'])) {
-        $src = base_path() . $path . '/images/svgs/' . $info['svg-square'];
-      } 
-      else {
-        $src = base_path() . $path . '/images/svgs/' . $info['svg'];
-      }
-      $svg = array('#markup' => '<img src="' . $src . '" style="max-width: 2em; max-height: 2em;" />');
+    $icon = array();
+    if (isset($info['icon'])) {
+      $svg_settings = array(
+        'icon_classes' => array(),
+        'alt' => '',
+        'size' => $size,
+        'square' => $square,
+        'type' => 'icon',
+      );
+      $icon = otw_build_svg_renderable($info['icon'], $svg_settings);
     }
-    $form['services'][$service]['svg'] = $svg;
+    $form['services'][$service]['icon'] = $icon;
+
+    $legacy = array();
+    if (isset($info['svg'])) {
+      if ($square == TRUE && isset($info['svg-square'])) {
+        $legacy_icon = 'otw-' . str_replace('.svg', '', $info['svg-square']);
+      }
+      else {
+        $legacy_icon = 'otw-' . str_replace('.svg', '', $info['svg']);
+      }
+      $svg_settings = array(
+        'icon_classes' => array(),
+        'alt' => '',
+        'size' => $size,
+        'square' => $square,
+        'type' => 'legacy',
+      );
+      $legacy = otw_build_svg_renderable($legacy_icon, $svg_settings);
+    }
+    $form['services'][$service]['svg'] = $legacy;
 
     
     $type = $config->get('type');
@@ -174,7 +203,13 @@ function on_the_web_settings_form($form, &$form_state) {
         $icon_classes = array('fa');
       }
 
-      $icon_classes[] = 'fa-2x';
+      if ($size == 'sm') {
+        $icon_classes[] = 'fa-2x';
+      }
+      elseif ($size == 'lg') {
+        $icon_classes[] = 'fa-4x';
+      }
+
       // Only use a square icon if it exists.
       if ($square == TRUE && isset($info['fa-icon-square'])) {
         $icon_classes[] = $info['fa-icon-square'];
@@ -228,13 +263,6 @@ function on_the_web_settings_form($form, &$form_state) {
       }
     }
 
-    $legacy = array();
-    if (isset($info['image'])) {
-      $src = base_path() . $path . '/images/sm/' . $info['image'];
-      $legacy = array('#markup' => '<img src="' . $src . '" />');
-    }
-    $form['services'][$service]['legacy'] = $legacy;
-
     $form['services'][$service]['weight'] = array(
       '#type' => 'weight',
       '#default_value' => $weight,
@@ -258,8 +286,6 @@ function on_the_web_settings_form($form, &$form_state) {
  * Submit handler for on_the_web_settings_form().
  */
 function on_the_web_settings_form_submit($form, &$form_state) {
-  $services = on_the_web_get_services();
-
   $config = config('on_the_web.settings');
   $config->set('type', $form_state['values']['type']);
   $config->set('square', $form_state['values']['square']);
@@ -269,6 +295,7 @@ function on_the_web_settings_form_submit($form, &$form_state) {
   $config->set('sitename', $form_state['values']['sitename']);
   $config->set('target', $form_state['values']['target']);
 
+  $services = on_the_web_get_services();
   foreach ($services as $name => $info) {
     $config->set($name . '_page', $form_state['values'][$name]['page']);
     $config->set($name . '_weight', $form_state['values'][$name]['weight']);

@@ -38,7 +38,7 @@ function xmlsitemap_custom_list_links() {
     $row['priority'] = number_format($link->priority, 1);
     $row['changefreq'] = $link->changefreq ? backdrop_ucfirst(xmlsitemap_get_changefreq($link->changefreq)) : t('None');
     if (isset($header['language'])) {
-      $row['language'] = module_invoke('locale', 'language_name', $link->language);
+      $row['language'] = language_name($link->language);
     }
     $operations = array();
     $operations['edit'] = xmlsitemap_get_operation_link('admin/config/search/xmlsitemap/custom/edit/' . $link->id, array('title' => t('Edit'), 'modal' => TRUE));
@@ -110,7 +110,7 @@ function xmlsitemap_custom_edit_link_form($form, &$form_state, $link = array()) 
     '#default_value' => $link['changefreq'],
     '#description' => t('How frequently the page is likely to change. This value provides general information to search engines and may not correlate exactly to how often they crawl the page.'),
   );
-  $languages = module_exists('locale') ? locale_language_list() : array();
+  $languages = module_exists('locale') ? language_list(TRUE, TRUE, TRUE) : array();
   $form['language'] = array(
     '#type' => 'select',
     '#title' => t('Language'),

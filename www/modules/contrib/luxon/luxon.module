@@ -5,6 +5,9 @@
  * times.
  */
 
+// Update this to match the value of VERSION defined in luxon.js.
+define('LUXON_VERSION', '3.5.0');
+
 /**
  * Implements hook_menu().
  */
@@ -20,7 +23,6 @@ function luxon_menu() {
   return $items;
 }
 
-
 /**
  * Implements hook_library_info().
  */
@@ -31,12 +33,11 @@ function luxon_library_info() {
     'luxon' => array(
       'title' => t('Luxon'),
       'website' => 'https://moment.github.io/luxon/index.html',
-      'version' => '1.0',
+      'version' => LUXON_VERSION,
       'js' => array($path => array()),
     ),
   );
 }
-
 
 /**
  * Implements hook_config_info().

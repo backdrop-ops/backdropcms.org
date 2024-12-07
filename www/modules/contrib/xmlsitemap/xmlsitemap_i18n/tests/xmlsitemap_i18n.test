@@ -36,7 +36,12 @@ class XMLSitemapI18nWebTestCase extends XMLSitemapTestHelper {
 
     // Add predefined language and reset the locale cache.
     require_once BACKDROP_ROOT . '/includes/locale.inc';
-    locale_add_language('fr', NULL, NULL, LANGUAGE_LTR, '', 'fr');
+    $french = (object) array(
+      'langcode' => 'fr',
+      'name' => 'French',
+      'direction' => LANGUAGE_LTR,
+    );
+    language_save($french);
     backdrop_language_initialize();
     config_set('xmlsitemap.settings', 'language_negotiation', LOCALE_LANGUAGE_NEGOTIATION_URL_PREFIX);
 

@@ -4,6 +4,9 @@
  * Adds a block with a series of icons which link off-site to other web presences.
  */
 
+// Pull in the list of services.
+module_load_include('inc', 'on_the_web', 'on_the_web.services');
+
 /**
  * Implements hook_config_info().
  */
@@ -30,6 +33,99 @@ function on_the_web_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_icon_info().
+ */
+function on_the_web_icon_info() {
+
+  $icons['otw-bluesky'] = array(
+    'name' => 'bluesky',
+  );
+  $icons['otw-bluesky-square'] = array(
+    'name' => 'bluesky-square',
+  );
+  $icons['otw-delicious'] = array(
+    'name' => 'delicious',
+  );
+  $icons['otw-envelope-square'] = array(
+    'name' => 'envelope-square',
+  );
+  $icons['otw-envelope'] = array(
+    'name' => 'envelope',
+  );
+  $icons['otw-facebook-f'] = array(
+    'name' => 'facebook-f',
+  );
+  $icons['otw-facebook-square'] = array(
+    'name' => 'facebook-square',
+  );
+  $icons['otw-flickr'] = array(
+    'name' => 'flickr',
+  );
+  $icons['otw-github-square'] = array(
+    'name' => 'github-square',
+  );
+  $icons['otw-github'] = array(
+    'name' => 'github',
+  );
+  $icons['otw-instagram-square'] = array(
+    'name' => 'instagram-square',
+  );
+  $icons['otw-instagram'] = array(
+    'name' => 'instagram',
+  );
+  $icons['otw-lastfm-square'] = array(
+    'name' => 'lastfm-square',
+  );
+  $icons['otw-lastfm'] = array(
+    'name' => 'lastfm',
+  );
+  $icons['otw-linkedin-in'] = array(
+    'name' => 'linkedin-in',
+  );
+  $icons['otw-linkedin-square'] = array(
+    'name' => 'linkedin-square',
+  );
+  $icons['otw-mastodon'] = array(
+    'name' => 'mastodon',
+  );
+  $icons['otw-pinterest-square'] = array(
+    'name' => 'pinterest-square',
+  );
+  $icons['otw-pinterest'] = array(
+    'name' => 'pinterest',
+  );
+  $icons['otw-podcast'] = array(
+    'name' => 'podcast',
+  );
+  $icons['otw-rss-square'] = array(
+    'name' => 'rss-square',
+  );
+  $icons['otw-rss'] = array(
+    'name' => 'rss',
+  );
+  $icons['otw-soundcloud'] = array(
+    'name' => 'soundcloud',
+  );
+  $icons['otw-tiktok'] = array(
+    'name' => 'tiktok',
+  );
+  $icons['otw-twitter-square'] = array(
+    'name' => 'twitter-square',
+  );
+  $icons['otw-twitter'] = array(
+    'name' => 'twitter',
+  );
+  $icons['otw-youtube-square'] = array(
+    'name' => 'youtube-square',
+  );
+  $icons['otw-youtube'] = array(
+    'name' => 'youtube',
+  );
+
+  return $icons;
 }
 
 /**
@@ -146,6 +242,8 @@ function on_the_web_block_view($delta = 'social_links', $settings = array(), $co
 function on_the_web_display_block($delta, $settings = array(), $contexts = array()) {
   $config = config('on_the_web.settings');
   $type = $config->get('type');
+  $size = $config->get('size');
+  $square = $config->get('square');
   $output = '';
 
   // Get the appropriate name to use in links.
@@ -165,6 +263,7 @@ function on_the_web_display_block($delta, $settings = array(), $contexts = array
     $enabled = $settings['services']['enabled'];
   }
 
+  // Get all active services.
   $services = on_the_web_get_services();
 
   $links = array();
@@ -190,14 +289,12 @@ function on_the_web_display_block($delta, $settings = array(), $contexts = array
         $title = t('!us RSS feed', array('!us' => $rss_name));
       }
 
-      $size = $config->get('size');
-      $classes = array('on-the-web', 'otw-' . $size, 'otw-' . $service);
+      $classes = array('on-the-web', 'otw-' . $type, 'otw-' . $service);
 
       $icon = FALSE;
-      $icon_classes = array();
+      $icon_classes = array('otw-' . $size);
 
-      // Select the appropriate source data.
-      $type = $config->get('type');
+      // Load item data by type.
       switch ($type) {
         case 'font':
           if (isset($info['fa-icon'])) {
@@ -212,7 +309,7 @@ function on_the_web_display_block($delta, $settings = array(), $contexts = array
           }
 
           // Only use a square icon if it exists.
-          if ($config->get('square') == TRUE && isset($info['fa-icon-square'])) {
+          if ($square == TRUE && isset($info['fa-icon-square'])) {
             $icon = $info['fa-icon-square'];
 
             if ($config->get('version') == '5.x.x' && $service == 'linkedin') {
@@ -221,14 +318,9 @@ function on_the_web_display_block($delta, $settings = array(), $contexts = array
             }
           }
           break;
-        case 'image':
-          if (isset($info['image'])) {
-            $path = backdrop_get_path('module', 'on_the_web');
-            $icon = base_path() . $path . '/images/' . $size . '/' . $info['image'];
-          }
-          break;
+
         case 'anchor':
-          if ($config->get('square') == TRUE && isset($info['svg-square'])) {
+          if ($square == TRUE && isset($info['svg-square'])) {
             $img_path = $info['svg-square'];
           }
           else {
@@ -237,14 +329,25 @@ function on_the_web_display_block($delta, $settings = array(), $contexts = array
           $path = backdrop_get_path('module', 'on_the_web');
           $icon = base_path() . $path . '/images/svgs/' . $img_path;
           break;
+
+        case 'icon':
+          $icon = $info['icon'];
+          break;
+      }
+
+      $theme_function = 'on_the_web_item';
+      if ($type == 'icon') {
+        $theme_function .= '__icon';
       }
 
       $links[] = array(
-        '#theme' => 'on_the_web_item',
+        '#theme' => $theme_function,
         '#service' => $service,
         '#link' => $link,
         '#icon' => $icon,
         '#size' => $size,
+        '#square' => $square,
+        '#target' => $config->get('target'),
         '#title' => $title,
         '#classes' => $classes,
         '#icon_classes' => $icon_classes,
@@ -254,7 +357,7 @@ function on_the_web_display_block($delta, $settings = array(), $contexts = array
   }
 
   // Add the assets.
-  if ($type == 'anchor') {
+  if ($type == 'anchor' || $type == 'icon') {
     $links['#attached']['css'][] = backdrop_get_path('module', 'on_the_web') . '/css/on_the_web.css';
   }
 
@@ -301,6 +404,21 @@ function on_the_web_theme($existing, $type, $theme, $path) {
         'link' => NULL,
         'icon' => 'fa-fort-awesome',
         'size' => 'sm',
+        'square' => FALSE,
+        'title' => NULL,
+        'classes' => array(),
+        'icon_classes' => array(),
+      ),
+      'file' => 'on_the_web.theme.inc',
+    ),
+    // Why is this necessary?
+    'on_the_web_item__icon' => array(
+      'variables' => array(
+        'service' => NULL,
+        'link' => NULL,
+        'icon' => 'phosphor-logo',
+        'size' => 'sm',
+        'square' => FALSE,
         'title' => NULL,
         'classes' => array(),
         'icon_classes' => array(),
@@ -321,146 +439,105 @@ function on_the_web_theme($existing, $type, $theme, $path) {
 *******************************************************************************/
 
 /**
- * Gets the available services.
+ * Builds the appropriate icon using OTW settings and service information.
  *
- * @return array
- *   List of services with icons.
+ * @param string $icon
+ *   Name of the icon being rendered.
+ *
+ * @param array $settings
+ *   OTW settings used to render the icon.
+ *   - 'icon_classes' - classes to add to the SVG tag.
+ *   - 'alt' - Alternate tag for the SVG element.
+ *   - 'size' - ('sm' or 'lg') requested size for the SVG.
+ *   - 'square' (bool) = whether the icon should be rendered in a square or not.
+ *
+ * @return string
+ *   rendered SVG tag.
  */
-function on_the_web_get_services() {
-  $services = array(
-    /* Icons that are the FontAwesome "Brand" style. */
-    'twitter' => array(
-      'name' => 'Twitter',
-      'fa-icon' => 'fa-twitter',
-      'fa-icon-square' => 'fa-twitter-square',
-      'v5style' => 'fab', // Brand
-      'image' => 'twitter.png',
-      'svg' => 'twitter.svg',
-      'svg-square' => 'twitter-square.svg',
-    ),
-    'mastodon' => array(
-      'name' => 'Mastodon',
-      'fa-icon' => 'fa-mastodon',
-      'fa-icon-square' => 'fa-mastodon-square',
-      'v5style' => 'fab', // Brand
-      'svg' => 'mastodon.svg',
-    ),
-    'facebook' => array(
-      'name' => 'Facebook',
-      'fa-icon' => 'fa-facebook-f',
-      'fa-icon-square' => 'fa-facebook-square',
-      'v5style' => 'fab', // Brand
-      'image' => 'facebook.png',
-      'svg' => 'facebook-f.svg',
-      'svg-square' => 'facebook-square.svg',
-    ),
-    'pinterest' => array(
-      'name' => 'Pinterest',
-      'fa-icon' => 'fa-pinterest',
-      'fa-icon-square' => 'fa-pinterest-square',
-      'v5style' => 'fab', // Brand
-      'image' => 'pinterest.png',
-      'svg' => 'pinterest.svg',
-      'svg-square' => 'pinterest-square.svg',
-    ),
-    'instagram' => array(
-      'name' => 'Instagram',
-      'fa-icon' => 'fa-instagram',
-      'v5style' => 'fab', // Brand
-      'image' => 'instagram.png',
-      'svg' => 'instagram.svg',
-      'svg-square' => 'instagram-square.svg',
-    ),
-    'github' => array(
-      'name' => 'GitHub',
-      'fa-icon' => 'fa-github',
-      'fa-icon-square' => 'fa-github-square',
-      'v5style' => 'fab', // Brand
-      'svg' => 'github.svg',
-      'svg-square' => 'github-square.svg',
-    ),
-    'tiktok' => array(
-      'name' => 'TikTok',
-      'fa-icon' => 'fa-tiktok',
-      'v5style' => 'fab', // Brand
-      'svg' => 'tiktok.svg',
-    ),
-    'youtube' => array(
-      'name' => 'YouTube',
-      'fa-icon' => 'fa-youtube',
-      'fa-icon-square' => 'fa-youtube-square',
-      'v5style' => 'fab', // Brand
-      'image' => 'youtube.png',
-      'svg' => 'youtube.svg',
-      'svg-square' => 'youtube-square.svg',
-    ),
-    'flickr' => array(
-      'name' => 'Flickr',
-      'fa-icon' => 'fa-flickr',
-      'v5style' => 'fab', // Brand
-      'image' => 'flickr.png',
-      'svg' => 'flickr.svg',
-    ),
-    'linkedin' => array(
-      'name' => 'LinkedIn',
-      'fa-icon' => 'fa-linkedin',
-      'fa-icon-square' => 'fa-linkedin-square',
-      'v5style' => 'fab', // Brand
-      'image' => 'linkedin.png',
-      'svg' => 'linkedin-in.svg',
-      'svg-square' => 'linkedin-square.svg',
-    ),
-    'delicious' => array(
-      'name' => 'Delicious',
-      'fa-icon' => 'fa-delicious',
-      'v5style' => 'fab', // Brand
-      'image' => 'delicious.png',
-      'svg' => 'delicious.svg',
-    ),
-    'lastfm' => array(
-      'name' => 'LastFM',
-      'fa-icon' => 'fa-lastfm',
-      'fa-icon-square' => 'fa-lastfm-square',
-      'svg' => 'lastfm.svg',
-      'svg-square' => 'lastfm-square.svg',
-      'v5style' => 'fab', // Brand
-    ),
-    'soundcloud' => array(
-      'name' => 'Soundcloud',
-      'fa-icon' => 'fa-soundcloud',
-      'v5style' => 'fab', // Brand
-      'image' => 'soundcloud.png',
-      'svg' => 'soundcloud.svg',
-    ),
+function otw_build_svg($icon, $settings) {
+  $icon_classes = $settings['icon_classes'];
+  $alt = $settings['alt'];
+  $size = $settings['size'];
+  $square = $settings['square'];
 
-    /* Icons that are the FontAwesome "Solid" style. */
-    'rss' => array(
-      'name' => 'RSS Feed',
-      'fa-icon' => 'fa-rss',
-      'fa-icon-square' => 'fa-rss-square',
-      'v5style' => 'fas', // Solid
-      'image' => 'rss.png',
-      'svg' => 'rss.svg',
-      'svg-square' => 'rss-square.svg',
-    ),
-    'envelope' => array(
-      'name' => 'Newsletter (or Contact)',
-      'fa-icon' => 'fa-envelope',
-      'fa-icon-square' => 'fa-envelope-square',
-      'v5style' => 'fas', // Solid
-      'svg' => 'envelope.svg',
-      'svg-square' => 'envelope-square.svg',
-    ),
-    'itunes' => array(
-      'name' => 'Podcast',
-      'fa-icon' => 'fa-podcast',
-      'v5style' => 'fas', // Solid
-      'image' => 'itunes.png',
-      'svg' => 'podcast.svg',
-    ),
+  $icon_classes[] = 'otw-' . $size;
+  if ($square) {
+    $icon_classes[] = 'otw-square';
+  }
+
+  $svg_attributes = array('class' => $icon_classes);
+  switch ($size) {
+    case 'sm':
+      $svg_attributes['width'] = '32px';
+      break;
+    case 'lg':
+      $svg_attributes['width'] = '64px';
+      break;
+  }
+
+  $svg_options = array(
+    'alt' => $alt,
+    'attributes' => $svg_attributes,
   );
 
-  backdrop_alter('on_the_web_get_services', $services);
+  return icon($icon, $svg_options);
+}
 
-  return $services;
+/**
+ * Builds the appropriate icon using OTW settings and service information.
+ *
+ * @param string $icon
+ *   Name of the icon being rendered.
+ *
+ * @param array $settings
+ *   OTW settings used to render the icon.
+ *   - 'icon_classes' - classes to add to the SVG tag.
+ *   - 'alt' - Alternate tag for the SVG element.
+ *   - 'size' - string 'sm' or 'lg' - requested size for the SVG.
+ *   - 'square' (bool) = whether the icon should be rendered in a square or not.
+ *   - 'type' - string 'legacy' or 'icon' - type of icon requested.
+ *
+ * @return string
+ *   rendered SVG tag.
+ */
+function otw_build_svg_renderable($icon, $settings) {
+  $icon_classes = $settings['icon_classes'];
+  $alt = $settings['alt'];
+  $size = $settings['size'];
+  $square = $settings['square'];
+  $type = $settings['type'];
+
+  $icon_inverse = array('lastfm-logo-fill', 'checkerboard-fill', 'linkedin-logo-fill', 'rss-fill');
+  $legacy_inverse = array('otw-mastodon', 'otw-tiktok', 'otw-podcast', 'otw-soundcloud');
+
+  $icon_classes[] = 'otw-' . $size;
+  if ($square) {
+    if ($type != 'legacy') {
+      $icon_classes[] = 'otw-square';
+      if (in_array($icon, $icon_inverse)) {
+        $icon_classes[] = 'otw-icon-inverse';
+      }
+    }
+    elseif (in_array($icon, $legacy_inverse)) {
+      $icon_classes[] = 'otw-legacy-inverse';
+    }
+  }
+
+  $svg_attributes = array('class' => $icon_classes, 'fill' => 'currentColor');
+  switch ($size) {
+    case 'sm':
+      $svg_attributes['width'] = '32px';
+      break;
+    case 'lg':
+      $svg_attributes['width'] = '64px';
+      break;
+  }
+
+  return array(
+    '#theme' => 'icon',
+    '#name' => $icon,
+    '#path' => icon_get_path($icon),
+    '#alt' => $alt,
+    '#attributes' => $svg_attributes,
+  );
 }

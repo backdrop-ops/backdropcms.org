@@ -310,6 +310,8 @@ class PHPMailer {
   // PROPERTIES, PRIVATE AND PROTECTED
   /////////////////////////////////////////////////
 
+  protected $is_html        = '';
+  protected $DKIM_passphrase = '';
   protected $smtp           = NULL;
   private   $to             = array();
   private   $cc             = array();
@@ -344,7 +346,7 @@ class PHPMailer {
    * @param boolean $exceptions Should we throw external exceptions?
    */
   public function __construct($exceptions = FALSE) {
-    $this->logging = variable_get('smtp_debugging', SMTP_LOGGING_ERRORS);
+    $this->logging = config_get('smtp.settings', 'smtp_debugging');
     $this->exceptions = ($exceptions == TRUE);
   }
 
@@ -618,7 +620,7 @@ class PHPMailer {
     $to = implode(', ', $toArr);
 
     $params = sprintf("-oi -f %s", $this->Sender);
-    if ($this->Sender != '' && strlen(ini_get('safe_mode'))< 1) {
+    if ($this->Sender != '') {
       $old_from = ini_get('sendmail_from');
       ini_set('sendmail_from', $this->Sender);
       if ($this->SingleTo === TRUE && count($toArr) > 1) {
@@ -1437,30 +1439,8 @@ class PHPMailer {
       if (!is_readable($path)) {
         throw new phpmailerException(t('File Error: Could not open file: !nofile', array('!nofile' => $path)), self::STOP_CONTINUE);
       }
-      if (function_exists('get_magic_quotes')) {
-        function get_magic_quotes() {
-          return FALSE;
-        }
-      }
-      $magic_quotes = get_magic_quotes_runtime();
-      if ($magic_quotes) {
-        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-          set_magic_quotes_runtime(0);
-        }
-        else {
-          ini_set('magic_quotes_runtime', 0);
-        }
-      }
       $file_buffer  = file_get_contents($path);
       $file_buffer  = $this->EncodeString($file_buffer, $encoding);
-      if ($magic_quotes) {
-        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-          set_magic_quotes_runtime($magic_quotes);
-        }
-        else {
-          ini_set('magic_quotes_runtime', $magic_quotes);
-        }
-      }
       return $file_buffer;
     } catch (Exception $e) {
       $this->SetError($e->getMessage());

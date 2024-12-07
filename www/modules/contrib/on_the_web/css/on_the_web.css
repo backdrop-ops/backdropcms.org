@@ -1,14 +1,53 @@
-a.on-the-web {
+a.otw-anchor {
   display: inline-block;
   text-indent: -9999px;
 }
 
 /* Set the size */
-a.otw-sm {
+.otw-sm {
+  max-width: 32px;
+  max-height: 32px;
+}
+.otw-lg {
+  max-width: 64px;
+  max-height: 64px;
+}
+
+/* Create the square behavior */
+svg.otw-square {
+  box-sizing: border-box;
+  background: black;
+  color: white;
+  margin: 0 5px;
+  border-radius: 5px;
+  padding: 3px;
+}
+
+svg.otw-square.otw-lg {
+  border-radius: 10px;
+  padding: 5px;
+}
+
+svg.otw-legacy-inverse {
+  box-sizing: border-box;
+  color: white;
+  background: black;
+  border-radius: 5px;
+  padding: 3px;
+}
+
+svg.otw-icon-inverse {
+  padding: 0;
+  background: transparent;
+  color: black;
+  position: relative;
+}
+svg.otw-icon-inverse::before {
+  content: ' ';
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 32px;
   height: 32px;
-}
-a.otw-lg {
-  width: 64px;
-  height: 64px;
+  background: black;
 }

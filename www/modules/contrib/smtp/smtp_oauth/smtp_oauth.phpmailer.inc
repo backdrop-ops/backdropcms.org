@@ -21,6 +21,16 @@ class PHPMailerOAuth extends PHPMailer {
   public $googleClient = '';
 
   /**
+   * @type string
+   */
+  public $AuthType;
+
+  /**
+   * @type array
+   */
+  public $SMTPOptions;
+
+  /**
    * An instance of the GmailXOAuth2 class.
    * @type GmailXOAuth2
    * @access protected

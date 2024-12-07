@@ -27,7 +27,7 @@ function xmlsitemap_i18n_autoload_info() {
 function xmlsitemap_i18n_xmlsitemap_context_info() {
   $context['language'] = array(
     'label' => t('Language'),
-    'summary callback' => 'locale_language_name',
+    'summary callback' => 'language_name',
     'default' => language_default('language'),
   );
   return $context;
@@ -37,7 +37,7 @@ function xmlsitemap_i18n_xmlsitemap_context_info() {
  * Implements hook_xmlsitemap_context().
  */
 function xmlsitemap_i18n_xmlsitemap_context() {
-  $context['language'] = $GLOBALS['language']->language;
+  $context['language'] = $GLOBALS['language']->langcode;
   return $context;
 }
 
@@ -59,7 +59,7 @@ function xmlsitemap_i18n_form_xmlsitemap_sitemap_edit_form_alter(&$form, $form_s
   $form['context']['language'] = array(
     '#type' => 'select',
     '#title' => t('Language'),
-    '#options' => locale_language_list(),
+    '#options' => language_list(TRUE, TRUE, TRUE),
     '#default_value' => isset($form['#sitemap']->context['language']) ? $form['#sitemap']->context['language'] : LANGUAGE_NONE,
   );
 }

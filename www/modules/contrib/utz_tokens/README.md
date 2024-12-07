@@ -7,6 +7,24 @@ A typical usage would be to give the time(s) of an event in the body of a page t
 
 Logged-in users will see the date/time in their own time zone. Anonymous users will see it in the default time zone (typically the server time zone), but there is an option to detect their time zone as well.
 
+Installation
+------------
+
+Install this module using [the official Backdrop CMS instructions](https://backdropcms.org/guide/modules).
+
+* Visit the configuration page under Administration > Configuration > Regional and lanugage >
+  User time zone tokens (admin/config/category/utz-tokens) and select the desired method for detecting the user's time zone.
+
+To use the tokens in formatted text,
+
+- Install and enable the [Token Filter](https://backdropcms.org/project/token_filter) module.
+- Enable the "Replace tokens" filter for the text formats that you will be using these tokens in.
+
+To automatically detect the time zone for anonymous or all users,
+
+- Install and enable the [Luxon](https://github.com/bugfolder/luxon) module.
+- Go to /admin/config/regional/utz-tokens and check the desired option.
+
 Usage
 -----
 
@@ -42,31 +60,20 @@ To initialize from a timestamp, you can convert a date to a timestamp using [Epo
 
 Note that _datetime_ and _format_ are separated by a pipe (|), not a colon (:), because _datetime_ might contain a colon (typically separating hours and minutes).
 
-You can use these tokens anywhere that tokens are accepted. To use the tokens in formatted text (the most common use case), install and enable the [Token Filter](https://backdropcms.org/project/token_filter) module.
+You can use these tokens anywhere that tokens are accepted. To use the tokens in formatted text (the most common use case), install and enable the [Token Filter](https://backdropcms.org/project/token_filter) module and then enable the "Replace tokens" filter in your text format.
 
 ### Timezone Detection for Anonymous Users
 
 There is an option to automatically detect the user's time zone (which is provided by their browser) and use that for anonymous or all users, which works even for cached pages. To use this capability you will need to install the [Luxon](https://github.com/bugfolder/luxon) module. With Luxon installed and enabled, on the configuration page for this module you will have the option to detect the user's time zone for anonymous or all users. This capability requires Javascript.
 
-Installation
-------------
+### Beware of Caching
 
-Install this module using [the official Backdrop CMS instructions](https://backdropcms.org/guide/modules).
+When using either setting that includes "Use user's timezone for authenticated users," page and/or entity caching can short-circuit UTZ tokens via this scenario:
 
-To use the tokens in formatted text,
+* User in time zone A visits the page; it gets cached with time zone A data.
+* User in time zone B visits the page and is served the cached version containing time zone A data.
 
-- Install and enable the [Token Filter](https://backdropcms.org/project/token_filter) module.
-- Enable the "Replace tokens" filter for the text formats that you will be using these tokens in.
-
-To automatically detect the time zone for anonymous or all users,
-
-- Install and enable the [Luxon](https://github.com/bugfolder/luxon) module.
-- Go to /admin/config/regional/utz-tokens and check the desired option.
-
-Documentation
--------------
-
-Additional documentation is located in [the Wiki](https://github.com/backdrop-contrib/utz_tokens/wiki/Documentation).
+To get around this, you can turn off caching for pages and/or relevant entities. (You can turn off entity caching on a per-bundle basis using the [Entity Cache Administation](https://backdropcms.org/project/entity_cache_admin) module.) This will, of course, come with a cost in performance. Alternatively, you can install the Luxon module per the above and select the third option in the settings, "Use the browser's timezone for both authenticated and anonymous users (requires Luxon and Javascript).". This will work regardless of caching because the time zone localization happens in the user's browser.
 
 ### Theme Function (for Developers)
 

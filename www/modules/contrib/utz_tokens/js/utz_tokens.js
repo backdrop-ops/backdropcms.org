@@ -126,7 +126,7 @@
           // Time - Hours
 
           case 'g': // 12-hour format of an hour without leading zeros (1 to 12)
-            string += (date.hour - 1) % 12 + 1;
+            string += (date.hour + 11) % 12 + 1;
             break;
 
           case 'H': // 24-hour format of an hour with leading zeros (00 to 23)
@@ -134,7 +134,7 @@
             break;
 
           case 'h': // 12-hour format of an hour with leading zeros (01 to 12)
-            var hour = (date.hour - 1) % 12 + 1;
+            var hour = (date.hour + 11) % 12 + 1;
             if (hour < 10) {
               string += '0';
             }

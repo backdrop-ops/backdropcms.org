@@ -2,9 +2,12 @@ name = On The Web
 type = module
 description = Provides a block with social media icons linked to your other sources on the web.
 backdrop = 1.x
+
+dependencies[] = system (>= 1.28.0)
+
 configure = admin/config/services/on_the_web
 
-; Added by Backdrop CMS packaging script on 2022-11-21
+; Added by Backdrop CMS packaging script on 2024-11-22
 project = on_the_web
-version = 1.x-2.0.0
-timestamp = 1669089511
+version = 1.x-2.1.1
+timestamp = 1732342223

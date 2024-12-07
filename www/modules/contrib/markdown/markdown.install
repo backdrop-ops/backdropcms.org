@@ -11,18 +11,17 @@
  * Implements hook_requirements().
  */
 function markdown_requirements($phase) {
-  $requirements = array();
-  $t = get_t();
-
-  if ($phase == 'runtime') {
-    module_load_include('php', 'markdown', 'includes/Markdown.inc');
-
-    $requirements['markdown_lib_version'] = array(
-      'title' => $t('Markdown library version'),
-      'value' => l($t('@version', array('@version' => \Michelf\Markdown::MARKDOWNLIB_VERSION)), 'http://michelf.com/projects/php-markdown/'),
-      'severity' => REQUIREMENT_INFO,
-    );
+  if ($phase != 'runtime') {
+    return array();
   }
+  $t = get_t();
+  module_load_include('php', 'markdown', 'includes/Markdown.inc');
 
-  return $requirements;
+  return array(
+    'markdown_lib_version' => array(
+      'title' => $t('Markdown'),
+      'value' => $t('Version: !version', array('!version' =>l(\Michelf\Markdown::MARKDOWNLIB_VERSION, 'http://michelf.com/projects/php-markdown/'))),
+      'severity' => REQUIREMENT_INFO,
+    )
+  );
 }
