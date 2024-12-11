@@ -191,7 +191,10 @@
             "status": 1,
             "weight": -43,
             "module": "token_filter",
-            "settings": []
+            "settings": {
+                "replace": 0,
+                "tokens": ""
+            }
         },
         "filter_htmlcorrector": {
             "status": 1,
