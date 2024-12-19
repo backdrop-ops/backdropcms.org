@@ -214,15 +214,19 @@
                         "services": {
                             "display": "auto",
                             "enabled": {
-                                "rss": "rss",
-                                "youtube": "youtube",
-                                "google": "google",
+                                "mastodon": "mastodon",
                                 "facebook": "facebook",
-                                "twitter": "twitter"
+                                "github": "github",
+                                "linkedin": "linkedin",
+                                "rss": "rss",
+                                "twitter": "twitter",
+                                "youtube": "youtube"
                             }
                         }
                     },
-                    "contexts": []
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "58a52df4-ec8f-441b-a463-994fe39766df",
                 "style": {
