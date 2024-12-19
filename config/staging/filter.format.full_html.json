@@ -73,7 +73,10 @@
             "status": 0,
             "weight": -43,
             "module": "token_filter",
-            "settings": []
+            "settings": {
+                "replace": 0,
+                "tokens": ""
+            }
         }
     },
     "editor": "",

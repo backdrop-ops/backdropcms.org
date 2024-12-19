@@ -41,7 +41,10 @@
             "status": 0,
             "weight": 0,
             "module": "token_filter",
-            "settings": []
+            "settings": {
+                "replace": 0,
+                "tokens": ""
+            }
         },
         "filter_html_escape": {
             "status": 1,
