@@ -91,14 +91,14 @@
         6
     ],
     "user_login_method": "username_or_email",
-    "user_email_match": 0,
+    "user_email_match": 1,
     "path_pattern": "account/[user:name]",
     "x_frame_options": "SAMEORIGIN",
     "form_cache_expiration": 21600,
     "dblog_row_limit": "1000000",
     "dblog_date_format": "M jS, Y g:ia",
     "log_date_format": "M jS, Y g:ia",
-    "user_password_reject_weak": 0,
+    "user_password_reject_weak": 1,
     "user_password_strength_threshold": 50,
     "config_sync_clear_staging": 1,
     "_config_translatables": [
