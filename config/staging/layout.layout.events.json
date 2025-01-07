@@ -2,7 +2,7 @@
     "_config_name": "layout.layout.events",
     "path": "node/%",
     "name": "events",
-    "title": "Events",
+    "title": "News / Event / Press Release",
     "description": null,
     "renderer_name": "standard",
     "module": null,
@@ -23,11 +23,10 @@
         ],
         "top": [],
         "content": [
-            "fad9598b-b2f1-4299-8200-aa44720f60aa",
-            "aa72f52d-4999-40aa-874e-781c43f261ff"
+            "fad9598b-b2f1-4299-8200-aa44720f60aa"
         ],
         "sidebar": [
-            "7e7d4eb3-fb10-4010-a105-5d6e80a8588f"
+            "97ffb954-4a23-4898-a942-66e0e4c7b41d"
         ],
         "bottom": [],
         "footer": [
@@ -152,55 +151,23 @@
                 }
             }
         },
-        "aa72f52d-4999-40aa-874e-781c43f261ff": {
-            "plugin": "borg_blocks:rss",
+        "97ffb954-4a23-4898-a942-66e0e4c7b41d": {
+            "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
-                "module": "borg_blocks",
-                "delta": "rss",
+                "module": "copy_blocks",
+                "delta": "region_copy",
                 "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "aa72f52d-4999-40aa-874e-781c43f261ff",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "7e7d4eb3-fb10-4010-a105-5d6e80a8588f": {
-            "plugin": "views:events-block_1",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "events-block_1",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": 1,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "3",
-                    "offset": 0,
-                    "path": "news/events",
-                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
+                    "admin_label": "",
+                    "admin_description": "",
+                    "source_region": "news:sidebar"
                 },
-                "uuid": "7e7d4eb3-fb10-4010-a105-5d6e80a8588f",
+                "uuid": "97ffb954-4a23-4898-a942-66e0e4c7b41d",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -245,7 +212,10 @@
             "data": {
                 "settings": {
                     "bundles": [
-                        "event"
+                        "event",
+                        "external_mention",
+                        "post",
+                        "press"
                     ],
                     "load_condition_nojs": "Load condition"
                 }

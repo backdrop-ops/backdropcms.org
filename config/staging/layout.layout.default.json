@@ -26,7 +26,9 @@
             "default",
             "62b827f3-5a2e-463d-ac3f-63fd43e95bdc"
         ],
-        "bottom": [],
+        "bottom": [
+            "4d3e7be1-36e5-4f74-bd00-d079c1bf281f"
+        ],
         "footer": [
             "71336ea1-c14b-4464-9040-64b1ee6b4fcc",
             "58a52df4-ec8f-441b-a463-994fe39766df",
@@ -174,6 +176,55 @@
                         }
                     }
                 }
+            }
+        },
+        "4d3e7be1-36e5-4f74-bd00-d079c1bf281f": {
+            "plugin": "views:press_releases-block",
+            "data": {
+                "status": 1,
+                "module": "views",
+                "delta": "press_releases-block",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "5",
+                    "offset": 0,
+                    "path": null,
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "4d3e7be1-36e5-4f74-bd00-d079c1bf281f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                },
+                "conditions": [
+                    {
+                        "plugin": "path",
+                        "data": {
+                            "settings": {
+                                "visibility_setting": "1",
+                                "paths": "press-kit",
+                                "load_condition_nojs": "Load condition"
+                            }
+                        }
+                    }
+                ]
             }
         },
         "71336ea1-c14b-4464-9040-64b1ee6b4fcc": {

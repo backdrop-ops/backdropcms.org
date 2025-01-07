@@ -17,9 +17,7 @@
     },
     "positions": {
         "header": [
-            "384ca120-51fa-423c-9f2f-4746b1da5968",
-            "4c9f650d-285c-4ac9-a400-bf2c928cf219",
-            "8cb1257b-8c83-48c9-8c00-d631dbad0ac7"
+            "002cef01-bce4-4b08-a300-cf5a6269d5aa"
         ],
         "top": [],
         "content": [
@@ -27,11 +25,7 @@
             "e81c9e8e-de17-4a54-881e-308b15e28e75"
         ],
         "sidebar": [
-            "6dd45bcc-c42c-4dba-9a12-18833d1ba369",
-            "d4212fcf-cd32-43b3-be03-03fa628a51f4",
-            "ea3d1cdf-a469-4514-bf03-3ee430a845cb",
-            "fc8f3467-8b1b-4122-9e00-bd55db37d4b2",
-            "e586a598-e0a2-485a-8f00-d55fececd52a"
+            "3a1944bc-aca5-443a-ae08-8a93668671ca"
         ],
         "bottom": [],
         "footer": [
@@ -42,81 +36,23 @@
     "contexts": [],
     "relationships": [],
     "content": {
-        "384ca120-51fa-423c-9f2f-4746b1da5968": {
-            "plugin": "borg_blocks:branding",
+        "002cef01-bce4-4b08-a300-cf5a6269d5aa": {
+            "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
-                "module": "borg_blocks",
-                "delta": "branding",
+                "module": "copy_blocks",
+                "delta": "region_copy",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": "",
+                    "source_region": "default:header"
                 },
-                "uuid": "384ca120-51fa-423c-9f2f-4746b1da5968",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "4c9f650d-285c-4ac9-a400-bf2c928cf219": {
-            "plugin": "system:user-menu",
-            "data": {
-                "status": 1,
-                "module": "system",
-                "delta": "user-menu",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "menu_name": "user-menu",
-                        "style": "tree",
-                        "level": "1",
-                        "depth": "1",
-                        "expand_all": 0,
-                        "toggle": 0
-                    },
-                    "contexts": []
-                },
-                "uuid": "4c9f650d-285c-4ac9-a400-bf2c928cf219",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "8cb1257b-8c83-48c9-8c00-d631dbad0ac7": {
-            "plugin": "system:main-menu",
-            "data": {
-                "status": 1,
-                "module": "system",
-                "delta": "main-menu",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "menu_name": "main-menu",
-                        "style": "dropdown",
-                        "level": "1",
-                        "depth": "2",
-                        "toggle": 1
-                    },
-                    "contexts": []
-                },
-                "uuid": "8cb1257b-8c83-48c9-8c00-d631dbad0ac7",
+                "uuid": "002cef01-bce4-4b08-a300-cf5a6269d5aa",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -177,147 +113,23 @@
                 }
             }
         },
-        "6dd45bcc-c42c-4dba-9a12-18833d1ba369": {
-            "plugin": "block:7",
+        "3a1944bc-aca5-443a-ae08-8a93668671ca": {
+            "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
-                "module": "block",
-                "delta": "7",
+                "module": "copy_blocks",
+                "delta": "region_copy",
                 "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "7",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "6dd45bcc-c42c-4dba-9a12-18833d1ba369",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "d4212fcf-cd32-43b3-be03-03fa628a51f4": {
-            "plugin": "block:meeting_schedule",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "meeting_schedule",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "meeting_schedule",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "d4212fcf-cd32-43b3-be03-03fa628a51f4",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "ea3d1cdf-a469-4514-bf03-3ee430a845cb": {
-            "plugin": "views:backdrop_on_the_web-block_1",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "backdrop_on_the_web-block_1",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": 1,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "5",
-                    "offset": 0,
-                    "path": "news/on-the-web",
-                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
+                    "admin_label": "",
+                    "admin_description": "",
+                    "source_region": "news:sidebar"
                 },
-                "uuid": "ea3d1cdf-a469-4514-bf03-3ee430a845cb",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "fc8f3467-8b1b-4122-9e00-bd55db37d4b2": {
-            "plugin": "views:events-block_1",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "events-block_1",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": 1,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "3",
-                    "offset": 0,
-                    "path": "news/events",
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
-                },
-                "uuid": "fc8f3467-8b1b-4122-9e00-bd55db37d4b2",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "e586a598-e0a2-485a-8f00-d55fececd52a": {
-            "plugin": "block:9",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "9",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "9",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "e586a598-e0a2-485a-8f00-d55fececd52a",
+                "uuid": "3a1944bc-aca5-443a-ae08-8a93668671ca",
                 "style": {
                     "plugin": "default",
                     "data": {

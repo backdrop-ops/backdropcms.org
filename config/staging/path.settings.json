@@ -65,5 +65,6 @@
     "node_external_mention_pattern": "mention/[node:title]",
     "node_platform_pattern": "platform/[node:title]",
     "taxonomy_term_project_tags_pattern": "projects/tags/[term:name]",
-    "taxonomy_term_organization_pattern": "[term:name]"
+    "taxonomy_term_organization_pattern": "[term:name]",
+    "node_press_pattern": "news/press-releases/[node:title]"
 }

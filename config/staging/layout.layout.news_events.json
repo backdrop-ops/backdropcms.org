@@ -17,9 +17,7 @@
     },
     "positions": {
         "header": [
-            "7e03d641-4b4e-4c97-8e3b-59436714a769",
-            "13c6231e-40ae-440b-8600-b60c1287e64f",
-            "8092846a-4ca4-444b-9e02-2a140f279902"
+            "a574eff7-9c89-4234-9d27-39b2428393e9"
         ],
         "top": [],
         "content": [
@@ -27,11 +25,7 @@
             "9779cdfd-c592-4b4f-8440-6467767ad350"
         ],
         "sidebar": [
-            "3bb93f50-80cb-4c01-a20c-12ea7cb4c1d4",
-            "0e975a41-7438-4327-bd16-22a34674ced0",
-            "70c30070-20d8-46b5-a700-c190ab36b44a",
-            "7ee10e9e-634f-4940-845c-92edf2ccd95c",
-            "5f9efb67-2c36-4b25-9b00-cdb7ea319e1a"
+            "9d747ccf-b84f-4160-941c-281409660dfe"
         ],
         "bottom": [],
         "footer": [
@@ -42,81 +36,23 @@
     "contexts": [],
     "relationships": [],
     "content": {
-        "7e03d641-4b4e-4c97-8e3b-59436714a769": {
-            "plugin": "borg_blocks:branding",
+        "a574eff7-9c89-4234-9d27-39b2428393e9": {
+            "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
-                "module": "borg_blocks",
-                "delta": "branding",
+                "module": "copy_blocks",
+                "delta": "region_copy",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
-                    "contexts": []
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": "",
+                    "source_region": "default:header"
                 },
-                "uuid": "7e03d641-4b4e-4c97-8e3b-59436714a769",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "13c6231e-40ae-440b-8600-b60c1287e64f": {
-            "plugin": "system:user-menu",
-            "data": {
-                "status": 1,
-                "module": "system",
-                "delta": "user-menu",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "menu_name": "user-menu",
-                        "style": "tree",
-                        "level": "1",
-                        "depth": "1",
-                        "expand_all": 0,
-                        "toggle": 0
-                    },
-                    "contexts": []
-                },
-                "uuid": "13c6231e-40ae-440b-8600-b60c1287e64f",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "8092846a-4ca4-444b-9e02-2a140f279902": {
-            "plugin": "system:main-menu",
-            "data": {
-                "status": 1,
-                "module": "system",
-                "delta": "main-menu",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "menu_name": "main-menu",
-                        "style": "dropdown",
-                        "level": "1",
-                        "depth": "2",
-                        "toggle": 1
-                    },
-                    "contexts": []
-                },
-                "uuid": "8092846a-4ca4-444b-9e02-2a140f279902",
+                "uuid": "a574eff7-9c89-4234-9d27-39b2428393e9",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -139,7 +75,7 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>Here is a list of events where you can talk to your&nbsp;peers about Backdrop CMS.&nbsp;<br />\r\n<br />\r\n<a href=\"https://calendar.google.com/calendar/embed?src=backdropcms%40gmail.com&amp;ctz=America%2FChicago\">Full calendar</a></p>\r\n",
+                    "content": "<p>\r\n    Here is a list of events where you can talk to your&nbsp;peers about Backdrop CMS.&nbsp;<br>\r\n    <br>\r\n    <a href=\"https://calendar.google.com/calendar/embed?src=backdropcms%40gmail.com&amp;ctz=America%2FChicago\">See our full calendar</a>\r\n</p>",
                     "format": "filtered_html",
                     "admin_label": "",
                     "admin_description": ""
@@ -179,147 +115,23 @@
                 }
             }
         },
-        "3bb93f50-80cb-4c01-a20c-12ea7cb4c1d4": {
-            "plugin": "block:7",
+        "9d747ccf-b84f-4160-941c-281409660dfe": {
+            "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
-                "module": "block",
-                "delta": "7",
+                "module": "copy_blocks",
+                "delta": "region_copy",
                 "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "7",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "3bb93f50-80cb-4c01-a20c-12ea7cb4c1d4",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "0e975a41-7438-4327-bd16-22a34674ced0": {
-            "plugin": "block:meeting_schedule",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "meeting_schedule",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "meeting_schedule",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "0e975a41-7438-4327-bd16-22a34674ced0",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "70c30070-20d8-46b5-a700-c190ab36b44a": {
-            "plugin": "views:backdrop_on_the_web-block_1",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "backdrop_on_the_web-block_1",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": 1,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "5",
-                    "offset": 0,
-                    "path": "news/on-the-web",
-                    "fields_override": null,
                     "title_display": "default",
                     "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
+                    "admin_label": "",
+                    "admin_description": "",
+                    "source_region": "news:sidebar"
                 },
-                "uuid": "70c30070-20d8-46b5-a700-c190ab36b44a",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "7ee10e9e-634f-4940-845c-92edf2ccd95c": {
-            "plugin": "views:events-block_1",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "events-block_1",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": 1,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "3",
-                    "offset": 0,
-                    "path": "news/events",
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
-                },
-                "uuid": "7ee10e9e-634f-4940-845c-92edf2ccd95c",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "5f9efb67-2c36-4b25-9b00-cdb7ea319e1a": {
-            "plugin": "block:9",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "9",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "9",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "5f9efb67-2c36-4b25-9b00-cdb7ea319e1a",
+                "uuid": "9d747ccf-b84f-4160-941c-281409660dfe",
                 "style": {
                     "plugin": "default",
                     "data": {

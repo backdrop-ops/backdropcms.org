@@ -1,11 +1,12 @@
 {
     "_config_name": "block.custom.9",
     "delta": "9",
-    "info": "Twitter widget",
-    "title": "Tweets",
+    "info": "BlueSky widget",
+    "title": "Backdrop on BlueSky",
     "body": {
-        "value": "<a class=\"twitter-timeline\"  href=\"https://twitter.com/backdropcms\" data-widget-id=\"384881800230612992\">Tweets by @backdropcms</a>\r\n<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>\r\n          ",
+        "value": "<script type=\"module\" src=\"https://cdn.jsdelivr.net/npm/bsky-embed/dist/bsky-embed.es.js\" async></script><bsky-embed\r\n    username=\"backdropcms.bsky.social\"\r\n    limit=\"3\"\r\n    link-target=\"_blank\"\r\n    link-image=\"false\"\r\n    load-more=\"true\"\r\n    custom-styles=\".gap-2 > img {display:none} .p-4 {padding: .5rem 0}\"\r\n  ></bsky-embed>",
         "format": "full_html"
     },
-    "description": "A reusable custom block."
+    "description": "Formerly Twitter widget",
+    "default_langcode": "und"
 }

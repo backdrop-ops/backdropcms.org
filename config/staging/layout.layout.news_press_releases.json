@@ -1,12 +1,12 @@
 {
-    "_config_name": "layout.layout.news_events",
-    "path": "news/events",
-    "name": "news_events",
-    "title": "News / Events",
+    "_config_name": "layout.layout.news_press_releases",
+    "path": "news/press-releases",
+    "name": "news_press_releases",
+    "title": "News / Press Releases",
     "description": null,
     "renderer_name": "standard",
     "module": null,
-    "weight": 0,
+    "weight": -2,
     "storage": 1,
     "layout_template": "moscone_flipped",
     "disabled": false,
@@ -17,26 +17,25 @@
     },
     "positions": {
         "header": [
-            "a574eff7-9c89-4234-9d27-39b2428393e9"
+            "d9d459ad-f944-4e76-a61a-266d0f04ef79"
         ],
         "top": [],
         "content": [
-            "7de92a06-18f5-43bd-be05-059f004ebcb9",
-            "9779cdfd-c592-4b4f-8440-6467767ad350"
+            "410d305e-6eef-4a87-ac00-d3bd2f117fe1"
         ],
         "sidebar": [
-            "9d747ccf-b84f-4160-941c-281409660dfe"
+            "eb5b81ee-6b56-4365-8700-c53a7dc8501e"
         ],
         "bottom": [],
         "footer": [
-            "0ca81bba-b434-4f62-ab00-f731714906bd"
+            "788b04b3-eb8f-42a0-ae00-c7b32aa7f56d"
         ],
         "title": []
     },
     "contexts": [],
     "relationships": [],
     "content": {
-        "a574eff7-9c89-4234-9d27-39b2428393e9": {
+        "d9d459ad-f944-4e76-a61a-266d0f04ef79": {
             "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
@@ -52,7 +51,7 @@
                     "admin_description": "",
                     "source_region": "default:header"
                 },
-                "uuid": "a574eff7-9c89-4234-9d27-39b2428393e9",
+                "uuid": "d9d459ad-f944-4e76-a61a-266d0f04ef79",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -63,35 +62,7 @@
                 }
             }
         },
-        "7de92a06-18f5-43bd-be05-059f004ebcb9": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "status": 1,
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>\r\n    Here is a list of events where you can talk to your&nbsp;peers about Backdrop CMS.&nbsp;<br>\r\n    <br>\r\n    <a href=\"https://calendar.google.com/calendar/embed?src=backdropcms%40gmail.com&amp;ctz=America%2FChicago\">See our full calendar</a>\r\n</p>",
-                    "format": "filtered_html",
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "7de92a06-18f5-43bd-be05-059f004ebcb9",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "9779cdfd-c592-4b4f-8440-6467767ad350": {
+        "410d305e-6eef-4a87-ac00-d3bd2f117fe1": {
             "plugin": "system:main",
             "data": {
                 "status": 1,
@@ -104,7 +75,7 @@
                     "block_settings": [],
                     "contexts": []
                 },
-                "uuid": "9779cdfd-c592-4b4f-8440-6467767ad350",
+                "uuid": "410d305e-6eef-4a87-ac00-d3bd2f117fe1",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -115,7 +86,7 @@
                 }
             }
         },
-        "9d747ccf-b84f-4160-941c-281409660dfe": {
+        "eb5b81ee-6b56-4365-8700-c53a7dc8501e": {
             "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
@@ -131,7 +102,7 @@
                     "admin_description": "",
                     "source_region": "news:sidebar"
                 },
-                "uuid": "9d747ccf-b84f-4160-941c-281409660dfe",
+                "uuid": "eb5b81ee-6b56-4365-8700-c53a7dc8501e",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -142,7 +113,7 @@
                 }
             }
         },
-        "0ca81bba-b434-4f62-ab00-f731714906bd": {
+        "788b04b3-eb8f-42a0-ae00-c7b32aa7f56d": {
             "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
@@ -158,7 +129,7 @@
                     "admin_description": "",
                     "source_region": "default:footer"
                 },
-                "uuid": "0ca81bba-b434-4f62-ab00-f731714906bd",
+                "uuid": "788b04b3-eb8f-42a0-ae00-c7b32aa7f56d",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -169,5 +140,17 @@
                 }
             }
         }
-    }
+    },
+    "conditions": [
+        {
+            "plugin": "path",
+            "data": {
+                "settings": {
+                    "visibility_setting": "1",
+                    "paths": "news/press-releases",
+                    "load_condition_nojs": "Load condition"
+                }
+            }
+        }
+    ]
 }
