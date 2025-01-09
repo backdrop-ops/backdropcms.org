@@ -269,7 +269,7 @@ function hook_element_info_alter(&$type) {
  * the browser.
  *
  * This hook by default is not called on pages served by the default page cache,
- * but can be enabled through the $settings['page_cache_invoke_hook'] option in
+ * but can be enabled through the $settings['page_cache_invoke_hooks'] option in
  * settings.php.
  *
  * @param $destination
@@ -1452,7 +1452,7 @@ function hook_forms($form_id, $args) {
  * hook_init() instead. In hook_boot(), only the most basic APIs are available
  * and not all modules have been loaded. This hook by default is not called on
  * pages served by the default page cache, but can be enabled through the
- * $settings['page_cache_invoke_hook'] option in settings.php.
+ * $settings['page_cache_invoke_hooks'] option in settings.php.
  *
  * @see hook_init()
  */

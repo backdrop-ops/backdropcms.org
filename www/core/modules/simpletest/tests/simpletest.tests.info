@@ -640,6 +640,12 @@ description = Tests management of database connections.
 group = Database
 file = database_test.test
 
+[DatabaseStatementPrefetchGadgetChainTestCase]
+name = Database Statement Prefetch Gadget Chain Test
+description = Tests protection against unserialization attacks.
+group = Database
+file = database_test.test
+
 [BackdropErrorHandlerUnitTest]
 name = Backdrop error handlers
 description = Performs tests on the Backdrop error and exception handler.
@@ -1390,7 +1396,7 @@ description = Test the file tokens.
 group = Token
 file = token.test
 
-; Added by Backdrop CMS packaging script on 2024-11-20
+; Added by Backdrop CMS packaging script on 2025-01-08
 project = backdrop
-version = 1.29.2
-timestamp = 1732142640
+version = 1.29.3
+timestamp = 1736371781
