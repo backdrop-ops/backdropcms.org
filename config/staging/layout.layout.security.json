@@ -26,8 +26,8 @@
             "3d0062a8-2b60-4f9b-b100-c4670df4251f"
         ],
         "sidebar": [
-            "65796ea7-4fa0-4cd0-9d00-e11124b61e86",
-            "40b01f71-f22e-4cff-b500-ffd2f131c057"
+            "40b01f71-f22e-4cff-b500-ffd2f131c057",
+            "65796ea7-4fa0-4cd0-9d00-e11124b61e86"
         ],
         "bottom": [],
         "footer": [
@@ -146,34 +146,6 @@
                 }
             }
         },
-        "65796ea7-4fa0-4cd0-9d00-e11124b61e86": {
-            "plugin": "book:navigation",
-            "data": {
-                "status": 1,
-                "module": "book",
-                "delta": "navigation",
-                "settings": {
-                    "title_display": "custom",
-                    "title": "About",
-                    "style": "default",
-                    "block_settings": {
-                        "book_mode": "book pages"
-                    },
-                    "contexts": [],
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "65796ea7-4fa0-4cd0-9d00-e11124b61e86",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "40b01f71-f22e-4cff-b500-ffd2f131c057": {
             "plugin": "views:security-block_1",
             "data": {
@@ -199,6 +171,34 @@
                     "exposed": []
                 },
                 "uuid": "40b01f71-f22e-4cff-b500-ffd2f131c057",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "65796ea7-4fa0-4cd0-9d00-e11124b61e86": {
+            "plugin": "book:navigation",
+            "data": {
+                "status": 1,
+                "module": "book",
+                "delta": "navigation",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "About",
+                    "style": "default",
+                    "block_settings": {
+                        "book_mode": "book pages"
+                    },
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "65796ea7-4fa0-4cd0-9d00-e11124b61e86",
                 "style": {
                     "plugin": "default",
                     "data": {
