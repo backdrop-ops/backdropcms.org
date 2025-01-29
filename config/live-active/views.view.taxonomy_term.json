@@ -36,18 +36,19 @@
                 "style_plugin": "default",
                 "row_plugin": "node",
                 "sorts": {
-                    "random": {
-                        "id": "random",
-                        "table": "views",
-                        "field": "random",
+                    "created": {
+                        "id": "created",
+                        "table": "node",
+                        "field": "created",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
-                        "order": "ASC",
+                        "order": "DESC",
                         "exposed": false,
                         "expose": {
                             "label": ""
-                        }
+                        },
+                        "granularity": "second"
                     }
                 },
                 "arguments": {

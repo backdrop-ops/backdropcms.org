@@ -208,13 +208,10 @@
                 },
                 "conditions": [
                     {
-                        "plugin": "user_role",
+                        "plugin": "user_permission",
                         "data": {
                             "settings": {
-                                "negate": false,
-                                "roles": [
-                                    "authenticated"
-                                ],
+                                "permission": "create supporter content",
                                 "load_condition_nojs": "Load condition"
                             }
                         }
