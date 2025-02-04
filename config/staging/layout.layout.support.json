@@ -24,12 +24,14 @@
         "top": [],
         "content": [
             "4543880d-1a0a-413e-8300-0045a93106df",
+            "fafd4507-ee65-4b9a-9900-d085fc0d16e7",
             "1bf26084-5e1f-49da-9e4a-74d812df73ba",
             "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
+            "259b344a-ad23-4a93-934a-74fc24a725b1",
             "debc30fa-2afd-4390-9200-ca4456b6c081",
             "aa20864f-9388-46a1-a608-8eb21c6b7b63",
-            "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
-            "e21a9e69-e89f-4b7a-b809-9e961daa1208"
+            "0238c274-e742-4442-8e00-b6dfe1b33924",
+            "4a0593db-19db-4d2e-aa51-81c80eaf0598"
         ],
         "sidebar": [
             "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
@@ -144,9 +146,39 @@
                     "block_settings": [],
                     "contexts": [],
                     "content": "<p>Read through a curated collection of&nbsp;online documentation, where you’ll find information on everything from installing Backdrop CMS for the first time to creating your own layouts, themes, and&nbsp;modules.</p>\r\n\r\n<p><i class=\"fa fa-book\"></i> <a href=\"https://backdropcms.org/user-guide\">Read our&nbsp;User Guide</a></p>\r\n",
-                    "format": "full_html"
+                    "format": "full_html",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "4543880d-1a0a-413e-8300-0045a93106df",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "fafd4507-ee65-4b9a-9900-d085fc0d16e7": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "status": 1,
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Live Chat",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>\r\n    <i class=\"fa fa-commenting\"></i> Drop in and say hi in <a href=\"https://backdrop.zulipchat.com\">Live chat</a> with Zulip.\r\n</p>",
+                    "format": "full_html",
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "fafd4507-ee65-4b9a-9900-d085fc0d16e7",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -195,10 +227,40 @@
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "content": "<p>If you're digging into the code and looking for some help, check out the API documentation and helpful developer tools available. Change records from Drupal are also available.</p>\r\n\r\n<p><i class=\"fa fa-code\"></i> <a href=\"https://api.backdropcms.org\">Check out the API</a></p>\r\n\r\n",
-                    "format": "full_html"
+                    "content": "<p>The <a href=\"http://docs.backdropcms.org/\">Documentation &amp; API Website</a> contains our list of public functions, <a href=\"https://docs.backdropcms.org/api/backdrop/core!includes!module.inc/group/hooks/1\">hooks</a>, and sub-system documentation. It also contains all the <a href=\"https://docs.backdropcms.org/change-records\">change records</a> documenting differences between Drupal 7 and Backdrop.</p>\r\n\r\n<p><i class=\"fa fa-code\"></i> <a href=\"https://api.backdropcms.org\">Check out the API</a></p>",
+                    "format": "full_html",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
                 "uuid": "edd5e9bd-56e8-499e-8f00-b7cb7b4f4b0a",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "259b344a-ad23-4a93-934a-74fc24a725b1": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "status": 1,
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "Github Issue Queue",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<p>The Issue Queue is where all discussion happens around adding new features or fixing bugs. Backdrop also has a handful of other <a href=\"https://backdropcms.org/backdrop-cms-github\">repositories and queues</a>.\r\n</p>\r\n\r\n<i class=\"fa fa-github\"></i> <a href=\"http://github.com/backdrop/backdrop-issues/issues\">Browse the core Issue Queue</a>",
+                    "format": "full_html",
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "259b344a-ad23-4a93-934a-74fc24a725b1",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -257,30 +319,24 @@
                 }
             }
         },
-        "36ba10f1-d0f3-4e17-ad00-ff5114fedc38": {
-            "plugin": "views:providers-block_2",
+        "0238c274-e742-4442-8e00-b6dfe1b33924": {
+            "plugin": "layout:custom_block",
             "data": {
                 "status": 1,
-                "module": "views",
-                "delta": "providers-block_2",
+                "module": "layout",
+                "delta": "custom_block",
                 "settings": {
-                    "link_to_view": null,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "100",
-                    "offset": 0,
-                    "path": "service-providers",
-                    "fields_override": null,
                     "title_display": "default",
-                    "title": "",
+                    "title": "Professional Services",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "allowed": [],
-                    "path_override": false
+                    "content": "<p>\r\n    Check out professional service providers for <a href=\"https://backdropcms.org/support/services/hosting\">Hosting</a> and <a href=\"https://backdropcms.org/support/services\">Development </a>for Backdrop CMS.&nbsp;\r\n</p>",
+                    "format": "filtered_html",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "36ba10f1-d0f3-4e17-ad00-ff5114fedc38",
+                "uuid": "0238c274-e742-4442-8e00-b6dfe1b33924",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -291,30 +347,24 @@
                 }
             }
         },
-        "e21a9e69-e89f-4b7a-b809-9e961daa1208": {
-            "plugin": "views:providers-block_3",
+        "4a0593db-19db-4d2e-aa51-81c80eaf0598": {
+            "plugin": "layout:custom_block",
             "data": {
                 "status": 1,
-                "module": "views",
-                "delta": "providers-block_3",
+                "module": "layout",
+                "delta": "custom_block",
                 "settings": {
-                    "link_to_view": null,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "100",
-                    "offset": 0,
-                    "path": "service-providers",
-                    "fields_override": null,
                     "title_display": "default",
-                    "title": "",
+                    "title": "Social Media",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
-                    "allowed": [],
-                    "path_override": false
+                    "content": "<h3>\r\n    BlueSky\r\n</h3>\r\n<p>\r\n    Backdrop has an official BlueSky account at <a href=\"https://bsky.app/profile/backdropcms.bsky.social\">@backdropcms.bsky.social</a>.\r\n</p>\r\n<h3>\r\n    Mastodon\r\n</h3>\r\n<p>\r\n    Backdrop has an official Mastodon account at <a href=\"https://phpc.social/@backdropcms\">@backdropcms.</a> [phpc.social]\r\n</p>\r\n<h3>\r\n    Twitter\r\n</h3>\r\n<p>\r\n    Backdrop has an official Twitter account at <a href=\"http://twitter.com/backdropcms\">@backdropcms</a>.\r\n</p>\r\n<h3>\r\n    Facebook\r\n</h3>\r\n<p>\r\n    Backdrop has an official Facebook page at <a href=\"http://www.facebook.com/backdropcms\">http://www.facebook.com/backdropcms</a>.\r\n</p>\r\n<h3>\r\n    LinkedIn\r\n</h3>\r\n<p>\r\n    Backdrop has an official LinkedIn group at <a href=\"https://www.linkedin.com/groups/6930143\">https://www.linkedin.com/groups/6930143</a>.\r\n</p>",
+                    "format": "filtered_html",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "e21a9e69-e89f-4b7a-b809-9e961daa1208",
+                "uuid": "4a0593db-19db-4d2e-aa51-81c80eaf0598",
                 "style": {
                     "plugin": "default",
                     "data": {
