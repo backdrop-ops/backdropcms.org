@@ -162,6 +162,7 @@
     text-decoration: underline;
   }
   .block-views-news-block .feed-icon {
+    overflow: hidden; /* Prevents horizontal scrollbar */
     text-align: right;
     position: relative;
     top: -10px;
