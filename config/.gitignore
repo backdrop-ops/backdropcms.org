@@ -1,10 +1,15 @@
+# Ignore all readmes
+*/README.md
+
 # Ignore dev for local
 dev-active/*.json
 dev-active/.htaccess
 
+# Ingore beta server changes (is this what we want?)
+beta-active/*
 
 # Ignore specific config files in staging
-staging/devel.settings.json
-staging/menu.menu.devel.json
-
+*/devel.settings.json
+*/menu.menu.devel.json
+*/stage_file_proxy.settings.json
 

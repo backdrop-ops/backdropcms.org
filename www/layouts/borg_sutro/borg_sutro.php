@@ -20,6 +20,10 @@ function template_preprocess_layout__borg_sutro(&$variables) {
     $top_region_count++;
   }
 
+  $variables['corner_spacer_class'] = '';
+  $variables['corner_container_class'] ='';
+  $variables['top_column_classes'] = array();
+
   if ($top_region_count) {
     switch ($top_region_count) {
       case 1:
