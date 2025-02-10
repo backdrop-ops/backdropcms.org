@@ -18,6 +18,8 @@
  * @see page.tpl.php
  */
 function backdropcms_preprocess_page(&$variables) {
+  $path = backdrop_get_path('theme', 'backdropcms');
+
   $variables['fp'] = '';
   $user_pages = array('login', 'register', 'password');
   if (arg(0) == 'user') {
@@ -42,6 +44,11 @@ function backdropcms_preprocess_page(&$variables) {
       <!-- End Facebook Pixel Code -->';
     }
   }
+
+  if (backdrop_is_front_page()) {
+    backdrop_add_css($path . '/css/page-front.css');
+  }
+
 }
 
 /**

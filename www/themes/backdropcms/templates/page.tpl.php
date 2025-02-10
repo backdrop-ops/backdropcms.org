@@ -11,6 +11,8 @@
   <head>
     <?php print backdrop_get_html_head(); ?>
     <title><?php print $head_title; ?></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <?php print backdrop_get_css(); ?>
     <?php print backdrop_get_js(); ?>
     <?php print $fp; ?>

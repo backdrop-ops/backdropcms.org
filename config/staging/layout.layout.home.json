@@ -8,7 +8,7 @@
     "module": null,
     "weight": -9,
     "storage": 1,
-    "layout_template": "borg_sutro",
+    "layout_template": "borg_sutro_grid",
     "disabled": false,
     "settings": {
         "title": "",
@@ -29,10 +29,14 @@
             "af96a11b-a617-457e-8e00-e6a56cf0f640"
         ],
         "top2": [
-            "231ef900-0d0f-4d58-a43f-636a2b11e958"
+            "56fbf81f-ffaa-4e4b-be06-6fe88d598872"
         ],
         "top3": [
-            "e66902ae-5fac-47b7-8500-b84bff8c4dd9"
+            "55c7ed91-2227-4fca-8828-404c2beef9d6"
+        ],
+        "top4": [
+            "305bb9ac-2a47-4c96-b602-2ec6d07e9949",
+            "f6eb4543-8e49-46d2-aa60-968e3c0ab21d"
         ],
         "content": [],
         "half1": [
@@ -208,90 +212,135 @@
             }
         },
         "af96a11b-a617-457e-8e00-e6a56cf0f640": {
-            "plugin": "layout:custom_block",
+            "plugin": "block:home_card_performance",
             "data": {
                 "status": 1,
-                "module": "layout",
-                "delta": "custom_block",
+                "module": "block",
+                "delta": "home_card_performance",
                 "settings": {
                     "title_display": "default",
-                    "title": "What is Backdrop CMS?",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "delta": "home_card_performance",
+                        "description": "",
+                        "reusable": true
+                    },
                     "contexts": [],
-                    "content": "<p>\r\n    Backdrop is a free and Open Source Content Management System that helps you build modern, comprehensive websites on a reasonable budget.\r\n</p>\r\n<p>\r\n    A fork of the successful Drupal project, it's an <a href=\"/drupal-alternative\">excellent alternative</a>&nbsp;for organizations of all sizes.\r\n</p>",
-                    "format": "filtered_html",
-                    "admin_label": "",
-                    "admin_description": ""
+                    "admin_label": "Home Card - Performance",
+                    "admin_description": "",
+                    "title": ""
                 },
                 "uuid": "af96a11b-a617-457e-8e00-e6a56cf0f640",
                 "style": {
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
+                            "classes": "dark-hero-card dark-hero-card--performance"
                         }
                     }
                 }
             }
         },
-        "231ef900-0d0f-4d58-a43f-636a2b11e958": {
-            "plugin": "views:showcase-block_2",
+        "56fbf81f-ffaa-4e4b-be06-6fe88d598872": {
+            "plugin": "block:home_card_functionality",
             "data": {
                 "status": 1,
-                "module": "views",
-                "delta": "showcase-block_2",
+                "module": "block",
+                "delta": "home_card_functionality",
                 "settings": {
-                    "link_to_view": 0,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "1",
-                    "offset": 0,
-                    "path": "showcase",
-                    "fields_override": null,
                     "title_display": "default",
-                    "title": "",
                     "style": "default",
-                    "block_settings": [],
+                    "block_settings": {
+                        "delta": "home_card_functionality",
+                        "description": "",
+                        "reusable": true
+                    },
                     "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": [],
-                    "admin_label": "",
-                    "admin_description": ""
+                    "admin_label": "Home Card - Functionality",
+                    "admin_description": "",
+                    "title": ""
                 },
-                "uuid": "231ef900-0d0f-4d58-a43f-636a2b11e958",
+                "uuid": "56fbf81f-ffaa-4e4b-be06-6fe88d598872",
                 "style": {
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": ""
+                            "classes": "dark-hero-card dark-hero-card--functionality"
                         }
                     }
                 }
             }
         },
-        "e66902ae-5fac-47b7-8500-b84bff8c4dd9": {
-            "plugin": "block:backdrop_live",
+        "55c7ed91-2227-4fca-8828-404c2beef9d6": {
+            "plugin": "block:home_card_d7",
             "data": {
                 "status": 1,
                 "module": "block",
-                "delta": "backdrop_live",
+                "delta": "home_card_d7",
                 "settings": {
                     "title_display": "default",
-                    "title": "",
                     "style": "default",
                     "block_settings": {
-                        "delta": "backdrop_live",
-                        "description": "Promote Backdrop LIVE",
+                        "delta": "home_card_d7",
+                        "description": "",
                         "reusable": true
                     },
                     "contexts": [],
-                    "admin_label": "",
+                    "admin_label": "Home Card - D7",
+                    "admin_description": "",
+                    "title": ""
+                },
+                "uuid": "55c7ed91-2227-4fca-8828-404c2beef9d6",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "dark-hero-card dark-hero-card--d7"
+                        }
+                    }
+                }
+            }
+        },
+        "305bb9ac-2a47-4c96-b602-2ec6d07e9949": {
+            "plugin": "block:home_card_manage_content",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "home_card_manage_content",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "Home Card - Manage Content",
                     "admin_description": ""
                 },
-                "uuid": "e66902ae-5fac-47b7-8500-b84bff8c4dd9",
+                "uuid": "305bb9ac-2a47-4c96-b602-2ec6d07e9949",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "dark-hero-card dark-hero-card--content"
+                        }
+                    }
+                }
+            }
+        },
+        "f6eb4543-8e49-46d2-aa60-968e3c0ab21d": {
+            "plugin": "block:home_card_cta",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "home_card_cta",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "Home Card - CTA",
+                    "admin_description": ""
+                },
+                "uuid": "f6eb4543-8e49-46d2-aa60-968e3c0ab21d",
                 "style": {
                     "plugin": "default",
                     "data": {

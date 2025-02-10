@@ -1,0 +1,289 @@
+/*******************************************************************************
+ * page-front.css
+ *
+ * Contains styles only needed for the front page of the site.
+ *
+ * These elements were separated from the compontents.css file because there is
+ * a lot of code in here that's not needed for most of the site, so it didn't
+ * need to be loaded all the time.
+ ******************************************************************************/
+
+body[class] {
+  font-family: "IBM Plex Sans", "Open Sans", Helvetica, sans-serif;
+  font-optical-sizing: auto;
+  font-variation-settings: "wdth" 100;
+}
+
+.layout--grid-2025 .container {
+  max-width: 100%;
+}
+
+.tagline-block__headline-wrapper {
+  color: #fff;
+}
+
+.block-borg-blocks-tagline {
+  position: relative;
+  z-index: 0;
+  color: #fff;
+  background: #000 url(../images/diagonal-grid.svg) center bottom;
+  background-size: 580px;
+}
+
+.block-borg-blocks-tagline p {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+/* Gradients to overlay background image */
+.block-borg-blocks-tagline:before,
+.block-borg-blocks-tagline .block-content:before,
+.block-borg-blocks-tagline .block-content:after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  display: block;
+}
+
+.block-borg-blocks-tagline:before {
+  top: 0;
+  right:0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to bottom, #0005 75%, #000);
+}
+
+.block-borg-blocks-tagline .block-content:before {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 144px;
+  background: linear-gradient(to left, #0000, #000c);
+}
+
+.block-borg-blocks-tagline .block-content:after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 144px;
+  background: linear-gradient(to right, #0000, #000c);
+}
+
+.block-borg-blocks-tagline .block-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+  padding: 7.5rem 2rem;
+  /* 28px at desktop in mockup */
+  font-size: clamp(18px, 2.5vw ,1.75rem);
+  text-align: center;
+  /* This media query should match the width on .tagline-block__headline-wrapper */
+  @media (min-width: 30em) {
+    width: min-content;
+  }
+}
+
+.visual-tag {
+  display: block;
+  width: min-content;
+  margin: 0 auto;
+  padding: 0.571em 1.143em;
+  border: 1px solid #01FDA6;
+  font-family: "IBM Plex Mono", Consolas, 'Courier New', Courier, monospace;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.143;
+  white-space: nowrap;
+  background: #0008;
+}
+
+.tagline-block__headline-wrapper[class] {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+  /* 100px at desktop in mock */
+  font-size: clamp(1.5em, 8vw, 3.57em);
+  line-height: 0.96;
+  font-weight: 600;
+  color: #fff;
+  @media (min-width: 30em) {
+    width: 10em;
+  }
+  @media (min-width: 48em) {
+    /* 100px at desktop in mock */
+    font-size: 3.57em;
+  }
+}
+
+.block-borg-blocks-tagline .block-content p {
+  font: inherit;
+}
+
+.tagline-block__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  justify-content: center;
+}
+
+.tagline-block__button {
+  display: inline-block;
+  font-size: 1.125rem;
+  padding: 0.6em 1.111em;
+  color: #fff;
+  background: #000;
+}
+
+.tagline-block__button:hover,
+.tagline-block__button:focus {
+  color: #fff;
+  background: #222;
+}
+
+.tagline-block__button--primary {
+  background: var(--color__accent--primary);
+}
+
+.tagline-block__button--primary:hover,
+.tagline-block__button--primary:focus {
+  background: var(--color__accent--primary--dark);
+}
+
+
+/**
+ * Dark Hero Cards
+ */
+.l-top__wrapper {
+  --dark-hero-card__max-width: 18em;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  color: #fff;
+  /* 1.78em is measured height of the CTA */
+  padding: 0 32px 32px;
+  background: #000;
+}
+@media (min-width: 48em) {
+  .l-top__wrapper {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(2, minmax(0, var(--dark-hero-card__max-width)));
+    padding: 0 64px calc(64px + 1.78em + 24px);
+  }
+}
+@media (min-width: 75em) {
+  .l-top__wrapper {
+    grid-template-columns: repeat(4, minmax(0, var(--dark-hero-card__max-width)));
+  }
+}
+
+.l-top__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.dark-hero-card {
+  --dark-hero-card__border-color: #303030;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: var(--dark-hero-card__max-width);
+  height: 100%;
+  margin-inline: auto;
+  padding: 32px;
+  border: 1px solid var(--dark-hero-card__border-color);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.dark-hero-card:before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  background: var(--color__accent--primary--light);
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.dark-hero-card:after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 0;
+  height: 0;
+  border: 12px solid #000;
+  border-top-color: var(--dark-hero-card__border-color);
+  border-left-color: var(--dark-hero-card__border-color);
+}
+
+.dark-hero-card--performance:before {
+  mask-image: url(../images/rocket-launch.svg);
+}
+
+.dark-hero-card--functionality:before {
+  mask-image: url(../images/puzzle-piece.svg);
+}
+
+.dark-hero-card--d7:before {
+  mask-image: url(../images/drop.svg);
+}
+
+.dark-hero-card--content:before {
+  mask-image: url(../images/browser.svg);
+}
+
+.dark-hero-card h2 {
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+}
+
+.dark-hero-card p {
+  margin: 0;
+  font: inherit;
+}
+
+.dark-hero-card p + p {
+  margin-top: 0.75em;
+}
+
+.block-block-home-card-cta {
+  text-align: right;
+}
+
+.block-block-home-card-cta {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  @media (min-width: 48em) {
+    position: absolute;
+    top: calc(100% + 24px);
+    right: 0;
+  }
+}
+
+.top-cards__cta {
+  display: inline-block;
+  padding: 0.25em 0;
+  font-weight: 600;
+  color: inherit;
+  box-shadow: inset 0 -1px 0 0 var(--color__accent--primary--light);
+}
+
+.top-cards__cta:hover,
+.top-cards__cta:focus {
+  color: inherit;
+  box-shadow: inset 0 -2px 0 0 var(--color__accent--primary--light);
+}
