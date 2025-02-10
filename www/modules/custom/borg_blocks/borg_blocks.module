@@ -8,6 +8,16 @@
  * Implements hook_block_info().
  */
 function borg_blocks_block_info() {
+  // New home page blocks
+  $blocks['resources'] = array(
+    'info' => t('Get Started with Backdrop'),
+    'description' => t('Home page: Resources section'),
+  );
+  $blocks['community'] = array(
+    'info' => t('Join the community'),
+    'description' => t('Home page: Community section'),
+  );
+
   $blocks['branding'] = array(
     'info' => t('Branding'),
     'description' => t('Backdrop CMS logomark and wordmark.'),
@@ -15,6 +25,10 @@ function borg_blocks_block_info() {
   $blocks['tagline'] = array(
     'info' => t('Tagline & Download'),
     'description' => t('Tagline and download'),
+  );
+  $blocks['audiences'] = array(
+    'info' => t('Backdrop for Audiences'),
+    'description' => t('Homepage block'),
   );
   $blocks['greeting'] = array(
     'info' => t('Greeting'),
@@ -43,6 +57,79 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
   $block = array();
 
   switch ($delta) {
+    case 'resources':
+      $block_title = '<div class="visual-tag">Resources</div>';
+      $block_title .= '<div class="b-resources__title">Get Started with Backdrop</div>';
+
+      $copy = t('Our documentation is written and maintained for people, by people, just like our code.');
+
+      $resource_links = array(
+        'api' => array(
+          'url' => 'https://api.backdropcms.org',
+          'name' => t('Documentation & API'),
+          'more' => t('Find complete documentation for people who are using Backdrop CMS.'),
+        ),
+        'forum' => array(
+          'url' => 'https://forum.backdropcms.org',
+          'name' => t('Visit the Backdrop Forum'),
+          'more' => t('Visit our forum with questions. All answers will be provided with dignity and respect.'),
+        ),
+        'hours' => array(
+          'url' => '/support/meetings',
+          'name' => t('Join Office Hours'),
+          'more' => t('Visit our virtual office hours every Wednesday from 12-2 pm EST'),
+        ),
+      );
+      $items = array();
+      foreach ($resource_links as $resource) {
+        $link_content = '<div class="b-resources__resource-name">' . $resource['name'] . '</div>';
+        $link_content .= $resource['more'];
+        $items[] = l($link_content, $resource['url'], array('html' => TRUE));
+      }
+      $attributes = array('class' => array('b-resources__links'));
+      $resources = theme('item_list', array('items' => $items, 'attributes' => $attributes));
+
+      $block['subject'] = $block_title;
+      $block['content'] = array(
+        'copy' => $copy,
+        'resources' => $resources,
+      );
+      break;
+
+    case 'community':
+      $block_title = '<div class="visual-tag">Get Involved</div>';
+      $block_title .= '<div class="b-community__title">Join the community</div>';
+
+      $copy = t('Whether you’re a developer, designer, or enthusiast, your contributions make Backdrop better for everyone. Join a vibrant open source community.');
+
+      $button_attributes = array(
+        'class' => array('borg__button borg__button--primary', 'borg__button--right-arrow'));
+      $options = array('attributes' => $button_attributes);
+      $button = l(t('Join the conversation'), 'https://forum.backdropcms.org', $options);
+
+      $image_path = backdrop_get_path('module', 'borg_blocks') . '/images/';
+      $photo_files = array(
+        'Backdrop-BDay-Nantes.jpg',
+        'Backdrop-BDay-Oakland.jpg',
+        'Justin-Laryn.jpg',
+        'migrating-backdrop-on-pantheon.jpg',
+        'tcbackdrop.jpg',
+      );
+      $items = array();
+      foreach ($photo_files as $filename) {
+        $items[] = theme('image', array('path' => $image_path . $filename));
+      }
+      $attributes = array('class' => array('b-community__photos'));
+      $photos = theme('item_list', array('items' => $items, 'attributes' => $attributes));
+
+      $block['subject'] = $block_title;
+      $block['content'] = array(
+        'copy' => $copy,
+        'photos' => $photos,
+        'button' => $button,
+      );
+      break;
+
     case 'branding':
       $options = array('attributes' => array('class' => array('site-name')));
       $output = l(t('backdrop'), '', $options);
@@ -70,6 +157,11 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
       }
       break;
 
+    case 'audiences':
+      $block['subject'] = NULL;
+      $block['content'] = borg_blocks_audiences($settings);
+      break;
+
     case 'upgrade':
 
       $block['subject'] = t('Upgrade from Drupal 7');
@@ -95,45 +187,119 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
 function borg_blocks_tagline($settings) {
   $version = check_plain($settings['version']);
 
-  $demo_attributes = array('class' => array('button', 'demo'));
+  $button_class_name = 'borg__button';
   if (module_exists('tugboat')) {
-    $demo_text = t('Demo Backdrop');
-    $demo_link = l($demo_text, 'demo', array('attributes' => $demo_attributes, 'html' => TRUE));
+    $demo_text = t('Demo Backdrop CMS');
+    $demo_link = l($demo_text, 'demo',
+      array(
+        'attributes' => array(
+          'class' => array(
+            $button_class_name,
+            $button_class_name . '--primary',
+          )
+        ),
+        'html' => TRUE,
+      )
+    );
   }
   else {
     $pantheon_url = 'https://dashboard.pantheon.io/sites/create?upstream_id=bf703821-4c18-45a1-88b8-3d9ec302273d';
     $demo_text = t('Backdrop on Pantheon');
-    $demo_link = l($demo_text, $pantheon_url, array('attributes' => $demo_attributes, 'html' => TRUE));
+    $demo_link = l($demo_text, $pantheon_url,
+      array(
+        'attributes' => array(
+          'class' => array(
+            $button_class_name,
+            $button_class_name . '--primary',
+          )
+        ),
+        'html' => TRUE,
+      )
+    );
+
   }
 
   $dl_url = 'https://github.com/backdrop/backdrop/releases/download/' . $version . '/backdrop.zip';
-  $dl_text = t('Download Backdrop') . ' <span class="version">v ' . $version . '</span>';
-  $dl_attributes = array('class' => array('button', 'download'));
-  $download_link = l($dl_text, $dl_url, array('attributes' => $dl_attributes, 'html' => TRUE));
+  $dl_text = t('Download Backdrop&nbsp;CMS') . ' <span class="version">v&nbsp;' . $version . '</span>';
 
-  //$output  = '<h1 class="page-title">Backdrop CMS</h1>';
-  $output  = '<h1>Backdrop CMS</h1>';
-  $output .= '<h2>Put your content center stage.</h2>';
-  //$output .= '<p>Backdrop is the free and Open Source Content Management System<br>that helps you build modern, comprehensive websites for businesses and non-profits.</p>';
+  $download_link = l($dl_text, $dl_url,
+    array(
+      'attributes' => array(
+        'class' => array(
+          $button_class_name,
+          $button_class_name . '--secondary',
+        )
+      ),
+      'html' => TRUE,
+    )
+  );
 
-  $output .= '<div class="tagline-section section-demo">';
-  $output .=   $demo_link;
-  $output .= '  <p class="subtext">';
-  $output .=      l(t('more ways to try'), 'try-backdrop');
-  $output .= '  </p>';
-  $output .= '</div>';
+  $output  =
+    '<h1 class="tagline-block__headline-wrapper">' .
+      '<span class="tagline-block__primary-text">'. t('Put your content center stage') . '</span>' .
+    '</h1>' .
+    '<p>' .
+      t('Backdrop CMS is a free and Open Source Content Management System that helps you build modern, comprehensive websites on a reasonable budget.') .
+    '</p>';
 
+  $output .= '<ul class="tagline-block__ctas">';
+  $output .=   '<li>' . $demo_link . '</li>';
+  $output .=   '<li>' . $download_link . '</li>';
+  $output .= '</ul>';
 
-  $requirements = l(t('requirements'), 'requirements');
-  $installing = l(t('installing'), 'installation');
-  $upgrading = l(t('upgrading'), 'upgrade');
+  return $output;
+}
 
-  $output .= '<div class="tagline-section section-download">';
-  $output .= $download_link;
-  $output .= '  <p class="subtext">';
-  $output .=      $requirements . ' | ' . $installing . ' | ' . $upgrading;
-  $output .= '  </p>';
-  $output .= '</div>';
+function borg_blocks_audiences($settings) {
+  $button_class_name = 'borg__button';
+
+  $output =
+    '<span class="audiences-block__visual-tag visual-tag">'.
+      t('Sites Showcase') .
+    '</span> ' .
+    '<h2 class="audiences-block__title">' .
+      t('A flexible CMS for any person or organization') .
+    '</h2>' .
+    '<div class="audiences-block__body">' .
+        t('A flexible CMS for any person or organization') .
+      '<p>' .
+        t('Backdrop CMS is being used across more than 3,600+ sites for both individuals and organization of all kinds.') .
+      '</p>' .
+      l(
+        t('See the Showcase'),
+        'showcase',
+        array(
+          'attributes' => array(
+            'class' => array(
+              $button_class_name,
+              $button_class_name . '--primary',
+              $button_class_name . '--right-arrow',
+            )
+          ),
+        )
+      ) .
+    '</div>';
+
+  $output .= '<ul class="audiences-block__organizations chonky-link-bar__outer-wrapper">';
+  $audiences_menu = menu_load_links('menu-cms-audiences');
+  foreach ($audiences_menu as $key => $audiences_menu_item) {
+    if (!empty($audiences_menu_item['hidden'])) {
+      break;
+    }
+    $mlid = $audiences_menu_item['mlid'];
+
+    $options = $audiences_menu_item['options'];
+    $options['attributes']['class'][] = 'audiences-block__organization-link';
+    $options['attributes']['class'][] = 'audiences-block__organization-link--' . $mlid;
+    $options['attributes']['class'][] = 'chonky-link-bar';
+
+    $output .=
+      '<li class="audiences-block__organization-item chonky-link-bar__item">' .
+        l($audiences_menu_item['link_title'], $audiences_menu_item['link_path'], $options) .
+      '</li>';
+  }
+
+  $output .= '</ul>';
 
   return $output;
 }
@@ -226,5 +392,25 @@ function borg_blocks_form_supporter_node_form_alter(&$form, &$form_state, $form_
   if (current_path() == 'node/19') {
     unset($form['title']['#attributes']['autofocus']);
     $form['actions']['submit']['#value'] = t('Submit');
+  }
+}
+
+/**
+ * Prepare variables for Block templates.
+ *
+ * @see block--borg-blocks--resources.tpl.php
+ * @see block--borg-blocks--community.tpl.php
+ */
+function borg_blocks_preprocess_block(&$variables){
+  if ($variables['block']->module == 'borg_blocks') {
+    if ($variables['block']->delta == 'community') {
+      $variables['copy'] = $variables['content']['copy'];
+      $variables['photos'] = $variables['content']['photos'];
+      $variables['button'] = $variables['content']['button'];
+    }
+    elseif ($variables['block']->delta == 'resources') {
+      $variables['copy'] = $variables['content']['copy'];
+      $variables['resources'] = $variables['content']['resources'];
+    }
   }
 }
