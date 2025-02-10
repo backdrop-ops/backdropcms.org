@@ -16,7 +16,7 @@
     "user_picture_dimensions": "1024x1024",
     "user_picture_file_size": "800",
     "user_picture_guidelines": "",
-    "site_frontpage": "node/19",
+    "site_frontpage": "home",
     "cache": 1,
     "page_cache_maximum_age": "300",
     "page_compression": 1,
@@ -46,7 +46,8 @@
         "2": "main-menu",
         "3": "management",
         "5": "user-menu",
-        "7": "menu-footer-menu"
+        "7": "menu-footer-menu",
+        "8": "menu-cms-audiences"
     },
     "menu_route_handler": "layout_route_handler",
     "file_default_scheme": "public",
@@ -120,5 +121,11 @@
     },
     "install_version": "1.0.x",
     "user_login_appearance": "tabs",
-    "login_admin_theme": 1
+    "login_admin_theme": 1,
+    "site_logo_attributes": {
+        "width": "",
+        "height": ""
+    },
+    "site_logo_upload": "",
+    "site_favicon_upload": ""
 }
