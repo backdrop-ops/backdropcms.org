@@ -5,19 +5,6 @@
  * element classes used as base identifiers in this file should start with .l-
  ******************************************************************************/
 
-/*******************************************************************************
- * News page overrides
- ******************************************************************************/
-.layout--double-fixed-inner-rev .l-sidebar-inner h2 {
-  font-size: 2.375rem; /* 38px */
-  margin: 0 0 .5em 0;
-}
-@media (min-width: 850px) {
-  .layout--double-fixed-inner-rev .l-sidebar-inner .block {
-    margin-left: 25px;
-    margin-bottom: 25px;
-  }
-}
 
 /*******************************************************************************
  * Showcase page overrides
@@ -74,27 +61,11 @@ body.support-services-contractors .page-title {
 }
 
 /*******************************************************************************
- * Bottom region link blue.
- * - About pages
-******************************************************************************/
-body.node-type-book .l-bottom {
-  margin-top: 100px;
-  border-top: 3px solid #E8E6E5;
-  background-color: #007CBA;
-  color: #fff;
-  padding-bottom: 0;
-}
-body.node-type-book .l-footer {
-  margin-top: 0;
-}
-
-/*******************************************************************************
  * Bottom region dark gray.
  * - Home page
  * - Resources page
  * - Support page(s)
  *   - Put back Contractors page
- * - About pages
  ******************************************************************************/
 body.support .l-bottom,
 body.support-services .l-bottom,
