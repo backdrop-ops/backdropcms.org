@@ -58,6 +58,7 @@
             "a9d84586-db47-4e43-a75d-93e603166bfb"
         ],
         "bottom": [
+            "72cf526c-2292-46bd-a017-2395ee4c228b",
             "ab1a0052-0f34-4e5d-ba00-00f61a41f411"
         ],
         "footer": [
@@ -313,7 +314,8 @@
                     "block_settings": [],
                     "contexts": [],
                     "admin_label": "Home Card - Manage Content",
-                    "admin_description": ""
+                    "admin_description": "",
+                    "title": ""
                 },
                 "uuid": "305bb9ac-2a47-4c96-b602-2ec6d07e9949",
                 "style": {
@@ -338,7 +340,8 @@
                     "block_settings": [],
                     "contexts": [],
                     "admin_label": "Home Card - CTA",
-                    "admin_description": ""
+                    "admin_description": "",
+                    "title": ""
                 },
                 "uuid": "f6eb4543-8e49-46d2-aa60-968e3c0ab21d",
                 "style": {
@@ -585,6 +588,32 @@
                     "exposed": []
                 },
                 "uuid": "a9d84586-db47-4e43-a75d-93e603166bfb",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "72cf526c-2292-46bd-a017-2395ee4c228b": {
+            "plugin": "borg_blocks:audiences",
+            "data": {
+                "status": 1,
+                "module": "borg_blocks",
+                "delta": "audiences",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "72cf526c-2292-46bd-a017-2395ee4c228b",
                 "style": {
                     "plugin": "default",
                     "data": {

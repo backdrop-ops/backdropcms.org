@@ -617,7 +617,9 @@
                     "fields": false,
                     "header": true,
                     "pager": false,
-                    "pager_options": false
+                    "pager_options": false,
+                    "arguments": false,
+                    "relationships": false
                 },
                 "pager": {
                     "type": "full",
@@ -644,7 +646,27 @@
                         }
                     }
                 },
-                "pager_options": null
+                "pager_options": null,
+                "arguments": {
+                    "name": {
+                        "id": "name",
+                        "table": "taxonomy_term_data",
+                        "field": "name",
+                        "relationship": "field_organization_tid"
+                    }
+                },
+                "relationships": {
+                    "field_organization_tid": {
+                        "id": "field_organization_tid",
+                        "table": "field_data_field_organization",
+                        "field": "field_organization_tid",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "term from field_organization",
+                        "required": 0
+                    }
+                }
             }
         },
         "feed_1": {
