@@ -61,6 +61,17 @@ body.support-services-contractors .page-title {
 }
 
 /*******************************************************************************
+ * Page title less bottom margin (because of h2)
+ * - Showcase page
+ * - Contact page
+ * - Contractors page
+ ******************************************************************************/
+body.project-search h1.page-title
+body.showcase h1.page-title {
+  margin-bottom: 0;
+}
+
+/*******************************************************************************
  * Bottom region dark gray.
  * - Home page
  * - Resources page
