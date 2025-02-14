@@ -16,6 +16,10 @@ function borg_blocks_block_info() {
     'info' => t('Tagline & Download'),
     'description' => t('Tagline and download'),
   );
+  $blocks['audiences'] = array(
+    'info' => t('Backdrop for Audiences'),
+    'description' => t('Homepage block'),
+  );
   $blocks['greeting'] = array(
     'info' => t('Greeting'),
     'description' => t('Backdrop CMS greeting block.'),
@@ -70,6 +74,11 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
       }
       break;
 
+    case 'audiences':
+      $block['subject'] = NULL;
+      $block['content'] = borg_blocks_audiences($settings);
+      break;
+
     case 'upgrade':
 
       $block['subject'] = t('Upgrade from Drupal 7');
@@ -95,7 +104,7 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
 function borg_blocks_tagline($settings) {
   $version = check_plain($settings['version']);
 
-  $button_class_name = 'tagline-block__button';
+  $button_class_name = 'borg__button';
   if (module_exists('tugboat')) {
     $demo_text = t('Demo Backdrop CMS');
     $demo_link = l($demo_text, 'demo',
@@ -154,6 +163,59 @@ function borg_blocks_tagline($settings) {
   $output .= '<ul class="tagline-block__ctas">';
   $output .=   '<li>' . $demo_link . '</li>';
   $output .=   '<li>' . $download_link . '</li>';
+  $output .= '</ul>';
+
+  return $output;
+}
+
+function borg_blocks_audiences($settings) {
+  $button_class_name = 'borg__button';
+
+  $output =
+    '<span class="audiences-block__visual-tag visual-tag">'.
+      t('Sites Showcase') .
+    '</span> ' .
+    '<h2 class="audiences-block__title">' .
+      t('A flexible CMS for any person or organization') .
+    '</h2>' .
+    '<div class="audiences-block__body">' .
+        t('A flexible CMS for any person or organization') .
+      '<p>' .
+        t('Backdrop CMS is being used across more than 3,600+ sites for both individuals and organization of all kinds.') .
+      '</p>' .
+      l(
+        t('See the Showcase'),
+        'showcase',
+        array(
+          'attributes' => array(
+            'class' => array(
+              $button_class_name,
+              $button_class_name . '--primary',
+            )
+          ),
+        )
+      ) .
+    '</div>';
+
+  $output .= '<ul class="audiences-block__organizations chonky-link-bar__outer-wrapper">';
+  $audiences_menu = menu_load_links('menu-cms-audiences');
+  foreach ($audiences_menu as $key => $audiences_menu_item) {
+    if (!empty($audiences_menu_item['hidden'])) {
+      break;
+    }
+    $mlid = $audiences_menu_item['mlid'];
+
+    $options = $audiences_menu_item['options'];
+    $options['attributes']['class'][] = 'audiences-block__organization-link';
+    $options['attributes']['class'][] = 'audiences-block__organization-link--' . $mlid;
+    $options['attributes']['class'][] = 'chonky-link-bar';
+
+    $output .=
+      '<li class="audiences-block__organization-item chonky-link-bar__item">' .
+        l($audiences_menu_item['link_title'], $audiences_menu_item['link_path'], $options) .
+      '</li>';
+  }
+
   $output .= '</ul>';
 
   return $output;
