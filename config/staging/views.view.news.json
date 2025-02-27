@@ -151,10 +151,10 @@
                         "separator": ", ",
                         "field_api_classes": 0
                     },
-                    "view_node": {
-                        "id": "view_node",
-                        "table": "views_entity_node",
-                        "field": "view_node",
+                    "field_image": {
+                        "id": "field_image",
+                        "table": "field_data_field_image",
+                        "field": "field_image",
                         "relationship": "none",
                         "group_type": "group",
                         "ui_name": "",
@@ -166,7 +166,7 @@
                             "make_link": 0,
                             "path": "",
                             "absolute": 0,
-                            "external": false,
+                            "external": 0,
                             "replace_spaces": 0,
                             "path_case": "none",
                             "trim_whitespace": 0,
@@ -200,7 +200,24 @@
                         "hide_empty": 0,
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
-                        "text": "Read more"
+                        "click_sort_column": "fid",
+                        "type": "image",
+                        "settings": {
+                            "image_style": "hero_featured",
+                            "image_link": "content",
+                            "image_float": "",
+                            "image_load": "lazy"
+                        },
+                        "group_column": "",
+                        "group_columns": [],
+                        "group_rows": true,
+                        "delta_limit": "all",
+                        "delta_offset": 0,
+                        "delta_reversed": false,
+                        "delta_first_last": false,
+                        "multi_type": "separator",
+                        "separator": ", ",
+                        "field_api_classes": 0
                     }
                 },
                 "filters": {

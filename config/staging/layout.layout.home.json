@@ -38,12 +38,11 @@
             "305bb9ac-2a47-4c96-b602-2ec6d07e9949",
             "f6eb4543-8e49-46d2-aa60-968e3c0ab21d"
         ],
-        "content": [],
-        "half1": [
+        "content": [
             "712c691e-6273-4634-8000-d97d82d86e88"
         ],
+        "half1": [],
         "half2": [
-            "78355c13-bb46-4609-a607-7fa6192a1afd",
             "f763943b-8712-44ff-ba00-e45044734b4b",
             "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1"
         ],
@@ -51,14 +50,13 @@
             "65611a78-5d6e-4d50-8705-058169d6120c",
             "1bcb4583-cc63-43dc-8908-08af956e6975"
         ],
-        "below1": [
-            "67447c68-4227-4401-ad00-f50c7b1a6690"
-        ],
+        "below1": [],
         "below2": [
             "a9d84586-db47-4e43-a75d-93e603166bfb"
         ],
         "bottom": [
             "72cf526c-2292-46bd-a017-2395ee4c228b",
+            "67447c68-4227-4401-ad00-f50c7b1a6690",
             "ab1a0052-0f34-4e5d-ba00-00f61a41f411"
         ],
         "footer": [
@@ -383,40 +381,10 @@
                 }
             }
         },
-        "78355c13-bb46-4609-a607-7fa6192a1afd": {
-            "plugin": "block:books",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "books",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "books",
-                        "description": "",
-                        "reusable": true
-                    },
-                    "contexts": [],
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "78355c13-bb46-4609-a607-7fa6192a1afd",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "f763943b-8712-44ff-ba00-e45044734b4b": {
             "plugin": "block:resources",
             "data": {
-                "status": 1,
+                "status": 0,
                 "module": "block",
                 "delta": "resources",
                 "settings": {
@@ -446,7 +414,7 @@
         "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1": {
             "plugin": "layout:custom_block",
             "data": {
-                "status": 1,
+                "status": 0,
                 "module": "layout",
                 "delta": "custom_block",
                 "settings": {
@@ -472,7 +440,7 @@
         "65611a78-5d6e-4d50-8705-058169d6120c": {
             "plugin": "views:showcase-block_1",
             "data": {
-                "status": 1,
+                "status": 0,
                 "module": "views",
                 "delta": "showcase-block_1",
                 "settings": {
@@ -507,7 +475,7 @@
         "1bcb4583-cc63-43dc-8908-08af956e6975": {
             "plugin": "borg_project_metrics:backdrop_project_metrics",
             "data": {
-                "status": 1,
+                "status": 0,
                 "module": "borg_project_metrics",
                 "delta": "backdrop_project_metrics",
                 "settings": {
@@ -528,45 +496,10 @@
                 }
             }
         },
-        "67447c68-4227-4401-ad00-f50c7b1a6690": {
-            "plugin": "views:news-block",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "news-block",
-                "settings": {
-                    "link_to_view": null,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "1",
-                    "offset": 0,
-                    "path": "news",
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
-                },
-                "uuid": "67447c68-4227-4401-ad00-f50c7b1a6690",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "a9d84586-db47-4e43-a75d-93e603166bfb": {
             "plugin": "views:supporters_home-block_2",
             "data": {
-                "status": 1,
+                "status": 0,
                 "module": "views",
                 "delta": "supporters_home-block_2",
                 "settings": {
@@ -624,10 +557,45 @@
                 }
             }
         },
+        "67447c68-4227-4401-ad00-f50c7b1a6690": {
+            "plugin": "views:news-block",
+            "data": {
+                "status": 1,
+                "module": "views",
+                "delta": "news-block",
+                "settings": {
+                    "link_to_view": null,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "1",
+                    "offset": 0,
+                    "path": "news",
+                    "fields_override": null,
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": []
+                },
+                "uuid": "67447c68-4227-4401-ad00-f50c7b1a6690",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
         "ab1a0052-0f34-4e5d-ba00-00f61a41f411": {
             "plugin": "borg_blocks:upgrade",
             "data": {
-                "status": 1,
+                "status": 0,
                 "module": "borg_blocks",
                 "delta": "upgrade",
                 "settings": {
