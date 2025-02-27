@@ -293,7 +293,7 @@
 .view-showcase .col-inner,
 .view-showcase .fields {
   background-color: #fff;
-  border: 2px solid #EDEFF0;
+  border: 1px solid #EDEFF0;
   border-radius: 4px;
   padding-bottom: 15px;
 }
@@ -515,6 +515,59 @@
 }
 
 /*******************************************************************************
+ * Exposed form on Showcase
+*******************************************************************************/
+
+.block-views--exp-showcase-page {
+  width: 100%; /* no idea why this would be necessary */
+}
+.showcase .l-top .views-exposed-form {
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+.showcase .l-top .views-exposed-form select {
+  background: transparent;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .showcase .l-top .views-exposed-form {
+    margin-top: 15px;
+  }
+  .showcase .l-top .views-exposed-form .form-item {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .showcase .l-top .views-exposed-form select {
+    min-width: 400px;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .showcase .l-top .views-exposed-form label,
+  .showcase .l-top .views-exposed-form .form-item {
+    margin-right: 15px;
+  }
+  .showcase .l-top .views-exposed-form select {
+    min-width: 620px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .showcase .l-top .views-exposed-form {
+    margin-top: 60px;
+  }
+  .showcase .l-top .views-exposed-form select {
+    min-width: 842px;
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .showcase .l-top .views-exposed-form {
+    margin-top: 75px;
+  }
+  .showcase .l-top .views-exposed-form select {
+    min-width: 1020px;
+  }
+}
+
+/*******************************************************************************
  * Platforms view
  ******************************************************************************/
 .view-platforms .views-row {
@@ -559,6 +612,13 @@
   .view-term {
     margin-bottom: 90px;
   }
+}
+
+/*******************************************************************************
+ * View: Backdrop mentions
+ ******************************************************************************/
+.view-backdrop-on-the-web h3 {
+  margin-bottom: .33em;
 }
 
 /*******************************************************************************
