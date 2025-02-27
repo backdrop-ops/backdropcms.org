@@ -65,6 +65,28 @@ function backdropcms_preprocess_node(&$variables) {
   }
 }
 
+/**
+ * Implements template_preprocess_block().
+ */
+function backdropcms_preprocess_block(&$variables) {
+  if ($variables['title'] == 'Latest News') {
+    // Massively simplifying the markup of this block so CSS layout is easier to accomplish
+    // Getting the single result from the view, and rendering it without views markup bloat
+    $data = views_get_view_result('news', 'block');
+
+    $content =
+      '<h3 class="latest-news__title">' . $data[0]->node_title . '</h3>' .
+      '<div class="latest-news__body">' .
+        $data[0]->field_body[0]['rendered']['#markup'] .
+      '</div>' .
+      '<div class="latest-news__image">' .
+        render($data[0]->field_field_image[0]['rendered']) .
+      '</div>';
+
+    $variables['content'] = $content;
+  }
+}
+
 /******************************************************************************
  * Theme function overrides
  ******************************************************************************/
