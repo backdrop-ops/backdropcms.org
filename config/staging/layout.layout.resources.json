@@ -2,7 +2,7 @@
     "_config_name": "layout.layout.resources",
     "path": "node/%",
     "name": "resources",
-    "title": "Resources",
+    "title": "Meetings",
     "description": null,
     "renderer_name": "standard",
     "module": null,
@@ -21,8 +21,7 @@
         ],
         "top": [],
         "content": [
-            "2b25a428-72d4-4957-8100-00e8ac1f78ac",
-            "9a65a35d-23c6-4800-af00-fc16ed0825b8"
+            "2b25a428-72d4-4957-8100-00e8ac1f78ac"
         ],
         "sidebar": [
             "f0a1a87f-75fe-4d79-a261-97875c307a34",
@@ -90,33 +89,6 @@
                             "title_classes": "block-title",
                             "content_tag": "div",
                             "content_classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "9a65a35d-23c6-4800-af00-fc16ed0825b8": {
-            "plugin": "block:books",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "books",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "books",
-                        "reusable": true
-                    },
-                    "contexts": []
-                },
-                "uuid": "9a65a35d-23c6-4800-af00-fc16ed0825b8",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
                         }
                     }
                 }
