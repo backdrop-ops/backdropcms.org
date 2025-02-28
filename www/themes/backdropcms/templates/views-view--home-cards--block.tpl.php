@@ -8,7 +8,7 @@
  * @ingroup views_templates
  */
 ?>
-<div class="<?php print implode(' ', $classes); ?> l-top__wrapper">
+<div class="<?php print implode(' ', $classes); ?>">
   <?php print render($title_prefix); ?>
   <?php if ($title): ?>
     <?php print $title; ?>
@@ -32,29 +32,27 @@
     </div>
   <?php endif; ?>
 
-  <?php if ($rows): ?>
-    <div class="l-top__wrapper">
-      <?php print (is_array($rows)) ? backdrop_render($rows) : $rows; ?>
-    </div>
-  <?php elseif ($empty): ?>
-    <!-- div class="view-empty" -->
-      <?php print $empty; ?>
-    <!-- /div -->
-  <?php endif; ?>
+  <div class="l-top__wrapper">
+    <?php if ($rows): ?>
+        <?php print (is_array($rows)) ? backdrop_render($rows) : $rows; ?>
+    <?php elseif ($empty): ?>
+      <!-- div class="view-empty" -->
+        <?php print $empty; ?>
+      <!-- /div -->
+    <?php endif; ?>
 
-  <?php if ($pager): ?>
-    <?php print $pager; ?>
-  <?php endif; ?>
+    <?php if ($more): ?>
+      <?php print $more; ?>
+    <?php endif; ?>
+
+    <?php if ($pager): ?>
+      <?php print $pager; ?>
+    <?php endif; ?>
+  </div>
 
   <?php if ($attachment_after): ?>
     <div class="attachment attachment-after">
       <?php print $attachment_after; ?>
-    </div>
-  <?php endif; ?>
-
-  <?php if ($more): ?>
-    <div class="l-topwrapper">
-      <?php print $more; ?>
     </div>
   <?php endif; ?>
 
