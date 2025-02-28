@@ -359,7 +359,11 @@
                     "type": "views_query",
                     "options": []
                 },
-                "path": "features"
+                "path": "features",
+                "title": "Features of Backdrop CMS",
+                "defaults": {
+                    "title": false
+                }
             }
         },
         "block_1": {
