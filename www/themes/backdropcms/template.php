@@ -198,3 +198,7 @@ function backdropcms_field__body__docs($variables) {
     }
   }
 }
+
+function backdropcms_system_powered_by() {
+  return '<span>' . t('<a href="@url">Backdrop CMS</a> and the Backdrop logo are registered trademarks of the Softrware Freedom conservancy.', array('@url' => 'https://backdropcms.org')) . '</span>';
+}
