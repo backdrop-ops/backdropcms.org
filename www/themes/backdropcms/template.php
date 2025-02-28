@@ -20,35 +20,35 @@
 function backdropcms_preprocess_page(&$variables) {
   $path = backdrop_get_path('theme', 'backdropcms');
 
-  $variables['fp'] = '';
-  $user_pages = array('login', 'register', 'password');
-  if (arg(0) == 'user') {
-    if (!in_array(arg(1), $user_pages) && (is_numeric(arg(1)) && arg(2) != 'edit')) {
-      $variables['fp'] = "
-      <!-- Facebook Pixel Code -->
-      <script>
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '1687153224763628');
-        fbq('track', 'PageView');
-      </script>" . '
-      <noscript><img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id=1687153224763628&ev=PageView&noscript=1"
-      /></noscript>
-      <!-- End Facebook Pixel Code -->';
-    }
-  }
-
   if (backdrop_is_front_page()) {
     backdrop_add_css($path . '/css/page-front.css');
+
+    // Load IBM Plex variable fonts.
+    backdrop_add_css(
+      'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap',
+      array('type' => 'external')
+    );
+
+    // Make the icons available for use in CSS.
+    $home_icons = array();
+    $view_features = views_get_view_result('product_features', 'block');
+    foreach ($view_features as $count => $item) {
+      if ($count < 4) {
+        $home_icons[] = $item->field_field_icon_class[0]['raw']['safe_value'];
+      }
+    }
+    backdrop_add_icons($home_icons);
   }
 
+  if (arg(0) == 'features') {
+    // Make all the icons available for use in CSS.
+    $home_icons = array();
+    $view_features = views_get_view_result('product_features', 'block');
+    foreach ($view_features as $count => $item) {
+      $home_icons[] = $item->field_field_icon_class[0]['raw']['safe_value'];
+    }
+    backdrop_add_icons($home_icons);
+  }
 }
 
 /**
@@ -56,11 +56,30 @@ function backdropcms_preprocess_page(&$variables) {
  */
 function backdropcms_preprocess_node(&$variables) {
   if ($variables['type'] == 'feature') {
-    $variables['icon_class'] = '';
+    $variables['icon'] = '';
     $node = $variables['node'];
     if (property_exists($node, 'field_icon_class') && !empty($node->field_icon_class)) {
-      $class = $node->field_icon_class[LANGUAGE_NONE][0]['safe_value'];
-      $variables['icon_class'] = $class;
+      $name = $node->field_icon_class[LANGUAGE_NONE][0]['safe_value'];
+      $variables['icon'] = icon('$name');
+      backdrop_add_icons(array($name));
+    }
+  }
+  // For showcase nodes include a special stylesheet.
+  if ($variables['type'] == 'showcase') {
+    backdrop_add_css($path . '/css/node-showcase.css');
+  }
+  // Get the theme location.
+  $path = backdrop_get_path('theme', 'borg');
+
+  // For project nodes include a special stylesheet.
+  if (($variables['type'] == 'core') || substr($variables['type'], 0, 8) == 'project_'){
+    if ($variables['type'] == 'project_release') {
+
+    }
+    else {
+      unset($variables['content']['project_release_downloads']['#prefix']);
+      $variables['classes'][] = 'node-project';
+      backdrop_add_css($path . '/css/node-project.css');
     }
   }
 }

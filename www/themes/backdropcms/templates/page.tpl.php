@@ -15,7 +15,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <?php print backdrop_get_css(); ?>
     <?php print backdrop_get_js(); ?>
-    <?php print $fp; ?>
   </head>
   <body class="<?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($body_attributes); ?>>
     <?php print $page; ?>
