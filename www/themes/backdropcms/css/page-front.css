@@ -275,20 +275,24 @@ article.node .content .field {
   border-left-color: var(--dark-hero-card__border-color);
 }
 
-.dark-hero-card--performance:before {
-  mask-image: url(../images/rocket-launch.svg);
+.dark-hero-card--performance:before, /* delete this line */
+.dark-hero-card--rocket-launch:before {
+  mask: var(--icon-rocket-launch) no-repeat center center;
 }
 
-.dark-hero-card--functionality:before {
-  mask-image: url(../images/puzzle-piece.svg);
+.dark-hero-card--functionality:before, /* delete this line */
+.dark-hero-card--puzzle-piece:before {
+  mask: var(--icon-puzzle-piece) no-repeat center center;
 }
 
-.dark-hero-card--d7:before {
-  mask-image: url(../images/drop.svg);
+.dark-hero-card--d7:before, /* delete this line */
+.dark-hero-card--drop:before {
+  mask: var(--icon-drop) no-repeat center center;
 }
 
-.dark-hero-card--content:before {
-  mask-image: url(../images/browser.svg);
+.dark-hero-card--content:before, /* delete this line */
+.dark-hero-card--browser:before {
+  mask: var(--icon-browser) no-repeat center center;
 }
 
 .dark-hero-card h2 {
