@@ -153,7 +153,6 @@ function borg_blocks_tagline($settings) {
 
   $output  =
     '<h1 class="tagline-block__headline-wrapper">' .
-      '<span class="tagline-block__visual-tag visual-tag">'. t('Backdrop CMS') . '</span> ' .
       '<span class="tagline-block__primary-text">'. t('Put your content center stage') . '</span>' .
     '</h1>' .
     '<p>' .
