@@ -18,7 +18,7 @@
 
   <?php if ($content['header']): ?>
     <header class="l-header" role="banner" aria-label="<?php print t('Site header'); ?>">
-      <div class="l-header-inner">
+      <div class="l-header-inner container container-fluid">
         <div class="row">
           <?php print $content['header']; ?>
         </div>
@@ -66,7 +66,7 @@
   <?php endif; ?>
 
   <div class="l-wrapper">
-    <div class="l-wrapper-inner">
+    <div class="l-wrapper-inner container container-fluid">
 
       <?php if ($messages): ?>
         <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
@@ -119,7 +119,7 @@
 
   <?php if ($content['below1'] || $content['below2']): ?>
     <div class="l-wrapper">
-      <div class="l-wrapper-inner">
+      <div class="l-wrapper-inner container container-fluid">
 
         <div class="l-middle l-middle-bottom l-halves row">
           <div class="l-halves-region col-md-6">
@@ -136,7 +136,7 @@
 
   <?php if ($content['footer']): ?>
     <footer class="l-footer"  role="footer">
-      <div class="l-footer-inner">
+      <div class="l-footer-inner container container-fluid">
         <div class="row">
           <?php print $content['footer']; ?>
         </div>

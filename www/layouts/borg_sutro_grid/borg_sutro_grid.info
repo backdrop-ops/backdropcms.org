@@ -28,5 +28,8 @@ default region = content
 ; Preview
 preview = borg-sutro.png
 
+; Include the Bootstrap4 Grid System
+libraries[] = bootstrap4-gs
+
 ; Stylesheet
 stylesheets[all][] = borg_sutro_grid.css
