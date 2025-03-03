@@ -93,8 +93,14 @@ function backdropcms_preprocess_block(&$variables) {
     // Getting the single result from the view, and rendering it without views markup bloat
     $data = views_get_view_result('news', 'block');
 
+    $title = $data[0]->node_title;
+    if (isset($data[0]->nid)) {
+      $article_url = backdrop_get_path_alias('node/' . $data[0]->nid);
+      $title = '<a href="' . $article_url . '">' . $title . '</a>';
+    }
+
     $content =
-      '<h3 class="latest-news__title">' . $data[0]->node_title . '</h3>' .
+      '<h3 class="latest-news__title">' . $title . '</h3>' .
       '<div class="latest-news__body">' .
         $data[0]->field_body[0]['rendered']['#markup'] .
       '</div>' .
