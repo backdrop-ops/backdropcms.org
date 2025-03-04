@@ -1,0 +1,228 @@
+<?php
+/**
+ * @file
+ * Allow users to override the default publishing options for nodes they can
+ * edit without giving them the 'administer nodes' permission.
+ */
+
+/**
+ * Impelements hook_config_info().
+ */
+function override_node_options_config_info() {
+  $prefixes['override_node_options.settings'] = array(
+    'label' => t('Override Node Options'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_permisson().
+ */
+function override_node_options_permission() {
+  // Global permissions which apply to all node types.
+  $permissions = array(
+    'administer override node options' => array(
+      'title' => t('Administer override node options.'),
+    ),
+  );
+
+  $show_perms = config_get('override_node_options.settings', 'permissions');
+  if (in_array('general', $show_perms, TRUE)) {
+    $permissions += array(
+      'override all published option' => array(
+        'title' => t('Override published option for all node types.'),
+      ),
+      'override all promote to front page option' => array(
+        'title' => t('Override promote to front page option for all node types.'),
+      ),
+      'override all sticky option' => array(
+        'title' => t('Override sticky option for all node types.'),
+      ),
+      'override all revision option' => array(
+        'title' => t('Override revision option for all node types.'),
+      ),
+      'enter all revision log entry' => array(
+        'title' => t('Enter revision log entry for all node types.'),
+      ),
+      'override all authored on option' => array(
+        'title' => t('Override authored on option for all node types.'),
+      ),
+      'override all authored by option' => array(
+        'title' => t('Override authored by option for all node types.'),
+      ),
+    );
+    if (module_exists('comment')) {
+      $permissions += array(
+        'override all comment setting option' => array(
+          'title' => t('Override comment setting option for all node types.'),
+        ),
+      );
+    }
+  }
+
+  if (in_array('specific', $show_perms, TRUE)) {
+    // Generate override node permissions for all applicable node types.
+    foreach (node_permissions_get_configured_types() as $type) {
+      $permissions += override_node_options_list_permissions($type);
+    }
+  }
+
+  return $permissions;
+}
+
+/**
+ * Helper function to generate override node permission list for a given type.
+ *
+ * @param $type
+ *   The machine-readable name of the node type.
+ * @return
+ *   An array of permission names and description.
+ */
+function override_node_options_list_permissions($type, $name = NULL) {
+  if (!$name) {
+    $name = node_type_get_name($type);
+  }
+  $type = check_plain($type);
+
+  $permissions = array(
+    "override $type published option" => array(
+      'title' => t('Override %type_name published option.', array('%type_name' => $name)),
+    ),
+    "override $type promote to front page option" => array(
+      'title' => t('Override %type_name promote to front page option.', array('%type_name' => $name)),
+    ),
+    "override $type sticky option" => array(
+      'title' => t('Override %type_name sticky option.', array('%type_name' => $name)),
+    ),
+    "override $type revision option" => array(
+      'title' => t('Override %type_name revision option.', array('%type_name' => $name)),
+    ),
+    "enter $type revision log entry" => array(
+      'title' => t('Enter %type_name revision log entry.', array('%type_name' => $name)),
+    ),
+    "override $type authored on option" => array(
+      'title' => t('Override %type_name authored on option.', array('%type_name' => $name)),
+    ),
+    "override $type authored by option" => array(
+      'title' => t('Override %type_name authored by option.', array('%type_name' => $name)),
+    ),
+    "override $type URL alias" => array(
+      'title' => t('Override %type_name URL alias', array('%type_name' => $name)),
+    ),
+  );
+  if (module_exists('comment')) {
+    $permissions += array(
+      "override $type comment setting option" => array(
+        'title' => t('Override %type_name comment setting option.', array('%type_name' => $name)),
+      ),
+    );
+  }
+
+  return $permissions;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function override_node_options_menu() {
+  $items['admin/config/content/override-node-options'] = array(
+    'title' => 'Override Node Options',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('override_node_options_settings_form'),
+    'access arguments' => array('administer override node options'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'override_node_options.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function override_node_options_form_alter(&$form, $form_state, $form_id) {
+  if (strstr($form_id, '_node_form') && !user_access('administer nodes')) {
+    // Get a copy of the current node object.
+    $node = $form['#node'];
+
+    // Add access to the 'Revision information: log message' field
+    $form['revision_information']['log']['#access'] = user_access('enter ' . $node->type . ' revision log entry') || user_access('enter all revision log entry');
+
+    // Add access to the 'Revision information' fieldset.
+    $form['revision_information']['revision']['#access'] = user_access('override ' . $node->type . ' revision option') || user_access('override all revision option');
+    $form['revision_information']['#access'] = element_get_visible_children($form['revision_information']);
+
+    // Add access to the 'Authoring information' fieldset.
+    $form['author']['name']['#access'] = user_access('override ' . $node->type . ' authored by option') || user_access('override all authored by option');
+    $form['author']['date']['#access'] = user_access('override ' . $node->type . ' authored on option') || user_access('override all authored on option');
+    if (array_key_exists('#access', $form['author'])) {
+      $form['author']['#access'] |= (bool) element_get_visible_children($form['author']);
+    }
+    else {
+      $form['author']['#access'] = element_get_visible_children($form['author']);
+    }
+
+    // Add access to the 'Publishing options' fieldset.
+    $form['options']['status']['#access'] = user_access('override ' . $node->type . ' published option') || user_access('override all published option');
+    $form['options']['scheduled']['#access'] = user_access('override ' . $node->type . ' published option') || user_access('override all published option');
+    $form['options']['promote']['#access'] = user_access('override ' . $node->type . ' promote to front page option') || user_access('override all promote to front page option');
+    $form['options']['sticky']['#access'] = user_access('override ' . $node->type . ' sticky option') || user_access('override all sticky option');
+
+    // If access is granted for promote or sticky, show (but disable) status.
+      // This keeps core's JS working, and correctly populates the vertical tab.
+    if ($form['options']['status']['#access'] == FALSE && ($form['options']['promote']['#access'] || $form['options']['sticky']['#access'])) {
+      $form['options']['status']['#access'] = TRUE;
+      $form['options']['status']['#disabled'] = TRUE;
+    }
+
+    if (array_key_exists('#access', $form['options'])) {
+      $form['options']['#access'] |= (bool) element_get_visible_children($form['options']);
+    }
+    else {
+      $form['options']['#access'] = element_get_visible_children($form['options']);
+    }
+
+    // Add access to the 'Comment settings' fieldset.
+    if (module_exists('comment') && isset($form['comment_settings'])) {
+      $form['comment_settings']['#access'] |= user_access('override ' . $node->type . ' comment setting option') || user_access('override all comment setting option');
+    }
+
+    // @todo Remove when http://drupal.org/node/683630 is fixed.
+    if ($form['author']['name']['#access']) {
+      $form['#submit'][] = 'override_node_options_submit_node';
+    }
+
+    if (!empty($form['#node_edit_form']) && !user_access('administer nodes')) {
+      $form['author']['#attached']['js'][1]['data']['anonymous'] = $form['author']['name']['#default_value'];
+    }
+
+    // Fire after_build function for some overrides that will be overriden if set at this stage
+    $form['#after_build'][] = 'override_node_options_after_build';
+  }
+}
+
+/*
+ * Alter the node form after form_alter functions have been called
+ */
+function override_node_options_after_build($form, &$form_state) {
+  // Add additional access to the 'Path' fieldset.
+  $form['path']['#access'] = (user_access('create url aliases') || user_access('administer url aliases') || user_access('override ' . $form['#node']->type . ' URL alias'));
+
+  return $form;
+}
+
+/**
+ * Perform additional node form submission processing normally skipped by core.
+ *
+ * @todo Remove when http://drupal.org/node/683630 is fixed.
+ */
+function override_node_options_submit_node($form, &$form_state) {
+  // Populate the "authored by" field.
+  if ($account = user_load_by_name($form_state['values']['name'])) {
+    $form_state['values']['uid'] = $account->uid;
+  }
+  else {
+    $form_state['values']['uid'] = 0;
+  }
+}

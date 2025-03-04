@@ -1,0 +1,11 @@
+type = module
+name = Override node options
+description = Allow non-admins to override the default options for nodes.
+backdrop = 1.x
+
+configure = admin/config/content/override-node-options
+
+; Added by Backdrop CMS packaging script on 2022-09-23
+project = override_node_options
+version = 1.x-1.13.2
+timestamp = 1663981637

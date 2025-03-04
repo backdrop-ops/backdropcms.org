@@ -1,0 +1,39 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the override_node_options module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function override_node_options_install() {
+  db_update('system')->fields(array(
+    'weight' => 1
+  ))
+  ->condition('name', 'override_node_options', '=')
+  ->execute();
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function override_node_options_update_last_removed() {
+  // We've removed the 1.x-1.x version of mymodule, including database updates.
+  // For the 1.x-2.x version of the module, the next update function would be
+  // mymodule_update_1200().
+  return 7114;
+}
+
+/**
+ * Converts Drupal 7 variables to config.
+ */
+function override_node_options_update_1000(&$sandbox){
+  $defaults = array('general', 'specific');
+
+  $config = config('override_node_options.settings');
+  $config->set('permissions', update_variable_get('override_node_options_permissions', $defaults));
+  $config->save();
+
+  update_variable_del('override_node_options_permissions');
+}
