@@ -3,23 +3,28 @@
     "field_name": "field_icon_class",
     "entity_type": "node",
     "bundle": "feature",
-    "label": "Icon class",
+    "label": "Icon name",
     "widget": {
-        "weight": "0",
+        "weight": 0,
         "type": "text_textfield",
         "module": "text",
         "active": 1,
         "settings": {
-            "size": "10"
+            "size": "20"
         }
     },
-    "description": "Please select a CSS class for a <a href=\"http://fontawesome.io/icons/\">fontAwesome icon</a> and add it in this field. Example: <pre>fa-bicycle</pre>",
+    "description": "Please enter the name of the <a href=\"https://phosphoricons.com\">Phosphor Icon</a> to use for this feature. Example: <code>rocket-launch</code>",
     "required": 1,
     "deleted": 0,
-    "default_value": null,
+    "default_value": [
+        {
+            "value": "rocket-launch"
+        }
+    ],
     "default_value_function": null,
     "settings": {
         "text_processing": "0",
+        "allowed_formats": [],
         "user_register_form": false
     },
     "display": {
