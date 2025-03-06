@@ -196,7 +196,7 @@
                         "order": "DESC"
                     }
                 },
-                "title": "Website Admins",
+                "title": "Current Website Administrators",
                 "style_options": {
                     "grouping": [],
                     "row_class": "",
@@ -209,27 +209,28 @@
                 "relationships": []
             }
         },
-        "page": {
-            "display_title": "Page",
-            "display_plugin": "page",
+        "block_2": {
+            "display_title": "Developer Block",
+            "display_plugin": "block",
             "display_options": {
                 "query": {
                     "type": "views_query",
                     "options": []
                 },
-                "path": "website-admins"
+                "path": "website-admins",
+                "display_description": ""
             }
         },
-        "page_1": {
-            "display_title": "Page",
-            "display_plugin": "page",
+        "block_1": {
+            "display_title": "Editor Block",
+            "display_plugin": "block",
             "display_options": {
                 "query": {
                     "type": "views_query",
                     "options": []
                 },
                 "path": "website-editors",
-                "title": "Website Editors",
+                "title": "Current Website Editors",
                 "defaults": {
                     "title": false,
                     "filters": false,
@@ -338,7 +339,9 @@
                     "groups": {
                         "1": "AND"
                     }
-                }
+                },
+                "display_description": "",
+                "block_description": "Website Editors"
             }
         }
     }
