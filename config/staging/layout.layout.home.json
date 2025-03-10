@@ -8,7 +8,7 @@
     "module": null,
     "weight": -9,
     "storage": 1,
-    "layout_template": "borg_sutro",
+    "layout_template": "borg_sutro_grid",
     "disabled": false,
     "settings": {
         "title": "",
@@ -23,38 +23,33 @@
         ],
         "top": [
             "2ccf25c8-e89e-4531-b83a-585d462a1e02",
-            "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d"
+            "e50b4f98-4eb2-4ae0-9d3c-60932d8a5a6d",
+            "55c9ae11-1555-467f-9500-efd5ae2257a4"
         ],
         "top1": [
             "af96a11b-a617-457e-8e00-e6a56cf0f640"
         ],
         "top2": [
-            "231ef900-0d0f-4d58-a43f-636a2b11e958"
+            "56fbf81f-ffaa-4e4b-be06-6fe88d598872"
         ],
         "top3": [
-            "e66902ae-5fac-47b7-8500-b84bff8c4dd9"
+            "55c7ed91-2227-4fca-8828-404c2beef9d6"
         ],
-        "content": [],
-        "half1": [
+        "top4": [
+            "305bb9ac-2a47-4c96-b602-2ec6d07e9949",
+            "f6eb4543-8e49-46d2-aa60-968e3c0ab21d"
+        ],
+        "content": [
             "712c691e-6273-4634-8000-d97d82d86e88"
         ],
-        "half2": [
-            "78355c13-bb46-4609-a607-7fa6192a1afd",
-            "f763943b-8712-44ff-ba00-e45044734b4b",
-            "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1"
-        ],
-        "below": [
-            "65611a78-5d6e-4d50-8705-058169d6120c",
-            "1bcb4583-cc63-43dc-8908-08af956e6975"
-        ],
-        "below1": [
-            "67447c68-4227-4401-ad00-f50c7b1a6690"
-        ],
-        "below2": [
-            "a9d84586-db47-4e43-a75d-93e603166bfb"
-        ],
+        "half1": [],
+        "half2": [],
+        "below": [],
+        "below1": [],
+        "below2": [],
         "bottom": [
-            "ab1a0052-0f34-4e5d-ba00-00f61a41f411"
+            "72cf526c-2292-46bd-a017-2395ee4c228b",
+            "67447c68-4227-4401-ad00-f50c7b1a6690"
         ],
         "footer": [
             "c66acea2-a5a6-4e74-aa05-5ed51a7cb134"
@@ -207,48 +202,20 @@
                 }
             }
         },
-        "af96a11b-a617-457e-8e00-e6a56cf0f640": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "status": 1,
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "What is Backdrop CMS?",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "<p>\r\n    Backdrop is a free and Open Source Content Management System that helps you build modern, comprehensive websites on a reasonable budget.\r\n</p>\r\n<p>\r\n    A fork of the successful Drupal project, it's an <a href=\"/drupal-alternative\">excellent alternative</a>&nbsp;for organizations of all sizes.\r\n</p>",
-                    "format": "filtered_html",
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "af96a11b-a617-457e-8e00-e6a56cf0f640",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "231ef900-0d0f-4d58-a43f-636a2b11e958": {
-            "plugin": "views:showcase-block_2",
+        "55c9ae11-1555-467f-9500-efd5ae2257a4": {
+            "plugin": "views:product_features-block",
             "data": {
                 "status": 1,
                 "module": "views",
-                "delta": "showcase-block_2",
+                "delta": "product_features-block",
                 "settings": {
                     "link_to_view": 0,
-                    "more_link": false,
+                    "more_link": 1,
                     "use_pager": false,
                     "pager_id": 0,
-                    "items_per_page": "1",
+                    "items_per_page": "4",
                     "offset": 0,
-                    "path": "showcase",
+                    "path": "features",
                     "fields_override": null,
                     "title_display": "default",
                     "title": "",
@@ -261,7 +228,7 @@
                     "admin_label": "",
                     "admin_description": ""
                 },
-                "uuid": "231ef900-0d0f-4d58-a43f-636a2b11e958",
+                "uuid": "55c9ae11-1555-467f-9500-efd5ae2257a4",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -272,26 +239,138 @@
                 }
             }
         },
-        "e66902ae-5fac-47b7-8500-b84bff8c4dd9": {
-            "plugin": "block:backdrop_live",
+        "af96a11b-a617-457e-8e00-e6a56cf0f640": {
+            "plugin": "block:home_card_performance",
             "data": {
                 "status": 1,
                 "module": "block",
-                "delta": "backdrop_live",
+                "delta": "home_card_performance",
                 "settings": {
                     "title_display": "default",
-                    "title": "",
                     "style": "default",
                     "block_settings": {
-                        "delta": "backdrop_live",
-                        "description": "Promote Backdrop LIVE",
+                        "delta": "home_card_performance",
+                        "description": "",
                         "reusable": true
                     },
                     "contexts": [],
-                    "admin_label": "",
-                    "admin_description": ""
+                    "admin_label": "Home Card - Performance",
+                    "admin_description": "",
+                    "title": ""
                 },
-                "uuid": "e66902ae-5fac-47b7-8500-b84bff8c4dd9",
+                "uuid": "af96a11b-a617-457e-8e00-e6a56cf0f640",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "dark-hero-card dark-hero-card--performance"
+                        }
+                    }
+                }
+            }
+        },
+        "56fbf81f-ffaa-4e4b-be06-6fe88d598872": {
+            "plugin": "block:home_card_functionality",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "home_card_functionality",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "home_card_functionality",
+                        "description": "",
+                        "reusable": true
+                    },
+                    "contexts": [],
+                    "admin_label": "Home Card - Functionality",
+                    "admin_description": "",
+                    "title": ""
+                },
+                "uuid": "56fbf81f-ffaa-4e4b-be06-6fe88d598872",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "dark-hero-card dark-hero-card--functionality"
+                        }
+                    }
+                }
+            }
+        },
+        "55c7ed91-2227-4fca-8828-404c2beef9d6": {
+            "plugin": "block:home_card_d7",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "home_card_d7",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "home_card_d7",
+                        "description": "",
+                        "reusable": true
+                    },
+                    "contexts": [],
+                    "admin_label": "Home Card - D7",
+                    "admin_description": "",
+                    "title": ""
+                },
+                "uuid": "55c7ed91-2227-4fca-8828-404c2beef9d6",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "dark-hero-card dark-hero-card--d7"
+                        }
+                    }
+                }
+            }
+        },
+        "305bb9ac-2a47-4c96-b602-2ec6d07e9949": {
+            "plugin": "block:home_card_manage_content",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "home_card_manage_content",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "Home Card - Manage Content",
+                    "admin_description": "",
+                    "title": ""
+                },
+                "uuid": "305bb9ac-2a47-4c96-b602-2ec6d07e9949",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": "dark-hero-card dark-hero-card--content"
+                        }
+                    }
+                }
+            }
+        },
+        "f6eb4543-8e49-46d2-aa60-968e3c0ab21d": {
+            "plugin": "block:home_card_cta",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "home_card_cta",
+                "settings": {
+                    "title_display": "default",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "Home Card - CTA",
+                    "admin_description": "",
+                    "title": ""
+                },
+                "uuid": "f6eb4543-8e49-46d2-aa60-968e3c0ab21d",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -331,141 +410,22 @@
                 }
             }
         },
-        "78355c13-bb46-4609-a607-7fa6192a1afd": {
-            "plugin": "block:books",
+        "72cf526c-2292-46bd-a017-2395ee4c228b": {
+            "plugin": "borg_blocks:audiences",
             "data": {
                 "status": 1,
-                "module": "block",
-                "delta": "books",
+                "module": "borg_blocks",
+                "delta": "audiences",
                 "settings": {
                     "title_display": "default",
                     "title": "",
                     "style": "default",
-                    "block_settings": {
-                        "delta": "books",
-                        "description": "",
-                        "reusable": true
-                    },
+                    "block_settings": [],
                     "contexts": [],
                     "admin_label": "",
                     "admin_description": ""
                 },
-                "uuid": "78355c13-bb46-4609-a607-7fa6192a1afd",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "f763943b-8712-44ff-ba00-e45044734b4b": {
-            "plugin": "block:resources",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "resources",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "resources",
-                        "description": "",
-                        "reusable": true
-                    },
-                    "contexts": [],
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "f763943b-8712-44ff-ba00-e45044734b4b",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1": {
-            "plugin": "layout:custom_block",
-            "data": {
-                "status": 1,
-                "module": "layout",
-                "delta": "custom_block",
-                "settings": {
-                    "title_display": "default",
-                    "title": "Badges",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "content": "Linux Foundation Core Infrastructure Initiative\r\n\r\n<a href=\"https://bestpractices.coreinfrastructure.org/projects/4114\"><img src=\"https://bestpractices.coreinfrastructure.org/projects/4114/badge\"></a>",
-                    "format": "full_html"
-                },
-                "uuid": "a2d68242-5eb9-422e-8700-0fa9e7c6b9a1",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "65611a78-5d6e-4d50-8705-058169d6120c": {
-            "plugin": "views:showcase-block_1",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "showcase-block_1",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "3",
-                    "offset": 0,
-                    "path": "showcase",
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
-                },
-                "uuid": "65611a78-5d6e-4d50-8705-058169d6120c",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": "dark"
-                        }
-                    }
-                }
-            }
-        },
-        "1bcb4583-cc63-43dc-8908-08af956e6975": {
-            "plugin": "borg_project_metrics:backdrop_project_metrics",
-            "data": {
-                "status": 1,
-                "module": "borg_project_metrics",
-                "delta": "backdrop_project_metrics",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "1bcb4583-cc63-43dc-8908-08af956e6975",
+                "uuid": "72cf526c-2292-46bd-a017-2395ee4c228b",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -501,65 +461,6 @@
                     "exposed": []
                 },
                 "uuid": "67447c68-4227-4401-ad00-f50c7b1a6690",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "a9d84586-db47-4e43-a75d-93e603166bfb": {
-            "plugin": "views:supporters_home-block_2",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "supporters_home-block_2",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "16",
-                    "offset": 0,
-                    "path": null,
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
-                },
-                "uuid": "a9d84586-db47-4e43-a75d-93e603166bfb",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "ab1a0052-0f34-4e5d-ba00-00f61a41f411": {
-            "plugin": "borg_blocks:upgrade",
-            "data": {
-                "status": 1,
-                "module": "borg_blocks",
-                "delta": "upgrade",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": []
-                },
-                "uuid": "ab1a0052-0f34-4e5d-ba00-00f61a41f411",
                 "style": {
                     "plugin": "default",
                     "data": {
