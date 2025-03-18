@@ -1,0 +1,24 @@
+{
+    "_config_name": "field.bundle.file.image",
+    "bundle": "image",
+    "entity_type": "file",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "filename": {
+                "weight": "-10"
+            },
+            "preview": {
+                "weight": "-5"
+            }
+        },
+        "display": {
+            "file": {
+                "default": {
+                    "weight": "0",
+                    "visible": true
+                }
+            }
+        }
+    }
+}

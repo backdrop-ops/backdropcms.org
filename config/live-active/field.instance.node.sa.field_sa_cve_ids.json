@@ -11,7 +11,7 @@
         "active": 0,
         "settings": []
     },
-    "description": "See <a href=\"https://github.com/backdrop/backdrop-issues/blob/master/procedures/security--request-cve.md\" target=\"_blank\">instructions on how to request a CVE</a>. URL should be in the form https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-YYYY-XXXXX",
+    "description": "See <a href=\"https://github.com/backdrop/backdrop-issues/blob/master/procedures/security--request-cve.md\" target=\"_blank\">instructions on how to request a CVE</a>. URL should be in the form <code>https://www.cve.org/CVERecord?id=CVE-YYYY-XXXXX</code> (formerly https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-YYYY-XXXXX)",
     "required": 0,
     "deleted": 0,
     "default_value": null,
@@ -19,6 +19,7 @@
     "settings": {
         "validate_url": 1,
         "url": 0,
+        "type": "both",
         "title": "optional",
         "title_value": "",
         "title_label_use_field_label": 1,

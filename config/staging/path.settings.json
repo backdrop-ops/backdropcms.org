@@ -66,5 +66,12 @@
     "node_platform_pattern": "platform/[node:title]",
     "taxonomy_term_project_tags_pattern": "projects/tags/[term:name]",
     "taxonomy_term_organization_pattern": "[term:name]",
-    "node_press_pattern": "news/press-releases/[node:title]"
+    "node_press_pattern": "news/press-releases/[node:title]",
+    "node_book_pattern": "[node:title]",
+    "node_eyebrow_pattern": "",
+    "node_notification_pattern": "",
+    "node_supporter_pattern": "",
+    "node_webform_pattern": "",
+    "taxonomy_term_development_status_pattern": "",
+    "taxonomy_term_maintenance_status_pattern": ""
 }

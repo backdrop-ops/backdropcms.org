@@ -14,7 +14,14 @@
             "display_options": {
                 "query": {
                     "type": "views_query",
-                    "options": []
+                    "options": {
+                        "disable_sql_rewrite": 0,
+                        "distinct": 1,
+                        "pure_distinct": 1,
+                        "replica": 0,
+                        "query_comment": "",
+                        "query_tags": []
+                    }
                 },
                 "access": {
                     "type": "perm",

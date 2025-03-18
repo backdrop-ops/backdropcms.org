@@ -1,0 +1,50 @@
+{
+    "_config_name": "node.type.image",
+    "type": "image",
+    "name": "image",
+    "base": "node_content",
+    "module": "node",
+    "node_preview": "0",
+    "description": "These images will appear only in galleries, and will not be visible on a page of their own.",
+    "help": "",
+    "modified": true,
+    "disabled": false,
+    "has_title": true,
+    "title_label": "Administrative Name",
+    "settings": {
+        "formblock_expose": 0,
+        "formblock_show_help": 0,
+        "menu_default": 0,
+        "menu_options": {
+            "menu-more-developer-resources": 0,
+            "menu-footer-menu": 0,
+            "menu-handbook": 0,
+            "main-menu": 0,
+            "management": 0,
+            "user-menu": 0
+        },
+        "menu_parent": "main-menu:0",
+        "status_default": 1,
+        "scheduling_enabled": 0,
+        "promote_enabled": 1,
+        "promote_default": 0,
+        "sticky_enabled": 0,
+        "sticky_default": 0,
+        "revision_enabled": 0,
+        "revision_default": 0,
+        "node_preview": "0",
+        "node_submitted": 0,
+        "node_submitted_format": "[node:created:medium] by [node:author]",
+        "node_user_picture": true,
+        "hidden_path": 1,
+        "language": 0,
+        "node_permissions": true,
+        "project_behavior": "none",
+        "project_release_version_format": "!api#major%minor%patch#extra",
+        "project_release_api_versions": [
+            ""
+        ],
+        "project_release_type": ""
+    },
+    "orig_type": "image"
+}
