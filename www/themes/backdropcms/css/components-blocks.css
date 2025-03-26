@@ -4,6 +4,13 @@
  * Contains styles for blocks components.
  ******************************************************************************/
 
+.layout--double-fixed-case .l-sidebar .block {
+  margin-bottom: 15px;
+}
+.layout--double-fixed-case .l-sidebar .block:last-child {
+  margin-bottom: 0;
+}
+
 /*******************************************************************************
 * Leadership listings (pmc, committers, bug squad, etc)
 *******************************************************************************/
