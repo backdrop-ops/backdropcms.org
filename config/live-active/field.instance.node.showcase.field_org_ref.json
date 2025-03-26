@@ -1,0 +1,35 @@
+{
+    "_config_name": "field.instance.node.showcase.field_org_ref",
+    "field_name": "field_org_ref",
+    "entity_type": "node",
+    "bundle": "showcase",
+    "label": "Organization Credits",
+    "widget": {
+        "weight": "5",
+        "type": "entityreference_autocomplete",
+        "module": "entityreference",
+        "active": 1,
+        "settings": {
+            "match_operator": "CONTAINS",
+            "size": "60",
+            "hide_ids": 0,
+            "path": ""
+        }
+    },
+    "description": "Are there any organizations on this site that designed, built, hosted or otherwise were involved with creating or maintaining this website?",
+    "required": 0,
+    "deleted": 0,
+    "default_value": null,
+    "default_value_function": null,
+    "settings": {
+        "user_register_form": false
+    },
+    "display": {
+        "default": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "2",
+            "settings": []
+        }
+    }
+}

@@ -17,6 +17,7 @@
     },
     "settings": {
         "text_processing": "1",
+        "allowed_formats": [],
         "display_summary": 0,
         "user_register_form": false
     },
@@ -41,7 +42,7 @@
     "default_value": [
         {
             "summary": "",
-            "value": "<p>Backdrop CMS doesn't sufficiently FOO under the scenario BAR.</p>\r\n\r\n<p>This vulnerability is mitigated by the fact that an attacker must have a role with the permission \"administer FOO\".</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>A CVE has been requested, and this page will be updated as soon as an official number has been issued.</p>\r\n",
+            "value": "<p>\r\n    Backdrop CMS doesn't sufficiently FOO under the scenario BAR.\r\n</p>\r\n<p>\r\n    This vulnerability is mitigated by the fact that an attacker must have a role with the permission \"administer FOO\".\r\n</p>\r\n<p>\r\n    The Drupal project is not affected by this vulnerability.&nbsp;\r\n</p>\r\n<p>\r\n    &nbsp;\r\n</p>\r\n<p>\r\n    A CVE has been requested, and this page will be updated as soon as an official number has been issued.\r\n</p>",
             "format": "filtered_html"
         }
     ],
