@@ -28,26 +28,6 @@ function backdropcms_preprocess_page(&$variables) {
       'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap',
       array('type' => 'external')
     );
-
-    // Make the icons available for use in CSS.
-    $home_icons = array();
-    $view_features = views_get_view_result('product_features', 'block');
-    foreach ($view_features as $count => $item) {
-      if ($count < 4) {
-        $home_icons[] = $item->field_field_icon_class[0]['raw']['safe_value'];
-      }
-    }
-    backdrop_add_icons($home_icons);
-  }
-
-  if (arg(0) == 'features') {
-    // Make all the icons available for use in CSS.
-    $home_icons = array();
-    $view_features = views_get_view_result('product_features', 'block');
-    foreach ($view_features as $count => $item) {
-      $home_icons[] = $item->field_field_icon_class[0]['raw']['safe_value'];
-    }
-    backdrop_add_icons($home_icons);
   }
 }
 
@@ -109,6 +89,24 @@ function backdropcms_preprocess_block(&$variables) {
       '</div>';
 
     $variables['content'] = $content;
+  }
+}
+
+/**
+ * Preare varibles for views templates.
+ *
+ * @see views-view.tpl.php.
+ */
+function backdropcms_preprocess_views_view(&$variables) {
+  $view = $variables['view'];
+  if ($view->name == 'product_features') {
+
+    // Make the icons available for use in CSS.
+    $icons_needed = array();
+    foreach ($view->result as $count => $item) {
+      $icons_needed[] = $item->field_field_icon_class[0]['raw']['safe_value'];
+    }
+    backdrop_add_icons($icons_needed);
   }
 }
 
