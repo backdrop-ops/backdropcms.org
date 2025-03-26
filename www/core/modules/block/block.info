@@ -1,6 +1,6 @@
 type = module
-name = Block
-description = Controls the visual building blocks a page is constructed with. Blocks are boxes of content rendered into an area, or region, of a web page.
+name = Reusable Custom Blocks
+description = Allows custom blocks to be reused across different layouts.
 package = Layouts
 tags[] = Blocks
 tags[] = Site Architecture
@@ -9,7 +9,7 @@ backdrop = 1.x
 
 configure = admin/structure/block
 
-; Added by Backdrop CMS packaging script on 2025-01-08
+; Added by Backdrop CMS packaging script on 2025-03-19
 project = backdrop
-version = 1.29.3
-timestamp = 1736371781
+version = 1.30.2
+timestamp = 1742431268

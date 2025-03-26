@@ -46,7 +46,15 @@ scripts[] = js/script.js
 ; menu. Color module provides our defaults, so we just register a dummy setting.
 settings[color] = true
 
-; Added by Backdrop CMS packaging script on 2025-01-08
+; These defaults are used when the Basis theme is disabled but a sub-theme is
+; active. These can be overridden by a sub-theme's [theme].settings.json config
+; file or the sub-themes [theme].info file.
+settings[css_update] = "install"
+
+; An empty string is the same as "no updates".
+settings[css_update_version] = ""
+
+; Added by Backdrop CMS packaging script on 2025-03-19
 project = backdrop
-version = 1.29.3
-timestamp = 1736371781
+version = 1.30.2
+timestamp = 1742431268

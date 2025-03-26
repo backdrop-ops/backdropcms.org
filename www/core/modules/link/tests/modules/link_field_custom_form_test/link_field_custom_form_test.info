@@ -1,0 +1,15 @@
+type = module
+name = Link Custom Form Test
+description = Helper module to test custom forms and link fields.
+package = Testing
+backdrop = 1.x
+version = BACKDROP_VERSION
+
+dependencies[] = link
+
+hidden = TRUE
+
+; Added by Backdrop CMS packaging script on 2025-03-19
+project = backdrop
+version = 1.30.2
+timestamp = 1742431268
