@@ -87,10 +87,23 @@ function borg_preprocess_page(&$variables) {
   $arg0 = check_plain(arg(0));
   $arg1 = check_plain(arg(1));
   $arg2 = check_plain(arg(2));
-  // Add the Source Sans Pro font.
-  backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700', array('type' => 'external'));
-  // Add FontAwesome.
-  backdrop_add_js('https://use.fontawesome.com/baf3c35582.js', array('type' => 'external'));
+
+  // Load new font if we're on the homepage of the marketing site
+  if ($variables['is_front'] && strpos(path_to_theme(), 'backdropcms')) {
+    // Add the IBM Plex variable fonts
+    backdrop_add_css(
+      'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap',
+      array('type' => 'external')
+    );
+    //
+  }
+  else {
+    // Add the Source Sans Pro font.
+    backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700', array('type' => 'external'));
+    // Add FontAwesome.
+    backdrop_add_js('https://use.fontawesome.com/baf3c35582.js', array('type' => 'external'));
+  }
+
 
   // Add a body class based on the admin bar.
   if (module_exists('admin_bar') && user_access('admin_bar')) {

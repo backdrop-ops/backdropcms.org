@@ -30,7 +30,8 @@
         "user_register_form": false,
         "max_dimensions": "",
         "min_dimensions": "",
-        "orientate": 0
+        "orientate": 0,
+        "alt_field_required": 0
     },
     "display": {
         "default": {
@@ -49,6 +50,12 @@
             "label": "hidden",
             "type": "hidden",
             "weight": "6",
+            "settings": []
+        },
+        "card": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "2",
             "settings": []
         }
     }
