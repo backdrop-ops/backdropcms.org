@@ -35,6 +35,9 @@ function backdropcms_preprocess_page(&$variables) {
  * Preare varibles for node.tpl.php.
  */
 function backdropcms_preprocess_node(&$variables) {
+  // Get the theme location.
+  $path = backdrop_get_path('theme', 'borg');
+
   if ($variables['type'] == 'feature') {
     $variables['icon'] = '';
     $node = $variables['node'];
@@ -48,8 +51,6 @@ function backdropcms_preprocess_node(&$variables) {
   if ($variables['type'] == 'showcase') {
     backdrop_add_css($path . '/css/node-showcase.css');
   }
-  // Get the theme location.
-  $path = backdrop_get_path('theme', 'borg');
 
   // For project nodes include a special stylesheet.
   if (($variables['type'] == 'core') || substr($variables['type'], 0, 8) == 'project_'){
