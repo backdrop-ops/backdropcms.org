@@ -190,6 +190,7 @@ function borg_blocks_audiences($settings) {
             'class' => array(
               $button_class_name,
               $button_class_name . '--primary',
+              $button_class_name . '--right-arrow',
             )
           ),
         )
