@@ -32,7 +32,7 @@
     </div>
   <?php endif; ?>
 
-  <div class="l-top__wrapper">
+  <div class="l-top__outer-wrapper">
     <?php if ($rows): ?>
         <?php print (is_array($rows)) ? backdrop_render($rows) : $rows; ?>
     <?php elseif ($empty): ?>

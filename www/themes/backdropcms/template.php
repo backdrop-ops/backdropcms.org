@@ -80,14 +80,17 @@ function backdropcms_preprocess_block(&$variables) {
       $title = '<a href="' . $article_url . '">' . $title . '</a>';
     }
 
-    $content =
-      '<h3 class="latest-news__title">' . $title . '</h3>' .
-      '<div class="latest-news__body">' .
-        $data[0]->field_body[0]['rendered']['#markup'] .
-      '</div>' .
-      '<div class="latest-news__image">' .
-        render($data[0]->field_field_image[0]['rendered']) .
-      '</div>';
+    $content = [
+      'title' => ['#markup' => '<h3 class="latest-news__title">' . $title . '</h3>'],
+      'body' => ['#markup' =>
+        '<div class="latest-news__body">' .
+          $data[0]->field_body[0]['rendered']['#markup'] .
+        '</div>'
+      ],
+      'image' => ['#markup' =>
+        render($data[0]->field_field_image[0]['rendered'])
+      ]
+    ];
 
     $variables['content'] = $content;
   }

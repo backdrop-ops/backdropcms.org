@@ -33,7 +33,7 @@
   <?php endif; ?>
 
   <?php if (!empty($content['bottom']) || !empty($content['top1']) || !empty($content['top2']) || !empty($content['top3']) || !empty($content['top4'])): ?>
-    <div class="l-top-cards">
+    <div class="l-content-wrapper">
 
       <?php if (!empty($content['top1']) || !empty($content['top2']) || !empty($content['top3']) || !empty($content['top4'])): ?>
       <div class="l-top__wrapper">

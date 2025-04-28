@@ -14,11 +14,17 @@
 ?>
 <div class="<?php print implode(' ', $classes); ?>"<?php print backdrop_attributes($attributes); ?>>
   <div class="section-wrapper">
-    <?php print render($title_prefix); ?>
-    <?php if ($title): ?>
-      <h2 class="block-title"><?php print $title; ?></h2>
-    <?php endif; ?>
-    <?php print render($title_suffix); ?>
-    <?php print render($content); ?>
+      <div class="latest-news__text-wrapper">
+        <?php print render($title_prefix); ?>
+        <?php if ($title): ?>
+          <h2 class="block-title"><?php print $title; ?></h2>
+        <?php endif; ?>
+        <?php print render($title_suffix); ?>
+        <?php print render($content['title']); ?>
+        <?php print render($content['body']); ?>
+      </div>
+      <div class="latest-news__image">
+        <?php print render($content['image']); ?>
+      </div>
   </div>
 </div>
