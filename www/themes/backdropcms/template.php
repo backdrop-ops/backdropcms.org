@@ -108,9 +108,13 @@ function backdropcms_preprocess_views_view(&$variables) {
     // Make the icons available for use in CSS.
     $icons_needed = array();
     foreach ($view->result as $count => $item) {
-      $icons_needed[] = $item->field_field_icon_class[0]['raw']['safe_value'];
+      if (!empty($item->field_field_icon_class)) {
+        $icons_needed[] = $item->field_field_icon_class[0]['raw']['safe_value'];
+      }
     }
-    backdrop_add_icons($icons_needed);
+    if (!empty($icons_needed)) {
+      backdrop_add_icons($icons_needed);
+    }
   }
 }
 
