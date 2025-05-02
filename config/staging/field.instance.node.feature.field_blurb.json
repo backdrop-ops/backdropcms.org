@@ -20,7 +20,8 @@
     "default_value_function": null,
     "settings": {
         "text_processing": "0",
-        "user_register_form": false
+        "user_register_form": false,
+        "allowed_formats": []
     },
     "display": {
         "default": {
@@ -31,6 +32,13 @@
             "module": "text"
         },
         "teaser": {
+            "label": "hidden",
+            "type": "text_default",
+            "weight": "0",
+            "settings": [],
+            "module": "text"
+        },
+        "card": {
             "label": "hidden",
             "type": "text_default",
             "weight": "0",
