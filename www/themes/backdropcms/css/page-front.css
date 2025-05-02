@@ -47,6 +47,12 @@ body[class] {
 .front p {
   font-size: inherit;
 }
+
+.front .l-messages {
+  max-width: 1000px;
+  margin-inline: auto;
+  padding: 2em;
+}
 /* END Overrides */
 
 
