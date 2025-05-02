@@ -8,7 +8,7 @@
 <article class="node-<?php print $node->nid; ?> <?php print implode(' ', $classes); ?> clearfix"<?php print backdrop_attributes($attributes); ?>>
   <?php print render($title_prefix); ?>
   <?php if (!$page): ?>
-    <h3><i class="fa fa-2x <?php print $icon_class; ?>" aria-hidden="true"></i><?php print $title; ?></h3>
+    <h3><i class="fa fa-2x <?php print $icon; ?>" aria-hidden="true"></i><?php print $title; ?></h3>
   <?php endif; ?>
   <?php print render($title_suffix); ?>
 
