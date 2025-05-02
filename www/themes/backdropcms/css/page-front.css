@@ -30,7 +30,8 @@ body[class] {
 
 /* BEGIN Override general style that screws with the layout */
 .front article,
-.front .container {
+.front .l-hero,
+.l-wrapper-inner[class] {
   max-width: 9999em;
   padding-inline: 0;
 }
@@ -229,6 +230,8 @@ body[class] {
 /* Content containers of major sections */
 .view-product-features,
 .l-top__wrapper,
+.block-borg-blocks-audiences .block-content,
+.block-views-news-block,
 .bd-resources,
 .bd-community {
   max-width: var(--layout__max-width);
@@ -499,6 +502,8 @@ body[class] {
   display: flex;
   align-items: center;
   line-height: 1.6;
+  /* @todo REMOVE THIS: Temporary hack until we can get all of these links pointing somewhere */
+  pointer-events: none;
 }
 
 .audiences-block__organization-link:before {
