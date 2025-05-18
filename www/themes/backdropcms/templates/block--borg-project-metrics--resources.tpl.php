@@ -23,9 +23,9 @@
       <div><?php print $copy; ?></div>
 
       <ul>
-        <li>75+ Modules</li>
-        <li>2,876 Community Members</li>
-        <li>5,438 Commits</li>
+        <li><?php print $projects; ?></li>
+        <li><?php print $members; ?> Community Members</li>
+        <li><?php print $commits; ?> Commits</li>
       </ul>
     </div><!-- /.b-resources__body -->
 
