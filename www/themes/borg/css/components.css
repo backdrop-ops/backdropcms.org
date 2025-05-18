@@ -334,10 +334,18 @@ article.comment ul.links.inline {
 }
 
 /*******************************************************************************
+ * General submitted
+*******************************************************************************/
+div.submitted {
+  color: #595959; /* AAA */
+}
+
+/*******************************************************************************
  * All entity footers
 *******************************************************************************/
 article footer {
   font-size: 0.875rem; /* 16px */
+  color: #000;
   background-color: #f7f7f7;
   border: 1px solid #E8E6E5;
   border-radius: 10px;
@@ -626,6 +634,28 @@ a.feed-icon {
 }
 
 /*******************************************************************************
+ * Social media icons - general.
+*******************************************************************************/
+
+div.fa-mastodon {
+  display: inline-block;
+  -webkit-mask-image: url(../images/mastodon-logo-black.svg);
+  mask-image: url(../images/mastodon-logo-black.svg);
+  background-image: url(../images/mastodon-logo-black.svg);
+  background-color: #007CBA;
+  content: '-';
+}
+
+div.fa-bluesky {
+  display: inline-block;
+  -webkit-mask-image: url(../images/bluesky-logo-black.svg);
+  mask-image: url(../images/bluesky-logo-black.svg);
+  background-image: url(../images/bluesky-logo-black.svg);
+  background-color: #007CBA;
+  content: '-';
+}
+
+/*******************************************************************************
  * On The Web social media links block.
 *******************************************************************************/
 .block-on-the-web-social-links {
@@ -633,6 +663,9 @@ a.feed-icon {
 }
 .block-on-the-web-social-links a i {
   color: #007CBA;
+}
+.block-on-the-web-social-links a svg {
+  background-color: #007CBA;
 }
 .l-footer .block-on-the-web-social-links a i {
   text-align: left;
@@ -644,18 +677,50 @@ a.feed-icon {
   color: #000;
 }
 
+/* add top/bottom margin */
+svg.otw-square {
+  margin: 5px;
+}
+
+/* 8 iccons should stack */
+a.otw-icon {
+  display: inline-block;
+  width: 25%;
+  text-align: center;
+}
+
 a.otw-svg-mask {
+  width: 28px;
+  height: 32px;
+}
+a.otw-svg-mask-2 {
+  display: inline-block;
   margin: 5px;
   background: #007CBA;
   width: 28px;
   height: 32px;
 }
-a.otw-svg-mask:first-child {
-  margin-left: 0;
+
+@media (min-width: 22.5em) { /* 360px @ 16px font size -- SM */
+  a.otw-icon {
+    width: auto;
+    text-align: left;
+  }
+  a.otw-icon:first-child svg.otw-square {
+    margin-left: 0;
+  }
+  a.otw-icon:last-child svg.otw-square {
+    margin-right: 0;
+  }
+
+  a.otw-svg-mask:first-child {
+    margin-left: 0;
+  }
+  a.otw-svg-mask:last-child {
+    margin-right: 0;
+  }
 }
-a.otw-svg-mask:last-child {
-  margin-right: 0;
-}
+
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .block-on-the-web-social-links {
@@ -741,71 +806,15 @@ a.otw-svg-mask:last-child {
   }
 }
 
-/* @TODO temp hack to fix overlapping text in footer */
-.l-footer {
-  position: relative;
-  z-index: 0;
-  border-bottom: 0;
-  overflow: hidden;
-}
-
-.l-footer-inner .row:after {
-  content: '';
-  grid-row: 2 / 4;
-  grid-column: 1 / -1;
-  position: relative;
-  left: 50%;
-  z-index: -1;
-  display: block;
-  width: 100vw;
-  height: 100%;
-  background: #E8E6E5;
-  transform: translate(-50%);
-}
-
-.l-footer-inner > .row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.l-footer-inner > .row > [class*="col-"] {
-  width: 100%;
-  max-width: 100%;
-}
-
-.block-menu-menu-footer-menu[class][class] {
-  position: static;
-  grid-column: 1 / -1;
-  grid-row: 3;
-  font-size: 1rem;
-  padding: 1em 0;
-  width: 100%;
-}
-
-.block-menu-menu-footer-menu[class][class] ul {
-  position: relative;
-  left: -1.25em;
-  text-align: left;
-}
-
-.block-menu-menu-footer-menu[class][class] a {
-  font-size: inherit;
-}
-
 /*******************************************************************************
  * Powered by Backdrop block.
 *******************************************************************************/
 .l-footer .block-system-powered-by {
-  position: static;
-}
-
-.l-footer .block-system-powered-by {
-  grid-row: 2;
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  padding: 1em 0 0;
+  position: absolute;
+  bottom: -62px;
+  left: 2.9375rem;
+  padding: 0;
+  padding-bottom: 0;
 }
 .block-system-powered-by span {
   display: block;
@@ -864,6 +873,10 @@ a.otw-svg-mask:last-child {
   margin: 0 0 1em;
 }
 
+.field-prefix {
+  line-height: 2.2em;
+}
+
 
 /*******************************************************************************
  * Site contact form.
@@ -913,6 +926,8 @@ body.user-form .page-title {
 *******************************************************************************/
 #user-login .help p {
   font-size: 1.5rem; /* 24px */
+  text-align: right;
+  margin-top: .6em;
 }
 #user-login .form-item {
   padding: 15px 0;
@@ -993,6 +1008,8 @@ body.user-form .page-title {
 }
 #user-register-form .help p {
   font-size: 1.5rem; /* 24px */
+  text-align: right;
+  margin-top: .6em;
 }
 #user-register-form fieldset .form-item {
   padding: 5px 0;
@@ -1050,7 +1067,8 @@ body.user-form .page-title {
   }
   #user-register-form .form-type-textfield label,
   #user-register-form .form-type-email label {
-    width: 140px;
+    width: 145px;
+    text-align: right;
   }
   #user-register-form .form-item input[type="text"],
   #user-register-form .form-item input[type="email"] {
@@ -1062,8 +1080,9 @@ body.user-form .page-title {
     padding-left: 165px;
   }
 
-  #user-register-form .form-type-checkbox label {
-
+  /* Hide bad descriptions.*/
+  #user-register-form .form-item-captcha-response div.description {
+    display: none;
   }
   #user-register-form #edit-contact .form-item input {
     flex: none;
@@ -1521,12 +1540,26 @@ div.addressfield-container-inline::after {
 .views-exposed-form input[type="submit"],
 .views-exposed-form .form-submit {
   font-size: 1rem;
+  margin: 0;
 }
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .views-exposed-form {
-    padding: 30px;
+    padding: 30px 0;
     margin-bottom: 30px;
   }
+}
+
+/* Exposed forms in l-top *****************************************************/
+.l-top .views-exposed-form {
+  background: transparent;
+  padding: 15px 0;
+}
+.l-top .views-exposed-form label {
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.l-top .views-exposed-form select {
+  border: 1.5px solid black;
 }
 
 /*******************************************************************************
