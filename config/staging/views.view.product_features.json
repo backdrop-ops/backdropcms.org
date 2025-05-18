@@ -2,14 +2,14 @@
     "_config_name": "views.view.product_features",
     "name": "product_features",
     "description": "",
-    "tag": "default",
+    "tag": "",
     "disabled": false,
     "base_table": "node",
-    "human_name": "Product Features",
-    "core": "1.4.2",
+    "human_name": "product_features",
+    "core": "1.29.3",
     "display": {
         "default": {
-            "display_title": "Master",
+            "display_title": "Default",
             "display_plugin": "default",
             "display_options": {
                 "query": {
@@ -32,8 +32,8 @@
                         "offset": "0"
                     }
                 },
-                "style_plugin": "grid",
-                "row_plugin": "fields",
+                "style_plugin": "list",
+                "row_plugin": "node",
                 "fields": {
                     "field_icon_class": {
                         "id": "field_icon_class",
@@ -106,10 +106,10 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
-                            "alter_text": 1,
-                            "text": "<h4><i class=\"fa fa-2x [field_icon_class]\" aria-hidden=\"true\"></i>&nbsp;[title]</h4>",
+                            "alter_text": 0,
+                            "text": "",
                             "make_link": 0,
                             "path": "",
                             "absolute": 0,
@@ -147,7 +147,7 @@
                         "hide_empty": 0,
                         "empty_zero": 0,
                         "hide_alter_empty": 1,
-                        "link_to_node": 1
+                        "link_to_node": 0
                     },
                     "field_blurb": {
                         "id": "field_blurb",
@@ -157,7 +157,7 @@
                         "group_type": "group",
                         "ui_name": "",
                         "label": "",
-                        "exclude": 0,
+                        "exclude": 1,
                         "alter": {
                             "alter_text": 0,
                             "text": "",
@@ -211,6 +211,56 @@
                         "multi_type": "separator",
                         "separator": ", ",
                         "field_api_classes": 0
+                    },
+                    "nothing": {
+                        "id": "nothing",
+                        "table": "views",
+                        "field": "nothing",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": true,
+                            "text": "<div class=\"dark-hero-card dark-hero-card--[field_icon_class]\">\r\n  <h2>[title]</h2>\r\n  [field_blurb]\r\n</div>",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "0",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "0",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 0
                     }
                 },
                 "filters": {
@@ -234,6 +284,19 @@
                     }
                 },
                 "sorts": {
+                    "promote": {
+                        "id": "promote",
+                        "table": "node",
+                        "field": "promote",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    },
                     "created": {
                         "id": "created",
                         "table": "node",
@@ -241,28 +304,58 @@
                         "order": "ASC"
                     }
                 },
-                "title": "Product Features",
+                "title": "",
                 "row_options": {
-                    "default_field_elements": 1,
-                    "inline": [],
-                    "separator": "",
-                    "hide_empty": 0
+                    "relationship": "none",
+                    "view_mode": "card",
+                    "title": 1,
+                    "links": 1,
+                    "comments": 0
                 },
                 "style_options": {
-                    "grouping": [],
                     "row_class": "",
                     "default_row_class": 1,
                     "row_class_special": 1,
-                    "columns": "3",
-                    "alignment": "horizontal",
-                    "deprecated_table": 1,
-                    "fill_single_line": 1,
-                    "caption": "",
-                    "summary": ""
-                }
+                    "uses_fields": 0,
+                    "type": "ul",
+                    "wrapper_class": "",
+                    "class": "l-top__wrapper"
+                },
+                "css_class": "",
+                "use_more": 1,
+                "use_more_always": false,
+                "use_more_text": "Explore more features"
             }
         },
-        "page": {
+        "block": {
+            "display_title": "Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "field": {
+                    "title": {
+                        "link_to_node": 1
+                    }
+                },
+                "block_description": "Hero Home Cards",
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "4",
+                        "offset": "0"
+                    }
+                },
+                "defaults": {
+                    "pager": false,
+                    "pager_options": false
+                },
+                "pager_options": null
+            }
+        },
+        "page_1": {
             "display_title": "Page",
             "display_plugin": "page",
             "display_options": {
@@ -270,7 +363,11 @@
                     "type": "views_query",
                     "options": []
                 },
-                "path": "features"
+                "path": "features",
+                "title": "Features of Backdrop CMS",
+                "defaults": {
+                    "title": false
+                }
             }
         }
     }

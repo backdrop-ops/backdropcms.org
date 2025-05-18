@@ -5,9 +5,31 @@
  */
 
 /**
+ * Modules included in core.
+ */
+define('MODULES_CORE', 75);
+
+/**
+ * Percent of top Drupal Modules ready.
+ */
+define('MODULES_TOP', 97);
+
+/**
+ * Projects available.
+ */
+define('MODULES_AVAILABLE', 1300);
+
+
+/**
  * Implements hook_block_info().
  */
 function borg_blocks_block_info() {
+  // New home page block.
+  $blocks['community'] = array(
+    'info' => t('Join the community'),
+    'description' => t('Home page: Community section'),
+  );
+
   $blocks['branding'] = array(
     'info' => t('Branding'),
     'description' => t('Backdrop CMS logomark and wordmark.'),
@@ -15,6 +37,10 @@ function borg_blocks_block_info() {
   $blocks['tagline'] = array(
     'info' => t('Tagline & Download'),
     'description' => t('Tagline and download'),
+  );
+  $blocks['audiences'] = array(
+    'info' => t('Backdrop for Audiences'),
+    'description' => t('Homepage block'),
   );
   $blocks['greeting'] = array(
     'info' => t('Greeting'),
@@ -43,17 +69,17 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
   $block = array();
 
   switch ($delta) {
+
+    case 'community':
+      $block_title = '<div class="visual-tag">Get Involved</div>';
+      $block_title .= '<div class="b-community__title">Join the community</div>';
+      $block['subject'] = $block_title;
+      $block['content'] = borg_blocks_community($settings);
+      break;
+
     case 'branding':
-      $options = array('attributes' => array('class' => array('site-name')));
-      $output = l(t('backdrop'), '', $options);
-
-      $uri = backdrop_get_path('module', 'borg_blocks') . '/images/logo.png';
-      $image = theme('image', array('uri' => $uri, 'alt' => t('Backdrop CMS Logo')));
-      $options = array('html' => TRUE, 'attributes' => array('class' => array('logo'), 'title' => t('Backdrop CMS Home')));
-      $output .= l($image, '', $options);
-
       $block['subject'] = NULL;
-      $block['content'] = $output;
+      $block['content'] = borg_blocks_branding($settings);
       break;
 
     case 'tagline':
@@ -63,15 +89,18 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
 
     case 'greeting':
       global $user;
-
       $block['subject'] = NULL;
       if ($user->uid) {
         $block['content'] = t('Hi !name!', array('!name'  => theme('username', array('account' => $user))));
       }
       break;
 
-    case 'upgrade':
+    case 'audiences':
+      $block['subject'] = NULL;
+      $block['content'] = borg_blocks_audiences($settings);
+      break;
 
+    case 'upgrade':
       $block['subject'] = t('Upgrade from Drupal 7');
       $block['content'] = borg_blocks_upgrade($settings);
       break;
@@ -92,72 +121,195 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
   return $block;
 }
 
+/**
+ * Block callback.
+ */
+function borg_blocks_community($settings) {
+  $copy = t('Whether you’re a developer, designer, or enthusiast, your contributions make Backdrop better for everyone. Join a vibrant open source community.');
+
+  $button_attributes = array(
+    'class' => array('borg__button', 'borg__button--primary', 'borg__button--right-arrow'));
+  $options = array('attributes' => $button_attributes);
+  $button = l(t('Join the conversation'), 'https://forum.backdropcms.org', $options);
+
+  $image_path = backdrop_get_path('module', 'borg_blocks') . '/images/';
+  $photo_files = array(
+    'Backdrop-BDay-Nantes.jpg',
+    'Backdrop-BDay-Oakland.jpg',
+    'Justin-Laryn.jpg',
+    'migrating-backdrop-on-pantheon.jpg',
+    'tcbackdrop.jpg',
+  );
+  $items = array();
+  foreach ($photo_files as $filename) {
+    $items[] = theme('image', array('path' => $image_path . $filename));
+  }
+  $attributes = array('class' => array('b-community__photos'));
+  $photos = theme('item_list', array('items' => $items, 'attributes' => $attributes));
+
+  return array(
+    'copy' => $copy,
+    'photos' => $photos,
+    'button' => $button,
+  );
+}
+
+/**
+ * Block callback.
+ */
+function borg_blocks_branding($settings) {
+  $options = array('attributes' => array('class' => array('site-name')));
+  $output = l(t('backdrop'), '', $options);
+
+  $uri = backdrop_get_path('module', 'borg_blocks') . '/images/logo.png';
+  $image = theme('image', array('uri' => $uri, 'alt' => t('Backdrop CMS Logo')));
+  $options = array('html' => TRUE, 'attributes' => array('class' => array('logo'), 'title' => t('Backdrop CMS Home')));
+  $output .= l($image, '', $options);
+  return $output;
+}
+
+/**
+ * Block callback.
+ */
 function borg_blocks_tagline($settings) {
   $version = check_plain($settings['version']);
 
-  $demo_attributes = array('class' => array('button', 'demo'));
+  $button_class_name = 'borg__button';
   if (module_exists('tugboat')) {
-    $demo_text = t('Demo Backdrop');
-    $demo_link = l($demo_text, 'demo', array('attributes' => $demo_attributes, 'html' => TRUE));
+    $demo_text = t('Demo Backdrop CMS');
+    $demo_link = l($demo_text, 'demo',
+      array(
+        'attributes' => array(
+          'class' => array(
+            $button_class_name,
+            $button_class_name . '--primary',
+          )
+        ),
+        'html' => TRUE,
+      )
+    );
   }
   else {
     $pantheon_url = 'https://dashboard.pantheon.io/sites/create?upstream_id=bf703821-4c18-45a1-88b8-3d9ec302273d';
     $demo_text = t('Backdrop on Pantheon');
-    $demo_link = l($demo_text, $pantheon_url, array('attributes' => $demo_attributes, 'html' => TRUE));
+    $demo_link = l($demo_text, $pantheon_url,
+      array(
+        'attributes' => array(
+          'class' => array(
+            $button_class_name,
+            $button_class_name . '--primary',
+          )
+        ),
+        'html' => TRUE,
+      )
+    );
+
   }
 
   $dl_url = 'https://github.com/backdrop/backdrop/releases/download/' . $version . '/backdrop.zip';
-  $dl_text = t('Download Backdrop') . ' <span class="version">v ' . $version . '</span>';
-  $dl_attributes = array('class' => array('button', 'download'));
-  $download_link = l($dl_text, $dl_url, array('attributes' => $dl_attributes, 'html' => TRUE));
+  $dl_text = t('Download Backdrop&nbsp;CMS') . ' <span class="version">v&nbsp;' . $version . '</span>';
 
-  //$output  = '<h1 class="page-title">Backdrop CMS</h1>';
-  $output  = '<h1>Backdrop CMS</h1>';
-  $output .= '<h2>Put your content center stage.</h2>';
-  //$output .= '<p>Backdrop is the free and Open Source Content Management System<br>that helps you build modern, comprehensive websites for businesses and non-profits.</p>';
+  $download_link = l($dl_text, $dl_url,
+    array(
+      'attributes' => array(
+        'class' => array(
+          $button_class_name,
+          $button_class_name . '--secondary',
+        )
+      ),
+      'html' => TRUE,
+    )
+  );
 
-  $output .= '<div class="tagline-section section-demo">';
-  $output .=   $demo_link;
-  $output .= '  <p class="subtext">';
-  $output .=      l(t('more ways to try'), 'try-backdrop');
-  $output .= '  </p>';
-  $output .= '</div>';
+  $output  =
+    '<h1 class="tagline-block__headline-wrapper">' .
+      '<span class="tagline-block__primary-text">'. t('Put your content center stage') . '</span>' .
+    '</h1>' .
+    '<p>' .
+      t('Backdrop CMS is a free and Open Source Content Management System that helps you build modern, comprehensive websites on a reasonable budget.') .
+    '</p>';
 
-
-  $requirements = l(t('requirements'), 'requirements');
-  $installing = l(t('installing'), 'installation');
-  $upgrading = l(t('upgrading'), 'upgrade');
-
-  $output .= '<div class="tagline-section section-download">';
-  $output .= $download_link;
-  $output .= '  <p class="subtext">';
-  $output .=      $requirements . ' | ' . $installing . ' | ' . $upgrading;
-  $output .= '  </p>';
-  $output .= '</div>';
+  $output .= '<ul class="tagline-block__ctas">';
+  $output .=   '<li>' . $demo_link . '</li>';
+  $output .=   '<li>' . $download_link . '</li>';
+  $output .= '</ul>';
 
   return $output;
 }
 
-function borg_blocks_upgrade($settings) {
-  // Included in core
-  $modules_core = 75;
-  // Percent ready
-  $modules_top = 97;
-  // Number of modules
-  $projects_available = 1100;
+/**
+ * Block callback.
+ */
+function borg_blocks_audiences($settings) {
+  $button_class_name = 'borg__button';
 
+  $output =
+    '<span class="audiences-block__visual-tag visual-tag">'.
+      t('Sites Showcase') .
+    '</span> ' .
+    '<h2 class="audiences-block__title">' .
+      t('A flexible CMS for any person or organization') .
+    '</h2>' .
+    '<div class="audiences-block__body">' .
+        t('A flexible CMS for any person or organization') .
+      '<p>' .
+        t('Backdrop CMS is being used across more than 3,600+ sites for both individuals and organization of all kinds.') .
+      '</p>' .
+      l(
+        t('See the Showcase'),
+        'showcase',
+        array(
+          'attributes' => array(
+            'class' => array(
+              $button_class_name,
+              $button_class_name . '--primary',
+              $button_class_name . '--right-arrow',
+            )
+          ),
+        )
+      ) .
+    '</div>';
+
+  $output .= '<ul class="audiences-block__organizations chonky-link-bar__outer-wrapper">';
+  $audiences_menu = menu_load_links('menu-cms-audiences');
+  foreach ($audiences_menu as $key => $audiences_menu_item) {
+    if (!empty($audiences_menu_item['hidden'])) {
+      break;
+    }
+    $mlid = $audiences_menu_item['mlid'];
+
+    $options = $audiences_menu_item['options'];
+    $options['attributes']['class'][] = 'audiences-block__organization-link';
+    $options['attributes']['class'][] = 'audiences-block__organization-link--' . $mlid;
+    $options['attributes']['class'][] = 'chonky-link-bar';
+
+    $output .=
+      '<li class="audiences-block__organization-item chonky-link-bar__item">' .
+        l($audiences_menu_item['link_title'], $audiences_menu_item['link_path'], $options) .
+      '</li>';
+  }
+
+  $output .= '</ul>';
+
+  return $output;
+}
+
+/**
+ * Block callback.
+ */
+function borg_blocks_upgrade($settings) {
   $path = backdrop_get_path('module', 'borg_blocks');
   $button = l(t('Upgrade from Drupal'), 'node/4967', array('attributes' => array('class' => array('button'))));
 
-  $included_modules = l(t("$modules_core+ included modules"), 'https://docs.backdropcms.org/documentation/features-added-to-core');
+  $included_modules = l(t("MODULES_CORE+ included modules"), 'https://docs.backdropcms.org/documentation/features-added-to-core');
   $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" />';
   $included_modules_icon_link = l($included_modules_icon, 'https://docs.backdropcms.org/documentation/features-added-to-core', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $top_modules = l(t("$modules_top% of top modules"), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
+  $top_modules = l(t("MODULES_TOP% of top modules"), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
   $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" />';
   $top_modules_icon_link = l($top_modules_icon, 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $total_addons = l(t("$projects_available+ total add-ons"), 'node/1686');
+  $total_addons = l(t("MODULES_AVAILABLE+ total add-ons"), 'node/1686');
   $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" />';
   $total_addons_icon_link = l($total_addons_icon, 'node/1686', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
@@ -166,17 +318,17 @@ function borg_blocks_upgrade($settings) {
   $output .= '    <div class="col-md-4 column">';
   $output .=        $included_modules_icon_link;
   $output .= '      <h3>' . $included_modules . '</h3>';
-  $output .= '      <p>' . t("More than $modules_core Drupal modules have been merged into Backdrop core.") . '</p>';
+  $output .= '      <p>' . t("More than MODULES_CORE Drupal modules have been merged into Backdrop core.") . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $top_modules_icon_link;
   $output .= '      <h3>' . $top_modules . '</h3>';
-  $output .= '      <p>' . t("Of the top 100 Drupal 7 modules, $modules_top of them are ready for Backdrop CMS.") . '</p>';
+  $output .= '      <p>' . t("Of the top 100 Drupal 7 modules, MODULES_TOP of them are ready for Backdrop CMS.") . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $total_addons_icon_link;
   $output .= '      <h3>' . $total_addons . '</h3>';
-  $output .= '      <p>' . t("More than $projects_available modules, themes, and layouts are available for use today.") . '</p>';
+  $output .= '      <p>' . t("More than MODULES_AVAILABLE modules, themes, and layouts are available for use today.") . '</p>';
   $output .= '    </div>';
   $output .= '  </div>';
   $output .= '</div>';
@@ -226,5 +378,20 @@ function borg_blocks_form_supporter_node_form_alter(&$form, &$form_state, $form_
   if (current_path() == 'node/19') {
     unset($form['title']['#attributes']['autofocus']);
     $form['actions']['submit']['#value'] = t('Submit');
+  }
+}
+
+/**
+ * Prepare variables for Block templates.
+ *
+ * @see block--borg-blocks--community.tpl.php
+ */
+function borg_blocks_preprocess_block(&$variables){
+  if ($variables['block']->module == 'borg_blocks') {
+    if ($variables['block']->delta == 'community') {
+      $variables['copy'] = $variables['content']['copy'];
+      $variables['photos'] = $variables['content']['photos'];
+      $variables['button'] = $variables['content']['button'];
+    }
   }
 }

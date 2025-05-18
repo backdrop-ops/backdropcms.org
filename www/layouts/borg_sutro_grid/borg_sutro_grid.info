@@ -1,0 +1,22 @@
+type = layout
+name = New Home Grid
+backdrop = 1.x
+
+; Specify regions for this layout.
+regions[header]     = Header
+regions[top]        = Top
+regions[content]    = Content
+regions[bottom]     = Bottom
+regions[footer]     = Footer
+
+; The default region automatically receives the "Main Content" block if needed.
+default region = content
+
+; Preview
+preview = boxton.png
+
+; Include the Bootstrap4 Grid System
+libraries[] = bootstrap4-gs
+
+; Stylesheet
+stylesheets[all][] = borg_sutro_grid.css

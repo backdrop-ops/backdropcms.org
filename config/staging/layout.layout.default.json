@@ -366,6 +366,7 @@
                             "display": "auto",
                             "enabled": {
                                 "mastodon": "mastodon",
+                                "bluesky": "bluesky",
                                 "facebook": "facebook",
                                 "github": "github",
                                 "linkedin": "linkedin",
@@ -384,7 +385,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "col-sm-6"
+                            "classes": "col-md-6"
                         }
                     }
                 }
@@ -410,7 +411,7 @@
                     "plugin": "default",
                     "data": {
                         "settings": {
-                            "classes": "col-sm-6"
+                            "classes": "col-md-6"
                         }
                     }
                 }
