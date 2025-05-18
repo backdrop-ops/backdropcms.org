@@ -841,3 +841,9 @@ a.logo {
     width: 70%;
   }
 }
+
+/** Footer hack **************************************************************/
+/** Remove with Borg 2.x *****************************************************/
+.block-on-the-web-social-links a svg {
+  background-color: #000;
+}

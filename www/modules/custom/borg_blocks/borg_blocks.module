@@ -103,7 +103,7 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
       $copy = t('Whether you’re a developer, designer, or enthusiast, your contributions make Backdrop better for everyone. Join a vibrant open source community.');
 
       $button_attributes = array(
-        'class' => array('borg__button borg__button--primary', 'borg__button--right-arrow'));
+        'class' => array('borg__button', 'borg__button--primary', 'borg__button--right-arrow'));
       $options = array('attributes' => $button_attributes);
       $button = l(t('Join the conversation'), 'https://forum.backdropcms.org', $options);
 
