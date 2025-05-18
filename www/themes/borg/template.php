@@ -9,14 +9,6 @@
  ******************************************************************************/
 
 /**
- * Implements hook_form_id_alter()
- * Modify the user edit form for usability++
- */
-function borg_form_user_profile_form_alter(&$form, &$form_state) {
-
-}
-
-/**
  * Implements hook_form_FORM_ID_alter().
  */
 function borg_form_user_register_form_alter(&$form, &$form_state) {
@@ -30,7 +22,7 @@ function borg_form_user_register_form_alter(&$form, &$form_state) {
   // Remove description text from password.
   unset($form['account']['pass']['#description']);
   // Fix the description text for email address.
-  $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you request to receive a new password.');
+  $form['account']['mail']['#description'] = t('This e-mail address is not made public and will only be used if you choose to receive messages.');
 }
 
 /**
@@ -88,22 +80,21 @@ function borg_preprocess_page(&$variables) {
   $arg1 = check_plain(arg(1));
   $arg2 = check_plain(arg(2));
 
-  // Load new font if we're on the homepage of the marketing site
-  if ($variables['is_front'] && strpos(path_to_theme(), 'backdropcms')) {
-    // Add the IBM Plex variable fonts
-    backdrop_add_css(
-      'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap',
-      array('type' => 'external')
-    );
-    //
-  }
-  else {
-    // Add the Source Sans Pro font.
-    backdrop_add_css('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700', array('type' => 'external'));
-    // Add FontAwesome.
-    backdrop_add_js('https://use.fontawesome.com/baf3c35582.js', array('type' => 'external'));
-  }
+  // Add the Source Sans Pro font.
+  $source_sans = 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700';
+  backdrop_add_css($source_sans, array('type' => 'external'));
 
+  // Add FontAwesome.
+  $font_awesome = 'https://use.fontawesome.com/baf3c35582.js';
+  backdrop_add_js($font_awesome, array('type' => 'external'));
+
+  // Add ForkAwesome.
+  $fork_awesome = 'https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css';
+  $attributes = array(
+    'integrity' => 'sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=',
+    'crossorigin' => 'anonymous',
+  );
+  backdrop_add_css($fork_awesome, array('type' => 'external', 'attributes' => $attributes));
 
   // Add a body class based on the admin bar.
   if (module_exists('admin_bar') && user_access('admin_bar')) {
@@ -111,7 +102,6 @@ function borg_preprocess_page(&$variables) {
   }
 
   $path = backdrop_get_path('theme', 'borg');
-
   // Add Flexslider to the front page only.
   if (backdrop_is_front_page()) {
     backdrop_add_css($path . '/css/page-front.css');
@@ -151,12 +141,12 @@ function borg_preprocess_page(&$variables) {
     }
   }
 
-  // Add a node class based on the node ID...
+  // Add a class based on the node ID...
   if ($arg0 == 'node' && is_numeric($arg1) && !$arg2) {
     $variables['classes'][] = 'node-' . $arg1;
   }
 
-  // ...or add body classes based on args.
+  // ...or add classes based on args.
   elseif ($arg0) {
     $variables['classes'][] = $arg0;
     if ($arg1) {
@@ -372,26 +362,6 @@ function borg_preprocess_node(&$variables){
   // Change the submitted by language for all nodes.
   $variables['submitted'] = t('Posted by !username on !datetime', array(
     '!username' => $variables['name'], '!datetime' => $variables['date']));
-
-  // Get the theme location.
-  $path = backdrop_get_path('theme', 'borg');
-
-  // For project nodes include a special stylesheet.
-  if (($variables['type'] == 'core') || substr($variables['type'], 0, 8) == 'project_'){
-    if ($variables['type'] == 'project_release') {
-
-    }
-    else {
-      unset($variables['content']['project_release_downloads']['#prefix']);
-      $variables['classes'][] = 'node-project';
-      backdrop_add_css($path . '/css/node-project.css');
-    }
-  }
-
-  // For showcase nodes include a special stylesheet.
-  if ($variables['type'] == 'showcase') {
-    backdrop_add_css($path . '/css/node-showcase.css');
-  }
 }
 
 /**
@@ -738,9 +708,9 @@ function borg_menu_tree__user_menu($variables) {
   $output .= '    </li>';
   $output .= '  </ul>';
 
-  $output .= '  <a class="icon" title="Find us on GitHub" href="https://github.com/backdrop/backdrop"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>';
-  $output .= '  <a class="icon" title="Follow us on Twitter" href="https://twitter.com/backdropcms"><i class="fa fa-twitter fa-2x" aria-hidden="true"></i></a>';
-  $output .= '  <a class="icon" title="Subscribe to our Newsletter" href="https://backdropcms.org/newsletter"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></a>';
+  $output .= '  <a class="icon" title="Code on GitHub" href="https://github.com/backdrop/backdrop"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>';
+  $output .= '  <a class="icon" title="Live Chat on Zulip" href="https://backdrop.zulipchat.com/#narrow/stream/218635-Backdrop"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></a>';
+  $output .= '  <a class="icon" title="Updates from our Newsletter" href="https://backdropcms.org/newsletter"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></a>';
 
   $output .= '</nav>';
 
@@ -818,8 +788,10 @@ function borg_on_the_web_item($variables) {
   $type = $config->get('type');
   $target = $config->get('target');
 
-  // Add a new link class for SVG masks.
-  $link_classes[] = 'otw-svg-mask';
+  if ($type == 'anchor') {
+    // Add a new link class for SVG masks.
+    $link_classes[] = 'otw-svg-mask';
+  }
 
   // Determine attributes for the link
   $attributes = array(
