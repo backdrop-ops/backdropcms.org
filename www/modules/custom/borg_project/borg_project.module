@@ -94,9 +94,7 @@ function _borg_project_core_build_latest() {
   $data = array(
     'status' => 'success',
     'timestamp' => REQUEST_TIME,
-    'items' => array(
-      $release_data,
-    ),
+    'latest' => $release_data,
   );
 
   return $data;
