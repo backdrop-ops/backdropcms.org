@@ -5,17 +5,19 @@
  ******************************************************************************/
 
 .menu-dropdown {
+  font-family: var(--font-family--sans);
   position: relative;
+  background-color: #fff;
+  border: 1px solid #000;
 }
-
-/* Undo system.theme.css menu styles for dropdowns. */
 .menu-dropdown li,
 .menu-dropdown li.expanded,
 .menu-dropdown li.collapsed,
 .menu-dropdown li.leaf {
+  /* Undo system.theme.css menu styles for dropdowns. */
   margin: 0;
   padding: 0;
-  background-color: #696969;
+  /* now our stuff */
   border-bottom: 1px solid #000;
 }
 .menu-dropdown li:last-child {
@@ -23,30 +25,25 @@
 }
 .js .menu-dropdown ul {
   border-top: 1px solid #000;
-  background-color: #808080;
-}
-.menu-dropdown li li,
-.menu-dropdown li li.expanded,
-.menu-dropdown li li.collapsed,
-.menu-dropdown li li.leaf {
-  background-color: #808080;
+  background-color: var(--color__gray-faint);
 }
 .menu-dropdown a,
 .menu-dropdown a:hover,
 .menu-dropdown a:focus,
 .menu-dropdown a:active {
-  padding: .75em 1em;
+  padding: 10px 16px;
   /* make room for the toggle button (sub indicator) */
   padding-right: 58px;
   font-weight: normal;
   line-height: 17px;
   text-decoration: none;
+  color: #000;
 }
 .menu-dropdown a.current {
-  color: #d23600;
+  color: var(--color__purple-light);
 }
 .menu-dropdown a.disabled {
-  color: #7D7D7D;
+  color: var(--color__gray-dark);
 }
 .menu-dropdown a span.sub-arrow {
   position: absolute;
@@ -61,6 +58,9 @@
   text-align: center;
   text-shadow: none;
 }
+.menu-dropdown a span.sub-arrow:before {
+  color: var(--color__accent--primary);
+}
 @media (min-width: 48em) {
   .menu-dropdown a span.sub-arrow {
     top: 50%;
@@ -69,8 +69,8 @@
     height: 0.5em;
     margin-top: 0;
     border: 1px solid transparent;
-    border-right-color: var(--color__accent--primary--light);
-    border-bottom-color: var(--color__accent--primary--light);
+    border-right-color: #fff;
+    border-bottom-color: #fff;
     transform: translate(0, -50%) rotate(45deg);
     background: transparent;
     border-radius: 0;
@@ -92,13 +92,12 @@
      These transform the menu tree from
      collapsible to desktop (navbar + dropdowns)
   -----------------------------------------------*/
-  /* start... (it's not recommended editing these rules) */
+  /* start... (it's not recommended editing these rules) **********************/
   .js .menu-dropdown ul {
     position: absolute;
     width: 12em;
     top: 1em;
   }
-
   .menu-dropdown li,
   .menu-dropdown li.expanded,
   .menu-dropdown li.collapsed,
@@ -106,7 +105,6 @@
     display: inline-block;
     background-color: transparent;
   }
-
   .menu-dropdown li li,
   .menu-dropdown li li.expanded,
   .menu-dropdown li li.collapsed,
@@ -114,26 +112,41 @@
     display: block;
     float: left;
   }
-
   [dir="rtl"] .menu-dropdown li {
     float: right;
   }
-
   .menu-dropdown ul li,
   [dir="rtl"] .menu-dropdown ul li {
     float: none;
   }
-
   .menu-dropdown a {
     white-space: nowrap;
   }
-
   .menu-dropdown ul a {
     white-space: normal;
   }
+  /** ...end ******************************************************************/
 
-  /* ...end */
-
+  .menu-dropdown {
+    background-color: transparent;
+    border: none;
+    left: -30px;
+  }
+  .menu-dropdown li,
+  .menu-dropdown li.expanded,
+  .menu-dropdown li.collapsed,
+  .menu-dropdown li.leaf {
+    margin: 0;
+    _padding: 0 9px; /* See 992px viewport */
+    border: 0;
+    border-top: 0;
+  }
+  .menu-dropdown li:first-child {
+    padding-left: 0;
+  }
+  .menu-dropdown li:last-child {
+    margin-right: 0;
+  }
   .menu-dropdown a,
   .menu-dropdown a:hover,
   .menu-dropdown a:focus,
@@ -141,20 +154,29 @@
   .menu-dropdown a.highlighted {
     width: 100%;
     color: #fff;
-    padding: .75em 1em;
-    padding-right: 1em;
+    padding: 8px;
+    padding-right: 1em; /* override mobile pading */
+  }
+
+  /* top level only */
+  .menu-dropdown > li > a,
+  .menu-dropdown > li > a:hover,
+  .menu-dropdown > li > a:focus,
+  .menu-dropdown > li > a:active,
+  .menu-dropdown > li > a.highlighted {
     border-bottom: 2px solid transparent;
   }
-  .menu-dropdown a.active-trail,
-  .menu-dropdown a.active,
-  .menu-dropdown a:hover,
-  .menu-dropdown a:focus,
-  .menu-dropdown a:active,
-  .menu-dropdown a.highlighted {
-    border-bottom: 2px solid #fff;
+  .menu-dropdown > li > a.active-trail,
+  .menu-dropdown > li > a.active,
+  .menu-dropdown > li > a:hover,
+  .menu-dropdown > li > a:focus,
+  .menu-dropdown > li > a:active,
+  .menu-dropdown > li > a.highlighted {
+    border-bottom: 2px solid var(--color__gray-purple);
   }
+
   .menu-dropdown a.disabled {
-    color: #7D7D7D;
+    color: var(--color__gray-dark);
   }
   .js .menu-dropdown li.has-children > a:hover,
   .js .menu-dropdown li.has-children > a {
@@ -163,20 +185,22 @@
   .menu-dropdown a.highlighted span.sub-arrow:before {
     display: none;
   }
-  .menu-dropdown li,
-  .menu-dropdown li.expanded,
-  .menu-dropdown li.collapsed,
-  .menu-dropdown li.leaf {
-    border-top: 0;
-    border-bottom: 1px solid transparent;
-  }
+
+  /** second level ************************************************************/
   .js .menu-dropdown ul {
-    padding: 0;
-    padding-left: 0;
-    background-color: #696969;
+    padding: 12px 24px;
+    padding-left: 24px;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 2px;
   }
   .js .menu-dropdown ul li {
     float: none;
+    border-bottom: 1px solid var(--color__gray-purple);
+    padding: 0;
+  }
+  .js .menu-dropdown ul li:last-child {
+    border-bottom: none;
   }
   .menu-dropdown ul a,
   .menu-dropdown ul a:hover,
@@ -184,9 +208,8 @@
   .menu-dropdown ul a:active,
   .menu-dropdown ul a.highlighted {
     border: 0 !important;
-    padding: 10px 20px;
-    color: #fff;
-    background-color: #696969;
+    padding: 12px 0;
+    color: #000;
   }
   .menu-dropdown ul a.active,
   .menu-dropdown ul a.active-trail,
@@ -194,7 +217,10 @@
   .menu-dropdown ul a:focus,
   .menu-dropdown ul a:active,
   .menu-dropdown ul a.highlighted {
-    background-color: #808080;
+    background-color: #fafafa;
+  }
+  .menu-dropdown ul a:hover {
+    background-color: var(--color__gray-faint);
   }
   .menu-dropdown ul a.disabled {
     background: white;
@@ -209,7 +235,7 @@
     margin-top: -5px;
     border-width: 5px;
     border-style: dashed dashed dashed solid;
-    border-color: transparent transparent transparent #555555;
+    border-color: transparent transparent transparent var(--color__accent--primary);
   }
   .menu-dropdown span.scroll-up,
   .menu-dropdown span.scroll-down {
@@ -235,12 +261,12 @@
     overflow: hidden;
     border-width: 6px;
     border-style: dashed dashed solid dashed;
-    border-color: transparent transparent #555555 transparent;
+    border-color: transparent transparent var(--color__accent--primary) transparent;
   }
   .menu-dropdown span.scroll-down-arrow {
     top: 8px;
     border-style: solid dashed dashed dashed;
-    border-color: #555555 transparent transparent transparent;
+    border-color: var(--color__accent--primary) transparent transparent transparent;
   }
   [dir="rtl"] .menu-dropdown li.has-children > a {
     padding-right: 12px;
@@ -265,6 +291,45 @@
     right: auto;
     left: 8px;
     border-style: dashed solid dashed dashed;
-    border-color: transparent #555555 transparent transparent;
+    border-color: transparent var(--color__accent--primary) transparent transparent;
+  }
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  /* top -evel menus only */
+  .menu-dropdown > li > a,
+  .menu-dropdown > li > a:hover,
+  .menu-dropdown > li > a:focus,
+  .menu-dropdown > li > a:active,
+  .menu-dropdown > li > a.highlighted {
+    width: 100%;
+    _padding-right: .5em; /* override mobile pading */
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .js .menu-dropdown li.has-children > a:hover,
+  .js .menu-dropdown li.has-children > a {
+    _padding-right: 20px;
+  }
+  .menu-dropdown a span.sub-arrow {
+    right: 5px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .menu-dropdown {
+    left: 0;
+  }
+  .menu-dropdown > li,
+  .menu-dropdown > li.expanded,
+  .menu-dropdown > li.collapsed,
+  .menu-dropdown > li.leaf {
+    _padding: 0 6px;
+  }
+  .js .menu-dropdown li.has-children > a:hover,
+  .js .menu-dropdown li.has-children > a {
+    padding-right: 28px;
+  }
+  .menu-dropdown a span.sub-arrow {
+    right: 10px;
   }
 }

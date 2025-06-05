@@ -5,12 +5,12 @@
  ******************************************************************************/
 
 /*******************************************************************************
- * Main menu at mobile width
+ * Main menu - drop-open position for mobile
  ******************************************************************************/
 @media all and (max-width: 47.9375em) { /* 767px @ 16px font size  -- MD */
   .block-system-main-menu ul.menu {
     position: absolute;
-    right: 0;
+    right: 100px;
     top: 50px;
     width: 250px;
   }
@@ -18,112 +18,112 @@
 @media all and (max-width: 33.9375em) { /* 543px @ 16px font size -- SM */
   .block-system-main-menu ul.menu {
     position: absolute;
-    right: 0;
+    right: 100px;
     top: 50px;
     width: 100vw;
   }
 }
 
 /*******************************************************************************
- * Account Menu
+ * Borg menus - account
  ******************************************************************************/
-.borg-greeting {
-  text-align: right;
-  padding-right: 15px;
-}
-.borg-greeting ul.borg-user-menu {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 0.9375rem; /* 15px */
-  line-height: 1.25;
-}
-.borg-greeting li {
-  margin: 0;
-  padding: 0;
-}
-.borg-greeting li.top {
-  position: relative;
-}
-.borg-greeting li.top a.greeting {
-  font-weight: bold;
-  display: inline-block;
-  padding: 0 5px 5px 23px;
-  background: transparent url(../images/cog.png) 0 2px no-repeat;
-  background-size: 14px;
-}
-.borg-greeting li.top a.greeting:hover {
-  text-decoration: underline;
-}
-.borg-greeting ul.menu-tree {
-  padding: 0;
-  margin: 0;
-  position: absolute;
-  right: 0;
-  z-index: 999;
-  background-color: #696969;
-}
-.borg-greeting ul.menu-tree.closed {
+.menu-account {
   display: none;
 }
-.borg-greeting ul.menu-tree li {
-  list-style: none;
+
+.menu-account > ul > li > a,
+.menu-account > ul > li > a:hover,
+.menu-account > ul > li > a:focus,
+.menu-account > ul > li > a:active,
+.menu-account > ul > li > a.highlighted {
+  padding: 2px;
 }
-.borg-greeting ul.menu-tree a {
-  display: block;
-  padding: 3px 10px;
-  border-bottom: 1px solid #000;
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
 }
-.borg-greeting ul.menu-tree a:hover {
-  background-color: #808080;
+
+/*******************************************************************************
+ * Borg menus - demo
+ ******************************************************************************/
+.menu-demo {
+  display: none;
+  margin-left: 16px;
 }
-.borg-greeting a.icon {
-  display: inline-block;
-  margin: 0 0 0 10px;
-  padding: 5px;
-  color: rgba(255,255,255,.45);
-  font-size: 14px;
+.menu-demo > ul {
+  background-color: transparent;
 }
-.borg-greeting a.icon:last-child {
-  padding-right: 0;
+.menu-demo > ul > li > a,
+.menu-demo > ul > li > a:hover,
+.menu-demo > ul > li > a:focus,
+.menu-demo > ul > li > a:active,
+.menu-demo > ul > li > a.highlighted {
+  padding: 8px 10px;
+  color: #ffffff;
+  border-radius: 2px;
+  border-right: 1px solid #300099;
+  background: #;
+  background: linear-gradient(
+    90deg,
+    #4000CC 0%,
+    #4000CC calc(100% - 33px),
+    #300099 1px,
+    var(--color__accent--primary) 32px);
 }
-.borg-greeting a.icon:hover {
-  color: #fff;
+.js .menu-demo > ul > li.has-children > a,
+.js .menu-demo > ul > li.has-children > a:hover,
+.js .menu-demo > ul > li.has-children > a:focus,
+.js .menu-demo > ul > li.has-children > a:active,
+.js .menu-demo > ul > li.has-children > a.highlighted {
+  padding-right: 42px;
+}
+
+.menu-demo > ul > li > a > span.sub-arrow {
+  color: #ffffff;
+  border-right-color: #ffffff;
+  border-bottom-color: #ffffff;
+  right: 13px;
+}
+
+.menu-demo ul ul li a {
+  color: var(--color__accent--primary);
+}
+
+
+/*******************************************************************************
+ * Borg menus - all
+ ******************************************************************************/
+.borg-header-menu {
+  height: 36px;
+  text-align: center;
+  _border-bottom: 1px solid red;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .menu-main,
+  .menu-account,
+  .menu-demo {
+
+  }
 }
 
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .borg-greeting ul.borg-user-menu {
-    vertical-align: top;
-    display: inline-block;
-    height: 3em;
-  }
-  .borg-greeting li.top {
-    height: 3em;
-  }
-  .borg-greeting li.top a.greeting {
-    line-height: 3em;
-    height: 2.75em;
+  .l-header .container {
+    _background-color: orange;
   }
 }
+
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .borg-greeting ul.borg-user-menu {
-    display: block;
-    height: 1.75rem;
-    font-size: 1.125rem; /* 18px */
-    line-height: 1.25;
+  .l-header .borg-header-menu {
+    _display: inline-block;
   }
-  .borg-greeting li.top {
-    height: 1.75rem;
+
+  .l-header .container {
+    _background-color: yellow;
   }
-  .borg-greeting li.top a.greeting {
-    font-size: 1rem; /* 16px */
-    line-height: 1.75rem;
-    padding: 0 0 0 23px;
-    height: 1.75rem;
-    background-position: 0 7px;
-  }
-  .borg-greeting ul.menu-tree a {
-    padding: 6px 15px;
+}
+
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .l-header .container {
+    _background-color: green;
   }
 }
 
@@ -192,28 +192,34 @@
 }
 .l-footer .block-menu li a,
 .l-footer .block-menu-menu-footer-menu li a {
-  font-size: 18px;
+  font-size: 1.125em; /* relative size: 18px; */
   display: block;
   padding: .5em 1em;
+}
+.l-footer .block-menu li a,
+.l-footer .block-menu-menu-footer-menu li:last-child a {
+  padding-right: 0; /* line-up with col-md-6 block above */
 }
 .l-footer .block-menu li a:hover,
 .l-footer .block-menu-menu-footer-menu li a:hover {
   background-color: #F7F7F7;
 }
 
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .l-footer .block-menu,
   .l-footer .block-menu-menu-footer-menu {
     position: absolute;
-    bottom: -70px;
+    bottom: -58px;
     right: 0;
-    width: 50%;
+    width: 75%;
     padding: 0;
     padding-bottom: 0;
+    padding-top: 30px;
+    text-align: right;
   }
   .l-footer .block-menu ul,
   .l-footer .block-menu-menu-footer-menu ul {
-    text-align: center;
+    text-align: right;
   }
   .l-footer .block-menu li,
   .l-footer .block-menu-menu-footer-menu li {
@@ -221,7 +227,7 @@
   }
   .l-footer .block-menu li a,
   .l-footer .block-menu-menu-footer-menu li a {
-    font-size: 18px;
+    font-size: 1rem; /* 16px */
     display: inline-block;
     padding: .25em .25em;
   }
@@ -230,24 +236,19 @@
     background-color: #F7F7F7;
   }
 }
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
   .l-footer .block-menu,
   .l-footer .block-menu-menu-footer-menu {
-    bottom: -58px;
-    width: 75%;
-  }
-  .l-footer .block-menu ul,
-  .l-footer .block-menu-menu-footer-menu ul {
-    text-align: right;
+    bottom: -62px; /* adjust with font size */
   }
   .l-footer .block-menu li a,
   .l-footer .block-menu-menu-footer-menu li a {
-    padding: .25em 1em;
+    font-size: 1.125em; /* relative size: 18px; */
+    padding: .5em 1em;
   }
 }
-@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .l-footer .block-menu li a,
-  .l-footer .block-menu-menu-footer-menu li a {
-    padding: .5em 1em;
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .l-footer .block-menu-menu-footer-menu {
+    right: 30px; /* line-up with col-md-6 block above */
   }
 }

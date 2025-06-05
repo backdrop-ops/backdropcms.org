@@ -4,21 +4,38 @@
  * Contains base styles for HTML elements only.
  ******************************************************************************/
 
+:root {
+
+  /* Colors by name. */
+  --color__gray-dark: #34333F;
+  --color__purple-dark: #3909a9;
+  --color__purple-light: #B79CF6;
+
+  --color__gray-purple: #EAE1FF;
+  --color__gray-faint: #ECECEC;
+  --color__gray-dark: #7D7D7D;
+
+  /* Colors by use. */
+  --color__accent--primary: #4D00FF; /* purple - dark bg */
+  --color__accent--primary--dark: var(--color__purple-dark);
+  --color__accent--primary--light: var(--color__purple-light);
+  --color__accent--secondary: #01FDA6; /* green? */
+
+  /* Fonts */
+  --font-family--sans: "IBM Plex Sans", "Open Sans", Helvetica, sans-serif;
+  --font-family--mono: "IBM Plex Mono", Consolas, 'Courier New', Courier, monospace;
+  --font-family--sans-legacy: 'Source Sans Pro', "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  --font-family--mono-legacy: Menlo, Consolas, "Andale Mono", "Lucida Console", "Nimbus Mono L", "DejaVu Sans Mono", monospace, "Courier New";
+}
+
 html,
 body {
-  font-family: 'Source Sans Pro', "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: var(--font-family--sans-legacy);
   font-size: 16px;
   line-height: 1.25;
   margin: 0;
   padding: 0;
-  min-width: 320px;
-}
-
-body {
-  --color__accent--primary: #4D00FF;
-  --color__accent--primary--dark: #3909a9;
-  --color__accent--primary--light: #B79CF6;
-  --color__accent--secondary: #01FDA6;
+  min-width: 360px;
 }
 
 @media (max-width: 47.9375em) {  /* 767px @ 16px font size  -- MD */
@@ -180,7 +197,7 @@ pre {
   margin: 10px 0;
 }
 code {
-  font-family: Menlo, Consolas, "Andale Mono", "Lucida Console", "Nimbus Mono L", "DejaVu Sans Mono", monospace, "Courier New";
+  font-family: var(--font-family--mono-legacy);
   font-size: 0.857em;
   background-color: #EEEEEE;
   padding: 0.2em 0.5em;

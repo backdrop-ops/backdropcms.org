@@ -5,6 +5,94 @@
  */
 
 /*******************************************************************************
+ * New theme functions.
+ ******************************************************************************/
+
+/**
+ * Implements hook_theme()
+ * - Provides a theme function for outputting a list.
+ */
+function borg_theme($existing, $type, $theme, $path) {
+  return array(
+    'borg_list' => array(
+      'variables' => array(
+        'type' => 'ul',
+        'items' => array(),
+        'attributes' => array(),
+        'empty' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Outputs a HTML list.
+ * - type: UL or OL
+ * - items: A list of items to render. String values are rendered as is. Each item can also be an associative array containing:
+ *   - data: The string content of the list item.
+ *   - attrubutes: Any attributes to be applied to the LI list item.
+ *   - children: A list of nested child items to render that behave identically to 'items', but any non-numeric string keys are treated as HTML attributes for the child list that wraps 'children'.
+ */
+function borg_borg_list($variables) {
+  $type = $variables['type'];
+  $items = $variables['items'];
+  $list_attributes = $variables['attributes'];
+
+  $output = '';
+
+  if ($items) {
+    $output .= '<' . $type . backdrop_attributes($list_attributes) . '>';
+    $num_items = count($items);
+    $i = 0;
+
+    foreach ($items as $key => $item) {
+      $i++;
+      $attributes = array();
+
+      if (is_array($item)) {
+        $value = '';
+        if (isset($item['data'])) {
+          $value .= $item['data'];
+        }
+
+        if (isset($item['attributes'])) {
+          $attributes = $item['attributes'];
+        }
+
+        // Append nested child list, if any.
+        if (isset($item['children'])) {
+          // Handle child attributes.
+          $child_list_attributes = array();
+          foreach ($item['children'] as $child_key => $child_item) {
+            if (is_string($child_key)) {
+              $child_list_attributes = $child_item['attributes'];
+              unset($item['children'][$child_key]);
+            }
+          }
+          $value .= theme('borg_list', array(
+            'items' => $item['children'],
+            'type' => $type,
+            'attributes' => $child_list_attributes,
+          ));
+        }
+      }
+      else {
+        $value = $item;
+      }
+
+      $output .= '<li' . backdrop_attributes($attributes) . '>' . $value . '</li>';
+    }
+    $output .= "</$type>";
+  }
+  elseif (!empty($variables['empty'])) {
+    $output .= render($variables['empty']);
+  }
+
+  return $output;
+}
+
+
+/*******************************************************************************
  * Alter functions: modify renderable structures before used.
  ******************************************************************************/
 
@@ -84,17 +172,27 @@ function borg_preprocess_page(&$variables) {
   $source_sans = 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700';
   backdrop_add_css($source_sans, array('type' => 'external'));
 
-  // Add FontAwesome.
-  $font_awesome = 'https://use.fontawesome.com/baf3c35582.js';
-  backdrop_add_js($font_awesome, array('type' => 'external'));
+  // Make the icons available for use in CSS.
+  $icons_needed = array('user-circle');
+  backdrop_add_icons($icons_needed);
 
-  // Add ForkAwesome.
+  // Add FontAwesome.
+  //$font_awesome = 'https://use.fontawesome.com/baf3c35582.js';
+  //backdrop_add_js($font_awesome, array('type' => 'external'));
+
+  // Add ForkAwesome. @todo - replace with ICON API
   $fork_awesome = 'https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css';
   $attributes = array(
     'integrity' => 'sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=',
     'crossorigin' => 'anonymous',
   );
   backdrop_add_css($fork_awesome, array('type' => 'external', 'attributes' => $attributes));
+
+  // Load IBM Plex variable fonts.
+  backdrop_add_css(
+    'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap',
+    array('type' => 'external')
+  );
 
   // Add a body class based on the admin bar.
   if (module_exists('admin_bar') && user_access('admin_bar')) {
@@ -368,7 +466,7 @@ function borg_preprocess_node(&$variables){
  * Prepare variables for comment templates.
  * @see comment.tpl.php
  */
-function borg_preprocess_comment(&$variables){
+function borg_preprocess_comment(&$variables) {
   // Change text to "Comment from".
   $variables['submitted'] = str_replace('Submitted by', 'Comment from', $variables['submitted']);
   // Get the headshot photo from the field.
@@ -377,6 +475,122 @@ function borg_preprocess_comment(&$variables){
     $langcode = $author->langcode;
     $uri = $author->field_photo[$langcode][0]['uri'];
     $variables['user_picture'] = theme('image_style', array('style_name' => 'headshot_small', 'uri' => $uri));
+  }
+}
+
+/**
+ * Prepare variables for block templates.
+ * @see block.tpl.php
+ */
+function borg_preprocess_block(&$variables) {
+  if ($variables['block']->module == 'system') {
+    if ($variables['block']->delta == 'main-menu') {
+
+      $icon_size = '26px';
+      $icon_attributes = array('width' => $icon_size, 'height' => $icon_size);
+      $icon_options = array('attributes' => $icon_attributes);
+      $link_options = array('html' => TRUE, 'attributes' => array('class' => array('has-submenu')));
+      $account_button = l(icon('user-circle', $icon_options), 'user', $link_options);
+
+      global $user;
+      if ($user->uid == 0) {
+        $user_links = array(
+          '#theme' => 'links',
+          '#links' => array(
+            'profile' => array(
+              'title' => 'Log In',
+              'href' => 'user/login',
+            ),
+          ),
+        );
+        if (user_register_access()) {
+          $user_links['#links']['register'] = array(
+            'title' => 'Create an account',
+            'href' => 'user/register',
+          );
+        }
+      }
+      else {
+        $user_links = array(
+          '#theme' => 'links',
+          '#links' => array(
+            'profile' => array(
+              'title' => 'My Profile',
+              'href' => 'user',
+            ),
+            'logout' => array(
+              'title' => 'Log out',
+              'href' => 'user/logout',
+            ),
+          ),
+        );
+      }
+
+      $inner_user_menu = backdrop_render($user_links);
+      $user_menu = array(
+        '#theme' => 'borg_list',
+        '#attributes' => array(
+          'class' => array(
+            'sm',
+            'menu-dropdown',
+            'closed',
+            'sm-nowrap',
+          ),
+          'data-menu-style' => 'dropdown',
+        ),
+        '#items' => array(
+          'account' => array(
+            'data' => $account_button . $inner_user_menu,
+            'attributes' => array('class' => array('has-children')),
+          ),
+        ),
+      );
+
+      // Create a renderable containing links.
+
+      $version_info = _borg_get_version();
+      $demo_button = l(t('Try Backdrop CMS'), 'https://backdropcms.org/try-backdrop', $link_options);
+      $demo_links = array(
+        '#theme' => 'links',
+        '#links' => array(
+          'demo' => array(
+            'title' => 'Demo Backdrop CMS',
+            'href' => 'https://www.backdropmcs.org/demo',
+          ),
+          'download' => array(
+            'title' => 'Download Backdrop v' . $version_info['latest']['version'],
+            'href' => $version_info['latest']['download_link'],
+          ),
+          'more' => array(
+            'title' => 'Other ways to try',
+            'href' => 'https://backdropcms.org/try-backdrop',
+          ),
+        ),
+      );
+      $inner_demo_menu = backdrop_render($demo_links);
+      $demo_menu = array(
+        '#theme' => 'borg_list',
+        '#attributes' => array(
+          'class' => array(
+            'sm',
+            'menu-dropdown',
+            'closed',
+            'sm-nowrap',
+          ),
+          'data-menu-style' => 'dropdown',
+        ),
+        '#items' => array(
+          'demo' => array(
+            'data' => $demo_button . $inner_demo_menu,
+            'attributes' => array('class' => array('has-children')),
+          ),
+        ),
+      );
+
+      $variables['account'] = $user_menu;
+      $variables['demo'] = $demo_menu;
+
+    }
   }
 }
 
@@ -685,39 +899,6 @@ function borg_socialfield_drag_components($variables) {
 }
 
 /**
- * Overrides theme_menu_tree().
- */
-function borg_menu_tree__user_menu($variables) {
-  $variables['attributes']['class'][] = 'closed';
-
-  global $user;
-
-  $output  = '<nav class="borg-greeting">';
-  $output .= '  <ul class="borg-user-menu">';
-  $output .= '    <li class=top>';
-
-  if ($user->uid) {
-    $greeting = t('Hi @name!', array('@name'  => $user->name));
-    $output .= '      <a href="#" id="greeting" class="greeting">' . $greeting . '</a>';
-  }
-  else {
-    $output .= '      <a href="#" id="greeting" class="greeting">' . t('Welcome!') . '</a>';
-  }
-
-  $output .= '      <ul' . backdrop_attributes($variables['attributes']) . '>' . $variables['tree'] . '</ul>';
-  $output .= '    </li>';
-  $output .= '  </ul>';
-
-  $output .= '  <a class="icon" title="Code on GitHub" href="https://github.com/backdrop/backdrop"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>';
-  $output .= '  <a class="icon" title="Live Chat on Zulip" href="https://backdrop.zulipchat.com/#narrow/stream/218635-Backdrop"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></a>';
-  $output .= '  <a class="icon" title="Updates from our Newsletter" href="https://backdropcms.org/newsletter"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></a>';
-
-  $output .= '</nav>';
-
-  return $output;
-}
-
-/**
  * Overrides theme_feed_icon().
  */
 function borg_feed_icon($variables) {
@@ -892,4 +1073,33 @@ function borg_system_powered_by() {
   $output .= '</span>';
 
   return $output;
+}
+
+/*******************************************************************************
+ * Helper functions.
+ ******************************************************************************/
+
+/**
+ * Helper function, get core version from JSON API.
+ */
+function _borg_get_version() {
+  $cached = cache_get('backdrop_core_version_latest');
+  $data = isset($cached->data) ? $cached->data : array();
+  if (empty($data)) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+    curl_setopt($ch, CURLOPT_URL, 'https://backdropcms.org/core/latest.json');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+    $json = curl_exec($ch);
+    $res_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $data = json_decode($json, TRUE);
+
+    $expires = time() + 60*60; // Expire in no less than 1 hour.
+    cache_set('backdrop_core_version_latest', $data, 'cache', $expires);
+  }
+
+  return $data;
 }

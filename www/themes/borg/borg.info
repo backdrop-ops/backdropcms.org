@@ -21,6 +21,8 @@ stylesheets[screen][] = css/components-menus.css
 stylesheets[screen][] = css/components-views.css
 stylesheets[screen][] = css/components-blocks.css
 
+;stylesheets[screen][] = css/debug.css
+
 ; Stylesheets to be added in the rich-text editor:
 ckeditor_stylesheets[] = css/base.css
 ckeditor_stylesheets[] = css/editor.css
@@ -28,7 +30,7 @@ ckeditor_stylesheets[] = css/editor.css
 ; Custom javascript to be added:
 scripts[] = js/borg.js
 
-; Added by Backdrop CMS packaging script on 2024-03-13
+; Added by Backdrop CMS packaging script on 2025-06-13
 project = borg
-version = 1.x-1.2.3
-timestamp = 1710361227
+version = 1.x-2.0.0-alpha
+timestamp = 1749841816

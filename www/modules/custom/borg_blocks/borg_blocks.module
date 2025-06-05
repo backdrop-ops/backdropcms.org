@@ -158,13 +158,17 @@ function borg_blocks_community($settings) {
  * Block callback.
  */
 function borg_blocks_branding($settings) {
-  $options = array('attributes' => array('class' => array('site-name')));
-  $output = l(t('backdrop'), '', $options);
+  $options = array(
+    'attributes' => array(
+      'class' => array('site-name'),
+      'aria-label' => 'Backdrop CMS home page',
+    ),
+    'html' => TRUE,
+  );
+  $uri = icon_get_path('backdrop-logo');
+  $svg_contents = file_get_contents($uri);
+  $output = l(t('backdrop'). $svg_contents, '', $options);
 
-  $uri = backdrop_get_path('module', 'borg_blocks') . '/images/logo.png';
-  $image = theme('image', array('uri' => $uri, 'alt' => t('Backdrop CMS Logo')));
-  $options = array('html' => TRUE, 'attributes' => array('class' => array('logo'), 'title' => t('Backdrop CMS Home')));
-  $output .= l($image, '', $options);
   return $output;
 }
 
@@ -172,8 +176,6 @@ function borg_blocks_branding($settings) {
  * Block callback.
  */
 function borg_blocks_tagline($settings) {
-  $version = check_plain($settings['version']);
-
   $button_class_name = 'borg__button';
   if (module_exists('tugboat')) {
     $demo_text = t('Demo Backdrop CMS');
@@ -203,10 +205,13 @@ function borg_blocks_tagline($settings) {
         'html' => TRUE,
       )
     );
-
   }
 
-  $dl_url = 'https://github.com/backdrop/backdrop/releases/download/' . $version . '/backdrop.zip';
+  // Initiate a curl session.
+  $data = _borg_blocks_get_version();
+
+  $version = $data['latest']['version'];
+  $dl_url = $data['latest']['download_link'];
   $dl_text = t('Download Backdrop&nbsp;CMS') . ' <span class="version">v&nbsp;' . $version . '</span>';
 
   $download_link = l($dl_text, $dl_url,
@@ -352,11 +357,16 @@ function borg_blocks_block_configure($delta = '', $settings = array()) {
       'version' => '1.13.0',
     );
 
+    $data = _borg_blocks_get_version();
+    $version = $data['latest']['version'];
+
     $form['version'] = array(
       '#type' => 'textfield',
       '#size' => 10,
       '#title' => t('Current Version Number'),
-      '#default_value' => $settings['version'],
+      '#default_value' => $version,
+      '#disabled' => TRUE,
+      '#description' => t('<strong>Clear all caches</strong> to update. This value is now determined automatically. '),
     );
 
   }
@@ -394,4 +404,29 @@ function borg_blocks_preprocess_block(&$variables){
       $variables['button'] = $variables['content']['button'];
     }
   }
+}
+
+/**
+ * Helper function, get core version from JSON API.
+ */
+function _borg_blocks_get_version() {
+  $cached = cache_get('backdrop_core_version_latest');
+  $data = isset($cached->data) ? $cached->data : array();
+  if (empty($data)) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+    curl_setopt($ch, CURLOPT_URL, 'https://backdropcms.org/core/latest.json');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+    $json = curl_exec($ch);
+    $res_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $data = json_decode($json, TRUE);
+
+    $expires = time() + 60*60; // Expire in no less than 1 hour.
+    cache_set('backdrop_core_version_latest', $data, 'cache', $expires);
+  }
+
+  return $data;
 }

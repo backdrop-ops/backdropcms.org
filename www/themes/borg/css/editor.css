@@ -86,7 +86,8 @@ span.example {
 
 }
 span.monospace {
-  font-family: Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+  _font-family: Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+  font-family: var(--font-family--mono-legacy);
   font-size: 85%;
   padding-right: 1px;
 }
