@@ -31,3 +31,73 @@ function borg_project_project_release_release_xml_alter(&$release_xml, $release_
     );
   }
 }
+
+/**
+ * Implements hook_menu().
+ */
+function borg_project_menu() {
+  $items['core/latest.json'] = array(
+    'title' => 'AJAX Callback',
+    'delivery callback' => 'backdrop_json_deliver',
+    'page callback' => 'borg_project_core_latest',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Page callback that returns JSON data using backdrop_json_output().
+ */
+function borg_project_core_latest() {
+  $data = _borg_project_core_get_latest_cached();
+  return backdrop_json_output($data);
+}
+
+/**
+ * Getter - with cache reset  - for latest core version.
+ */
+function _borg_project_core_get_latest_cached($refresh = FALSE) {
+  $cached = cache_get('backdrop_core_version_latest');
+  $data = isset($cached->data) ? $cached->data : array();
+  if (empty($data) || $refresh) {
+    $data = _borg_project_core_build_latest();
+    cache_set('backdrop_core_version_latest', $data);
+  }
+  return $data;
+}
+
+/**
+ * Getter for latest core version.
+ */
+function _borg_project_core_build_latest() {
+  // Get the latest supported core release.
+  $latest_nid = db_query("SELECT n.nid, prsv.recommended
+    FROM {node} n
+    LEFT JOIN {project_release_supported_versions} prsv
+      ON n.nid = prsv.nid
+    WHERE n.type = 'core_release'
+      AND n.status = 1
+    ORDER BY n.created DESC
+    LIMIT 1")->fetchField();
+
+  $release_data = db_query("SELECT
+      version,
+      download_link,
+      version_major as major,
+      version_minor as minor,
+      version_patch as patch,
+      version_api
+    FROM {project_release} pr
+    WHERE nid = :nid", array(':nid' => $latest_nid))->fetchAssoc();
+
+  $data = array(
+    'status' => 'success',
+    'timestamp' => REQUEST_TIME,
+    'items' => array(
+      $release_data,
+    ),
+  );
+
+  return $data;
+}
