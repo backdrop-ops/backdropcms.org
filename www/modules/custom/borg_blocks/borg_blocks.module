@@ -206,15 +206,8 @@ function borg_blocks_tagline($settings) {
   // Initiate a curl session.
   $data = _borg_blocks_get_version();
 
-  $version = $data['items'][0]['version'];
-  $dl_url = $data['items'][0]['download_link'];
-
-  // After update.
-  //$version = $data['latest']['version'];
-  //$dl_url = $data['items'][0]['download_link'];
-
-
-  //$dl_url = 'https://github.com/backdrop/backdrop/releases/download/' . $version . '/backdrop.zip';
+  $version = $data['latest']['version'];
+  $dl_url = $data['latest']['download_link'];
   $dl_text = t('Download Backdrop&nbsp;CMS') . ' <span class="version">v&nbsp;' . $version . '</span>';
 
   $download_link = l($dl_text, $dl_url,
@@ -361,9 +354,7 @@ function borg_blocks_block_configure($delta = '', $settings = array()) {
     );
 
     $data = _borg_blocks_get_version();
-    $version = $data['items'][0]['version'];
-    // After update.
-    //$version = $data['latest']['version'];
+    $version = $data['latest']['version'];
 
     $form['version'] = array(
       '#type' => 'textfield',
