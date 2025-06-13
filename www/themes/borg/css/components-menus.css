@@ -59,12 +59,24 @@
   padding: 8px 10px;
   color: #ffffff;
   border-radius: 2px;
-  border-right: 1px solid #300099;
-  background: #;
   background: linear-gradient(
     90deg,
     #4000CC 0%,
     #4000CC calc(100% - 33px),
+    #300099 1px,
+    var(--color__accent--primary) 32px);
+}
+.menu-demo > ul > li > a.active-trail,
+.menu-demo > ul > li > a.active,
+.menu-demo > ul > li > a:hover,
+.menu-demo > ul > li > a:focus,
+.menu-demo > ul > li > a:active,
+.menu-demo > ul > li > a.highlighted {
+  border-bottom: 2px solid transparent;
+  background: linear-gradient(
+    90deg,
+    var(--color__accent--primary--dark) 0%,
+    var(--color__accent--primary--dark) calc(100% - 33px),
     #300099 1px,
     var(--color__accent--primary) 32px);
 }
@@ -85,6 +97,14 @@
 
 .menu-demo ul ul li a {
   color: var(--color__accent--primary);
+}
+.menu-demo ul ul li a.active-trail,
+.menu-demo ul ul li a.active,
+.menu-demo ul ul li a:hover,
+.menu-demo ul ul li a:focus,
+.menu-demo ul ul li a:active,
+.menu-demo ul ul li a.highlighted {
+  color: #000;
 }
 
 

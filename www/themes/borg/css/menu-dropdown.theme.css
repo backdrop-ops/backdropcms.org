@@ -217,10 +217,8 @@
   .menu-dropdown ul a:focus,
   .menu-dropdown ul a:active,
   .menu-dropdown ul a.highlighted {
+    color: var(--color__accent--primary);
     background-color: #fafafa;
-  }
-  .menu-dropdown ul a:hover {
-    background-color: var(--color__gray-faint);
   }
   .menu-dropdown ul a.disabled {
     background: white;
