@@ -28,6 +28,9 @@ body[class] {
   font-variation-settings: "wdth" 100;
 }
 
+a.site-name {
+  font-family: var(--font-family--sans-legacy);
+}
 
 .section-wrapper {
   line-height: 1.6;
