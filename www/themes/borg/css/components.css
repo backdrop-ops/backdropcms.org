@@ -775,10 +775,12 @@ a.otw-svg-mask-2 {
   text-align: center;
 }
 .block-borg-signup-newsletter input[type="submit"] {
-  background-color: #000;
+  font-size: 1.125rem;
+  background: var(--color__accent--primary);
   color: #fff;
-  border: 1px solid #fff;
+  padding: 0.3em 1.111em;
   margin: 20px 0 10px 0;
+  height: auto;
 }
 .block-borg-signup-newsletter .form-actions {
   text-align: left;
