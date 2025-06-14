@@ -85,7 +85,7 @@ tr.even .form-item {
   white-space: nowrap;
 }
 .form-item .description {
-  font-size: 0.85em;
+  font-size: 1em;
   padding: 0.8em 0 0;
 }
 label {
@@ -439,12 +439,11 @@ img.align-right {
 fieldset {
   position: relative;
   max-width: 100%;
-  display: table-cell;
-  margin: .5em 0;
+  margin: 1.5em 0;
   padding: 3em 0 0 0; /* LTR */
-  border-radius: 4px;
-  background-color:#fff;
-  border:solid 2px #EAEAEA;
+  border-radius: 2px;
+  background-color: white;
+  border: solid 1px var(--color__border--light);
   min-width: 0;
 }
 [dir="rtl"] fieldset {
@@ -482,10 +481,10 @@ fieldset fieldset fieldset {
   position: relative;
 }
 fieldset .fieldset-wrapper {
-  padding: 0 13px 13px 15px; /* LTR */
+  padding: 12px 12px 12px 24px; /* LTR */
 }
 [dir="rtl"] fieldset .fieldset-wrapper {
-  padding: 0 15px 13px 13px;
+  padding: 12px 24px 12px 12px;
 }
 .js fieldset.collapsible a.fieldset-title {
   position: relative;
@@ -523,7 +522,7 @@ fieldset .fieldset-wrapper {
 }
 /* Collapsed state styles */
 .js fieldset.collapsed {
-  padding: 1.6em 0;
+  padding: 1.5em 0;
 }
 .js fieldset.collapsed .fieldset-legend a:before {
   left: .8em;

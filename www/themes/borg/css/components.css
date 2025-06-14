@@ -1600,6 +1600,32 @@ h4 i.fa-2x {
 /*******************************************************************************
  * Buttons
 *******************************************************************************/
+
+input.button-primary {
+  background-color: var(--color__accent--primary);
+  color: white;
+  border: 2px solid var(--color__link);
+}
+input.button-primary:hover {
+  background-color: var(--color__accent--primary--dark);
+}
+
+a.button-secondary,
+input.button-secondary {
+  background-color: white;
+  color: var(--color__link);
+  border: 2px solid var(--color__link);
+}
+a.button-secondary:hover,
+input.button-secondary:hover {
+  background-color: var(--color__accent--primary);
+  color: white;
+}
+
+a.form-cancel {
+
+}
+
 a.button {
   display: inline-block;
   border: 2px solid #007CBA;
@@ -1649,16 +1675,6 @@ input.button-large {
   line-height: 60px;
   padding: 0 30px;
   margin-right: 0;
-}
-
-a.button-secondary,
-input.button-secondary {
-  border: 2px solid #E8E6E5;
-}
-a.button-secondary:hover,
-input.button-secondary:hover {
-  background-color: #f7f7f7;
-  color: #007CBA;
 }
 
 /*******************************************************************************
