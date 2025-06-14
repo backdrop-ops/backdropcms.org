@@ -1,12 +1,12 @@
 {
-    "_config_name": "field.instance.node.feature.field_backdrop_version",
-    "field_name": "field_backdrop_version",
+    "_config_name": "field.instance.node.feature.field_organization",
+    "field_name": "field_organization",
     "entity_type": "node",
     "bundle": "feature",
-    "label": "Backdrop version",
+    "label": "Organization",
     "widget": {
-        "weight": "5",
-        "type": "options_select",
+        "weight": "3",
+        "type": "options_buttons",
         "module": "options",
         "active": 1,
         "settings": []
@@ -14,33 +14,28 @@
     "description": "",
     "required": 0,
     "deleted": 0,
-    "default_value": [
-        {
-            "value": "1.0"
-        }
-    ],
+    "default_value": null,
     "default_value_function": null,
     "settings": {
         "user_register_form": false
     },
     "display": {
         "default": {
-            "label": "inline",
-            "type": "list_default",
-            "weight": "4",
-            "settings": [],
-            "module": "list"
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "6",
+            "settings": []
         },
         "teaser": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "2",
+            "weight": "5",
             "settings": []
         },
         "card": {
-            "label": "inline",
+            "label": "hidden",
             "type": "hidden",
-            "weight": "4",
+            "weight": "7",
             "settings": []
         }
     }

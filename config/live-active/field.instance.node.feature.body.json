@@ -17,7 +17,8 @@
     "settings": {
         "text_processing": "1",
         "display_summary": 0,
-        "user_register_form": false
+        "user_register_form": false,
+        "allowed_formats": []
     },
     "display": {
         "default": {
@@ -35,6 +36,12 @@
                 "trim_length": 600
             },
             "module": "text"
+        },
+        "card": {
+            "label": "hidden",
+            "type": "hidden",
+            "weight": "5",
+            "settings": []
         }
     },
     "description": "",
