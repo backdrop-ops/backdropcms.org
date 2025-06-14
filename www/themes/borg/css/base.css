@@ -7,18 +7,20 @@
 :root {
 
   /* Colors by name. */
-  --color__gray-dark: #34333F;
+  --color__purple: #4D00FF;
   --color__purple-dark: #3909a9;
   --color__purple-light: #B79CF6;
 
   --color__gray-purple: #EAE1FF;
   --color__gray-faint: #ECECEC;
-  --color__gray-dark: #7D7D7D;
+  --color__gray-mid: #7D7D7D;
+  --color__gray-dark: #34333F;
 
   /* Colors by use. */
-  --color__accent--primary: #4D00FF; /* purple - dark bg */
+  --color__accent--primary: var(--color__purple);
   --color__accent--primary--dark: var(--color__purple-dark);
   --color__accent--primary--light: var(--color__purple-light);
+
   --color__accent--secondary: #01FDA6; /* green? */
 
   /* Fonts */
@@ -74,11 +76,11 @@ p {
 }
 
 a {
-  color: #0078B5;
+  color: var(--color__purple-dark);
   text-decoration: none;
 }
 a:hover {
-  color: #007CBA;
+  color: var(--color__purple);
 }
 
 img {

@@ -43,7 +43,7 @@
   color: var(--color__purple-light);
 }
 .menu-dropdown a.disabled {
-  color: var(--color__gray-dark);
+  color: var(--color__gray-mid);
 }
 .menu-dropdown a span.sub-arrow {
   position: absolute;
@@ -176,7 +176,7 @@
   }
 
   .menu-dropdown a.disabled {
-    color: var(--color__gray-dark);
+    color: var(--color__gray-mid);
   }
   .js .menu-dropdown li.has-children > a:hover,
   .js .menu-dropdown li.has-children > a {
