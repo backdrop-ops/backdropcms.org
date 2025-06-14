@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+/usr/local/bin/bee/bee.php --root=/var/www/html/$DDEV_DOCROOT --uri=$DDEV_PRIMARY_URL $@
