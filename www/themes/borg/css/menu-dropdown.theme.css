@@ -188,28 +188,36 @@
 
   /** second level ************************************************************/
   .js .menu-dropdown ul {
-    padding: 12px 24px;
-    padding-left: 24px;
+    padding: 12px;
+    padding-left: 12px;
     background-color: #fff;
     border: 1px solid #000;
     border-radius: 2px;
   }
   .js .menu-dropdown ul li {
     float: none;
-    border-bottom: 1px solid var(--color__gray-purple);
-    padding: 0;
+    padding: 0 12px;
   }
-  .js .menu-dropdown ul li:last-child {
-    border-bottom: none;
+  .menu-dropdown ul li:has(a.active),
+  .menu-dropdown ul li:has(a.active-trail),
+  .menu-dropdown ul li:has(a:hover),
+  .menu-dropdown ul li:has(a:focus),
+  .menu-dropdown ul li:has(a:active),
+  .menu-dropdown ul li:has(a.highlighted) {
+    background-color: #fafafa;
   }
   .menu-dropdown ul a,
   .menu-dropdown ul a:hover,
   .menu-dropdown ul a:focus,
   .menu-dropdown ul a:active,
   .menu-dropdown ul a.highlighted {
-    border: 0 !important;
+    border: 0;
     padding: 12px 0;
     color: #000;
+    border-bottom: 1px solid var(--color__gray-purple);
+  }
+  .js .menu-dropdown ul li:last-child a {
+    border-bottom: none;
   }
   .menu-dropdown ul a.active,
   .menu-dropdown ul a.active-trail,
@@ -218,7 +226,6 @@
   .menu-dropdown ul a:active,
   .menu-dropdown ul a.highlighted {
     color: var(--color__accent--primary);
-    background-color: #fafafa;
   }
   .menu-dropdown ul a.disabled {
     background: white;
