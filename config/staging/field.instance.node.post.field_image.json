@@ -11,11 +11,12 @@
         "active": 1,
         "settings": {
             "progress_indicator": "throbber",
+            "browser_view": "image_library",
             "preview_image_style": "medium"
         }
     },
-    "description": "",
-    "required": 0,
+    "description": "Required for home page.",
+    "required": 1,
     "deleted": 0,
     "default_value": null,
     "default_value_function": null,
@@ -26,7 +27,9 @@
         "max_dimensions": "",
         "min_dimensions": "",
         "alt_field": 1,
+        "alt_field_required": 0,
         "title_field": 0,
+        "orientate": 0,
         "default_image": "",
         "user_register_form": false
     },
@@ -38,7 +41,8 @@
             "settings": {
                 "image_style": "",
                 "image_link": "",
-                "image_float": ""
+                "image_float": "",
+                "image_load": "auto"
             },
             "module": "image"
         },
@@ -49,7 +53,8 @@
             "settings": {
                 "image_style": "medium",
                 "image_link": "content",
-                "image_float": "right"
+                "image_float": "right",
+                "image_load": "auto"
             },
             "module": "image"
         }

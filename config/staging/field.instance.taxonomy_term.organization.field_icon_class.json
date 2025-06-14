@@ -1,26 +1,22 @@
 {
-    "_config_name": "field.instance.node.feature.field_icon_class",
+    "_config_name": "field.instance.taxonomy_term.organization.field_icon_class",
     "field_name": "field_icon_class",
-    "entity_type": "node",
-    "bundle": "feature",
+    "entity_type": "taxonomy_term",
+    "bundle": "organization",
     "label": "Icon class",
     "widget": {
-        "weight": 0,
+        "weight": "1",
         "type": "text_textfield",
         "module": "text",
         "active": 1,
         "settings": {
-            "size": "20"
+            "size": "60"
         }
     },
     "description": "Please enter the class for the <a href=\"https://phosphoricons.com\">Phosphor Icon</a> to use for this feature. Example: <code>rocket-launch</code>",
-    "required": 1,
+    "required": 0,
     "deleted": 0,
-    "default_value": [
-        {
-            "value": "rocket-launch"
-        }
-    ],
+    "default_value": null,
     "default_value_function": null,
     "settings": {
         "text_processing": "0",
@@ -29,15 +25,9 @@
     },
     "display": {
         "default": {
-            "label": "above",
-            "type": "hidden",
-            "weight": "7",
-            "settings": []
-        },
-        "teaser": {
             "label": "hidden",
             "type": "hidden",
-            "weight": "4",
+            "weight": "2",
             "settings": []
         }
     }
