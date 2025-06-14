@@ -46,6 +46,7 @@ a.site-name {
 }
 #admin-bar .admin-bar-search input {
   line-height: 16px;
+  font-size: var(--admin-bar-font-size);
   height: auto;
 }
 
