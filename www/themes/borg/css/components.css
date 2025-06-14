@@ -53,17 +53,15 @@ a.site-name {
 /*******************************************************************************
  * Tabs & Sub-tabs.
 *******************************************************************************/
+nav.tabs {
+  margin: 0 0 var(--section__padding-sm);
+}
 ul.primary {
-  height: auto;
-  border-bottom: 2px solid #E8E6E5;
-  border-collapse: collapse;
-  line-height: normal;
+  border-bottom: 1px solid var(--color__border--light);
   list-style: none;
-  margin: 5px 0;
-  padding: 0 0 0 .5em; /* LTR */
+  margin: 0;
+  padding: 0;
   white-space: nowrap;
-  box-sizing: border-box;
-  overflow: hidden;
 }
 ul.primary li {
   display: inline;
@@ -73,47 +71,48 @@ ul.primary li {
 }
 ul.primary li a {
   display: inline-block;
-  background-color: #f7f7f7;
-  border-color: #E8E6E5;
+  background-color: var(--color__gray-faint);
+  border-color: var(--color__border--light);
   border-style: solid solid none solid;
-  border-width: 2px;
   height: auto;
-  margin-right: 0.5em; /* LTR */
-  padding: 8px 20px 5px 20px;
+  margin-right: 0.25em; /* LTR */
+  padding: 8px 20px 6px 20px;
   text-decoration: none;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  box-sizing: border-box;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
   position: relative;
-  bottom: -2px;
+  bottom: -1px;
 }
 ul.primary li.active a {
   background-color: #fff;
-  border: 2px solid #E8E6E5;
+  border-color: var(--color__border--light);
   border-bottom: none;
   padding-bottom: 7px;
 }
 ul.primary li a:hover {
-  background-color: #eee;
-  border-color: #E8E6E5;
-  border-bottom-color: #eee;
+  border-color: var(--color__border--light);
+  text-decoration: underline;
 }
+
 ul.secondary {
-  border-bottom: 2px solid #E8E6E5;
-  padding: 0.5em 1em;
-  margin: 5px;
+  border-bottom: 1px solid var(--color__border--light);
+  padding: 0.5em;
+  margin: 5px 0;
 }
 ul.secondary li {
-  border-right: 2px solid #E8E6E5; /* LTR */
+  border-right: 1px solid var(--color__border--light); /* LTR */
   display: inline;
   padding: 0 1em;
+}
+ul.secondary li:last-child {
+  border-right: none;
 }
 ul.secondary a {
   padding: 0;
   text-decoration: none;
 }
 ul.secondary a.active {
-  border-bottom: 4px solid #7D7D7D;
+  border-bottom: 1px solid var(--color__link);
 }
 
 
@@ -142,10 +141,22 @@ nav.breadcrumb li a {
  * Vertical tabs
 *******************************************************************************/
 .vertical-tabs {
-  background: white;
-  border: 2px solid #E8E6E5;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
+  background-color: var(--color__gray-white);
+  border: 1px solid var(--color__border--light);
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.vertical-tab-item {
+  border-color: var(--color__border--light);
+  border-left-width: 0;
+}
+.vertical-tabs-panes {
+  border-left: 1px solid var(--color__border--light);
+
+}
+.vertical-tabs-panes .fieldset-wrapper {
+  padding: .75em 1.5em;
+  background-color: white;
 }
 
 /*******************************************************************************

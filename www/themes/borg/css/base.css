@@ -10,24 +10,43 @@
   --color__purple: #4D00FF;
   --color__purple-dark: #3909a9;
   --color__purple-light: #B79CF6;
+  --color__purple-vlight: #EAE1FF;
 
-  --color__gray-purple: #EAE1FF;
+  --color__gray-purple-light: #F2F2F2;
+  --color__gray-purple-mid: #C3BCD5;
+
+  --color__gray-white: #FAFAFA;
   --color__gray-faint: #ECECEC;
-  --color__gray-mid: #7D7D7D;
-  --color__gray-dark: #34333F;
+  --color__gray-dark: #7D7D7D;
+  --color__gray-black: #34333F;
 
   /* Colors by use. */
+  --color__link: var(--color__purple-dark);
+  --color__link-hover: var(--color__purple);
+
   --color__accent--primary: var(--color__purple);
   --color__accent--primary--dark: var(--color__purple-dark);
   --color__accent--primary--light: var(--color__purple-light);
 
   --color__accent--secondary: #01FDA6; /* green? */
 
+  --color__border--light: var(--color__gray-purple-mid);
+
   /* Fonts */
   --font-family--sans: "IBM Plex Sans", "Open Sans", Helvetica, sans-serif;
   --font-family--mono: "IBM Plex Mono", Consolas, 'Courier New', Courier, monospace;
   --font-family--sans-legacy: 'Source Sans Pro', "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   --font-family--mono-legacy: Menlo, Consolas, "Andale Mono", "Lucida Console", "Nimbus Mono L", "DejaVu Sans Mono", monospace, "Courier New";
+
+  /* Spacing */
+  --section__padding-sm: 16px;
+  --section__padding: 32px;
+}
+@media (min-width: 48em) {
+  :root {
+    --section__padding-sm: 32px;
+    --section__padding: 64px;
+  }
 }
 
 html,
@@ -76,11 +95,11 @@ p {
 }
 
 a {
-  color: var(--color__purple-dark);
+  color: var(--color__link);
   text-decoration: none;
 }
 a:hover {
-  color: var(--color__purple);
+  color: var(--color__link-hover);
 }
 
 img {
