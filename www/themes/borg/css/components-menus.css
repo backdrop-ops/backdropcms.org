@@ -111,29 +111,53 @@
 /*******************************************************************************
  * Borg menus - all
  ******************************************************************************/
+.l-header .block-system-main-menu {
+  display: inline-block;
+  text-align: right;
+}
 .borg-header-menu {
   height: 36px;
-  text-align: center;
-  _border-bottom: 1px solid red;
 }
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .menu-main,
-  .menu-account,
   .menu-demo {
-
+    display: inline-block;
   }
 }
 
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-header .block-system-main-menu {
+    text-align: center;
+  }
+  .borg-header-menu {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .menu-demo {
+    display: none;
+  }
   .l-header .container {
     _background-color: orange;
   }
 }
 
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .l-header .borg-header-menu {
-    _display: inline-block;
+  .l-header .block-system-main-menu {
+    text-align: center;
+    margin-top: 7px;
+    display: flex;
+  }
+  .menu-main,
+  .menu-account,
+  .menu-demo {
+    display: flex;
+    align-self: flex-end;
+  }
+  .menu-main {
+    flex: 1;
+    justify-content: centre;
+    align-items: centre;
   }
 
   .l-header .container {

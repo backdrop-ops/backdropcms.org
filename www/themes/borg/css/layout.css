@@ -36,10 +36,6 @@
   height: 100%;
   vertical-align: middle;
 }
-.l-header .block-system-main-menu {
-  display: inline-block;
-  text-align: right;
-}
 
 .l-header ul.menu-dropdown {
   margin: 0 auto;
@@ -52,38 +48,23 @@
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-header {
+    padding: 8px 0;
+  }
   .l-header .block-borg-blocks-branding {
     padding-right: 0;
   }
   .l-header .block-system-main-menu {
-    text-align: center;
     padding-right: 0;
     padding-left: 0;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .l-header {
+    padding: 16px 0;
+  }
   .l-header .block-borg-blocks-branding {
-    padding-left: 12px;
-  }
-  .l-header .block-system-main-menu {
-    margin-top: 7px;
-    _text-align: center;
-    display: flex;
-  }
-  .l-header .block-system-main-menu .menu-main,
-  .l-header .block-system-main-menu .menu-account,
-  .l-header .block-system-main-menu .menu-demo {
-    display: flex;
-    align-self: flex-end;
-  }
-  .l-header .block-system-main-menu .menu-main {
-    flex: 1;
-    justify-content: centre;
-    align-items: centre;
-  }
-  .l-header .block-system-main-menu .menu-account {
-  }
-  .l-header .block-system-main-menu .menu-demo {
+    padding-left: 8px;
   }
 }
 
