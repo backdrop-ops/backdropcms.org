@@ -1,0 +1,277 @@
+/*******************************************************************************
+ * node-project.css
+ *
+ * Contains styles only needed for several Project node types.
+ *
+ * These elements were separated from the compontents.css file because there is
+ * a lot of code in here that's not needed for most of the site.
+ ******************************************************************************/
+
+/**
+ * Projects -- all display modes.
+**/
+
+article.node-project h2 {
+  padding: .4em 0;
+}
+article.node-project .content {
+  padding: 0;
+}
+article.node-project .content h2 {
+  display: block;
+  font-size: 1.15em;
+  margin: 2em 0 1em;
+  padding: .8em 0 0;
+  border-top: 1px solid #d4d6d6;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+article.node-project .field-name-field-image {
+  margin-bottom: 0;
+}
+article.node-project .content p:last-child {
+  margin-bottom: 0;
+}
+article.node-project .field-name-body br {
+  display: none;
+}
+
+
+/**
+ * Projects -- full display mode only.
+**/
+/* This should add a headline to docs that don't have one */
+.node-project.view-mode-full .field-name-body .field-item > p:first-child:before {
+  content: 'Documentation';
+  display: block;
+  font-size: 1em;
+  margin: 2em 0 1em;
+  padding: .8em 0 0;
+  border-top: 2px solid #d4d6d6;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/**
+ * Projects -- teaser display mode only.
+**/
+article.node-project.view-mode-teaser {
+  padding: 0;
+}
+article.node-project.view-mode-teaser .content h2 {
+  display: none;
+}
+
+/**
+ * Projects -- project_search display mode only (for search results)
+**/
+.node-project.view-mode-project-search {
+  border: 1px solid #d4d4d6;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+.project-main {
+  padding: 15px;
+}
+.project-main h3 {
+  text-align: center;
+}
+.project-main h3 a:hover {
+  text-decoration: underline;
+}
+.project-main .column-download {
+  display: none;
+}
+.project-main .field-name-field-image img {
+  border: 1px solid #d4d4d6;
+}
+.project-main a.more-details {
+  text-align: center;
+  text-transform: uppercase;
+  margin: 10px 0 0 0;
+  border-radius: 0;
+  display: block;
+}
+
+.project-foot {
+  border-top: 1px solid #d4d4d6;
+  background-color: #fafafa;
+  padding: 15px;
+  margin: 15px 0 0 0;
+}
+.node-project.view-mode-project-search .field-name-field-download-count .field-item,
+.node-project.view-mode-project-search .field-name-field-download-count .field-label,
+.node-project.view-mode-project-search .project-usage .usage-total,
+.node-project.view-mode-project-search .project-usage .usage-label {
+  display: inline;
+  margin-right: 10px;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .project-foot .item-list ul {
+    margin: 0;
+    columns: 2;
+  }
+  .project-foot .item-list li {
+    list-style-type: none;
+    margin: 0 0 5px 0;
+  }
+  .project-foot ul > li:nth-last-of-type(-n+2) {
+    text-align: right;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .project-main h3 {
+    text-align: left;
+    margin: 0;
+    margin-top: 0;
+  }
+  .project-main .column-download {
+    display: block;
+    margin-top: 20px;
+    text-align: right;
+  }
+  .project-main .download-size {
+    margin-left: 8px;
+  }
+  .project-main .field-name-field-image {
+    margin-top: 15px;
+  }
+  .project-main a.more-details {
+    margin: 30px 0 0 0;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .project-main {
+    padding: 30px;
+  }
+  .project-foot {
+    padding: 15px 30px;
+    margin: 30px 0 0 0;
+    font-size: 1.125em; /* relative size: 18px; */
+    line-height: 1.45; /* 26.1px @ 18px font size */
+  }
+}
+
+/**
+ * View-modes used only on the modues / themes / layouts search pages.
+ */
+.project-sidebar .field,
+.project-sidebar .project-usage {
+  font-size: 1rem;
+  text-align: center;
+}
+.project-sidebar .field-item,
+.project-sidebar .usage-total {
+  font-size: 1.25rem;
+}
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .project-sidebar .field-type-number-integer,
+  .project-sidebar .project-usage {
+    float: left;
+    width: 50%;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .project-sidebar .field-type-number-integer,
+  .project-sidebar .project-usage {
+    margin: 30px 0;
+  }
+}
+
+/**
+ * Project releases.
+ */
+ .node-project-release ul.links.inline {
+   display: none;
+ }
+ article.node-project-release .content h2 {
+   display: block;
+ }
+
+ .node-project-release .form-item {
+   font-size: 1.3em;
+ }
+ .node-project-release .form-item label {
+   font-size: 1em;
+   margin: 2em 0 1em;
+   padding: .8em 0 0;
+   border-top: 1px solid #d4d6d6;
+   text-transform: uppercase;
+   font-weight: 600;
+ }
+
+/**
+ * Project releases -- teasers.
+ */
+article.node-project-release.view-mode-project-search {
+
+}
+article.node-project-release.view-mode-project-search .node h2 {
+  margin-bottom: 0;
+}
+article.node-project-release.view-mode-project-search .node ul.links {
+  text-align: left;
+}
+article.node-project-release.view-mode-project-search article.view-mode-teaser {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+/**
+ * Download table (view).
+ */
+.node-project .view-project-release-download-table .view-content {
+  line-height: 1.3em;
+}
+.node-project .view-project-release-download-table th {
+  font-weight: 400;
+  font-size: .8em;
+}
+.node-project .view-project-release-download-table th,
+.node-project .view-project-release-download-table td {
+  padding: 5px .8em .0 0;
+}
+.node-project .view-project-release-download-table th {
+  vertical-align: bottom;
+}
+.node-project .view-project-release-download-table td {
+  vertical-align: top;
+}
+.node-project .view-project-release-download-table .recommended td:first-child a {
+  display: inline-block;
+  margin: 0 .2em 0 0;
+}
+.node-project .view-project-release-download-table .recommended td:first-child a:after,
+.node-project .view-project-release-download-table .supported td:first-child a:after {
+  content: "\f0ab";
+  font-family: 'FontAwesome';
+  display: inline-block;
+  padding: 0 0 0 .2em;
+}
+.view-project-release-download-table .recommended-version,
+.view-project-release-download-table .released,
+.view-project-release-download-table .all-versions {
+  padding: 5px 0;
+}
+
+.block-views-project-release-download-table-block-1 {
+  padding-top: 15px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .node-project .view-project-release-download-table .view-content {
+    font-size: 1.3em;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .block-views-project-release-download-table-block-1 {
+    padding-top: 30px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .node-project .view-project-release-download-table .recommended td:first-child a {
+    font-size: 1.4em;
+  }
+}
