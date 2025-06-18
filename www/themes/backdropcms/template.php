@@ -101,10 +101,11 @@ function backdropcms_preprocess_node(&$variables) {
     }
 
     // Add a more info link to content.
+    // Link text <span class="element-invisible"> about ' . check_plain($node->title) . '</span>'
     $variables['content']['more'] = array(
       '#type' => 'link',
-      '#title' => t('More details<span class="element-invisible"> about ' . check_plain($node->title) . '</span>'),
-      '#href' => url('node/' . $node->nid, array('absolute' => TRUE, 'html' => TRUE)),
+      '#title' => t('More details'),
+      '#href' => url('node/' . $node->nid, array('absolute' => TRUE),
       '#attributes' => array('class' => array('more-details')),
       '#weight' => 10,
     );
