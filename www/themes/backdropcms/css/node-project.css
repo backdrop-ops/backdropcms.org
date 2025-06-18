@@ -101,6 +101,12 @@ article.node-project.view-mode-teaser .content h2 {
   padding: 15px;
   margin: 15px 0 0 0;
 }
+.project-foot > ul {
+  columns: 2;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
 .node-project.view-mode-project-search .field-name-field-download-count .field-item,
 .node-project.view-mode-project-search .field-name-field-download-count .field-label,
 .node-project.view-mode-project-search .project-usage .usage-total,
