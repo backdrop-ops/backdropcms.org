@@ -23,7 +23,7 @@ services:
         container_name: ddev-borg-db
         environment:
             BITNAMI_VOLUME_DIR: ""
-            COLUMNS: "131"
+            COLUMNS: "120"
             DDEV_DATABASE: mariadb:10.4
             DDEV_DATABASE_FAMILY: mysql
             DDEV_GOARCH: arm64
@@ -40,7 +40,7 @@ services:
             DOCKER_IP: 127.0.0.1
             HOST_DOCKER_INTERNAL_IP: ""
             IS_DDEV_PROJECT: "true"
-            LINES: "42"
+            LINES: "44"
             MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/borg-db/mysql_history
             PGDATABASE: db
             PGHOST: 127.0.0.1
@@ -71,7 +71,6 @@ services:
             - host_ip: 127.0.0.1
               mode: ingress
               protocol: tcp
-              published: "52547"
               target: 3306
         restart: "no"
         stop_grace_period: 1m0s
@@ -114,7 +113,7 @@ services:
             - /pre-start.sh
         container_name: ddev-borg-web
         environment:
-            COLUMNS: "131"
+            COLUMNS: "120"
             COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
             COREPACK_HOME: /mnt/ddev-global-cache/corepack
             DDEV_COMPOSER_ROOT: /var/www/html
@@ -147,7 +146,7 @@ services:
             HTTP_EXPOSE: 80:80,8025:8025
             HTTPS_EXPOSE: 443:80,8026:8025
             IS_DDEV_PROJECT: "true"
-            LINES: "42"
+            LINES: "44"
             MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/borg-web/mysql_history
             NODE_EXTRA_CA_CERTS: /mnt/ddev-global-cache/mkcert/rootCA.pem
             PGDATABASE: db
@@ -184,12 +183,10 @@ services:
             - host_ip: 127.0.0.1
               mode: ingress
               protocol: tcp
-              published: "52549"
               target: 80
             - host_ip: 127.0.0.1
               mode: ingress
               protocol: tcp
-              published: "52548"
               target: 443
             - host_ip: 127.0.0.1
               mode: ingress
