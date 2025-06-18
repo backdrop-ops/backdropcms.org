@@ -1631,9 +1631,9 @@ a.form-cancel {
 
 a.button {
   display: inline-block;
-  border: 2px solid #007CBA;
+  border: 2px solid var(--color__accent--primary--dark);
   background-color: white;
-  color: #007CBA;
+  color: var(--color__accent--primary--dark);
   font-size: 1.125rem; /* 18px */
   border-radius: 20px;
   width: auto;
@@ -1657,13 +1657,13 @@ a.button {
   transition: color .33s;
 }
 a.button:hover {
-  background-color: #007CBA;
+  background-color: var(--color__accent--primary--dark);
   color: white;
 }
 
 a.button-small,
 input.button-small {
-  border-radius: 15px;
+  border-radius: 2px;
   font-size: 16px;
   height: 30px;
   line-height: 30px;
@@ -1672,7 +1672,7 @@ input.button-small {
 }
 a.button-large,
 input.button-large {
-  border-radius: 30px;
+  border-radius: 2px;
   font-size: 24px;
   height: 60px;
   line-height: 60px;
