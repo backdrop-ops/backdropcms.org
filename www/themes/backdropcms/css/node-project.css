@@ -88,11 +88,9 @@ article.node-project.view-mode-teaser .content h2 {
   border: 1px solid #d4d4d6;
 }
 .project-main a.more-details {
-  text-align: center;
   text-transform: uppercase;
+  text-decoration: underline;
   margin: 10px 0 0 0;
-  border-radius: 0;
-  display: block;
 }
 
 .project-foot {
