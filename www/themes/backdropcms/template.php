@@ -105,7 +105,7 @@ function backdropcms_preprocess_node(&$variables) {
     $variables['content']['more'] = array(
       '#type' => 'link',
       '#title' => t('More details'),
-      '#href' => url('node/' . $node->nid, array('absolute' => TRUE),
+      '#href' => url('node/' . $node->nid, array('absolute' => TRUE)),
       '#attributes' => array('class' => array('more-details')),
       '#weight' => 10,
     );
