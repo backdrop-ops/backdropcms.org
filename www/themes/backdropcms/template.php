@@ -104,7 +104,7 @@ function backdropcms_preprocess_node(&$variables) {
     $variables['content']['more'] = array(
       '#type' => 'link',
       '#title' => t('More details<span class="element-invisible"> about ' . check_plain($node->title) . '</span>'),
-      '#href' => url('node/' . $node->nid, array('absolute' => TRUE)),
+      '#href' => url('node/' . $node->nid, array('absolute' => TRUE, 'html' => TRUE)),
       '#attributes' => array('class' => array('more-details')),
       '#weight' => 10,
     );
