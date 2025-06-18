@@ -36,7 +36,7 @@ function backdropcms_preprocess_page(&$variables) {
  */
 function backdropcms_preprocess_node(&$variables) {
   // Get the theme location.
-  $path = backdrop_get_path('theme', 'borg');
+  $path = backdrop_get_path('theme', 'backdropcms');
 
   if ($variables['type'] == 'feature') {
     $variables['icon'] = '';
