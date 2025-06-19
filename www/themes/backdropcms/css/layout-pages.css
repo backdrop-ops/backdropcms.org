@@ -10,12 +10,12 @@
  * Showcase page overrides
  ******************************************************************************/
 .showcase .l-top {
-  border-bottom: 2px solid #D4D6D6;
+  border-bottom: 2px solid var(--color__border--gray-mid);
   padding-top: 25px;
   padding-bottom: 15px;
 }
 .showcase .l-wrapper {
-  background-color: #F7F7F7;
+  background-color: var(--color__background--gray-vlight);
   padding-top: 25px;
   padding-bottom: 15px;
 }
@@ -82,8 +82,8 @@ body.support .l-bottom,
 body.support-services .l-bottom,
 body.node-1621 .l-bottom {
   margin-top: 100px;
-  border-top: 3px solid #E8E6E5;
-  background-color: #F7F7F7;
+  border-top: 2px solid var(--color__border--gray-mid);;
+  background-color: var(--color__background--gray-vlight);
   padding-bottom: 5px;
 }
 body.front .l-footer,

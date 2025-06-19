@@ -173,9 +173,9 @@ label.github-clone-label {
  ******************************************************************************/
 .field-name-field-docs-level {
   padding: 15px 15px 5px 15px;
-  background-color: #f7f7f7;
+  background-color: var(--color__background--gray);
 }
 .field-name-field-docs-status {
   padding: 5px 15px 15px 15px;
-  background-color: #f7f7f7;
+  background-color: var(--color__background--gray);
 }

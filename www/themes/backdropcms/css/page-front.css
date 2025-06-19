@@ -407,7 +407,7 @@ a.site-name {
 }
 
 .chonky-link-bar__item + .chonky-link-bar__item {
-    border-top: 1px solid #EAE1FF;
+  border-top: 1px solid var(--color__border--gray-light);
 }
 
 .chonky-link-bar {
@@ -535,7 +535,7 @@ a.site-name {
 }
 
 .block-views-news-block .section-wrapper {
-  border: 1px solid #EAE1FF;
+  border: 1px solid var(--color__border--gray-light);
   background: #F9F8FB;
 }
 
@@ -692,7 +692,7 @@ a.site-name {
   padding: 32px 0 24px;
   text-decoration: none;
   color: inherit;
-  box-shadow: inset 0 -1px 0 #EAE1FF;
+  box-shadow: inset 0 -1px 0 var(--color__border--gray-light);
 }
 
 .b-resources__links[class] a:hover,

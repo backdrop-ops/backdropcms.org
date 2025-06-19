@@ -168,10 +168,10 @@ main.col-md-8 .backdrop-books figure {
  * borg_project_metrics block
  ******************************************************************************/
 div.block-borg-project-metrics-backdrop-project-metrics {
-  background-color: #F7F7F7;
+  background-color: var(--color__background--gray-vlight);
   padding: 30px 0;
-  border-top: 3px solid #E8E6E5;
-  border-bottom: 3px solid #E8E6E5;
+  border-top: 2px solid var(--color__border--gray-light);
+  border-bottom: 2px solid var(--color__border--gray-light);
   margin-bottom: 0;
 }
 .block-borg-project-metrics-backdrop-project-metrics .project-metrics div {
@@ -339,7 +339,7 @@ div.block-views-showcase-block-1 {
 
 /* File upload widget gets pretty complicated. */
 .block-formblock-supporter .form-managed-file {
-  border: 2px solid #E8E6E5;
+  border: 2px solid var(--color__border--gray-light);
   background: white;
   padding: 8px 4px;
   height: 24px;

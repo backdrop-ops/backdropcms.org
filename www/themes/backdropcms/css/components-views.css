@@ -184,9 +184,9 @@
   padding-top: 15px;
 }
 .view-providers .views-row {
-  padding-bottom: 15px;
-  border-bottom: 2px solid #E8E6E5;
-  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color__border--gray-light);
+  margin-bottom: 24px;
 }
 .view-providers .views-row:last-child {
   border-bottom: 0;
@@ -210,20 +210,24 @@
   margin: 0;
 }
 .view-providers .view-footer {
-  background-color:  #f7f7f7;
-  padding: 15px;
-  margin-top: 15px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
+  background-color:  var(--color__background--gray-vlight);
+  border: 1px solid var(--color__border--gray-light);
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 2px;
 }
 .view-providers .view-footer p {
   margin: 0;
   text-align: center;
   color: #444b53;
-  font-size: 1rem; /* 16px */
+  font-size: 1em; /* 16px */
 }
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .view-providers .views-row {
+    padding-bottom: 24px;
+    margin-bottom: 48px;
+  }
   .view-providers table td {
     padding: 15px 0;
   }
@@ -241,8 +245,8 @@
 .block-views-providers-block-2 .view-providers,
 .block-views-providers-block-3 .view-providers {
   margin-bottom: 100px;
-  border: 2px solid #E8E6E5;
-  border-radius: 4px;
+  border: 2px solid var(--color__border--gray-mid);
+  border-radius: 2px;
 }
 
 /*******************************************************************************
@@ -294,8 +298,8 @@
 .view-showcase .col-inner,
 .view-showcase .fields {
   background-color: #fff;
-  border: 1px solid #EDEFF0;
-  border-radius: 4px;
+  border: 1px solid var(--color__border--gray-light);
+  border-radius: 2px;
   padding-bottom: 15px;
 }
 .view-showcase .views-field {
@@ -584,6 +588,9 @@
 .view-platforms .top-bar {
   border-bottom: 0;
   margin-bottom: 0;
+  background-color: var(--color__background--gray-vlight);
+  border-top: 2px solid var(--color__border--gray-light);
+  border-bottom: 1px solid var(--color__border--gray-light);
 }
 .view-platforms h3 {
   margin: 1.5em 0; /* 24px */
