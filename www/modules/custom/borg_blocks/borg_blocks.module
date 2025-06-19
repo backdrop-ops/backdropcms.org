@@ -381,19 +381,22 @@ function borg_blocks_audiences($settings) {
  * Block callback.
  */
 function borg_blocks_upgrade($settings) {
+  $icon_size = '100px';
+  $icon_attributes = array('width' => $icon_size, 'height' => $icon_size);
+  $icon_options = array('attributes' => $icon_attributes);
   $path = backdrop_get_path('module', 'borg_blocks');
   $button = l(t('Upgrade from Drupal'), 'node/4967', array('attributes' => array('class' => array('button'))));
 
-  $included_modules = l(t("MODULES_CORE+ included modules"), 'https://docs.backdropcms.org/documentation/features-added-to-core');
-  $included_modules_icon = '<img src="/' . $path . '/images/gift--white--256.png" />';
+  $included_modules = l(MODULES_CORE . t("+ included modules"), 'https://docs.backdropcms.org/documentation/features-added-to-core');
+  $included_modules_icon = icon('gift', $icon_options);
   $included_modules_icon_link = l($included_modules_icon, 'https://docs.backdropcms.org/documentation/features-added-to-core', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $top_modules = l(t("MODULES_TOP% of top modules"), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
-  $top_modules_icon = '<img src="/' . $path . '/images/check-circle--white--256.png" />';
+  $top_modules = l(MODULES_TOP . t("% of top modules"), 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules');
+  $top_modules_icon = icon('check-square', $icon_options);
   $top_modules_icon_link = l($top_modules_icon, 'https://docs.backdropcms.org/documentation/top-100-drupal-7-modules', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
-  $total_addons = l(t("MODULES_AVAILABLE+ total add-ons"), 'node/1686');
-  $total_addons_icon = '<img src="/' . $path . '/images/puzzle-piece--white--256.png" />';
+  $total_addons = l(MODULES_AVAILABLE . t("+ total add-ons"), 'node/1686');
+  $total_addons_icon = icon('puzzle-piece', $icon_options);
   $total_addons_icon_link = l($total_addons_icon, 'node/1686', array('html' => TRUE, 'attributes' => array('class' => array('icon'))));
 
   $output  = '<div class="container container-fluid">';
@@ -401,17 +404,17 @@ function borg_blocks_upgrade($settings) {
   $output .= '    <div class="col-md-4 column">';
   $output .=        $included_modules_icon_link;
   $output .= '      <h3>' . $included_modules . '</h3>';
-  $output .= '      <p>' . t("More than MODULES_CORE Drupal modules have been merged into Backdrop core.") . '</p>';
+  $output .= '      <p>' . t("More than !modules Drupal modules have been merged into Backdrop core.", array('!modules' => MODULES_CORE)) . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $top_modules_icon_link;
   $output .= '      <h3>' . $top_modules . '</h3>';
-  $output .= '      <p>' . t("Of the top 100 Drupal 7 modules, MODULES_TOP of them are ready for Backdrop CMS.") . '</p>';
+  $output .= '      <p>' . t("Of the top 100 Drupal 7 modules, !modules of them are ready for Backdrop CMS.", array('!modules' => MODULES_TOP)) . '</p>';
   $output .= '    </div>';
   $output .= '    <div class="col-md-4 column">';
   $output .=        $total_addons_icon_link;
   $output .= '      <h3>' . $total_addons . '</h3>';
-  $output .= '      <p>' . t("More than MODULES_AVAILABLE modules, themes, and layouts are available for use today.") . '</p>';
+  $output .= '      <p>' . t("More than !modules modules, themes, and layouts are available for use today.", array('!modules' => MODULES_AVAILABLE)) . '</p>';
   $output .= '    </div>';
   $output .= '  </div>';
   $output .= '</div>';
