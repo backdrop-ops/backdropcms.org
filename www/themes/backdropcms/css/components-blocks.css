@@ -232,6 +232,11 @@ div.block-borg-project-metrics-backdrop-project-metrics {
   width: 100%;
   padding-top: 15px;
   text-align: center;
+  background-color: var(--color__background--gray);
+  border-top: 1px solid var(--color__border--gray-light);
+}
+.block-borg-blocks-upgrade a.icon {
+  display: block;
 }
 .block-borg-blocks-upgrade a.icon:hover {
   color: #007CBA;
@@ -242,23 +247,25 @@ div.block-borg-project-metrics-backdrop-project-metrics {
 }
 .block-borg-blocks-upgrade h3 {
   font-weight: normal;
-  margin: 1em 0;
+  margin: 0 0 1em 0;
 }
 .block-borg-blocks-upgrade h3 a {
-  color: #fff;
   text-decoration: underline;
 }
 .block-borg-blocks-upgrade p {
   text-align: center;
+  margin: 0 0 1em 0;
 }
 .upgrade-cta {
   margin-top: 30px;
-  padding: 5px 0;
-  color: #000;
+  padding: 12px 0;
+  color: white;
   text-align: left;
-  background-color: #F7F7F7;
-  border-top: 3px solid #E8E6E5;
-  border-bottom: 3px solid #E8E6E5;
+  background-color: var(--color__accent--primary);
+  border-top: 1px solid var(--color__border--gray-light);
+}
+.upgrade-cta p {
+  margin: 0;
 }
 
 @media (min-width: 25em) { /* 400px @ 16px font size */
@@ -277,27 +284,14 @@ div.block-borg-project-metrics-backdrop-project-metrics {
     font-size: 1.75em;
     margin: .5em 0;
   }
-  .block-borg-blocks-upgrade p {
-    font-size: 1.25em;
-  }
-  .upgrade-cta {
-    margin-top: 345px;
-    padding: 10px 0;
-  }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .block-borg-blocks-upgrade {
-    padding-top: 45px;
-  }
   .block-borg-blocks-upgrade h3 {
     font-size: 1.5rem;
   }
   .block-borg-blocks-upgrade p {
     font-size: 1em;
-  }
-  .upgrade-cta {
-    margin-top: 60px;
-    padding: 15px 0;
+    margin: 0;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
