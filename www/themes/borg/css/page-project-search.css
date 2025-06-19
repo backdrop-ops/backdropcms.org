@@ -116,7 +116,7 @@ form.views-exposed-form,
 .views-exposed-form .form-text,
 .views-exposed-form .form-submit {
   display: block;
-  border: 2px solid var(--color__border--gray-mid);
+  border: 1px solid var(--color__accent--primary);
   margin: 0;
   font-size: inherit;
 }
