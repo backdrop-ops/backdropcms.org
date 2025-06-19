@@ -116,7 +116,7 @@ form.views-exposed-form,
 .views-exposed-form .form-text,
 .views-exposed-form .form-submit {
   display: block;
-  border: 2px solid #000;
+  border: 2px solid var(--color__border--gray-mid);
   margin: 0;
   font-size: inherit;
 }
@@ -141,13 +141,13 @@ form.views-exposed-form,
   overflow: hidden;
   text-indent: -9999em;
   border-radius: 0;
-  background: #cfde56;
+  background: var(--color__accent--primary);
 }
 
 .views-exposed-form .form-submit:hover,
 .views-exposed-form .form-submit:focus,
 .views-exposed-form .form-submit:active {
-  background: #c7cc00;
+  background: var(--color__accent--primary-dark);
 }
 
 
