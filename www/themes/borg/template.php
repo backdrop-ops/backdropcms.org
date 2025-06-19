@@ -450,44 +450,46 @@ function borg_preprocess_block(&$variables) {
 
       // Create a renderable containing links.
 
-      $version_info = _borg_get_version();
       $demo_button = l(t('Try Backdrop CMS'), 'https://backdropcms.org/try-backdrop', $link_options);
-      $demo_links = array(
-        '#theme' => 'links',
-        '#links' => array(
-          'demo' => array(
-            'title' => 'Demo Backdrop CMS',
-            'href' => 'https://www.backdropmcs.org/demo',
+      $demo_menu = $demo_button;
+      if ($version_info = _borg_get_version()) {
+        $demo_links = array(
+          '#theme' => 'links',
+          '#links' => array(
+            'demo' => array(
+              'title' => 'Demo Backdrop CMS',
+              'href' => 'https://www.backdropmcs.org/demo',
+            ),
+            'download' => array(
+              'title' => 'Download Backdrop v' . $version_info['latest']['version'],
+              'href' => $version_info['latest']['download_link'],
+            ),
+            'more' => array(
+              'title' => 'Other ways to try',
+              'href' => 'https://backdropcms.org/try-backdrop',
+            ),
           ),
-          'download' => array(
-            'title' => 'Download Backdrop v' . $version_info['latest']['version'],
-            'href' => $version_info['latest']['download_link'],
+        );
+        $inner_demo_menu = backdrop_render($demo_links);
+        $demo_menu = array(
+          '#theme' => 'borg_list',
+          '#attributes' => array(
+            'class' => array(
+              'sm',
+              'menu-dropdown',
+              'closed',
+              'sm-nowrap',
+            ),
+            'data-menu-style' => 'dropdown',
           ),
-          'more' => array(
-            'title' => 'Other ways to try',
-            'href' => 'https://backdropcms.org/try-backdrop',
+          '#items' => array(
+            'demo' => array(
+              'data' => $demo_button . $inner_demo_menu,
+              'attributes' => array('class' => array('has-children')),
+            ),
           ),
-        ),
-      );
-      $inner_demo_menu = backdrop_render($demo_links);
-      $demo_menu = array(
-        '#theme' => 'borg_list',
-        '#attributes' => array(
-          'class' => array(
-            'sm',
-            'menu-dropdown',
-            'closed',
-            'sm-nowrap',
-          ),
-          'data-menu-style' => 'dropdown',
-        ),
-        '#items' => array(
-          'demo' => array(
-            'data' => $demo_button . $inner_demo_menu,
-            'attributes' => array('class' => array('has-children')),
-          ),
-        ),
-      );
+        );
+      }
 
       $variables['account'] = $user_menu;
       $variables['demo'] = $demo_menu;
@@ -963,6 +965,90 @@ function borg_github_info($variables) {
   $clone .= '</div>';
 
   return $list . $clone;
+}
+
+/**
+ * Override theme_pager_link().
+ */
+function borg_pager_link($variables) {
+  $text = $variables['text'];
+  $page_new = $variables['page_new'];
+  $element = $variables['element'];
+  $parameters = $variables['parameters'];
+  $attributes = $variables['attributes'];
+
+  $page = isset($_GET['page']) ? $_GET['page'] : '';
+  if ($new_page = implode(',', pager_load_array($page_new[$element], $element, explode(',', $page)))) {
+    $parameters['page'] = $new_page;
+  }
+
+  $query = array();
+  if (count($parameters)) {
+    $query = backdrop_get_query_parameters($parameters, array());
+  }
+  if ($query_pager = pager_get_query_parameters()) {
+    $query = array_merge($query, $query_pager);
+  }
+
+  // Set new pager link text
+  static $pager_pieces = NULL;
+  if (!isset($pager_pieces)) {
+    $pager_pieces = array(
+      t('« first') => array(
+        'title_attribute' => t('Go to first page'),
+        'before' => '« ',
+        'text' => t('first'),
+      ),
+      t('‹ previous') => array(
+        'title_attribute' => t('Go to previous page'),
+        'before' => '‹ ',
+        'text' => t('previous'),
+      ),
+      t('next ›') => array(
+        'title_attribute' => t('Go to next page'),
+        'text' => t('next'),
+        'after' => ' ›',
+      ),
+      t('last »') => array(
+        'title_attribute' => t('Go to last page'),
+        'text' => t('last'),
+        'after' => ' »',
+      ),
+    );
+  }
+
+  // Set the title attribute for each pager link.
+  if (!isset($attributes['title'])) {
+    if (isset($pager_pieces[$text])) {
+      $attributes['title'] = $pager_pieces[$text]['title_attribute'];
+    }
+    elseif (is_numeric($text)) {
+      $attributes['title'] = t('Go to page @number', array('@number' => $text));
+    }
+  }
+
+  // @todo l() cannot be used here, since it adds an 'active' class based on the
+  //   path only (which is always the current path for pager links). Apparently,
+  //   none of the pager links is active at any time - but it should still be
+  //   possible to use l() here.
+  // @see http://drupal.org/node/1410574
+  $attributes['href'] = url($_GET['q'], array('query' => $query));
+
+  // How to tell when spans and new text are needed.
+  $has_text = FALSE;
+  if (isset($pager_pieces[$text]['text'])) {
+    $has_text = TRUE;
+  }
+
+  $output  = '<a' . backdrop_attributes($attributes) . '>';
+  $output .=   isset($pager_pieces[$text]['before']) ? $pager_pieces[$text]['before'] : '';
+  $output .=   $has_text ? '<span class="pager-text">' : '';
+  $output .=   $has_text ? check_plain($pager_pieces[$text]['text']) : check_plain($text);
+  $output .=   $has_text ? '</span>' : '';
+  $output .=   isset($pager_pieces[$text]['after']) ? $pager_pieces[$text]['after']: '';
+  $output .= '</a>';
+
+  return $output;
 }
 
 /**

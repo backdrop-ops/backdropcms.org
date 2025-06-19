@@ -88,7 +88,7 @@ label.github-clone-label {
 
 .node-project .view-project-release-download-table .views-row {
   clear: left;
-  border-bottom: 1px solid #d4d4d6;
+  border-bottom: 1px solid var(--color__border--gray-light);
   padding: 28px 0;
 }
 .node-project .view-project-release-download-table h3 {

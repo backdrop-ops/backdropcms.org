@@ -12,7 +12,9 @@
   --color__purple-light: #B79CF6;
   --color__purple-vlight: #EAE1FF;
 
-  --color__gray-purple-light: #F2F2F2;
+  --color__gray: #F2F2F2;
+  --color__gray-vlight: #F9F8FB;
+  --color--gray-purple-light: #EAE1FF;
   --color__gray-purple-mid: #C3BCD5;
 
   --color__gray-white: #FAFAFA;
@@ -27,10 +29,14 @@
   --color__accent--primary: var(--color__purple);
   --color__accent--primary--dark: var(--color__purple-dark);
   --color__accent--primary--light: var(--color__purple-light);
-
   --color__accent--secondary: #01FDA6; /* green? */
 
-  --color__border--light: var(--color__gray-purple-mid);
+  --color__border--gray-light: var(--color--gray-purple-light);
+  --color__border--gray-mid: var(--color__gray-purple-mid);
+
+  --color__background--gray-vlight: var(--color__gray-vlight);
+  --color__background--gray: var(--color__gray);
+  --color__background--gray-mid: var(--color__gray-faint);
 
   /* Fonts */
   --font-family--sans: "IBM Plex Sans", "Open Sans", Helvetica, sans-serif;
@@ -250,11 +256,10 @@ textarea {
   height: 40px;
   max-width: 100%;
   padding: 8px 10px 4px 10px;
-  border: 1px solid var(--color__border--light);
+  border: 1px solid var(--color__border--gray-mid);
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
   box-sizing: border-box;
-  -moz-border-radius: 4px;
   border-radius: 2px;
 }
 textarea {
@@ -265,6 +270,9 @@ select {
   height: 40px;
   color: #444b53;
   padding: 4px 16px 4px 8px;
+  background-color: white;
+  border: 1px solid var(--color__border--gray-mid);
+  border-radius: 2px;
 }
 input[type="checkbox"] {
   -webkit-box-shadow: none;

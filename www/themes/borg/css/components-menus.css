@@ -252,10 +252,6 @@
 .l-footer .block-menu-menu-footer-menu li:last-child a {
   padding-right: 0; /* line-up with col-md-6 block above */
 }
-.l-footer .block-menu li a:hover,
-.l-footer .block-menu-menu-footer-menu li a:hover {
-  background-color: #F7F7F7;
-}
 
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .l-footer .block-menu,
@@ -282,10 +278,6 @@
     font-size: 1rem; /* 16px */
     display: inline-block;
     padding: .25em .25em;
-  }
-  .l-footer .block-menu li a:hover,
-  .l-footer .block-menu-menu-footer-menu li a:hover {
-    background-color: #F7F7F7;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
