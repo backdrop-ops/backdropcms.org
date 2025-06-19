@@ -29,6 +29,10 @@ function borg_blocks_block_info() {
     'info' => t('Join the community'),
     'description' => t('Home page: Community section'),
   );
+  $blocks['resources'] = array(
+    'info' => t('Backdrop CMS Resources'),
+    'description' => t('Social media and other useful links'),
+  );
 
   $blocks['branding'] = array(
     'info' => t('Branding'),
@@ -75,6 +79,11 @@ function borg_blocks_block_view($delta = '', $settings = array(), $contexts = ar
       $block_title .= '<div class="b-community__title">Join the community</div>';
       $block['subject'] = $block_title;
       $block['content'] = borg_blocks_community($settings);
+      break;
+
+    case 'resources':
+      $block['subject'] = t('Resources');
+      $block['content'] = borg_blocks_resources($settings);
       break;
 
     case 'branding':
@@ -157,6 +166,74 @@ function borg_blocks_community($settings) {
 /**
  * Block callback.
  */
+function borg_blocks_resources() {
+  $link_options = array('html' => TRUE);
+  $icon_size = '26px';
+  $icon_attributes = array('width' => $icon_size, 'height' => $icon_size);
+  $icon_options = array('attributes' => $icon_attributes);
+
+  $zulip_icon = icon('chat', $icon_options);
+  $office_icon = icon('building', $icon_options);
+  $forum_icon  = icon('chats', $icon_options);
+  $newsletter_icon = icon('envelope', $icon_options);
+  $github_icon = icon('github-logo', $icon_options);
+  $docs_icon = icon('puzzle-piece', $icon_options);
+  $video_icon = icon('video', $icon_options);
+  $bluesky_icon = icon('butterfly', $icon_options);
+  $twitter_icon = icon('twitter-logo', $icon_options);
+  $mastodon_icon = icon('mastodon-logo', $icon_options);
+  $face_icon = icon('facebook-logo', $icon_options);
+  $linkedin_icon = icon('linkedin-logo', $icon_options);
+  $items = array(
+    'chat' => array(
+      'data' => l($zulip_icon . t('Live Chat: Zulip'), 'https://backdrop.zulipchat.com', $link_options),
+    ),
+    'office-hours' => array(
+      'data' => l($office_icon . t('Office Hours'), 'support/meetings', $link_options),
+    ),
+    'forum' => array(
+      'data' => l($forum_icon . t('Backdrop Forum'), 'https://forum.backdropcms.org', $link_options),
+    ),
+    'news' => array(
+      'data' => l($newsletter_icon . t('Newsletter signup'), 'https://backdropcms.org/newsletter', $link_options),
+    ),
+    'github' => array(
+      'data' => l($github_icon . t('GitHub Issue Queue'), 'http://github.com/backdrop/backdrop-issues/issues', $link_options),
+    ),
+    'docs' => array(
+      'data' => l($docs_icon . t('Developer Documentation & API'), 'http://api.backdropcms.org', $link_options),
+    ),
+    'videos' => array(
+      'data' => l($video_icon . t('Video archives: YouTube'), 'https://www.youtube.com/user/backdropcms', $link_options),
+    ),
+    'linkedin-page' => array(
+      'data' => l($linkedin_icon . t('LinkedIn page'), 'https://www.linkedin.com/company/backdrop-cms', $link_options),
+    ),
+    'linkedin-group' => array(
+      'data' => l($linkedin_icon . t('LinkedIn group'), 'https://www.linkedin.com/groups/6930143', $link_options),
+    ),
+    'bluesky' => array(
+      'data' => l($bluesky_icon . t('BlueSky (use #BackdropCMS)'), 'https://blsky.social', $link_options),
+    ),
+    'mastodon' => array(
+      'data' => l($mastodon_icon . t('Mastodon (use #BackdropCMS)'), 'https://phpc.social/@backdropcms', $link_options),
+    ),
+    'twitter' => array(
+      'data' => l($twitter_icon . t('Twitter or X (use #BackdropCMS)'), 'http://twitter.com/backdropcms', $link_options),
+    ),
+    'facebook' => array(
+      'data' => l($face_icon . t('Facebook group'), 'http://www.facebook.com/backdropcms', $link_options),
+    ),
+  );
+
+  $output = theme('borg_list', array('items' => $items));
+
+  return $output;
+}
+
+/**
+ * Block callback.
+ */
 function borg_blocks_branding($settings) {
   $options = array(
     'attributes' => array(
@@ -208,23 +285,24 @@ function borg_blocks_tagline($settings) {
   }
 
   // Initiate a curl session.
-  $data = _borg_blocks_get_version();
+  $download_link = '<span class="element-invisible">Version API error</span>';
+  if ($data = _borg_blocks_get_version()) {
+    $version = $data['latest']['version'];
+    $dl_url = $data['latest']['download_link'];
+    $dl_text = t('Download Backdrop&nbsp;CMS') . ' <span class="version">v&nbsp;' . $version . '</span>';
 
-  $version = $data['latest']['version'];
-  $dl_url = $data['latest']['download_link'];
-  $dl_text = t('Download Backdrop&nbsp;CMS') . ' <span class="version">v&nbsp;' . $version . '</span>';
-
-  $download_link = l($dl_text, $dl_url,
-    array(
-      'attributes' => array(
-        'class' => array(
-          $button_class_name,
-          $button_class_name . '--secondary',
-        )
-      ),
-      'html' => TRUE,
-    )
-  );
+    $download_link = l($dl_text, $dl_url,
+      array(
+        'attributes' => array(
+          'class' => array(
+            $button_class_name,
+            $button_class_name . '--secondary',
+          )
+        ),
+        'html' => TRUE,
+      )
+    );
+  }
 
   $output  =
     '<h1 class="tagline-block__headline-wrapper">' .
