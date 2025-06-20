@@ -11,14 +11,11 @@ private-files
 *.tar.gz
 *.zip
 
+# Civi logs
+CiviCRM*.log
+
 # Ignore modules for development.
 www/modules/contrib/devel
-
-# Ignore config for modules for development.
-www/modules/contrib/devel
-www/modules/contrib/backup_migrate
-config/*/devel.settings.json
-config/*/backup_migrate.settings.json
 
 # Ignore local development settings
 www/settings.local.dev.php
