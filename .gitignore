@@ -29,7 +29,7 @@ i.env
 .env
 
 # Ignore .ddev files
-.ddev
+.ddev/traefik/*
 www/settings.ddev.php
 www/drushrc.php
 
