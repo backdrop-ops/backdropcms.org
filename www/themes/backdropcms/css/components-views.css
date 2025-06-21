@@ -210,7 +210,7 @@
   margin: 0;
 }
 .view-providers .view-footer {
-  background-color:  var(--color__background--gray-vlight);
+  background-color:  var(--color__background--section--gray);
   border: 1px solid var(--color__border--gray-light);
   padding: 12px;
   margin-top: 12px;
@@ -588,7 +588,7 @@
 .view-platforms .top-bar {
   border-bottom: 0;
   margin-bottom: 0;
-  background-color: var(--color__background--gray-vlight);
+  background-color: var(--color__background--section--gray);
   border-top: 2px solid var(--color__border--gray-light);
   border-bottom: 1px solid var(--color__border--gray-light);
 }

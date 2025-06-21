@@ -23,7 +23,7 @@ body.node-type-post .block-system-main article.node-post {
 
 /* add the bottom border for tags to sit on */
 article.node-post.view-mode-full .content {
-  border-bottom: 2px solid #E8E6E5;
+  border-bottom: 2px solid var(--color__border--gray-legacy);
   margin-bottom: 30px;
   position: relative;
 }
@@ -166,16 +166,4 @@ label.github-clone-label {
 }
 .node-organization .field-name-body {
   clear: both;
-}
-
-/*******************************************************************************
- * Node: Documentation - status/level fields
- ******************************************************************************/
-.field-name-field-docs-level {
-  padding: 15px 15px 5px 15px;
-  background-color: var(--color__background--gray);
-}
-.field-name-field-docs-status {
-  padding: 5px 15px 15px 15px;
-  background-color: var(--color__background--gray);
 }
