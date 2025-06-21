@@ -168,22 +168,24 @@ function borg_blocks_community($settings) {
  */
 function borg_blocks_resources() {
   $link_options = array('html' => TRUE);
+  $icon_style = '-fill';
   $icon_size = '26px';
   $icon_attributes = array('width' => $icon_size, 'height' => $icon_size);
   $icon_options = array('attributes' => $icon_attributes);
 
-  $zulip_icon = icon('chat', $icon_options);
-  $office_icon = icon('building', $icon_options);
-  $forum_icon  = icon('chats', $icon_options);
-  $newsletter_icon = icon('envelope', $icon_options);
-  $github_icon = icon('github-logo', $icon_options);
-  $docs_icon = icon('puzzle-piece', $icon_options);
-  $video_icon = icon('video', $icon_options);
-  $bluesky_icon = icon('butterfly', $icon_options);
-  $twitter_icon = icon('twitter-logo', $icon_options);
-  $mastodon_icon = icon('mastodon-logo', $icon_options);
-  $face_icon = icon('facebook-logo', $icon_options);
-  $linkedin_icon = icon('linkedin-logo', $icon_options);
+  $zulip_icon = icon('chat-circle-dots' . $icon_style, $icon_options);
+  $office_icon = icon('building' . $icon_style, $icon_options);
+  $forum_icon  = icon('chats-circle' . $icon_style, $icon_options);
+  $newsletter_icon = icon('envelope-simple' . $icon_style, $icon_options);
+  $github_icon = icon('github-logo' . $icon_style, $icon_options);
+  $docs_icon = icon('puzzle-piece' . $icon_style, $icon_options);
+  $youtube_icon = icon('youtube-logo' . $icon_style, $icon_options);
+  $bluesky_icon = icon('butterfly' . $icon_style, $icon_options);
+  $twitter_icon = icon('twitter-logo' . $icon_style, $icon_options);
+  $mastodon_icon = icon('mastodon-logo' . $icon_style, $icon_options);
+  $face_icon = icon('facebook-logo' . $icon_style, $icon_options);
+  $linkedin_icon = icon('linkedin-logo' . $icon_style, $icon_options);
+  $group_icon = icon('users-three' . $icon_style, $icon_options);
   $items = array(
     'chat' => array(
       'data' => l($zulip_icon . t('Live Chat: Zulip'), 'https://backdrop.zulipchat.com', $link_options),
@@ -204,13 +206,13 @@ function borg_blocks_resources() {
       'data' => l($docs_icon . t('Developer Documentation & API'), 'http://api.backdropcms.org', $link_options),
     ),
     'videos' => array(
-      'data' => l($video_icon . t('Video archives: YouTube'), 'https://www.youtube.com/user/backdropcms', $link_options),
+      'data' => l($youtube_icon . t('Video archives: YouTube'), 'https://www.youtube.com/user/backdropcms', $link_options),
     ),
     'linkedin-page' => array(
       'data' => l($linkedin_icon . t('LinkedIn page'), 'https://www.linkedin.com/company/backdrop-cms', $link_options),
     ),
     'linkedin-group' => array(
-      'data' => l($linkedin_icon . t('LinkedIn group'), 'https://www.linkedin.com/groups/6930143', $link_options),
+      'data' => l($group_icon . t('LinkedIn group'), 'https://www.linkedin.com/groups/6930143', $link_options),
     ),
     'bluesky' => array(
       'data' => l($bluesky_icon . t('BlueSky (use #BackdropCMS)'), 'https://blsky.social', $link_options),
