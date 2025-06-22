@@ -114,17 +114,22 @@ main.col-md-8 .backdrop-books figure {
 /*******************************************************************************
  * Resrouces block
  ******************************************************************************/
+.block-borg-blocks-resources ul,
 .block-block-resources ul {
   padding: 0;
 }
+.block-borg-blocks-resources li,
 .block-block-resources li {
   list-style: none;
   position: relative;
   padding-left: 38px;
 }
+.block-borg-blocks-resources a,
 .block-block-resources a {
+  display: block;
   line-height: 1.5em;
 }
+.block-borg-blocks-resources .icon,
 .block-block-resources i.fa {
   font-size: 1.5em; /* relative size */
   position: absolute;
