@@ -80,7 +80,8 @@
    padding-top: 0;
  }
 
- .node-type-showcase blockquote {
+.node-type-showcase blockquote {
+   width: 100%;
    border: 10px solid var(--color__background--section--gray); /* matches background for image positioning */
    background-color: var(--color__background--section--gray);
    background-image: url('../images/quote-open.png'), url('../images/quote-close.png');
@@ -94,7 +95,7 @@
    font-size: 1.25rem; /* 20px */
    line-height: 1.5rem; /* 24px */
    text-align: left;
- }
+}
  @media all and (min-width: 34em) { /* 544px */
    .node-type-showcase blockquote {
      padding: 20px 35px;
@@ -118,7 +119,6 @@
  @media (min-width: 34em) { /* 544px */
    .node-type-showcase .screen {
      background-color: var(--color__background--section--gray);
-     border: 1px solid var(--color__border--gray-light);
    }
    .node-type-showcase .col-sm-8 .screen {
      padding: 29px 20px;

@@ -307,6 +307,12 @@
   padding-right: .9375rem;
   padding-left: .9375rem;
 }
+.view-showcase .views-field a:has(img) {
+  display: block;
+}
+.view-showcase .views-field img {
+  border-bottom: 1px solid var(--color__border--gray-light);
+}
 .view-showcase .views-field-field-screen-lg {
   padding-right: 0;
   padding-left: 0;
@@ -319,7 +325,7 @@
   font-size: 1.25rem; /* 20px */
 }
 .view-showcase .views-field-field-audience {
-  color: #7D7D7D;
+  color: var(--color__gray-dark);
 }
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
