@@ -168,7 +168,7 @@ nav.breadcrumb li a {
   margin: 0;
 }
 .search-block-form .form-item {
-  margin: 0 22px 0 0;
+  margin: 0;
 }
 .search-block-form input.form-search {
   width: 100%;
@@ -180,19 +180,24 @@ nav.breadcrumb li a {
   bottom: 0;
   width: 44px;
   margin: 0;
+  border-left: 1px solid var(--color__border--gray-mid);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }
 .search-block-form input[type="submit"] {
   margin: 0;
+  width: 44px;
   text-indent: -9999px;
-  background: #fff url(../images/search.png) center center no-repeat;
-  background-size: 50%;
-  border: 2px solid #E8E6E5;
+  background: var(--color__border--gray-mid); /* match border */
+  mask: url(../images/magnifying-glass-solid.svg) center center no-repeat;
+  mask-size: 60%;
 }
+.search-block-form input.button-primary:focus,
+.search-block-form input.button-primary:hover,
+.search-block-form input[type="submit"]:focus,
 .search-block-form input[type="submit"]:hover {
-  background-color: #007CBA;
-  background-image: url(../images/search-hover.png);
-  color: #fff;
-  border: 2px solid #007CBA;
+  mask: none;
+  background: var(--color__accent--primary) url(../images/magnifying-glass-solid.svg) center center no-repeat;
+  background-size: 60%;
 }
 
 /*******************************************************************************
@@ -250,7 +255,7 @@ article.view-mode-project-search {
  * All Nodes - Teaser view mode
  *******************************************************************************/
 article.view-mode-teaser {
-  border-bottom: 2px solid #E8E6E5;
+  border-bottom: 2px solid var(--color__border--gray-legacy);
   margin-bottom: 25px;
 }
 article.view-mode-teaser h2 {
@@ -362,7 +367,7 @@ article footer {
   font-size: 0.875rem; /* 16px */
   color: #000;
   background-color: #f7f7f7;
-  border: 1px solid #E8E6E5;
+  border: 1px solid var(--color__border--gray-legacy);
   border-radius: 10px;
   padding: 15px;
   display: table;
@@ -400,7 +405,7 @@ article footer .arrow-down {
   height: 0;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
-  border-top: 20px solid #E8E6E5;
+  border-top: 20px solid var(--color__border--gray-legacy);
   position: absolute;
   bottom: -20px;
   left: 33.5px;
@@ -456,7 +461,7 @@ article footer .arrow-down:after {
  * All Comments
 *******************************************************************************/
 article.comment {
-  border: 2px solid #E8E6E5;
+  border: 2px solid var(--color__border--gray-legacy);
   margin-bottom: 1em;
   border-radius: 10px;
   max-width: 700px;
@@ -510,7 +515,7 @@ article .content .field-name-field-tags {
   margin-left: 20px;
   margin-right: 20px;
   padding: 0 8px 0 12px;
-  background: #E8E6E5;
+  background: var(--color__border--gray-legacy); /* should match border */
   color: #000;
   text-decoration: none;
   -moz-border-radius-bottomright: 4px;
@@ -534,7 +539,7 @@ article .content .field-name-field-tags {
   left: -15px;
   width: 0;
   height: 0;
-  border-color: transparent #E8E6E5 transparent transparent;
+  border-color: transparent var(--color__border--gray-legacy) transparent transparent;
   border-style: solid;
   border-width: 15px 15px 15px 0;
 }
@@ -649,28 +654,6 @@ a.feed-icon {
 #social-field-wrapper .description {
   padding: .25em 0 .25em 0;
   color: #7D7D7D;
-}
-
-/*******************************************************************************
- * Social media icons - general.
-*******************************************************************************/
-
-div.fa-mastodon {
-  display: inline-block;
-  -webkit-mask-image: url(../images/mastodon-logo-black.svg);
-  mask-image: url(../images/mastodon-logo-black.svg);
-  background-image: url(../images/mastodon-logo-black.svg);
-  background-color: #007CBA;
-  content: '-';
-}
-
-div.fa-bluesky {
-  display: inline-block;
-  -webkit-mask-image: url(../images/bluesky-logo-black.svg);
-  mask-image: url(../images/bluesky-logo-black.svg);
-  background-image: url(../images/bluesky-logo-black.svg);
-  background-color: #007CBA;
-  content: '-';
 }
 
 /*******************************************************************************
@@ -891,7 +874,7 @@ a.otw-svg-mask-2 {
 }
 
 .field-type-text-long {
-  margin: 0 0 1em;
+  margin: 2em 0 1em;
 }
 
 .field-prefix {
@@ -1118,6 +1101,18 @@ body.user-form .page-title {
 }
 
 /*******************************************************************************
+ * Field table.
+*******************************************************************************/
+table.sticky-enabled,
+.field-multiple-table {
+  border: 1px solid var(--color__border--gray-legacy);
+}
+table.sticky-enabled th,
+.field-multiple-table th {
+  padding: .25em .5em 0;
+}
+
+/*******************************************************************************
  * User Profile Edit form - by Wesruv
 *******************************************************************************/
 .user-profile-form table {
@@ -1127,7 +1122,7 @@ body.user-form .page-title {
   border: 0;
 }
 .user-profile-form table tbody {
-  border-top: 1px solid #E8E6E5; /* matches row bottom border */
+  border-top: 1px solid var(--color__border--gray-legacy); /* matches row bottom border */
 }
 .user-profile-form table.tabledrag-processed tbody {
   border-top: 1px solid #eee; /* matches row bottom border */
@@ -1296,7 +1291,7 @@ div.addressfield-container-inline::after {
   padding: 30px 0 0;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  border-bottom: 1px solid #E8E6E5;
+  border-bottom: 1px solid var(--color__border--gray-legacy);
   background: #ddd;
   display: inline-block;
   position: relative;
@@ -1364,7 +1359,7 @@ div.addressfield-container-inline::after {
   -moz-border-radius: 2px;
   border-radius: 2px;
   border: 1px solid #fff;
-  background-color: #E8E6E5;
+  background-color: var(--color__gray-faint);
   position: absolute;
   right: 15px;
 }
@@ -1405,7 +1400,7 @@ div.addressfield-container-inline::after {
   -moz-border-radius: 3px;
   border-radius: 3px;
   border: 1px solid #fff;
-  background-color: #E8E6E5;
+  background-color: var(--color__gray-faint);
   position: absolute;
   top: 10px;
 }
@@ -1474,8 +1469,8 @@ div.addressfield-container-inline::after {
  * All Views exposed forms
 *******************************************************************************/
 .views-exposed-form {
-  background-color: var(--color__background--gray-vlight);
-  border: 1px solid var(--color__border--gray-light);
+  background-color: var(--color__background--section--gray);
+  border: 1px solid var(--color__border--section--gray);
   color: #444b53;
   padding: 15px;
   border-radius: 2px;
@@ -1512,30 +1507,6 @@ div.addressfield-container-inline::after {
 }
 .l-top .views-exposed-form select {
   border: 1.5px solid black;
-}
-
-/*******************************************************************************
- * Font Awesome
-*******************************************************************************/
-/* make font-awesome heading icons have more space */
-h2 i.fa,
-h3 i.fa,
-h4 i.fa {
-  margin-right: 10px;
-}
-h5 i.fa,
-h6 i.fa {
-  margin-right: 5px;
-}
-
-/* make larger font-awesome heading icons vertically offset */
-h2 i.fa-lg {
-  position: relative;
-  top: 3px;
-}
-h4 i.fa-2x {
-  position: relative;
-  top: 5px;
 }
 
 /*******************************************************************************

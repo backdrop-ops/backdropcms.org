@@ -16,8 +16,8 @@ Installation
 Documentation
 -------------
 
-Additional documentation is located in the Wiki:
-https://github.com/backdrop-contrib/borg/wiki/Documentation
+There are a few utility classes provided with this theme:
+- menu-solid will render a sidebar menu on a solid gray background.
 
 Issues
 ------

@@ -443,7 +443,7 @@ fieldset {
   padding: 3em 0 0 0; /* LTR */
   border-radius: 2px;
   background-color: white;
-  border: solid 1px var(--color__border--light);
+  border: solid 1px var(--color__border--section--gray);
   min-width: 0;
 }
 [dir="rtl"] fieldset {

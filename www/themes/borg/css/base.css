@@ -7,20 +7,24 @@
 :root {
 
   /* Colors by name. */
-  --color__purple: #4D00FF;
-  --color__purple-dark: #3909a9;
-  --color__purple-light: #B79CF6;
-  --color__purple-vlight: #EAE1FF;
+  --color__purple: #4D00FF;        /* brand color - new design */
+  --color__purple-dark: #3909a9;   /* brand color (dark) - new design */
+  --color__purple-light: #B79CF6;  /* svgs, mobile toggle - new design */
+  --color__purple-vlight: #EAE1FF; /* section & menu item borders  - new design */
+    --color--gray-purple-light: #EAE1FF; /* @todo delete me - duplicate, see above */
 
-  --color__gray: #F2F2F2;
-  --color__gray-vlight: #F9F8FB;
-  --color--gray-purple-light: #EAE1FF;
-  --color__gray-purple-mid: #C3BCD5;
+  --color__gray-white: #FAFAFA; /* dropdown menu background + vtabs - new design */
+  --color__gray-light: #F9F8FB; /* section background - new design */
 
-  --color__gray-white: #FAFAFA;
-  --color__gray-faint: #ECECEC;
-  --color__gray-dark: #7D7D7D;
+  --color__gray-dark: #7D7D7D; /* menu text and border color - new design */
   --color__gray-black: #34333F;
+
+  /* legacy colors */
+  --color__gray: #F2F2F2;
+  --color__gray-darker: #F7F7F7; /* replace with --color__gray-light - blockquote, menu backgrounds */
+  --color__gray-dark: #444b53; /* sidebar menu borders, and ... */
+  --color__gray-purple-mid: #C3BCD5; /* tabs - legacy gray background */
+  --color__gray-faint: #E8E6E5; /* replace with #ECECEC? - legacy gray border & showcase UI bg */
 
   /* Colors by use. */
   --color__link: var(--color__purple-dark);
@@ -31,12 +35,14 @@
   --color__accent--primary--light: var(--color__purple-light);
   --color__accent--secondary: #01FDA6; /* green? */
 
-  --color__border--gray-light: var(--color--gray-purple-light);
+  --color__border--section--gray: var(--color__purple-vlight); /* see below */
+    --color__border--gray-light: var(--color__purple-vlight); /* @todo delete me - duplicate */
   --color__border--gray-mid: var(--color__gray-purple-mid);
+  --color__border--gray-legacy: var(--color__gray-faint);
 
-  --color__background--gray-vlight: var(--color__gray-vlight);
+  --color__background--section--gray: var(--color__gray-light); /* use with --color__border--section--gray borders */
   --color__background--gray: var(--color__gray);
-  --color__background--gray-mid: var(--color__gray-faint);
+  --color__background--gray-mid: var(--color__gray-faint); /* rename me? */
 
   /* Fonts */
   --font-family--sans: "IBM Plex Sans", "Open Sans", Helvetica, sans-serif;
@@ -176,7 +182,7 @@ table {
 table th {
   font-size: 1.25em;
   font-weight: 400; /* Normal */
-  border-bottom: 2px solid #E8E6E5;
+  border-bottom: 2px solid var(--color__gray-faint);
 }
 tr.odd {
   background-color: #f7f7f7;
@@ -209,7 +215,7 @@ figure {
 }
 figcaption {
   margin-top: 5px;
-  color: #444b53;
+  color: var(--color__gray-dark);
   font-size: .85em; /* relative size */
 }
 
@@ -250,10 +256,8 @@ label {
 input,
 textarea {
   font-size: 1.125rem; /* 18px */
-  color: #444b53;
+  color: var(--color__gray-dark);
   background-color: #fff;
-  line-height: 40px;
-  height: 40px;
   max-width: 100%;
   padding: 8px 10px 4px 10px;
   border: 1px solid var(--color__border--gray-mid);
@@ -262,13 +266,17 @@ textarea {
   box-sizing: border-box;
   border-radius: 2px;
 }
+input {
+  line-height: 42px; /* 42+1+1 border to match button with 40+2+2 border */
+  height: 42px; /* 42+1+1 border to match button with 40+2+2 border */
+}
 textarea {
   height: auto;
   padding: 10px;
 }
 select {
   height: 40px;
-  color: #444b53;
+  color: var(--color__gray-dark);
   padding: 4px 16px 4px 8px;
   background-color: white;
   border: 1px solid var(--color__border--gray-mid);
@@ -282,6 +290,8 @@ input[type="checkbox"] {
   margin-right: .5em;
 }
 input[type="submit"] {
+  line-height: 40px;
+  height: 42px;
   border: 2px solid var(--color__link);
   background-color: white;
   color: var(--color__link);

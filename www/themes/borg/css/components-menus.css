@@ -114,7 +114,7 @@
 
 
 /*******************************************************************************
- * Borg menus - all
+ * Borg menus - all header menus
  ******************************************************************************/
 .l-header .block-system-main-menu {
   display: inline-block;
@@ -180,47 +180,56 @@
 }
 
 /*******************************************************************************
- * Handbook menu block
+ * All Sidebar Menus
  ******************************************************************************/
-.block-borg-blocks-handbook ul.menu {
-  background-color: #F7F7F7;
-  border: 1px solid #444b53;
-  padding: 20px;
+.l-sidebar ul.menu a.active {
+  font-weight: bold;
 }
-.block-borg-blocks-handbook ul.menu li {
+.l-sidebar ul.menu {
+  padding-left: 1.5em;
+}
+
+/*******************************************************************************
+ * Solid Menus (usually in the sidebar, but not necessarily)
+ ******************************************************************************/
+.block.menu-solid ul.menu {
+  background-color: var(--color__background--section--gray);
+  border: 1px solid var(--color__border--section--gray);
+  padding: 1em;
+}
+.block.menu-solid ul.menu li {
   list-style: none;
   padding: 0px;
 }
-.block-borg-blocks-handbook ul.menu li.expanded {
-  border-top: solid 1px #444b53;
-  margin-top: 20px;
-  padding-top: 15px;
+.block.menu-solid ul.menu li.expanded {
+  border-top: solid 1px var(--color__border--section--gray);
+  border-bottom: solid 1px var(--color__border--section--gray);
+  padding: .75em 0 .5em;
+  margin: 1em 0;
 }
-.block-borg-blocks-handbook ul.menu li.first.expanded {
+.block.menu-solid ul.menu li.expanded:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.block.menu-solid ul.menu li.first.expanded {
   border-top: 0;
   margin-top: 0px;
   padding-top: 0px;
 }
-.block-borg-blocks-handbook ul.menu li.expanded span {
-  padding: 30px 0 10px 0;
+.block.menu-solid ul.menu li.expanded span {
+  padding: 1.5em 0 .5em 0;
 }
-.block-borg-blocks-handbook ul.menu li.expanded span.nolink {
+.block.menu-solid ul.menu li.expanded span.nolink {
   font-size: 1.5rem; /* 24px */
   letter-spacing: -.05em;
 }
-.block-borg-blocks-handbook ul.menu li.first.expanded span {
-  padding: 0px 0 10px 0;
+.block.menu-solid ul.menu li.first.expanded span {
+  padding: 0px 0 .5em 0;
 }
-.block-borg-blocks-handbook ul.menu ul {
-  margin: 0;
-  padding: 0;
-}
-
-/*******************************************************************************
- * Sidebar Menu
- ******************************************************************************/
-.l-sidebar ul.menu a.active {
-  font-weight: bold;
+.block.menu-solid ul.menu ul {
+  margin: .75em 0 0 0;
+  padding-left: 1.5em;
 }
 
 /*******************************************************************************
