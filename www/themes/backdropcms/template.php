@@ -29,6 +29,15 @@ function backdropcms_preprocess_page(&$variables) {
       array('type' => 'external')
     );
   }
+  elseif ($arg0 == 'modules' || $arg0 == 'themes' || $arg0 == 'layouts') {
+    $variables['classes'][] = 'project-search';
+    backdrop_add_css($path . '/css/page-project-search.css');
+  }
+  elseif ($arg0 == 'support') {
+    if ($arg1 == 'services') {
+      backdrop_add_css($path . '/css/page-services.css');
+    }
+  }
 }
 
 /**

@@ -1,0 +1,284 @@
+/*******************************************************************************
+ * page-project-search.css
+ *
+ * Contains styles only needed for the modules, themes, and layouts search pages.
+ *
+ * These elements were separated from the compontents.css file because there is
+ * a lot of code in here that's not needed for most of the site, so it didn't
+ * need to be loaded all the time.
+ ******************************************************************************/
+
+.project-search h1.page-title {
+  padding: 0;
+}
+
+.view-modules h2 {
+  margin-top: 0;
+  color: #929597;
+  font-size: 24px;
+  line-height: 32px;
+}
+@media (min-width: 30em) { /* 480px */
+  .view-modules h2 {
+    font-size: 30px;
+    line-height: 36px;
+  }
+}
+
+.l-top {
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
+.l-top .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+.l-top h2 {
+  font-weight: 300; /* Light */
+  color: #5A5D5E;
+  margin-top: 0;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .l-top {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .l-top {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .l-top {
+    padding-top: 100px;
+    padding-bottom: 75px;
+  }
+}
+
+.l-wrapper {
+  border-top: 2px solid #D4D6D6;
+  background-color: #F7F7F7;
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
+
+
+.block-views--exp-modules-modules,
+.block-views--exp-modules-themes,
+.block-views--exp-modules-layouts {
+  width: 100%;
+}
+.block-views--exp-modules-modules .block-content,
+.block-views--exp-modules-themes .block-content,
+.block-views--exp-modules-layouts .block-content {
+  max-width: 750px;
+}
+
+form.views-exposed-form,
+.views-exposed-widgets {
+  width: 100%;
+  position: relative;
+}
+
+#views-exposed-form-modules-modules,
+#views-exposed-form-modules-themes,
+#views-exposed-form-modules-layouts {
+  border: 0;
+  padding: 0;
+}
+
+.views-exposed-form .views-widget-filter-combine,
+.views-exposed-form .views-widget-filter-title,
+.views-exposed-form .views-widget-filter-keys,
+.views-exposed-form .views-submit-button {
+  height: 2em;
+  padding: 0;
+  font-size: 25px;
+  line-height: 1.5;
+}
+
+.views-exposed-form .views-widget-filter-combine,
+.views-exposed-form .views-widget-filter-title,
+.views-exposed-form .views-widget-filter-keys {
+  width: 100%;
+}
+
+.views-exposed-form .views-submit-button {
+  width: 2.3em;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.views-exposed-form .form-text,
+.views-exposed-form .form-submit {
+  display: block;
+  border: 1px solid var(--color__accent--primary);
+  margin: 0;
+  font-size: inherit;
+}
+
+.views-exposed-form .form-text:hover,
+.views-exposed-form .form-submit:hover {
+  border-color: #000;
+}
+
+.views-exposed-form .form-text {
+  width: 100%;
+  height: 2em;
+  padding: 0.5em 0 0.25em .6em;
+  border-right: 0;
+  border-radius: 0;
+  font-weight: 300;
+}
+
+.views-exposed-form .form-submit {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  text-indent: -9999em;
+  border-radius: 0;
+  background: var(--color__accent--primary);
+}
+
+.views-exposed-form .form-submit:hover,
+.views-exposed-form .form-submit:focus,
+.views-exposed-form .form-submit:active {
+  background: var(--color__accent--primary--dark);
+}
+
+
+/**
+ * Mag glass icon
+ */
+.views-exposed-form .views-submit-button:before,
+.views-exposed-form .views-submit-button:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.views-exposed-form .views-submit-button:before {
+  width: 0.5em;
+  height: 0.5em;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  -webkit-transform: translate(-0.5em, -0.5em);
+  -ms-transform: translate(-0.5em, -0.5em);
+  transform: translate(-0.5em, -0.5em);
+}
+
+.views-exposed-form .views-submit-button:after {
+  width: 0.45em;
+  height: 3px;
+  border-radius: 0 2px 2px 0;
+  -webkit-transform: translate(0.05em, 0.18em) rotate(45deg);
+  -ms-transform: translate(0.05em, 0.18em) rotate(45deg);
+  transform: translate(0.05em, 0.18em) rotate(45deg);
+  background: #fff;
+}
+
+/**
+ * Search results styling
+ */
+.view-modules .view-content {
+
+}
+
+.project-search--results {
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
+  list-style: none;
+}
+
+.project-search--results,
+.project-search--results p {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.result h3 {
+  font-weight: 600;
+  font-size: 27px;
+}
+
+.result div.since {
+  color: #86898a;
+  font-size: 0.9em;
+}
+
+.result__description {
+  margin: 0 0 1em;
+  color: #86898a;
+}
+
+.result__description p {
+  margin: 0.5em 0;
+}
+
+.result__info {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.result__info li {
+  margin: 0 5px 0 0;
+  display: inline-block;
+}
+.result__info li.download-link {
+  margin: 0;
+}
+
+.result__info a {
+  color: #00a1d3;
+}
+
+/* @todo delete me */
+.result__info .view-node a {
+  font-size: 16px;
+  height: 30px;
+  line-height: 30px;
+  margin: 10px 0;
+  padding: 0 20px 0 15px;
+  background-color: white;
+  border: 2px solid #007cba;
+  display: inline-block;
+  position: relative;
+  text-transform: uppercase;
+  transition: color 0.33s ease 0s;
+  white-space: nowrap;
+}
+
+.result__info i.fa-forward {
+  font-size: 14px;
+  width: 0.42em;
+  text-align: right;
+  overflow: hidden;
+  position: relative;
+  top: 1px;
+  left: 5px;
+}
+
+@media (min-width: 34em) { /* 544px */
+  .result {
+    padding: 30px 0;
+    margin: 30px 0;
+  }
+  .result div.since {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .result h3 {
+    margin-top: 45px;
+  }
+}
