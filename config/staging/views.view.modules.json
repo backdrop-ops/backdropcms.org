@@ -795,7 +795,7 @@
                         "ui_name": "",
                         "label": "",
                         "empty": true,
-                        "content": "<p>No results found.</p>\r\n",
+                        "content": "<p>\r\n    There are no releases available for a project with this name.&nbsp;\r\n</p>\r\n<p>\r\n    Additional projects may still be in development <a href=\"https://github.com/backdrop-contrib\">on GitHub</a>.\r\n</p>",
                         "format": "filtered_html",
                         "tokenize": 0
                     }

@@ -14,6 +14,7 @@
         "formblock_expose": 0,
         "formblock_show_help": 0,
         "menu_options": {
+            "menu-cms-audiences": 0,
             "menu-more-developer-resources": 0,
             "menu-footer-menu": 0,
             "menu-handbook": 0,
@@ -33,7 +34,7 @@
         "node_user_picture": true,
         "language": 0,
         "node_permissions": true,
-        "project_behavior": "none",
+        "project_behavior": "project",
         "project_release_version_format": "!api#major%minor%patch#extra",
         "project_release_api_versions": [
             ""
