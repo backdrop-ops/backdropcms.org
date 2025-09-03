@@ -242,7 +242,7 @@ article.node-project-release.view-mode-project-search article.view-mode-teaser {
   vertical-align: bottom;
 }
 .node-project .view-project-release-download-table td {
-  vertical-align: top;
+  vertical-align: bottom;
 }
 .node-project .view-project-release-download-table .recommended td:first-child a {
   display: inline-block;
@@ -250,10 +250,21 @@ article.node-project-release.view-mode-project-search article.view-mode-teaser {
 }
 .node-project .view-project-release-download-table .recommended td:first-child a:after,
 .node-project .view-project-release-download-table .supported td:first-child a:after {
-  content: "\f0ab";
-  font-family: 'FontAwesome';
+  content: ' ';
   display: inline-block;
-  padding: 0 0 0 .2em;
+  color: var(--color__gray-white);
+  background-color: var(--color__purple-dark);
+  mask-image: var(--icon-arrow-circle-down-fill);
+  -webkit-mask-image: var(--icon-arrow-circle-down-fill);
+  width: 1em;
+  height: 1em;
+  position: relative;
+  top: 4px;
+  left: 4px;
+}
+.node-project .view-project-release-download-table .recommended td:first-child a:hover:after,
+.node-project .view-project-release-download-table .supported td:first-child a:hover:after {
+  background-color: var(--color__purple);
 }
 .view-project-release-download-table .recommended-version,
 .view-project-release-download-table .released,

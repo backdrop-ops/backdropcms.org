@@ -19,6 +19,10 @@
  */
 function backdropcms_preprocess_page(&$variables) {
   $path = backdrop_get_path('theme', 'backdropcms');
+  $arg0 = check_plain(arg(0));
+  $arg1 = check_plain(arg(1));
+  $arg2 = check_plain(arg(2));
+  $icons_needed = array();
 
   if (backdrop_is_front_page()) {
     backdrop_add_css($path . '/css/page-front.css', array('group' => CSS_THEME));
@@ -29,6 +33,13 @@ function backdropcms_preprocess_page(&$variables) {
       array('type' => 'external')
     );
   }
+  elseif ($arg0 == 'node' && is_numeric($arg1) && !$arg2) {
+    $variables['classes'][] = 'node-' . $arg1;
+    $node = node_load($arg1); // Entity cache should save us here.
+    if (substr($node->type, 0, 8) == 'project_') {
+      $icons_needed[] = 'arrow-circle-down-fill';
+    }
+  }
   elseif ($arg0 == 'modules' || $arg0 == 'themes' || $arg0 == 'layouts') {
     $variables['classes'][] = 'project-search';
     backdrop_add_css($path . '/css/page-project-search.css');
@@ -37,6 +48,11 @@ function backdropcms_preprocess_page(&$variables) {
     if ($arg1 == 'services') {
       backdrop_add_css($path . '/css/page-services.css');
     }
+  }
+
+  // Make the icons needed available for use in CSS.
+  if (!empty($icons_needed)) {
+    backdrop_add_icons($icons_needed);
   }
 }
 
