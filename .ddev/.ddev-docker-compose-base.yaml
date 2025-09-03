@@ -45,17 +45,24 @@ services:
       - BITNAMI_VOLUME_DIR=
       - DDEV_DATABASE
       - DDEV_DATABASE_FAMILY
+      - DDEV_GID
       - DDEV_GOARCH
       - DDEV_GOOS
       - DDEV_HOSTNAME
       - DDEV_PHP_VERSION
       - DDEV_PRIMARY_URL
+      - DDEV_PRIMARY_URL_PORT
+      - DDEV_PRIMARY_URL_WITHOUT_PORT
       - DDEV_PROJECT
       - DDEV_PROJECT_TYPE
       - DDEV_ROUTER_HTTP_PORT
       - DDEV_ROUTER_HTTPS_PORT
+      - DDEV_SCHEME
       - DDEV_SITENAME
       - DDEV_TLD
+      - DDEV_UID
+      - DDEV_USER
+      - DDEV_VERSION
       - DOCKER_IP=127.0.0.1
       - HOST_DOCKER_INTERNAL_IP=
       - IS_DDEV_PROJECT=true
@@ -139,22 +146,29 @@ services:
     - COREPACK_ENABLE_DOWNLOAD_PROMPT=0
     - COREPACK_HOME=/mnt/ddev-global-cache/corepack
     - DOCROOT=${DDEV_DOCROOT}
+    - DDEV_APPROOT=/var/www/html
     - DDEV_COMPOSER_ROOT
     - DDEV_DATABASE
     - DDEV_DOCROOT
     - DDEV_DATABASE_FAMILY
+    - DDEV_GID
     - DDEV_GOARCH
     - DDEV_GOOS
     - DDEV_HOSTNAME
     - DDEV_MUTAGEN_ENABLED
     - DDEV_PHP_VERSION
     - DDEV_PRIMARY_URL
+    - DDEV_PRIMARY_URL_PORT
+    - DDEV_PRIMARY_URL_WITHOUT_PORT
     - DDEV_PROJECT
     - DDEV_PROJECT_TYPE
     - DDEV_ROUTER_HTTP_PORT
     - DDEV_ROUTER_HTTPS_PORT
+    - DDEV_SCHEME
     - DDEV_SITENAME
     - DDEV_TLD
+    - DDEV_UID
+    - DDEV_USER
     - DDEV_FILES_DIR
     - DDEV_FILES_DIRS
     - DDEV_WEB_ENTRYPOINT=/mnt/ddev_config/web-entrypoint.d
@@ -212,7 +226,7 @@ services:
       timeout: "70s"
   
   xhgui:
-    image: ddev/ddev-xhgui:v1.24.4
+    image: ddev/ddev-xhgui:v1.24.7
     container_name: ddev-${DDEV_SITENAME}-xhgui
     labels:
       com.ddev.site-name: ${DDEV_SITENAME}

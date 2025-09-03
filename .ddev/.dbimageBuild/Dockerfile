@@ -1,8 +1,8 @@
 
 #ddev-generated - Do not modify this file; your modifications will be overwritten.
+ARG BASE_IMAGE="scratch"
 
 ### DDEV-injected base Dockerfile contents
-ARG BASE_IMAGE="scratch"
 FROM $BASE_IMAGE
 SHELL ["/bin/bash", "-c"]
 

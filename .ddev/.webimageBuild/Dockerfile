@@ -1,8 +1,8 @@
 
 #ddev-generated - Do not modify this file; your modifications will be overwritten.
+ARG BASE_IMAGE="scratch"
 
 ### DDEV-injected base Dockerfile contents
-ARG BASE_IMAGE="scratch"
 FROM $BASE_IMAGE
 SHELL ["/bin/bash", "-c"]
 
@@ -21,8 +21,6 @@ RUN (groupadd --gid $gid "$username" || groupadd "$username" || true) && (userad
 
 RUN mkdir -p /home/$username && chown $username /home/$username && chmod 600 /home/$username/.pgpass
 ENV NVM_DIR=/home/$username/.nvm
-RUN START_SCRIPT_TIMEOUT=30 mariadb-client-install.sh || true
-
 
 ### DDEV-injected composer update
 RUN export XDEBUG_MODE=off; composer self-update --stable || composer self-update --stable || true; composer self-update --2 || log-stderr.sh composer self-update --2 || true

@@ -11,7 +11,7 @@ services:
     db:
         build:
             args:
-                BASE_IMAGE: ddev/ddev-dbserver-mariadb-10.4:v1.24.4
+                BASE_IMAGE: ddev/ddev-dbserver-mariadb-10.4:v1.24.7
                 gid: "20"
                 uid: "501"
                 username: jlampton
@@ -23,20 +23,27 @@ services:
         container_name: ddev-borg-db
         environment:
             BITNAMI_VOLUME_DIR: ""
-            COLUMNS: "120"
+            COLUMNS: "132"
             DDEV_DATABASE: mariadb:10.4
             DDEV_DATABASE_FAMILY: mysql
+            DDEV_GID: "20"
             DDEV_GOARCH: arm64
             DDEV_GOOS: darwin
             DDEV_HOSTNAME: borg.ddev.site
             DDEV_PHP_VERSION: "8.3"
             DDEV_PRIMARY_URL: https://borg.ddev.site
+            DDEV_PRIMARY_URL_PORT: "443"
+            DDEV_PRIMARY_URL_WITHOUT_PORT: https://borg.ddev.site
             DDEV_PROJECT: borg
             DDEV_PROJECT_TYPE: backdrop
             DDEV_ROUTER_HTTP_PORT: "80"
             DDEV_ROUTER_HTTPS_PORT: "443"
+            DDEV_SCHEME: https
             DDEV_SITENAME: borg
             DDEV_TLD: ddev.site
+            DDEV_UID: "501"
+            DDEV_USER: jlampton
+            DDEV_VERSION: v1.24.7
             DOCKER_IP: 127.0.0.1
             HOST_DOCKER_INTERNAL_IP: ""
             IS_DDEV_PROJECT: "true"
@@ -58,7 +65,7 @@ services:
             start_period: 2m0s
             timeout: 1m10s
         hostname: borg-db
-        image: ddev/ddev-dbserver-mariadb-10.4:v1.24.4-borg-built
+        image: ddev/ddev-dbserver-mariadb-10.4:v1.24.7-borg-built
         labels:
             com.ddev.app-type: backdrop
             com.ddev.approot: /Users/jlampton/Sites/_backdrop/backdropcms.org/repo
@@ -99,7 +106,7 @@ services:
     web:
         build:
             args:
-                BASE_IMAGE: ddev/ddev-webserver:v1.24.4
+                BASE_IMAGE: ddev/ddev-webserver:v1.24.7
                 DDEV_DATABASE: mariadb:10.4
                 DDEV_PHP_VERSION: "8.3"
                 gid: "20"
@@ -113,28 +120,35 @@ services:
             - /pre-start.sh
         container_name: ddev-borg-web
         environment:
-            COLUMNS: "120"
+            COLUMNS: "132"
             COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
             COREPACK_HOME: /mnt/ddev-global-cache/corepack
+            DDEV_APPROOT: /var/www/html
             DDEV_COMPOSER_ROOT: /var/www/html
             DDEV_DATABASE: mariadb:10.4
             DDEV_DATABASE_FAMILY: mysql
             DDEV_DOCROOT: www
             DDEV_FILES_DIR: /var/www/html/www/files
             DDEV_FILES_DIRS: /var/www/html/www/files
+            DDEV_GID: "20"
             DDEV_GOARCH: arm64
             DDEV_GOOS: darwin
             DDEV_HOSTNAME: borg.ddev.site
             DDEV_MUTAGEN_ENABLED: "true"
             DDEV_PHP_VERSION: "8.3"
             DDEV_PRIMARY_URL: https://borg.ddev.site
+            DDEV_PRIMARY_URL_PORT: "443"
+            DDEV_PRIMARY_URL_WITHOUT_PORT: https://borg.ddev.site
             DDEV_PROJECT: borg
             DDEV_PROJECT_TYPE: backdrop
             DDEV_ROUTER_HTTP_PORT: "80"
             DDEV_ROUTER_HTTPS_PORT: "443"
+            DDEV_SCHEME: https
             DDEV_SITENAME: borg
             DDEV_TLD: ddev.site
-            DDEV_VERSION: v1.24.4
+            DDEV_UID: "501"
+            DDEV_USER: jlampton
+            DDEV_VERSION: v1.24.7
             DDEV_WEB_ENTRYPOINT: /mnt/ddev_config/web-entrypoint.d
             DDEV_WEBSERVER_TYPE: nginx-fpm
             DDEV_XDEBUG_ENABLED: "false"
@@ -170,7 +184,7 @@ services:
             start_period: 2m0s
             timeout: 1m10s
         hostname: borg-web
-        image: ddev/ddev-webserver:v1.24.4-borg-built
+        image: ddev/ddev-webserver:v1.24.7-borg-built
         labels:
             com.ddev.app-type: backdrop
             com.ddev.approot: /Users/jlampton/Sites/_backdrop/backdropcms.org/repo
@@ -255,7 +269,7 @@ services:
             XHGUI_PDO_PASS: db
             XHGUI_PDO_USER: db
             XHGUI_SAVE_HANDLER: pdo
-        image: ddev/ddev-xhgui:v1.24.4
+        image: ddev/ddev-xhgui:v1.24.7
         labels:
             com.ddev.approot: /Users/jlampton/Sites/_backdrop/backdropcms.org/repo
             com.ddev.site-name: borg
