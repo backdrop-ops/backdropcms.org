@@ -215,7 +215,7 @@ function borg_blocks_resources() {
       'data' => l($group_icon . t('LinkedIn group'), 'https://www.linkedin.com/groups/6930143', $link_options),
     ),
     'bluesky' => array(
-      'data' => l($bluesky_icon . t('BlueSky (use #BackdropCMS)'), 'https://blsky.social', $link_options),
+      'data' => l($bluesky_icon . t('Bluesky (use #BackdropCMS)'), 'https://blsky.social', $link_options),
     ),
     'mastodon' => array(
       'data' => l($mastodon_icon . t('Mastodon (use #BackdropCMS)'), 'https://phpc.social/@backdropcms', $link_options),
