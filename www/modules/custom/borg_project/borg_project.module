@@ -78,6 +78,7 @@ function _borg_project_core_build_latest() {
       ON n.nid = prsv.nid
     WHERE n.type = 'core_release'
       AND n.status = 1
+      AND n.title NOT LIKE '%preview'
     ORDER BY n.created DESC
     LIMIT 1")->fetchField();
 
