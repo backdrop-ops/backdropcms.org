@@ -167,13 +167,14 @@ function borg_preprocess_page(&$variables) {
   $arg0 = check_plain(arg(0));
   $arg1 = check_plain(arg(1));
   $arg2 = check_plain(arg(2));
+  $icons_needed = array();
 
   // Add the Source Sans Pro font.
   $source_sans = 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700';
   backdrop_add_css($source_sans, array('type' => 'external'));
 
   // Make the icons available for use in CSS.
-  $icons_needed = array('user-circle');
+  $icons_needed[] = 'user-circle';
   backdrop_add_icons($icons_needed);
 
   // Add FontAwesome.
@@ -203,15 +204,6 @@ function borg_preprocess_page(&$variables) {
   // Add Flexslider to the front page only.
   if (backdrop_is_front_page()) {
     backdrop_add_css($path . '/css/page-front.css');
-  }
-  elseif ($arg0 == 'support') {
-    if ($arg1 == 'services') {
-      backdrop_add_css($path . '/css/page-services.css');
-    }
-  }
-  elseif ($arg0 == 'modules' || $arg0 == 'themes' || $arg0 == 'layouts') {
-    $variables['classes'][] = 'project-search';
-    backdrop_add_css($path . '/css/page-project-search.css');
   }
   elseif ($arg0 == 'user') {
     if ($arg1 == 'login') {
@@ -253,6 +245,11 @@ function borg_preprocess_page(&$variables) {
         $variables['classes'][] = $arg0 . '-' . $arg1 . '-' . $arg2;
       }
     }
+  }
+
+  // Make the icons needed available for use in CSS.
+  if (!empty($icons_needed)) {
+    backdrop_add_icons($icons_needed);
   }
 }
 
@@ -458,15 +455,18 @@ function borg_preprocess_block(&$variables) {
           '#links' => array(
             'demo' => array(
               'title' => 'Demo Backdrop CMS',
-              'href' => 'https://www.backdropcms.org/demo',
+              'href' => 'https://backdropcms.org/demo',
+              'attributes' => array('title' => 'Create your own demo sandbox'),
             ),
             'download' => array(
-              'title' => 'Download Backdrop v' . $version_info['latest']['version'],
+              'title' => 'Download version' . ' ' . $version_info['latest']['version'],
               'href' => $version_info['latest']['download_link'],
+              'attributes' => array('title' => 'Download the latest version'),
             ),
             'more' => array(
-              'title' => 'Other ways to try',
+              'title' => 'More ways to try Backdrop',
               'href' => 'https://backdropcms.org/try-backdrop',
+              'attributes' => array('title' => 'Discover other ways to try Backdrop CMS'),
             ),
           ),
         );

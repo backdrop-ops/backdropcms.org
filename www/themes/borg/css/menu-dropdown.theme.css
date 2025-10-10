@@ -32,12 +32,14 @@
 .menu-dropdown a:focus,
 .menu-dropdown a:active {
   padding: 10px 16px;
-  /* make room for the toggle button (sub indicator) */
-  padding-right: 58px;
   font-weight: normal;
   line-height: 17px;
   text-decoration: none;
   color: #000;
+}
+.menu-dropdown a.has-submenu {
+  /* make room for the toggle button (sub indicator) */
+  padding-right: 58px;
 }
 .menu-dropdown a.current {
   color: var(--color__purple-light);
@@ -61,7 +63,7 @@
 .menu-dropdown a span.sub-arrow:before {
   color: var(--color__accent--primary);
 }
-@media (min-width: 48em) {
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .menu-dropdown a span.sub-arrow {
     top: 50%;
     right: 10px;

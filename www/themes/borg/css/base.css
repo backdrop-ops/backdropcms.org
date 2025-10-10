@@ -177,26 +177,50 @@ ol > li {
 
 table {
   width: 100%;
-  margin: 1em 0;
+  margin: 1rem 0;
 }
 table th {
   font-size: 1.25em;
   font-weight: 400; /* Normal */
-  border-bottom: 2px solid var(--color__gray-faint);
+  border-bottom: 2px solid var(--color__border--section--gray);
 }
 tr.odd {
-  background-color: #f7f7f7;
+  background-color: var(--color__background--section--gray);
 }
 tr.even {
   background-color: transparent;
 }
+th.active {
+  border-bottom: 1.5px solid var(--color__accent--primary);
+}
+td.active {
+  background-color: inherit;
+  border-left: 1px solid var(--color__accent--primary);
+  border-right: 1px solid var(--color__accent--primary);
+}
+tr:last-child td.active {
+  border-bottom: 1px solid var(--color__accent--primary);
+}
+.tableresponsive-toggle-columns {
+  text-align: right; /* LTR */
+  position: relative;
+  top: 1rem; /* match top margin for table */
+}
+[dir="rtl"] .tableresponsive-toggle-columns {
+  text-align: left; /* LTR */
+}
 
+table th,
 table td {
-  padding: 1em .5em;
+  padding: 1em .5rem; /* use rems for r+l to match different fonts */
 }
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  table th,
   table td {
-    padding: 1em;
+    padding: 1em 1rem; /* use rems for r+l to match different fonts */
+  }
+  table th {
+    padding: .33em 1rem; /* use rems for r+l to match different fonts */
   }
 }
 
@@ -261,10 +285,9 @@ textarea {
   max-width: 100%;
   padding: 8px 10px 4px 10px;
   border: 1px solid var(--color__border--gray-mid);
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-  box-sizing: border-box;
   border-radius: 2px;
+  box-shadow: inset 0 -1px 1px rgba(0,0,0,.075);
+  box-sizing: border-box;
 }
 input {
   line-height: 42px; /* 42+1+1 border to match button with 40+2+2 border */
@@ -275,31 +298,33 @@ textarea {
   padding: 10px;
 }
 select {
-  height: 40px;
+  height: 42px; /* match input */
+  font-size: 1.125rem; /* 18px */
   color: var(--color__gray-dark);
-  padding: 4px 16px 4px 8px;
   background-color: white;
-  border: 1px solid var(--color__border--gray-mid);
+  padding: 8px 10px 4px 10px; /* match input */
+  border: 1px solid var(--color__border--gray-mid); /* match input */
   border-radius: 2px;
+  box-shadow: inset 0 -1px 1px rgba(0,0,0,.075); /* match input */
+  box-sizing: border-box;
 }
 input[type="checkbox"] {
-  -webkit-box-shadow: none;
   box-shadow: none;
   height: 22px;
   line-height: 22px;
   margin-right: .5em;
 }
 input[type="submit"] {
-  line-height: 40px;
-  height: 42px;
-  border: 2px solid var(--color__link);
-  background-color: white;
-  color: var(--color__link);
+  height: 42px; /* match input */
   font-size: 1.125rem; /* 18px */
-  border-radius: 2px;
+  color: var(--color__link);
+  background-color: white;
   margin: 10px 20px 10px 0;
   padding: 1px 20px 0;
   white-space: nowrap;
+  border: 2px solid var(--color__link);
+  border-radius: 2px;
+  box-shadow: inset 0 -1px 1px rgba(0,0,0,.075); /* match input */
 }
 input[type="submit"]:hover {
   background-color: var(--color__accent--primary);
