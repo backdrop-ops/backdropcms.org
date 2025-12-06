@@ -40,7 +40,7 @@ class CRM_Gdpr_Utils {
 
     $actTypes = [];
 
-    // Get all membership types from CiviCRM
+    // Get all activity types from CiviCRM
     $result = self::CiviCRMAPIWrapper('OptionValue', 'get', [
       'sequential' => 1,
       'is_active' => 1,
@@ -55,6 +55,32 @@ class CRM_Gdpr_Utils {
     }
 
     return $actTypes;
+  }
+
+  /**
+   * Get all activity statuses
+   *
+   * @return array of activity status ids, title
+   */
+  public static function getAllActivityStatuses() {
+
+    $actStatuses = [];
+
+    // Get all activity statuses from CiviCRM
+    $result = self::CiviCRMAPIWrapper('OptionValue', 'get', [
+      'sequential' => 1,
+      'is_active' => 1,
+      'option_group_id' => "activity_status",
+      'options' => ['limit' => 0],
+    ]);
+
+    if (!empty($result['values'])) {
+      foreach ($result['values'] as $value) {
+        $actStatuses [$value['name']] = $value['label'];
+      }
+    }
+
+    return $actStatuses;
   }
 
   /**

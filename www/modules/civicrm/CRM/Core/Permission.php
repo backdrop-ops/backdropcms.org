@@ -278,10 +278,8 @@ class CRM_Core_Permission {
     }
 
     // By default, users without 'access all custom data' are permitted to see no groups.
-    $allowedGroups = [];
-
     // Allow ACLs and hooks to grant permissions to certain groups.
-    return CRM_ACL_API::group($type, $userId, 'civicrm_custom_group', $customGroups, $allowedGroups);
+    return CRM_ACL_API::group($type, $userId, 'civicrm_custom_group', $customGroups);
   }
 
   /**
@@ -574,7 +572,7 @@ class CRM_Core_Permission {
       $item['access_callback'][0] == 'CRM_Core_Permission' &&
       $item['access_callback'][1] == 'checkMenu'
     ) {
-      $op = CRM_Utils_Array::value(1, $item['access_arguments'], 'and');
+      $op = $item['access_arguments'][1] ?? 'and';
       return self::checkMenu($item['access_arguments'][0], $op);
     }
     else {
@@ -759,7 +757,7 @@ class CRM_Core_Permission {
       ],
       'profile listings' => [
         'label' => $prefix . ts('profile listings'),
-        'description' => ts('Warning: Give to trusted roles only; this permission has privacy implications. Access public searchable directories.'),
+        'description' => ts('Warning: Give to trusted roles only; this permission has privacy implications. Access public searchable directories.') . ' ' . ts('Profile listings are being phased out in favor of SearchKit/FormBuilder. They have been moved to the Legacy Profiles extension.'),
       ],
       'profile create' => [
         'label' => $prefix . ts('profile create'),
@@ -1086,6 +1084,9 @@ class CRM_Core_Permission {
       ],
       // managed by query object
       'get' => [],
+      'getMergedTo' => [],
+      'getMergedFrom' => [],
+
       // managed by _civicrm_api3_check_edit_permissions
       'update' => [],
       'duplicatecheck' => [
@@ -1289,8 +1290,10 @@ class CRM_Core_Permission {
     // Custom field permissions
     $permissions['custom_field'] = [
       'default' => [
-        'administer CiviCRM',
-        'access all custom data',
+        'administer CiviCRM data',
+      ],
+      'get' => [
+        ['access CiviCRM', 'access all custom data'],
       ],
     ];
     $permissions['custom_group'] = $permissions['custom_field'];
@@ -1406,6 +1409,11 @@ class CRM_Core_Permission {
       'submit' => [
         'access CiviCRM',
         ['access CiviMail', 'schedule mailings'],
+      ],
+      'gettokens' => [
+        'access CiviCRM',
+        [...$civiMailBasePerms, 'edit message templates'],
+        // FIXME: When there's an API that provides tokens for a MessageTemplate, these permissions can be re-tightened.
       ],
       'default' => [
         'access CiviCRM',
@@ -1825,7 +1833,7 @@ class CRM_Core_Permission {
    * @return bool
    */
   public static function isMultisiteEnabled() {
-    return (bool) Civi::settings()->get('is_enabled');
+    return (bool) Civi::settings()->get('multisite_is_enabled');
   }
 
   /**

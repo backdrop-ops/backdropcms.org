@@ -10,6 +10,7 @@ function civicrm_contact_ref_menu() {
   $items['civicrm_contact_ref/autocomplete'] = array(
     'title' => 'Contacts',
     'page callback' => 'civicrm_contact_ref_autocomplete_value',
+    'delivery callback' => 'backdrop_json_deliver',
     'type' => MENU_CALLBACK,
     'access arguments' => array('access content'),
   );
@@ -62,9 +63,9 @@ function civicrm_contact_ref_field_widget_info_alter(&$info) {
 /**
  * Implements hook_options_list().
  */
-function civicrm_contact_ref_options_list($field) {
-  $function = !empty($field['settings']['options_list_callback']) ? $field['settings']['options_list_callback'] : 'civicrm_contact_ref_allowed_values';
-  return $function($field);
+function civicrm_contact_ref_options_list($field, $instance, $entity_type, $entity) {
+  $function = !empty($field['settings']['options_list_callback']) ? $field['settings']['options_list_callback'] : 'civicrm_contact_ref_options_list_values';
+  return $function($field, $instance, $entity_type, $entity);
 }
 
 /**
@@ -148,14 +149,25 @@ function civicrm_contact_ref_field_formatter_view($entity_type, $entity, $field,
 /**
  * Returns the set of valid civicrm contacts
  *
- * @param $field
+ * @param array $field
  *   The field definition.
+ * @param array $instance
+ *   A field instance array.
+ * @param string $entity_type
+ *   The type of entity; e.g. 'node' or 'user'.
+ * @param EntityInterface|null $entity
+ *   The entity object or NULL if the entity hasn't been created yet.
  *
  * @return array
  *   The array of valid contacts.
  */
-function civicrm_contact_ref_allowed_values($field) {
-  $references = _civicrm_contact_ref_potential_references($field);
+function civicrm_contact_ref_options_list_values($field, $instance, $entity_type, $entity) {
+  $entity_id = NULL;
+  if ($entity) {
+    $entity_id = $entity->id();
+  }
+
+  $references = _civicrm_contact_ref_potential_references($field['field_name'], $entity_type, $instance['bundle'], $entity_id);
 
   $options = array();
   foreach ($references as $key => $value) {
@@ -176,9 +188,21 @@ function civicrm_contact_ref_field_widget_form(&$form, &$form_state, $field, $in
     $defaultValues[] = "$sort_name [cid:{$item['contact_id']}]";
   }
 
+  $entity = isset($element['#entity']) ? $element['#entity'] : NULL;
+
+  $autocomplete_path = $instance['widget']['settings']['autocomplete_path'] . '/' . $field['field_name'] . '/' . $instance['entity_type'] . '/' . $instance['bundle'] . '/';
+
+  // Use <NULL> as a placeholder in the URL when there's no entity.
+  // Most webservers collapse two consecutive slashes.
+  $entity_id = 'NULL';
+  if ($entity) {
+    $entity_id = $entity->id();
+  }
+  $autocomplete_path .= $entity_id;
+
   $element += array(
     '#type' => 'textfield',
-    '#autocomplete_path' => $instance['widget']['settings']['autocomplete_path'] . '/' . $field['field_name'],
+    '#autocomplete_path' => $autocomplete_path,
     '#size' => $instance['widget']['settings']['size'],
     '#maxlength' => 1024,
     '#default_value' => empty($defaultValues[$delta]) ? '' : $defaultValues[$delta],
@@ -220,8 +244,38 @@ function civicrm_contact_ref_field_settings_form($field, $instance, $has_data) {
       '#options' => CRM_Utils_Array::crmArrayMerge(array($name => $label), $subTypes),
       '#default_value' => isset($settings['allowed_values']) ? $settings['allowed_values'][$name] : array(),
       '#weight' => 1,
+      '#access' => empty($settings['options_list_callback']) && empty($settings['allowed_values_function']),
     );
   }
+
+  $form['custom_callbacks'] = array(
+    '#type' => 'item',
+    '#title' => t('Custom callbacks'),
+    '#markup' => t('Custom callback functions can be used to fetch the values for this field. This is useful if values need more customized filtering than selecting by Contact Types. The <code>options_list_callback</code> setting will a custom function that returns a list to be displayed in an options list. The <code>allowed_values_function</code> setting returns references used for the allowed values. It will be used for all widgets: autocomplete and list. It will also be used for validation. Consult <em>civicrm_contact_ref.api.php</em> in the module for more info.'),
+    '#access' => empty($settings['options_list_callback']) && empty($settings['allowed_values_function']),
+  );
+
+  $form['allowed_values_function'] = array(
+    '#type' => 'value',
+    '#value' => !empty($settings['allowed_values_function']) ? $settings['allowed_values_function'] : '',
+  );
+  $form['allowed_values_function_display'] = array(
+    '#type' => 'item',
+    '#title' => t('Allowed values list'),
+    '#markup' => t('The value of this field is being determined by the <code>@function</code> function in the <em>allowed_values_callback</em> field setting and cannot be changed here. Consult <em>civicrm_contact_ref.api.php</em> for more info.', array('@function' => !empty($settings['allowed_values_function']) ? $settings['allowed_values_function'] : '')),
+    '#access' => !empty($settings['allowed_values_function']),
+  );
+
+  $form['options_list_callback'] = array(
+    '#type' => 'value',
+    '#value' => !empty($settings['options_list_callback']) ? $settings['options_list_callback'] : '',
+  );
+  $form['options_list_callback_display'] = array(
+    '#type' => 'item',
+    '#title' => t('Options list'),
+    '#markup' => t('The values of this field are being determined by the <code>@function</code> function in the field setting <em>options_list_callback</em> and cannot not be changed here. Consult <em>civicrm_contact_ref.api.php</em> for more info.', array('@function' => !empty($settings['options_list_callback']) ? $settings['options_list_callback'] : '')),
+    '#access' => !empty($settings['options_list_callback']),
+  );
 
   return $form;
 }
@@ -231,10 +285,12 @@ function civicrm_contact_ref_field_settings_form($field, $instance, $has_data) {
  */
 function civicrm_contact_ref_autocomplete_validate($element, &$form_state) {
 
-  $field     = field_info_field($element['#field_name']);
-  $field_key = $element['#columns'][0];
-  $delta     = $element['#delta'];
   $value     = $element['#value'];
+  $entity = isset($element['#entity']) ? $element['#entity'] : NULL;
+  $entity_id = NULL;
+  if ($entity) {
+    $entity_id = $entity->id();
+  }
 
   $cid = NULL;
   if (!empty($value)) {
@@ -245,7 +301,7 @@ function civicrm_contact_ref_autocomplete_validate($element, &$form_state) {
     }
     else {
       // No explicit cid.
-      $cids = _civicrm_contact_ref_potential_references($field, $value, TRUE);
+      $cids = _civicrm_contact_ref_potential_references($element['#field_name'], $element['#entity_type'], $element['#bundle'], $entity_id, $value, TRUE);
       if (empty($cids)) {
         form_error($element, t('%name: found no valid post with that title.', array('%name' => $element['#title'])));
       }
@@ -263,18 +319,42 @@ function civicrm_contact_ref_autocomplete_validate($element, &$form_state) {
 }
 
 /**
- * Function to provide values for autocomplete civicrm contact
- * element, depend upon entered string.
+ * Menu callback to provide values for autocomplete civicrm contact
+ * element, depends upon entered string.
+ *
+ * @param string $field_name
+ *   The name of the contact reference field.
+ * @param string $entity_type
+ *   The entity type.
+ * @param string $bundle_name
+ *   The bundle name.
+ * @param string $entity_id
+ *   The entity ID the contact reference field is attached to, or an empty
+ *   string if the entity hasn't been created yet.
+ * @param string $string
+ *   The label of the Contact to query by.
  */
-function civicrm_contact_ref_autocomplete_value($field_name, $string = '') {
+function civicrm_contact_ref_autocomplete_value($field_name, $entity_type, $bundle_name, $entity_id = '', $string = '') {
   if (!civicrm_initialize()) {
     return;
   }
 
-  $field = field_info_field($field_name);;
+  // If the request has a '/' in the search text, then the menu system will have
+  // split it into multiple arguments and $string will only be a partial.
+  // Make sure to recover the intended $string.
+  $args = func_get_args();
+  // Shift off the $type, $field_name, $entity_type,
+  // $bundle_name, and $entity_id args.
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  array_shift($args);
+  $string = implode('/', $args);
+
   $matches = array();
 
-  $references = _civicrm_contact_ref_potential_references($field, $string);
+  $references = _civicrm_contact_ref_potential_references($field_name, $entity_type, $bundle_name, $entity_id, $string);
   foreach ($references as $id => $row) {
     // Add a class wrapper for a few required CSS overrides.
     $matches["{$row['title']} [cid:{$id}]"] = '<div class="reference-autocomplete">' . $row['rendered'] . '</div>';
@@ -285,18 +365,25 @@ function civicrm_contact_ref_autocomplete_value($field_name, $string = '') {
 /**
  * Fetch an array of all candidate referenced nodes.
  *
- * This info is used in various places (aloowed values, autocomplete results,
+ * This info is used in various places (allowed values, autocomplete results,
  * input validation...). Some of them only need the nids, others nid + titles,
  * others yet nid + titles + rendered row (for display in widgets).
  * The array we return contains all the potentially needed information, and lets
  * consumers use the parts they actually need.
  *
- * @param $field
- *   The field description.
- * @param $string
+ * @param string $field_name
+ *   The name of the contact reference field.
+ * @param string $entity_type
+ *   The entity type.
+ * @param string $bundle_name
+ *   The bundle name.
+ * @param string|null $entity_id
+ *   The entity ID the contact reference field is attached to, or an empty
+ *   string if the entity hasn't been created yet.
+ * @param string $string
  *   Optional string to filter titles on (used by autocomplete)
- * @param $exact_string
- *   Optional: should the title filter be an exact match.
+ * @param bool $exact_string
+ *   Should the title filter be an exact match. Defaults to FALSE.
  *
  * @return array
  *   An array of valid nodes in the form:
@@ -308,10 +395,13 @@ function civicrm_contact_ref_autocomplete_value($field_name, $string = '') {
  *     ...
  *   )
  */
-function _civicrm_contact_ref_potential_references($field, $string = '', $exact_string = FALSE) {
+function _civicrm_contact_ref_potential_references($field_name, $entity_type, $bundle_name, $entity_id, $string = '', $exact_string = FALSE) {
   static $results = array();
 
-  $references = _civicrm_contact_ref_potential_references_standard($field, $string, $exact_string);
+  $field = field_info_field($field_name);
+
+  $function = !empty($field['settings']['allowed_values_function']) ? $field['settings']['allowed_values_function'] : '_civicrm_contact_ref_potential_references_standard';
+  $references = $function($field_name, $entity_type, $bundle_name, $entity_id, $string, $exact_string);
 
   // Store the results.
   $results[$field['field_name']][$string][$exact_string] = $references;
@@ -320,15 +410,37 @@ function _civicrm_contact_ref_potential_references($field, $string = '', $exact_
 }
 
 /**
- * Helper function for _civicrm_contact_ref_potential_references():
- * referenceable nodes defined by content types.
+ * Helper function for referenceable CiviCRM contacts.
+ *
+ * @param string $field_name
+ *   The name of the contact reference field.
+ * @param string $entity_type
+ *   The entity type.
+ * @param string $bundle_name
+ *   The bundle name.
+ * @param string|null $entity_id
+ *   The entity ID the contact reference field is attached to, or an empty
+ *   string if the entity hasn't been created yet.
+ * @param string $string
+ *   Optional string to filter titles on (used by autocomplete)
+ * @param bool $exact_string
+ *   Should the title filter be an exact match. Defaults to FALSE.
+ *
+ * @return array
+ *   Nested array of references keyed by the contact ID containing an array of
+ *   the contact title and the rendered contact info to display.
+ *
+ * @see _civicrm_contact_ref_potential_references()
  */
-function _civicrm_contact_ref_potential_references_standard($field, $string = '', $exact_string = FALSE, $limit = '10') {
+function _civicrm_contact_ref_potential_references_standard($field_name, $entity_type, $bundle_name, $entity_id, $string = '', $exact_string = FALSE) {
   $args = $whereClause = $contactTypes = $contactSubTypes = array();
+  $limit = '10';
 
   if (!civicrm_initialize()) {
     return;
   }
+
+  $field = field_info_field($field_name);
 
   require_once 'CRM/Contact/BAO/ContactType.php';
   $basicTypes = CRM_Contact_BAO_ContactType::basicTypePairs();
@@ -359,7 +471,6 @@ function _civicrm_contact_ref_potential_references_standard($field, $string = ''
   }
 
   $whereClause = empty($whereClause) ? '' : '(' . implode(' OR ', $whereClause) . ') AND';
-  $related_clause = "";
 
   if (isset($string)) {
     if ($exact_string) {
@@ -407,6 +518,7 @@ function _civicrm_contact_ref_potential_references_standard($field, $string = ''
  *
  * @param int $cid
  * @param string $field
+ *
  * @return string|null
  */
 function _civicrm_contact_ref_titles($cid, $field = 'display_name') {
@@ -466,11 +578,20 @@ function civicrm_contact_ref_civicrm_merge($type, $data, $new_id = NULL, $old_id
   $updated = FALSE;
   if (!empty($new_id) && !empty($old_id) && $type == 'sqls' && $tables === FALSE) {
     // Update contact reference field data
-    $db = db_query("SELECT field_name FROM {field_config} WHERE module = 'civicrm_contact_ref'");
-    foreach ($db as $table) {
-      $result = db_update("field_data_{$table->field_name}")
-        ->fields(array("{$table->field_name}_contact_id" => $new_id))
-        ->condition("{$table->field_name}_contact_id", $old_id)
+    $field_config_names = config_get_names_with_prefix('field.field.');
+    foreach ($field_config_names as $config_name) {
+      $field_config = config($config_name);
+      if ($field_config->get('module') != 'civicrm_contact_ref') {
+        continue;
+      }
+      $field_name = $field_config->get('field_name');
+      $result = db_update("field_data_{$field_name}")
+        ->fields(array("{$field_name}_contact_id" => $new_id))
+        ->condition("{$field_name}_contact_id", $old_id)
+        ->execute();
+      $result = db_update("field_revision_{$field_name}")
+        ->fields(array("{$field_name}_contact_id" => $new_id))
+        ->condition("{$field_name}_contact_id", $old_id)
         ->execute();
       if ($result) {
         $updated = TRUE;
@@ -478,7 +599,8 @@ function civicrm_contact_ref_civicrm_merge($type, $data, $new_id = NULL, $old_id
     }
   }
   if ($updated) {
-    cache_clear_all('*', 'cache_field', TRUE);
-    cache_clear_all('*', 'cache_page', TRUE);
+    cache_flush('cache_field');
+    cache_flush('cache_page');
   }
 }
+

@@ -7298,6 +7298,12 @@
 	display: list-item;
 }
 
+#bootstrap-theme legend {
+	position: initial;
+	text-transform: inherit;
+	float: none;
+}
+
 #bootstrap-theme .form-control .select2-choice {
 	border: 0;
 	border-radius: 2px;

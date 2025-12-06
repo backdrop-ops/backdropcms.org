@@ -1,0 +1,767 @@
+{
+    "_config_name": "views.view.civicrm_my_activities",
+    "name": "civicrm_my_activities",
+    "description": "Calendar of CiviCRM Activities - Assigned to logged in user. Requires Calendar module.",
+    "module": "civicrm",
+    "storage": 4,
+    "tag": "civicrm",
+    "disabled": true,
+    "base_table": "civicrm_activity",
+    "human_name": "CiviCRM My Activities",
+    "core": "1.0",
+    "display": {
+        "default": {
+            "display_title": "Master",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": {
+                        "query_comment": false
+                    }
+                },
+                "title": "CiviCRM My Activities Calendar",
+                "use_more_always": false,
+                "access": {
+                    "type": "perm",
+                    "perm": "view all activities"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic",
+                    "options": {
+                        "reset_button_label": "Reset"
+                    }
+                },
+                "pager": {
+                    "type": "some",
+                    "options": {
+                        "items_per_page": "5",
+                        "offset": "0"
+                    }
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "civicrm_event_calendar",
+                "row_options": {
+                    "colors": {
+                        "calendar_colors_type": {
+                            "article": "#ffffff",
+                            "page": "#ffffff"
+                        }
+                    }
+                },
+                "relationships": {
+                    "contact_id": {
+                        "id": "contact_id",
+                        "table": "civicrm_activity_contact",
+                        "field": "contact_id",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Activity Contact ID",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": 1,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "record_type": "1"
+                    },
+                    "backdrop_id": {
+                        "id": "backdrop_id",
+                        "table": "civicrm_contact",
+                        "field": "backdrop_id",
+                        "relationship": "contact_id",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "Backdrop User",
+                        "required": 0
+                    }
+                },
+                "fields": {
+                    "activity_date_time": {
+                        "id": "activity_date_time",
+                        "table": "civicrm_activity",
+                        "field": "activity_date_time",
+                        "label": "",
+                        "element_label_colon": false,
+                        "hide_alter_empty": false,
+                        "date_format": "short",
+                        "custom_date_format": "g:i"
+                    },
+                    "activity_type": {
+                        "id": "activity_type",
+                        "table": "civicrm_activity",
+                        "field": "activity_type",
+                        "label": "",
+                        "element_label_colon": false
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "civicrm_activity",
+                        "field": "status",
+                        "label": "",
+                        "element_label_colon": false
+                    },
+                    "subject": {
+                        "id": "subject",
+                        "table": "civicrm_activity",
+                        "field": "subject",
+                        "label": "",
+                        "element_label_colon": false,
+                        "hide_alter_empty": false
+                    }
+                },
+                "sorts": {
+                    "activity_date_time": {
+                        "id": "activity_date_time",
+                        "table": "civicrm_activity",
+                        "field": "activity_date_time"
+                    }
+                },
+                "arguments": {
+                    "activity_date_time": {
+                        "id": "activity_date_time",
+                        "table": "civicrm_activity",
+                        "field": "activity_date_time",
+                        "default_action": "default",
+                        "exception": {
+                            "title": "All"
+                        },
+                        "summary": {
+                            "format": "default_summary"
+                        },
+                        "granularity": "year",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "civicrm_activity.activity_date_time": "civicrm_activity.activity_date_time"
+                        }
+                    },
+                    "uf_id": {
+                        "id": "uf_id",
+                        "table": "civicrm_uf_match",
+                        "field": "uf_id",
+                        "relationship": "contact_id",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "default",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 0,
+                            "title": "All"
+                        },
+                        "title_enable": 0,
+                        "title": "",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "current_user",
+                        "default_argument_options": "",
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 0,
+                        "validate": {
+                            "type": "none",
+                            "fail": "not found"
+                        },
+                        "validate_options": [],
+                        "break_phrase": 0,
+                        "not": 0
+                    }
+                },
+                "filters": {
+                    "activity_type": {
+                        "id": "activity_type",
+                        "table": "civicrm_activity",
+                        "field": "activity_type",
+                        "value": {
+                            "1": "1",
+                            "2": "2"
+                        },
+                        "group": 1
+                    }
+                }
+            }
+        },
+        "page": {
+            "display_title": "Month",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "display_description": "Monthly calendar of activities",
+                "defaults": {
+                    "hide_admin_links": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "arguments": false
+                },
+                "pager": {
+                    "type": "date_views_pager",
+                    "options": {
+                        "date_id": "month"
+                    }
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "civicrm_activity_calendar",
+                "arguments": {
+                    "activity_date_time": {
+                        "id": "activity_date_time",
+                        "table": "civicrm_activity",
+                        "field": "activity_date_time",
+                        "default_action": "default",
+                        "exception": {
+                            "title": "All"
+                        },
+                        "add_delta": "yes",
+                        "use_fromto": "no",
+                        "date_fields": {
+                            "civicrm_activity.activity_date_time": "civicrm_activity.activity_date_time"
+                        }
+                    },
+                    "uf_id": {
+                        "id": "uf_id",
+                        "table": "civicrm_uf_match",
+                        "field": "uf_id",
+                        "relationship": "contact_id",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "default",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 0,
+                            "title": "All"
+                        },
+                        "title_enable": 0,
+                        "title": "",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "current_user",
+                        "default_argument_options": "",
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 0,
+                        "validate": {
+                            "type": "none",
+                            "fail": "not found"
+                        },
+                        "validate_options": [],
+                        "break_phrase": 0,
+                        "not": 0
+                    }
+                },
+                "path": "myactivities/month",
+                "menu": {
+                    "type": "default tab",
+                    "title": "Month",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "1",
+                    "context": 0,
+                    "context_only_inline": 0
+                },
+                "tab_options": {
+                    "type": "normal",
+                    "title": "Activities Calendar",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "0"
+                }
+            }
+        },
+        "page_1": {
+            "display_title": "Week",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "display_description": "Weekly calendar of activities",
+                "defaults": {
+                    "hide_admin_links": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "arguments": false
+                },
+                "pager": {
+                    "type": "date_views_pager",
+                    "options": {
+                        "date_id": "month"
+                    }
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "calendar_type": "week",
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "civicrm_activity_calendar",
+                "arguments": {
+                    "activity_date_time": {
+                        "id": "activity_date_time",
+                        "table": "civicrm_activity",
+                        "field": "activity_date_time",
+                        "default_action": "default",
+                        "exception": {
+                            "title": "All"
+                        },
+                        "summary": {
+                            "format": "default_summary"
+                        },
+                        "granularity": "week",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "civicrm_activity.activity_date_time": "civicrm_activity.activity_date_time"
+                        }
+                    },
+                    "uf_id": {
+                        "id": "uf_id",
+                        "table": "civicrm_uf_match",
+                        "field": "uf_id",
+                        "relationship": "contact_id",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "default",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 0,
+                            "title": "All"
+                        },
+                        "title_enable": 0,
+                        "title": "",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "current_user",
+                        "default_argument_options": "",
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 0,
+                        "validate": {
+                            "type": "none",
+                            "fail": "not found"
+                        },
+                        "validate_options": [],
+                        "break_phrase": 0,
+                        "not": 0
+                    }
+                },
+                "path": "myactivities/week",
+                "menu": {
+                    "type": "tab",
+                    "title": "Week",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "2",
+                    "context": 0,
+                    "context_only_inline": 0
+                }
+            }
+        },
+        "page_2": {
+            "display_title": "Day",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "display_description": "Daily calendar of activities",
+                "defaults": {
+                    "hide_admin_links": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "arguments": false
+                },
+                "pager": {
+                    "type": "date_views_pager",
+                    "options": {
+                        "date_id": "month"
+                    }
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "calendar_type": "day",
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "civicrm_activity_calendar",
+                "arguments": {
+                    "activity_date_time": {
+                        "id": "activity_date_time",
+                        "table": "civicrm_activity",
+                        "field": "activity_date_time",
+                        "default_action": "default",
+                        "exception": {
+                            "title": "All"
+                        },
+                        "summary": {
+                            "format": "default_summary"
+                        },
+                        "granularity": "day",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "civicrm_activity.activity_date_time": "civicrm_activity.activity_date_time"
+                        }
+                    },
+                    "uf_id": {
+                        "id": "uf_id",
+                        "table": "civicrm_uf_match",
+                        "field": "uf_id",
+                        "relationship": "contact_id",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "default",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 0,
+                            "title": "All"
+                        },
+                        "title_enable": 0,
+                        "title": "",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "current_user",
+                        "default_argument_options": "",
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 0,
+                        "validate": {
+                            "type": "none",
+                            "fail": "not found"
+                        },
+                        "validate_options": [],
+                        "break_phrase": 0,
+                        "not": 0
+                    }
+                },
+                "path": "myactivities/day",
+                "menu": {
+                    "type": "tab",
+                    "title": "Day",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "3",
+                    "context": 0,
+                    "context_only_inline": 0
+                }
+            }
+        },
+        "page_3": {
+            "display_title": "Year",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "display_description": "Annual calendar of activities",
+                "defaults": {
+                    "hide_admin_links": false,
+                    "pager": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "arguments": false
+                },
+                "pager": {
+                    "type": "date_views_pager",
+                    "options": {
+                        "date_id": "month"
+                    }
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "calendar_type": "year",
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "civicrm_activity_calendar",
+                "arguments": {
+                    "activity_date_time": {
+                        "id": "activity_date_time",
+                        "table": "civicrm_activity",
+                        "field": "activity_date_time",
+                        "default_action": "default",
+                        "exception": {
+                            "title": "All"
+                        },
+                        "summary": {
+                            "format": "default_summary"
+                        },
+                        "granularity": "year",
+                        "add_delta": "yes",
+                        "date_fields": {
+                            "civicrm_activity.activity_date_time": "civicrm_activity.activity_date_time"
+                        }
+                    },
+                    "uf_id": {
+                        "id": "uf_id",
+                        "table": "civicrm_uf_match",
+                        "field": "uf_id",
+                        "relationship": "contact_id",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "default_action": "default",
+                        "exception": {
+                            "value": "all",
+                            "title_enable": 0,
+                            "title": "All"
+                        },
+                        "title_enable": 0,
+                        "title": "",
+                        "breadcrumb_enable": 0,
+                        "breadcrumb": "",
+                        "default_argument_type": "current_user",
+                        "default_argument_options": "",
+                        "default_argument_skip_url": 0,
+                        "summary_options": {
+                            "base_path": "",
+                            "count": "1",
+                            "items_per_page": "25",
+                            "override": 0
+                        },
+                        "summary": {
+                            "sort_order": "asc",
+                            "number_of_records": "0",
+                            "format": "default_summary"
+                        },
+                        "specify_validation": 0,
+                        "validate": {
+                            "type": "none",
+                            "fail": "not found"
+                        },
+                        "validate_options": [],
+                        "break_phrase": 0,
+                        "not": 0
+                    }
+                },
+                "path": "myactivities/year",
+                "menu": {
+                    "type": "tab",
+                    "title": "Year",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "4",
+                    "context": 0,
+                    "context_only_inline": 0
+                }
+            }
+        },
+        "block_1": {
+            "display_title": "Block",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "defaults": {
+                    "hide_admin_links": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false
+                },
+                "style_plugin": "calendar_style",
+                "style_options": {
+                    "name_size": "3",
+                    "mini": "0",
+                    "with_weekno": "0",
+                    "multiday_theme": "1",
+                    "theme_style": "1",
+                    "max_items": "0"
+                },
+                "row_plugin": "civicrm_activity_calendar"
+            }
+        },
+        "block_2": {
+            "display_title": "Scheduled",
+            "display_plugin": "block",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "display_description": "Scheduled Activities",
+                "defaults": {
+                    "hide_admin_links": false,
+                    "style_plugin": false,
+                    "style_options": false,
+                    "row_plugin": false,
+                    "row_options": false,
+                    "fields": false,
+                    "arguments": false,
+                    "filter_groups": false,
+                    "filters": false
+                },
+                "style_plugin": "list",
+                "row_plugin": "fields",
+                "fields": {
+                    "activity_date_time": {
+                        "id": "activity_date_time",
+                        "table": "civicrm_activity",
+                        "field": "activity_date_time",
+                        "label": "",
+                        "element_label_colon": false,
+                        "hide_alter_empty": false,
+                        "date_format": "long"
+                    },
+                    "activity_type": {
+                        "id": "activity_type",
+                        "table": "civicrm_activity",
+                        "field": "activity_type",
+                        "label": "",
+                        "element_label_colon": false
+                    },
+                    "subject": {
+                        "id": "subject",
+                        "table": "civicrm_activity",
+                        "field": "subject",
+                        "label": "",
+                        "element_label_colon": false,
+                        "hide_alter_empty": false
+                    }
+                },
+                "arguments": [],
+                "filters": {
+                    "activity_type": {
+                        "id": "activity_type",
+                        "table": "civicrm_activity",
+                        "field": "activity_type",
+                        "value": {
+                            "1": "1",
+                            "2": "2"
+                        },
+                        "group": 1
+                    },
+                    "status": {
+                        "id": "status",
+                        "table": "civicrm_activity",
+                        "field": "status",
+                        "value": {
+                            "1": "1"
+                        },
+                        "group": 1
+                    }
+                }
+            }
+        }
+    }
+}

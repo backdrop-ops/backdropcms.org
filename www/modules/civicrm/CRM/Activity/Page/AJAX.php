@@ -26,7 +26,7 @@ class CRM_Activity_Page_AJAX {
     $caseID = CRM_Utils_Type::validate($_GET['caseID'], 'Integer');
     $contactID = CRM_Utils_Type::validate($_GET['cid'], 'Integer');
     $userID = CRM_Utils_Type::validate($_GET['userID'], 'Integer');
-    $context = CRM_Utils_Type::validate(CRM_Utils_Array::value('context', $_GET), 'String');
+    $context = CRM_Utils_Type::validate($_GET['context'] ?? NULL, 'String');
 
     $optionalParameters = [
       'source_contact_id' => 'Integer',
@@ -396,7 +396,7 @@ class CRM_Activity_Page_AJAX {
 
     $params['mainActivityId'] = $mainActivityId;
     CRM_Activity_BAO_Activity::copyExtendedActivityData($params);
-    CRM_Utils_Hook::post('create', 'CaseActivity', $caseActivity->id, $caseActivity);
+    CRM_Utils_Hook::post('create', 'CaseActivity', $caseActivity->id, $caseActivity, $params);
 
     return (['error_msg' => $error_msg, 'newId' => $mainActivity->id]);
   }

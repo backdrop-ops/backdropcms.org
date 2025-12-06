@@ -634,7 +634,7 @@ LEFT  JOIN civicrm_membership_payment mp  ON ( mp.contribution_id = con.id )
       }
 
       // copy custom data
-      $groupTree = CRM_Core_BAO_CustomGroup::getAll(['extends' => ['Contribution']]);
+      $groupTree = CRM_Core_BAO_CustomGroup::getAll(['extends' => ['Contribution'], 'is_active' => TRUE]);
       if ($groupTree) {
         foreach ($groupTree as $groupID => $group) {
           $table[$groupTree[$groupID]['table_name']] = ['entity_id'];
@@ -794,7 +794,7 @@ LEFT  JOIN civicrm_membership_payment mp  ON ( mp.contribution_id = con.id )
         break;
       }
       // If data has been entered for a recurring field, tell the tpl layer to open the pane
-      if (!empty($form->_formValues) && !empty($form->_formValues[$key . '_relative']) || !empty($form->_formValues[$key . '_low']) || !empty($form->_formValues[$key . '_high'])) {
+      if (!empty($form->_formValues[$key . '_relative']) || !empty($form->_formValues[$key . '_low']) || !empty($form->_formValues[$key . '_high'])) {
         $form->assign('contribution_recur_pane_open', TRUE);
         break;
       }

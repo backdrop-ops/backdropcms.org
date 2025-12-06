@@ -9,7 +9,7 @@
 *}
 
 
-  <div id="report-tab-order-by-elements" class="civireport-criteria">
+  <div id="report-tab-order-by-elements" role="tabpanel" class="civireport-criteria">
     <table id="optionField">
       <tr>
         <th>&nbsp;</th>
@@ -35,7 +35,7 @@
       {/section}
     </table>
     <div id="optionFieldLink" class="add-remove-link">
-      <a onclick="showHideRow(); return false;" name="optionFieldLink" href="#" class="form-link"><i class="crm-i fa-plus action-icon" aria-hidden="true"></i> {ts}another column{/ts}</a>
+      <a onclick="showHideRow(); return false;" name="optionFieldLink" href="#" class="form-link"><i class="crm-i fa-plus action-icon" role="img" aria-hidden="true"></i> {ts}another column{/ts}</a>
     </div>
     <script type="text/javascript">
       var showRows   = new Array({$showBlocks});

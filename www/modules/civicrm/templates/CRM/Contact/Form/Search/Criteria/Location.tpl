@@ -16,7 +16,7 @@
           {$form.street_address.html|crmAddClass:big}
           {if $parseStreetAddress}
             <div>
-              <a href="#" title="{ts}Use Address Elements{/ts}" rel="addressElements" class="address-elements-toggle">{ts}Use Address Elements{/ts}</a>
+              <a href="#" title="{ts escape='htmlattribute'}Use Address Elements{/ts}" rel="addressElements" class="address-elements-toggle">{ts}Use Address Elements{/ts}</a>
             </div>
           {/if}
         </div>
@@ -28,7 +28,7 @@
               <td>{$form.street_unit.label}<br />{$form.street_unit.html|crmAddClass:four}</td>
             </tr>
             <tr>
-              <td colspan="3"><a href="#" title="{ts}Use Complete Address{/ts}" rel="streetAddress" class="address-elements-toggle">{ts}Use Street Address{/ts}</a></td>
+              <td colspan="3"><a href="#" title="{ts escape='htmlattribute'}Use Complete Address{/ts}" rel="streetAddress" class="address-elements-toggle">{ts}Use Street Address{/ts}</a></td>
             </tr>
           </table>
         </div>
@@ -69,7 +69,7 @@
 
       <td>
         <div class="crm-field-wrapper">
-          <div>{$form.location_type.label} {help id="location_type" title=$form.location_type.label}</div>
+          <div>{$form.location_type.label} {help id="location_type"}</div>
           {$form.location_type.html}
         </div>
         {if !empty($form.address_name.html)}

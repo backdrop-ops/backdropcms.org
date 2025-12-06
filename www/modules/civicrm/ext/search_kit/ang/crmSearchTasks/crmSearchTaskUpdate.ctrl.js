@@ -2,7 +2,7 @@
   "use strict";
 
   angular.module('crmSearchTasks').controller('crmSearchTaskUpdate', function ($scope, $timeout, crmApi4, searchTaskBaseTrait) {
-    var ts = $scope.ts = CRM.ts('org.civicrm.search_kit'),
+    const ts = $scope.ts = CRM.ts('org.civicrm.search_kit'),
       // Combine this controller with model properties (ids, entity, entityInfo) and searchTaskBaseTrait
       ctrl = angular.extend(this, $scope.model, searchTaskBaseTrait);
 
@@ -18,10 +18,8 @@
         loadOptions: ['id', 'name', 'label', 'description', 'color', 'icon'],
         where: [['deprecated', '=', false], ["readonly", "=", false]],
       }],
-      entityInfo: ['Entity', 'get', {select: ['primary_key'], where: [['name', '=', this.entity]]}, 0]
     }).then(function(results) {
         ctrl.fields = results.getFields;
-        ctrl.idField = results.entityInfo.primary_key[0];
       });
 
     this.updateField = function(index) {
@@ -37,9 +35,9 @@
       // Debounce the onchange event using timeout
       $timeout(function() {
         if (ctrl.add) {
-          var field = ctrl.getField(ctrl.add),
-            value = '';
-          if (field.serialize) {
+          const field = ctrl.getField(ctrl.add);
+          let value = '';
+          if (field.serialize || field.data_type === 'Array') {
             value = [];
           } else if (field.data_type === 'Boolean') {
             value = true;
@@ -61,8 +59,8 @@
     }
 
     this.availableFields = function() {
-      var results = _.transform(ctrl.fields, function(result, item) {
-        var formatted = {id: item.name, text: item.label, description: item.description};
+      const results = _.transform(ctrl.fields, function(result, item) {
+        const formatted = {id: item.name, text: item.label, description: item.description};
         if (fieldInUse(item.name)) {
           formatted.disabled = true;
         }
@@ -82,7 +80,7 @@
       this.close();
     };
 
-    this.onError = function() {
+    this.onError = function(error) {
       CRM.alert(ts('An error occurred while attempting to update %1 %2.', {1: ctrl.ids.length, 2: ctrl.entityTitle}), ts('Error'), 'error');
       this.cancel();
     };

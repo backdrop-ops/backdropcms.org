@@ -16,7 +16,7 @@
 
 /**
  * Plugin which creates a view on the resulting object
- * and formats it as a Calendar node.
+ * and formats it as a Calendar entity.
  */
 class calendar_plugin_row_civicrm extends calendar_plugin_row {
   /**
@@ -42,6 +42,10 @@ class calendar_plugin_row_civicrm extends calendar_plugin_row {
       'contains' => array(
         'legend' => array('default' => ''),
         'calendar_colors_type' => array('default' => array()),
+        'taxonomy_field' => array('default' => ''),
+        'calendar_colors_vocabulary' => array('default' => array()),
+        'calendar_colors_taxonomy' => array('default' => array()),
+        'calendar_colors_group' => array('default' => array()),
       ),
     );
     return $options;
@@ -55,18 +59,21 @@ class calendar_plugin_row_civicrm extends calendar_plugin_row {
 
     $form['markup']['#markup'] = t("The calendar row plugin will format view results as calendar items. Make sure this display has a 'Calendar' format and uses a 'Date' contextual filter, or this plugin will not work correctly.");
     $form['calendar_date_link'] = array(
-      '#title' => t('Add new date link'),
-      '#type' => 'select',
-      '#default_value' => $this->options['calendar_date_link'],
-      '#options' => array('' => t('No link')) + node_type_get_names(),
-      '#description' => t('Display a link to add a new date of the specified content type. Displayed only to users with appropriate permissions.'),
+      '#type' => 'value',
+      '#value' => '',
     );
     $form['colors'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Legend Colors'),
-      '#description' => t('Set a hex color value (like #ffffff) to use in the calendar legend for each content type. Items with empty values will have no stripe in the calendar and will not be added to the legend.'),
+      '#type' => 'container',
     );
     $form['colors']['legend'] = array(
+      '#type' => 'value',
+      '#value' => '',
+    );
+    $form['colors']['taxonomy_field'] = array(
+      '#type' => 'value',
+      '#value' => '',
+    );
+    $form['colors']['calendar_colors_vocabulary'] = array(
       '#type' => 'value',
       '#value' => '',
     );
@@ -132,12 +139,12 @@ class calendar_plugin_row_civicrm extends calendar_plugin_row {
     $id = $row->{$this->field_alias};
 
     if (!is_numeric($id)) {
-      return $rows;
+      return [];
     }
 
     // Load the specified object:
-    $node = (object) $this->entities[$id];
-    if (empty($node)) {
+    $calendar_entity = (object) $this->entities[$id];
+    if (empty($calendar_entity)) {
       return;
     }
 
@@ -157,8 +164,8 @@ class calendar_plugin_row_civicrm extends calendar_plugin_row {
       // Retrieve the field value that matched our query from the cached node.
       // Find the date and set it to the right timezone.
 
-      $item            = $node->$field_name;
-      $node->date_id   = array();
+      $item            = $calendar_entity->$field_name;
+      $calendar_entity->date_id   = array();
       $item_start_date = NULL;
       $item_end_date   = NULL;
 
@@ -170,13 +177,13 @@ class calendar_plugin_row_civicrm extends calendar_plugin_row {
       if ($is_field) {
 
         // @TODO Not sure if this is the correct way to retrieve the right language value, but I think so.
-        $lang  = $node->language;
+        $lang  = $calendar_entity->language;
         $delta = isset($row->$delta_field) ? $row->$delta_field : 0;
         $item  = array_key_exists($lang, $item) ? $item[$lang][$delta] : $item['und'][$delta];
 
-        // Set the date_id for the node, used to identify which field value to display for
+        // Set the date_id for the entity, used to identify which field value to display for
         // fields that have multiple values. The theme expects it to be an array.
-        $node->date_id = array('calendar.' . $node->id . '.' . $field_name . '.' . $delta);
+        $calendar_entity->date_id = array('calendar.' . $calendar_entity->id . '.' . $field_name . '.' . $delta);
 
         if (!empty($item['value'])) {
           $item_start_date = new dateObject($item['value'], $db_tz);
@@ -184,14 +191,14 @@ class calendar_plugin_row_civicrm extends calendar_plugin_row {
         }
 
         $cck_field   = field_info_field($field_name);
-        $instance    = field_info_instance($this->view->base_table, $field_name, $node->type);
+        $instance    = field_info_instance($this->view->base_table, $field_name, $calendar_entity->type);
         $granularity = date_granularity_precision($cck_field['settings']['granularity']);
         $increment   = $instance['widget']['settings']['increment'];
       }
       elseif (!$is_field && !empty($item)) {
         $item_start_date = new dateObject($item, $db_tz);
         $item_end_date   = $item_start_date;
-        $node->date_id   = array('calendar.' . $node->id . '.' . $field_name . '.0');
+        $calendar_entity->date_id   = array('calendar.' . $calendar_entity->id . '.' . $field_name . '.0');
       }
 
       // If we don't have date value, go no further.
@@ -203,9 +210,9 @@ class calendar_plugin_row_civicrm extends calendar_plugin_row {
       $item_start_date->setTimezone(new dateTimezone($to_zone));
       $item_end_date->setTimezone(new dateTimezone($to_zone));
       $event        = new stdClass();
-      $event->nid   = $node->id;
-      $event->title = $node->{$this->definition['title field']};
-      //$event->type = $node->event_type_id;
+      $event->id   = $calendar_entity->id;
+      $event->title = $calendar_entity->{$this->definition['title field']};
+      //$event->type = $calendar_entity->event_type_id;
       $event->date_start  = $item_start_date;
       $event->date_end    = $item_end_date;
       $event->db_tz       = $db_tz;
@@ -214,14 +221,14 @@ class calendar_plugin_row_civicrm extends calendar_plugin_row {
       $event->increment   = $increment;
       $event->field       = $is_field ? $item : NULL;
       $event->row         = $row;
-      $event->node        = $node;
+      $event->entity        = $calendar_entity;
 
       // All calendar row plugins should provide a date_id that the theme can use.
-      $event->date_id = $node->date_id[0];
+      $event->date_id = $calendar_entity->date_id[0];
 
-      $nodes = $this->explode_values($event);
-      foreach ($nodes as $node) {
-        $rows[] = $node;
+      $entities = $this->explode_values($event);
+      foreach ($entities as $entity) {
+        $rows[] = $entity;
       }
     }
     return $rows;

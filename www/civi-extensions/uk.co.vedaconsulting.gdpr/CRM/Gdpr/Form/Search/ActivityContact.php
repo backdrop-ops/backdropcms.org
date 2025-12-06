@@ -22,6 +22,7 @@ class CRM_Gdpr_Form_Search_ActivityContact extends CRM_Contact_Form_Search_Custo
     $form->add('text',
       'contact_name',
       E::ts('Contact Name'),
+      [],
       TRUE
     );
 

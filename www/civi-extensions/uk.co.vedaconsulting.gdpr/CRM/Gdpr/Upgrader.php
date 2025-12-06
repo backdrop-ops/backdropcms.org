@@ -337,4 +337,14 @@ class CRM_Gdpr_Upgrader extends CRM_Extension_Upgrader_Base {
     }
   }
 
+  public function upgrade_1206() {
+    $this->ctx->log->info('Updating Contribution Page custom fields');
+    // Change Contribution Page custom group style to Tab to avoid showing twice
+    \Civi\Api4\CustomGroup::update(FALSE)
+      ->addWhere('name', '=', 'Contribution_Page_terms_and_conditions')
+      ->addValue('style', 'Tab')
+      ->execute();
+    return TRUE;
+  }
+
 }

@@ -26,8 +26,11 @@ class CRM_Contribute_Form_AdditionalInfo {
    * Putting it on this class doesn't seem to reduce complexity.
    *
    * @param CRM_Core_Form $form
+   *
+   * @deprecated since 6.0 will be removed around 6.6.
    */
   public static function buildPremium($form) {
+    CRM_Core_Error::deprecatedFunctionWarning('no alternative, will be removed around 6.6');
     //premium section
     $form->add('hidden', 'hidden_Premium', 1);
     $sel1 = $sel2 = [];
@@ -71,8 +74,13 @@ class CRM_Contribute_Form_AdditionalInfo {
    * Build the form object for Additional Details.
    *
    * @param CRM_Core_Form $form
+   *
+   * @deprecated since 6.0 will be removed around 6.6.
+   *
    */
   public static function buildAdditionalDetail(&$form) {
+    CRM_Core_Error::deprecatedFunctionWarning('no alternative, will be removed around 6.6');
+
     //Additional information section
     $form->add('hidden', 'hidden_AdditionalDetail', 1);
 
@@ -97,7 +105,7 @@ class CRM_Contribute_Form_AdditionalInfo {
       $feeAmount->freeze();
     }
 
-    $element = &$form->add('text', 'invoice_id', ts('Invoice ID'),
+    $element = &$form->add('text', 'invoice_id', ts('Invoice Reference'),
       $attributes['invoice_id']
     );
     if ($form->_online) {
@@ -105,7 +113,7 @@ class CRM_Contribute_Form_AdditionalInfo {
     }
     else {
       $form->addRule('invoice_id',
-        ts('This Invoice ID already exists in the database.'),
+        ts('This Invoice Reference already exists in the database.'),
         'objectExists',
         ['CRM_Contribute_DAO_Contribution', $form->_id, 'invoice_id']
       );
@@ -138,26 +146,6 @@ class CRM_Contribute_Form_AdditionalInfo {
       $feeAmount->freeze();
     }
 
-  }
-
-  /**
-   * used by  CRM/Pledge/Form/Pledge.php
-   *
-   * Build the form object for PaymentReminders Information.
-   *
-   * @deprecated since 5.68 will be removed around 5.78.
-   * @param CRM_Core_Form $form
-   */
-  public static function buildPaymentReminders(&$form) {
-    CRM_Core_Error::deprecatedFunctionWarning('no alternative, will be removed around 5.78');
-    //PaymentReminders section
-    $form->add('hidden', 'hidden_PaymentReminders', 1);
-    $form->add('text', 'initial_reminder_day', ts('Send Initial Reminder'), ['size' => 3]);
-    $form->addRule('initial_reminder_day', ts('Please enter a valid reminder day.'), 'positiveInteger');
-    $form->add('text', 'max_reminders', ts('Send up to'), ['size' => 3]);
-    $form->addRule('max_reminders', ts('Please enter a valid No. of reminders.'), 'positiveInteger');
-    $form->add('text', 'additional_reminder_day', ts('Send additional reminders'), ['size' => 3]);
-    $form->addRule('additional_reminder_day', ts('Please enter a valid additional reminder day.'), 'positiveInteger');
   }
 
   /**
@@ -315,16 +303,6 @@ class CRM_Contribute_Form_AdditionalInfo {
    */
   public static function emailReceipt(&$form, &$params, $ccContribution = FALSE) {
     $form->assign('receiptType', 'contribution');
-    // Retrieve Financial Type Name from financial_type_id
-    $params['contributionType_name'] = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_FinancialType',
-      $params['financial_type_id']);
-    if (!empty($params['payment_instrument_id'])) {
-      $paymentInstrument = CRM_Contribute_PseudoConstant::paymentInstrument();
-      $params['paidBy'] = $paymentInstrument[$params['payment_instrument_id']];
-      if ($params['paidBy'] !== 'Check' && isset($params['check_number'])) {
-        unset($params['check_number']);
-      }
-    }
 
     // retrieve individual prefix value for honoree
     if (isset($params['soft_credit'])) {
@@ -371,21 +349,6 @@ class CRM_Contribute_Form_AdditionalInfo {
       $valuesForForm = CRM_Contribute_Form_AbstractEditPayment::formatCreditCardDetails($params);
       $form->assignVariables($valuesForForm, ['credit_card_exp_date', 'credit_card_type', 'credit_card_number']);
     }
-    else {
-      //offline contribution
-      // assigned various dates to the templates
-      $form->assign('receipt_date', CRM_Utils_Date::processDate($params['receipt_date']));
-
-      if (!empty($params['cancel_date'])) {
-        $form->assign('cancel_date', CRM_Utils_Date::processDate($params['cancel_date']));
-      }
-      if (!empty($params['thankyou_date'])) {
-        $form->assign('thankyou_date', CRM_Utils_Date::processDate($params['thankyou_date']));
-      }
-      if ($form->_action & CRM_Core_Action::UPDATE) {
-        $form->assign('lineItem', empty($form->_lineItems) ? FALSE : $form->_lineItems);
-      }
-    }
 
     //handle custom data
     if (!empty($params['hidden_custom'])) {
@@ -424,12 +387,6 @@ class CRM_Contribute_Form_AdditionalInfo {
     list($contributorDisplayName,
       $contributorEmail
       ) = CRM_Contact_BAO_Contact_Location::getEmailDetails($params['contact_id']);
-    $form->assign('contactID', $params['contact_id']);
-    $form->assign('contributionID', $params['contribution_id']);
-
-    if (!empty($params['currency'])) {
-      $form->assign('currency', $params['currency']);
-    }
 
     if (!empty($params['receive_date'])) {
       $form->assign('receive_date', CRM_Utils_Date::processDate($params['receive_date']));
@@ -438,14 +395,15 @@ class CRM_Contribute_Form_AdditionalInfo {
     [$sendReceipt] = CRM_Core_BAO_MessageTemplate::sendTemplate(
       [
         'workflow' => 'contribution_offline_receipt',
-        'contactId' => $params['contact_id'],
-        'contributionId' => $params['contribution_id'],
-        'tokenContext' => ['contributionId' => (int) $params['contribution_id'], 'contactId' => $params['contact_id']],
         'from' => $params['from_email_address'],
         'toName' => $contributorDisplayName,
         'toEmail' => $contributorEmail,
         'isTest' => $form->_mode === 'test',
         'PDFFilename' => ts('receipt') . '.pdf',
+        'modelProps' => [
+          'contributionID' => $params['contribution_id'],
+          'contactID' => $params['contact_id'],
+        ],
         'isEmailPdf' => Civi::settings()->get('invoice_is_email_pdf'),
       ]
     );

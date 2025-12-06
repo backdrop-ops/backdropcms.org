@@ -46,7 +46,15 @@ function civicrm_enable() {
 
   // also invoke civicrm menu rebuild
   CRM_Core_Menu::store();
+}
 
+/**
+ * Implements hook_install().
+ */
+function civicrm_install() {
+  $t = get_t();
+  $link = l($t('Administer > Appearance > Administration theme'), 'admin/appearance');
+  backdrop_set_message($t("CiviCRM theme configuration setting is available under !link", array('!link' => $link)));
 }
 
 /**
@@ -64,6 +72,9 @@ function civicrm_uninstall() {
 
   require_once 'CRM/Core/DAO.php';
   CRM_Core_DAO::dropAllTables();
+
+  $config = config('layout.layout.civicrm_admin_default');
+  $config->delete();
 }
 
 function civicrm_requirements($phase) {
@@ -116,4 +127,51 @@ function civicrm_requirements($phase) {
  */
 function civicrm_update_last_removed() {
   return 7401;
+}
+
+/**
+ * Move civicrmtheme settings from variables to config.
+ */
+function civicrm_update_1000() {
+  // Migrate variables to config.
+  $config = config('civicrm.settings');
+  $config->set('theme_admin', update_variable_get('civicrmtheme_theme_admin', 'seven'));
+  $config->set('theme_public', update_variable_get('civicrmtheme_theme_public', 0));
+  $config->save();
+
+  // Delete variables.
+  update_variable_del('theme_admin');
+  update_variable_del('theme_public');
+}
+
+/**
+ * Move civicrmtheme config.
+ */
+function civicrm_update_1001() {
+  // Migrate civicrmtheme config.
+  $config_new = config('civicrm.settings');
+  $config_old = config('civicrmtheme.settings');
+  if ($config_old->isNew()) {
+    return;
+  }
+  $config_new->setData($config_old->getData());
+  $config_new->save();
+  $config_old->delete();
+}
+
+/**
+ * Disable civicrmtheme sub-module
+ */
+function civicrm_update_1002() {
+  module_disable(array('civicrmtheme'));
+}
+
+/**
+ * Update the Default CiviCRM Layout.
+ */
+function civicrm_update_1003() {
+  // Should now belong to civicrm, not civicrmtheme.
+  $config = config('layout.layout.civicrm_admin_default');
+  $config->set('module', 'civicrm');
+  $config->save();
 }

@@ -285,13 +285,9 @@ class CRM_Activity_BAO_Activity extends CRM_Activity_DAO_Activity {
       }
     }
 
-    // Set priority to Normal for Auto-populated activities (for Cases)
-    if (!isset($params['priority_id']) &&
-      // if not set and not 0
-      empty($params['id'])
-    ) {
-      $priority = CRM_Activity_DAO_Activity::buildOptions('priority_id');
-      $params['priority_id'] = array_search('Normal', $priority);
+    // Set the default priority for Auto-populated activities (for Cases)
+    if (!isset($params['priority_id']) && empty($params['id'])) {
+      $params['priority_id'] = CRM_Core_OptionGroup::getDefaultValue('priority');
     }
 
     if (!empty($params['target_contact_id']) && is_array($params['target_contact_id'])) {
@@ -722,12 +718,6 @@ class CRM_Activity_BAO_Activity extends CRM_Activity_DAO_Activity {
             $activities[$id]['campaign'] = $allCampaigns[$activities[$id][$expectedName]] ?? NULL;
           }
         }
-      }
-      // if deleted, wrap in <del>
-      if (!empty($activity['source_contact_id']) &&
-        CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Contact', $activity['source_contact_id'], 'is_deleted')
-      ) {
-        $activities[$id]['source_contact_name'] = sprintf("<del>%s<del>", htmlentities($activity['source_contact_name']));
       }
       $activities[$id]['is_recurring_activity'] = CRM_Core_BAO_RecurringEntity::getParentFor($id, 'civicrm_activity');
     }
@@ -2340,7 +2330,7 @@ INNER JOIN  civicrm_option_group grp ON (grp.id = option_group_id AND grp.name =
         $activity['DT_RowAttr']['data-entity'] = 'activity';
         $activity['DT_RowAttr']['data-id'] = $activityId;
 
-        $activity['activity_type'] = (!empty($activityIcons[$values['activity_type_id']]) ? '<span class="crm-i ' . $activityIcons[$values['activity_type_id']] . '" aria-hidden="true"></span> ' : '') . htmlentities($values['activity_type']);
+        $activity['activity_type'] = (!empty($activityIcons[$values['activity_type_id']]) ? '<span class="crm-i ' . $activityIcons[$values['activity_type_id']] . '" role="img" aria-hidden="true"></span> ' : '') . htmlentities($values['activity_type']);
         $activity['subject'] = $values['subject'];
 
         if ($params['contact_id'] == $values['source_contact_id']) {

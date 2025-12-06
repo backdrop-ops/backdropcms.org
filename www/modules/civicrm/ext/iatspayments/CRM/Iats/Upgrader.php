@@ -8,19 +8,6 @@ class CRM_Iats_Upgrader extends CRM_Extension_Upgrader_Base {
   // By convention, functions that look like "function upgrade_NNNN()" are
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).
 
-  public function getCurrentRevision() {
-    // reset the saved extension version as well
-    try {
-      $xmlfile = CRM_Core_Resources::singleton()->getPath('com.iatspayments.civicrm','info.xml');
-      $myxml = simplexml_load_file($xmlfile);
-      $version = (string) $myxml->version;
-      Civi::settings()->set('iats_extension_version', $version);
-    }
-    catch (Exception $e) {
-      // ignore
-    }
-    return parent::getCurrentRevision();
-  }
   /**
    * Standard: run an install sql script
    */

@@ -2,6 +2,7 @@
 
 namespace Civi\AfformAdmin;
 
+use Civi\Afform\Placement\PlacementUtils;
 use Civi\Api4\Entity;
 use Civi\Api4\Utils\CoreUtil;
 use Civi\Core\Event\GenericHookEvent;
@@ -12,13 +13,13 @@ class AfformAdminMeta {
   /**
    * @return array
    */
-  public static function getAdminSettings() {
-    $afformPlacement = \CRM_Utils_Array::formatForSelect2((array) \Civi\Api4\OptionValue::get(FALSE)
-      ->addSelect('value', 'label', 'icon', 'description')
-      ->addWhere('is_active', '=', TRUE)
-      ->addWhere('option_group_id:name', '=', 'afform_placement')
-      ->addOrderBy('weight')
-      ->execute(), 'label', 'value');
+  public static function getAdminSettings(): array {
+    // Check minimum permission needed to reach this
+    if (!\CRM_Core_Permission::check('manage own afform')) {
+      return [];
+    }
+    $afformPlacement = \CRM_Utils_Array::formatForSelect2(PlacementUtils::getPlacements(), 'label', 'value');
+    $afformTags = \CRM_Utils_Array::formatForSelect2((array) \Civi\Api4\Utils\AfformTags::getTagOptions());
     $afformTypes = (array) \Civi\Api4\OptionValue::get(FALSE)
       ->addSelect('name', 'label', 'icon')
       ->addWhere('is_active', '=', TRUE)
@@ -35,11 +36,39 @@ class AfformAdminMeta {
     foreach ($afformTypes as $index => $type) {
       $afformTypes[$index]['plural'] = $plurals[$type['name']] ?? \CRM_Utils_String::pluralize($type['label']);
     }
+    $containerStyles = (array) \Civi\Api4\OptionValue::get(FALSE)
+      ->addSelect('value', 'label')
+      ->addWhere('is_active', '=', TRUE)
+      ->addWhere('option_group_id:name', '=', 'afform_container_style')
+      ->addOrderBy('weight', 'ASC')
+      ->execute();
     return [
       'afform_type' => $afformTypes,
       'afform_placement' => $afformPlacement,
+      'afform_container_style' => $containerStyles,
+      'placement_entities' => array_column(PlacementUtils::getPlacements(), 'entities', 'value'),
+      'placement_filters' => self::getPlacementFilterOptions(),
+      'afform_tags' => $afformTags,
       'search_operators' => \Civi\Afform\Utils::getSearchOperators(),
+      'confirmation_types' => self::getConfirmationTypes(),
+      'locales' => self::getLocales(),
     ];
+  }
+
+  /**
+   * Get confirmation types
+   *
+   * @return array
+   */
+  public static function getConfirmationTypes(): array {
+    $confirmationTypes = (array) \Civi\Api4\OptionValue::get(FALSE)
+      ->addSelect('label', 'name', 'value')
+      ->addWhere('is_active', '=', TRUE)
+      ->addWhere('option_group_id:name', '=', 'afform_confirmation_type')
+      ->addOrderBy('weight', 'ASC')
+      ->execute();
+
+    return $confirmationTypes;
   }
 
   /**
@@ -200,7 +229,7 @@ class AfformAdminMeta {
       ];
 
       // Explicitly load Contact and Custom entities because they do not have afformEntity files
-      $contactAndCustom = Entity::get(TRUE)
+      $contactAndCustom = Entity::get(FALSE)
         ->addClause('OR', ['name', '=', 'Contact'], ['type', 'CONTAINS', 'CustomValue'])
         ->execute()->indexBy('name');
       foreach ($contactAndCustom as $name => $entity) {
@@ -208,7 +237,7 @@ class AfformAdminMeta {
       }
 
       // Call getFields on getFields to get input type labels
-      $inputTypeLabels = \Civi\Api4\Contact::getFields()
+      $inputTypeLabels = \Civi\Api4\Contact::getFields(FALSE)
         ->setLoadOptions(TRUE)
         ->setAction('getFields')
         ->addWhere('name', '=', 'input_type')
@@ -220,7 +249,9 @@ class AfformAdminMeta {
         $name = basename($file, '.html');
         $inputTypes[] = [
           'name' => $name,
-          'label' => $inputTypeLabels[$name] ?? E::ts($name),
+          'label' => $inputTypeLabels[$name] ?? $name,
+          'template' => '~/af/fields/' . $name . '.html',
+          'admin_template' => '~/afGuiEditor/inputType/' . $name . '.html',
         ];
       }
 
@@ -252,6 +283,16 @@ class AfformAdminMeta {
             '#markup' => FALSE,
           ],
         ],
+        'tabset' => [
+          'title' => E::ts('Tab Set'),
+          'element' => [
+            '#tag' => 'af-tabset',
+            '#children' => [
+              ['#tag' => 'af-tab', 'title' => E::ts('Tab 1'), '#children' => []],
+              ['#tag' => 'af-tab', 'title' => E::ts('Tab 2'), '#children' => []],
+            ],
+          ],
+        ],
         'submit' => [
           'title' => E::ts('Submit Button'),
           'afform_type' => ['form'],
@@ -263,6 +304,20 @@ class AfformAdminMeta {
             'ng-if' => 'afform.showSubmitButton',
             '#children' => [
               ['#text' => E::ts('Submit')],
+            ],
+          ],
+        ],
+        'save_draft' => [
+          'title' => E::ts('Save Draft Button'),
+          'afform_type' => ['form'],
+          'element' => [
+            '#tag' => 'button',
+            'class' => 'af-button btn btn-primary',
+            'crm-icon' => 'fa-floppy-disk',
+            'ng-click' => 'afform.submitDraft()',
+            'ng-if' => 'afform.showSubmitButton',
+            '#children' => [
+              ['#text' => E::ts('Save Draft')],
             ],
           ],
         ],
@@ -301,7 +356,7 @@ class AfformAdminMeta {
         'danger' => E::ts('Danger'),
       ];
 
-      $perms = \Civi\Api4\Permission::get()
+      $perms = \Civi\Api4\Permission::get(FALSE)
         ->addWhere('group', 'IN', ['afformGeneric', 'const', 'civicrm', 'cms'])
         ->addWhere('is_active', '=', 1)
         ->setOrderBy(['title' => 'ASC'])
@@ -334,6 +389,45 @@ class AfformAdminMeta {
     }
 
     return $data;
+  }
+
+  private static function getPlacementFilterOptions(): array {
+    $entities = $entityFilterOptions = [];
+    foreach (PlacementUtils::getPlacements() as $placement) {
+      $entities += $placement['entities'];
+    }
+    foreach ($entities as $entityName) {
+      $filterOptions = PlacementUtils::getEntityTypeFilterOptions($entityName);
+      if ($filterOptions) {
+        $entityFilterOptions[$entityName] = [
+          'name' => PlacementUtils::getEntityTypeFilterName($entityName),
+          'label' => PlacementUtils::getEntityTypeFilterLabel($entityName),
+          'options' => $filterOptions,
+        ];
+      }
+    }
+    return $entityFilterOptions;
+  }
+
+  private static function getLocales(): array {
+    $options = [];
+    if (\CRM_Core_I18n::isMultiLingual()) {
+      $languages = \CRM_Core_I18n::languages();
+      $locales = \CRM_Core_I18n::getMultilingual();
+
+      if (\Civi::settings()->get('force_translation_source_locale') ?? TRUE) {
+        $defaultLocale = \Civi::settings()->get('lcMessages');
+        $locales = [$defaultLocale];
+      }
+
+      foreach ($locales as $index => $locale) {
+        $options[] = [
+          'id' => $locale,
+          'text' => $languages[$locale],
+        ];
+      }
+    }
+    return $options;
   }
 
 }

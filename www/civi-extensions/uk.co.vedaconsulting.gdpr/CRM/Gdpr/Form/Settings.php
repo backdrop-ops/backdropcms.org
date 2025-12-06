@@ -41,7 +41,23 @@ class CRM_Gdpr_Form_Settings extends CRM_Core_Form {
     );
 
     //Track Exports
-    $this->addElement('checkbox', 'track_exports', E::ts('Do you Want to track Exports?'), NULL);
+    $this->addElement('checkbox', 'track_exports', E::ts('Track exports'), NULL);
+
+    // determine if single or multiple activity should be created
+    $this->addElement('checkbox', 'single_export_activity', E::ts('Single export activity'), NULL);
+
+    // Get all activity statuses
+    $actStatuses = CRM_Gdpr_Utils::getAllActivityStatuses();
+
+    // set the activity status
+    $this->add(
+      'select',
+      'export_activity_status',
+      E::ts('Export activity status'),
+      ['' => E::ts('- select -')] + $actStatuses, // list of options
+      FALSE,
+      ['class' => 'crm-select2' ]
+    );
 
     // Get all contact types
     $contactTypes = CRM_Gdpr_Utils::getAllContactTypes($parentOnly = TRUE);
@@ -247,6 +263,9 @@ class CRM_Gdpr_Form_Settings extends CRM_Core_Form {
     $defaults = CRM_Gdpr_Utils::getGDPRSettings();
     $defaults = array_merge($bare_defaults, $defaults);
     $defaults['track_exports'] = CRM_Gdpr_Utils::getItem(CRM_Gdpr_Constants::GDPR_SETTING_GROUP, 'track_exports', NULL, FALSE);
+    $defaults['single_export_activity'] = CRM_Gdpr_Utils::getItem(CRM_Gdpr_Constants::GDPR_SETTING_GROUP, 'single_export_activity', NULL, FALSE);
+    $defaults['export_activity_status'] = CRM_Gdpr_Utils::getItem(CRM_Gdpr_Constants::GDPR_SETTING_GROUP, 'export_activity_status', NULL, FALSE);
+
     // Set defaults
     if (!empty($defaults)) {
       $this->setDefaults($defaults);
@@ -360,6 +379,8 @@ class CRM_Gdpr_Form_Settings extends CRM_Core_Form {
       $trackExports = $values['track_exports'];
     }
     CRM_Gdpr_Utils::setItem($trackExports, CRM_Gdpr_Constants::GDPR_SETTING_GROUP,'track_exports');
+    CRM_Gdpr_Utils::setItem($values['single_export_activity'] ?? NULL, CRM_Gdpr_Constants::GDPR_SETTING_GROUP,'single_export_activity');
+    CRM_Gdpr_Utils::setItem($values['export_activity_status'] ?? NULL, CRM_Gdpr_Constants::GDPR_SETTING_GROUP,'export_activity_status');
 
     $message = "GDPR settings saved.";
     $url = CRM_Utils_System::url('civicrm/gdpr/dashboard', 'reset=1');

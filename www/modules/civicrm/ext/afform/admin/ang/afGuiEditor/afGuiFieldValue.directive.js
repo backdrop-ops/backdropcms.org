@@ -45,13 +45,13 @@
 
           getDataType();
 
-          // Decide whether the input should be multivalued
+          // Decide whether the input should be multivalued:
+          // On a search form, it's based on the search operator
           if (ctrl.op) {
             multi = ['IN', 'NOT IN'].includes(ctrl.op);
-          } else if (inputType) {
-            multi = (dataType !== 'Boolean' &&
-              (inputType === 'CheckBox' || (field.input_attrs && field.input_attrs.multiple)));
-          } else {
+          }
+          // On an input form, it's based on the field's data type
+          else {
             multi = field.serialize || dataType === 'Array';
           }
           $el.crmAutocomplete('destroy').crmDatepicker('destroy');
@@ -92,7 +92,7 @@
               }, []);
               $el.select2({data: options, multiple: multi, separator: '\u0001'});
             } else if (dataType === 'Boolean') {
-              $el.attr('placeholder', ts('- select -')).crmSelect2({allowClear: false, multiple: multi, separator: '\u0001', placeholder: ts('- select -'), data: [
+              $el.attr('placeholder', ts('- select -')).crmSelect2({allowClear: false, separator: '\u0001', placeholder: ts('- select -'), data: [
                   {id: '1', text: ts('Yes')},
                   {id: '0', text: ts('No')}
                 ]});
@@ -116,8 +116,12 @@
         }
 
         function convertDataType(val) {
-          if (dataType === 'Integer') {
-            let newVal = +val;
+          // A regex is always a string
+          if (ctrl.op && ctrl.op.includes('REGEXP')) {
+            dataType = 'String';
+          }
+          else if (dataType === 'Integer' || dataType === 'Float') {
+            let newVal = Number(val);
             // FK Entities can use a mix of numeric & string values (see `"static": options` above)
             if (ctrl.field.fk_entity && ('' + newVal) !== val) {
               return val;

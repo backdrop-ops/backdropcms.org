@@ -224,7 +224,7 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
         try {
           $result = civicrm_api3('Contribution', 'create', $contribution_update);
         }
-        catch (CiviCRM_API3_Exception $e) {
+        catch (CRM_Core_Exception $e) {
           // Not a critical error, just log and continue.
           $error = $e->getMessage();
           Civi::log()->info('Unexpected error adding the trxn_id for contribution id {id}: {error}', array('id' => $recur_id, 'error' => $error));
@@ -310,8 +310,8 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
    * @return array
    */
   protected function convertParams($params, $method) {
-    $request = array();
-    $convert = array(
+    $request = [];
+    $convert = [
       'ownerEmail' => 'email',
       'ownerStreet' => 'street_address',
       'ownerCity' => 'city',
@@ -320,10 +320,10 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
       'ownerCountry' => 'country',
       'orderId' => 'invoiceID',
       'achCryptogram' => 'cryptogram',
-    );
+    ];
     foreach ($convert as $r => $p) {
       if (isset($params[$p])) {
-        $request[$r] = htmlspecialchars($params[$p]);
+        $request[$r] = str_replace(';','',$params[$p]);
       }
     }
     if (empty($params['email'])) {

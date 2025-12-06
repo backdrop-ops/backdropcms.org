@@ -66,7 +66,7 @@
  * Run hook_views_data for active CiviCRM components
  */
 function civicrm_views_data_alter(&$data) {
-  if (!civicrm_initialize() || CRM_Utils_System::isInUpgradeMode()) {
+  if (!civicrm_initialize() || CRM_Core_Config::isUpgradeMode()) {
     return;
   }
 
@@ -205,8 +205,8 @@ function civicrm_views_add_fields(&$fields, &$data, $tableName, &$skipFields = N
     $name = $value['name'];
     // Only add fields not in $data or $skipFields and has a ['title']
     if (isset($value['custom_field_id']) ||
-      CRM_Utils_Array::value($name, $skipFields) ||
-      CRM_Utils_Array::value($name, $data) ||
+      ($skipFields[$name] ?? NULL) ||
+      ($data[$name] ?? NULL) ||
       !isset($value['title']) ||
       (isset($value['where']) &&
         substr($value['where'], 0, strlen($tableName) + 1) != "{$tableName}."
@@ -222,7 +222,7 @@ function civicrm_views_add_fields(&$fields, &$data, $tableName, &$skipFields = N
       }
     }
 
-    $type = CRM_Utils_Array::value('type', $value, 'String');
+    $type = $value['type'] ?? 'String';
     $data[$value['name']] = array(
       'title' => $value['title'],
       'help' => $value['title'],
@@ -392,7 +392,7 @@ function civicrm_views_custom_data_cache(&$data, $entity_type, $group_id, $sub_t
         'help' => empty($current_field['help_post']) ? t('Custom Data Field') : $current_field['help_post'],
         'field' => civicrm_views_get_field($current_field['data_type'], $current_field['html_type']),
         'argument' => civicrm_views_get_argument($current_field['data_type']),
-        'filter' => civicrm_views_get_filter($current_field['data_type'], $current_field['html_type'], $option_group_id),
+        'filter' => civicrm_views_get_filter($current_field['data_type'], $option_group_id, !empty($current_field['serialize'])),
         'sort' => civicrm_views_get_sort($current_field['data_type']),
         'relationship' => civicrm_views_get_relationship($current_field['data_type']),
       );
@@ -565,32 +565,28 @@ function civicrm_views_get_argument($type) {
 /**
  * Acquire the proper filter handler by checking against the field's data_type as defined by CRM_Utils_Type.
  *
- * @param $data_type
+ * @param string $data_type
  *   A String containing the field data type
- * @param $html_type
- *   A string containing the field html type
+ * @param int|null $option_group_id
+ *   ID for the option group.
+ * @param bool $multivalue
+ *   TRUE if a multi-value field, based on serialized property.
  *
  * @return array
  *   An array containing the handler name and any extra settings
  */
-function civicrm_views_get_filter($data_type, $html_type = NULL, $option_group_id = NULL) {
-  // Relying on html types as opposed to data types seems like a code smell.
-  // Would love to be able to remove this logic.
-  $customMultiValueHTMLTypes = array(
-    'Multi-Select', 'CheckBox', 'Multi-Select Country',
-    'Multi-Select State/Province',
-  );
-  if ($html_type == 'Multi-Select Country') {
+function civicrm_views_get_filter($data_type, $option_group_id = NULL, $multivalue = FALSE) {
+  if ($data_type == 'Country' && $multivalue) {
     return array(
       'handler' => 'civicrm_handler_filter_country_multi',
     );
   }
-  elseif ($html_type == 'Multi-Select State/Province') {
+  elseif ($data_type == 'StateProvince' && $multivalue) {
     return array(
       'handler' => 'civicrm_handler_filter_state_multi',
     );
   }
-  elseif (!empty($option_group_id) && in_array($html_type, $customMultiValueHTMLTypes)) {
+  elseif (!empty($option_group_id) && $multivalue) {
     return array(
       'handler' => 'civicrm_handler_filter_custom_option',
     );

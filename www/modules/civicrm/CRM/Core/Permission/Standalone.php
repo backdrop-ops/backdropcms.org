@@ -52,21 +52,21 @@ class CRM_Core_Permission_Standalone extends CRM_Core_Permission_Base {
    * composite permissions (ORs etc), implied permission hierarchies,
    * and Contacts.
    *
-   * @param string $str
+   * @param string $permissionName
    *   The permission to check.
    * @param int $userId
    *
    * @return bool
    *   true if yes, else false
    */
-  public function check($str, $userId = NULL) {
-    return \Civi\Standalone\Security::singleton()->checkPermission($str, $userId);
+  public function check($permissionName, $userId = NULL) {
+    return \Civi\Standalone\Security::singleton()->checkPermission($permissionName, $userId);
   }
 
   /**
    * Determine whether the permission store allows us to store
    * a list of permissions generated dynamically (eg by
-   * hook_civicrm_permissions.)
+   * hook_civicrm_permission.)
    *
    * @return bool
    */

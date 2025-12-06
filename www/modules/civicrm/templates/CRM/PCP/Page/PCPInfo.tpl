@@ -25,13 +25,13 @@
     {foreach from = $links key = k item = v}
           <tr>
             <td>
-                <a href="{crmURL p=$v.url q=$v.qs|replace:'%%pcpId%%':$replace.id|replace:'%%pageComponent%%':$replace.pageComponent|replace:'%%pcpBlock%%':$replace.block}" title="{$v.title|escape:'html'}" {if $v.extra}{$v.extra}{/if}><strong><i class="crm-i fa-chevron-right" aria-hidden="true"></i> {$v.name}</strong></a>
+                <a href="{crmURL p=$v.url q=$v.qs|replace:'%%pcpId%%':$replace.id|replace:'%%pageComponent%%':$replace.pageComponent|replace:'%%pcpBlock%%':$replace.block}" title="{$v.title|escape:'html'}" {if $v.extra}{$v.extra}{/if}><strong><i class="crm-i fa-chevron-right" role="img" aria-hidden="true"></i> {$v.name}</strong></a>
        </td>
          <td>&nbsp;<cite>{$hints.$k}</cite></td>
       </tr>
         {/foreach}
        </table>
-     <i class="crm-i fa-lightbulb-o" aria-hidden="true"></i>
+     <i class="crm-i fa-lightbulb-o" role="img" aria-hidden="true"></i>
      <strong>{ts}Tip{/ts}</strong> - <span class="description">{ts}You must be logged in to your account to access the editing options above. (If you visit this page without logging in, you will be viewing the page in "live" mode - as your visitors and friends see it.){/ts}</span>
 </div>
 {/if}
@@ -77,7 +77,7 @@
               </marquee>
           </div>
           <div class="description">
-              [<a href="#" onclick="roll_start_stop(); return false;" id="roll" title="{ts}Stop scrolling{/ts}">{ts}Stop{/ts}</a>]
+              [<a href="#" onclick="roll_start_stop(); return false;" id="roll" title="{ts escape='htmlattribute'}Stop scrolling{/ts}">{ts}Stop{/ts}</a>]
           </div>
         </div>
      {/if}

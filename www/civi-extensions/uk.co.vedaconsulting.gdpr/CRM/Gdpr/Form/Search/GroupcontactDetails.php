@@ -60,7 +60,7 @@ class CRM_Gdpr_Form_Search_GroupcontactDetails extends CRM_Contact_Form_Search_C
       'group_contact_status', E::ts('Group Status')
     );
 
-    CRM_Core_Form_Date::buildDateRange($form, 'subscription_date', 1, '_low', '_high', E::ts('From'), FALSE);
+    $form->addDatePickerRange('subscription_date', E::ts('From'), FALSE, FALSE);
     $form->addElement('hidden', 'subscription_date_range_error');
 
     /**

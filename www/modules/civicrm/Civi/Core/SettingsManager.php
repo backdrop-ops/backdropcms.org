@@ -364,7 +364,7 @@ class SettingsManager {
    *
    * We now simplify to two simple groups, 'domain' and 'contact'.
    *
-   *    $civicrm_settings['domain']['foo'] = 'bar';
+   *    $civicrm_setting['domain']['foo'] = 'bar';
    *
    * 'Personal Preferences' is still aliased for compatibility (is this still needed in June 2024?).
    *
@@ -461,9 +461,11 @@ class SettingsManager {
     // file in order to:
     // a) ensure the env values take precedence over define('CIVICRM_DSN'...) in the settings file
     // b) provide the right source value for CIVICRM_LOGGING_DSN (set from CIVICRM_DSN in the settings file template)
-    $composedDsn = $bootSettingsManager->getBagByDomain(NULL)->get('civicrm_db_dsn');
-    if ($composedDsn) {
-      define('CIVICRM_DSN', $composedDsn);
+    if (!defined('CIVICRM_DSN')) {
+      $composedDsn = $bootSettingsManager->getBagByDomain(NULL)->get('civicrm_db_dsn');
+      if ($composedDsn) {
+        define('CIVICRM_DSN', $composedDsn);
+      }
     }
 
     if (file_exists($settingsPath)) {
@@ -484,6 +486,13 @@ class SettingsManager {
       }
       // TODO: should we complain here if there are inconsistent defines
       // from elsewhere?
+    }
+
+    // if in doubt, the root of civicrm-core is 3 steps
+    // up from this file
+    global $civicrm_root;
+    if (!$civicrm_root) {
+      $civicrm_root = dirname(__FILE__, 3) . DIRECTORY_SEPARATOR;
     }
   }
 

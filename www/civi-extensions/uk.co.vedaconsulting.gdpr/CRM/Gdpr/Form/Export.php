@@ -244,22 +244,12 @@ class CRM_Gdpr_Form_Export extends CRM_Core_Form {
 
       foreach ($entityData['values'] as $row_key => $row_value) {
         $exportRow = $emptyRow;
-        
+
         // Replace tokens for contact, ex: postal greeting, addressee
         if ($entity == 'contact') {
-          $greetingFields = [
-            'email_greeting',
-            'postal_greeting',
-            'addressee',
-          ];
-          foreach ($greetingFields as $greeting) {
-            if (!empty($row_value[$greeting])) {
-              $greetingLabel = $row_value[$greeting];
-
-              $tokens = ['contact' => $greetingLabel];
-              $row_value[$greeting] = CRM_Utils_Token::replaceContactTokens($greetingLabel, $row_value, NULL, $tokens);
-            }
-          }
+          $row_value['email_greeting'] = $row_value['email_greeting_display'];
+          $row_value['postal_greeting'] = $row_value['postal_greeting_display'];
+          $row_value['addressee'] = $row_value['addressee_display'];
         }
 
         // We need to get event details, for participant entity
@@ -381,14 +371,14 @@ class CRM_Gdpr_Form_Export extends CRM_Core_Form {
       case 2: // PDF
       default:
         self::export2pdf($exportData, $contactName, $pdfColumn);
-        break;  
+        break;
     }
 
     return;
   }
 
   /**
-   * 
+   *
    * Get Option Values for a given Option Group ID
    *
    * @param int $optionGroupID
@@ -409,7 +399,7 @@ class CRM_Gdpr_Form_Export extends CRM_Core_Form {
   }
 
   /**
-   * 
+   *
    * Make CSV file content and return as string.
    *
    * @param array $rows
@@ -526,7 +516,7 @@ class CRM_Gdpr_Form_Export extends CRM_Core_Form {
         'exclude_test' => 0,
       ],
     ];
-    
+
     // Check if other components are enabled and include them in export options
     $compInfo = CRM_Core_Component::getEnabledComponents();
     if (isset($compInfo['CiviContribute'])) {

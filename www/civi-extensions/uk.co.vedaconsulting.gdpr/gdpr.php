@@ -2,6 +2,8 @@
 
 require_once 'gdpr.civix.php';
 use CRM_Gdpr_ExtensionUtil as E;
+use Civi\Token\Event\TokenRegisterEvent;
+use Civi\Token\Event\TokenValueEvent;
 
 /**
  * Implements hook_civicrm_config().
@@ -10,6 +12,16 @@ use CRM_Gdpr_ExtensionUtil as E;
  */
 function gdpr_civicrm_config(&$config) {
   _gdpr_civix_civicrm_config($config);
+  Civi::dispatcher()->addListener(
+    'civi.token.list',
+    'gdpr_civicrm_register_tokens',
+    500
+  );
+  Civi::dispatcher()->addListener(
+    'civi.token.eval',
+    'gdpr_civicrm_evaluate_tokens',
+    500
+  );
 }
 
 /**
@@ -18,46 +30,7 @@ function gdpr_civicrm_config(&$config) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
 function gdpr_civicrm_install() {
-  // #188 - use install instead of managed entities hook to avoid fatal
-  $result = civicrm_api3('OptionValue', 'get', [
-    'sequential'      => 1,
-    'option_group_id' => "cg_extend_objects",
-    'value'           => "ContributionPage",
-  ]);
-  if (empty($result['id'])) {
-    civicrm_api3('OptionValue', 'create', [
-      'label'           => E::ts('Contribution Page'),
-      'name'            => 'civicrm_contribution_page',
-      'value'           => 'ContributionPage',
-      'option_group_id' => 'cg_extend_objects',
-      'is_active'       => 1,
-    ]);
-  }
   _gdpr_civix_civicrm_install();
-}
-
-/**
- * Implements hook_civicrm_uninstall().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
- */
-function gdpr_civicrm_uninstall() {
-  $result = civicrm_api3('CustomGroup', 'get', [
-    'sequential' => 1,
-    'extends'    => "ContributionPage",
-  ]);
-  if (!$result['is_error'] && $result['count'] <= 0) {
-    $result = civicrm_api3('OptionValue', 'get', [
-      'sequential'      => 1,
-      'option_group_id' => "cg_extend_objects",
-      'value'           => "ContributionPage",
-    ]);
-    if (!empty($result['id'])) {
-      civicrm_api3('OptionValue', 'delete', [
-        'id' => $result['id'],
-      ]);
-    }
-  }
 }
 
 /**
@@ -176,7 +149,7 @@ function gdpr_civicrm_buildForm($formName, $form) {
       $templatePath = realpath(dirname(__FILE__).'/templates');
       CRM_Core_Region::instance('page-body')->add(
         [
-          'template' => "{$templatePath}/CRM/Gdpr/Event/ThankYou.tpl"
+          'template' => "{$templatePath}/CRM/Gdpr/Event/ThankYou.tpl",
         ]
       );
 
@@ -198,7 +171,7 @@ function gdpr_civicrm_buildForm($formName, $form) {
       $templatePath = realpath(dirname(__FILE__) . '/templates');
       CRM_Core_Region::instance('page-body')->add(
         [
-          'template' => "{$templatePath}/CRM/Gdpr/Event/ThankYou.tpl"
+          'template' => "{$templatePath}/CRM/Gdpr/Event/ThankYou.tpl",
         ]
       );
       //amend communication preference link/embed form in thank you page
@@ -394,63 +367,44 @@ function gdpr_civicrm_navigationMenu(&$menu) {
 
 }
 
-/**
- * implementation of hook_civicrm_token
- */
-function gdpr_civicrm_tokens(&$tokens) {
-  // Keeping this token only to sustain the old tokens otherwise,
-  // the token 'CommunicationPreferences' can be used in all places
-  $tokens['contact']['contact.comm_pref_supporter_url'] = E::ts("Communication Preferences URL");
-  $tokens['contact']['contact.comm_pref_supporter_link'] = E::ts("Communication Preferences Link");
-  $tokens['CommunicationPreferences'] = [
-    'CommunicationPreferences.comm_pref_supporter_url' => E::ts("Communication Preferences URL (Bulk Mailing)"),
-    'CommunicationPreferences.comm_pref_supporter_link' => E::ts("Communication Preferences Link (Bulk Mailing)"),
-  ];
+function gdpr_civicrm_register_tokens(TokenRegisterEvent $e) {
+  $e->register([
+    'entity' => 'CommunicationPreferences',
+    'field' => 'comm_pref_supporter_url',
+    'label' => E::ts("Communication Preferences URL (Bulk Mailing)"),
+  ]);
+  $e->register([
+    'entity' => 'CommunicationPreferences',
+    'field' => 'comm_pref_supporter_link',
+    'label' => E::ts("Communication Preferences Link (Bulk Mailing)"),
+  ]);
 }
 
-/**
- * implementation of hook_civicrm_tokenValues
- */
-function gdpr_civicrm_tokenValues(&$values, $cids, $job = null, $tokens = [], $context = null) {
-  if (!empty($tokens['contact']) OR !empty($tokens['CommunicationPreferences'])) {
-    /*
-    THIS CHANGE IS ONLY FOR ACTIONSCHEDULE (SEND EMAIL USING SCHEDULE REMINDER)
-
-    we have mentioned the contact custom tokens in token hook.
-    so whenever replaceHookToken called its trying replace Category 'Contact' tokens
-    (which cause null values in template result).
-
-    This is not happening when send email via contact summary or mailing,
-    because all other work flow to send emails are builds the contact details array
-    before replaceHookToken fired using this function CRM_Utils_Token::getTokenDetails().
-
-    When Action schedule send email, Contact Details get from BAO API Query
-    which doesn't return some default contact values ex: email_greetings,
-    postal greetings etc. So build the contact details array with all default values.
-
-    This changes is needed only when we have $tokens['contact']. Keeping this oly to sustain
-    the old token.
-    IN FUTURE or V3.0, WE CAN REMOVE THIS CHANGE ALONG WITH CONTACT CUSTOM TOKEN ABOVE.
-    */
-    $tokenValues = [];
-    $cids = isset($cids) ? $cids : [];
-    if ($context == 'CRM_Core_BAO_ActionSchedule') {
-      list($tokenValues) = CRM_Utils_Token::getTokenDetails($cids, [], FALSE, FALSE);
-    }
-    foreach ($cids as $cid) {
-      if (!empty($tokenValues[$cid])) {
-        $values[$cid] = array_merge($values[$cid], $tokenValues[$cid]);
-      }
-      $commPrefURL = CRM_Gdpr_CommunicationsPreferences_Utils::getCommPreferenceURLForContact($cid);
-      $link = sprintf("<a href='%s' target='_blank'>%s</a>",$commPrefURL, E::ts('Communication Preferences'));
-      $values[$cid]['contact.comm_pref_supporter_url'] = $commPrefURL;
-      $values[$cid]['contact.comm_pref_supporter_link'] = html_entity_decode($link);
-
-      //For Bulk Mailing
-      $values[$cid]['CommunicationPreferences.comm_pref_supporter_url'] = $commPrefURL;
-      $values[$cid]['CommunicationPreferences.comm_pref_supporter_link'] = html_entity_decode($link);
-    }
+function gdpr_civicrm_evaluate_tokens(TokenValueEvent $e) {
+  $messageTokens = $e->getTokenProcessor()->getMessageTokens();
+  $tokens = ['comm_pref_supporter_link', 'comm_pref_supporter_url'];
+  if (!array_intersect($messageTokens['contact'] ?? [], $tokens) && !array_intersect($messageTokens['CommunicationPreferences'] ?? [], $tokens)) {
+    return;
   }
+  foreach ($e->getRows() as $row) {
+    if (empty($row->context['contactId'])) {
+      continue;
+    }
+    $commPrefURL = CRM_Gdpr_CommunicationsPreferences_Utils::getCommPreferenceURLForContact($row->context['contactId']);
+    $link = sprintf("<a href='%s' target='_blank'>%s</a>",$commPrefURL, E::ts('Communication Preferences'));
+    $row->format('text/html')
+      ->tokens('CommunicationPreferences', 'comm_pref_supporter_url', $commPrefURL);
+    $row->format('text/html')
+      ->tokens('CommunicationPreferences', 'comm_pref_supporter_link', html_entity_decode($link));
+
+    // The contact versions of these tokens are deprecated and will cause notices, but we
+    // still resolve them here.
+    $row->format('text/html')
+      ->tokens('contact', 'comm_pref_supporter_url', $commPrefURL);
+    $row->format('text/html')
+      ->tokens('contact', 'comm_pref_supporter_link', html_entity_decode($link));
+  }
+
 }
 
 /**
@@ -490,7 +444,7 @@ function gdpr_civicrm_searchTasks($objectName, &$tasks) {
     if(CRM_Core_Permission::check('forget contact')) {
       $tasks[] = [
         'title' => E::ts('GDPR forget'),
-        'class' => 'CRM_Gdpr_Form_Task_Contact'
+        'class' => 'CRM_Gdpr_Form_Task_Contact',
       ];
     }
   }
@@ -506,7 +460,7 @@ function gdpr_civicrm_pageRun(&$page) {
     $templatePath = realpath(dirname(__FILE__).'/templates');
     CRM_Core_Region::instance('page-body')->add(
       [
-        'template' => "{$templatePath}/CRM/Gdpr/Page/ContactSummary.tpl"
+        'template' => "{$templatePath}/CRM/Gdpr/Page/ContactSummary.tpl",
       ]
     );
     $accept_activity = CRM_Gdpr_SLA_Utils::getContactLastAcceptance($cid);

@@ -7,7 +7,7 @@ return [
   'getInfo' => fn() => [
     'title' => ts('Product'),
     'title_plural' => ts('Products'),
-    'description' => ts('able - stores "product info" for premiums and can be used for non-incentive products'),
+    'description' => ts('Stores "product info" for premiums and can be used for non-incentive products'),
     'log' => TRUE,
     'add' => '1.4',
     'label_field' => 'name',
@@ -67,7 +67,7 @@ return [
       'localizable' => TRUE,
       'description' => ts('Store comma-delimited list of color, size, etc. options for the product.'),
       'add' => '1.4',
-      'serialize' => CRM_Core_DAO::SERIALIZE_COMMA,
+      'serialize' => CRM_Core_DAO::SERIALIZE_COMMA_KEY_VALUE,
     ],
     'image' => [
       'title' => ts('Image'),

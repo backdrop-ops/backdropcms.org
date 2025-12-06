@@ -6,14 +6,13 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    $vendorDir . '/tecnickcom',
     $vendorDir . '/pear/auth_sasl',
     $vendorDir . '/pear/pear_exception',
     $vendorDir . '/pear/console_getopt',
     $vendorDir . '/pear/pear-core-minimal/src',
     $vendorDir . '/pear/db',
-    $vendorDir . '/pear/log',
     $vendorDir . '/pear/mail',
+    $vendorDir . '/pear/log',
     $vendorDir . '/pear/mail_mime',
     $vendorDir . '/pear/net_socket',
     $vendorDir . '/pear/net_smtp',

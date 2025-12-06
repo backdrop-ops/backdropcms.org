@@ -168,7 +168,7 @@ class Html extends BaseReader
     private function readEnding(): string
     {
         $meta = stream_get_meta_data($this->fileHandle);
-        $filename = $meta['uri']; // @phpstan-ignore-line
+        $filename = $meta['uri'];
 
         $size = (int) filesize($filename);
         if ($size === 0) {
@@ -1084,7 +1084,10 @@ class Html extends BaseReader
         $name = $attributes['alt'] ?? null;
 
         $drawing = new Drawing();
-        $drawing->setPath($src);
+        $drawing->setPath($src, false, null, $this->allowExternalImages);
+        if ($drawing->getPath() === '') {
+            return;
+        }
         $drawing->setWorksheet($sheet);
         $drawing->setCoordinates($column . $row);
         $drawing->setOffsetX(0);

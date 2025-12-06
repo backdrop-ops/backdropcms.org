@@ -20,10 +20,21 @@
   <version>1.0.0</version>
   <develStage>alpha</develStage>
   <compatibility>
-    <ver>5.79</ver>
+    <ver>[civicrm.majorVersion]</ver>
   </compatibility>
+  <php_compatibility>
+    <ver>8.0</ver>
+    <ver>8.1</ver>
+    <ver>8.2</ver>
+    <ver>8.3</ver>
+    <ver>8.4</ver>
+  </php_compatibility>
+  <smarty_compatibility>
+    <ver>5</ver>
+  </smarty_compatibility>
   <requires>
     <ext>org.civicrm.afform</ext>
+    <ext>authx</ext>
   </requires>
   <comments></comments>
   <classloader>
@@ -32,7 +43,7 @@
   </classloader>
   <civix>
     <namespace>CRM/AfformLoginToken</namespace>
-    <format>24.09.1</format>
+    <format>25.01.1</format>
     <angularModule>crmAfformLoginToken</angularModule>
   </civix>
   <mixins>

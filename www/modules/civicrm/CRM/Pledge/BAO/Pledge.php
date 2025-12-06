@@ -63,7 +63,7 @@ class CRM_Pledge_BAO_Pledge extends CRM_Pledge_DAO_Pledge {
 
     $result = $pledge->save();
 
-    CRM_Utils_Hook::post($hook, 'Pledge', $pledge->id, $pledge);
+    CRM_Utils_Hook::post($hook, 'Pledge', $pledge->id, $pledge, $params);
 
     return $result;
   }
@@ -605,7 +605,7 @@ GROUP BY  currency
     );
 
     // FIXME: Translate
-    $details = 'Total Amount ' . CRM_Utils_Money::format($params['total_pledge_amount'], CRM_Utils_Array::value('currency', $params)) . ' To be paid in ' . $params['installments'] . ' installments of ' . CRM_Utils_Money::format($params['scheduled_amount'], CRM_Utils_Array::value('currency', $params)) . ' every ' . $params['frequency_interval'] . ' ' . $params['frequency_unit'] . '(s)';
+    $details = 'Total Amount ' . CRM_Utils_Money::format($params['total_pledge_amount'], $params['currency'] ?? NULL) . ' To be paid in ' . $params['installments'] . ' installments of ' . CRM_Utils_Money::format($params['scheduled_amount'], $params['currency'] ?? NULL) . ' every ' . $params['frequency_interval'] . ' ' . $params['frequency_unit'] . '(s)';
 
     if (!$activity->find()) {
       $activityParams = [
@@ -883,8 +883,7 @@ SELECT  pledge.contact_id              as contact_id,
       $template = CRM_Core_Smarty::singleton();
 
       // set receipt from
-      $receiptFrom = CRM_Core_BAO_Domain::getNameAndEmail(FALSE, TRUE);
-      $receiptFrom = reset($receiptFrom);
+      $receiptFrom = CRM_Core_BAO_Domain::getFromEmail();
 
       foreach ($pledgeDetails as $paymentId => $details) {
         if (array_key_exists($details['contact_id'], $contactDetails)) {

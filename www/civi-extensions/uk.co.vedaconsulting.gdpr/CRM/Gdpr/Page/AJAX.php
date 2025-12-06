@@ -33,7 +33,7 @@ class CRM_Gdpr_Page_AJAX {
     else {
       $dsn = DB::parseDSN(CIVICRM_DSN);
     }
-    $logging_db = $dsn['database'];
+    $logging_db = CRM_Utils_Type::escape($dsn['database'], 'MysqlColumnNameOrAlias');
 
     $sql = "SELECT lca.*,  lt.display_name as lt_name
 FROM {$logging_db}.log_civicrm_address as lca

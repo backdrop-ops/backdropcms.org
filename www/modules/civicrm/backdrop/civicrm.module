@@ -30,8 +30,6 @@
  */
 require_once 'civicrm_user.inc';
 
-define('CIVICRM_UF_HEAD', TRUE);
-
 /**
  * Minimum required PHP
  *
@@ -43,7 +41,7 @@ define('CIVICRM_UF_HEAD', TRUE);
  * @see CRM_Upgrade_Incremental_General::MIN_INSTALL_PHP_VER
  * @see CiviBackdrop\PhpVersionTest::testConstantMatch()
  */
-define('CIVICRM_BACKDROP_PHP_MINIMUM', '7.4.0');
+define('CIVICRM_BACKDROP_PHP_MINIMUM', '8.0.0');
 
 /**
  * Adds CiviCRM CSS and JS resources into the header.
@@ -94,6 +92,26 @@ function civicrm_block_info() {
   }
   $block = CRM_Core_Block::getInfo();
   return $block;
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function civicrm_config_info() {
+  $prefixes['civicrm.settings'] = array(
+    'label' => t('CiviCRM settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
+
+/**
+ * Implements hook_layout_api().
+ */
+function civicrm_layout_api() {
+  return array(
+    'file' => 'includes/civicrm.layout.inc',
+  );
 }
 
 /**
@@ -191,26 +209,6 @@ function civicrm_telemetry_data($telemetry_key) {
     case 'civicrm_version':
       return CRM_Utils_System::majorVersion();
   }
-}
-
-/**
- * Implements hook_layout_access_info().
- *
- * Adding a CiviCRM checksum visibility condition and a URL condition that
- * considers the query parameters in the URL.
- */
-function civicrm_layout_access_info() {
-  $info['civicrm_checksum'] = array(
-    'title' => t('CiviCRM checksum'),
-    'description' => t('Has the page been loaded with a valid CiviCRM checksum?'),
-    'class' => 'CivicrmChecksumLayoutAccess',
-  );
-  $info['civicrm_urls'] = array(
-    'title' => t('CiviCRM URL path and query'),
-    'description' => t('Control access by the path and query parameters of the current CiviCRM page.'),
-    'class' => 'CivicrmUrlLayoutAccess',
-  );
-  return $info;
 }
 
 /**
@@ -855,7 +853,6 @@ function civicrm_translated_menu_link_alter(&$item) {
  */
 function civicrm_autoload_info() {
   return array(
-
     // field handlers
     'civicrm_handler_field' => 'modules/views/civicrm/civicrm_handler_field.inc',
     'civicrm_handler_field_activity' => 'modules/views/civicrm/civicrm_handler_field_activity.inc',
@@ -944,6 +941,7 @@ function civicrm_autoload_info() {
     'views_handler_argument_civicrm_year_month' => 'modules/views/civicrm/views_handler_argument_civicrm_year_month.inc',
 
     // layout visibility conditions handlers
+    'CivicrmLayoutAccess' => 'modules/layouts/plugins/access/civicrm_layout_access.inc',
     'CivicrmChecksumLayoutAccess' => 'modules/layouts/plugins/access/civicrm_checksum_layout_access.inc',
     'CivicrmUrlLayoutAccess' => 'modules/layouts/plugins/access/civicrm_url_layout_access.inc',
 
@@ -951,6 +949,9 @@ function civicrm_autoload_info() {
     'civicrm_plugin_argument_default' => 'modules/views/plugins/civicrm_plugin_argument_default.inc',
     'civicrm_plugin_argument_default_civicrm_id' => 'modules/views/plugins/civicrm_plugin_argument_default_civicrm_id.inc',
     'civicrm_plugin_argument_default_civicrm_id_current_user' => 'modules/views/plugins/civicrm_plugin_argument_default_civicrm_id_current_user.inc',
+
+    // Row plugins
+    'calendar_plugin_row_civicrm' => 'modules/views/plugins/calendar_plugin_row_civicrm.inc',
   );
 }
 
@@ -1192,24 +1193,16 @@ function _civicrm_filter_process($text, $filter, $format, $langcode, $cache, $ca
     return t('(Content unavailable. CiviCRM is not installed.)');
   }
 
-  $config = CRM_Core_Config::singleton();
-  $smarty = CRM_Core_Smarty::singleton();
-  // as this file is not a class (not sure why) we need the require once
-  require_once 'CRM/Core/Smarty/resources/String.php';
-  civicrm_smarty_register_string_resource();
-
-  $was_secure       = $smarty->security;
-  $smarty->security = TRUE;
-  $text             = $smarty->fetch("string:{$text}");
-  $smarty->security = $was_secure;
-
-  // In the use-case of embedding Smarty codes inside a Backdrop page, one is likely
-  // to load data using 'pull MVC' instead of 'push MVC', so the interesting
-  // data isn't loaded until after processing the main content. Therefore, we
-  // evaluate debug codes after the main content.
-  if ($config->debug) {
-    $text .= $smarty->fetch('CRM/common/debug.tpl');
+  try {
+    $text = CRM_Utils_String::parseOneOffStringThroughSmarty($text);
+  } catch (Exception $e) {
+    if (config_get('system.core', 'error_level') != ERROR_REPORTING_HIDE) {
+      $message = t('Unable to parse CiviCRM Smarty token: @message', array('@message' => $e->getMessage()));
+      backdrop_set_message($message, 'error');
+    }
+    watchdog_exception('civicrm_smarty_filter', $e);
   }
+
   return $text;
 }
 
@@ -1435,5 +1428,106 @@ function civicrm_metatag_page_cache_cid_parts_alter(&$cid_parts) {
     $get = $_GET;
     ksort($get);
     $cid_parts['path'] .= '/' . md5(print_r($get, TRUE));
+  }
+}
+
+/**
+ * Get all available themes.
+ */
+function civicrm_list_themes() {
+  $theme_list = array();
+  // Get current list of themes.
+  $themes = system_rebuild_theme_data();
+  uasort($themes, 'system_sort_modules_by_info_name');
+
+  foreach ($themes as & $theme) {
+    if (!empty($theme->info['hidden'])) {
+      continue;
+    }
+    $theme_list[$theme->name] = $theme->info['name'];
+  }
+
+  return $theme_list;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function civicrm_form_system_themes_admin_form_alter(&$form, $form_state) {
+  $config = config('civicrm.settings');
+  // Define a fieldset for civicrm theme setting section
+  $form['admin_theme']['civicrm'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('CiviCRM'),
+    '#collapsible' => TRUE,
+    '#description' => t('Choose theme for CiviCRM.'),
+  );
+
+  $theme_list = civicrm_list_themes();
+
+  $form['admin_theme']['civicrm']['civicrm_admin'] = array(
+    '#type' => 'select',
+    '#options' => array(
+      0 => t('Default theme'),
+    ) + $theme_list,
+    '#title' => t('CiviCRM Administration theme'),
+    '#description' => t('Choose theme for CiviCRM administration/backend pages.'),
+    '#default_value' => $config->get('theme_admin'),
+  );
+
+  $form['admin_theme']['civicrm']['civicrm_public'] = array(
+    '#type' => 'select',
+    '#options' => array(
+      0 => t('Default theme'),
+    ) + $theme_list,
+    '#title' => t('CiviCRM Public theme'),
+    '#description' => t('Choose theme for CiviCRM frontend pages.'),
+    '#default_value' => $config->get('theme_public'),
+  );
+
+  // Add extra submit
+  $form['#submit'][] = 'civicrm_system_themes_admin_form_submit';
+  $form['admin_theme']['actions']['#weight'] = 10;
+}
+
+/**
+ * Process system_themes_form extra submit.
+ */
+function civicrm_system_themes_admin_form_submit($form, &$form_state) {
+  $config = config('civicrm.settings');
+  $config->set('theme_admin', $form_state['values']['civicrm_admin']);
+  $config->set('theme_public', $form_state['values']['civicrm_public']);
+  $config->save();
+}
+
+/**
+ * Implements hook_custom_theme().
+ */
+function civicrm_custom_theme() {
+  if (arg(0) != 'civicrm') {
+    return;
+  }
+  if (arg(1) == 'upgrade') {
+    return;
+  }
+  $config = config('civicrm.settings');
+  $admin_theme = $config->get('theme_admin');
+  $public_theme = $config->get('theme_public');
+
+  if ((!$admin_theme && !$public_theme) || !civicrm_initialize()) {
+    return;
+  }
+
+  // Check for public pages
+  // If public page and civicrm public theme is set, apply civicrm public theme
+  // If user does not have access to CiviCRM use the public page for the error message
+  if (!user_access('access CiviCRM') || CRM_Core_Config::singleton()->userSystem->isFrontEndPage()) {
+    if ($public_theme) {
+      return $public_theme;
+    }
+  }
+  elseif ($admin_theme) {
+    // If admin page and civicrm admin theme is set, apply civicrm admin theme
+    return $admin_theme;
   }
 }

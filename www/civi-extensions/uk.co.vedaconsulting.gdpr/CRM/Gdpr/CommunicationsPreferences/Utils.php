@@ -135,6 +135,7 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
           'visibility' => "Public Pages",
           // Key by id for convenience.
           'serialized' => FALSE,
+          'options' => ['limit' => 0],
       ];
       $result = civicrm_api3('Group', 'get', $params);
       if (!empty($result['values'])) {

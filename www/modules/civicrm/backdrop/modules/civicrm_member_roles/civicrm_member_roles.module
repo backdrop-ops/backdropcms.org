@@ -719,6 +719,9 @@ function _civicrm_member_roles_get_data($type) {
 function civicrm_member_roles_civicrm_post($op, $objname, $objid, &$objref) {
   if ($objname == "Membership") {
     if (in_array('update', config_get('civicrm_member_roles.settings', 'civicrm_member_roles_sync_method') ?? [], TRUE)) {
+      if (empty($objref->contact_id)) {
+        $objref->find(TRUE);
+      }
       _civicrm_member_roles_sync(NULL, $objref->contact_id);
     }
   }

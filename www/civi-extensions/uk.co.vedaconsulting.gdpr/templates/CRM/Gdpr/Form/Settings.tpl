@@ -88,6 +88,31 @@
 		<div class="content">
 			{$form.track_exports.html}
 		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="crm-section">
+		<div class="label">{$form.single_export_activity.label}</div>
+		<div class="content">
+			{$form.single_export_activity.html}
+			<br />
+		<span class="description">
+			<i>{ts}By default individual activity will be created for every exported contact.{/ts}</i>
+		</span>
+
+		</div>
+		<div class="clear"></div>
+	</div>
+
+	<div class="crm-section">
+		<div class="label">{$form.export_activity_status.label}</div>
+		<div class="content">
+			{$form.export_activity_status.html}
+			<br/>
+		<span class="description">
+			<i>{ts}If no status is specified activity status is set to Completed.{/ts}</i>
+		</span>
+		</div>
+		<div class="clear"></div>
 	</div>
 
 </div>
