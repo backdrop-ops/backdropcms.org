@@ -1,0 +1,22 @@
+From d5407e651ac72b6799bdbb61a49833dfa687e975 Mon Sep 17 00:00:00 2001
+From: Martin Price <20357797+yorkshire-pudding@users.noreply.github.com>
+Date: Mon, 22 Dec 2025 12:21:10 +0000
+Subject: [PATCH] Check for blank version strings before attempting truncate
+
+---
+ project_telemetry/project_telemetry.pages.inc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/project_telemetry/project_telemetry.pages.inc b/project_telemetry/project_telemetry.pages.inc
+index 00e948d..8ac12c0 100644
+--- a/project_telemetry/project_telemetry.pages.inc
++++ b/project_telemetry/project_telemetry.pages.inc
+@@ -293,7 +293,7 @@ function _project_telemetry_load_aggregates($project_nid, $allowed_values) {
+  *   The number of decimals to retain. If NULL, no modification will be done.
+  */
+ function _project_telemetry_round_version_string($version_string, $precision) {
+-  if (strlen($precision)) {
++  if (strlen($precision) && strlen($version_string)) {
+     $decimal_location = 0;
+     for ($n = 0; $n <= $precision; $n++) {
+       $decimal_location = strpos($version_string, '.', $decimal_location + 1);

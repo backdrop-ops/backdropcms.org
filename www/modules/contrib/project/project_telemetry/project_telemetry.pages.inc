@@ -293,7 +293,7 @@ function _project_telemetry_load_aggregates($project_nid, $allowed_values) {
  *   The number of decimals to retain. If NULL, no modification will be done.
  */
 function _project_telemetry_round_version_string($version_string, $precision) {
-  if (strlen($precision)) {
+  if (strlen($precision) && strlen($version_string)) {
     $decimal_location = 0;
     for ($n = 0; $n <= $precision; $n++) {
       $decimal_location = strpos($version_string, '.', $decimal_location + 1);

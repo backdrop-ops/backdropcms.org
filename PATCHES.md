@@ -29,6 +29,10 @@ spambot - move last checked uid to state
   https://github.com/backdrop-contrib/spambot/issues/4
   https://github.com/backdrop-contrib/spambot/pull/5.patch
 
+project - prevent fatal error on telemetry page if submitted version string is blank
+  https://github.com/backdrop-contrib/project/issues/64
+  https://github.com/backdrop-contrib/project/pull/65.patch 
+
 Patches to CiviCRM:
 ============================
 
