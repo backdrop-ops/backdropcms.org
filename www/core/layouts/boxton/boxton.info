@@ -1,5 +1,6 @@
 type = layout
 name = Boxton
+description = Includes a header, top, content, bottom, and footer. This is the default template for the Home page and Default Administrative layouts.
 version = BACKDROP_VERSION
 backdrop = 1.x
 
@@ -25,7 +26,7 @@ preview = boxton.png
 ; Include the Bootstrap4 Grid System
 libraries[] = bootstrap4-gs
 
-; Added by Backdrop CMS packaging script on 2025-03-19
+; Added by Backdrop CMS packaging script on 2025-10-06
 project = backdrop
-version = 1.30.2
-timestamp = 1742431268
+version = 1.32.1
+timestamp = 1759813356

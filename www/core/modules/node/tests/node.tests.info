@@ -202,6 +202,12 @@ description = Test changing display mode.
 group = Node
 file = node.test
 
+[NodeAccessJoinTest]
+name = Node access joins
+description = Tests that node access checks get applied across left-joined tables.
+group = Node
+file = node.test
+
 [NodePageCacheTest]
 name = Node page cache test
 description = Test cache invalidation of node operations.
@@ -226,7 +232,7 @@ description = Tests the new node states for Draft, Publish Now and Schedule Publ
 group = Node
 file = node.test
 
-; Added by Backdrop CMS packaging script on 2025-03-19
+; Added by Backdrop CMS packaging script on 2025-10-06
 project = backdrop
-version = 1.30.2
-timestamp = 1742431268
+version = 1.32.1
+timestamp = 1759813356
