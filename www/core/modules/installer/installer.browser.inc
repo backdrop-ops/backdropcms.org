@@ -231,8 +231,9 @@ function installer_browser_get_queued_releases() {
  * @param array $filters
  *   An associative array of queries to use to filter results.
  *
- * @return
- *   Returns an array of results.
+ * @return array
+ *   If $filters is set, returns an array of projects based on the passed in
+ *   keys. If not set, returns all projects of all types.
  */
 function installer_browser_fetch_results($filters = array()) {
   $filters += array(
