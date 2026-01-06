@@ -3,6 +3,9 @@ Patches to Backdrop Core:
 
 - none
 
+Installer module - increase query count
+  https://github.com/backdrop/backdrop-issues/issues/5845
+  https://github.com/backdrop/backdrop/pull/5188.patch
 
 Patches to Backdrop Contrib:
 ============================
