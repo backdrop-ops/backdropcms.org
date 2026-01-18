@@ -4,8 +4,9 @@
  * Template for the Sutro layout.
  *
  * *** CHANGES: ***
- * - Moved messages inside hero
- * - Moved top region to above title, outside .l-wrapper.
+ * - Refactored top area to hero with extra containers.
+ * - Moved messages inside hero.
+ * - Moved hero region to above title, outside .l-wrapper.
  * - Moved bottom region to above footer, outside .l-wrapper.
  * - Added a div with the "row" class to both header and footer.
  */
@@ -25,15 +26,19 @@
     </header>
   <?php endif; ?>
 
-  <?php if (!empty($content['top'])): ?>
+  <?php if (!empty($content['top']) || $messages): ?>
     <div class="l-hero">
-      <?php if ($messages): ?>
-        <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
-          <?php print $messages; ?>
-        </div>
-      <?php endif; ?>
+      <div class="l-hero-image">
+        <div class="l-hero-vgradients"><div class="l-hero-hgradients">
+          <?php if ($messages): ?>
+            <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
+              <?php print $messages; ?>
+            </div>
+          <?php endif; ?>
 
-      <?php print $content['top']; ?>
+          <?php print $content['top']; ?>
+        </div></div>
+      </div>
     </div>
   <?php endif; ?>
 

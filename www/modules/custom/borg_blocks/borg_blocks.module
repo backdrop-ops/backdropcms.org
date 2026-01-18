@@ -256,34 +256,25 @@ function borg_blocks_branding($settings) {
  */
 function borg_blocks_tagline($settings) {
   $button_class_name = 'borg__button';
+  $button_options = array(
+    'html' => TRUE,
+    'attributes' => array(
+      'class' => array(
+        $button_class_name,
+      )
+    ),
+  );
+  $demo_options = $button_options;
+  $demo_options['attributes']['class'][] = $button_class_name . '--primary';
+
   if (module_exists('tugboat')) {
     $demo_text = t('Demo Backdrop CMS');
-    $demo_link = l($demo_text, 'demo',
-      array(
-        'attributes' => array(
-          'class' => array(
-            $button_class_name,
-            $button_class_name . '--primary',
-          )
-        ),
-        'html' => TRUE,
-      )
-    );
+    $demo_link = l($demo_text, 'demo', $demo_options);
   }
   else {
     $pantheon_url = 'https://dashboard.pantheon.io/sites/create?upstream_id=bf703821-4c18-45a1-88b8-3d9ec302273d';
     $demo_text = t('Backdrop on Pantheon');
-    $demo_link = l($demo_text, $pantheon_url,
-      array(
-        'attributes' => array(
-          'class' => array(
-            $button_class_name,
-            $button_class_name . '--primary',
-          )
-        ),
-        'html' => TRUE,
-      )
-    );
+    $demo_link = l($demo_text, $pantheon_url, $demo_options);
   }
 
   // Initiate a curl session.
@@ -292,18 +283,9 @@ function borg_blocks_tagline($settings) {
     $version = $data['latest']['version'];
     $dl_url = $data['latest']['download_link'];
     $dl_text = t('Download Backdrop&nbsp;CMS') . ' <span class="version">v&nbsp;' . $version . '</span>';
-
-    $download_link = l($dl_text, $dl_url,
-      array(
-        'attributes' => array(
-          'class' => array(
-            $button_class_name,
-            $button_class_name . '--secondary',
-          )
-        ),
-        'html' => TRUE,
-      )
-    );
+    $dl_options = $button_options;
+    $dl_options['attributes']['class'][] = $button_class_name . '--secondary';
+    $download_link = l($dl_text, $dl_url, $dl_options);
   }
 
   $output  =
@@ -314,7 +296,7 @@ function borg_blocks_tagline($settings) {
       t('Backdrop CMS is a free and Open Source Content Management System that helps you build modern, comprehensive websites on a reasonable budget.') .
     '</p>';
 
-  $output .= '<ul class="tagline-block__ctas">';
+  $output .= '<ul>';
   $output .=   '<li>' . $demo_link . '</li>';
   $output .=   '<li>' . $download_link . '</li>';
   $output .= '</ul>';
@@ -441,17 +423,18 @@ function borg_blocks_block_configure($delta = '', $settings = array()) {
     );
 
     $data = _borg_blocks_get_version();
-    $version = $data['latest']['version'];
+    if ($data) {
+      $version = $data['latest']['version'];
 
-    $form['version'] = array(
-      '#type' => 'textfield',
-      '#size' => 10,
-      '#title' => t('Current Version Number'),
-      '#default_value' => $version,
-      '#disabled' => TRUE,
-      '#description' => t('<strong>Clear all caches</strong> to update. This value is now determined automatically. '),
-    );
-
+      $form['version'] = array(
+        '#type' => 'textfield',
+        '#size' => 10,
+        '#title' => t('Current Version Number'),
+        '#default_value' => $version,
+        '#disabled' => TRUE,
+        '#description' => t('<strong>Clear all caches</strong> to update. This value is now determined automatically. '),
+      );
+    }
   }
 
   return $form;

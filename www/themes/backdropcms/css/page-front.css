@@ -1,11 +1,10 @@
 /*******************************************************************************
- * page-front.css
+ * Backdrop CMS site override for page-front.css
  *
  * Contains styles only needed for the front page of the site.
  *
  * These elements were separated from the compontents.css file because there is
- * a lot of code in here that's not needed for most of the site, so it didn't
- * need to be loaded all the time.
+ * a lot of code in here that's not needed for most of the site.
  ******************************************************************************/
 
 body {
@@ -22,12 +21,16 @@ body {
   }
 }
 
+/*******************************************************************************
+ * Fonts
+ ******************************************************************************/
 body[class] {
   font-family: "IBM Plex Sans", "Open Sans", Helvetica, sans-serif;
   font-optical-sizing: auto;
   font-variation-settings: "wdth" 100;
 }
 
+/* override the font change */
 a.site-name {
   font-family: var(--font-family--sans-legacy);
 }
@@ -50,50 +53,49 @@ a.site-name {
   white-space: nowrap;
 }
 
-/**
- * Hero Tagline section
- */
-.tagline-block__headline-wrapper {
-  color: #fff;
-}
-
-.block-borg-blocks-tagline {
-  position: relative;
-  z-index: 0;
-  color: #fff;
-}
-
-.block-borg-blocks-tagline p {
-  margin: 0;
-  padding: 0;
+.l-hero-image .block-content p {
   font: inherit;
 }
 
+/*******************************************************************************
+ * Hero Region
+ ******************************************************************************/
+
+.l-hero {
+  background: #000;
+  max-width: 9999em;
+  padding-inline: 0;
+}
+
+.l-hero-image {
+  position: relative;
+  z-index: 0;
+}
 /* Grid image behind hero */
-.tagline-block__headline-wrapper:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -10;
-    mask-image: url(/themes/backdropcms/images/diagonal-grid.svg);
-    mask-size: 580px;
-    background-color: #666;
+.l-hero-image:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -10;
+  mask-image: url(/themes/borg/images/diagonal-grid.svg);
+  mask-size: 580px;
+  background-color: #666;
 }
 
 /* Gradients to overlay background image */
-.block-borg-blocks-tagline:before,
-.block-borg-blocks-tagline .block-content:before,
-.block-borg-blocks-tagline .block-content:after {
+.l-hero-vgradients:before,
+.l-hero-hgradients:before,
+.l-hero-hgradients:after {
   content: '';
   position: absolute;
   z-index: -1;
   display: block;
 }
 
-.block-borg-blocks-tagline:before {
+.l-hero-vgradients:before {
   top: 0;
   right:0;
   bottom: 0;
@@ -101,15 +103,14 @@ a.site-name {
   background: linear-gradient(to bottom, #0005 75%, #000);
 }
 
-.block-borg-blocks-tagline .block-content:before {
+.l-hero-hgradients:before {
   top: 0;
   left: 0;
   bottom: 0;
   width: 144px;
   background: linear-gradient(to left, #0000, #000c);
 }
-
-.block-borg-blocks-tagline .block-content:after {
+.l-hero-hgradients:after {
   top: 0;
   right: 0;
   bottom: 0;
@@ -117,28 +118,28 @@ a.site-name {
   background: linear-gradient(to right, #0000, #000c);
 }
 
-.block-borg-blocks-tagline .block-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+.l-hero-hgradients {
   margin: 0 auto;
-  padding: 7.5rem 2rem;
   /* 28px at desktop in mockup */
   font-size: clamp(18px, 2.5vw ,1.75rem);
   text-align: center;
-  /* This media query should match the width on .tagline-block__headline-wrapper */
+  /* This media query should match the width on `.l-hero .block h1` */
   @media (min-width: 30em) {
     width: min-content;
   }
 }
 
-.tagline-block__visual-tag {
-  margin: 0 auto;
-  border-color: 1px solid #01FDA6;
-  background: #0008;
-}
+/*******************************************************************************
+ * Blocks in hero region
+ ******************************************************************************/
 
-.tagline-block__headline-wrapper[class] {
+/* add padding only to the first block in hero */
+
+.l-hero :nth-child(1 of .block) {
+  padding: 7.5rem 2rem;
+}
+.l-hero .block h1,
+.l-hero .block h2.block-title {
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -156,12 +157,35 @@ a.site-name {
     font-size: 3.57em;
   }
 }
-
-.block-borg-blocks-tagline .block-content p {
+.l-hero .block h2 {
+  font-size: clamp(1.5em, 8vw, 3.57em);
+  font-size: 3rem;
+  line-height: 1;
+}
+.l-hero .block-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.l-hero .block-content p {
+  margin: 0;
+  padding: 0;
   font: inherit;
+  color: #fff;
 }
 
-.tagline-block__ctas {
+/*******************************************************************************
+ * Tagline block
+ ******************************************************************************/
+
+.block-borg-blocks-tagline ul {
+  margin: 0 auto;
+  padding: 0;
+  border-color: 1px solid #01FDA6;
+  background: #0008;
+}
+
+.block-borg-blocks-tagline ul {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -171,9 +195,10 @@ a.site-name {
   justify-content: center;
 }
 
-/**
- * Borg Buttons
- */
+/*******************************************************************************
+ * Borg buttons
+ ******************************************************************************/
+
 .borg__button {
   display: inline-block;
   font-size: 1.125rem;
@@ -221,7 +246,9 @@ a.site-name {
   transform: translateY(-50%) translateY(0.125em);
 }
 
-/* Content containers of major sections */
+/*******************************************************************************
+** Content containers of major sections
+*******************************************************************************/
 .view-product-features,
 .l-top__wrapper,
 .block-borg-blocks-audiences .block-content,
@@ -232,13 +259,9 @@ a.site-name {
   margin: 0 auto;
 }
 
-/**
- * Dark Hero Cards
- */
-.l-hero {
-  background: #000;
-}
-
+/*******************************************************************************
+** Dark Hero Carss
+*******************************************************************************/
 .l-top__outer-wrapper {
   padding-bottom: var(--section__padding);
 }
@@ -391,9 +414,9 @@ a.site-name {
   box-shadow: inset 0 -2px 0 0 var(--color__accent--primary--light);
 }
 
-/**
- * Chonky Link bar
- */
+/*******************************************************************************
+** Chonky Link bar
+*******************************************************************************/
 .chonky-link-bar__outer-wrapper {
   list-style: none;
   margin: 0;
@@ -424,9 +447,9 @@ a.site-name {
   color: inherit;
 }
 
-/**
- * Audiences Section
- */
+/*******************************************************************************
+** Audiences Section
+*******************************************************************************/
 .block-borg-blocks-audiences {
   padding: 60px var(--section__padding) 60px;
 }
@@ -520,9 +543,9 @@ a.site-name {
   mask-image: url(/core/misc/icons/newspaper.svg); /* blogs */
 }
 
-/**
- * News Section
- */
+/*******************************************************************************
+** * News Section
+*******************************************************************************/
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .block-views-news-block {
     padding: var(--section__padding);
@@ -561,7 +584,6 @@ a.site-name {
     padding: 48px;
   }
 }
-
 
 .block-views-news-block .block-title {
   margin: 0;
@@ -617,9 +639,9 @@ a.site-name {
   margin-bottom: 0;
 }
 
-/**
- * Resources section
- */
+/*******************************************************************************
+** Resources section
+*******************************************************************************/
 .b-resources__outer-wrapper {
   background: #F9F8FB;
 }
@@ -712,9 +734,9 @@ a.site-name {
   color: inherit;
 }
 
-/**
- * Community section
- */
+/*******************************************************************************
+** Community section
+*******************************************************************************/
 .b-community__outer-wrapper {
   padding-block: 60px;
   padding-inline: var(--section__padding);
@@ -797,7 +819,6 @@ a.site-name {
   }
 
 }
-
 @media (min-width: 75em) {
   .b-community__photos {
     grid-template-columns: repeat(5, minmax(0, 1fr));

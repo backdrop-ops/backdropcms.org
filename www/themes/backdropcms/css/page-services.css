@@ -1,0 +1,77 @@
+/*******************************************************************************
+ * page-services.css
+ *
+ * Contains styles only needed for services page.
+ *
+ * These elements were separated from the compontents.css file because there is
+ * a lot of code in here that's not needed for most of the site, so it didn't
+ * need to be loaded all the time.
+ ******************************************************************************/
+
+body.support-services .l-top {
+  background-color: #F7F7F7;
+  border-bottom: 2px solid #D4D6D6;
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
+
+body.support-services .views-widget-filter-combine,
+body.support-services input {
+  width: 100%;
+}
+
+body.support-services .views-exposed-widget {
+  width: 100%;
+  margin-bottom: 15px;
+}
+body.support-services .views-exposed-widget input,
+body.support-services .views-exposed-widget select {
+  width: 100%;
+}
+
+body.support-services .l-top h2 {
+  font-weight: 300; /* Light */
+  color: #5A5D5E;
+}
+
+body.support-services h1.page-title {
+  margin-top: 0;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  body.support-services .l-top {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  body.support-services .l-top {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  body.support-services .l-top {
+    padding-top: 100px;
+    padding-bottom: 75px;
+  }
+  #edit-expertise-wrapper {
+    width: 46%;
+    margin-bottom: 0;
+  }
+  #edit-expertise-wrapper .form-item {
+    margin-right: 15px;
+  }
+  #edit-country-wrapper {
+    width: 53%;
+    margin-bottom: 0;
+  }
+  .views-widget-filter-field_location_country select {
+    max-width: 100%;
+    width: 100%;
+  }
+  .views-widget-filter-field_location_country {
+    width: 60%;
+  }
+}
+
