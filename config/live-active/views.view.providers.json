@@ -14,7 +14,14 @@
             "display_options": {
                 "query": {
                     "type": "views_query",
-                    "options": []
+                    "options": {
+                        "disable_sql_rewrite": 0,
+                        "distinct": 1,
+                        "pure_distinct": 0,
+                        "replica": 0,
+                        "query_comment": "",
+                        "query_tags": []
+                    }
                 },
                 "access": {
                     "type": "perm",
@@ -33,7 +40,7 @@
                         "expose_sort_order": 1,
                         "sort_asc_label": "Asc",
                         "sort_desc_label": "Desc",
-                        "autosubmit": 0,
+                        "autosubmit": 1,
                         "autosubmit_hide": 1
                     }
                 },

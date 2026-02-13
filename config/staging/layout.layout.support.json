@@ -32,8 +32,8 @@
             "4a0593db-19db-4d2e-aa51-81c80eaf0598"
         ],
         "sidebar": [
-            "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
             "a571dfe7-6a60-4b8a-a900-bad3a4bb7b15",
+            "1d778b13-37e1-4bf1-8f1e-305f76cab443",
             "d9c1cdda-6733-4683-ac00-bde06aabf0f7"
         ],
         "bottom": [
@@ -316,36 +316,6 @@
                 }
             }
         },
-        "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6": {
-            "plugin": "block:resources",
-            "data": {
-                "status": 0,
-                "module": "block",
-                "delta": "resources",
-                "settings": {
-                    "title_display": "default",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "resources",
-                        "description": "",
-                        "reusable": true
-                    },
-                    "contexts": [],
-                    "title": "",
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "457d1bb1-9bd9-4b26-aa07-7e1dae51bad6",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
         "a571dfe7-6a60-4b8a-a900-bad3a4bb7b15": {
             "plugin": "borg_blocks:resources",
             "data": {
@@ -362,6 +332,36 @@
                     "admin_description": ""
                 },
                 "uuid": "a571dfe7-6a60-4b8a-a900-bad3a4bb7b15",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1d778b13-37e1-4bf1-8f1e-305f76cab443": {
+            "plugin": "block:meeting_schedule",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "meeting_schedule",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": {
+                        "delta": "meeting_schedule",
+                        "description": "",
+                        "reusable": true
+                    },
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "1d778b13-37e1-4bf1-8f1e-305f76cab443",
                 "style": {
                     "plugin": "default",
                     "data": {

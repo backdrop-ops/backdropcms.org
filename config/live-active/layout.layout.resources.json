@@ -24,9 +24,7 @@
             "2b25a428-72d4-4957-8100-00e8ac1f78ac"
         ],
         "sidebar": [
-            "052527cd-87f1-4cde-9902-2d13c9fd30de",
-            "d2bca8f3-4b5c-4884-9c00-fe9313f33293",
-            "c13974ed-6702-4c2e-8400-e4143e9a30e9"
+            "07fac89e-76a0-4761-b605-5a18d9588648"
         ],
         "bottom": [
             "f26b380e-29b5-4d29-bb03-3aaf7e795248"
@@ -95,12 +93,12 @@
                 }
             }
         },
-        "052527cd-87f1-4cde-9902-2d13c9fd30de": {
-            "plugin": "borg_blocks:resources",
+        "07fac89e-76a0-4761-b605-5a18d9588648": {
+            "plugin": "copy_blocks:region_copy",
             "data": {
                 "status": 1,
-                "module": "borg_blocks",
-                "delta": "resources",
+                "module": "copy_blocks",
+                "delta": "region_copy",
                 "settings": {
                     "title_display": "default",
                     "title": "",
@@ -108,74 +106,10 @@
                     "block_settings": [],
                     "contexts": [],
                     "admin_label": "",
-                    "admin_description": ""
+                    "admin_description": "",
+                    "source_region": "support:sidebar"
                 },
-                "uuid": "052527cd-87f1-4cde-9902-2d13c9fd30de",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "d2bca8f3-4b5c-4884-9c00-fe9313f33293": {
-            "plugin": "block:meeting_schedule",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "meeting_schedule",
-                "settings": {
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": {
-                        "delta": "meeting_schedule",
-                        "description": "",
-                        "reusable": true
-                    },
-                    "contexts": [],
-                    "admin_label": "",
-                    "admin_description": ""
-                },
-                "uuid": "d2bca8f3-4b5c-4884-9c00-fe9313f33293",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "c13974ed-6702-4c2e-8400-e4143e9a30e9": {
-            "plugin": "views:contractors-block",
-            "data": {
-                "status": 1,
-                "module": "views",
-                "delta": "contractors-block",
-                "settings": {
-                    "link_to_view": 0,
-                    "more_link": false,
-                    "use_pager": false,
-                    "pager_id": 0,
-                    "items_per_page": "50",
-                    "offset": 0,
-                    "path": "support/services/contractors",
-                    "fields_override": null,
-                    "title_display": "default",
-                    "title": "",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "allowed": [],
-                    "path_override": false,
-                    "exposed": []
-                },
-                "uuid": "c13974ed-6702-4c2e-8400-e4143e9a30e9",
+                "uuid": "07fac89e-76a0-4761-b605-5a18d9588648",
                 "style": {
                     "plugin": "default",
                     "data": {
