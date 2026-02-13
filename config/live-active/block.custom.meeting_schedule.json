@@ -2,10 +2,11 @@
     "_config_name": "block.custom.meeting_schedule",
     "delta": "meeting_schedule",
     "info": "Meeting schedule",
-    "title": "",
+    "title": "Meeting Schedule",
     "body": {
-        "value": "<p>See full&nbsp;<a href=\"/resources\">meeting schedule</a>&nbsp;and other resources.</p>\r\n",
-        "format": "filtered_html"
+        "value": "<p>\r\n    Wendesdays:\r\n</p>\r\n<ul>\r\n    <li>\r\n        <strong>Office Hours,</strong> 8-10pm UTC&nbsp;<br>\r\n        [utz-datetime:19:00 UTC|g:ia] –&nbsp;[utz-datetime:21:00 UTC|g:ia e]\r\n    </li>\r\n</ul>\r\n<p>\r\n    Thursdays:\r\n</p>\r\n<ul>\r\n    <li>\r\n        <strong>Weekly developer meeting, </strong>8pm UTC<br>\r\n        [utz-datetime:19:00 UTC|g:ia] –&nbsp;[utz-datetime:20:00 UTC|g:ia e]\r\n    </li>\r\n    <li>\r\n        <strong>Fortnightly documentation meeting, </strong>9pm UTC&nbsp;&nbsp;<br>\r\n        [utz-datetime:20:00 UTC|g:ia] –&nbsp;[utz-datetime:21:00 UTC|g:ia e]\r\n    </li>\r\n    <li>\r\n        <strong>Fortnightly User Group meeting,</strong> 9pm UTC<br>\r\n        [utz-datetime:20:00 UTC|g:ia] –&nbsp;[utz-datetime:21:00 UTC|g:ia e]\r\n    </li>\r\n</ul>\r\n<p>\r\n    <a href=\"https://backdropcms.org/support/meetings\">Learn more about Backdrop meetings</a>\r\n</p>",
+        "format": "standard_tokens"
     },
-    "description": "A reusable custom block."
+    "description": "",
+    "default_langcode": "und"
 }

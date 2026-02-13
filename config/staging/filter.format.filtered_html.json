@@ -9,50 +9,27 @@
         "authenticated": "authenticated",
         "4": "4",
         "3": "3",
-        "anonymous": 0
+        "anonymous": 0,
+        "civi": 0
     },
     "filters": {
-        "filter_html_escape": {
+        "civicrm_smarty": {
             "status": 0,
-            "weight": -50,
-            "module": "filter",
+            "weight": 10,
+            "module": "civicrm",
             "settings": []
-        },
-        "filter_html": {
-            "status": 1,
-            "weight": -49,
-            "settings": {
-                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h1> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th><span>",
-                "filter_html_help": 1,
-                "filter_html_nofollow": 0
-            },
-            "module": "filter"
         },
         "codefilter": {
             "status": 1,
             "weight": -48,
-            "module": "codefilter",
             "settings": {
                 "nowrap_expand": false
-            }
-        },
-        "filter_url": {
-            "status": 1,
-            "weight": -47,
-            "module": "filter",
-            "settings": {
-                "filter_url_length": 72
-            }
+            },
+            "module": "codefilter"
         },
         "filter_image_caption": {
             "status": 1,
             "weight": -46,
-            "module": "filter",
-            "settings": []
-        },
-        "filter_image_align": {
-            "status": 1,
-            "weight": -45,
             "module": "filter",
             "settings": []
         },
@@ -62,20 +39,54 @@
             "module": "filter",
             "settings": []
         },
-        "filter_tokens": {
-            "status": 0,
-            "weight": -43,
-            "module": "token_filter",
+        "filter_url": {
+            "status": 1,
+            "weight": -47,
             "settings": {
-                "replace": 0,
-                "tokens": ""
-            }
+                "filter_url_length": 72
+            },
+            "module": "filter"
         },
         "filter_htmlcorrector": {
             "status": 1,
             "weight": -42,
             "module": "filter",
             "settings": []
+        },
+        "filter_html_escape": {
+            "status": 0,
+            "weight": -50,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_image_align": {
+            "status": 1,
+            "weight": -45,
+            "module": "filter",
+            "settings": []
+        },
+        "filter_html": {
+            "status": 1,
+            "weight": -49,
+            "settings": {
+                "allowed_html": "<a> <em> <strong> <cite> <blockquote> <code> <pre> <ul> <ol> <li> <h1> <h2> <h3> <h4> <i> <p> <small> <blockquote> <div> <img> <figcaption> <figure> <table> <thead> <tbody> <td> <tr> <th><span>"
+            },
+            "module": "filter"
+        },
+        "filter_markdown": {
+            "status": 0,
+            "weight": 0,
+            "module": "markdown",
+            "settings": []
+        },
+        "filter_tokens": {
+            "status": 0,
+            "weight": -43,
+            "settings": {
+                "replace": 0,
+                "tokens": ""
+            },
+            "module": "token_filter"
         }
     },
     "editor": "ckeditor5",
@@ -86,7 +97,6 @@
             "|",
             "backdropLink",
             "|",
-            "blockQuote",
             "bulletedList",
             "numberedList",
             "|",
@@ -107,11 +117,31 @@
             "status": 1,
             "orientate": 0,
             "scheme": "public",
+            "alt_required": 0,
             "directory": "inline-images",
             "max_size": "",
             "max_dimensions": {
                 "width": "",
                 "height": ""
+            }
+        },
+        "image_styles": {
+            "status": 0,
+            "list": {
+                "": 0,
+                "header": 0,
+                "header_preview": 0,
+                "headshot_large": 0,
+                "headshot_small": 0,
+                "hero_featured": 0,
+                "large": 0,
+                "logo": 0,
+                "medium": 0,
+                "phone": 0,
+                "project": 0,
+                "showcase_preview_512x512": 0,
+                "tablet": 0,
+                "thumbnail": 0
             }
         },
         "file_upload": {
@@ -168,7 +198,8 @@
                 "name": "Vertical tab",
                 "element": "span",
                 "classes": [
-                    "vartical-tab "
+                    "vartical-tab",
+                    ""
                 ]
             },
             {
@@ -208,7 +239,6 @@
             }
         ],
         "heading_list": {
-            "h1": "h1",
             "h2": "h2",
             "h3": "h3",
             "h4": "h4"

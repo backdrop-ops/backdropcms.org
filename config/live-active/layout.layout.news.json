@@ -25,11 +25,11 @@
             "a298b2b4-a75f-4fa8-9d08-8ce0f2e71309"
         ],
         "sidebar": [
-            "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909",
+            "1cb8ed0f-b783-4901-9a00-f445fd6db153",
             "e161c1f5-be5c-47c4-a723-352567c8870c",
+            "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909",
             "0765a3fa-4353-454d-9301-1c346e550eae",
             "1c732b6a-9279-45af-b242-666a63fa2848",
-            "1cb8ed0f-b783-4901-9a00-f445fd6db153",
             "11f77fa6-ce86-4619-9338-56b87d16920f"
         ],
         "bottom": [],
@@ -123,24 +123,26 @@
                 }
             }
         },
-        "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909": {
-            "plugin": "block:newsletter_signup",
+        "1cb8ed0f-b783-4901-9a00-f445fd6db153": {
+            "plugin": "block:meeting_schedule",
             "data": {
                 "status": 1,
                 "module": "block",
-                "delta": "newsletter_signup",
+                "delta": "meeting_schedule",
                 "settings": {
-                    "title_display": "custom",
-                    "title": "Newsletter",
+                    "title_display": "default",
                     "style": "default",
                     "block_settings": {
-                        "description": "Text and a link to our newsletter signup page",
-                        "delta": "newsletter_signup",
+                        "delta": "meeting_schedule",
+                        "description": "",
                         "reusable": true
                     },
-                    "contexts": []
+                    "contexts": [],
+                    "title": "",
+                    "admin_label": "",
+                    "admin_description": ""
                 },
-                "uuid": "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909",
+                "uuid": "1cb8ed0f-b783-4901-9a00-f445fd6db153",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -175,6 +177,34 @@
                     "path_override": false
                 },
                 "uuid": "e161c1f5-be5c-47c4-a723-352567c8870c",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909": {
+            "plugin": "block:newsletter_signup",
+            "data": {
+                "status": 1,
+                "module": "block",
+                "delta": "newsletter_signup",
+                "settings": {
+                    "title_display": "custom",
+                    "title": "Newsletter",
+                    "style": "default",
+                    "block_settings": {
+                        "description": "Text and a link to our newsletter signup page",
+                        "delta": "newsletter_signup",
+                        "reusable": true
+                    },
+                    "contexts": []
+                },
+                "uuid": "1b33cc2a-4f5e-4988-9501-1e8d7f2e4909",
                 "style": {
                     "plugin": "default",
                     "data": {
@@ -236,30 +266,6 @@
                     "contexts": []
                 },
                 "uuid": "1c732b6a-9279-45af-b242-666a63fa2848",
-                "style": {
-                    "plugin": "default",
-                    "data": {
-                        "settings": {
-                            "classes": ""
-                        }
-                    }
-                }
-            }
-        },
-        "1cb8ed0f-b783-4901-9a00-f445fd6db153": {
-            "plugin": "block:meeting_schedule",
-            "data": {
-                "status": 1,
-                "module": "block",
-                "delta": "meeting_schedule",
-                "settings": {
-                    "title_display": "default",
-                    "style": "default",
-                    "block_settings": [],
-                    "contexts": [],
-                    "title": ""
-                },
-                "uuid": "1cb8ed0f-b783-4901-9a00-f445fd6db153",
                 "style": {
                     "plugin": "default",
                     "data": {
