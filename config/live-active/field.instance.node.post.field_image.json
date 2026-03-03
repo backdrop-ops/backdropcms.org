@@ -12,7 +12,7 @@
         "settings": {
             "progress_indicator": "throbber",
             "browser_view": "image_library",
-            "preview_image_style": "medium"
+            "preview_image_style": "hero_featured"
         }
     },
     "description": "Required for home page.",
@@ -51,9 +51,9 @@
             "type": "image",
             "weight": "0",
             "settings": {
-                "image_style": "medium",
+                "image_style": "hero_featured",
                 "image_link": "content",
-                "image_float": "right",
+                "image_float": "",
                 "image_load": "auto"
             },
             "module": "image"

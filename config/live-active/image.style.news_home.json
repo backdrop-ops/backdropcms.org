@@ -1,0 +1,16 @@
+{
+    "_config_name": "image.style.news_home",
+    "label": "News Home (305x540)",
+    "name": "news_home",
+    "effects": [
+        {
+            "name": "image_scale_and_crop",
+            "data": {
+                "width": "610",
+                "height": "1080",
+                "anchor": "left-top"
+            },
+            "weight": 1
+        }
+    ]
+}
