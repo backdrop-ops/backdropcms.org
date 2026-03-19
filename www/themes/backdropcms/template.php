@@ -36,7 +36,7 @@ function backdropcms_preprocess_page(&$variables) {
   elseif ($arg0 == 'node' && is_numeric($arg1) && !$arg2) {
     $variables['classes'][] = 'node-' . $arg1;
     $node = node_load($arg1); // Entity cache should save us here.
-    if (substr($node->type, 0, 8) == 'project_') {
+    if (substr($node->type, 0, 8) == 'project_' || $node->type == 'core') {
       $icons_needed[] = 'arrow-circle-down-fill';
     }
   }
@@ -82,10 +82,7 @@ function backdropcms_preprocess_node(&$variables) {
 
   // For project nodes include a special stylesheet.
   if (($variables['type'] == 'core') || substr($variables['type'], 0, 8) == 'project_'){
-    if ($variables['type'] == 'project_release') {
-
-    }
-    else {
+    if ($variables['type'] != 'project_release') {
       unset($variables['content']['project_release_downloads']['#prefix']);
       $variables['classes'][] = 'node-project';
       backdrop_add_css($path . '/css/node-project.css');
