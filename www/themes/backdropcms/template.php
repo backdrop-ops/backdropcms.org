@@ -49,6 +49,19 @@ function backdropcms_preprocess_page(&$variables) {
       backdrop_add_css($path . '/css/page-services.css');
     }
   }
+  elseif ($arg0 == 'user') {
+    // For socialfield.
+    $icons_needed[] = 'github-logo-fill';
+    $icons_needed[] = 'linkedin-logo-fill';
+    $icons_needed[] = 'facebook-logo-fill';
+    $icons_needed[] = 'butterfly-fill';
+    $icons_needed[] = 'instagram-logo-fill';
+    $icons_needed[] = 'twitter-logo-fill';
+    $icons_needed[] = 'youtube-logo-fill';
+    $icons_needed[] = 'pinterest-logo-fill';
+    $icons_needed[] = 'pinterest-logo-fill';
+    $icons_needed[] = 'slideshow-fill';
+  }
 
   // Make the icons needed available for use in CSS.
   if (!empty($icons_needed)) {
