@@ -23,29 +23,32 @@
             "youtube": "youtube",
             "flickr": "flickr",
             "pinterest": "pinterest",
+            "slideshare": "slideshare",
+            "mastodon": "mastodon",
             "facebook": "facebook",
-            "twitter": "twitter",
             "linkedin": "linkedin",
             "github": "github"
         },
         "services": {
-            "twitter": "twitter",
             "facebook": "facebook",
             "linkedin": "linkedin",
-            "github": "github"
+            "github": "github",
+            "youtube": "youtube"
         },
         "weights": {
-            "facebook": "-9",
-            "twitter": "-8",
-            "instagram": "-7",
-            "googleplus": "-6",
-            "linkedin": "-5",
-            "youtube": "-4",
-            "flickr": "-3",
-            "pinterest": "-2",
-            "reddit": "-1",
-            "slideshare": "0",
-            "github": "-10"
+            "facebook": "-8",
+            "twitter": "-4",
+            "instagram": "-3",
+            "googleplus": "2",
+            "linkedin": "-9",
+            "youtube": "-7",
+            "flickr": "-2",
+            "pinterest": "-1",
+            "reddit": "0",
+            "slideshare": "1",
+            "github": "-10",
+            "blue_sky": "-6",
+            "mastodon": "-5"
         }
     },
     "display": {

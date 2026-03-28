@@ -16,11 +16,6 @@
             "icon": "fa fa-instagram",
             "validation_pattern": "*instagram.com/*"
         },
-        "googleplus": {
-            "name": "Google+",
-            "icon": "fa fa-google-plus-square",
-            "validation_pattern": "*plus.google.com/*"
-        },
         "linkedin": {
             "name": "LinkedIn",
             "icon": "fa fa-linkedin-square",
@@ -55,6 +50,16 @@
             "name": "Github",
             "icon": "fa fa-github-square",
             "validation_pattern": "*github.com/*"
+        },
+        "blue_sky": {
+            "name": "Blue Sky",
+            "icon": "fa fa-comments",
+            "validation_pattern": "*bsky.app*"
+        },
+        "mastodon": {
+            "name": "Mastodon",
+            "icon": "fa fa-comment",
+            "validation_pattern": ""
         }
     }
 }
