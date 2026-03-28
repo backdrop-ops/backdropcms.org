@@ -24,7 +24,8 @@ RUN (groupadd --gid "$gid" "$username" || groupadd "$username" || true) && \
 ### DDEV-injected extra content
 
 RUN mkdir -p /home/$username && chown $username /home/$username && chmod 600 /home/$username/.pgpass
-ENV NVM_DIR=/home/$username/.nvm
+RUN log-stderr.sh mariadb-compat-install.sh || true
+
 
 ### DDEV-injected composer update
 RUN export XDEBUG_MODE=off; composer self-update --stable || composer self-update --stable || true; composer self-update --2 || log-stderr.sh composer self-update --2 || true
@@ -38,5 +39,6 @@ RUN unzip -q bee.zip && rm bee.zip
 RUN mv bee-1.x-1.x /usr/local/bin/bee
 
 ### DDEV-injected folders permission fix
-RUN chmod 777 /run/php /var/log
-RUN mkdir -p /tmp/xhprof && chmod -R ugo+w /etc/php /var/lib/php /tmp/xhprof
+RUN chmod 777 /run/php /var/log && \
+    chmod -f ugo+rwx /usr/local/bin /usr/local/bin/* && \
+    mkdir -p /tmp/xhprof && chmod -R ugo+w /etc/php /var/lib/php /tmp/xhprof
