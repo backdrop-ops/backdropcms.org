@@ -1,0 +1,16 @@
+
+/* Property display */
+
+.entity-property-label {
+  font-weight: bold;
+}
+
+.entity-property-inline .entity-property-label,
+.entity-property-inline .entity-property-item {
+  float:left; /*LTR*/
+}
+
+[dir="rtl"] .entity-property-inline .entity-property-label,
+[dir="rtl"] .entity-property-inline .entity-property-item {
+  float:left; /*LTR*/
+}

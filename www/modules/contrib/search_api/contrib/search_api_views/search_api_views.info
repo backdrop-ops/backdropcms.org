@@ -1,0 +1,12 @@
+name = Search Views
+description = Integrates the Search API with Views, enabling users to create views with searches as filters or arguments.
+dependencies[] = search_api:search_api
+dependencies[] = entity_plus (>=1.x-1.0.10)
+backdrop = 1.x
+type = module
+package = Search
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = search_api
+version = 1.x-1.29.5
+timestamp = 1770395528

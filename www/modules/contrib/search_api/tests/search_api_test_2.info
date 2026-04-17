@@ -1,0 +1,14 @@
+name = Search API Test Service 2
+description = "A module providing a second test search service."
+backdrop = 1.x
+type = module
+package = Search
+
+dependencies[] = search_api:search_api
+
+hidden = TRUE
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = search_api
+version = 1.x-1.29.5
+timestamp = 1770395528
