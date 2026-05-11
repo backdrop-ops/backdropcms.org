@@ -1,0 +1,11 @@
+[SearchApiDbTest]
+name = Test "Database search" module
+description = Tests indexing and searching with the "Database search" module.
+group = Search API Database Search
+file = search_api_db.test
+
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = search_api_db
+version = 1.x-1.9.2
+timestamp = 1770378646

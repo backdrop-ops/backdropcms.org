@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * Gets the i18n controller for a given entity type.
+ *
+ * @return EntityDefaultI18nStringController|array|false
+ *   If a type is given, the controller for the given entity type. Else an array
+ *   of all enabled controllers keyed by entity type is returned.
+ */
+function entity_plus_i18n_i18n_controller($type = NULL) {
+  $static = &backdrop_static(__FUNCTION__);
+
+  if (!isset($type)) {
+    // Invoke the function for each type to ensure we have fully populated the
+    // static variable.
+    foreach (entity_get_info() as $entity_type => $info) {
+      entity_plus_i18n_i18n_controller($entity_type);
+    }
+    return array_filter($static);
+  }
+
+  if (!isset($static[$type])) {
+    $info = entity_get_info($type);
+    // Do not activate it by default. Modules have to explicitly enable it by
+    // specifying EntityDefaultI18nStringController or their customization.
+    $class = isset($info['i18n controller class']) ? $info['i18n controller class'] : FALSE;
+    $static[$type] = $class ? new $class($type, $info) : FALSE;
+  }
+
+  return $static[$type];
+}
+
+/**
+ * Implements hook_i18n_string_info().
+ */
+function entity_plus_i18n_i18n_string_info() {
+  $groups = array();
+  foreach (entity_plus_i18n_i18n_controller() as $entity_type => $controller) {
+    $groups += $controller->hook_string_info();
+  }
+  return $groups;
+}
+
+/**
+ * Implements hook_i18n_object_info().
+ */
+function entity_plus_i18n_i18n_object_info() {
+  $info = array();
+  foreach (entity_plus_i18n_i18n_controller() as $entity_type => $controller) {
+    $info += $controller->hook_object_info();
+  }
+  return $info;
+}
+
+/**
+ * Implements hook_i18n_string_objects().
+ */
+function entity_plus_i18n_i18n_string_objects($type) {
+  if ($controller = entity_plus_i18n_i18n_controller($type)) {
+    return $controller->hook_string_objects();
+  }
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function entity_plus_i18n_autoload_info() {
+  return array(
+    'EntityDefaultI18nStringController' => 'includes/entity_plus_i18n.i18n.inc',
+  );
+}

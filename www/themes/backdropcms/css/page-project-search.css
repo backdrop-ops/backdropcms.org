@@ -12,14 +12,16 @@
   padding: 0;
 }
 
-.view-modules h2 {
+.view-modules h2,
+.view-project-listings h2 {
   margin-top: 0;
   color: #929597;
   font-size: 24px;
   line-height: 32px;
 }
 @media (min-width: 30em) { /* 480px */
-  .view-modules h2 {
+  .view-modules h2,
+  .view-project-listings h2 {
     font-size: 30px;
     line-height: 36px;
   }
@@ -68,12 +70,18 @@
 
 .block-views--exp-modules-modules,
 .block-views--exp-modules-themes,
-.block-views--exp-modules-layouts {
+.block-views--exp-modules-layouts,
+.block-views--exp-project-listings-modules,
+.block-views--exp-project-listings-themes,
+.block-views--exp-project-listings-layouts {
   width: 100%;
 }
 .block-views--exp-modules-modules .block-content,
 .block-views--exp-modules-themes .block-content,
-.block-views--exp-modules-layouts .block-content {
+.block-views--exp-modules-layouts .block-content,
+.block-views--exp-project-listings-modules .block-content,
+.block-views--exp-project-listings-themes .block-content,
+.block-views--exp-project-listings-layouts .block-content {
   max-width: 750px;
 }
 
@@ -85,11 +93,15 @@ form.views-exposed-form,
 
 #views-exposed-form-modules-modules,
 #views-exposed-form-modules-themes,
-#views-exposed-form-modules-layouts {
+#views-exposed-form-modules-layouts,
+#views-exposed-form-project-listings-modules,
+#views-exposed-form-project-listings-themes,
+#views-exposed-form-project-listings-layouts {
   border: 0;
   padding: 0;
 }
 
+.views-exposed-form .views-widget-filter-search_api_views_fulltext,
 .views-exposed-form .views-widget-filter-combine,
 .views-exposed-form .views-widget-filter-title,
 .views-exposed-form .views-widget-filter-keys,
@@ -100,6 +112,7 @@ form.views-exposed-form,
   line-height: 1.5;
 }
 
+.views-exposed-form .views-widget-filter-search_api_views_fulltext,
 .views-exposed-form .views-widget-filter-combine,
 .views-exposed-form .views-widget-filter-title,
 .views-exposed-form .views-widget-filter-keys {
@@ -229,16 +242,17 @@ form.views-exposed-form,
   padding: 0;
 }
 
+.result__info li.rendered-entity {
+  width: 100%;
+  max-width: 100%;
+}
+
 .result__info li {
   margin: 0 5px 0 0;
   display: inline-block;
 }
 .result__info li.download-link {
   margin: 0;
-}
-
-.result__info a {
-  color: #00a1d3;
 }
 
 /* @todo delete me */
