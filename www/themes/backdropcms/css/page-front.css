@@ -80,7 +80,7 @@ a.site-name {
   right: 0;
   bottom: 0;
   z-index: -10;
-  mask-image: url(/themes/borg/images/diagonal-grid.svg);
+  mask-image: url(/themes/backdropcms/images/diagonal-grid.svg);
   mask-size: 580px;
   background-color: #666;
 }
@@ -133,11 +133,11 @@ a.site-name {
  * Blocks in hero region
  ******************************************************************************/
 
-/* add padding only to the first block in hero */
-
-.l-hero :nth-child(1 of .block) {
+/* Add padding to the main title and tagline block. */
+.l-hero .block-borg-blocks-tagline {
   padding: 7.5rem 2rem;
 }
+
 .l-hero .block h1,
 .l-hero .block h2.block-title {
   display: flex;
@@ -250,7 +250,7 @@ a.site-name {
 ** Content containers of major sections
 *******************************************************************************/
 .view-product-features,
-.l-top__wrapper,
+ul.l-top__wrapper,
 .block-borg-blocks-audiences .block-content,
 .block-views-news-block,
 .b-resources,
@@ -266,26 +266,25 @@ a.site-name {
   padding-bottom: var(--section__padding);
 }
 
-.l-top__wrapper {
+ul.l-top__wrapper {
   --dark-hero-card__max-width: 18em;
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 0 var(--section__padding);
-  padding-bottom: 32px;
+  padding: 0 0 1rem;
   color: #fff;
   list-style: none;
   background: #000;
 }
 @media (min-width: 48em) {
-  .l-top__wrapper {
+  ul.l-top__wrapper {
     display: grid;
     justify-content: center;
     grid-template-columns: repeat(2, minmax(0, var(--dark-hero-card__max-width)));
   }
 }
 @media (min-width: 75em) {
-  .l-top__wrapper {
+  ul.l-top__wrapper {
     grid-template-columns: repeat(4, minmax(0, var(--dark-hero-card__max-width)));
   }
 }
@@ -402,10 +401,6 @@ a.site-name {
   font-weight: 600;
   color: #fff;
   box-shadow: inset 0 -1px 0 0 var(--color__accent--primary--light);
-}
-
-.view-product-features .more-link a {
-  margin-right: 64px;
 }
 
 .top-cards__cta:hover,
