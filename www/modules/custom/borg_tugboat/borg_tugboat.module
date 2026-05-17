@@ -7,7 +7,7 @@
 /**
  * Implements hook_theme_registry_alter().
  *
- * @see https://api.backdropcms.org/documentation/overriding-template-files-in-a-module
+ * @see https://docs.backdropcms.org/documentation/overriding-template-files-in-a-module
  */
 function borg_tugboat_theme_registry_alter(&$theme_registry) {
   $module_path = backdrop_get_path('module', 'borg_tugboat') . '/templates';

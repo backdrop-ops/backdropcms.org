@@ -203,7 +203,7 @@ function borg_blocks_resources() {
       'data' => l($github_icon . t('GitHub Issue Queue'), 'http://github.com/backdrop/backdrop-issues/issues', $link_options),
     ),
     'docs' => array(
-      'data' => l($docs_icon . t('Developer Documentation & API'), 'http://api.backdropcms.org', $link_options),
+      'data' => l($docs_icon . t('Developer Documentation & API'), 'http://docs.backdropcms.org', $link_options),
     ),
     'videos' => array(
       'data' => l($youtube_icon . t('Video archives: YouTube'), 'https://www.youtube.com/user/backdropcms', $link_options),

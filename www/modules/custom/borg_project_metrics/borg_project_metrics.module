@@ -343,7 +343,7 @@ function borg_project_metrics_resources($settings) {
 
   $resource_links = array(
     'api' => array(
-      'url' => 'https://api.backdropcms.org',
+      'url' => 'https://docs.backdropcms.org',
       'name' => t('Documentation & API'),
       'more' => t('Find complete documentation for people who are using Backdrop CMS.'),
     ),
