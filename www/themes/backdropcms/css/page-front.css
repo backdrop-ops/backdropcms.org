@@ -604,6 +604,7 @@ ul.l-top__wrapper {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top left;
 }
 
 .latest-news__title[class] {

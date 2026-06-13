@@ -1,16 +1,25 @@
 {
     "_config_name": "image.style.news_home",
-    "label": "News Home (305x540)",
+    "label": "News Home (800x600)",
     "name": "news_home",
-    "effects": [
-        {
-            "name": "image_scale_and_crop",
+    "effects": {
+        "1": {
+            "name": "image_scale",
             "data": {
-                "width": "610",
-                "height": "1080",
+                "width": "800",
+                "height": "",
+                "upscale": 0
+            },
+            "weight": "2"
+        },
+        "2": {
+            "name": "image_crop",
+            "data": {
+                "width": "800",
+                "height": "600",
                 "anchor": "left-top"
             },
-            "weight": 1
+            "weight": "3"
         }
-    ]
+    }
 }
