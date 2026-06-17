@@ -1,0 +1,525 @@
+<?php
+
+/**
+ * @file
+ * Entity Metadata Wrapper tests.
+ */
+
+/**
+ * Common parent class containing common helpers.
+ */
+abstract class EntityPlusHelperTestCase extends BackdropWebTestCase {
+
+  /**
+   * Creates a new vocabulary.
+   */
+  protected function createVocabulary() {
+    $vocabulary = new TaxonomyVocabulary(array(
+      'name' => $this->randomName(),
+      'description' => $this->randomName(),
+      'machine_name' => backdrop_strtolower($this->randomName()),
+      'weight' => mt_rand(0, 10),
+    ));
+    taxonomy_vocabulary_save($vocabulary);
+    return $vocabulary;
+  }
+
+  /**
+   * Creates a random file of the given type.
+   */
+  protected function createFile($file_type = 'text') {
+    // Create a managed file.
+    $file = current($this->backdropGetTestFiles($file_type));
+
+    // Set additional file properties and save it.
+    $file->filemime = file_get_mimetype($file->filename);
+    $file->uid = 1;
+    $file->timestamp = REQUEST_TIME;
+    $file->filesize = filesize($file->uri);
+    $file->status = 0;
+    $file->save();
+    return $file;
+  }
+}
+
+
+/**
+ * Tests metadata wrappers.
+ */
+class EntityPlusMetadataTestCase extends EntityPlusHelperTestCase {
+
+  function setUp() {
+    parent::setUp('entity_plus', 'locale');
+    // Create a field having 4 values for testing multiple value support.
+    $this->field_name = backdrop_strtolower($this->randomName() . '_field_name');
+    $this->field = array('field_name' => $this->field_name, 'type' => 'text', 'cardinality' => 4);
+    $this->field = field_create_field($this->field);
+    $this->instance = array(
+      'field_name' => $this->field_name,
+      'entity_type' => 'node',
+      'bundle' => 'page',
+      'label' => $this->randomName() . '_label',
+      'description' => $this->randomName() . '_description',
+      'weight' => mt_rand(0, 127),
+      'settings' => array(
+        'text_processing' => FALSE,
+      ),
+      'widget' => array(
+        'type' => 'text_textfield',
+        'label' => 'Test Field',
+        'settings' => array(
+          'size' => 64,
+        )
+      )
+    );
+    field_create_instance($this->instance);
+
+    // Make the body field and the node type 'page' translatable.
+    $field = field_info_field('body');
+    $field['translatable'] = TRUE;
+    field_update_field($field);
+    // Set page type language.
+    $config = config('node.type.page');
+    $config->set('settings.language', 1);
+    $config->save();
+  }
+
+  /**
+   * Creates a user and a node, then tests getting the properties.
+   */
+  function testEntityMetadataWrapper() {
+    $account = $this->backdropCreateUser();
+    // For testing sanitizing give the user a malicious user name
+    $account->name = '<b>BadName</b>';
+    $account->save();
+    $title = '<b>Is it bold?<b>';
+    $body[LANGUAGE_NONE][0] = array('value' => '<b>The body & nothing.</b>', 'summary' => '<b>The body.</b>');
+    $node = $this->backdropCreateNode(array('uid' => $account->uid, 'name' => $account->name, 'body' => $body, 'title' => $title, 'summary' => '', 'type' => 'page'));
+
+    // First test without sanitizing.
+    $wrapper = entity_metadata_wrapper('node', $node);
+
+    $this->assertEqual('<b>Is it bold?<b>', $wrapper->title->value(), 'Getting a field value.');
+    $this->assertEqual($node->title, $wrapper->title->raw(), 'Getting a raw property value.');
+
+    // Test chaining.
+    $this->assertEqual($account->mail, $wrapper->author->mail->value(), 'Testing chained usage.');
+    $this->assertEqual($account->name, $wrapper->author->name->value(), 'Testing chained usage with callback and sanitizing.');
+
+    // Test sanitized output.
+    $options = array('sanitize' => TRUE);
+    $this->assertEqual(check_plain('<b>Is it bold?<b>'), $wrapper->title->value($options), 'Getting sanitized field.');
+    $this->assertEqual(filter_xss($node->name), $wrapper->author->name->value($options), 'Getting sanitized property with getter callback.');
+
+    // Test getting an not existing property.
+    try {
+      echo $wrapper->dummy;
+      $this->fail('Getting an not existing property.');
+    }
+    catch (EntityMetadataWrapperException $e) {
+      $this->pass('Getting an not existing property.');
+    }
+
+    // Test setting.
+    $wrapper->author = 0;
+    $this->assertEqual(0, $wrapper->author->uid->value(), 'Setting a property.');
+    try {
+      $wrapper->url = 'dummy';
+      $this->fail('Setting an unsupported property.');
+    }
+    catch (EntityMetadataWrapperException $e) {
+      $this->pass('Setting an unsupported property.');
+    }
+
+    // Test value validation.
+    $this->assertFalse($wrapper->author->name->validate(array(3)), 'Validation correctly checks for valid data types.');
+    try {
+      $wrapper->author->mail = 'foo';
+      $this->fail('An invalid mail address has been set.');
+    }
+    catch (EntityMetadataWrapperException $e) {
+      $this->pass('Setting an invalid mail address throws exception.');
+    }
+    // Test unsetting a required property.
+    try {
+      $wrapper->author = NULL;
+      $this->fail('The required node author has been unset.');
+    }
+    catch (EntityMetadataWrapperException $e) {
+      $this->pass('Unsetting the required node author throws an exception.');
+    }
+
+    // Test setting a referenced entity by id.
+    $wrapper->author->set($GLOBALS['user']->uid);
+    $this->assertEqual($wrapper->author->getIdentifier(), $GLOBALS['user']->uid, 'Get the identifier of a referenced entity.');
+    $this->assertEqual($wrapper->author->uid->value(), $GLOBALS['user']->uid, 'Successfully set referenced entity using the identifier.');
+    // Set by object.
+    $wrapper->author->set($GLOBALS['user']);
+    $this->assertEqual($wrapper->author->uid->value(), $GLOBALS['user']->uid, 'Successfully set referenced entity using the entity.');
+
+
+    // Test getting by the field API processed values like the node body.
+    $body_value = $wrapper->body->value;
+    $this->assertEqual("<p>The body &amp; nothing.</p>\n", $body_value->value(), "Getting processed value.");
+    $this->assertEqual("The body & nothing.\n", $body_value->value(array('decode' => TRUE)), "Decoded value.");
+    $this->assertEqual("<b>The body & nothing.</b>", $body_value->raw(), "Raw body returned.");
+
+    // Test getting the summary.
+    $this->assertEqual("<p>The body.</p>\n", $wrapper->body->summary->value(), "Getting body summary.");
+
+    $wrapper->body->set(array('value' => "<b>The second body.</b>"));
+    $this->assertEqual("<p>The second body.</p>\n", $wrapper->body->value->value(), "Setting a processed field value and reading it again.");
+    $this->assertEqual($node->body[LANGUAGE_NONE][0]['value'], "<b>The second body.</b>", 'Update appears in the wrapped entity.');
+    $this->assert(isset($node->body[LANGUAGE_NONE][0]['safe_value']), 'Formatted text has been processed.');
+
+    // Test translating the body on an English node.
+    // Add a new language and optionally set it as default.
+    require_once BACKDROP_ROOT . '/core/includes/locale.inc';
+    $language = (object) array(
+      'langcode' => 'de',
+    );
+    language_save($language);
+
+    $body['en'][0] = array('value' => '<b>English body.</b>', 'summary' => '<b>The body.</b>');
+    $node = $this->backdropCreateNode(array('body' => $body, 'langcode' => 'en', 'type' => 'page'));
+    $wrapper = entity_metadata_wrapper('node', $node);
+
+    $wrapper->language('de');
+
+    $languages = language_list();
+    $this->assertEqual($wrapper->getPropertyLanguage(), $languages['de'], 'Wrapper language has been set to German');
+    $this->assertEqual($wrapper->body->value->value(), "<p>English body.</p>\n", 'Language fallback on default language.');
+
+    // Set a German text using the wrapper.
+    $wrapper->body->set(array('value' => "<b>Der zweite Text.</b>"));
+    $this->assertEqual($wrapper->body->value->value(), "<p>Der zweite Text.</p>\n", 'German body set and retrieved.');
+
+    $wrapper->language(LANGUAGE_NONE);
+    $this->assertEqual($wrapper->body->value->value(), "<p>English body.</p>\n", 'Default language text is still there.');
+
+    // Test iterator.
+    $type_info = entity_plus_get_property_info('node');
+    $this->assertFalse(array_diff_key($type_info['properties'], iterator_to_array($wrapper->getIterator())), 'Iterator is working.');
+    foreach ($wrapper as $property) {
+      $this->assertTrue($property instanceof EntityMetadataWrapper, 'Iterate over wrapper properties.');
+    }
+
+    // Test setting a new node.
+    $node->title = 'foo';
+    $wrapper->set($node);
+    $this->assertEqual($wrapper->title->value(), 'foo', 'Changed the wrapped node.');
+
+    // Test getting options lists.
+    $this->assertEqual($wrapper->type->optionsList(), node_type_get_names(), 'Options list returned.');
+
+    // Test making use of a generic 'entity' reference property the
+    // 'entity_plus_test' module provides. The property defaults to the node author.
+/*     $this->assertEqual($wrapper->reference->uid->value(), $wrapper->author->getIdentifier(), 'Used generic entity reference property.');
+    // Test updating a property of the generic entity reference.
+    $wrapper->reference->name->set('foo');
+    $this->assertEqual($wrapper->reference->name->value(), 'foo', 'Updated property of generic entity reference');
+    // For testing, just point the reference to the node itself now.
+    $wrapper->reference->set($wrapper);
+    $this->assertEqual($wrapper->reference->nid->value(), $wrapper->getIdentifier(), 'Correctly updated the generic entity referenced property.');
+ */
+    // Test saving and deleting.
+    $wrapper->save();
+    $wrapper->delete();
+    $return = node_load($wrapper->getIdentifier());
+    $this->assertFalse($return, "Node has been successfully deleted.");
+
+    // Ensure changing the bundle changes available wrapper properties.
+    $wrapper->type->set('post');
+    $this->assertTrue(isset($wrapper->field_tags), 'Changing bundle changes available wrapper properties.');
+
+    // Test labels.
+    $user = $this->backdropCreateUser();
+    user_save($user, array('roles' => array()));
+    $wrapper->author = $user->uid;
+    $this->assertEqual($wrapper->label(), $node->title, 'Entity label returned.');
+    $this->assertEqual($wrapper->author->roles[0]->label(), t('Authenticated'), 'Label from options list returned');
+    $this->assertEqual($wrapper->author->roles->label(), t('Authenticated'), 'Label for a list from options list returned');
+  }
+
+  /**
+   * Test supporting multi-valued fields.
+   */
+  function testListMetadataWrappers() {
+    $property = $this->field_name;
+    $values = array();
+    $values[LANGUAGE_NONE][0] = array('value' => '<b>2009-09-05</b>');
+    $values[LANGUAGE_NONE][1] = array('value' => '2009-09-05');
+    $values[LANGUAGE_NONE][2] = array('value' => '2009-08-05');
+
+    $node = $this->backdropCreateNode(array('type' => 'page', $property => $values));
+    $wrapper = entity_metadata_wrapper('node', $node);
+
+    $this->assertEqual('<b>2009-09-05</b>', $wrapper->{$property}[0]->value(), 'Getting array entry.');
+    $this->assertEqual('2009-09-05', $wrapper->{$property}->get(1)->value(), 'Getting array entry.');
+    $this->assertEqual(3, count($wrapper->{$property}->value()), 'Getting the whole array.');
+
+    // Test sanitizing
+    $this->assertEqual(check_plain('<b>2009-09-05</b>'), $wrapper->{$property}[0]->value(array('sanitize' => TRUE)), 'Getting array entry.');
+
+    // Test iterator
+    $this->assertEqual(array_keys(iterator_to_array($wrapper->$property->getIterator())), array_keys($wrapper->$property->value()), 'Iterator is working.');
+    foreach ($wrapper->$property as $p) {
+      $this->assertTrue($p instanceof EntityMetadataWrapper, 'Iterate over list wrapper properties.');
+    }
+
+    // Make sure changing the array changes the actual entity property.
+    $wrapper->{$property}[0] = '2009-10-05';
+    unset($wrapper->{$property}[1], $wrapper->{$property}[2]);
+    $this->assertEqual($wrapper->{$property}->value(), array('2009-10-05'), 'Setting multiple property values.');
+
+    // Test setting an arbitrary list item.
+    $list = array(0 => REQUEST_TIME);
+    $wrapper = entity_metadata_wrapper('list<date>', $list);
+    $wrapper[1] = strtotime('2009-09-05');
+    $this->assertEqual($wrapper->value(), array(REQUEST_TIME, strtotime('2009-09-05')), 'Setting a list item.');
+    $this->assertEqual($wrapper->count(), 2, 'List count is correct.');
+
+    // Test using a list wrapper without data.
+    $wrapper = entity_metadata_wrapper('list<date>');
+    $info = array();
+    foreach ($wrapper as $item) {
+      $info[] = $item->info();
+    }
+    $this->assertTrue($info[0]['type'] == 'date', 'Iterated over empty list wrapper.');
+
+    // Test using a list of entities with a list of term objects.
+    $vocab = $this->createVocabulary();
+    $list = array();
+    $list[] = entity_plus_property_values_create_entity('taxonomy_term', array(
+      'name' => 'term 1',
+      'vocabulary' => $vocab->machine_name,
+    ))->save()->value();
+    $list[] = entity_plus_property_values_create_entity('taxonomy_term', array(
+      'name' => 'term 2',
+      'vocabulary' => $vocab->machine_name,
+    ))->save()->value();
+    $wrapper = entity_metadata_wrapper('list<taxonomy_term>', $list);
+    $this->assertTrue($wrapper[0]->name->value() == 'term 1', 'Used a list of entities.');
+    // Test getting a list of identifiers.
+    $ids = $wrapper->value(array('identifier' => TRUE));
+    $this->assertTrue(!is_object($ids[0]), 'Get a list of entity ids.');
+
+    $wrapper = entity_metadata_wrapper('list<taxonomy_term>', $ids);
+    $this->assertTrue($wrapper[0]->name->value() == 'term 1', 'Created a list of entities with ids.');
+
+    // Test with a list of generic entities. The list is expected to be a list
+    // of entity wrappers, otherwise the entity type is unknown.
+    $node = $this->backdropCreateNode(array('title' => 'node 1'));
+    $list = array();
+    $list[] = entity_metadata_wrapper('node', $node);
+    $wrapper = entity_metadata_wrapper('list<entity>', $list);
+    $this->assertEqual($wrapper[0]->title->value(), 'node 1', 'Wrapped node was found in generic list of entities.');
+  }
+
+  /**
+   * Tests using the wrapper without any data.
+   */
+  function testWithoutData() {
+    $wrapper = entity_metadata_wrapper('node', NULL, array('bundle' => 'page'));
+    $this->assertTrue(isset($wrapper->title), 'Bundle properties have been added.');
+    $info = $wrapper->author->mail->info();
+    $this->assertTrue(!empty($info) && is_array($info) && isset($info['label']), 'Property info returned.');
+  }
+
+  /**
+   * Test using access() method.
+   */
+  function testAccess() {
+    // Test without data.
+    $account = $this->backdropCreateUser(array('bypass node access'));
+    $this->assertTrue(entity_plus_access('view', 'node', NULL, $account), 'Access without data checked.');
+
+    // Test with actual data.
+    $values[LANGUAGE_NONE][0] = array('value' => '<b>2009-09-05</b>');
+    $values[LANGUAGE_NONE][1] = array('value' => '2009-09-05');
+    $node = $this->backdropCreateNode(array('type' => 'page', $this->field_name => $values));
+    $this->assertTrue(entity_plus_access('delete', 'node', $node, $account), 'Access with data checked.');
+
+    // Test per property access without data.
+    $account2 = $this->backdropCreateUser(array('bypass node access', 'administer nodes'));
+    $wrapper = entity_metadata_wrapper('node', NULL, array('bundle' => 'page'));
+    $this->assertTrue($wrapper->access('edit', $account), 'Access to node granted.');
+    $this->assertFalse($wrapper->status->access('edit', $account), 'Access for admin property denied.');
+    $this->assertTrue($wrapper->status->access('edit', $account2), 'Access for admin property allowed for the admin.');
+
+    // Test per property access with data.
+    $wrapper = entity_metadata_wrapper('node', $node, array('bundle' => 'page'));
+    $this->assertFalse($wrapper->status->access('edit', $account), 'Access for admin property denied.');
+    $this->assertTrue($wrapper->status->access('edit', $account2), 'Access for admin property allowed for the admin.');
+
+    // Test field level access.
+    $this->assertTrue($wrapper->{$this->field_name}->access('view'), 'Field access granted.');
+
+    // Create node owned by anonymous and test access() method on each of its
+    // properties.
+    $node = $this->backdropCreateNode(array('type' => 'page', 'uid' => 0));
+    $wrapper = entity_metadata_wrapper('node', $node->nid);
+    foreach ($wrapper as $name => $property) {
+      $property->access('view');
+    }
+
+    // Property access of entity references takes entity access into account.
+    $node = $this->backdropCreateNode(array('type' => 'post'));
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $unprivileged_user = $this->backdropCreateUser();
+    $privileged_user = $this->backdropCreateUser(array('access user profiles'));
+
+    $this->assertTrue($wrapper->author->access('view', $privileged_user));
+    $this->assertFalse($wrapper->author->access('view', $unprivileged_user));
+
+    // Ensure the same works with multiple entity references by testing the
+    // $node->field_tags example.
+    $privileged_user = $this->backdropCreateUser(array('administer taxonomy'));
+    // Terms are view-able with access content, so make sure to remove this
+    // permission first.
+    user_role_revoke_permissions(BACKDROP_ANONYMOUS_ROLE, array('access content'));
+    $unprivileged_user = backdrop_anonymous_user();
+
+    $this->assertTrue($wrapper->field_tags->access('view', $privileged_user), 'Privileged user has access.');
+    $this->assertTrue($wrapper->field_tags->access('view', $unprivileged_user), 'Unprivileged user has access.');
+    $this->assertTrue($wrapper->field_tags[0]->access('view', $privileged_user), 'Privileged user has access.');
+    $this->assertFalse($wrapper->field_tags[0]->access('view', $unprivileged_user), 'Unprivileged user has no access.');
+  }
+
+  /**
+   * Tests using a data structure with passed in metadata.
+   */
+  function testDataStructureWrapper() {
+    $log_entry = array(
+      'type'        => 'entity',
+      'message'     => $this->randomName(8),
+      'variables'   => array(),
+      'severity'    => WATCHDOG_NOTICE,
+      'link'        => '',
+      'user'        => $GLOBALS['user'],
+    );
+    $info['property info'] = array(
+      'type' => array('type' => 'text', 'label' => 'The category to which this message belongs.'),
+      'message' => array('type' => 'text', 'label' => 'The log message.'),
+      'user' => array('type' => 'user', 'label' => 'The user causing the log entry.'),
+    );
+    $wrapper = entity_metadata_wrapper('log_entry', $log_entry, $info);
+    $this->assertEqual($wrapper->user->name->value(), $GLOBALS['user']->name, 'Wrapped custom entity.');
+  }
+
+  /**
+   * Tests using entity_plus_property_query().
+   */
+  function testEntityQuery() {
+    // Creat a test node.
+    $title = '<b>Is it bold?<b>';
+    $values[LANGUAGE_NONE][0] = array('value' => 'foo');
+    $node = $this->backdropCreateNode(array($this->field_name => $values, 'title' => $title, 'uid' => $GLOBALS['user']->uid));
+
+    $results = entity_plus_property_query('node', 'title', $title);
+    $this->assertEqual($results, array($node->nid), 'Queried nodes with a given title.');
+
+    $results = entity_plus_property_query('node', $this->field_name, 'foo');
+    $this->assertEqual($results, array($node->nid), 'Queried nodes with a given field value.');
+
+    $results = entity_plus_property_query('node', $this->field_name, array('foo', 'bar'));
+    $this->assertEqual($results, array($node->nid), 'Queried nodes with a list of possible values.');
+ 
+    $results = entity_plus_property_query('node', 'author', $GLOBALS['user']->uid);
+    // Backdrop provides 2 nodes with uid == 1 on clean install, meaning that assertEqual will not work
+    $this->assertTrue(in_array($node->nid, $results), 'Queried nodes with a given author.');
+
+    // Create another test node and try querying for tags.
+    $vocab = $this->createVocabulary();
+    $tag = entity_plus_property_values_create_entity('taxonomy_term', array(
+          'name' => $this->randomName(),
+          'vocabulary' => $vocab->machine_name,
+    ))->save();
+    $field_tag_value[LANGUAGE_NONE][0]['tid'] = $tag->getIdentifier();
+    $node = $this->backdropCreateNode(array('type' => 'post', 'field_tags' => $field_tag_value));
+
+    // Try query-ing with a single value.
+    $results = entity_plus_property_query('node', 'field_tags', $tag->getIdentifier());
+    $this->assertEqual($results, array($node->nid), 'Queried nodes with a given term id.');
+
+    $results = entity_plus_property_query('node', 'field_tags', $tag->value());
+    $this->assertEqual($results, array($node->nid), 'Queried nodes with a given term object.');
+
+    // Try query-ing with a list of possible values.
+    $results = entity_plus_property_query('node', 'field_tags', array($tag->getIdentifier()));
+    $this->assertEqual($results, array($node->nid), 'Queried nodes with a list of term ids.');
+  }
+
+  /**
+   * Tests serializing data wrappers, in particular for EntityBackdropWrapper.
+   */
+  function testWrapperSerialization() {
+    $node = $this->backdropCreateNode();
+    $wrapper = entity_metadata_wrapper('node', $node);
+    $this->assertTrue($wrapper->value() == $node, 'Data correctly wrapped.');
+
+    // Test serializing and make sure only the node id is stored.
+    $this->assertTrue(strpos(serialize($wrapper), $node->title) === FALSE, 'Node has been correctly serialized.');
+    $this->assertEqual(unserialize(serialize($wrapper))->title->value(), $node->title, 'Serializing works right.');
+
+    $wrapper2 = unserialize(serialize($wrapper));
+    // Test serializing the unloaded wrapper.
+    $this->assertEqual(unserialize(serialize($wrapper2))->title->value(), $node->title, 'Serializing works right.');
+
+    // Test loading a not more existing node.
+    $s = serialize($wrapper2);
+    node_delete($node->nid);
+    $this->assertFalse(node_load($node->nid), 'Node deleted.');
+
+    $value = unserialize($s)->value();
+    $this->assertNull($value, 'Tried to load not existing node.');
+  }
+
+  /**
+   * Tests the functionality of the vocabulary metadata wrapper.
+   */
+  public function testEntityVocabularyWrapper() {
+    $vocabulary = $this->createVocabulary();
+    $machine_name = $vocabulary->machine_name;
+    $vocabulary_wrapper = emw('taxonomy_vocabulary', $vocabulary);
+
+    // Check that wrapper has correctly wrapped the vocabulary.
+    $this->assertEqual($vocabulary, $vocabulary_wrapper->value(), 'Vocabulary wrapper value matches the original vocabulary.');
+    
+    // Access the name property.
+    $this->assertEqual($vocabulary->name, $vocabulary_wrapper->name->value(), 'Vocabulary name matches the value of the name property of the wrapper.');
+
+    // Change the name property via wrapper. 
+    $new_name = 'A new name';
+    $vocabulary_wrapper->name = $new_name;
+    $this->assertEqual($new_name, $vocabulary_wrapper->name->value(), 'Vocabulary name was changed correctly.');
+
+    // Save vocabulary with wrapper save method.
+    $vocabulary_wrapper->save();
+
+    // Assign NULL to 'original' to allow comparison.
+    // Note: after https://github.com/backdrop/backdrop-issues/issues/6197, all
+    // vocabulary objects contain an `original` property with a null value
+    // by default. 
+    $vocabulary->original = NULL;
+    $vocabulary2 = taxonomy_vocabulary_load($machine_name);
+    $this->assertEqual($vocabulary2, $vocabulary, 'Vocabulary was saved correctly.');
+
+    // Lazy-load a vocabulary.
+    $vocabulary_wrapper2 = emw('taxonomy_vocabulary', $machine_name);
+    $this->assertEqual($vocabulary, $vocabulary_wrapper2->value(), 'Wrapper lazy-loaded the vocabulary from machine_name.');
+
+    // Access the vocabulary and vocabulary name via a term.
+    $term_wrapper = entity_plus_property_values_create_entity('taxonomy_term', array('vocabulary' => $machine_name, 'name' => 'A term',));    
+    $this->assertEqual($term_wrapper->vocabulary->value(), $vocabulary, 'Accessed the vocabulary object through a term wrapper.');
+    $this->assertEqual($term_wrapper->vocabulary->name->value(), $vocabulary->name, 'Accessed the vocabulary name through a term wrapper.');
+
+    // Test the term_count calculated property of the wrapper.
+    $term_wrapper->save();
+    $efq = new EntityFieldQuery();
+    $count = $efq->entityCondition('entity_type', 'taxonomy_term')
+        ->propertyCondition('vocabulary', $machine_name)
+        ->count()->execute();
+    $this->assertEqual($vocabulary_wrapper->term_count->value(), $count, 'Correctly calculated the total number of terms in vocabulary.');
+  }
+}

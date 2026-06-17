@@ -1,0 +1,17 @@
+[SearchApiWebTest]
+name = Test search API framework
+description = Tests basic functions of the Search API, like creating, editing and deleting servers and indexes.
+group = Search API
+file = search_api.test
+
+[SearchApiUnitTest]
+name = Test search API components
+description = Tests some independent components of the Search API, like the processors.
+group = Search API
+file = search_api.test
+
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = search_api
+version = 1.x-1.29.5
+timestamp = 1770395528

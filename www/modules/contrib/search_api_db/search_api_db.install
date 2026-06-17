@@ -1,0 +1,24 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the search_api_db module.
+ *
+ */
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function search_api_db_update_last_removed() {
+  return 7107;
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function search_api_db_update_1000() {
+  $config = config('search_api_db.settings');
+  $config->set('autocomplete_max_occurrences', update_variable_get('search_api_db_autocomplete_max_occurrences', 0.9));
+  $config->save();
+  update_variable_del('search_api_db_autocomplete_max_occurrences');
+}
+
