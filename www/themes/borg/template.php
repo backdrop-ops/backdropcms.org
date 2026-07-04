@@ -267,8 +267,9 @@ function borg_preprocess_layout(&$variables) {
   if ($arg0 == 'user' && !is_numeric($arg1)) {
     $variables['tabs'] = FALSE;
   }
+
   // Special handling for header image.
-  if ($arg0 == 'user' && is_numeric($arg1) && !$arg2) {
+  elseif ($arg0 == 'user' && is_numeric($arg1) && !$arg2) {
     // Check to see if there is a profile image.
     $account = user_load($arg1); // Entity cache should save us here?
     if (isset($account->field_header_photo[LANGUAGE_NONE][0]['uri'])) {
@@ -279,6 +280,12 @@ function borg_preprocess_layout(&$variables) {
       $variables['wrap_attributes']['class'][] = 'has-background';
     }
   }
+
+  // Special template suggestion for home pages.
+  elseif (backdrop_is_front_page()) {
+    $home_template = $variables['theme_hook_original'] . '__home';
+    $variables['theme_hook_suggestion'] = $home_template;
+  }
 }
 
 /**
@@ -286,8 +293,13 @@ function borg_preprocess_layout(&$variables) {
  * @see header.tpl.php
  */
 function borg_preprocess_header(&$variables) {
-  $path = backdrop_get_path('theme', 'borg');
-  $variables['logo'] = theme('image', array('uri' => $path . '/logo-inverse.png'));
+  // Replace the logo with backdrop SVG.
+  $logo = icon('backdrop-logo', array('attributes' => array('width' => 40)));
+  $variables['logo'] = $logo;
+
+  $variables['account'] = _borg_get_account_menu();
+  $variables['demo'] = _borg_get_demo_menu();
+
   // Remove Backdrop CMS from the site name in the header template.
   if ($variables['site_name'] && strstr($variables['site_name'], 'Backdrop CMS')) {
     $variables['site_name'] = trim(str_replace('Backdrop CMS', '', $variables['site_name']));
@@ -384,116 +396,16 @@ function borg_preprocess_comment(&$variables) {
 function borg_preprocess_block(&$variables) {
   if ($variables['block']->module == 'system') {
     if ($variables['block']->delta == 'main-menu') {
+      $variables['add_wrapper'] = FALSE;
+      $variables['account'] = FALSE;
+      $variables['demo'] = FALSE;
 
-      $icon_size = '26px';
-      $icon_attributes = array('width' => $icon_size, 'height' => $icon_size);
-      $icon_options = array('attributes' => $icon_attributes);
-      $link_options = array('html' => TRUE, 'attributes' => array('class' => array('has-submenu')));
-      $account_button = l(icon('user-circle', $icon_options), 'user', $link_options);
-
-      global $user;
-      if ($user->uid == 0) {
-        $user_links = array(
-          '#theme' => 'links',
-          '#links' => array(
-            'profile' => array(
-              'title' => 'Log In',
-              'href' => 'user/login',
-            ),
-          ),
-        );
-        if (user_register_access()) {
-          $user_links['#links']['register'] = array(
-            'title' => 'Create an account',
-            'href' => 'user/register',
-          );
-        }
+      if ($variables['content']['#wrapper_attributes']['data-menu-style'] == 'dropdown') {
+        // Build menus for header area.
+        $variables['add_wrapper'] = TRUE;
+        $variables['account'] = _borg_get_account_menu();
+        $variables['demo'] = _borg_get_demo_menu();
       }
-      else {
-        $user_links = array(
-          '#theme' => 'links',
-          '#links' => array(
-            'profile' => array(
-              'title' => 'My Profile',
-              'href' => 'user',
-            ),
-            'logout' => array(
-              'title' => 'Log out',
-              'href' => 'user/logout',
-            ),
-          ),
-        );
-      }
-
-      $inner_user_menu = backdrop_render($user_links);
-      $user_menu = array(
-        '#theme' => 'borg_list',
-        '#attributes' => array(
-          'class' => array(
-            'sm',
-            'menu-dropdown',
-            'closed',
-            'sm-nowrap',
-          ),
-          'data-menu-style' => 'dropdown',
-        ),
-        '#items' => array(
-          'account' => array(
-            'data' => $account_button . $inner_user_menu,
-            'attributes' => array('class' => array('has-children')),
-          ),
-        ),
-      );
-
-      // Create a renderable containing links.
-
-      $demo_button = l(t('Try Backdrop CMS'), 'https://backdropcms.org/try-backdrop', $link_options);
-      $demo_menu = $demo_button;
-      if ($version_info = _borg_get_version()) {
-        $demo_links = array(
-          '#theme' => 'links',
-          '#links' => array(
-            'demo' => array(
-              'title' => 'Demo Backdrop CMS',
-              'href' => 'https://backdropcms.org/demo',
-              'attributes' => array('title' => 'Create your own demo sandbox'),
-            ),
-            'download' => array(
-              'title' => 'Download version' . ' ' . $version_info['latest']['version'],
-              'href' => $version_info['latest']['download_link'],
-              'attributes' => array('title' => 'Download the latest version'),
-            ),
-            'more' => array(
-              'title' => 'More ways to try Backdrop',
-              'href' => 'https://backdropcms.org/try-backdrop',
-              'attributes' => array('title' => 'Discover other ways to try Backdrop CMS'),
-            ),
-          ),
-        );
-        $inner_demo_menu = backdrop_render($demo_links);
-        $demo_menu = array(
-          '#theme' => 'borg_list',
-          '#attributes' => array(
-            'class' => array(
-              'sm',
-              'menu-dropdown',
-              'closed',
-              'sm-nowrap',
-            ),
-            'data-menu-style' => 'dropdown',
-          ),
-          '#items' => array(
-            'demo' => array(
-              'data' => $demo_button . $inner_demo_menu,
-              'attributes' => array('class' => array('has-children')),
-            ),
-          ),
-        );
-      }
-
-      $variables['account'] = $user_menu;
-      $variables['demo'] = $demo_menu;
-
     }
   }
 }
@@ -1068,6 +980,136 @@ function borg_system_powered_by() {
  ******************************************************************************/
 
 /**
+ * Helper function: Get User Account menu.
+ */
+function _borg_get_account_menu() {
+  $icon_size = '30px';
+  $icon_attributes = array('width' => $icon_size, 'height' => $icon_size);
+  $icon_options = array('attributes' => $icon_attributes);
+  $icon = icon('user-circle', $icon_options);
+  $link_options = array('html' => TRUE, 'attributes' => array('class' => array('has-submenu')));
+  $account_text = '<span class="element-invisible">' . t('My account') . '</span>';
+  $account_button = l($account_text . $icon, 'user', $link_options);
+
+  backdrop_add_library('system', 'smartmenus');
+
+  global $user;
+  if ($user->uid == 0) {
+    $user_links = array(
+      '#theme' => 'links',
+      '#links' => array(
+        'profile' => array(
+          'title' => 'Log In',
+          'href' => 'user/login',
+        ),
+      ),
+    );
+    if (user_register_access()) {
+      $user_links['#links']['register'] = array(
+        'title' => 'Create an account',
+        'href' => 'user/register',
+      );
+    }
+  }
+  else {
+    $user_links = array(
+      '#theme' => 'links',
+      '#links' => array(
+        'profile' => array(
+          'title' => 'My Profile',
+          'href' => 'user',
+        ),
+        'logout' => array(
+          'title' => 'Log out',
+          'href' => 'user/logout',
+        ),
+      ),
+    );
+  }
+
+  $inner_user_menu = backdrop_render($user_links);
+  $user_menu = array(
+    '#theme' => 'borg_list',
+    '#attributes' => array(
+      'class' => array(
+        'sm',
+        'menu-dropdown',
+        'closed',
+        'sm-nowrap',
+      ),
+      'data-menu-style' => 'dropdown',
+    ),
+    '#items' => array(
+      'account' => array(
+        'data' => $account_button . $inner_user_menu,
+        'attributes' => array('class' => array('has-children')),
+      ),
+    ),
+  );
+
+  return $user_menu;
+}
+
+/**
+ * Helper function: Get demo Backdrop menu.
+ */
+function _borg_get_demo_menu() {
+  $link_options = array('html' => TRUE);
+  backdrop_add_library('system', 'smartmenus');
+
+  if ($version_info = _borg_get_version()) {
+    $link_options['attributes'] = array('class' => array('has-submenu'));
+    $demo_button = l(t('Try Backdrop CMS'), 'https://backdropcms.org/try-backdrop', $link_options);
+
+    $demo_links = array(
+      '#theme' => 'links',
+      '#links' => array(
+        'demo' => array(
+          'title' => 'Demo Backdrop CMS',
+          'href' => 'https://backdropcms.org/demo',
+          'attributes' => array('title' => 'Create your own demo sandbox'),
+        ),
+        'download' => array(
+          'title' => 'Download version' . ' ' . $version_info['latest']['version'],
+          'href' => $version_info['latest']['download_link'],
+          'attributes' => array('title' => 'Download the latest version'),
+        ),
+        'more' => array(
+          'title' => 'More ways to try Backdrop',
+          'href' => 'https://backdropcms.org/try-backdrop',
+          'attributes' => array('title' => 'Discover other ways to try Backdrop CMS'),
+        ),
+      ),
+    );
+    $inner_demo_menu = backdrop_render($demo_links);
+    $demo_menu = array(
+      '#theme' => 'borg_list',
+      '#attributes' => array(
+        'class' => array(
+          'sm',
+          'menu-dropdown',
+          'closed',
+          'sm-nowrap',
+        ),
+        'data-menu-style' => 'dropdown',
+      ),
+      '#items' => array(
+        'demo' => array(
+          'data' => $demo_button . $inner_demo_menu,
+          'attributes' => array('class' => array('has-children')),
+        ),
+      ),
+    );
+  }
+  else {
+    $link_options['attributes'] = array('class' => array('button-only'));
+    $demo_menu = l(t('Try Backdrop CMS'), 'https://backdropcms.org/try-backdrop', $link_options);
+  }
+
+  return $demo_menu;
+}
+
+/**
  * Helper function, get core version from JSON API.
  */
 function _borg_get_version() {
@@ -1075,7 +1117,10 @@ function _borg_get_version() {
   $data = isset($cached->data) ? $cached->data : array();
   if (empty($data)) {
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Accept: application/json',
+      'Content-Type: application/json'),
+    );
     curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
     curl_setopt($ch, CURLOPT_URL, 'https://backdropcms.org/core/latest.json');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);

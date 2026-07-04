@@ -1,0 +1,186 @@
+/*******************************************************************************
+ * components-header.css
+ *
+ * Contains styles for system Header block.
+*******************************************************************************/
+
+
+/*******************************************************************************
+ * Site name
+ ******************************************************************************/
+.site-name {
+  font-size: 2.125rem; /* 34px */
+  line-height: 1.25em;
+  font-weight: 200;
+  letter-spacing: -.04em;
+  text-align: center;
+}
+.site-name svg {
+  width: 40px;
+  height: 40px;
+  margin-left: 5px;
+  box-sizing: border-box;
+  background-color: black;
+  color: white;
+  position: relative;
+  top: 5px;
+}
+
+/*******************************************************************************
+ * Site slogan
+ ******************************************************************************/
+.site-slogan {
+  display: none;
+  margin-left: 30px;
+  font-size: 1.25rem; /* 20px */
+  font-weight: 300;
+  line-height: 2.125rem;
+  padding-top: 5px;
+}
+
+/*******************************************************************************
+ * Name and slogan
+ ******************************************************************************/
+.name-and-slogan {
+  flex: 1;
+  .site-name {
+    font-size: 1.5rem;
+  }
+  .site-slogan {
+    padding-top: 7px;
+    display: none;
+  }
+}
+
+/*******************************************************************************
+ * Header Tenplate Columns
+ ******************************************************************************/
+.branding {
+  padding-right: 0;
+}
+.borg-navigation {
+  height: 36px;
+  display: flex;
+  padding-left: 0;
+  align-self: flex-end;
+  margin-top: 6px;
+}
+
+/*******************************************************************************
+ * Header Menus
+ ******************************************************************************/
+.borg-header-menu {
+  height: 36px;
+  display: flex;
+  align-self: flex-end;
+}
+
+.name-and-slogan {
+  text-align: center;
+}
+.menu-main {
+
+}
+.menu-account {
+  display: none;
+  align-self: flex-end;
+}
+.menu-demo {
+  display: none;
+  _margin: 0 auto;
+  align-self: flex-end;
+}
+
+
+
+@media (min-width: 25em) { /* 400px @ 16px font size */
+  .borg-navigation {
+    align-self: auto;
+    margin-top: 10px;
+  }
+  .name-and-slogan {
+    .site-name {
+      font-size: 1.85rem;
+    }
+  }
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .borg-header-menu {
+    text-align: right;
+  }
+  .name-and-slogan {
+    .site-name {
+      flex: 1;
+    }
+  }
+  .menu-main {
+  }
+  .menu-demo {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .name-and-slogan {
+    .site-name {
+      font-size: 2.125rem;
+      line-height: 1em;
+    }
+  }
+  .borg-header-menu {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .menu-main {
+    position: static;
+    left: 0;
+  }
+  .menu-account {
+    display: flex;
+  }
+  .menu-demo {
+  }
+}
+
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .borg-header-menu {
+    margin-top: 8px;
+  }
+  .menu-demo {
+    position: static;
+    left: 0;
+    top: 0;
+  }
+  .menu-main,
+  .menu-account,
+  .menu-demo {
+    display: flex;
+    align-self: flex-end;
+  }
+  .menu-main {
+    justify-content: centre;
+    align-items: centre;
+  }
+}
+
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .borg-header-menu {
+    display: flex;
+    text-align: center;
+  }
+  .site-slogan {
+    padding-top: 7px;
+    margin-left: 30px;
+  }
+}
+
+
+Events:
+col-xs-8 col-sm-6 col-md-6 col-lg-2
+col-xs-4 col-sm-6 col-md-6 col-lg-10
+
+
+font-size: 1.125em; /* 18px */
+line-height: 1.125em; /* 18px */

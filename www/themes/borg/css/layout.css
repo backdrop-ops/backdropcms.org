@@ -6,11 +6,9 @@
  ******************************************************************************/
 
 
-
 /*******************************************************************************
  * Header.
  ******************************************************************************/
-
 .l-header {
   background: #000;
   color: #fff;
@@ -25,34 +23,18 @@
 .l-header a {
   color: #fff;
 }
-
-.l-header .block {
-  display: inline-block;
-}
 .l-header .block-borg-blocks-branding {
   padding-right: 0;
-
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-}
-
-.l-header ul.menu-dropdown {
-  margin: 0 auto;
-  display: inline-block;
 }
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
   .l-header {
-    padding: 16px 0;
+    _padding: 16px 0;
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .l-header {
     padding: 8px 0;
-  }
-  .l-header .block-borg-blocks-branding {
-    padding-right: 0;
   }
   .l-header .block-system-main-menu {
     padding-right: 0;
@@ -64,9 +46,16 @@
     padding: 16px 0;
   }
   .l-header .block-borg-blocks-branding {
-    padding-left: 8px;
+    padding-left: 12px;
   }
 }
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .l-header .block-borg-blocks-branding {
+    padding-left: .9375rem;
+    padding-right: .9375rem;
+  }
+}
+
 
 /*******************************************************************************
  * Top region

@@ -16,8 +16,42 @@ Installation
 Documentation
 -------------
 
+### Full-width hero region with grid background.
+
+To Have a hero region with a grid background image as seen on backdropcms.org,
+in your sub-theme, override the layout template for the home page by adding
+ `--home` to the end of the file name.
+
+For example: `layout--boxton.tpl.php` becomes `layout--boxton--home.tpl.php`.
+Once copied, change the `l-top` region to be `l-hero` as follows:
+
+```
+<?php if (!empty($content['top']) || $messages): ?>
+  <div class="l-hero">
+    <div class="l-hero-image">
+      <div class="l-hero-vgradients"><div class="l-hero-hgradients">
+        <?php if ($messages): ?>
+          <div class="l-messages" role="status" aria-label="<?php print t('Status messages'); ?>">
+            <?php print $messages; ?>
+          </div>
+        <?php endif; ?>
+
+        <?php print $content['top']; ?>
+      </div></div>
+    </div>
+  </div>
+<?php endif; ?>
+```
+
+If your sub-theme has overridden `page-front.css` ensure the two sections on
+`Hero Region` and `Blocks in hero region` have been copied, and are up to date.
+
+### Utility classes
+
 There are a few utility classes provided with this theme:
-- menu-solid will render a sidebar menu on a solid gray background.
+- menu-solid will render a sidebar menu on a light gray background.
+- more as they come!
+
 
 Issues
 ------

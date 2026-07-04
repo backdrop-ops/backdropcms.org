@@ -9,6 +9,10 @@
   position: relative;
   background-color: white;
   border: 1px solid black;
+  border-radius: 2px;
+}
+ul.menu-dropdown { /* needed to override .sm */
+  padding: 10px 0;
 }
 .menu-dropdown li,
 .menu-dropdown li.expanded,
@@ -16,26 +20,26 @@
 .menu-dropdown li.leaf {
   /* Undo system.theme.css menu styles for dropdowns. */
   margin: 0;
-  padding: 0;
-  /* now our stuff */
-  border-bottom: 1px solid var(--color__gray-dark);
-}
-.menu-dropdown li:last-child {
-  border-bottom: 0;
+  padding: 0 10px;
 }
 .js .menu-dropdown ul {
-  border-top: 1px solid var(--color__gray-dark);
-  background-color: var(--color__gray-faint);
+  background-color: var(--color__gray-white);
+  border-bottom: 1px solid var(--color__purple-vlight);
 }
 .menu-dropdown a,
 .menu-dropdown a:hover,
 .menu-dropdown a:focus,
 .menu-dropdown a:active {
   padding: 10px 16px;
+  font-size: 1.0625rem; /* 17px */
   font-weight: normal;
-  line-height: 17px;
+  line-height: 1.0625rem; /* 17px */
   text-decoration: none;
   color: #000;
+  border-bottom: 1px solid var(--color__purple-vlight);
+}
+.menu-dropdown li:last-child a {
+  border-bottom: 0;
 }
 .menu-dropdown a.has-submenu {
   /* make room for the toggle button (sub indicator) */
@@ -88,6 +92,10 @@
   content: '-';
 }
 
+/*******************************************************************************
+ * Dopdown Styles start here
+ ******************************************************************************/
+
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   /* Switch to desktop layout
   -----------------------------------------------
@@ -99,6 +107,9 @@
     position: absolute;
     width: 12em;
     top: 1em;
+  }
+  ul.menu-dropdown { /* needed to override .sm */
+    padding: 0;
   }
   .menu-dropdown li,
   .menu-dropdown li.expanded,
@@ -139,7 +150,7 @@
   .menu-dropdown li.collapsed,
   .menu-dropdown li.leaf {
     margin: 0;
-    _padding: 0 9px; /* See 992px viewport */
+    padding: 0;
     border: 0;
     border-top: 0;
   }
@@ -155,9 +166,10 @@
   .menu-dropdown a:active,
   .menu-dropdown a.highlighted {
     width: 100%;
-    color: white;
+    color: #ffffff;
     padding: 8px;
     padding-right: 1em; /* override mobile pading */
+    border-bottom: 0;
   }
 
   /* top level only */
@@ -168,13 +180,13 @@
   .menu-dropdown > li > a.highlighted {
     border-bottom: 2px solid transparent;
   }
-  .menu-dropdown > li > a.active-trail,
-  .menu-dropdown > li > a.active,
-  .menu-dropdown > li > a:hover,
-  .menu-dropdown > li > a:focus,
-  .menu-dropdown > li > a:active,
-  .menu-dropdown > li > a.highlighted {
-    border-bottom: 2px solid var(--color__purple-vlight);
+  .menu-dropdown > li li > a.active-trail,
+  .menu-dropdown > li li > a.active,
+  .menu-dropdown > li li > a:hover,
+  .menu-dropdown > li li > a:focus,
+  .menu-dropdown > li li > a:active,
+  .menu-dropdown > li li > a.highlighted {
+    _border-bottom: 2px solid var(--color__purple-vlight);
   }
 
   .menu-dropdown a.disabled {
@@ -190,15 +202,19 @@
 
   /** second level ************************************************************/
   .js .menu-dropdown ul {
-    padding: 12px;
-    padding-left: 12px;
-    background-color: white;
+    padding: 10px;
+    padding-left: 10px;
+    background-color: #fff;
     border: 1px solid #000;
     border-radius: 2px;
   }
   .js .menu-dropdown ul li {
     float: none;
-    padding: 0 12px;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--color__purple-vlight);
+  }
+  .js .menu-dropdown ul li:last-child {
+    border-bottom: none;
   }
   .menu-dropdown ul li:has(a.active),
   .menu-dropdown ul li:has(a.active-trail),
@@ -214,12 +230,11 @@
   .menu-dropdown ul a:active,
   .menu-dropdown ul a.highlighted {
     border: 0;
-    padding: 12px 0;
-    color: #000;
-    border-bottom: 1px solid var(--color__purple-vlight);
+    padding: 10px 0;
   }
-  .js .menu-dropdown ul li:last-child a {
-    border-bottom: none;
+
+  .menu-dropdown ul a {
+    color: #000;
   }
   .menu-dropdown ul a.active,
   .menu-dropdown ul a.active-trail,
@@ -230,8 +245,8 @@
     color: var(--color__accent--primary);
   }
   .menu-dropdown ul a.disabled {
-    background: white;
-    color: #cccccc;
+    background: #fff;
+    color: #ccc;
   }
   .menu-dropdown ul .has-children > a {
     padding-right: 20px;
@@ -310,7 +325,6 @@
   .menu-dropdown > li > a:active,
   .menu-dropdown > li > a.highlighted {
     width: 100%;
-    _padding-right: .5em; /* override mobile pading */
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */

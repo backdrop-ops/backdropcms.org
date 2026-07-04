@@ -17,26 +17,36 @@
  * - $site_name: The name of the site, empty when display has been disabled.
  * - $site_slogan: The site slogan, empty when display has been disabled.
  * - $menu: The menu for the header (if any), as an HTML string.
+ *
+ * Added:
+ * - $account_menu: the user account menu.
+ * - $demo_menu: the demo Backdrop CMS menu.
  */
 ?>
-<a class="site-name wordmark" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span>backdrop</span></a>
+<div class="branding col-xs-6 col-sm-4 col-md-3 col-lg-2">
+  <?php if ($logo): ?>
+    <a class="wordmark site-name" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home">
+      <span><?php print t('backdrop'); ?></span><?php print $logo; ?>
+    </a>
+  <?php endif; ?>
+</div>
 
-<?php if ($logo): ?>
-  <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" class="logo">
-    <?php print $logo; ?>
-  </a>
-<?php endif; ?>
+<div class="borg-navigation col-xs-6 col-sm-8 col-md-9 col-lg-10">
+  <div class="borg-header-menu name-and-slogan">
+    <?php if ($site_name): ?>
+      <div class="site-name"><?php print $site_name; ?></div>
+    <?php endif; ?>
+    <?php if ($site_slogan): ?>
+      <div class="site-slogan"><?php print $site_slogan; ?></div>
+    <?php endif; ?>
+  </div>
 
-<?php if ($site_name): ?>
-  <a class="site-name" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
-<?php endif; ?>
-
-<?php if ($site_slogan): ?>
-  <div class="site-slogan"><?php print $site_slogan; ?></div>
-<?php endif; ?>
-
-<?php if ($menu): ?>
-  <nav class="header-menu">
-    <?php print $menu; ?>
-  </nav>
-<?php endif; ?>
+  <?php if ($menu): ?>
+    <div class="borg-header-menu menu-account">
+      <?php print render($account); ?>
+    </div>
+    <div class="borg-header-menu menu-demo">
+      <?php print render($demo); ?>
+    </div>
+  <?php endif; ?>
+</div>

@@ -4,20 +4,264 @@
  * Contains styles only needed for the front page of the site.
  *
  * These elements were separated from the compontents.css file because there is
- * a lot of code in here that's not needed for most of the site, so it didn't
- * need to be loaded all the time.
+ * a lot of code in here that's not needed for most of the site.
  ******************************************************************************/
 
-/* all headings should be light or normal weight */
+/*******************************************************************************
+** Header Region
+*******************************************************************************/
+body.front .l-header {
+  box-shadow: none;
+}
+
+/*******************************************************************************
+** Hero Region
+*******************************************************************************/
+body.front .l-hero {
+  background: #000;
+  max-width: 9999em;
+  padding-inline: 0;
+}
+
+body.front .l-hero-image {
+  position: relative;
+  z-index: 0;
+}
+/* Grid image behind hero */
+body.front .l-hero-image:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -10;
+  mask-image: url(../images/diagonal-grid.svg);
+  mask-size: 580px;
+  background-color: #666;
+}
+
+/* Gradients to overlay background image */
+body.front .l-hero-vgradients:before,
+body.front .l-hero-hgradients:before,
+body.front .l-hero-hgradients:after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  display: block;
+}
+
+body.front .l-hero-vgradients:before {
+  top: 0;
+  right:0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to bottom, #0005 75%, #000);
+}
+
+body.front .l-hero-hgradients:before {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 144px;
+  background: linear-gradient(to left, #0000, #000c);
+}
+body.front .l-hero-hgradients:after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 144px;
+  background: linear-gradient(to right, #0000, #000c);
+}
+
+body.front .l-hero-hgradients {
+  margin: 0 auto;
+  /* 28px at desktop in mockup */
+  font-size: clamp(18px, 2.5vw ,1.75rem);
+  text-align: center;
+  /* This media query should match the width on `body.front .l-hero .block h1` */
+  @media (min-width: 30em) {
+    width: min-content;
+  }
+}
+
+/*******************************************************************************
+** Blocks in hero region
+*******************************************************************************/
+
+/* add padding only to the first block in hero */
+body.front .l-hero :nth-child(1 of .block) {
+  padding: 7.5rem 2rem;
+}
+
+body.front .l-hero .block h1,
+body.front .l-hero .block h2.block-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+  /* 100px at desktop in mock */
+  font-size: clamp(1.5em, 8vw, 3.57em);
+  line-height: 0.96;
+  font-weight: 600;
+  color: #fff;
+  @media (min-width: 30em) {
+    width: 10em;
+  }
+  @media (min-width: 48em) {
+    /* 100px at desktop in mock */
+    font-size: 3.57em;
+  }
+}
+body.front .l-hero .block h2 {
+  font-size: clamp(1.5em, 8vw, 3.57em);
+  font-size: 3rem;
+  line-height: 1;
+}
+
+body.front .l-hero .block-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+body.front .l-hero .block-content p {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: #fff;
+}
+
+/*******************************************************************************
+** Top Region
+*******************************************************************************/
+body.front .l-top {
+  color: #fff;
+  border-bottom: 2px solid transparent;
+  border-top: .01px solid #E8E6E5;
+  background: linear-gradient(to top right, #00FFA6, #45BEB1, #F317CD);
+}
+body.front .l-top .view-promoted-cards .views-grid-box {
+  color: #15141A;
+}
+
+/*******************************************************************************
+* Page title
+*******************************************************************************/
+body.front .page-title {
+  font-size: 250%;
+  margin-bottom: 30px;
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  body.front .page-title {
+    font-size: 400%;
+    padding-bottom: 18px;
+  }
+}
+
+/*******************************************************************************
+* Content Region
+*******************************************************************************/
+body.front .l-content {
+  overflow: visible;
+}
+
+/*******************************************************************************
+** Middle (bottom) Region
+*******************************************************************************/
+body.front .l-middle-bottom {
+  margin-top: 0;
+  border-top: 0;
+}
+
+/*******************************************************************************
+** Bottom Region
+*******************************************************************************/
+body.front .l-bottom {
+  background: #000;
+  color: #FFF;
+  margin-bottom: 50px;
+}
+
+body.front .l-bottom-inner {
+  padding: 15px;
+}
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  body.front .l-bottom-inner {
+    padding: 30px;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  body.front .l-bottom-inner {
+    padding: 45px;
+  }
+}
+
+/*******************************************************************************
+** Headings
+*******************************************************************************/
+
+body.front .l-top h1.page-title {
+  font-size: 2.75rem; /* 44px */
+  padding: 0;
+}
+
 body.front .l-sidebar h2 {
   font-weight: 300;
 }
 
-/* hide vertical tabs on home page */
-body.front .vertical-tabs {
-  display: none;
+body.front .l-top h2 {
+  font-size: 1.625rem; /* 26px */
+  line-height: 1.33em; /* */
 }
 
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  body.front .l-top h1.page-title {
+    font-size: 3.75rem; /* 60px */
+    font-weight: normal;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  body.front .l-top h2 {
+    font-size: 2.625rem; /* 42px */
+  }
+  body.front .l-top .view-promoted-cards .views-grid-box h2 {
+    font-size: 1.25rem; /* 20px */
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  body.front .l-top .view-promoted-cards .views-grid-box h2 {
+    font-size: 2.625rem; /* 42px */
+  }
+}
+
+/*******************************************************************************
+** Node content on the home page
+*******************************************************************************/
+body.front .node-page ul {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  body.front .node-page {
+    margin: 0 auto 80px auto;
+    padding-right: 15px;
+  }
+}
+
+/*******************************************************************************
+** Why Backdrop block
+*******************************************************************************/
+body.front #why-use-backdrop-cms {
+  margin-top: 0;
+}
+
+/*******************************************************************************
+** Books block
+*******************************************************************************/
 body.front .block-block-books figure,
 body.front .backdrop-books figure {
   max-width: 50%;
@@ -50,109 +294,10 @@ body.front .backdrop-books figure {
   }
 }
 
-body.front .l-middle-bottom {
-  margin-top: 0;
-  border-top: 0;
-}
-
 /*******************************************************************************
- * Front page
- ******************************************************************************/
-body.front .l-header {
-  box-shadow: none;
-}
-body.front .l-top {
-  color: #fff;
-  border-bottom: 2px solid transparent;
-  border-top: .01px solid #E8E6E5;
-  background: linear-gradient(to top right, #00FFA6, #45BEB1, #F317CD);
-}
-body.front .l-top .view-promoted-cards .views-grid-box {
-  color: #15141A;
-}
+** Vertical tabs hidden
+*******************************************************************************/
 
-body.front .l-bottom {
-  background: #000;
-  color: #FFF;
-  margin-bottom: 50px;
-}
-
-body.front .l-bottom-inner {
-  padding: 15px;
-}
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  body.front .l-bottom-inner {
-    padding: 30px;
-  }
-}
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  body.front .l-bottom-inner {
-    padding: 45px;
-  }
-}
-
-body.front .l-content {
-  overflow: visible;
-}
-
-body.front .page-title {
-  font-size: 250%;
-  margin-bottom: 30px;
-}
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  body.front .page-title {
-    font-size: 400%;
-    padding-bottom: 18px;
-  }
-}
-
-body.front .node-page ul {
-  -webkit-column-count: 2;
-  -moz-column-count: 2;
-  column-count: 2;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  body.front .node-page {
-    margin: 0 auto 80px auto;
-    padding-right: 15px;
-  }
-}
-
-#why-use-backdrop-cms {
-  margin-top: 0;
-}
-
-/*******************************************************************************
- * Front page tagline.
- ******************************************************************************/
-body.front .l-top h1.page-title {
-  font-size: 2.75rem; /* 44px */
-  padding: 0;
-}
-body.front .l-top h2 {
-  font-size: 1.625rem; /* 26px */
-  line-height: 1.33em; /* */
-}
-
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  body.front .l-top h1.page-title {
-    font-size: 3.75rem; /* 60px */
-    font-weight: normal;
-  }
-}
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  body.front .l-top h2 {
-    font-size: 2.625rem; /* 42px */
-  }
-  body.front .l-top .view-promoted-cards .views-grid-box h2 {
-    font-size: 1.25rem; /* 20px */
-  }
-}
-@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
-  body.front .l-top .view-promoted-cards .views-grid-box h2 {
-    font-size: 2.625rem; /* 42px */
-  }
+body.front .vertical-tabs {
+  display: none;
 }

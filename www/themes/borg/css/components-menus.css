@@ -5,20 +5,16 @@
  ******************************************************************************/
 
 /*******************************************************************************
- * Main menu - drop-open position for mobile
- ******************************************************************************/
+** Main menu - drop-open position for mobile
+*******************************************************************************/
+
 .block-system-main-menu ul.menu {
   position: absolute;
   width: 275px;
-  top: 50px;
-  right: 30px;
+  top: 48px;
+  right: 15px;
 }
 
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  .block-system-main-menu ul.menu {
-    top: 54px;
-  }
-}
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .block-system-main-menu ul.menu {
     position: relative;
@@ -29,32 +25,74 @@
 }
 
 /*******************************************************************************
- * Borg menus - account
- ******************************************************************************/
-.menu-account {
-  display: none;
+** Borg menus - all header menus.
+*******************************************************************************/
+
+/* white bg for mobile menu */
+.borg-header-menu > ul.menu-dropdown {
+  background-color: #ffffff
 }
+.borg-header-menu > ul > li > a,
+.borg-header-menu > ul > li > a:hover,
+.borg-header-menu > ul > li > a:focus,
+.borg-header-menu > ul > li > a:active,
+.borg-header-menu > ul > li > a.highlighted {
+  padding: 10px;
+}
+.borg-header-menu > ul > li > a.active-trail,
+.borg-header-menu > ul > li > a.active,
+.borg-header-menu > ul > li > a:hover,
+.borg-header-menu > ul > li > a:focus,
+.borg-header-menu > ul > li > a:active,
+.borg-header-menu > ul > li > a.highlighted {
+  _border-bottom: 2px solid transparent;
+}
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .borg-header-menu > ul.menu-dropdown {
+    background-color: transparent;
+  }
+}
+
+/*******************************************************************************
+** Borg menus - account
+*******************************************************************************/
 
 .menu-account > ul > li > a,
 .menu-account > ul > li > a:hover,
 .menu-account > ul > li > a:focus,
 .menu-account > ul > li > a:active,
 .menu-account > ul > li > a.highlighted {
-  padding: 2px;
+  padding: 0;
 }
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+
+.menu-account > ul > li > a svg {
+  position: relative;
+  top: 3px;
+  width: 30px;
+  height: 30px;
 }
 
 /*******************************************************************************
- * Borg menus - demo
- ******************************************************************************/
-.menu-demo {
-  display: none;
-  margin-left: 16px;
+** Borg menus - demo - PURPLE
+*******************************************************************************/
+
+/* When the versions are not returned we have only one button */
+.menu-demo a.button-only {
+  display: inline-block;
+  padding: 10px 10px 9px 10px;
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.0625rem; /* 17px */
+  color: #ffffff;
+  border-radius: 2px;
+  background: var(--color__accent--primary);
 }
-.menu-demo > ul {
-  background-color: transparent;
+.menu-demo a.button-only:hover {
+  background: var(--color__accent--primary--light);
+  color: #000000;
 }
+
+/* Otherwise we have a drop-down menu */
 .menu-demo > ul > li > a,
 .menu-demo > ul > li > a:hover,
 .menu-demo > ul > li > a:focus,
@@ -76,7 +114,6 @@
 .menu-demo > ul > li > a:focus,
 .menu-demo > ul > li > a:active,
 .menu-demo > ul > li > a.highlighted {
-  border-bottom: 2px solid transparent;
   background: linear-gradient(
     90deg,
     var(--color__accent--primary--dark) 0%,
@@ -119,6 +156,9 @@
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .menu-demo a.button-only {
+    font-size: 1.125rem; /* 18px; */
+  }
   .menu-demo > ul > li > a > span.sub-arrow {
     right: 13px;
   }
@@ -126,94 +166,8 @@
 
 
 /*******************************************************************************
- * Borg menus - all header menus
- ******************************************************************************/
-.l-header .block-system-main-menu {
-  display: inline-block;
-  text-align: right;
-  position: relative;
-  margin-top: 13px;
-}
-.borg-header-menu {
-  height: 36px;
-}
-
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  .l-header .block-system-main-menu {
-    padding-left: 0;
-  }
-  .menu-main,
-  .menu-demo {
-    display: inline-block;
-  }
-  .menu-demo {
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-}
-
-@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
-  .l-header .block-system-main-menu {
-    text-align: center;
-    margin-top: 0;
-  }
-  .borg-header-menu {
-    text-align: center;
-    margin-top: 16px;
-  }
-  .menu-main {
-    position: static;
-    left: 0;
-  }
-  .menu-demo {
-    display: none;
-  }
-  .l-header .container {
-    _background-color: orange;
-  }
-}
-
-@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .l-header .block-system-main-menu {
-    text-align: center;
-    margin-top: 7px;
-    display: flex;
-  }
-  .borg-header-menu {
-    margin-top: 8px;
-  }
-  .menu-demo {
-    position: static;
-    left: 0;
-    top: 0;
-  }
-  .menu-main,
-  .menu-account,
-  .menu-demo {
-    display: flex;
-    align-self: flex-end;
-  }
-  .menu-main {
-    flex: 1;
-    justify-content: centre;
-    align-items: centre;
-  }
-
-  .l-header .container {
-    _background-color: yellow;
-  }
-}
-
-@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
-  .l-header .container {
-    _background-color: green;
-  }
-}
-
-/*******************************************************************************
- * All Sidebar Menus
- ******************************************************************************/
+** All Sidebar Menus
+*******************************************************************************/
 .l-sidebar ul.menu a.active {
   font-weight: bold;
 }
@@ -222,8 +176,8 @@
 }
 
 /*******************************************************************************
- * Solid Menus (usually in the sidebar, but not necessarily)
- ******************************************************************************/
+** Solid Menus (usually in the sidebar, but not necessarily)
+*******************************************************************************/
 .block.menu-solid ul.menu {
   background-color: var(--color__background--section--gray);
   border: 1px solid var(--color__border--section--gray);
@@ -265,8 +219,8 @@
 }
 
 /*******************************************************************************
- * Footer Menu
- ******************************************************************************/
+** Footer Menu
+*******************************************************************************/
 .l-footer .block-menu,
 .l-footer .block-menu-menu-footer-menu {
   width: 100%;

@@ -4,39 +4,6 @@
  * Styles for individual HTML components so they can be placed onto any page.
 *******************************************************************************/
 
-a.site-name {
-  display: inline-block;
-  font-size: 2.125rem; /* 34px */
-  font-weight: 200;
-  letter-spacing: -.04em;
-}
-.site-name svg {
-  width: 40px;
-  height: 40px;
-  margin-left: 5px;
-  box-sizing: border-box;
-  background-color: black;
-  color: white;
-  position: relative;
-  top: 5px;
-}
-.site-slogan {
-  display: none;
-  margin-left: 30px;
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 2.125rem;
-  padding-top: 5px;
-}
-
-@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  a.site-name {
-    font-size: 2rem; /* 32px */
-  }
-  .site-slogan {
-    display: inline-block;
-  }
-}
 
 /*******************************************************************************
  * Admin-bar
@@ -348,7 +315,6 @@ article.comment ul.links.inline {
 /*******************************************************************************
  * More link specifically
 *******************************************************************************/
-
 li.node-readmore a:after {
   content: ' »';
 }
@@ -666,8 +632,7 @@ a.feed-icon {
   color: #007CBA;
 }
 .block-on-the-web-social-links a svg {
-  /*background-color: var(--color__accent--primary);*/
-  background-color: black;
+  background-color: var(--color__accent--primary);
 }
 .l-footer .block-on-the-web-social-links a i {
   text-align: left;
@@ -767,10 +732,14 @@ a.otw-svg-mask-2 {
 .block-borg-signup-newsletter input[type="submit"] {
   font-size: 1.125rem;
   background: var(--color__accent--primary);
-  color: #fff;
   padding: 0.3em 1.111em;
   margin: 20px 0 10px 0;
   height: auto;
+}
+.block-borg-signup-newsletter input[type="submit"]:hover {
+  background: var(--color__accent--primary--light);
+  border: 2px solid var(--color__accent--primary--light);
+  color: #000;
 }
 .block-borg-signup-newsletter .form-actions {
   text-align: left;
@@ -1516,7 +1485,7 @@ div.addressfield-container-inline::after {
 input.button-primary {
   background-color: var(--color__accent--primary);
   color: white;
-  border: 2px solid var(--color__link);
+  border: 2px solid var(--color__accent--primary);
 }
 input.button-primary:hover {
   background-color: var(--color__accent--primary--dark);

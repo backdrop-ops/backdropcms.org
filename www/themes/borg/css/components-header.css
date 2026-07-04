@@ -1,0 +1,126 @@
+/*******************************************************************************
+ * components-header.css
+ *
+ * Contains styles for system Header block, and other header components.
+*******************************************************************************/
+
+/*******************************************************************************
+** Borg menus - all header menus
+*******************************************************************************/
+.l-header .block-system-main-menu {
+  height: 36px;
+  text-align: right;
+  margin-top: 15px;
+}
+
+.borg-header-menu {
+  height: 36px; /* 36 height + 15 padding */
+}
+.menu-main {
+  text-align: right;
+}
+.menu-account {
+  display: none;
+}
+.menu-demo {
+  display: none;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .l-header .block-system-main-menu {
+    padding-left: 0;
+    display: flex;
+  }
+
+  .menu-main,
+  .menu-demo {
+    text-align: right;
+    display: inline-block;
+    flex: 1;
+  }
+}
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .l-header .block-system-main-menu {
+    text-align: center;
+  }
+  .borg-header-menu {
+    padding-top: 2px;
+  }
+  .menu-demo {
+    display: none;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .l-header .block-system-main-menu {
+    text-align: center;
+  }
+  .borg-header-menu ul.menu-dropdown {
+    display: inline-block;
+  }
+  .menu-main,
+  .menu-account,
+  .menu-demo {
+    display: inline-block;
+    flex: auto;
+  }
+  .menu-account {
+    text-align: right;
+  }
+  .menu-demo {
+    text-align: left;
+  }
+}
+
+
+/*******************************************************************************
+** Site name and slogan.
+*******************************************************************************/
+.site-name {
+  display: inline-block;
+  font-size: 2.125rem; /* 34px */
+  font-weight: 200;
+  letter-spacing: -.04em; /* -.64px */
+}
+.site-name svg {
+  width: 40px;
+  height: 40px;
+  margin-left: 5px;
+  box-sizing: border-box;
+  background-color: black;
+  color: white;
+  position: relative;
+  top: 5px;
+}
+.site-slogan {
+  display: none;
+  margin-left: 30px;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 2.125rem;
+  padding-top: 5px;
+}
+
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .site-slogan {
+    display: inline-block;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .site-name {
+    font-size: 2rem; /* 32px */
+    padding-top: 2px;
+  }
+  .site-name svg {
+    margin-left: 0;
+  }
+}
+@media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
+  .site-name {
+    font-size: 2.125rem; /* 34px */
+    padding-top: 0;
+  }
+  .site-name svg {
+    margin-left: 5px;
+  }
+}
+

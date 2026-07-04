@@ -14,7 +14,8 @@ stylesheets[screen][] = css/components.css
 stylesheets[screen][] = css/menu-dropdown.theme.css
 stylesheets[screen][] = css/menu-toggle.theme.css
 
-; These should be overridden in base themes:
+; These should be overridden in sub-themes:
+stylesheets[screen][] = css/components-header.css
 stylesheets[screen][] = css/components-nodes.css
 stylesheets[screen][] = css/components-styles.css
 stylesheets[screen][] = css/components-menus.css
@@ -30,7 +31,7 @@ ckeditor_stylesheets[] = css/editor.css
 ; Custom javascript to be added:
 scripts[] = js/borg.js
 
-; Added by Backdrop CMS packaging script on 2025-10-10
+; Added by Backdrop CMS packaging script on 2026-01-20
 project = borg
-version = 1.x-2.0.0
-timestamp = 1760132491
+version = 1.x-2.0.1
+timestamp = 1768934481
