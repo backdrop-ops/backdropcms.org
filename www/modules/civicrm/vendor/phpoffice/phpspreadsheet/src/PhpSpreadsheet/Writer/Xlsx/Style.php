@@ -22,7 +22,7 @@ class Style extends WriterPart
      *
      * @return string XML Output
      */
-    public function writeStyles(Spreadsheet $spreadsheet)
+    public function writeStyles(Spreadsheet $spreadsheet): string
     {
         // Create XML writer
         $objWriter = null;
@@ -170,8 +170,8 @@ class Style extends WriterPart
     {
         // Check if this is a pattern type or gradient type
         if (
-            $fill->getFillType() === Fill::FILL_GRADIENT_LINEAR ||
-            $fill->getFillType() === Fill::FILL_GRADIENT_PATH
+            $fill->getFillType() === Fill::FILL_GRADIENT_LINEAR
+            || $fill->getFillType() === Fill::FILL_GRADIENT_PATH
         ) {
             // Gradient fill
             $this->writeGradientFill($objWriter, $fill);
@@ -407,9 +407,6 @@ class Style extends WriterPart
         $objWriter->endElement();
     }
 
-    /** @var mixed */
-    private static $scrutinizerFalse = false;
-
     /**
      * Write Cell Style Xf.
      */
@@ -423,7 +420,7 @@ class Style extends WriterPart
             $objWriter->writeAttribute('quotePrefix', '1');
         }
 
-        if ($style->getNumberFormat()->getBuiltInFormatCode() === self::$scrutinizerFalse) {
+        if ($style->getNumberFormat()->getBuiltInFormatCode() === false) {
             $objWriter->writeAttribute('numFmtId', (string) (int) ($this->getParentWriter()->getNumFmtHashTable()->getIndexForHashCode($style->getNumberFormat()->getHashCode()) + 164));
         } else {
             $objWriter->writeAttribute('numFmtId', (string) (int) $style->getNumberFormat()->getBuiltInFormatCode());
@@ -540,19 +537,19 @@ class Style extends WriterPart
         // protection
         if ((!empty($style->getProtection()->getLocked())) || (!empty($style->getProtection()->getHidden()))) {
             if (
-                $style->getProtection()->getLocked() !== Protection::PROTECTION_INHERIT ||
-                $style->getProtection()->getHidden() !== Protection::PROTECTION_INHERIT
+                $style->getProtection()->getLocked() !== Protection::PROTECTION_INHERIT
+                || $style->getProtection()->getHidden() !== Protection::PROTECTION_INHERIT
             ) {
                 $objWriter->startElement('protection');
                 if (
-                    ($style->getProtection()->getLocked() !== null) &&
-                    ($style->getProtection()->getLocked() !== Protection::PROTECTION_INHERIT)
+                    ($style->getProtection()->getLocked() !== null)
+                    && ($style->getProtection()->getLocked() !== Protection::PROTECTION_INHERIT)
                 ) {
                     $objWriter->writeAttribute('locked', ($style->getProtection()->getLocked() == Protection::PROTECTION_PROTECTED ? 'true' : 'false'));
                 }
                 if (
-                    ($style->getProtection()->getHidden() !== null) &&
-                    ($style->getProtection()->getHidden() !== Protection::PROTECTION_INHERIT)
+                    ($style->getProtection()->getHidden() !== null)
+                    && ($style->getProtection()->getHidden() !== Protection::PROTECTION_INHERIT)
                 ) {
                     $objWriter->writeAttribute('hidden', ($style->getProtection()->getHidden() == Protection::PROTECTION_PROTECTED ? 'true' : 'false'));
                 }
@@ -568,7 +565,7 @@ class Style extends WriterPart
      *
      * @param string $name Element name
      */
-    private function writeBorderPr(XMLWriter $objWriter, $name, Border $border): void
+    private function writeBorderPr(XMLWriter $objWriter, string $name, Border $border): void
     {
         // Write BorderPr
         if ($border->getBorderStyle() === Border::BORDER_OMIT) {
@@ -593,7 +590,7 @@ class Style extends WriterPart
      *
      * @param int $id Number Format identifier
      */
-    private function writeNumFmt(XMLWriter $objWriter, ?NumberFormat $numberFormat, $id = 0): void
+    private function writeNumFmt(XMLWriter $objWriter, ?NumberFormat $numberFormat, int $id = 0): void
     {
         // Translate formatcode
         $formatCode = ($numberFormat === null) ? null : $numberFormat->getFormatCode();
@@ -612,7 +609,7 @@ class Style extends WriterPart
      *
      * @return \PhpOffice\PhpSpreadsheet\Style\Style[] All styles in PhpSpreadsheet
      */
-    public function allStyles(Spreadsheet $spreadsheet)
+    public function allStyles(Spreadsheet $spreadsheet): array
     {
         return $spreadsheet->getCellXfCollection();
     }
@@ -622,7 +619,7 @@ class Style extends WriterPart
      *
      * @return Conditional[] All conditional styles in PhpSpreadsheet
      */
-    public function allConditionalStyles(Spreadsheet $spreadsheet)
+    public function allConditionalStyles(Spreadsheet $spreadsheet): array
     {
         // Get an array of all styles
         $aStyles = [];
@@ -644,7 +641,7 @@ class Style extends WriterPart
      *
      * @return Fill[] All fills in PhpSpreadsheet
      */
-    public function allFills(Spreadsheet $spreadsheet)
+    public function allFills(Spreadsheet $spreadsheet): array
     {
         // Get an array of unique fills
         $aFills = [];
@@ -659,7 +656,6 @@ class Style extends WriterPart
         $aFills[] = $fill1;
         // The remaining fills
         $aStyles = $this->allStyles($spreadsheet);
-        /** @var \PhpOffice\PhpSpreadsheet\Style\Style $style */
         foreach ($aStyles as $style) {
             if (!isset($aFills[$style->getFill()->getHashCode()])) {
                 $aFills[$style->getFill()->getHashCode()] = $style->getFill();
@@ -674,13 +670,12 @@ class Style extends WriterPart
      *
      * @return Font[] All fonts in PhpSpreadsheet
      */
-    public function allFonts(Spreadsheet $spreadsheet)
+    public function allFonts(Spreadsheet $spreadsheet): array
     {
         // Get an array of unique fonts
         $aFonts = [];
         $aStyles = $this->allStyles($spreadsheet);
 
-        /** @var \PhpOffice\PhpSpreadsheet\Style\Style $style */
         foreach ($aStyles as $style) {
             if (!isset($aFonts[$style->getFont()->getHashCode()])) {
                 $aFonts[$style->getFont()->getHashCode()] = $style->getFont();
@@ -695,13 +690,12 @@ class Style extends WriterPart
      *
      * @return Borders[] All borders in PhpSpreadsheet
      */
-    public function allBorders(Spreadsheet $spreadsheet)
+    public function allBorders(Spreadsheet $spreadsheet): array
     {
         // Get an array of unique borders
         $aBorders = [];
         $aStyles = $this->allStyles($spreadsheet);
 
-        /** @var \PhpOffice\PhpSpreadsheet\Style\Style $style */
         foreach ($aStyles as $style) {
             if (!isset($aBorders[$style->getBorders()->getHashCode()])) {
                 $aBorders[$style->getBorders()->getHashCode()] = $style->getBorders();
@@ -716,13 +710,12 @@ class Style extends WriterPart
      *
      * @return NumberFormat[] All number formats in PhpSpreadsheet
      */
-    public function allNumberFormats(Spreadsheet $spreadsheet)
+    public function allNumberFormats(Spreadsheet $spreadsheet): array
     {
         // Get an array of unique number formats
         $aNumFmts = [];
         $aStyles = $this->allStyles($spreadsheet);
 
-        /** @var \PhpOffice\PhpSpreadsheet\Style\Style $style */
         foreach ($aStyles as $style) {
             if ($style->getNumberFormat()->getBuiltInFormatCode() === false && !isset($aNumFmts[$style->getNumberFormat()->getHashCode()])) {
                 $aNumFmts[$style->getNumberFormat()->getHashCode()] = $style->getNumberFormat();

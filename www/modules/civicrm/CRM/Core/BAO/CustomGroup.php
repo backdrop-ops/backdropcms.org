@@ -680,16 +680,27 @@ class CRM_Core_BAO_CustomGroup extends CRM_Core_DAO_CustomGroup implements \Civi
       throw new CRM_Core_Exception('Invalid Entity Filter');
     }
     else {
-      $subTypes = CRM_Contact_BAO_ContactType::subTypeInfo($entityType, TRUE);
-      $subTypes = array_column($subTypes, 'name', 'name');
+      // Determine which types to collect subtypes from
+      $subTypesToCheck = $entityType === 'Contact' ? array_keys($contactTypes) : [$entityType];
+
+      $subTypes = [];
+      foreach ($subTypesToCheck as $type) {
+        $typeSubTypes = CRM_Contact_BAO_ContactType::subTypeInfo($type, TRUE);
+        if (!empty($typeSubTypes)) {
+          $subTypes = array_merge($subTypes, array_column($typeSubTypes, 'name', 'name'));
+        }
+      }
+      // Fallback if no subtypes exist
+      if (empty($subTypes)) {
+        $subTypes = $subTypesToCheck;
+      }
     }
     // When you create a new contact type it gets saved in mixed case in the database.
     // Eg. "Service User" becomes "Service_User" in civicrm_contact_type.name
     // But that field does not differentiate case (eg. you can't add Service_User and service_user because mysql will report a duplicate error)
     // webform_civicrm and some other integrations pass in the name as lowercase to API3 Contact.duplicatecheck
     // Since we can't actually have two strings with different cases in the database perform a case-insensitive search here:
-    $subTypesByName = array_combine($subTypes, $subTypes);
-    $subTypesByName = array_change_key_case($subTypesByName, CASE_LOWER);
+    $subTypesByName = array_change_key_case(array_combine($subTypes, $subTypes), CASE_LOWER);
     $subTypesByKey = array_change_key_case($subTypes, CASE_LOWER);
     $subTypeKey = mb_strtolower($subType);
     if (!array_key_exists($subTypeKey, $subTypesByKey) && !in_array($subTypeKey, $subTypesByName)) {
@@ -2206,6 +2217,13 @@ class CRM_Core_BAO_CustomGroup extends CRM_Core_DAO_CustomGroup implements \Civi
 
     $customEntityMap = self::getCustomEntityTypeMap();
     foreach ($customEntityMap as $customEntity) {
+
+      if (!\Civi\Schema\EntityRepository::tableExists($customEntity['table_name'])) {
+        // If we just deleted an ECK entity we'll get here with a NULL table_name
+        // when Managed entity reconcile is triggered as part of the delete process.
+        // ECK already deleted the CustomFields anyway.
+        return;
+      }
       // Go by table_name for the sake of contact types and complex entities with alternate tables
       $field = Civi::table($customEntity['table_name'])->getField($customEntity['grouping']);
       if (array_intersect_assoc($field[$mode] ?? [], $property)) {

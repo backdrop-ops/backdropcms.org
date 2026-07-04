@@ -145,7 +145,8 @@ class CRM_Contribute_Form_Task_Invoice extends CRM_Contribute_Form_Task {
     $this->preventAjaxSubmit();
     $this->assign('isAdmin', CRM_Core_Permission::check('administer CiviCRM'));
 
-    $this->add('select', 'from_email_address', ts('From'), $this->_fromEmails, TRUE, ['class' => 'crm-select2 huge']);
+    $fromEmailSelect = $this->add('select', 'from_email_address', ts('From'), $this->_fromEmails, TRUE, ['class' => 'crm-select2 huge']);
+    $fromEmailSelect->setOptionTextEscaped();
     if ($this->_selectedOutput !== 'email') {
       $this->addElement('radio', 'output', NULL, ts('Email Invoice'), 'email_invoice');
       $this->addElement('radio', 'output', NULL, ts('PDF Invoice'), 'pdf_invoice');
@@ -549,8 +550,8 @@ class CRM_Contribute_Form_Task_Invoice extends CRM_Contribute_Form_Task {
         $sendTemplateParams['tplParams'] = $tplParams;
         $sendTemplateParams['from'] = $fromEmailAddress;
         $sendTemplateParams['toEmail'] = $email;
-        $sendTemplateParams['cc'] = $values['cc_confirm'] ?? NULL;
-        $sendTemplateParams['bcc'] = $values['bcc_confirm'] ?? NULL;
+        $sendTemplateParams['cc'] = $values['cc_receipt'] ?? NULL;
+        $sendTemplateParams['bcc'] = $values['bcc_receipt'] ?? NULL;
 
         [$sent, $subject, $message, $html] = CRM_Core_BAO_MessageTemplate::sendTemplate($sendTemplateParams);
         // functions call for adding activity with attachment

@@ -59,12 +59,12 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
    */
   public static $_dataToHTML = [
     'String' => ['Text', 'Select', 'Radio', 'CheckBox', 'Autocomplete-Select', 'Hidden'],
-    'Int' => ['Text', 'Select', 'Radio', 'Hidden'],
+    'Int' => ['Text', 'Select', 'Radio', 'CheckBox', 'Autocomplete-Select', 'Hidden'],
     'Float' => ['Text', 'Select', 'Radio', 'Hidden'],
     'Money' => ['Text', 'Select', 'Radio', 'Hidden'],
     'Memo' => ['TextArea', 'RichTextEditor'],
     'Date' => ['Select Date'],
-    'Boolean' => ['Radio'],
+    'Boolean' => ['Toggle', 'Radio'],
     'StateProvince' => ['Select'],
     'Country' => ['Select'],
     'File' => ['File'],
@@ -219,7 +219,7 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
     $this->addField('html_type', ['class' => 'twenty', 'options' => $htmlOptions], TRUE);
 
     if (CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $this->_gid, 'is_multiple')) {
-      $this->add('advcheckbox', 'in_selector', ts('Display in Table?'));
+      $this->addToggle('in_selector', ts('Display in Table?'));
     }
 
     $optionGroupParams = [
@@ -229,7 +229,7 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
       'return' => ['title'],
     ];
 
-    $this->add('advcheckbox', 'serialize', ts('Multi-Select'));
+    $this->addToggle('serialize', ts('Multi-Select'));
 
     $this->addAutocomplete('fk_entity', ts('Entity'), [
       'class' => 'twenty',
@@ -438,11 +438,11 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
       $attributes['help_post']
     );
 
-    $this->add('advcheckbox', 'is_required', ts('Required'));
-    $this->addElement('advcheckbox', 'is_searchable', ts('Optimize for Search'));
-    $this->addRadio('is_search_range', ts('Search by Range'), [ts('No'), ts('Yes')]);
-    $this->add('advcheckbox', 'is_active', ts('Active'));
-    $this->add('advcheckbox', 'is_view', ts('View Only'));
+    $this->addToggle('is_required', ts('Required'));
+    $this->addToggle('is_searchable', ts('Optimize for Search'));
+    $this->addToggle('is_search_range', ts('Search by Range'));
+    $this->addToggle('is_active', ts('Enabled'));
+    $this->addToggle('is_view', ts('View Only'));
 
     $buttons = [
       [

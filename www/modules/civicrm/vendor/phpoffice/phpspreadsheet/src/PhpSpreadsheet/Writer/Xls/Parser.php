@@ -91,10 +91,8 @@ class Parser
 
     /**
      * The parse tree to be generated.
-     *
-     * @var array|string
      */
-    public $parseTree;
+    public array|string $parseTree;
 
     /**
      * Array of external sheets.
@@ -568,7 +566,7 @@ class Parser
      *
      * @param float|int|string $num an integer or double for conversion to its ptg value
      */
-    private function convertNumber($num): string
+    private function convertNumber(mixed $num): string
     {
         // Integer in the range 0..2**16-1
         if ((Preg::isMatch('/^\d+$/', (string) $num)) && ($num <= 65535)) {
@@ -746,26 +744,18 @@ class Parser
      *
      * @return string The error code ptgErr
      */
-    private function convertError($errorCode)
+    private function convertError(string $errorCode): string
     {
-        switch ($errorCode) {
-            case '#NULL!':
-                return pack('C', 0x00);
-            case '#DIV/0!':
-                return pack('C', 0x07);
-            case '#VALUE!':
-                return pack('C', 0x0F);
-            case '#REF!':
-                return pack('C', 0x17);
-            case '#NAME?':
-                return pack('C', 0x1D);
-            case '#NUM!':
-                return pack('C', 0x24);
-            case '#N/A':
-                return pack('C', 0x2A);
-        }
-
-        return pack('C', 0xFF);
+        return match ($errorCode) {
+            '#NULL!' => pack('C', 0x00),
+            '#DIV/0!' => pack('C', 0x07),
+            '#VALUE!' => pack('C', 0x0F),
+            '#REF!' => pack('C', 0x17),
+            '#NAME?' => pack('C', 0x1D),
+            '#NUM!' => pack('C', 0x24),
+            '#N/A' => pack('C', 0x2A),
+            default => pack('C', 0xFF),
+        };
     }
 
     private bool $tryDefinedName = false;
@@ -981,11 +971,11 @@ class Parser
         $row = $match[4];
 
         // Convert base26 column string to a number.
-        $expn = strlen($col_ref) - 1;
+        $expn = strlen($col_ref) - 1; // @phpstan-ignore-line
         $col = 0;
-        $col_ref_length = strlen($col_ref);
+        $col_ref_length = strlen($col_ref); // @phpstan-ignore-line
         for ($i = 0; $i < $col_ref_length; ++$i) {
-            $col += (ord($col_ref[$i]) - 64) * 26 ** $expn;
+            $col += (ord($col_ref[$i]) - 64) * 26 ** $expn; // @phpstan-ignore-line
             --$expn;
         }
 
@@ -1191,7 +1181,7 @@ class Parser
         ) {
             return $token;
         }
-        if (substr($token, -1) === ')') {
+        if (str_ends_with($token, ')')) {
             //    It's an argument of some description (e.g. a named range),
             //        precise nature yet to be determined
             return $token;
@@ -1562,7 +1552,7 @@ class Parser
      *
      * @return array A tree
      */
-    private function createTree($value, $left, $right): array
+    private function createTree(mixed $value, mixed $left, mixed $right): array
     {
         return ['value' => $value, 'left' => $left, 'right' => $right];
     }

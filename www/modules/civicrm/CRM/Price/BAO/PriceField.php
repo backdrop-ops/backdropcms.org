@@ -300,10 +300,14 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
         $priceOptionText = self::buildPriceOptionText($customOption[$optionKey], $field->is_display_amounts, $valueFieldName);
         // This second label is then added to the form as a second form element which just carries the label and is not otherwise used.
         $elementLabelAfter = $qf->add('static', $elementName . '_label_after', $priceOptionText['label']);
+        $elementLabelAfter->setLabelEscaped();
 
         if (!empty($fieldOptions[$optionKey]['label'])) {
           //check for label.
           $label = CRM_Utils_String::purifyHTML($fieldOptions[$optionKey]['label']);
+        }
+        else {
+          $label = CRM_Utils_String::purifyHTML($label);
         }
         // @todo - move this back to the only calling function on Contribution_Form_Main.php
         if ($isQuickConfig && $field->name === 'other_amount') {
@@ -322,6 +326,7 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
           ),
           $useRequired && $field->is_required
         );
+        $element->setLabelEscaped();
         if ($is_pay_later) {
           $qf->add('text', 'txt-' . $elementName, $label, ['size' => '4']);
         }
@@ -405,6 +410,7 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
 
         $element = &$qf->addRadio($elementName, $label, $choice, [], NULL, FALSE, $choiceAttrs);
         foreach ($element->getElements() as $radioElement) {
+          $radioElement->setTextEscaped();
           // CRM-6902 - Add "max" option for a price set field
           if (in_array($radioElement->getValue(), $freezeOptions)) {
             self::freezeIfEnabled($radioElement, $customOption[$radioElement->getValue()]);
@@ -473,6 +479,7 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
           'class' => 'crm-select2' . $class,
           'data-price-field-values' => json_encode($customOption),
         ]);
+        $element->setOptionTextEscaped();
 
         // CRM-6902 - Add "max" option for a price set field
         $button = substr($qf->controller->getButtonName(), -4);
@@ -503,6 +510,7 @@ class CRM_Price_BAO_PriceField extends CRM_Price_DAO_PriceField {
             // CRM-14696 - Improve display for sold out price set options
             $check[$opId]->setText('<span class="sold-out-option">' . $check[$opId]->getText() . '&nbsp;(' . ts('Sold out') . ')</span>');
           }
+          $check[$opId]->setTextEscaped();
         }
         $element = &$qf->addGroup($check, $elementName, $label);
         if ($useRequired && $field->is_required) {

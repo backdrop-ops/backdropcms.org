@@ -16,9 +16,11 @@ if (\PHP_VERSION_ID >= 80400) {
 }
 
 if (defined('CURL_VERSION_HTTP3') || PHP_VERSION_ID < 80200 && function_exists('curl_version') && curl_version()['version'] >= 0x074200) { // libcurl >= 7.66.0
-    define('CURL_HTTP_VERSION_3', 30);
+    if (!defined('CURL_HTTP_VERSION_3')) {
+        define('CURL_HTTP_VERSION_3', 30);
+    }
 
-    if (defined('CURLOPT_SSH_HOST_PUBLIC_KEY_SHA256')) { // libcurl >= 7.80.0 (7.88 would be better but is slow to check)
+    if (!defined('CURL_HTTP_VERSION_3ONLY') && defined('CURLOPT_SSH_HOST_PUBLIC_KEY_SHA256')) { // libcurl >= 7.80.0 (7.88 would be better but is slow to check)
         define('CURL_HTTP_VERSION_3ONLY', 31);
     }
 }
@@ -39,13 +41,17 @@ if (!function_exists('array_all')) {
     function array_all(array $array, callable $callback): bool { return p\Php84::array_all($array, $callback); }
 }
 
+if (!function_exists('fpow')) {
+    function fpow(float $num, float $exponent): float { return p\Php84::fpow($num, $exponent); }
+}
+
 if (extension_loaded('mbstring')) {
     if (!function_exists('mb_ucfirst')) {
-        function mb_ucfirst($string, ?string $encoding = null): string { return p\Php84::mb_ucfirst($string, $encoding); }
+        function mb_ucfirst(string $string, ?string $encoding = null): string { return p\Php84::mb_ucfirst($string, $encoding); }
     }
 
     if (!function_exists('mb_lcfirst')) {
-        function mb_lcfirst($string, ?string $encoding = null): string { return p\Php84::mb_lcfirst($string, $encoding); }
+        function mb_lcfirst(string $string, ?string $encoding = null): string { return p\Php84::mb_lcfirst($string, $encoding); }
     }
 
     if (!function_exists('mb_trim')) {
@@ -59,4 +65,18 @@ if (extension_loaded('mbstring')) {
     if (!function_exists('mb_rtrim')) {
         function mb_rtrim(string $string, ?string $characters = null, ?string $encoding = null): string { return p\Php84::mb_rtrim($string, $characters, $encoding); }
     }
+}
+
+if (extension_loaded('bcmath')) {
+    if (!function_exists('bcdivmod')) {
+        function bcdivmod(string $num1, string $num2, ?int $scale = null): ?array { return p\Php84::bcdivmod($num1, $num2, $scale); }
+    }
+}
+
+if (\PHP_VERSION_ID >= 80200) {
+    return require __DIR__.'/bootstrap82.php';
+}
+
+if (extension_loaded('intl') && !function_exists('grapheme_str_split')) {
+    function grapheme_str_split(string $string, int $length = 1) { return p\Php84::grapheme_str_split($string, $length); }
 }

@@ -51,7 +51,7 @@ class Submit extends AbstractProcessor {
     }
 
     // Call validation handlers
-    $event = new AfformValidateEvent($this->_afform, $this->_formDataModel, $this, $this->_entityValues);
+    $event = new AfformValidateEvent($this->_afform, $this->_formDataModel, $this);
     \Civi::dispatcher()->dispatch('civi.afform.validate', $event);
     $errors = $event->getErrors();
     if ($errors) {
@@ -120,7 +120,7 @@ class Submit extends AbstractProcessor {
     // todo - add only if needed?
     $this->setResponseItem('token', $this->generatePostSubmitToken());
 
-    if (isset($this->_response['redirect']) || isset($this->_reponse['message'])) {
+    if (isset($this->_response['redirect']) || isset($this->_response['message'])) {
       // redirect / message is already set, ignore defaults
     }
     elseif ($this->_afform['confirmation_type'] === 'show_confirmation_message') {
@@ -142,7 +142,7 @@ class Submit extends AbstractProcessor {
    */
   public static function validateFieldInput(AfformValidateEvent $event): void {
     foreach ($event->getFormDataModel()->getEntities() as $afEntityName => $afEntity) {
-      $entityValues = $event->getEntityValues()[$afEntityName] ?? [];
+      $entityValues = $event->getSubmittedValues()[$afEntityName] ?? [];
       foreach ($entityValues as $values) {
         foreach ($afEntity['fields'] as $fieldName => $attributes) {
           $error = self::getFieldInputError($event, $afEntity['type'], $fieldName, $attributes, $values['fields'][$fieldName] ?? NULL);
@@ -227,7 +227,7 @@ class Submit extends AbstractProcessor {
   public static function validateEntityRefFields(AfformValidateEvent $event): void {
     $formName = $event->getAfform()['name'];
     foreach ($event->getFormDataModel()->getEntities() as $entityName => $entity) {
-      $entityValues = $event->getEntityValues()[$entityName] ?? [];
+      $entityValues = $event->getSubmittedValues()[$entityName] ?? [];
       foreach ($entityValues as $values) {
         foreach ($entity['fields'] as $fieldName => $attributes) {
           $error = self::getEntityRefError($formName, $entityName, $entity['type'], $fieldName, $attributes, $values['fields'][$fieldName] ?? NULL);
@@ -296,7 +296,7 @@ class Submit extends AbstractProcessor {
     if ($isRequired) {
       $conditionals = $attributes['af-if'] ?? [];
       foreach ($conditionals as $conditional) {
-        $isVisible = self::checkAfformConditional($conditional, $event->getEntityValues());
+        $isVisible = self::checkAfformConditional($conditional, $event->getSubmittedValues());
         if (!$isVisible) {
           break;
         }
@@ -304,6 +304,9 @@ class Submit extends AbstractProcessor {
     }
     if ($isRequired && $isVisible) {
       $label = $attributes['defn']['label'] ?? $fullDefn['label'] ?? $fieldName;
+      if (empty($label)) {
+        $label = $attributes['name'];
+      }
       return E::ts('%1 is a required field.', [1 => $label]);
     }
     return NULL;
@@ -448,10 +451,16 @@ class Submit extends AbstractProcessor {
       if (empty($record['fields'])) {
         continue;
       }
+      if ($event->getEntityType() === 'Contribution') {
+        // "Contribution" requires more specialised processing using Order API and is handled by extensions like Afform Payments.
+        // We add a specific check here to ensure that it is not processed by the generic entity save.
+        continue;
+      }
       try {
         $idField = CoreUtil::getIdFieldName($event->getEntityType());
         $saved = $api4($event->getEntityType(), 'save', ['records' => [$record['fields']]])->first();
         $event->setEntityId($index, $saved[$idField]);
+        $event->setSaved($index, $saved);
         self::saveJoins($event, $index, $saved[$idField], $record['joins'] ?? []);
       }
       catch (\CRM_Core_Exception $e) {

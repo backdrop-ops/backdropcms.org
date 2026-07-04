@@ -249,7 +249,7 @@ class AfformAdminMeta {
         $name = basename($file, '.html');
         $inputTypes[] = [
           'name' => $name,
-          'label' => $inputTypeLabels[$name] ?? $name,
+          'label' => $inputTypeLabels[$name] ?? _ts($name),
           'template' => '~/af/fields/' . $name . '.html',
           'admin_template' => '~/afGuiEditor/inputType/' . $name . '.html',
         ];
@@ -291,6 +291,15 @@ class AfformAdminMeta {
               ['#tag' => 'af-tab', 'title' => E::ts('Tab 1'), '#children' => []],
               ['#tag' => 'af-tab', 'title' => E::ts('Tab 2'), '#children' => []],
             ],
+          ],
+        ],
+        'search_param_sets' => [
+          'title' => E::ts('Saved Search Picker'),
+          'admin_tpl' => '~/afGuiEditor/elements/afGuiSearchParamSets.html',
+          'directive' => 'af-search-param-sets',
+          'afform_type' => 'search',
+          'element' => [
+            '#tag' => 'af-search-param-sets',
           ],
         ],
         'submit' => [

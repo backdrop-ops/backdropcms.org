@@ -12,7 +12,7 @@
         var self = ctrls[0];
         self.afFormCtrl = ctrls[1];
       },
-      controller: function($scope, $element) {
+      controller: function($scope, $element, crmApi4) {
         let ctrl = this;
         let localData = [];
         let joinOffsets = {};
@@ -44,6 +44,19 @@
           return ctrl.afFormCtrl ? ctrl.afFormCtrl.getFormMeta().name : $scope.meta.name;
         };
 
+        this.getFieldMeta = () => {
+          const meta = {};
+          const fieldElements = $element[0].querySelectorAll('af-field');
+          fieldElements.forEach((field) => {
+            const name = field.getAttribute('name');
+            // TODO: one day we might use regular JSON for defn
+            // and then switch to JSON.parse
+            const defn = $scope.$eval(field.getAttribute('defn'));
+            meta[name] = defn;
+          });
+          return meta;
+        };
+
         this.getJoinOffset = function(joinEntity) {
           joinOffsets[joinEntity] = joinEntity in joinOffsets ? joinOffsets[joinEntity] + 1 : 0;
           return joinOffsets[joinEntity];
@@ -62,6 +75,7 @@
           }
           return this.reloadedStoredValues[fieldName];
         };
+
         this.$onInit = function() {
           if (this.storeValues) {
             $scope.$watch(ctrl.getFieldData, function(newVal, oldVal) {
@@ -70,20 +84,97 @@
               }
             }, true);
           }
+          $scope.$watch(this.getSearchParamSetId, () => this.fetchSearchParamSetValues());
         };
+
         /**
          * Get fieldset values to use for afform filters
+         *
+         * Filter out empty values (null, '', [], {}) at top level and one level
+         * below for object values (fields with ranges/operators)
+         *
          * @returns Object
          */
         this.getFilterValues = () => {
-          const data = this.getFieldData();
-          // filter out unset values
-          // intended to be equivalent to previous lodash implementation
-          // (typeof val !== 'undefined' && val !== null && (_.includes(['boolean', 'number', 'object'], typeof val) || val.length));
-          return Object.fromEntries(Object.entries(data).filter(([key, value]) =>
-            (['boolean', 'number', 'object'].includes(typeof value) && value !== null) || (value && value.length)
-          ));
+          // find null, '', [], {}
+          const isEmpty = (v) => {
+            if (v === null || v === '') {
+              return true;
+            }
+            if (Array.isArray(v) && v.length === 0) {
+              return true;
+            }
+            if (typeof v === 'object' && Object.keys(v).length === 0) {
+              return true;
+            }
+          };
+
+          // get a copy of the object
+          const data = _.cloneDeep(this.getFieldData());
+
+          Object.keys(data).forEach((key) => {
+            // first filter sub objects
+            if (typeof data[key] === 'object' && data[key] !== null) {
+              Object.keys(data[key]).forEach((subKey) => {
+                if (isEmpty(data[key][subKey])) {
+                  delete data[key][subKey];
+                }
+              });
+            }
+            // then filter top level
+            if (isEmpty(data[key])) {
+              delete data[key];
+            }
+          });
+
+          return data;
         };
+
+        /**
+         * Get value for a given field based on currently applied SearchParamSet
+         * Used by afField controller on load
+         */
+        this.getSearchParamSetFieldValue = (fieldName) => {
+          if (this.selectedSearchParamSet && this.selectedSearchParamSet.filters && this.selectedSearchParamSet.filters.hasOwnProperty(fieldName)) {
+            return this.selectedSearchParamSet.filters[fieldName];
+          }
+          return null;
+        };
+
+        /**
+         * Fetch values for a SearchParamSet from the server
+         */
+        this.fetchSearchParamSetValues = () => {
+          const searchParamSetId = this.getSearchParamSetId();
+          if (!searchParamSetId) {
+            return;
+          }
+          crmApi4('SearchParamSet', 'get', {
+            where: [
+              ['id', '=', searchParamSetId],
+              // check the searchParamSet ID is relevant to the current afform
+              // (in case multiple on the page)
+              ['afform_name', '=', this.getFormName()]
+            ],
+            select: ['filters', 'columns'],
+          })
+          .then((result) => {
+            if (result && result[0]) {
+              this.selectedSearchParamSet = result[0];
+            }
+            else {
+              this.selectedSearchParamSet = {};
+            }
+            // reset the form so af-fields read these
+            // values into their controllers
+            $scope.$broadcast('afFormReset');
+          });
+        };
+
+        /**
+         * Get search param set ID from URL hash param
+         */
+        this.getSearchParamSetId = () => ($scope && $scope.routeParams) ? $scope.routeParams._s : null;
       }
     };
   });

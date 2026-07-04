@@ -437,7 +437,7 @@ function _civicrm_contact_ref_potential_references_standard($field_name, $entity
   $limit = '10';
 
   if (!civicrm_initialize()) {
-    return;
+    return array();
   }
 
   $field = field_info_field($field_name);
@@ -576,7 +576,7 @@ function civicrm_contact_ref_field_views_data($field) {
  */
 function civicrm_contact_ref_civicrm_merge($type, $data, $new_id = NULL, $old_id = NULL, $tables = NULL) {
   $updated = FALSE;
-  if (!empty($new_id) && !empty($old_id) && $type == 'sqls' && $tables === FALSE) {
+  if (!empty($new_id) && !empty($old_id) && $type == 'sqls') {
     // Update contact reference field data
     $field_config_names = config_get_names_with_prefix('field.field.');
     foreach ($field_config_names as $config_name) {
@@ -603,4 +603,3 @@ function civicrm_contact_ref_civicrm_merge($type, $data, $new_id = NULL, $old_id
     cache_flush('cache_page');
   }
 }
-

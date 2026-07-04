@@ -143,7 +143,6 @@ if (!defined('CIVI_SETUP')) {
             'access contact reference fields',
             // standaloneusers provides concrete permissions in place of
             // the synthetic ones on other UF
-            'cms:administer users',
             'cms:view user account',
             // The admninister CiviCRM data implicitly sets other permissions as well.
             // Such as, edit message templates and admnister dedupe rules.
