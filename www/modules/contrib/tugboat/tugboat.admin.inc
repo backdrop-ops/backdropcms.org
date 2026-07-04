@@ -340,10 +340,11 @@ function tugboat_admin_previews_delete_all_submit($form, &$form_state) {
     }
   }
 
+  // Remove all known previews, even if some fail.
+  state_del('tugboat_previews');
+
   // Display message.
   if ($delete_count > 0) {
-    // Remove all known previews, even if some fail.
-    state_del('tugboat_previews');
     backdrop_set_message(format_plural($delete_count, 'Successfully deleted 1 preview.', 'Successfully deleted @count previews.'));
   }
   if ($delete_failures > 0) {
