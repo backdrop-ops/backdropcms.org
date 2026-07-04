@@ -166,7 +166,7 @@
                         "element_type": "",
                         "element_class": "",
                         "element_label_type": "",
-                        "element_label_class": "priority-medium",
+                        "element_label_class": "",
                         "element_label_colon": 0,
                         "element_wrapper_type": "",
                         "element_wrapper_class": "",
@@ -190,7 +190,7 @@
                         "element_type": "",
                         "element_class": "",
                         "element_label_type": "",
-                        "element_label_class": "priority-low",
+                        "element_label_class": "",
                         "element_label_colon": 0,
                         "element_wrapper_type": "",
                         "element_wrapper_class": "",
@@ -242,7 +242,7 @@
                         "element_type": "",
                         "element_class": "",
                         "element_label_type": "",
-                        "element_label_class": "priority-low",
+                        "element_label_class": "",
                         "element_label_colon": 0,
                         "element_wrapper_type": "",
                         "element_wrapper_class": "",
@@ -608,14 +608,16 @@
                             "default_sort_order": "asc",
                             "align": "",
                             "separator": "",
-                            "empty_column": 0
+                            "empty_column": 0,
+                            "responsive": "priority-medium"
                         },
                         "name": {
                             "sortable": 1,
                             "default_sort_order": "asc",
                             "align": "",
                             "separator": "",
-                            "empty_column": 0
+                            "empty_column": 0,
+                            "responsive": "priority-low"
                         },
                         "status": {
                             "sortable": 1,
@@ -629,7 +631,8 @@
                             "default_sort_order": "desc",
                             "align": "",
                             "separator": "",
-                            "empty_column": 0
+                            "empty_column": 0,
+                            "responsive": "priority-low"
                         },
                         "created": {
                             "sortable": 1,

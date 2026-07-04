@@ -419,7 +419,9 @@
                         "tokenize": 0
                     }
                 },
-                "hide_admin_links": true
+                "hide_admin_links": true,
+                "enable_ajax_history": false,
+                "exclude_ajax_args": ""
             }
         }
     },

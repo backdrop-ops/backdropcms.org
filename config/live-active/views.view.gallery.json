@@ -403,7 +403,9 @@
                     "groups": {
                         "1": "AND"
                     }
-                }
+                },
+                "enable_ajax_history": false,
+                "exclude_ajax_args": ""
             }
         }
     }

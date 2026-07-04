@@ -1,8 +1,8 @@
 {
     "_config_name": "redirect.settings",
+    "_config_static": true,
     "auto_redirect": true,
     "passthrough_querystring": true,
-    "default_status_code": "301",
     "page_cache": false,
     "purge_inactive": false,
     "global_home": true,
@@ -10,6 +10,5 @@
     "global_canonical": true,
     "global_deslash": false,
     "global_admin_paths": false,
-    "_config_static": true,
     "additional_statuses": false
 }

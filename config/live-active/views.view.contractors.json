@@ -794,7 +794,9 @@
                     "row_class_special": 0
                 },
                 "row_plugin": "fields",
-                "row_options": []
+                "row_options": [],
+                "enable_ajax_history": false,
+                "exclude_ajax_args": ""
             }
         }
     }
