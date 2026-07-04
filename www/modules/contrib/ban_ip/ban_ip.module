@@ -47,6 +47,27 @@ function ban_ip_menu() {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function ban_ip_views_api() {
+  return array(
+    'api' => 3,
+    'path' => backdrop_get_path('module', 'ban_ip') . '/views',
+  );
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function ban_ip_config_info() {
+  $prefixes['views.view.blocked_ip_addresses'] = array(
+    'label' => t('Blocked IP addresses'),
+    'group' => t('Views'),
+  );
+  return $prefixes;
+}
+
+/**
  * Retrieve a blocked IP address from the database.
  *
  * @param $iid integer
@@ -95,26 +116,20 @@ function ban_ip_ip_blocking($default_ip = '') {
         $ip,
       );
     }
+    $build['ban_ip_ip_blocking_table'] = array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
+      '#empty' => t('No blocked IP addresses available.'),
+    );
   }
   else {
-    $header = array(t('Blocked IP addresses'), t('Operations'));
-    $result = db_query('SELECT * FROM {blocked_ips}');
-    foreach ($result as $ip) {
-      $rows[] = array(
-        $ip->ip,
-        l(t('delete'), "admin/config/people/ip-blocking/delete/$ip->iid"),
-      );
-    }
-
     $build['ban_ip_ip_blocking_form'] = backdrop_get_form('ban_ip_ip_blocking_form', $default_ip);
-  }
 
-  $build['ban_ip_ip_blocking_table'] = array(
-    '#theme' => 'table',
-    '#header' => $header,
-    '#rows' => $rows,
-    '#empty' => t('No blocked IP addresses available.'),
-  );
+    $view = views_get_view('blocked_ip_addresses');
+    $view->override_url = 'admin/config/people/ip-blocking';
+    $build['ban_ip_blocked_ip_addresses'] = array('#markup' => $view->preview());
+  }
 
   return $build;
 }
@@ -133,12 +148,12 @@ function ban_ip_ip_blocking_form($form, $form_state, $default_ip) {
     '#size' => 48,
     '#maxlength' => 40,
     '#default_value' => $default_ip,
-    '#description' => t('Enter a valid IP address.'),
+    '#description' => t('Enter a valid IP address to block.'),
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Add'),
+    '#value' => t('Block'),
   );
   $form['#submit'][] = 'ban_ip_ip_blocking_form_submit';
   $form['#validate'][] = 'ban_ip_ip_blocking_form_validate';

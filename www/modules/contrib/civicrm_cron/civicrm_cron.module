@@ -19,14 +19,6 @@ function civicrm_cron_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
-  $items['civicrm-cron/passthrough'] = array(
-    'title' => 'CiviCRM Cron',
-    'description' => 'Runs CiviCRM\'s cron within Backdrop passing the site key as CiviCRM expects',
-    'page callback' => 'civicrm_cron_passthrough',
-    'access callback' => TRUE,
-    'type' => MENU_CALLBACK,
-  );
-
   return $items;
 }
 
@@ -68,14 +60,13 @@ function civicrm_cron_admin_settings($form, &$form_state) {
   $key = $config->get('civicrm_cron_sitekey');
 
   if (empty($form_state['input']['civicrm_cron_sitekey']) && $key != NULL && $key != 'NULL') {
+    $result = civicrm_cron_passthrough($key);
 
-    $result = backdrop_http_request($base_url . '/civicrm-cron/passthrough?key=' . $key);
-
-    if (!empty($result->code) && !empty($result->error)) {
-      backdrop_set_message('CiviCRM Cron result: ' . $result->code . ' - ' . $result->error, 'error');
+    if (!empty($result)) {
+      backdrop_set_message('CiviCRM cron result: ' . $result, 'error');
     }
     else {
-      backdrop_set_message(t('CiviCRM Cron Successfully Run'));
+      backdrop_set_message(t('CiviCRM cron successfully run'));
     }
 
   }
@@ -84,7 +75,7 @@ function civicrm_cron_admin_settings($form, &$form_state) {
   if ($key == NULL ) {
     $key = CIVICRM_SITE_KEY;
     if (empty($form_state['input']['civicrm_cron_sitekey'])) {
-      backdrop_set_message(t('Save the Configuration to Test CiviCRM Cron'), 'warning');
+      backdrop_set_message(t('Save the configuration to test CiviCRM cron'), 'warning');
     }
   }
 
@@ -105,7 +96,6 @@ function civicrm_cron_admin_settings($form, &$form_state) {
 
     // CiviMail job appears to be the only job that requires authentication.
     // Added username and pass back to resolve https://drupal.org/node/2088595
-
     $cron_values['name'] = $config->get('civicrm_cron_username');
     $cron_values['pass'] = $config->get('civicrm_cron_password');
 
@@ -165,12 +155,10 @@ function civicrm_cron_cron() {
   global $base_url;
 
   $key = config_get('civicrm_cron.settings', 'civicrm_cron_sitekey');
-  // We use backdrop_http_request because any errors from
-  // $facility->execute() are printed to screen.
-  $result = backdrop_http_request($base_url . '/civicrm-cron/passthrough?key=' . $key);
+  $result = civicrm_cron_passthrough($key);
   // Look for the CiviCRM error in response. If successful it returns nothing.
-  if (!empty($result->error) || $result->code == 0) {
-    watchdog('civicrm_cron', 'CiviCRM cron error ' . $result->code . ': ' . $result->error, NULL, WATCHDOG_ERROR);
+  if (!empty($result)) {
+    watchdog('civicrm_cron', t('CiviCRM cron error: ') . $result, NULL, WATCHDOG_ERROR);
   }
   else {
     watchdog('civicrm_cron', t('CiviCRM cron run completed.'), NULL, WATCHDOG_NOTICE);
@@ -179,23 +167,30 @@ function civicrm_cron_cron() {
 }
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Run CiviCRM's cron jobs.
+ *
+ * @param string $sentkey
+ *   The site key sent by the cron request.  This should match the site key in
+ *   civicrm-settings.php.
+ *
+ * @return string
+ *   An error message if there was a problem, or an empty string if it seems
+ *    the cron ran successfully.
  */
-function civicrm_cron_passthrough() {
+function civicrm_cron_passthrough(string $sentkey = '') {
+  civicrm_initialize();
   $config = config('civicrm_cron.settings');
 
-  $query = backdrop_get_query_parameters();
-  $sentkey = $query['key'];
-  $key = $config->get('civicrm_cron_sitekey');
-
-  if ($sentkey != $key) {
+  if (empty($sentkey)) {
+    $query = backdrop_get_query_parameters();
+    $sentkey = $query['key'];
+  }
+  if ($sentkey != CIVICRM_SITE_KEY) {
     // Key doesn't match, so don't process.
     return t('The site key that was provided does not match the key in the CiviCRM configuration.');
   }
 
   if (!civicrm_initialize()) {
-    // watchdog('civicrm_cron', t('Failed to initialize CiviCRM during Cron'), NULL, WATCHDOG_ERROR);
     return t('Failed to initialize CiviCRM during cron.');
   }
 
@@ -209,6 +204,6 @@ function civicrm_cron_passthrough() {
   require_once Civi::paths()->getPath('[civicrm.root]/CRM/Core/JobManager.php');
   $facility = new CRM_Core_JobManager();
 
-  return $facility->execute();
-
+  $facility->execute(FALSE);
+  return '';
 }

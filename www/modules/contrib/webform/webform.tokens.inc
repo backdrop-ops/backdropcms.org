@@ -175,12 +175,7 @@ function webform_tokens($type, $tokens, array $data = array(), array $options = 
     // Get the full submission renderable without $excluded_components so that
     // individually referenced values are available.
     $submission_renderable = webform_submission_render($node, $submission, $email, $format, $markup_components);
-    $available_modifiers = array(
-      'label',
-      'withlabel',
-      'nolabel',
-      'key',
-    );
+    $modifier_info = webform_get_token_modifiers();
 
     foreach ($node->webform['components'] as $cid => $component) {
       // Build the list of parents for this component.
@@ -234,41 +229,26 @@ function webform_tokens($type, $tokens, array $data = array(), array $options = 
           }
         }
 
-        // Assume no modifier (implied 'nolabel').
-        $modifier = NULL;
-        if (strcmp($name, $matched_token) !== 0) {
-          // Check if this matches the key plus a modifier.
-          $modifier = substr($name, strrpos($name, ':') + 1);
-          // @todo Allow components to provide additional modifiers per
-          // type, i.e. key, day, hour, minute, etc.
-          if (strcmp($name, $matched_token . ':' . $modifier) !== 0 || !in_array($modifier, $available_modifiers)) {
-            // No match.
-            // Token loop continue.
-            continue;
-          }
-        }
-
-        if ($modifier === 'label') {
-          $replacements[$original] = webform_filter_xss($display_element['#title']);
-        }
-        elseif ($modifier === 'key' && $display_element['#webform_component']['type'] === 'select') {
-          $values = array();
-          foreach ($display_element['#value'] as $value) {
-            $values[] = webform_filter_xss($value);
-          }
-          $replacements[$original] = implode(' ', $values);
+        if (strcmp($name, $matched_token) === 0) {
+          // Default behavior if there is no explicit modifier.
+          $modifier = 'nolabel';
         }
         else {
-          // Remove theme wrappers for the nolabel modifier.
-          if ($modifier === 'nolabel' || empty($modifier)) {
-            $display_element['#theme_wrappers'] = array();
-          }
-          $replacements[$original] = render($display_element);
+          $modifier = substr($name, strrpos($name, ':') + 1);
         }
-        // Continue processing tokens in case another modifier is used.
+        foreach ($modifier_info as $info) {
+          if ($info['modifier'] != $modifier) {
+            continue;
+          }
+          $component = $info['component'];
+          if ($component != 'all' && $component != $display_element['#webform_component']['type']) {
+            continue;
+          }
+          $replacements[$original] = $info['callback']($modifier, $display_element);
+          break;
+        }
       }
     }
-
   }
 
   // Chained token relationships.
@@ -296,4 +276,40 @@ function webform_tokens($type, $tokens, array $data = array(), array $options = 
   $recursion_level--;
 
   return $replacements;
+}
+
+/**
+ * Provides default webform token modifier behavior.
+ *
+ * @param string $modifier
+ *   The modifier that is being used.
+ * @param string $display_element
+ *   The renderable element of the component being modified.
+ *
+ * @return string
+ *   The rendered string of the component.
+ *
+ */
+function webform_token_modifier_defaults($modifier, $display_element) {
+  switch ($modifier) {
+    case 'label':
+      return webform_filter_xss($display_element['#title']);
+
+    case 'withlabel':
+      return render($display_element);
+
+    case 'nolabel':
+      $display_element['#theme_wrappers'] = array();
+      return render($display_element);
+
+    case 'key': // Only used for select elements
+      $values = array();
+      if (is_array($display_element['#value'])) {
+        foreach ($display_element['#value'] as $value) {
+          $values[] = webform_filter_xss($value);
+        }
+      }
+      return implode(' ', $values);
+  }
+  return '';
 }

@@ -1,4 +1,8 @@
-/* tokeninput vertical list - modified for webform_civicrm */
+/**
+ * tokeninput vertical list
+ * Modified for webform_civicrm 
+ */
+
 form ul.token-input-list {
     overflow: hidden;
     height: auto !important;
@@ -7,8 +11,6 @@ form ul.token-input-list {
     max-width: 400px;
     border: 1px solid #999;
     cursor: text;
-    font-size: 12px;
-    font-family: Verdana;
     margin: 0;
     padding: 0;
     background-color: #fff;
@@ -32,7 +34,7 @@ form ul.token-input-list li input {
     width: 350px;
     padding: 3px 8px;
     background-color: white;
-    -webkit-appearance: caret;
+    appearance: caret;
 }
 
 form li.token-input-token {
@@ -82,8 +84,6 @@ div.token-input-dropdown {
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     cursor: default;
-    font-size: 12px;
-    font-family: Verdana;
 }
 
 div.token-input-dropdown p {

@@ -37,7 +37,10 @@ function xmlsitemap_engines_test_xmlsitemap_engine_info() {
  * Implements hook_xmlsitemap_engine_info_alter().
  */
 function xmlsitemap_engines_test_xmlsitemap_engine_info_alter(&$engines) {
-  $engines['simpletest']['url'] = url('ping', array('absolute' => TRUE, 'query' => array('sitemap' => ''))) . '[sitemap]';
+  $engines['simpletest']['url'] = url('ping', array(
+    'absolute' => TRUE,
+    'query' => array('sitemap' => ''),
+  )) . '[sitemap]';
 }
 
 /**

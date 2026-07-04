@@ -1,10 +1,12 @@
 <?php
-
 /**
  * @file
  * Functional tests for providing xmlsitemap fields to views.
  */
 
+/**
+ * Tests regarding views fields.
+ */
 class XmlsitemapViewsFieldsTest extends BackdropWebTestCase {
 
   /**
@@ -31,6 +33,7 @@ class XmlsitemapViewsFieldsTest extends BackdropWebTestCase {
     $modules[] = 'views';
     $modules[] = 'xmlsitemap_node';
     parent::setUp($modules);
+    return TRUE;
   }
 
   /**

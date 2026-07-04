@@ -11,7 +11,10 @@ function xmlsitemap_custom_list_links() {
   $header = array(
     'loc' => array('data' => t('Location'), 'field' => 'loc', 'sort' => 'asc'),
     'priority' => array('data' => t('Priority'), 'field' => 'priority'),
-    'changefreq' => array('data' => t('Change frequency'), 'field' => 'changefreq'),
+    'changefreq' => array(
+      'data' => t('Change frequency'),
+      'field' => 'changefreq',
+    ),
     'language' => array('data' => t('Language'), 'field' => 'language'),
     'operations' => array('data' => t('Operations')),
   );
@@ -41,8 +44,14 @@ function xmlsitemap_custom_list_links() {
       $row['language'] = language_name($link->language);
     }
     $operations = array();
-    $operations['edit'] = xmlsitemap_get_operation_link('admin/config/search/xmlsitemap/custom/edit/' . $link->id, array('title' => t('Edit'), 'modal' => TRUE));
-    $operations['delete'] = xmlsitemap_get_operation_link('admin/config/search/xmlsitemap/custom/delete/' . $link->id, array('title' => t('Delete'), 'modal' => TRUE));
+    $operations['edit'] = xmlsitemap_get_operation_link('admin/config/search/xmlsitemap/custom/edit/' . $link->id, array(
+      'title' => t('Edit'),
+      'modal' => TRUE,
+    ));
+    $operations['delete'] = xmlsitemap_get_operation_link('admin/config/search/xmlsitemap/custom/delete/' . $link->id, array(
+      'title' => t('Delete'),
+      'modal' => TRUE,
+    ));
     $row['operations'] = array(
       'data' => array(
         '#theme' => 'links',

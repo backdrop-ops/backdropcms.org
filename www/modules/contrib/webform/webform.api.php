@@ -1460,6 +1460,38 @@ function hook_webform_exporters_alter(array &$exporters) {
 }
 
 /**
+ * Add additional modifiers to component tokens in webform results rendering.
+ *
+ * @return array
+ *   A 2-dimensional array of component keys and their possible modifiers. Each
+ *   entry is an array with the following keys:
+ *   - modifier: a string that is the modifier.
+ *   - component: a string that specifies the component this modifier applies
+ *     to. Use 'all' for a modifier that can apply to any component (like
+ *     'label').
+ *   - callback: a callback function that returns the replacement string. This
+ *     function takes the following parameter:
+ *     - string $modifier: the modifier that was used.
+ *     - array $display_element: the renderable element of the component.
+ *     It should returns the rendered string of the component. Note that one can
+ *     use the same function to handle multiple modifiers. Rendering should
+ *     sanitize any user input data that is displayed.
+ *
+ * @see webform_tokens()
+ * @see webform_get_token_modifiers()
+ * @see webform_token_modifiers_defaults()
+ */
+function hook_webform_token_modifiers_info() {
+  return array(
+    array(
+      'modifier' => 'backwardlabel',
+      'component' => 'all',
+      'callback' => 'webform_token_backwardlabel_callback',
+    ),
+  );
+}
+
+/**
  * Declare conditional types and their operators.
  *
  * Each conditional type defined here may then be referenced in

@@ -180,5 +180,5 @@ function drush_xmlsitemap_queue_rebuild() {
   else {
     drush_log(dt('No links to queue for rebuild processing.'), 'ok');
   }
-  variable_set('xmlsitemap_rebuild_needed', FALSE);
+  state_set('xmlsitemap_rebuild_needed', FALSE);
 }

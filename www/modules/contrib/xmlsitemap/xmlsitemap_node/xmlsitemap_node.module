@@ -249,7 +249,10 @@ function xmlsitemap_node_get_timestamps(stdClass $node) {
   if (!isset($timestamps[$node->nid])) {
     $timestamps[$node->nid] = db_query("SELECT nr.timestamp FROM {node_revision} nr WHERE nr.nid = :nid", array(':nid' => $node->nid))->fetchCol();
     if (module_exists('comment')) {
-      $comment_timestamps = db_query("SELECT c.created FROM {comment} c WHERE c.nid = :nid AND c.status = :status", array(':nid' => $node->nid, ':status' => COMMENT_PUBLISHED))->fetchCol();
+      $comment_timestamps = db_query("SELECT c.created FROM {comment} c WHERE c.nid = :nid AND c.status = :status", array(
+        ':nid' => $node->nid,
+        ':status' => COMMENT_PUBLISHED,
+      ))->fetchCol();
       $timestamps[$node->nid] = array_merge($timestamps[$node->nid], $comment_timestamps);
     }
   }
@@ -305,6 +308,9 @@ function xmlsitemap_node_create_link(stdClass $node) {
 /**
  * Determine whether a user may view the specified node.
  *
+ * This is for all intents and purposes a copy of Drupal 7's node_access()
+ * function.
+ *
  * @param object $node
  *   The node object on which the operation is to be performed, or node type
  *   (e.g. 'forum') for "create" operation.
@@ -314,9 +320,6 @@ function xmlsitemap_node_create_link(stdClass $node) {
  *
  * @return bool
  *   TRUE if the operation may be performed, FALSE otherwise.
- *
- * This is for all intents and purposes a copy of Drupal 7's node_access()
- * function.
  */
 function xmlsitemap_node_view_access($node, $account = NULL) {
   global $user;

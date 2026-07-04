@@ -45,8 +45,8 @@ function xmlsitemap_output_chunk() {
   if (config_get('xmlsitemap.settings', 'developer_mode') && isset($_GET['debug'])) {
     $output = array();
     $context = xmlsitemap_get_current_context();
-    $output[] = "Current context: " . print_r($context, TRUE);
-    $output[] = "Sitemap: " . print_r($sitemap, TRUE);
+    $output[] = "Current context: " . print_r($context, TRUE);// phpcs:ignore
+    $output[] = "Sitemap: " . print_r($sitemap, TRUE);// phpcs:ignore
     $output[] = "Chunk: $chunk";
     $output[] = "Cache file location: $file";
     $output[] = "Cache file exists: " . (file_exists($file) ? 'Yes' : 'No');

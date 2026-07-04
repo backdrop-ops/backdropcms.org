@@ -30,6 +30,7 @@ class XMLSitemapEnginesFunctionalTest extends XMLSitemapTestHelper {
     $this->backdropLogin($this->admin_user);
 
     $this->submit_url = url('ping', array('absolute' => TRUE, 'query' => array('sitemap' => ''))) . '[sitemap]';
+    return TRUE;
   }
 
   /**
@@ -111,14 +112,14 @@ class XMLSitemapEnginesFunctionalTest extends XMLSitemapTestHelper {
       'variables' => array(
         '%url' => $sitemap_url,
         '@code' => '200',
-      )
+      ),
     ));
     $this->_assertWatchdogMessage(array(
       'type' => 'xmlsitemap',
       'message' => 'Received ping for @sitemap.',
       'variables' => array(
         '@sitemap' => url('sitemap.xml', array('absolute' => TRUE)),
-      )
+      ),
     ));
   }
 
@@ -148,7 +149,10 @@ class XMLSitemapEnginesFunctionalTest extends XMLSitemapTestHelper {
         '@code' => '404',
       ),
     ));
-    $this->_assertWatchdogMessage(array('type' => 'xmlsitemap', 'message' => 'No valid sitemap parameter provided.'));
+    $this->_assertWatchdogMessage(array(
+      'type' => 'xmlsitemap',
+      'message' => 'No valid sitemap parameter provided.',
+    ));
 
     $edit = array('engines_custom_urls' => $this->submit_url);
     $this->backdropPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));

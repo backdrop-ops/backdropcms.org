@@ -199,6 +199,12 @@ class wf_crm_webform_preprocess extends wf_crm_webform_base {
         'scope' => 'footer',
       ];
       $currency = $this->contribution_page['currency'];
+      // Add request param to indicate that this is a drupal webform. This can
+      // be used by payment processor extensions to detect and implement any
+      // special handling for drupal webforms.
+      // @see https://www.drupal.org/project/webform_civicrm/issues/3242833
+      // @todo change to is_backdrop_webform in case it needs to be handled
+      // differently.
       $contributionCallbackQuery = ['currency' => $currency, 'snippet' => 4, 'is_drupal_webform' => 1];
       $contributionCallbackUrl = 'civicrm/payment/form';
       $js_vars['processor_id_key'] = 'processor_id';

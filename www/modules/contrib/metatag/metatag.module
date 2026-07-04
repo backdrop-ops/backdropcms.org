@@ -45,19 +45,6 @@ function metatag_autoload_info() {
 
     // Search API classes.
     'MetatagSearchAlterCallback' => 'metatag.search_api.inc',
-
-    // Tests.
-    'MetatagTestHelper' => 'tests/metatag.helper.test',
-    'MetatagCoreUnitTest' => 'tests/metatag.unit.test',
-    // Basic tag testing.
-    'MetatagTagsTestBase' => 'tests/metatag.tags.test',
-    'MetatagTagsTest' => 'tests/metatag.tags.test',
-    // Core entities.
-    'MetatagCoreNodeTest' => 'tests/metatag.node.test',
-    'MetatagCoreTermTest' => 'tests/metatag.term.test',
-    'MetatagCoreUserTest' => 'tests/metatag.user.test',
-    // Handling of core's default meta tags.
-    'MetatagCoreTagRemovalTest' => 'tests/metatag.core_tag_removal.test',
   );
 }
 
@@ -313,9 +300,11 @@ function metatag_config_load_multiple(array $instances) {
     $options['watchdog'] = $settings->get('i18n_enable_watchdog');
 
     foreach ($configs as $instance => &$config) {
-      foreach ($config['config'] as $tag => &$value) {
-        if (isset($value['value']) && is_string($value['value'])) {
-          $value['value'] = i18n_string_translate(array('metatag', 'metatag_config', $instance, $tag), $value['value'], $options);
+      if (isset($config['config']) && is_array($config['config'])) {
+        foreach ($config['config'] as $tag => &$value) {
+          if (isset($value['value']) && is_string($value['value'])) {
+            $value['value'] = i18n_string_translate(array('metatag', 'metatag_config', $instance, $tag), $value['value'], $options);
+          }
         }
       }
     }
@@ -518,7 +507,18 @@ function metatag_metatags_load_multiple($entity_type, array $entity_ids, array $
   // translations keyed by language code.
   $metatags = array();
   while ($record = $result->fetchObject()) {
-    $data = unserialize($record->data);
+
+    $data = @unserialize($record->data);
+    if ($data === FALSE || !is_array($data)) {
+      // Try json deode
+      $data = (array) json_decode($record->data, TRUE);
+      if ($data === FALSE || !is_array($data)) {
+        $message = "This was expected to be an array but it is not: \n%value";
+        $replacments = array('%value' => print_r($record->data, TRUE));
+        watchdog('metatag', $message, $replacments, WATCHDOG_WARNING);
+        $data = array();
+      }
+    }
 
     // "Fix" any records that might be using old values. Ideally these will be
     // permanently fixed by being re-saved.

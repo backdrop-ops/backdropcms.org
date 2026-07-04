@@ -106,7 +106,7 @@ function theme_webform_emails_form(array $variables) {
   $form = $variables['form'];
   $node = $form['#node'];
 
-  $header = array(t('Send'), t('E-mail to'), t('Subject'), t('From'), array('data' => t('Operations'), 'colspan' => 3));
+  $header = array(t('Send'), t('E-mail to'), t('Subject'), t('Reply-to'), array('data' => t('Operations'), 'colspan' => 3));
   $rows = array();
 
   if (!empty($form['emails'])) {

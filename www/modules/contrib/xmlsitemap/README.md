@@ -24,8 +24,9 @@ terms, and user profiles.
 
 ## Current Maintainers
 
- - [Laryn Kragt Bakker](https://github.com/laryn) - [CEDC.org](https://cedc.org)
+ - [Laryn Kragt Bakker](https://github.com/laryn)
  - [Nate Lampton](https://github.com/quicksketch)
+ - [Wilbur Ince](https://github.com/wylbur)
  - Collaboration and co-maintainers welcome!
 
 ## Credits

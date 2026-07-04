@@ -52,6 +52,7 @@ class XMLSitemapNodeFunctionalTest extends XMLSitemapTestHelper {
       'view own unpublished content',
     ));
     xmlsitemap_link_bundle_settings_save('node', 'page', array('status' => 1, 'priority' => 0.5));
+    return TRUE;
   }
 
   /**

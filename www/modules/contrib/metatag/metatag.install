@@ -280,7 +280,7 @@ function metatag_update_replace_meta_tag(&$sandbox, $old_tag, $new_tag) {
 
   // Loop over the values and correct them.
   foreach ($records as $record) {
-    $record->data = unserialize($record->data);
+    $record->data = json_decode($record->data);
 
     if (isset($record->data[$old_tag])) {
       $record->data[$new_tag] = $record->data[$old_tag];
@@ -449,7 +449,7 @@ function metatag_update_1000() {
 
   foreach ($records as $record) {
     $instance = str_replace(':', '.', $record->instance);
-    $record->config = unserialize($record->config);
+    $record->config = json_decode($record->config);
 
     $config = config('metatag.instance.' . $instance);
 
@@ -538,6 +538,7 @@ function metatag_update_1003() {
  */
 function metatag_update_1004() {
   $enabled_tags = array();
+  module_load_include('module', 'metatag', 'metatag');
   $metatags = metatag_get_info(NULL, NULL, TRUE);
   foreach ($metatags['tags'] as $tag_name => $tag) {
     $enabled_tags[$tag_name] = $tag_name;

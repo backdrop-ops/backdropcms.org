@@ -44,7 +44,23 @@ An empty array will have the effect of disabling IP blocking on your site.
 
 If using this setting, you will need to add back any IP addresses which
 you may have blocked via the administrative interface. Each element of this
-array represents a blocked IP address. 
+array represents a blocked IP address.
+
+Related Modules
+---------------
+
+The [IP Address Blocking](https://backdropcms.org/project/ip_blocking) module
+provides similar functionality to this module, along with a number of
+improvements. Both modules make use of the `blocked_ips` table inherited from
+Drupal 7 core. However, IP Address Blocking adds some (useful) columns to the
+table that were not present in D7 and are not supported by this module;
+therefore, the two modules are incompatible (and really, there is no reason you
+would ever need both).
+
+If you would like the additional functionality of [IP Address
+Blocking](https://backdropcms.org/project/ip_blocking), you should use it; if
+you simply want to keep the Drupal 7 core functionality, use this module; all
+D7-blocked IP addresses will still be blocked.
 
 
 License
@@ -56,8 +72,8 @@ complete text.
 Current Maintainers
 -------------------
 
-- Wilmoth Andy Shillingford (https://github.com/docwilmot)
-- (seeking additional maintainers)
+- [Wilmoth Andy Shillingford](https://github.com/docwilmot)
+- [Robert J. Lang](https://github.com/bugfolder)
 
 Credits
 -------

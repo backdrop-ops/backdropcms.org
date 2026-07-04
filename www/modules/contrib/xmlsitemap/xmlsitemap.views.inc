@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Provides information about the data being made available for views.

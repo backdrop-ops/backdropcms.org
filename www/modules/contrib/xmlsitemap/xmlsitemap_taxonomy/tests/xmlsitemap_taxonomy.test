@@ -38,6 +38,7 @@ class XMLSitemapTaxonomyFunctionalTest extends XMLSitemapTestHelper {
 
     $this->admin_user = $this->backdropCreateUser(array('administer taxonomy', 'administer xmlsitemap'));
     $this->normal_user = $this->backdropCreateUser(array('access content'));
+    return TRUE;
   }
 
   /**

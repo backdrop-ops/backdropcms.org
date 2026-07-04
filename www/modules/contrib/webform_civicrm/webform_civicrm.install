@@ -21,7 +21,7 @@ function webform_civicrm_requirements($phase) {
         'value' => $t('Version error'),
         'severity' => REQUIREMENT_ERROR,
         'description' => $t('The versions of the Webform CiviCRM Integration, Webform, CiviCRM enabled are not compatible. ') .
-        l($t('See the Webform CiviCRM Integration project page for version compatibility'), 'https://drupal.org/project/webform_civicrm'),
+        l($t('See the Webform CiviCRM Integration project page for version compatibility'), 'https://backdropcms.org/project/webform_civicrm'),
       ];
     }
     else {

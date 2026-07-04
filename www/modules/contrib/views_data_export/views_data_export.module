@@ -64,7 +64,7 @@ function views_data_export_autoload_info() {
  *   TRUE if the URI identifies an export file, FALSE otherwise.
  */
 function views_data_export_is_export_file($uri) {
-  foreach (entity_load('file', FALSE, array('uri' => $uri)) as $file) {
+  foreach (entity_load_multiple('file', FALSE, array('uri' => $uri)) as $file) {
     // See if this is an export file.
     $usages = file_usage_list($file);
     return !empty($usages['views_data_export']['eid']);

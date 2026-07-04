@@ -5,6 +5,17 @@
  */
 
 /**
+ * Implements hook_install().
+ *
+ * Populate the "salt" setting with a random string.
+ */
+function antibot_install() {
+  $config = config('antibot.settings');
+  $config->set('salt', backdrop_random_key());
+  $config->save();
+}
+
+/**
  * Implements hook_update_N(). Switch from varaibles to config.
  */
 function antibot_update_1000() {
@@ -16,4 +27,15 @@ function antibot_update_1000() {
   // Delete the legacy variables.
   update_variable_del('antibot_form_ids');
   update_variable_del('antibot_show_form_ids');
+}
+
+/**
+ * Add hash salt string to settings.
+ */
+function antibot_update_1001() {
+  $config = config('antibot.settings');
+  if (empty($config->get('salt'))) {
+    $config->set('salt', backdrop_random_key());
+    $config->save();
+  }
 }

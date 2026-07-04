@@ -51,7 +51,10 @@ function xmlsitemap_requirements($phase) {
     if (!xmlsitemap_check_directory()) {
       $requirements['xmlsitemap_directory']['value'] = $t('Not found or not writable');
       $requirements['xmlsitemap_directory']['severity'] = REQUIREMENT_ERROR;
-      $requirements['xmlsitemap_directory']['description'] = $t('The directory %directory was not found or is not writable by the server. See <a href="@docpage">@docpage</a> for more information.', array('%directory' => xmlsitemap_get_directory(), '@docpage' => 'https://www.drupal.org/node/244924'));
+      $requirements['xmlsitemap_directory']['description'] = $t('The directory %directory was not found or is not writable by the server. See <a href="@docpage">@docpage</a> for more information.', array(
+        '%directory' => xmlsitemap_get_directory(),
+        '@docpage' => 'https://www.drupal.org/node/244924',
+      ));
     }
     else {
       $directories = xmlsitemap_check_all_directories();
@@ -352,7 +355,7 @@ function xmlsitemap_install() {
     ->execute();
 
   // @todo Does the sitemap show up on first install or is it a 404 page?
-
+  //
   // Create the link process the queue.
   // @codingStandardsIgnoreStart
   /** @var BackdropReliableQueueInterface $queue */

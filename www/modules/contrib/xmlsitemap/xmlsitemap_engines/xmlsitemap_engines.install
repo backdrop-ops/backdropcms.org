@@ -60,6 +60,7 @@ function xmlsitemap_engines_update_1000() {
     'xmlsitemap_engines_submit_updated',
   );
   foreach ($convert as $name) {
+    // @todo should probably be update_variable_get() and update_variable_del().
     $value = variable_get($name, FALSE);
     if ($value) {
       if ($name == 'xmlsitemap_engines_engines') {

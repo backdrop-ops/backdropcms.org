@@ -54,6 +54,7 @@ class XMLSitemapI18nWebTestCase extends XMLSitemapTestHelper {
     $sitemap = new stdClass();
     $sitemap->context = array('language' => 'fr');
     xmlsitemap_sitemap_save($sitemap);
+    return TRUE;
   }
 
 }
@@ -63,12 +64,18 @@ class XMLSitemapI18nWebTestCase extends XMLSitemapTestHelper {
  */
 class XMLSitemapI18nTest extends XMLSitemapI18nWebTestCase {
 
+  /**
+   * Test language selection.
+   */
   public function testLanguageSelection() {
     // @todo check config file name.
     $config = config('i18n.settings');
 
     // Create our three different language nodes.
-    $node = $this->addSitemapLink(array('type' => 'node', 'language' => LANGUAGE_NONE));
+    $node = $this->addSitemapLink(array(
+      'type' => 'node',
+      'language' => LANGUAGE_NONE,
+    ));
     $node_en = $this->addSitemapLink(array('type' => 'node', 'language' => 'en'));
     $node_fr = $this->addSitemapLink(array('type' => 'node', 'language' => 'fr'));
 
@@ -145,6 +152,7 @@ class XMLSitemapI18nNodeTest extends XMLSitemapI18nWebTestCase {
     config_set('i18n.settings', 'language_content_type_page', 1);
     $this->admin_user = $this->backdropCreateUser(array('administer nodes'));
     $this->backdropLogin($this->admin_user);
+    return TRUE;
   }
 
   /**

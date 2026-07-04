@@ -106,7 +106,8 @@ class XMLSitemapWriter extends XMLWriter {
       'alias' => TRUE,
     );
 
-    // Add base_url here since using the addition operator above results in blank string.
+    // Add base_url here since using the addition operator above results in
+    // blank string.
     $options['base_url'] = $base_url;
 
     if (!empty($options['protocol_relative'])) {

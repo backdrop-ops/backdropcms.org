@@ -78,6 +78,13 @@ function webform_schema() {
         'not null' => TRUE,
         'default' => 1,
       ),
+      'back_to_form_link' => array(
+        'description' => 'Boolean value for whether to show or hide the "Go back to the form" link.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
       'confidential' => array(
         'description' => 'Boolean value for whether to anonymize submissions.',
         'type' => 'int',
@@ -843,7 +850,6 @@ function webform_update_1000() {
   // migrate variables
   $config->set('webform_install_create_content_type', update_variable_get('webform_install_create_content_type', TRUE));
   $config->set('webform_install_add_body_field', update_variable_get('webform_install_add_body_field', FALSE));
-  $config->set('webform_node_webform', update_variable_get('webform_node_webform',TRUE));
   $config->set('webform_blocks', update_variable_get('webform_blocks', array()));
   $config->set('webform_tracking_mode', update_variable_get('webform_tracking_mode', 'cookie'));
   $config->set('webform_allowed_tags', update_variable_get('webform_allowed_tags', array('a', 'em', 'strong', 'code', 'img')));
@@ -864,7 +870,7 @@ function webform_update_1000() {
 
   $config->set('webform_export_wordwrap', update_variable_get('webform_export_wordwrap', 0));
   $config->set('webform_excel_legacy_exporter', update_variable_get('webform_excel_legacy_exporter', 0));
-  $config->set('webform_progressbar_style', update_variable_get('webform_progressbar_style', array('progressbar_bar', 'progressbar_pagebreak_labels', 'progressbar_include_confirmation')));
+  $config->set('webform_progressbar_style', update_variable_get('webform_progressbar_style', array('progressbar_pagebreak_labels', 'progressbar_include_confirmation')));
   $config->set('webform_progressbar_label_first', update_variable_get('webform_progressbar_label_first', t('Start')));
   $config->set('webform_progressbar_label_confirmation', update_variable_get('webform_progressbar_label_confirmation', t('Complete')));
 
@@ -876,12 +882,16 @@ function webform_update_1000() {
   $config->set('webform_export_batch_size', update_variable_get('webform_export_batch_size', ''));
   $config->set('webform_export_path', update_variable_get('webform_export_path', 'temporary://'));
 
+  foreach (node_type_get_names() as $type => $name) {
+    $config->set('webform_node_' . $type, update_variable_get('webform_node_' . $type,TRUE));
+    update_variable_del('webform_node_' . $type);
+  }
+
   $config->save();
 
   // Delete variables.
   update_variable_del('webform_install_create_content_type');
   update_variable_del('webform_install_add_body_field');
-  update_variable_del('webform_node_webform');
   update_variable_del('webform_blocks');
 
   update_variable_del('webform_tracking_mode');
@@ -1477,4 +1487,23 @@ function webform_update_1607() {
  */
 function webform_update_1608() {
   backdrop_flush_all_caches();
+}
+
+/**
+ * Add a column to the webform table to allow the display of the "Go back to
+ * the form" link to be disabled.
+ */
+function webform_update_1609() {
+
+  if (!db_field_exists('webform', 'back_to_form_link')) {
+    $spec = array(
+      'description' => 'Boolean value for whether to show or hide the "Go back to the form" link.',
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 1,
+    );
+    db_add_field('webform', 'back_to_form_link', $spec);
+  }
+  return t('Webforms will now have the option to disable the display of the "Go back to the form" link below the confirmation message. If you have overridden <code>webform-confirmation.tpl.php</code> in your theme, you will need to manually update your theme for this setting to apply.');
 }

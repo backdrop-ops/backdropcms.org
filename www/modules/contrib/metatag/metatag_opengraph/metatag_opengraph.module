@@ -9,7 +9,7 @@
  */
 function metatag_opengraph_metatag_bundled_config_alter(array &$configs) {
   foreach ($configs as &$config) {
-    if (isset($config['instance'])) {
+    if (isset($config['instance']) && is_array($config['config'])) {
       switch ($config['instance']) {
         case 'global':
           $config['config'] += array(

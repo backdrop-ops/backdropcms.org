@@ -357,13 +357,13 @@ function xmlsitemap_sitemap_load_multiple($smids = array(), array $conditions = 
 /**
  * Load an XML sitemap array from the database based on its context.
  *
- * @param array $context
+ * @param ?array $context
  *   An optional XML sitemap context array to use to find the correct XML
  *   sitemap. If not provided, the current site's context will be used.
  *
  * @see xmlsitemap_get_current_context()
  */
-function xmlsitemap_sitemap_load_by_context(array $context = NULL) {
+function xmlsitemap_sitemap_load_by_context(?array $context = NULL) {
   if (!isset($context)) {
     $context = xmlsitemap_get_current_context();
   }
@@ -523,7 +523,10 @@ function xmlsitemap_sitemap_uri(stdClass $sitemap) {
  *   A sitemap link (array) or FALSE if the conditions were not found.
  */
 function xmlsitemap_link_load($entity_type, $entity_id) {
-  $link = xmlsitemap_link_load_multiple(array('type' => $entity_type, 'id' => $entity_id));
+  $link = xmlsitemap_link_load_multiple(array(
+    'type' => $entity_type,
+    'id' => $entity_id,
+  ));
   return $link ? reset($link) : FALSE;
 }
 
@@ -566,7 +569,8 @@ function xmlsitemap_link_presave(array $link, array $context = array()) {
   // Allow other modules to alter the sitemap link presave.
   backdrop_alter('xmlsitemap_link_presave', $link, $context);
 
-  // Save or update a sitemap link which will be overwritten in Backdrop cron job.
+  // Save or update a sitemap link which will be overwritten in Backdrop cron
+  // job.
   xmlsitemap_link_save($link, $context);
 }
 
@@ -613,7 +617,10 @@ function xmlsitemap_link_save(array $link, array $context = array()) {
     $link['changecount'] = 0;
   }
 
-  $existing = db_query_range("SELECT loc, access, status, lastmod, priority, changefreq, changecount, language FROM {xmlsitemap} WHERE type = :type AND id = :id", 0, 1, array(':type' => $link['type'], ':id' => $link['id']))->fetchAssoc();
+  $existing = db_query_range("SELECT loc, access, status, lastmod, priority, changefreq, changecount, language FROM {xmlsitemap} WHERE type = :type AND id = :id", 0, 1, array(
+    ':type' => $link['type'],
+    ':id' => $link['id'],
+  ))->fetchAssoc();
 
   // Check if this is a changed link and set the regenerate flag if necessary.
   if (!state_get('xmlsitemap_regenerate_needed', TRUE)) {
@@ -713,7 +720,6 @@ function xmlsitemap_link_delete_multiple(array $conditions) {
   }
 
   // @todo Add a hook_xmlsitemap_link_delete() hook invoked here.
-
   $query = db_delete('xmlsitemap');
   foreach ($conditions as $field => $value) {
     $query->condition($field, $value);
@@ -778,7 +784,10 @@ function _xmlsitemap_check_changed_link(array $link, $original_link = NULL, $fla
 
   if ($original_link === NULL) {
     // Load only the fields necessary for data to be changed in the sitemap.
-    $original_link = db_query_range("SELECT loc, access, status, lastmod, priority, changefreq, changecount, language FROM {xmlsitemap} WHERE type = :type AND id = :id", 0, 1, array(':type' => $link['type'], ':id' => $link['id']))->fetchAssoc();
+    $original_link = db_query_range("SELECT loc, access, status, lastmod, priority, changefreq, changecount, language FROM {xmlsitemap} WHERE type = :type AND id = :id", 0, 1, array(
+      ':type' => $link['type'],
+      ':id' => $link['id'],
+    ))->fetchAssoc();
   }
 
   if (!$original_link) {
@@ -810,7 +819,7 @@ function _xmlsitemap_check_changed_link(array $link, $original_link = NULL, $fla
  *
  * @} End of "defgroup xmlsitemap_api"
  */
-function xmlsitemap_get_directory(stdClass $sitemap = NULL) {
+function xmlsitemap_get_directory(?stdClass $sitemap = NULL) {
   $directory = &backdrop_static(__FUNCTION__);
 
   if (!isset($directory)) {
@@ -831,7 +840,7 @@ function xmlsitemap_get_directory(stdClass $sitemap = NULL) {
 /**
  * Check that the sitemap files directory exists and is writable.
  */
-function xmlsitemap_check_directory(stdClass $sitemap = NULL) {
+function xmlsitemap_check_directory(?stdClass $sitemap = NULL) {
   $directory = xmlsitemap_get_directory($sitemap);
   $result = file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
   if (!$result) {
@@ -868,7 +877,7 @@ function xmlsitemap_check_all_directories() {
 /**
  * Clear Directory.
  */
-function xmlsitemap_clear_directory(stdClass $sitemap = NULL, $delete = FALSE) {
+function xmlsitemap_clear_directory(?stdClass $sitemap = NULL, $delete = FALSE) {
   if ($directory = xmlsitemap_get_directory($sitemap)) {
     return _xmlsitemap_delete_recursive($directory, $delete);
   }
@@ -1024,8 +1033,14 @@ function xmlsitemap_get_link_type_enabled_bundles($entity_type) {
 function xmlsitemap_get_link_type_indexed_status($entity_type, $bundle = '') {
   $info = xmlsitemap_get_link_info($entity_type);
 
-  $status['indexed'] = db_query("SELECT COUNT(id) FROM {xmlsitemap} WHERE type = :entity AND subtype = :bundle", array(':entity' => $entity_type, ':bundle' => $bundle))->fetchField();
-  $status['visible'] = db_query("SELECT COUNT(id) FROM {xmlsitemap} WHERE type = :entity AND subtype = :bundle AND status = 1 AND access = 1", array(':entity' => $entity_type, ':bundle' => $bundle))->fetchField();
+  $status['indexed'] = db_query("SELECT COUNT(id) FROM {xmlsitemap} WHERE type = :entity AND subtype = :bundle", array(
+    ':entity' => $entity_type,
+    ':bundle' => $bundle,
+  ))->fetchField();
+  $status['visible'] = db_query("SELECT COUNT(id) FROM {xmlsitemap} WHERE type = :entity AND subtype = :bundle AND status = 1 AND access = 1", array(
+    ':entity' => $entity_type,
+    ':bundle' => $bundle,
+  ))->fetchField();
 
   $total = new EntityFieldQuery();
   $total->entityCondition('entity_type', $entity_type);
@@ -1094,7 +1109,10 @@ function xmlsitemap_link_bundle_rename($entity, $bundle_old, $bundle_new) {
     $config->clear("settings_{$entity}_{$bundle_old}");
     $config->save();
     xmlsitemap_link_bundle_settings_save($entity, $bundle_new, $settings, FALSE);
-    xmlsitemap_link_update_multiple(array('subtype' => $bundle_new), array('type' => $entity, 'subtype' => $bundle_old));
+    xmlsitemap_link_update_multiple(array('subtype' => $bundle_new), array(
+      'type' => $entity,
+      'subtype' => $bundle_old,
+    ));
   }
 }
 
@@ -1163,7 +1181,10 @@ function xmlsitemap_link_bundle_delete($entity, $bundle, $delete_links = TRUE) {
   $config->clear("settings_{$entity}_{$bundle}");
   $config->save();
   if ($delete_links) {
-    xmlsitemap_link_delete_multiple(array('type' => $entity, 'subtype' => $bundle));
+    xmlsitemap_link_delete_multiple(array(
+      'type' => $entity,
+      'subtype' => $bundle,
+    ));
   }
   cache_clear_all('xmlsitemap:link_info:', 'cache', TRUE);
 }
@@ -1429,7 +1450,10 @@ function xmlsitemap_restore_user() {
  */
 function xmlsitemap_process_form_link_options($form, &$form_state) {
   $link = &$form_state['values']['xmlsitemap'];
-  $fields = array('status' => XMLSITEMAP_STATUS_DEFAULT, 'priority' => XMLSITEMAP_PRIORITY_DEFAULT);
+  $fields = array(
+    'status' => XMLSITEMAP_STATUS_DEFAULT,
+    'priority' => XMLSITEMAP_PRIORITY_DEFAULT,
+  );
 
   if (empty($link)) {
     return;
@@ -1469,7 +1493,10 @@ function xmlsitemap_link_bundle_settings_form_submit($form, &$form_state) {
 
   $entity_info = $form['xmlsitemap']['#entity_info'];
   if (!empty($form['xmlsitemap']['#show_message'])) {
-    backdrop_set_message(t('XML sitemap settings for the @bundle-label %bundle have been saved.', array('@bundle-label' => backdrop_strtolower($entity_info['bundle label']), '%bundle' => $entity_info['bundles'][$bundle]['label'])));
+    backdrop_set_message(t('XML sitemap settings for the @bundle-label %bundle have been saved.', array(
+      '@bundle-label' => backdrop_strtolower($entity_info['bundle label']),
+      '%bundle' => $entity_info['bundles'][$bundle]['label'],
+    )));
   }
 
   // Unset the form values since we have already saved the bundle settings and

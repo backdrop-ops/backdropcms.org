@@ -59,20 +59,9 @@ function ip_user_insert($account) {
  */
 function _ip_demasquerade(&$account) {
   if (module_exists('masquerade')) {
-    // If the user is masquerading as $account, get the real user from the
-    // {masquerade} table. In case multiple users are masquerading as the same
-    // user, match on on the current user's IP address, which we get from the
-    // {sessions} table.
-    $uid_from = db_query('
-      SELECT m.uid_from
-      FROM {masquerade} m
-      JOIN {sessions} s ON s.sid = m.sid
-      WHERE m.uid_as = :uid_as
-      AND s.hostname = :ip_address
-      ', array(':uid_as' => $account->uid, ':ip_address' => ip_address()))
-      ->fetchField();
-    if ($uid_from) {
-      $account = user_load($uid_from);
+    // If the user is masquerading as $account, get the real user.
+    if (isset($_SESSION['masquerading'])) {
+      $account = user_load($_SESSION['masquerading']);
     }
   }
 }

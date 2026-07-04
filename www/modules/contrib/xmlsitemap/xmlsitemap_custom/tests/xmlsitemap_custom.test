@@ -20,8 +20,12 @@ class XMLSitemapCustomFunctionalTest extends XMLSitemapTestHelper {
     $modules[] = 'path';
     parent::setUp($modules);
 
-    $this->admin_user = $this->backdropCreateUser(array('access content', 'administer xmlsitemap'));
+    $this->admin_user = $this->backdropCreateUser(array(
+      'access content',
+      'administer xmlsitemap',
+    ));
     $this->backdropLogin($this->admin_user);
+    return TRUE;
   }
 
   /**
@@ -58,7 +62,10 @@ class XMLSitemapCustomFunctionalTest extends XMLSitemapTestHelper {
     $edit['loc'] = ' public-files ';
     $this->backdropPost(NULL, $edit, t('Save'));
     $this->assertText('The custom link for system/files was saved');
-    $links = xmlsitemap_link_load_multiple(array('type' => 'custom', 'loc' => 'system/files'));
+    $links = xmlsitemap_link_load_multiple(array(
+      'type' => 'custom',
+      'loc' => 'system/files',
+    ));
     $this->assertEqual(count($links), 1, t('Custom link saved in the database.'));
     $link = reset($links);
     $this->assertSitemapLinkValues('custom', $link['id'], array(
@@ -85,7 +92,10 @@ class XMLSitemapCustomFunctionalTest extends XMLSitemapTestHelper {
     $this->clickLink('Delete');
     $this->backdropPost(NULL, array(), t('Delete'));
     $this->assertText('The custom link for system/files has been deleted.');
-    $this->assertNoSitemapLink(array('type' => 'custom', 'loc' => 'system/files'));
+    $this->assertNoSitemapLink(array(
+      'type' => 'custom',
+      'loc' => 'system/files',
+    ));
   }
 
   /**
@@ -95,7 +105,9 @@ class XMLSitemapCustomFunctionalTest extends XMLSitemapTestHelper {
     // Test an invalid file.
     $edit['loc'] = $this->randomName();
     $this->backdropPost('admin/config/search/xmlsitemap/custom/add', $edit, t('Save'));
-    $this->assertText(t('The custom link @link is either invalid or it cannot be accessed by anonymous users.', array('@link' => $edit['loc'])));
+    $this->assertText(t('The custom link @link is either invalid or it cannot be accessed by anonymous users.', array(
+      '@link' => $edit['loc'],
+    )));
     $this->assertNoSitemapLink(array('type' => 'custom', 'loc' => $edit['loc']));
 
     // Test an unaccessible file .
@@ -109,14 +121,20 @@ class XMLSitemapCustomFunctionalTest extends XMLSitemapTestHelper {
     $edit['loc'] = 'core/misc/backdrop.js';
     $this->backdropPost('admin/config/search/xmlsitemap/custom/add', $edit, t('Save'));
     $this->assertText('The custom link for ' . $edit['loc'] . ' was saved');
-    $links = xmlsitemap_link_load_multiple(array('type' => 'custom', 'loc' => $edit['loc']));
+    $links = xmlsitemap_link_load_multiple(array(
+      'type' => 'custom',
+      'loc' => $edit['loc'],
+    ));
     $this->assertEqual(count($links), 1, t('Custom link saved in the database.'));
 
     // Test a valid folder.
     $edit['loc'] = 'core/misc';
     $this->backdropPost('admin/config/search/xmlsitemap/custom/add', $edit, t('Save'));
     $this->assertText('The custom link for ' . $edit['loc'] . ' was saved');
-    $links = xmlsitemap_link_load_multiple(array('type' => 'custom', 'loc' => $edit['loc']));
+    $links = xmlsitemap_link_load_multiple(array(
+      'type' => 'custom',
+      'loc' => $edit['loc'],
+    ));
     $this->assertEqual(count($links), 1, t('Custom link saved in the database.'));
   }
 

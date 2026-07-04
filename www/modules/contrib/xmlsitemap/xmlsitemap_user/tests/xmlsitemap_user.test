@@ -49,6 +49,7 @@ class XMLSitemapUserFunctionalTest extends XMLSitemapTestHelper {
     // Update the normal user to make its sitemap link visible.
     $account = clone $this->normal_user;
     user_save($account, array('access' => 1, 'login' => 1));
+    return TRUE;
   }
 
   /**

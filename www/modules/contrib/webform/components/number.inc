@@ -841,7 +841,7 @@ function webform_number_format_match($value, $point, $separator) {
                       \d*           #   0 or more digits
                     )?              # End of optional decimal portion
                     $
-                    /x", $value);
+                    /x", (string) $value);
 }
 
 /**

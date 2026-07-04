@@ -156,7 +156,10 @@ function xmlsitemap_engines_submit_sitemaps($url, array $sitemaps) {
     $sitemap->url = url($sitemap->uri['path'], $sitemap->uri['options']);
     $submit_url = xmlsitemap_engines_prepare_url($url, $sitemap->url);
     $request = backdrop_http_request($submit_url);
-    watchdog('xmlsitemap', 'Submitted the sitemap to %url and received response @code.', array('%url' => $submit_url, '@code' => $request->code));
+    watchdog('xmlsitemap', 'Submitted the sitemap to %url and received response @code.', array(
+      '%url' => $submit_url,
+      '@code' => $request->code,
+    ));
   }
 }
 

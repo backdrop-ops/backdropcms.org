@@ -6,16 +6,16 @@
  */
 Backdrop.FieldGroup = Backdrop.FieldGroup || {};
 Backdrop.FieldGroup.Effects = Backdrop.FieldGroup.Effects || {};
-Backdrop.FieldGroup.groupWithfocus = null;
+Backdrop.FieldGroup.groupWithFocus = null;
 
-Backdrop.FieldGroup.setGroupWithfocus = function(element) {
+Backdrop.FieldGroup.setGroupWithFocus = function(element) {
   element.css({display: 'block'});
-  Backdrop.FieldGroup.groupWithfocus = element;
+  Backdrop.FieldGroup.groupWithFocus = element;
 }
 
-Backdrop.FieldGroup.setDetailsWithfocus = function(element) {
+Backdrop.FieldGroup.setDetailsWithFocus = function(element) {
   element.attr('open', 'TRUE');
-  Backdrop.FieldGroup.groupWithfocus = element;
+  Backdrop.FieldGroup.groupWithFocus = element;
 }
 
 /**
@@ -31,7 +31,7 @@ Backdrop.FieldGroup.Effects.processFieldset = {
         }
         if ($('.error', $(this)).length) {
           $('legend span.fieldset-legend', $(this)).eq(0).addClass('error');
-          Backdrop.FieldGroup.setGroupWithfocus($(this));
+          Backdrop.FieldGroup.setGroupWithFocus($(this));
         }
       });
     }
@@ -51,87 +51,7 @@ Backdrop.FieldGroup.Effects.processFieldset = {
         }
         if ($('.error', $(this)).length) {
           $('summary span', $(this)).eq(0).addClass('error');
-          Backdrop.FieldGroup.setDetailsWithfocus($(this));
-        }
-      });
-    }
-  }
-}
-
-/**
- * Implements Backdrop.FieldGroup.processHook().
- */
-Backdrop.FieldGroup.Effects.processAccordion = {
-  execute: function (context, settings, type) {
-    $('div.field-group-accordion-wrapper', context).once('fieldgroup-effects', function () {
-      var wrapper = $(this);
-
-      // Get the index to set active.
-      var active_index = false;
-      wrapper.find('.accordion-item').each(function(i) {
-        if ($(this).hasClass('field-group-accordion-active')) {
-          active_index = i;
-        }
-      });
-
-      wrapper.accordion({
-        heightStyle: "content",
-        active: active_index,
-        collapsible: true,
-        changestart: function(event, ui) {
-          if ($(this).hasClass('effect-none')) {
-            ui.options.animated = false;
-          }
-          else {
-            ui.options.animated = 'slide';
-          }
-        }
-      });
-
-      if (type == 'form') {
-
-        var $firstErrorItem = false;
-
-        // Add required fields mark to any element containing required fields
-        wrapper.find('div.field-group-accordion-item').each(function(i) {
-
-          if ($(this).is('.required-fields') && $(this).find('.form-required').length > 0) {
-            $('h3.ui-accordion-header a').eq(i).append(' ').append($('.form-required').eq(0).clone());
-          }
-          if ($('.error', $(this)).length) {
-            // Save first error item, for focussing it.
-            if (!$firstErrorItem) {
-              $firstErrorItem = $(this).parent().accordion("option", "activate" , i);
-            }
-            $('h3.ui-accordion-header').eq(i).addClass('error');
-          }
-        });
-
-        // Save first error item, for focussing it.
-        if (!$firstErrorItem) {
-          $('.ui-accordion-content-active', $firstErrorItem).css({height: 'auto', width: 'auto', display: 'block'});
-        }
-
-      }
-    });
-  }
-}
-
-/**
- * Implements Backdrop.FieldGroup.processHook().
- */
-Backdrop.FieldGroup.Effects.processHtabs = {
-  execute: function (context, settings, type) {
-    if (type == 'form') {
-      // Add required fields mark to any element containing required fields
-      $('fieldset.horizontal-tabs-pane', context).once('fieldgroup-effects', function(i) {
-        if ($(this).is('.required-fields') && $(this).find('.form-required').length > 0) {
-          $(this).data('horizontalTab').link.find('strong:first').after($('.form-required').eq(0).clone()).after(' ');
-        }
-        if ($('.error', $(this)).length) {
-          $(this).data('horizontalTab').link.parent().addClass('error');
-          Backdrop.FieldGroup.setGroupWithfocus($(this));
-          $(this).data('horizontalTab').focus();
+          Backdrop.FieldGroup.setDetailsWithFocus($(this));
         }
       });
     }
@@ -156,7 +76,7 @@ Backdrop.FieldGroup.Effects.processTabs = {
           $(this).data('verticalTab').link.parent().addClass('error');
           // Focus the first tab with error.
           if (!errorFocussed) {
-            Backdrop.FieldGroup.setGroupWithfocus($(this));
+            Backdrop.FieldGroup.setGroupWithFocus($(this));
             $(this).data('verticalTab').focus();
             errorFocussed = true;
           }
@@ -169,8 +89,7 @@ Backdrop.FieldGroup.Effects.processTabs = {
 /**
  * Implements Backdrop.FieldGroup.processHook().
  *
- * TODO clean this up meaning check if this is really
- *      necessary.
+ * TODO clean this up meaning check if this is really  necessary.
  */
 Backdrop.FieldGroup.Effects.processDiv = {
   execute: function (context, settings, type) {
@@ -201,14 +120,17 @@ Backdrop.FieldGroup.Effects.processDiv = {
           var speed = $wrapper.hasClass('speed-fast') ? 300 : 1000;
           if ($wrapper.hasClass('effect-none') && $wrapper.hasClass('speed-none')) {
             $('> .field-group-format-wrapper', wrapper).toggle();
+            wrapper.animating = false;
           }
           else if ($wrapper.hasClass('effect-blind')) {
             $('> .field-group-format-wrapper', wrapper).toggle('blind', {}, speed);
+            wrapper.animating = false;
           }
           else {
-            $('> .field-group-format-wrapper', wrapper).toggle(speed);
+            $('> .field-group-format-wrapper', wrapper).toggle(speed, function() {
+              wrapper.animating = false;
+            });
           }
-          wrapper.animating = false;
         }
         $wrapper.toggleClass('collapsed');
         return false;
@@ -225,15 +147,8 @@ Backdrop.behaviors.fieldGroups = {
   attach: function (context, settings) {
 
     // Vertical tabs: fixes css for fieldgroups.
-    $('.fieldset-wrapper .fieldset > legend').css({display: 'block'});
+    $('.fieldset-wrapper .fieldset > legend').css({ display: 'block' });
     $('.vertical-tabs fieldset.fieldset').addClass('default-fallback');
-
-    // Fieldsets: add a new ID to each fieldset.
-    $('.group-wrapper .horizontal-tabs-panes > fieldset', context).once('group-wrapper-panes-processed', function() {
-      // Thats bad, but we have to keep the actual id to prevent layouts to break.
-      var fieldgroupID = 'field_group-' + $(this).attr('id');
-      $(this).attr('id', fieldgroupID);
-    });
 
     // Fieldsets: set the hash in url to remember last userselection.
     $('.group-wrapper ul li').once('group-wrapper-ul-processed', function() {

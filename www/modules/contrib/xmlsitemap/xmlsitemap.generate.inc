@@ -9,9 +9,9 @@
 /**
  * Given an internal path, return the alias for the path.
  *
- * This is similar to backdrop_get_path_alias(), but designed to fetch all alises
- * at once so that only one database query is executed instead of several or
- * possibly thousands during sitemap generation.
+ * This is similar to backdrop_get_path_alias(), but designed to fetch all
+ * alises at once so that only one database query is executed instead of several
+ * or possibly thousands during sitemap generation.
  *
  * @param string $path
  *   An internal Backdrop path.
@@ -205,8 +205,8 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
     $parsed_url = backdrop_parse_url($link['loc']);
     // Skip nodes which are 301 redirected.
     if (config_get('xmlsitemap.settings', 'redirect')) {
-      $relative_redirect = redirect_fetch_rids_by_path($link['loc'], $link['language']->language, TRUE);
-      $alias_redirect = redirect_fetch_rids_by_path(ltrim(url($link['loc']), '/'), $link['language']->language, TRUE);
+      $relative_redirect = redirect_load_by_source($link['loc'], $link['language']->langcode, array());
+      $alias_redirect = redirect_load_by_source(ltrim(url($link['loc']), '/'), $link['language']->langcode, array());
       // If node contains a 301 redirect we skip it.
       if (!empty($relative_redirect) || !empty($alias_redirect)) {
         continue;
@@ -314,19 +314,29 @@ function xmlsitemap_regenerate_batch(array $smids = array()) {
   );
 
   // Set the regenerate flag in case something fails during file generation.
-  $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array('xmlsitemap_regenerate_needed' => TRUE)));
+  $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array(
+    'xmlsitemap_regenerate_needed' => TRUE,
+  )));
 
   // @todo Get rid of this batch operation.
   $batch['operations'][] = array('_xmlsitemap_regenerate_before', array());
 
   // Generate all the sitemap pages for each context.
   foreach ($smids as $smid) {
-    $batch['operations'][] = array('xmlsitemap_regenerate_batch_generate', array($smid));
-    $batch['operations'][] = array('xmlsitemap_regenerate_batch_generate_index', array($smid));
+    $batch['operations'][] = array(
+      'xmlsitemap_regenerate_batch_generate',
+      array($smid),
+    );
+    $batch['operations'][] = array(
+      'xmlsitemap_regenerate_batch_generate_index',
+      array($smid),
+    );
   }
 
   // Clear the regeneration flag.
-  $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array('xmlsitemap_regenerate_needed' => FALSE)));
+  $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array(
+    'xmlsitemap_regenerate_needed' => FALSE,
+  )));
 
   return $batch;
 }
@@ -420,7 +430,9 @@ function xmlsitemap_rebuild_batch(array $entities, $save_custom = FALSE) {
   );
 
   // Set the rebuild flag in case something fails during the rebuild.
-  $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array('xmlsitemap_rebuild_needed' => TRUE)));
+  $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array(
+    'xmlsitemap_rebuild_needed' => TRUE,
+  )));
 
   // Purge any links first.
   $batch['operations'][] = array('xmlsitemap_rebuild_batch_clear',
@@ -430,11 +442,16 @@ function xmlsitemap_rebuild_batch(array $entities, $save_custom = FALSE) {
   // Fetch all the sitemap links and save them to the {xmlsitemap} table.
   foreach ($entities as $entity) {
     $info = xmlsitemap_get_link_info($entity);
-    $batch['operations'][] = array($info['xmlsitemap']['rebuild callback'], array($entity));
+    $batch['operations'][] = array(
+      $info['xmlsitemap']['rebuild callback'],
+      array($entity),
+    );
   }
 
   // Clear the rebuild flag.
-  $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array('xmlsitemap_rebuild_needed' => FALSE)));
+  $batch['operations'][] = array('xmlsitemap_batch_state_set', array(array(
+    'xmlsitemap_rebuild_needed' => FALSE,
+  )));
 
   // Add the regeneration batch.
   $regenerate_batch = xmlsitemap_regenerate_batch();

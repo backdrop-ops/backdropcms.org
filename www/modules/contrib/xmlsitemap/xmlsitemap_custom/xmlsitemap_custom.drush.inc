@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Drush integration functions for the xmlsitemap_custom module.

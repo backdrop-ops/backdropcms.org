@@ -10,6 +10,9 @@
 function metatag_twitter_cards_metatag_bundled_config_alter(array &$configs) {
   foreach ($configs as &$config) {
     if (isset($config['instance'])) {
+      if ($config['config'] === FALSE) {
+        $config['config'] = array();
+      }
       switch ($config['instance']) {
         case 'global':
           $config['config'] += array(

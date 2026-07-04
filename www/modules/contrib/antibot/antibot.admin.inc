@@ -28,6 +28,13 @@ function antibot_admin_settings($form, &$form_state) {
     '#default_value' => $config->get('show_form_ids'),
     '#description' => t('When enabled, the form IDs of all forms on every page will be displayed to any user with permission to access these settings. Also displayed will be whether or not Antibot is enabled for each form. This should only be turned on temporarily in order to easily determine the form IDs to use.'),
   );
+  $form['salt'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Key hash salt'),
+    '#default_value' => $config->get('salt'),
+    '#description' => t('Additional component for hidden keys to make them individual per site. If Antibot protection declines, change this string.'),
+    '#required' => TRUE,
+  );
 
   return system_settings_form($form);
 }

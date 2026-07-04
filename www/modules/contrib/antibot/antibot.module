@@ -97,10 +97,11 @@ function antibot_protect_form(array &$form) {
   // Ensure the form has an ID set.
   if (!empty($form['#form_id'])) {
     // Generate a key for this form.
-    $key = md5($form['#form_id']);
+    $key = _antibot_generate_key($form['#form_id']);
+    $shuffled_key = strrev(implode('', array_map('implode', array_map('array_reverse', array_chunk(str_split($key), 2)))));
 
     // Store the key in the form.
-    $form['#antibot_key'] = $key;
+    $form['#antibot_key'] = $shuffled_key;
 
     // Add a hidden value which will receive the key via JS.
     // The point of this is to add an additonal layer of protection for remotely
@@ -209,10 +210,20 @@ function antibot_form_validation($form, &$form_state) {
       return;
     }
 
+    // Get the expected key.
+    $expected_key = _antibot_generate_key($form['#form_id']);
+
     // Validate the key.
-    if (empty($form_state['input']['antibot_key']) || ($form['#antibot_key'] != $form_state['input']['antibot_key'])) {
+    if (empty($form_state['input']['antibot_key']) || ($expected_key != $form_state['input']['antibot_key'])) {
       // Prevent the form from submitting.
       form_set_error('', t('Submission failed. Please reload the page and try again.'));
     }
   }
+}
+
+/**
+ * Helper function to generate a key for a given form.
+ */
+function _antibot_generate_key($form_id) {
+  return md5($form_id . config_get('antibot.settings', 'salt'));
 }

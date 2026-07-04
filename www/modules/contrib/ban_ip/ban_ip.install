@@ -1,15 +1,37 @@
 <?php
-
 /**
  * @file
  * Install, update and uninstall functions for the Ban IP module.
  */
 
-
 /**
  * Implements hook_schema().
  */
 function ban_ip_schema() {
+
+  // Get the version. Possible values are:
+  // FALSE -- ban_ip has never been installed, so we must be in installation.
+  // -1 -- ban_ip was previously installed, then uninstalled. We must be in
+  //   reinstallation.
+  // 0 -- the old version is currently installed. We're in normal usage or
+  //   uninstallation.
+  // 1000+ -- The current version is currently installed. We're in normal usage
+  //   or uninstallation.
+  $version = db_query('
+    SELECT schema_version
+    FROM {system}
+    WHERE name = :name
+    ', array(':name' => 'ban_ip'))
+    ->fetchField();
+
+  // If we are upgrading from D7 and the blocked_ips table already exists, then
+  // during installation we should return an empty array for the schema so that
+  // we don't try to create the table that already exists.
+  if (($version === FALSE || $version == -1) && db_table_exists('blocked_ips')) {
+    $needs_rebuild_schema = &backdrop_static('ban_ip_needs_rebuild_schema', TRUE);
+    return array();
+  }
+
   $schema['blocked_ips'] = array(
     'description' => 'Stores blocked IP addresses.',
     'fields' => array(
@@ -34,4 +56,410 @@ function ban_ip_schema() {
   );
 
   return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function ban_ip_install() {
+  // This hook is called after table creation; if necessary, rebuild the schema
+  // so that it now includes the blocked_ips table.
+  $needs_rebuild_schema = &backdrop_static('ban_ip_needs_rebuild_schema');
+  if (isset($needs_rebuild_schema)) {
+    backdrop_get_complete_schema(TRUE);
+  }
+}
+
+/**
+ * Install the blocked_ip_addresses view.
+ */
+function ban_ip_update_1000() {
+  $view = views_get_view('blocked_ip_addresses');
+  if (!$view) {
+    $config = config('views.view.blocked_ip_addresses');
+    $data = array(
+      'base_table' => 'blocked_ips',
+      'base_field' => 'nid',
+      'name' => 'blocked_ip_addresses',
+      'description' => '',
+      'tag' => '',
+      'human_name' => 'Blocked IP addresses',
+      'core' => '1.28.0',
+      'api_version' => NULL,
+      'disabled' => false,
+      'type' => 'Normal',
+      'module' => NULL,
+      'storage' => 1,
+      'built' => false,
+      'executed' => false,
+      'editing' => false,
+      'args' => array(),
+      'build_info' => array(),
+      'use_ajax' => false,
+      'result' => array(),
+      'current_page' => NULL,
+      'items_per_page' => NULL,
+      'offset' => NULL,
+      'total_rows' => NULL,
+      'attachment_before' => '',
+      'attachment_after' => '',
+      'exposed_raw_input' => array(),
+      'old_view' => array(),
+      'parent_views' => array(),
+      'is_attachment' => NULL,
+      'current_display' => NULL,
+      'query' => NULL,
+      'display_handler' => NULL,
+      'display' =>array(
+      'default' => array(
+         'display_plugin' => 'default',
+         'id' => 'default',
+         'title' => NULL,
+         'display_options' => array(
+          'query' => array(
+            'type' => 'views_query',
+            'options' => array(),
+          ),
+          'access' => array(
+            'type' => 'perm',
+            'perm' => 'block IP addresses',
+          ),
+          'cache' => array(
+            'type' => 'none',
+          ),
+          'exposed_form' => array(
+            'type' => 'basic',
+          ),
+          'pager' => array(
+            'type' => 'full',
+          ),
+          'style_plugin' => 'table',
+          'row_plugin' => 'fields',
+          'fields' => array(
+            'iid' => array(
+              'id' => 'iid',
+              'table' => 'blocked_ips',
+              'field' => 'iid',
+              'relationship' => 'none',
+              'group_type' => 'group',
+              'ui_name' => '',
+              'label' => '',
+              'exclude' => 1,
+              'alter' => array(
+                'alter_text' => 0,
+                'text' => '',
+                'make_link' => 0,
+                'path' => '',
+                'absolute' => 0,
+                'external' => 0,
+                'replace_spaces' => 0,
+                'path_case' => 'none',
+                'trim_whitespace' => 0,
+                'alt' => '',
+                'rel' => '',
+                'link_class' => '',
+                'prefix' => '',
+                'suffix' => '',
+                'target' => '',
+                'nl2br' => 0,
+                'max_length' => '',
+                'word_boundary' => 1,
+                'ellipsis' => 1,
+                'more_link' => 0,
+                'more_link_text' => '',
+                'more_link_path' => '',
+                'strip_tags' => 0,
+                'trim' => 0,
+                'preserve_tags' => '',
+                'html' => 0,
+              ),
+              'element_type' => '',
+              'element_class' => '',
+              'element_label_type' => '',
+              'element_label_class' => '',
+              'element_label_colon' => false,
+              'element_wrapper_type' => '',
+              'element_wrapper_class' => '',
+              'element_default_classes' => 1,
+              'empty' => '',
+              'hide_empty' => 0,
+              'empty_zero' => 0,
+              'hide_alter_empty' => 1,
+            ),
+            'nothing' => array(
+              'id' => 'nothing',
+              'table' => 'views',
+              'field' => 'nothing',
+              'relationship' => 'none',
+              'group_type' => 'group',
+              'ui_name' => '',
+              'label' => 'Unblock',
+              'exclude' => 1,
+              'alter' =>
+              array(
+                'alter_text' => true,
+                'text' => 'Unblock',
+                'make_link' => 1,
+                'path' => 'admin/config/people/ip-blocking/delete/[iid]',
+                'absolute' => 0,
+                'external' => 0,
+                'replace_spaces' => 0,
+                'path_case' => 'none',
+                'trim_whitespace' => 0,
+                'alt' => '',
+                'rel' => '',
+                'link_class' => '',
+                'prefix' => '',
+                'suffix' => '',
+                'target' => '',
+                'nl2br' => 0,
+                'max_length' => '',
+                'word_boundary' => 1,
+                'ellipsis' => 1,
+                'more_link' => 0,
+                'more_link_text' => '',
+                'more_link_path' => '',
+                'strip_tags' => 0,
+                'trim' => 0,
+                'preserve_tags' => '',
+                'html' => 0,
+              ),
+              'element_type' => '',
+              'element_class' => '',
+              'element_label_type' => '',
+              'element_label_class' => '',
+              'element_label_colon' => 0,
+              'element_wrapper_type' => '',
+              'element_wrapper_class' => '',
+              'element_default_classes' => 1,
+              'empty' => '',
+              'hide_empty' => 0,
+              'empty_zero' => 0,
+              'hide_alter_empty' => 0,
+            ),
+            'ip' => array(
+              'id' => 'ip',
+              'table' => 'blocked_ips',
+              'field' => 'ip',
+              'relationship' => 'none',
+              'group_type' => 'group',
+              'ui_name' => '',
+              'label' => 'Blocked IP addresses',
+              'exclude' => 0,
+              'alter' =>
+              array(
+                'alter_text' => 0,
+                'text' => '',
+                'make_link' => 0,
+                'path' => '',
+                'absolute' => 0,
+                'external' => 0,
+                'replace_spaces' => 0,
+                'path_case' => 'none',
+                'trim_whitespace' => 0,
+                'alt' => '',
+                'rel' => '',
+                'link_class' => '',
+                'prefix' => '',
+                'suffix' => '',
+                'target' => '',
+                'nl2br' => 0,
+                'max_length' => '',
+                'word_boundary' => 1,
+                'ellipsis' => 1,
+                'more_link' => 0,
+                'more_link_text' => '',
+                'more_link_path' => '',
+                'strip_tags' => 0,
+                'trim' => 0,
+                'preserve_tags' => '',
+                'html' => 0,
+              ),
+              'element_type' => '',
+              'element_class' => '',
+              'element_label_type' => '',
+              'element_label_class' => '',
+              'element_label_colon' => 1,
+              'element_wrapper_type' => '',
+              'element_wrapper_class' => '',
+              'element_default_classes' => 1,
+              'empty' => '',
+              'hide_empty' => 0,
+              'empty_zero' => 0,
+              'hide_alter_empty' => 1,
+            ),
+            'dropbutton' => array(
+              'id' => 'dropbutton',
+              'table' => 'views',
+              'field' => 'dropbutton',
+              'relationship' => 'none',
+              'group_type' => 'group',
+              'ui_name' => '',
+              'label' => 'Operations',
+              'exclude' => 0,
+              'alter' =>
+              array(
+                'alter_text' => false,
+                'text' => '',
+                'make_link' => false,
+                'path' => '',
+                'absolute' => false,
+                'external' => false,
+                'replace_spaces' => false,
+                'path_case' => 'none',
+                'trim_whitespace' => false,
+                'alt' => '',
+                'rel' => '',
+                'link_class' => '',
+                'prefix' => '',
+                'suffix' => '',
+                'target' => '',
+                'nl2br' => false,
+                'max_length' => '',
+                'word_boundary' => true,
+                'ellipsis' => true,
+                'more_link' => false,
+                'more_link_text' => '',
+                'more_link_path' => '',
+                'strip_tags' => false,
+                'trim' => false,
+                'preserve_tags' => '',
+                'html' => false,
+              ),
+              'element_type' => '',
+              'element_class' => '',
+              'element_label_type' => '',
+              'element_label_class' => '',
+              'element_label_colon' => 1,
+              'element_wrapper_type' => '',
+              'element_wrapper_class' => '',
+              'element_default_classes' => 0,
+              'empty' => '',
+              'hide_empty' => 0,
+              'empty_zero' => 0,
+              'hide_alter_empty' => 1,
+              'fields' =>
+              array(
+                'nothing' => 'nothing',
+                'iid' => 0,
+                'ip' => 0,
+              ),
+              'destination' => 1,
+            ),
+          ),
+          'filters' => array(
+            'ip' => array(
+              'id' => 'ip',
+              'table' => 'blocked_ips',
+              'field' => 'ip',
+              'relationship' => 'none',
+              'group_type' => 'group',
+              'ui_name' => '',
+              'operator' => 'contains',
+              'value' => '',
+              'group' => '1',
+              'exposed' => true,
+              'expose' => array(
+                'operator_id' => 'ip_op',
+                'label' => 'IP address',
+                'description' => '',
+                'use_operator' => 1,
+                'operator' => 'ip_op',
+                'identifier' => 'ip',
+                'required' => 0,
+                'remember' => 0,
+                'multiple' => false,
+                'remember_roles' => array(
+                  'authenticated' => 'authenticated',
+                  'anonymous' => 0,
+                  'editor' => 0,
+                  'administrator' => 0,
+                  'architect' => 0,
+                ),
+              ),
+              'is_grouped' => false,
+              'group_info' => array(
+                'label' => '',
+                'description' => '',
+                'identifier' => '',
+                'optional' => true,
+                'widget' => 'select',
+                'multiple' => false,
+                'remember' => 0,
+                'default_group' => 'All',
+                'default_group_multiple' => array(),
+                'group_items' => array(),
+              ),
+            ),
+          ),
+          'sorts' => array(),
+          'style_options' => array(
+            'grouping' => array(
+            ),
+            'row_class' => '',
+            'default_row_class' => 1,
+            'row_class_special' => 1,
+            'override' => 1,
+            'sticky' => 0,
+            'caption' => '',
+            'summary' => '',
+            'columns' => array(
+              'iid' => 'iid',
+              'nothing' => 'nothing',
+              'ip' => 'ip',
+              'dropbutton' => 'dropbutton',
+            ),
+            'info' => array(
+              'iid' => array(
+                'sortable' => 0,
+                'default_sort_order' => 'asc',
+                'align' => '',
+                'separator' => '',
+                'empty_column' => 0,
+              ),
+              'nothing' => array(
+                'align' => '',
+                'separator' => '',
+                'empty_column' => 0,
+              ),
+              'ip' => array(
+                'sortable' => 0,
+                'default_sort_order' => 'asc',
+                'align' => '',
+                'separator' => '',
+                'empty_column' => 0,
+              ),
+              'dropbutton' => array(
+                'align' => '',
+                'separator' => '',
+                'empty_column' => 0,
+              ),
+            ),
+            'default' => '-1',
+            'empty_table' => 0,
+          ),
+          'arguments' => array(),
+        ),
+         'position' => 0,
+         'display_title' => 'Default',
+      ),
+      ),
+      'style_plugin' => NULL,
+      'style_options' => NULL,
+      'row_index' => NULL,
+      'override_url' => NULL,
+      'override_path' => NULL,
+      'base_database' => NULL,
+      'field' => NULL,
+      'argument' => NULL,
+      'sort' => NULL,
+      'filter' => NULL,
+      'relationship' => NULL,
+      'header' => NULL,
+      'footer' => NULL,
+      'empty' => NULL,
+    );
+    $config->setData($data);
+    $config->save();
+  }
 }

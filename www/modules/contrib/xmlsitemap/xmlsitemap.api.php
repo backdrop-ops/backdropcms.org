@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Hooks provided by the XML sitemap module.
@@ -307,12 +306,12 @@ function hook_xmlsitemap_sitemap_operations() {
  *   ['href'] - The URI the user is sent to when clicking the link.
  *   ['title'] - The title of the link.
  *   ['modal'] - Whether or not the edit link shows up in a modal.
- *   ['query'] - A destination query parameter to send user back to after updating
- *               the entity settings.
+ *   ['query'] - A destination query parameter to send user back to after
+ *               updating the entity settings.
  */
-function hook_xmlsitemap_operation_link_alter(&$link) {
-  // The XML Sitemap settings for the user entity are stored in a different place
-  // than entity_get_info() returns.
+function hook_xmlsitemap_operation_link_alter(array &$link) {
+  // The XML Sitemap settings for the user entity are stored in a different
+  // place than entity_get_info() returns.
   if ($link['href'] === 'admin/config/search/xmlsitemap/settings/user/user') {
     $link['href'] = 'admin/config/people/settings';
   }

@@ -46,8 +46,8 @@ function xmlsitemap_user_xmlsitemap_link_info() {
  * Implements hook_xmlsitemap_operation_link_alter().
  */
 function xmlsitemap_user_xmlsitemap_operation_link_alter(&$link) {
-  // The XML Sitemap settings for the user entity are stored in a different place
-  // than entity_get_info() returns.
+  // The XML Sitemap settings for the user entity are stored in a different
+  // place than entity_get_info() returns.
   if ($link['href'] === 'admin/config/search/xmlsitemap/settings/user/user') {
     $link['href'] = 'admin/config/people/settings';
   }
@@ -156,7 +156,8 @@ function xmlsitemap_user_form_user_admin_settings_alter(&$form, $form_state) {
   xmlsitemap_add_link_bundle_settings($form, $form_state, 'user', 'user');
 
   // @todo Figure out what this was supposed to do.
-  // The array += operator causes a fatal error since both of those arrays can be missing.
+  // The array += operator causes a fatal error since both of those arrays can
+  // be missing.
   // I don't see anything about an email on admin/config/people/settings.
   // $form['email_title'] += array('#weight' => 10);
   // $form['email'] += array('#weight' => 10);
