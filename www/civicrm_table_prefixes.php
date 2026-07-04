@@ -167,4 +167,7 @@ $civicrm_table_prefixes = array(
   'civicrm_payment_processor' => 'civicrm.',
   'civicrm_afform_submission' => 'civicrm.',
   'civicrm_site_token' => 'civicrm.',
+  'civicrm_translation_source' => 'civicrm.',
+  'civicrm_search_param_set' => 'civicrm.',
+  'civicrm_site_email_address' => 'civicrm.',
 );
