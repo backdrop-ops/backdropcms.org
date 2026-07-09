@@ -112,16 +112,16 @@ function civicrm_cron_admin_settings($form, &$form_state) {
 
     $form['civicrm_cron_advanced']['help'] = array(
       '#type' => 'markup',
-      '#markup' => 'A username and password of a Backdrop user with the permission to view all contacts,
+      '#markup' => t('<p>A username and password of a Backdrop user with the permission to view all contacts,
       access CiviCRM, and access CiviMail is required for CiviMail. Passing the username and password
-      is less secure.  ONLY configure this if you are using CiviMail.',
+      is less secure. ONLY configure this if you are using CiviMail.</p><p>To improve security store the credentials in the <code>settings.php</code> file. At minimum store the password in the format: <code>$config[\'civicrm_cron.settings\'][\'civicrm_cron_password\'] = \'\';</code></p>'),
     );
 
     $form['civicrm_cron_advanced']['civicrm_cron_username'] = array(
       '#type' => 'textfield',
       '#title' => t('Username'),
       '#default_value' => $cron_values['name'],
-      '#description' => t('CiviCRM runs cron as a specific user.  This user should have MINIMAL permissions since the password will be saved in the database and seen in the logs.'),
+      '#description' => t('CiviCRM runs cron as a specific user. This user should have MINIMAL permissions.'),
     );
 
     $form['civicrm_cron_advanced']['civicrm_cron_password'] = array(
@@ -152,8 +152,6 @@ function civicrm_cron_admin_settings($form, &$form_state) {
  * Implements hook_cron().
  */
 function civicrm_cron_cron() {
-  global $base_url;
-
   $key = config_get('civicrm_cron.settings', 'civicrm_cron_sitekey');
   $result = civicrm_cron_passthrough($key);
   // Look for the CiviCRM error in response. If successful it returns nothing.
@@ -194,8 +192,8 @@ function civicrm_cron_passthrough(string $sentkey = '') {
     return t('Failed to initialize CiviCRM during cron.');
   }
 
-  if ($config->get('civicrm_cron_username')) {
-    CRM_Utils_System::authenticateScript(TRUE, $config->get('civicrm_cron_username'), $config->get('civicrm_cron_password'));
+  if ($config->get('civicrm_cron_username') && $config->get('civicrm_cron_password')) {
+    CRM_Utils_System::authenticateScript(TRUE, $config->get('civicrm_cron_username'), $config->get('civicrm_cron_password'), TRUE, TRUE, FALSE);
   }
   else {
     CRM_Utils_System::authenticateScript(FALSE);
