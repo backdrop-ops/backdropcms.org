@@ -33,7 +33,11 @@ spambot - move last checked uid to state
 
 project - prevent fatal error on telemetry page if submitted version string is blank
   https://github.com/backdrop-contrib/project/issues/64
-  https://github.com/backdrop-contrib/project/pull/65.patch 
+  https://github.com/backdrop-contrib/project/pull/65.patch
+
+civicrm_cron - fix crash on the admin page in 2.0.7.
+  https://github.com/backdrop-contrib/civicrm_cron/issues/6
+  https://github.com/backdrop-contrib/civicrm_cron/pull/7.patch
 
 Patches to CiviCRM:
 ============================
