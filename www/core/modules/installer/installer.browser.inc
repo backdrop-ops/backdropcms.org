@@ -234,15 +234,7 @@ function installer_browser_get_queued_releases() {
  * @return array
  *   Returns an array of results.
  */
-function installer_browser_fetch_results($filters = array()) {
-  $filters += array(
-    'version' => '1',
-    'text' => '',
-    'type' => 'all',
-    'page' => 0,
-    'items_per_page' => 'all',
-  );
-
+function installer_browser_fetch_results($filters) {
   $server = installer_browser_get_server();
   // Attempt to retrieve the cached version of this page.
   $cid = 'installer:results:' . md5(serialize(array_merge($filters, $server)));
