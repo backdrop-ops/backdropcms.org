@@ -508,7 +508,7 @@ class WebformConditionals {
    * Returns whether the conditionals have been executed yet.
    */
   public function isExecuted() {
-    return (boolean) ($this->visibilityMap);
+    return (bool) ($this->visibilityMap);
   }
 
   /**

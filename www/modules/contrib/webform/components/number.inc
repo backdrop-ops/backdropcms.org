@@ -448,8 +448,8 @@ function _webform_analysis_number($component, $sids = array(), $single = FALSE, 
   foreach ($result as $data) {
     $value = trim($data['data']);
     $number = (float) $value;
-    $non_empty += (integer) ($value !== '');
-    $non_zero += (integer) ($number != 0.0);
+    $non_empty += (int) ($value !== '');
+    $non_zero += (int) ($number != 0.0);
     $sum += $number;
     $population[] = $number;
     $submissions++;

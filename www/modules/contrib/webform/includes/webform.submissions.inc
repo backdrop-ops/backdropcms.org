@@ -299,7 +299,7 @@ function _webform_submission_prepare_mail($node, $submission, &$email) {
   }
 
   // Replace tokens in the message.
-  $email['message'] = webform_replace_tokens($email['message'], $node, $submission, $email, (boolean) $email['html']);
+  $email['message'] = webform_replace_tokens($email['message'], $node, $submission, $email, (bool) $email['html']);
 
   // Build the e-mail headers.
   $email['headers'] = theme(array('webform_mail_headers_' . $node->nid, 'webform_mail_headers'), array('node' => $node, 'submission' => $submission, 'email' => $email));

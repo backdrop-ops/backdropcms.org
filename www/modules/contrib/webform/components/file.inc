@@ -359,6 +359,9 @@ function _webform_render_file($component, $value = NULL, $filter = TRUE, $submis
       'file_validate_extensions' => array(implode(' ', $component['extra']['filtering']['types'])),
     ),
     '#pre_render' => array_merge(element_info_property('managed_file', '#pre_render'), array('webform_file_allow_access')),
+    // Reject file IDs that the submitting user has no claim to. See
+    // webform_file_check_value().
+    '#file_value_callbacks' => array('webform_file_check_value'),
     '#upload_location' => $component['extra']['scheme'] . '://webform/' . ($filter
                                                                               ? backdrop_strtolower(webform_replace_tokens($component['extra']['directory'], $node))
                                                                               : $component['extra']['directory']),
@@ -431,6 +434,94 @@ function _webform_submit_file($component, $value) {
 }
 
 /**
+ * A #file_value_callback to reject files the user did not put in the form.
+ *
+ * The file component posts the ID of the uploaded file back to the server in a
+ * hidden form field. Nothing in that round trip proves that the ID is the one
+ * the form handed out, so it must not be taken at face value: a user who edits
+ * the field can otherwise attach any managed file on the site to their own
+ * submission, including uploads belonging to other people.
+ *
+ * Only two file IDs are legitimate for a given element: the one already stored
+ * for the component (when editing a submission, resuming a draft, or returning
+ * to an earlier page of a multi-page form), and one the current user uploaded
+ * through a webform during this session. Anything else is discarded, which
+ * leaves the element with no file, exactly as if nothing had been uploaded.
+ *
+ * Note that file_managed_file_value() applies its own checks on top of this
+ * one; this callback runs first and only ever narrows what is accepted.
+ *
+ * @param array $element
+ *   The managed_file element being processed.
+ * @param array $input
+ *   The raw submitted values for the element, altered in place.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @see _webform_render_file()
+ * @see file_managed_file_value()
+ */
+function webform_file_check_value($element, &$input, $form_state) {
+  if (empty($input['fid']) || webform_file_access_upload($element, $input['fid'], $form_state)) {
+    return;
+  }
+
+  watchdog('webform', 'The file ID %fid submitted for the %name field was not uploaded by this user and has been discarded.', array(
+    '%fid' => $input['fid'],
+    '%name' => isset($element['#title']) ? $element['#title'] : $element['#name'],
+  ), WATCHDOG_WARNING);
+
+  $input['fid'] = 0;
+}
+
+/**
+ * Determines whether a file ID may be used as the value of a file component.
+ *
+ * @param array $element
+ *   The managed_file element the file ID was submitted for.
+ * @param int $fid
+ *   The submitted file ID.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return bool
+ *   TRUE if the current user may attach this file to the component.
+ *
+ * @see webform_file_check_value()
+ */
+function webform_file_access_upload($element, $fid, $form_state) {
+  // The value already stored for this component. It comes from a saved
+  // submission or from values this user has already had validated on an
+  // earlier build of this form, never straight from the request.
+  $default = isset($element['#default_value']) ? $element['#default_value'] : NULL;
+  $default_fid = is_array($default) ? (isset($default['fid']) ? $default['fid'] : NULL) : $default;
+  if (!empty($default_fid) && (string) $fid === (string) $default_fid) {
+    return TRUE;
+  }
+
+  // Files this user has uploaded through a webform during this session.
+  // webform_file_allow_access() and _webform_submit_file() record them as they
+  // are uploaded, and webform_file_download() uses the same list to grant
+  // access to files that are not yet attached to a saved submission.
+  if (isset($_SESSION['webform_files'][$fid])) {
+    return TRUE;
+  }
+
+  // Anonymous users may have no session to record the upload in, so fall back
+  // to the signed token that file_managed_file_process() emits for them. It
+  // covers the same case as the session: a temporary file that this form
+  // handed back to the user who uploaded it.
+  if (empty($GLOBALS['user']->uid) && isset($form_state['input']) && ($file = webform_get_file($fid)) && $file->status != FILE_STATUS_PERMANENT) {
+    $token = backdrop_array_get_nested_value($form_state['input'], array_merge($element['#parents'], array('fid_token')));
+    if (isset($token) && $token === backdrop_hmac_base64('file-' . $file->fid, backdrop_get_private_key() . backdrop_get_hash_salt())) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
  * Pre-render callback to allow access to uploaded files.
  *
  * Files that have not yet been saved into a submission must be accessible to
@@ -473,8 +564,14 @@ function theme_webform_display_file($variables) {
   $element = $variables['element'];
 
   $file = $element['#value'];
-  $url = !empty($file) ? webform_file_url($file->uri) : t('no upload');
-  return !empty($file) ? ($element['#format'] == 'text' ? $url : l($file->filename, $url)) : ' ';
+  if (empty($file)) {
+    return ' ';
+  }
+  $url = webform_file_url($file->uri);
+  if ($element['#format'] == 'text') {
+    return $url;
+  }
+  return l($file->filename, $url, array('attributes' => webform_file_link_attributes($file)));
 }
 
 /**
@@ -544,7 +641,8 @@ function _webform_table_file($component, $value) {
   $output = '';
   $file = webform_get_file($value[0]);
   if (!empty($file->fid)) {
-    $output = '<a href="' . webform_file_url($file->uri) . '">' . check_plain(webform_file_name($file->uri)) . '</a>';
+    $attributes = backdrop_attributes(webform_file_link_attributes($file));
+    $output = '<a href="' . webform_file_url($file->uri) . '"' . $attributes . '>' . check_plain(webform_file_name($file->uri)) . '</a>';
     $output .= ' (' . (int) ($file->filesize / 1024) . ' KB)';
   }
   return $output;
@@ -590,6 +688,50 @@ function webform_file_url($uri) {
     $file_url = file_create_url($uri);
   }
   return isset($file_url) ? $file_url : '';
+}
+
+/**
+ * Returns the MIME types that a link should force the browser to download.
+ *
+ * Browsers display these types inline rather than saving them, which is rarely
+ * what is wanted for an uploaded attachment, and in the case of HTML lets a
+ * submitted file run in the site's own origin.
+ *
+ * @return array
+ *   An array of lowercase MIME type strings.
+ */
+function webform_file_download_mime_types() {
+  $mime_types = settings_get('webform_file_download_mime_types', array(
+    'application/atom',
+    'application/pdf',
+    'application/xml',
+    'text/html',
+    'text/xml',
+  ));
+
+  return array_map('backdrop_strtolower', $mime_types);
+}
+
+/**
+ * Helper function to build the attributes for a link to an uploaded file.
+ *
+ * @param object $file
+ *   The file the link points at.
+ *
+ * @return array
+ *   An array of attributes suitable for l() or backdrop_attributes(). Files of a
+ *   MIME type the browser would display inline carry the HTML5 download
+ *   attribute so that they are saved instead.
+ */
+function webform_file_link_attributes($file) {
+  $attributes = array();
+
+  $filemime = isset($file->filemime) ? backdrop_strtolower($file->filemime) : '';
+  if ($filemime !== '' && in_array($filemime, webform_file_download_mime_types(), TRUE)) {
+    $attributes['download'] = !empty($file->filename) ? $file->filename : webform_file_name($file->uri);
+  }
+
+  return $attributes;
 }
 
 /**
