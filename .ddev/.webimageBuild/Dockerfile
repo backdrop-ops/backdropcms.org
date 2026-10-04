@@ -24,7 +24,11 @@ RUN (groupadd --gid "$gid" "$username" || groupadd "$username" || true) && \
 ### DDEV-injected extra content
 
 RUN mkdir -p /home/$username && chown $username /home/$username && chmod 600 /home/$username/.pgpass
+RUN log-stderr.sh mariadb-client-install.sh || true
+
 RUN log-stderr.sh mariadb-compat-install.sh || true
+
+RUN log-stderr.sh mariadb-skip-ssl-wrapper-install.sh || true
 
 
 ### DDEV-injected composer update
