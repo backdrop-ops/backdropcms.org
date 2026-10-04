@@ -14,12 +14,13 @@
         }
     },
     "description": "This won't be displayed anywhere; we're just using it to help weed out spam submissions.",
-    "required": 0,
+    "required": 1,
     "deleted": 0,
     "default_value": null,
     "default_value_function": null,
     "settings": {
         "text_processing": "0",
+        "allowed_formats": [],
         "user_register_form": 1
     },
     "display": {

@@ -1,5 +1,12 @@
 {
     "_config_name": "system.core",
+    "_config_static": true,
+    "_config_translatables": [
+        "anonymous",
+        "site_name",
+        "site_slogan",
+        "maintenance_mode_message"
+    ],
     "user_admin_role": "3",
     "anonymous": "Anonymous",
     "user_email_verification": 1,
@@ -102,12 +109,6 @@
     "user_password_reject_weak": 1,
     "user_password_strength_threshold": 50,
     "config_sync_clear_staging": 1,
-    "_config_translatables": [
-        "anonymous",
-        "site_name",
-        "site_slogan",
-        "maintenance_mode_message"
-    ],
     "messages_dismissible": 1,
     "file_additional_public_schemes": [],
     "log_max_length": "128",
@@ -127,5 +128,6 @@
         "height": ""
     },
     "site_logo_upload": "",
-    "site_favicon_upload": ""
+    "site_favicon_upload": "",
+    "icon_browser_icons_per_page": 110
 }
