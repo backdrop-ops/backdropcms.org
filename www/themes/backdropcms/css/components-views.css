@@ -35,7 +35,8 @@
 /*******************************************************************************
  * Projects view
  ******************************************************************************/
-.view-modules ol {
+.view-modules ol,
+.view-project-listings ol {
   margin-left: 0                                                  ;
   list-style-type: none;
 }

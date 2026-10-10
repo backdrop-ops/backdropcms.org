@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Search facets module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function search_api_facetapi_install() {
+  _search_api_facetapi_set_date_formats();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function search_api_facetapi_uninstall() {
+  state_del('search_api_facets_search_ids');
+  _search_api_facetapi_set_date_formats('unset');
+}
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function search_api_facetapi_update_last_removed() {
+  return 7101;
+}
+
+/**
+ * Delete unnecessary config file and ensure date formats are set.
+ */
+function search_api_facetapi_update_1100() {
+  config('search_api_facetapi.settings')->delete();
+  _search_api_facetapi_set_date_formats();
+}
+
+/**
+ * Helper to ensure the custom date formats exist.
+ */
+function _search_api_facetapi_set_date_formats($action = 'set') {
+  include_once BACKDROP_ROOT . '/core/includes/update.inc';
+  $save_needed = FALSE;
+  $date_config = config('system.date');
+  $defaults = array(
+    'module' => 'search_api_facetapi',
+  );
+  $date_config_formats = $date_config->get('formats');
+  $date_formats = array(
+    FACETAPI_DATE_YEAR => array(
+      'label' => t('Search facets - Years'),
+      'pattern' => 'Y',
+    ) + $defaults,
+    FACETAPI_DATE_MONTH => array(
+      'label' => t('Search facets - Months'),
+      'pattern' => 'F Y',
+    ) + $defaults,
+    FACETAPI_DATE_DAY => array(
+      'label' => t('Search facets - Days'),
+      'pattern' => 'F j, Y',
+    ) + $defaults,
+    FACETAPI_DATE_HOUR => array(
+      'label' => t('Search facets - Hours'),
+      'pattern' => 'H:__',
+    ) + $defaults,
+    FACETAPI_DATE_MINUTE => array(
+      'label' => t('Search facets - Minutes'),
+      'pattern' => 'H:i',
+    ) + $defaults,
+    FACETAPI_DATE_SECOND => array(
+      'label' => t('Search facets - Seconds'),
+      'pattern' => 'H:i:s',
+    ) + $defaults,
+  );
+  foreach ($date_formats as $type => $format) {
+    $type = strtolower($type);
+    if ($action == 'set' && empty($date_config_formats['search_api_facetapi_' . $type])) {
+      $format['pattern'] = update_variable_get('search_api_facetapi_' . $type, $format['pattern']);
+      $date_config->set('formats.search_api_facetapi_' . $type, $format);
+      $save_needed = TRUE;
+    }
+    elseif ($action == 'unset') {
+      $date_config->clear('formats.search_api_facetapi_' . $type);
+      $save_needed = TRUE;
+    }
+  }
+  if ($save_needed) {
+    $date_config->save();
+  }
+}

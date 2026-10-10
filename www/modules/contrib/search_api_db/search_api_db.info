@@ -1,0 +1,12 @@
+name = Database search
+description = "Offers an implementation of the Search API that uses database tables for indexing content."
+dependencies[] = search_api
+backdrop = 1.x
+type = module
+package = Search
+
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = search_api_db
+version = 1.x-1.9.2
+timestamp = 1770378646

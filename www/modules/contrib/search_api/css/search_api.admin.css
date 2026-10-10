@@ -1,0 +1,51 @@
+/**
+ * @file
+ * Styles for Search API admin pages.
+ */
+
+/*
+ * OVERVIEW
+ */
+
+.search-api-overview td.search-api-status {
+  text-align: center;
+}
+
+.search-api-overview td {
+  vertical-align: top;
+}
+
+/*
+ * VIEW SERVER
+ */
+
+.search-api-server-summary ul.inline {
+  margin: 0;
+}
+
+.search-api-server-summary ul.inline li {
+  padding-left: 0;
+}
+
+/*
+ * VIEW INDEX
+ */
+.search-api-limit,
+.search-api-batch-size {
+  text-align: center;
+}
+
+.search-api-index-status .progress .bar .filled::after {
+  background: #0074BD none;
+
+}
+
+/*
+ * MISC
+ */
+
+.search-api-alter-add-aggregation-fields,
+.search-api-checkboxes-list {
+  max-height: 12em;
+  overflow: auto;
+}

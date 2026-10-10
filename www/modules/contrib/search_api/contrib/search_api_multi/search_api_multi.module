@@ -1,0 +1,115 @@
+<?php
+/**
+ * @file
+ * Hooks and custom functions for the Multi-Index Searches module.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function search_api_multi_views_api() {
+  if (module_exists('search_api_views')) {
+    return array(
+      'api' => '3.0',
+      'path' => backdrop_get_path('module', 'search_api_multi') . '/views',
+    );
+  }
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function search_api_multi_autoload_info() {
+  return array(
+    'SearchApiMultiQueryInterface' => 'includes/search_api_multi.query.inc',
+    'SearchApiMultiQuery' => 'includes/search_api_multi.query.inc',
+    'SearchApiMultiServiceInterface' => 'includes/search_api_multi.service.inc',
+    'SearchApiMultiHandlerArgumentFulltext' => 'views/handler_argument_fulltext.inc',
+    'SearchApiMultiHandlerFilterFulltext' => 'views/handler_filter_fulltext.inc',
+    'SearchApiMultiViewsHandlerFilterOptions' => 'views/handler_filter_options.inc',
+    'SearchApiMultiViewsQuery' => 'views/query.inc',
+    'SearchApiMultiRowEntityView' => 'views/row_entity_view.inc',
+  );
+}
+
+/**
+ * Creates a multi-index search query.
+ *
+ * For backwards-compatibility reasons, the options can be passed as either the
+ * first or the second parameter, the other one is ignored.
+ *
+ * @param ?array $options
+ *   Associative array of options configuring this query. Recognized options
+ *   are:
+ *   - conjunction: The type of conjunction to use for this query - either
+ *     'AND' or 'OR'. 'AND' by default. This only influences the search keys,
+ *     filters will always use AND by default.
+ *   - 'parse mode': The mode with which to parse the $keys variable, if it
+ *     is set and not already an array. See SearchApiMultiQuery::parseModes()
+ *     for recognized parse modes.
+ *   - languages: The languages to search for, as an array of language IDs.
+ *     If not specified, all languages will be searched. Language-neutral
+ *     content (LANGUAGE_NONE) is always searched.
+ *   - offset: The position of the first returned search results relative to
+ *     the whole result.
+ *   - limit: The maximum number of search results to return. -1 means no
+ *     limit.
+ *   - 'filter class': Can be used to change the SearchApiQueryFilterInterface
+ *     implementation to use.
+ *   - 'search id': A string that will be used as the identifier when storing
+ *     this search in the static cache.
+ *   All options are optional.
+ * @param array $options2
+ *   Deprecated. Exactly the same as $options. Will be used if $options is no
+ *   array.
+ *
+ * @return SearchApiMultiQueryInterface
+ *   A query object for searching multiple indexes.
+ */
+function search_api_multi_query(?array $options = array(), array $options2 = array()) {
+  $options = is_array($options) ? $options : $options2;
+  return new SearchApiMultiQuery($options);
+}
+
+/**
+ * Static store for the multi-index searches executed on the current page.
+ *
+ * Can either be used to store an executed search, or to retrieve a previously
+ * stored search.
+ *
+ * @param ?string $search_id
+ *   For pages displaying multiple searches, an optional ID identifying the
+ *   search in questions. When storing a search, this is filled automatically,
+ *   unless it is manually set.
+ * @param ?SearchApiMultiQuery $query
+ *   When storing an executed search, the query that was executed. NULL
+ *   otherwise.
+ * @param array $results
+ *   When storing an executed search, the returned results as specified by
+ *   SearchApiMultiQueryInterface::execute(). An empty array, otherwise.
+ *
+ * @return array
+ *   If a search with the specified ID was executed, an array containing
+ *   ($query, $results) as used in this function's parameters. If $search_id is
+ *   NULL, an array of all executed searches will be returned, keyed by ID.
+ */
+function search_api_multi_current_search(?string $search_id = NULL, ?SearchApiMultiQuery $query = NULL, array $results = array()) {
+  $searches = &backdrop_static(__FUNCTION__, array());
+
+  if (isset($query)) {
+    if (!isset($search_id)) {
+      $search_id = $query->getOption('search id');
+    }
+    $base = $search_id;
+    $i = 0;
+    while (isset($searches[$search_id])) {
+      $search_id = $base . '-' . (++$i);
+    }
+    $searches[$search_id] = array($query, $results);
+  }
+
+  if (isset($searches[$search_id])) {
+    return $searches[$search_id];
+  }
+  return $searches;
+}

@@ -1,0 +1,21 @@
+type = module
+name = Multi-index searches
+description = Small extension for the Search API that allows searches across several indexes on the same server.
+backdrop = 1.x
+package = Search
+
+dependencies[] = entity_plus
+dependencies[] = search_api
+
+files[] = search_api_multi.query.inc
+files[] = search_api_multi.service.inc
+files[] = views/handler_argument_fulltext.inc
+files[] = views/handler_filter_fulltext.inc
+files[] = views/handler_filter_options.inc
+files[] = views/query.inc
+files[] = views/row_entity_view.inc
+
+; Added by Backdrop CMS packaging script on 2026-02-06
+project = search_api
+version = 1.x-1.29.5
+timestamp = 1770395528

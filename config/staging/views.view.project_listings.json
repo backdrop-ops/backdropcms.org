@@ -1,0 +1,489 @@
+{
+    "_config_name": "views.view.project_listings",
+    "name": "project_listings",
+    "description": "",
+    "tag": "",
+    "disabled": false,
+    "base_table": "search_api_index_projects",
+    "human_name": "Project listings",
+    "core": "1.32.1",
+    "display": {
+        "default": {
+            "display_title": "Default",
+            "display_plugin": "default",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "access": {
+                    "type": "perm",
+                    "perm": "access content"
+                },
+                "cache": {
+                    "type": "none"
+                },
+                "exposed_form": {
+                    "type": "basic"
+                },
+                "pager": {
+                    "type": "full",
+                    "options": {
+                        "items_per_page": "25"
+                    }
+                },
+                "style_plugin": "list",
+                "row_plugin": "fields",
+                "fields": {
+                    "rendered_entity": {
+                        "id": "rendered_entity",
+                        "table": "views_entity_node",
+                        "field": "rendered_entity",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "label": "",
+                        "exclude": 0,
+                        "alter": {
+                            "alter_text": 0,
+                            "text": "",
+                            "make_link": 0,
+                            "path": "",
+                            "absolute": 0,
+                            "external": 0,
+                            "replace_spaces": 0,
+                            "path_case": "none",
+                            "trim_whitespace": 0,
+                            "alt": "",
+                            "rel": "",
+                            "link_class": "",
+                            "prefix": "",
+                            "suffix": "",
+                            "target": "",
+                            "nl2br": 0,
+                            "max_length": "",
+                            "word_boundary": 1,
+                            "ellipsis": 1,
+                            "more_link": 0,
+                            "more_link_text": "",
+                            "more_link_path": "",
+                            "strip_tags": 0,
+                            "trim": 0,
+                            "preserve_tags": "",
+                            "html": 0
+                        },
+                        "element_type": "",
+                        "element_class": "",
+                        "element_label_type": "",
+                        "element_label_class": "",
+                        "element_label_colon": false,
+                        "element_wrapper_type": "",
+                        "element_wrapper_class": "",
+                        "element_default_classes": 1,
+                        "empty": "",
+                        "hide_empty": 0,
+                        "empty_zero": 0,
+                        "hide_alter_empty": 1,
+                        "link_to_entity": 0,
+                        "display": "view",
+                        "view_mode": "project_search",
+                        "bypass_access": 0
+                    }
+                },
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "search_api_index_projects",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": {
+                            "project_module": "project_module"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "search_api_views_fulltext": {
+                        "id": "search_api_views_fulltext",
+                        "table": "search_api_index_projects",
+                        "field": "search_api_views_fulltext",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "AND",
+                        "value": "",
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "search_api_views_fulltext_op",
+                            "label": "",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "search_api_views_fulltext_op",
+                            "identifier": "search",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "civi": 0,
+                                "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "mode": "keys",
+                        "min_length": "3",
+                        "fields": {
+                            "body:value": "body:value",
+                            "field_project_maintainers_github": "field_project_maintainers_github",
+                            "title": "title"
+                        }
+                    }
+                },
+                "sorts": {
+                    "search_api_relevance": {
+                        "id": "search_api_relevance",
+                        "table": "search_api_index_projects",
+                        "field": "search_api_relevance",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    },
+                    "created": {
+                        "id": "created",
+                        "table": "search_api_index_projects",
+                        "field": "created",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    },
+                    "field_download_count": {
+                        "id": "field_download_count",
+                        "table": "search_api_index_projects",
+                        "field": "field_download_count",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "order": "DESC",
+                        "exposed": false,
+                        "expose": {
+                            "label": ""
+                        }
+                    }
+                },
+                "title": "Modules for Backdrop CMS",
+                "style_options": {
+                    "grouping": [],
+                    "row_class": "result",
+                    "default_row_class": 0,
+                    "row_class_special": 1,
+                    "type": "ol",
+                    "wrapper_class": "project-search__results-wrapper l-content-wrapper",
+                    "class": "project-search__results"
+                },
+                "relationships": []
+            }
+        },
+        "modules": {
+            "display_title": "Modules",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "modules2",
+                "display_description": "",
+                "exposed_block": true
+            }
+        },
+        "themes": {
+            "display_title": "Themes",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "themes2",
+                "display_description": "",
+                "exposed_block": true,
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "search_api_index_projects",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": {
+                            "project_theme": "project_theme"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "search_api_views_fulltext": {
+                        "id": "search_api_views_fulltext",
+                        "table": "search_api_index_projects",
+                        "field": "search_api_views_fulltext",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "AND",
+                        "value": "",
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "search_api_views_fulltext_op",
+                            "label": "",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "search_api_views_fulltext_op",
+                            "identifier": "search",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "civi": 0,
+                                "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "mode": "keys",
+                        "min_length": "3",
+                        "fields": {
+                            "body:value": "body:value",
+                            "field_project_maintainers_github": "field_project_maintainers_github",
+                            "title": "title"
+                        }
+                    }
+                },
+                "defaults": {
+                    "filters": false,
+                    "filter_groups": false
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
+            }
+        },
+        "layouts": {
+            "display_title": "Layouts",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "layouts2",
+                "display_description": "",
+                "exposed_block": true,
+                "filters": {
+                    "type": {
+                        "id": "type",
+                        "table": "search_api_index_projects",
+                        "field": "type",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "=",
+                        "value": {
+                            "project_layout": "project_layout"
+                        },
+                        "group": "1",
+                        "exposed": false,
+                        "expose": {
+                            "operator_id": false,
+                            "label": "",
+                            "description": "",
+                            "use_operator": false,
+                            "operator": "",
+                            "identifier": "",
+                            "required": false,
+                            "remember": false,
+                            "multiple": false,
+                            "remember_roles": {
+                                "authenticated": "authenticated"
+                            },
+                            "reduce": false
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        }
+                    },
+                    "search_api_views_fulltext": {
+                        "id": "search_api_views_fulltext",
+                        "table": "search_api_index_projects",
+                        "field": "search_api_views_fulltext",
+                        "relationship": "none",
+                        "group_type": "group",
+                        "ui_name": "",
+                        "operator": "AND",
+                        "value": "",
+                        "group": "1",
+                        "exposed": true,
+                        "expose": {
+                            "operator_id": "search_api_views_fulltext_op",
+                            "label": "",
+                            "description": "",
+                            "use_operator": 0,
+                            "operator": "search_api_views_fulltext_op",
+                            "identifier": "search",
+                            "required": 0,
+                            "remember": 0,
+                            "multiple": 0,
+                            "remember_roles": {
+                                "authenticated": "authenticated",
+                                "anonymous": 0,
+                                "4": 0,
+                                "civi": 0,
+                                "3": 0
+                            }
+                        },
+                        "is_grouped": false,
+                        "group_info": {
+                            "label": "",
+                            "description": "",
+                            "identifier": "",
+                            "optional": true,
+                            "widget": "select",
+                            "multiple": false,
+                            "remember": 0,
+                            "default_group": "All",
+                            "default_group_multiple": [],
+                            "group_items": []
+                        },
+                        "mode": "keys",
+                        "min_length": "3",
+                        "fields": {
+                            "body:value": "body:value",
+                            "field_project_maintainers_github": "field_project_maintainers_github",
+                            "title": "title"
+                        }
+                    }
+                },
+                "defaults": {
+                    "filters": false,
+                    "filter_groups": false
+                },
+                "filter_groups": {
+                    "operator": "AND",
+                    "groups": {
+                        "1": "AND"
+                    }
+                }
+            }
+        }
+    }
+}

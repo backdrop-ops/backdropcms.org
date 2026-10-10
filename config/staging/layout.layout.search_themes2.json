@@ -1,0 +1,222 @@
+{
+    "_config_name": "layout.layout.search_themes2",
+    "path": "themes2",
+    "name": "search_themes2",
+    "title": "Search Themes2",
+    "description": null,
+    "renderer_name": "standard",
+    "module": null,
+    "weight": -2,
+    "storage": 1,
+    "layout_template": "boxton",
+    "disabled": false,
+    "settings": {
+        "title": "",
+        "title_display": "default",
+        "title_block": null
+    },
+    "positions": {
+        "header": [
+            "46901d2a-a22f-4a71-9d0e-145c11ca8c91"
+        ],
+        "top": [
+            "7935cc9b-980c-4d20-8661-97b606fc424f",
+            "660e6487-599c-496c-ac3d-61a32cfaa79b",
+            "2fd7c1ed-48e1-4e81-9200-b8af9c30eb8d"
+        ],
+        "content": [
+            "3cd4d84b-5e33-45a1-bb10-1640c2dc5b79",
+            "5839359f-2740-47a2-8e00-abb8217f13fd"
+        ],
+        "bottom": [],
+        "footer": [
+            "39c1a59b-5a80-4b22-9d0e-14b0c3821559"
+        ],
+        "title": []
+    },
+    "contexts": [],
+    "relationships": [],
+    "content": {
+        "46901d2a-a22f-4a71-9d0e-145c11ca8c91": {
+            "plugin": "copy_blocks:region_copy",
+            "data": {
+                "status": 1,
+                "module": "copy_blocks",
+                "delta": "region_copy",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": "",
+                    "source_region": "default:header"
+                },
+                "uuid": "46901d2a-a22f-4a71-9d0e-145c11ca8c91",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "7935cc9b-980c-4d20-8661-97b606fc424f": {
+            "plugin": "system:page_components:title",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "page_components",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "title_tag": "h1",
+                    "title_classes": "page-title",
+                    "tab_type": "both"
+                },
+                "uuid": "7935cc9b-980c-4d20-8661-97b606fc424f",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "660e6487-599c-496c-ac3d-61a32cfaa79b": {
+            "plugin": "layout:custom_block",
+            "data": {
+                "status": 1,
+                "module": "layout",
+                "delta": "custom_block",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "content": "<h2>Themes are skins for your site that allow you to change the look, feel, and general appearance.</h2>\r\n",
+                    "format": "filtered_html"
+                },
+                "uuid": "660e6487-599c-496c-ac3d-61a32cfaa79b",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "2fd7c1ed-48e1-4e81-9200-b8af9c30eb8d": {
+            "plugin": "views:-exp-project_listings-themes",
+            "data": {
+                "status": 1,
+                "module": "views",
+                "delta": "-exp-project_listings-themes",
+                "settings": {
+                    "title_display": "none",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "2fd7c1ed-48e1-4e81-9200-b8af9c30eb8d",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "3cd4d84b-5e33-45a1-bb10-1640c2dc5b79": {
+            "plugin": "system:main",
+            "data": {
+                "status": 1,
+                "module": "system",
+                "delta": "main",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "3cd4d84b-5e33-45a1-bb10-1640c2dc5b79",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "5839359f-2740-47a2-8e00-abb8217f13fd": {
+            "plugin": "borg_blocks:rss",
+            "data": {
+                "status": 1,
+                "module": "borg_blocks",
+                "delta": "rss",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": []
+                },
+                "uuid": "5839359f-2740-47a2-8e00-abb8217f13fd",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "39c1a59b-5a80-4b22-9d0e-14b0c3821559": {
+            "plugin": "copy_blocks:region_copy",
+            "data": {
+                "status": 1,
+                "module": "copy_blocks",
+                "delta": "region_copy",
+                "settings": {
+                    "title_display": "default",
+                    "title": "",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "admin_label": "",
+                    "admin_description": "",
+                    "source_region": "default:footer"
+                },
+                "uuid": "39c1a59b-5a80-4b22-9d0e-14b0c3821559",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

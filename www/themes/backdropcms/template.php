@@ -40,7 +40,7 @@ function backdropcms_preprocess_page(&$variables) {
       $icons_needed[] = 'arrow-circle-down-fill';
     }
   }
-  elseif ($arg0 == 'modules' || $arg0 == 'themes' || $arg0 == 'layouts') {
+  elseif(in_array($arg0, array('modules', 'themes', 'layouts', 'modules2', 'themes2', 'layouts2'))) {
     $variables['classes'][] = 'project-search';
     backdrop_add_css($path . '/css/page-project-search.css');
   }

@@ -1,0 +1,12 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the Multi-Index Searches module.
+ */
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function search_api_multi_update_last_removed() {
+  return 7101;
+}

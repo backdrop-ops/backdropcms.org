@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the search_api_views module.
+ */
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function search_api_views_update_last_removed() {
+  return 7101;
+}

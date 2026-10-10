@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * @file
+ * Integrates the Search API with Views.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function search_api_views_views_api() {
+  return array(
+    'api' => '3.0',
+    'path' => backdrop_get_path('module', 'search_api_views') . '/views',
+  );
+}
+
+/**
+ * Implements hook_search_api_index_insert().
+ */
+function search_api_views_search_api_index_insert() {
+  // Make the new index available for views.
+  views_invalidate_cache();
+}
+
+/**
+ * Implements hook_search_api_index_update().
+ */
+function search_api_views_search_api_index_update(SearchApiIndex $index) {
+  // Check whether index was disabled.
+  $is_enabled = $index->enabled;
+  $was_enabled = $index->original->enabled;
+  if (!$is_enabled && $was_enabled) {
+    _search_api_views_index_unavailable($index);
+    return;
+  }
+
+  // Check whether the indexed fields changed.
+  $old_fields = $index->original->options + array('fields' => array());
+  $old_fields = $old_fields['fields'];
+  $new_fields = $index->options + array('fields' => array());
+  $new_fields = $new_fields['fields'];
+
+  // If the index was enabled or its fields changed, invalidate the Views cache.
+  if ($is_enabled != $was_enabled || $old_fields != $new_fields) {
+    views_invalidate_cache();
+  }
+}
+
+/**
+ * Implements hook_search_api_index_delete().
+ */
+function search_api_views_search_api_index_delete(SearchApiIndex $index) {
+  // Only do this if this is a "real" deletion, no revert.
+  if (!$index->hasStatus(ENTITY_PLUS_IN_CODE)) {
+    _search_api_views_index_unavailable($index);
+  }
+}
+
+/**
+ * Function for reacting to a disabled or deleted search index.
+ */
+function _search_api_views_index_unavailable(SearchApiIndex $index) {
+  $names = array();
+  $table = 'search_api_index_' . $index->machine_name;
+  foreach (views_get_all_views() as $name => $view) {
+    if (empty($view->disabled) && $view->base_table == $table) {
+      $names[] = $name;
+      // @todo: if ($index_deleted) $view->delete()?
+    }
+  }
+  if ($names) {
+    views_invalidate_cache();
+    backdrop_set_message(t('The following views were using the index %name: @views. You should disable or delete them.', array('%name' => $index->name, '@views' => implode(', ', $names))), 'warning');
+  }
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function search_api_views_autoload_info() {
+  return array(
+    'SearchApiViewsFacetsBlockDisplay' => 'includes/display_facet_block.inc',
+    'SearchApiViewsHandlerArgument' => 'includes/handler_argument.inc',
+    'SearchApiViewsHandlerArgumentDate' => 'includes/handler_argument_date.inc',
+    'SearchApiViewsHandlerArgumentFulltext' => 'includes/handler_argument_fulltext.inc',
+    'SearchApiViewsHandlerArgumentMoreLikeThis' => 'includes/handler_argument_more_like_this.inc',
+    'SearchApiViewsHandlerArgumentString' => 'includes/handler_argument_string.inc',
+    'SearchApiViewsHandlerArgumentTaxonomyTerm' => 'includes/handler_argument_taxonomy_term.inc',
+    'SearchApiViewsHandlerFilter' => 'includes/handler_filter.inc',
+    'SearchApiViewsHandlerFilterBoolean' => 'includes/handler_filter_boolean.inc',
+    'SearchApiViewsHandlerFilterDate' => 'includes/handler_filter_date.inc',
+    'SearchApiViewsHandlerFilterEntity' => 'includes/handler_filter_entity.inc',
+    'SearchApiViewsHandlerFilterFulltext' => 'includes/handler_filter_fulltext.inc',
+    'SearchApiViewsHandlerFilterLanguage' => 'includes/handler_filter_language.inc',
+    'SearchApiViewsHandlerFilterNumeric' => 'includes/handler_filter_numeric.inc',
+    'SearchApiViewsHandlerFilterOptions' => 'includes/handler_filter_options.inc',
+    'SearchApiViewsHandlerFilterTaxonomyTerm' => 'includes/handler_filter_taxonomy_term.inc',
+    'SearchApiViewsHandlerFilterText' => 'includes/handler_filter_text.inc',
+    'SearchApiViewsHandlerFilterUser' => 'includes/handler_filter_user.inc',
+    'SearchApiViewsHandlerSort' => 'includes/handler_sort.inc',
+    'SearchApiViewsCache' => 'includes/plugin_cache.inc',
+    'SearchApiViewsContentCache' => 'includes/plugin_content_cache.inc',
+    'SearchApiViewsQuery' => 'includes/query.inc',
+  );
+}
