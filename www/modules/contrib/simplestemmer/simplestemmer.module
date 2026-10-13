@@ -1,0 +1,70 @@
+<?php
+
+/**
+ * @file
+ * Simple stemming for core search for Backdrop CMS.
+ */
+
+/**
+ * Implements hook_search_preprocess().
+ */
+function simplestemmer_search_preprocess($text) {
+  return simplestemmer_gram_words($text);
+}
+
+/**
+ * Provides N-Gramming functionality.
+ *
+ * @param string $text
+ *  Single piece of plain-text that was extracted from between two HTML tags.
+ *  Will not contain any HTML entities.
+ *
+ * @return string
+ *  Processed string into N-Gram words.
+ */
+function simplestemmer_gram_words($text) {
+  // The N-gram size is set to match the minimum word size in Search module,
+  // unless overridden.
+  $gram_size = (int) settings_get('simplestemmer_ngram_size', config_get('search.settings', 'search_minimum_word_size'));
+  $text = simplestemmer_cleanse($text);
+
+  // Split into words.
+  module_load_include('module', 'search', 'search');
+  $boundary = '(?:(?<=[' . PREG_CLASS_UNICODE_WORD_BOUNDARY . PREG_CLASS_CJK . '])|(?=[' . PREG_CLASS_UNICODE_WORD_BOUNDARY . PREG_CLASS_CJK . ']))';
+  $words = preg_split('/' . $boundary . '/iu', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+  if (!count($words)) {
+    return $text;
+  }
+
+  // Process each word, skipping delimiters.
+  // Step through each of the text and add it modified text as space
+  // deliminated.
+  $isword = !preg_match('/' . $boundary . '/iu', $words[0]);
+
+  $new_words = array();
+  foreach ($words as $k => $word) {
+    if ($isword) {
+      for ($start = 0; $start + $gram_size <= backdrop_strlen($word); $start++) {
+        $new_words[] = backdrop_substr($word, $start, $gram_size);
+      }
+    }
+    $isword = !$isword;
+  }
+
+  // Implode the text so its 'words'.
+  return implode(" ", $new_words);
+}
+
+/**
+ * Strip all non alphanumeric characters from a string.
+ *
+ * @param string $text
+ *
+ * @return string
+ */
+function simplestemmer_cleanse($text) {
+  $text = strip_tags($text);
+  $text = backdrop_strtolower($text);
+  return preg_replace('/[' . PREG_CLASS_UNICODE_WORD_BOUNDARY . ']+/u', ' ', $text);
+}
