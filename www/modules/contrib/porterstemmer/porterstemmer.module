@@ -1,0 +1,149 @@
+<?php
+/**
+ * @file
+ * Porter 2 Stemming for Backdrop CMS.
+ *
+ * It can either use the PECL stemming library, or a PHP implementation in
+ * the includes/standard-stemmer.inc file.
+ */
+
+/**
+ * Regular expression defining a word boundary for Porter Stemmer.
+ *
+ * A word boundary is anything not a letter or an apostrophe.
+ */
+define('PORTERSTEMMER_BOUNDARY', "[^a-zA-Z']+");
+
+/**
+ * Implements hook_search_preprocess().
+ *
+ * Stems the words in $text, using the Porter Stemmer 2 algorithm.
+ */
+function porterstemmer_search_preprocess($text) {
+
+  // Convert text to lower case, and replace special apostrophes with regular
+  // apostrophes.
+  $text = backdrop_strtolower(str_replace('’', "'", $text));
+
+  // Split into words.
+  $words = preg_split('/(' . PORTERSTEMMER_BOUNDARY . '+)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+  if (!count($words)) {
+    return $text;
+  }
+
+  $has_pecl_stem = _porterstemmer_pecl_loaded();
+  if (!$has_pecl_stem) {
+    module_load_include('inc', 'porterstemmer', 'includes/standard-stemmer');
+  }
+
+  // Process each word, skipping delimiters.
+  $isword = !preg_match('/' . PORTERSTEMMER_BOUNDARY . '/', $words[0]);
+  foreach ($words as $k => $word) {
+    if ($isword) {
+      if ($has_pecl_stem) {
+        $words[$k] = stem_english($word);
+      }
+      else {
+        $words[$k] = porterstemmer_stem($word);
+      }
+    }
+    $isword = !$isword;
+  }
+
+  // Put it all back together (note that delimiters are in $words).
+  return implode('', $words);
+}
+
+/**
+ * Implements hook_help().
+ */
+function porterstemmer_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#porterstemmer':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Porter Stemmer module implements version 2 of the <a href="@algorithm">Porter Stemmer algorithm</a>, to improve American English-language searching with the core <a href="@search-help">Search module</a>. Stemming reduces a word to its basic root or stem (e.g. "blogging" to "blog") so that variations on a word ("blogs", "blogged", "blogging", "blog") are considered equivalent when searching. This generally results in more relevant results.', array('@search-help' => url('admin/help/search'), '@algorithm' => 'http://snowball.tartarus.org/algorithms/english/stemmer.html')) . '</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_sbp_excerpt_match().
+ *
+ * Allows Porter Stemmer to display better search excerpts with the
+ * Search by page module.
+ */
+function porterstemmer_sbp_excerpt_match($key, $text, $offset, $boundary) {
+  // We do not check for the PECL stem here as further parsing logic is needed.
+  module_load_include('inc', 'porterstemmer', 'includes/standard-stemmer');
+
+  // Stem the keyword down to its root form.
+  $key = porterstemmer_stem($key);
+
+  // In many cases, the root word is a substring of the full word, but not
+  // all. The cases where it is not, the root ends in e, i, or y, and if this
+  // last letter is removed, the root is a substring of the full word.
+  // So remove these letters at the end of the root.
+  $didit = FALSE;
+  porterstemmer_suffix($key, 'i', '', $didit, NULL, 2) or
+  porterstemmer_suffix($key, 'e', '', $didit, NULL, 2) or
+  porterstemmer_suffix($key, 'y', '', $didit, NULL, 2);
+
+  // Look for this modified key at the start of a word.
+  $match = array();
+  if (!preg_match('/' . $boundary . '(' . $key . ')/iu', $text, $match, PREG_OFFSET_CAPTURE, $offset)) {
+    // Didn't match our modified key.
+    return FALSE;
+  }
+
+  // If we get here, we have a potential match. Find the end of the word we
+  // actually matched, so it can be highlighted (making sure it's a real match
+  // for our key).
+  $newmatch = array();
+  $pos = $match[1][1];
+  // Note: Do not use backdrop_strlen/backdrop_substr here! Need the real PHP
+  // string lengths/pos.
+  if (preg_match('/' . $boundary . '/iu', $text, $newmatch,
+      PREG_OFFSET_CAPTURE, $pos + strlen($key))) {
+    $keyfound = substr($text, $pos, $newmatch[0][1] - $pos);
+  }
+  else {
+    // Assume we're going to the end of the string.
+    $keyfound = substr($text, $pos);
+  }
+
+  $foundstem = porterstemmer_stem($keyfound);
+  porterstemmer_suffix($foundstem, 'i', '', $didit, NULL, 2) or
+  porterstemmer_suffix($foundstem, 'e', '', $didit, NULL, 2) or
+  porterstemmer_suffix($foundstem, 'y', '', $didit, NULL, 2);
+
+  // Both $foundstem and $key may contain upper case.
+  if (backdrop_strtolower($foundstem) == backdrop_strtolower($key)) {
+    return array('where' => $pos, 'keyword' => $keyfound);
+  }
+
+  // If we get here, then it was a false match, and we should probably
+  // search again later in the string.
+  return porterstemmer_sbp_excerpt_match($key, $text, $pos + strlen($keyfound), $boundary);
+}
+
+/**
+ * Checks to see if the PECL stem extension has been loaded.
+ *
+ * @return bool
+ *    TRUE if the stem_english() function from the PECL stem library can be
+ *    used, FALSE if not.
+ */
+function _porterstemmer_pecl_loaded() {
+  static $has_pecl_stem = FALSE;
+  static $already_checked = FALSE;
+
+  if ($already_checked) {
+    return $has_pecl_stem;
+  }
+
+  $has_pecl_stem = extension_loaded('stem') && function_exists('stem_english');
+  $already_checked = TRUE;
+  return $has_pecl_stem;
+}
