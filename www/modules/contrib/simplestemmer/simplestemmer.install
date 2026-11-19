@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Simple Stemmer module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function simplestemmer_install() {
+  // Increase the module weight, so Simple Stemmer processing happens after
+  // other modules processing text, because each one passes its results on to
+  // the next in line in hook_search_preprocess() and Simple Stemmer breaks it
+  // down simplistically and can negate more sophisticated approaches such as
+  // with Porter Stemmer.
+  module_set_weight('simplestemmer', 10);
+}
