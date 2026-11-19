@@ -38,3 +38,31 @@ function copy_blocks_autoload_info() {
 function copy_blocks_ajax_select($form, &$form_state) {
   return $form['layout_blocks_wrapper'];
 }
+
+/**
+ * Prepares variables for block templates.
+ */
+function copy_blocks_preprocess_block(&$variables) {
+  $content = $variables['content'];
+  $block = $variables['block'];
+  if ($block->module == 'copy_blocks' && $block->delta == 'region_copy' && isset($block->settings['source_region'])) {
+    $variables['classes'][] = backdrop_html_class(str_replace(':', '-', $block->settings['source_region']));
+    if (!empty($block->settings['plain_region'])) {
+      $variables['theme_hook_suggestions'][] = 'block__region_copy_plain';
+    }
+  }
+  if ($block->module == 'copy_blocks' && $block->delta == 'block_copy' && isset($block->settings['source_block'])) {
+    $source_array = explode(':', $block->settings['source_block']);
+    array_pop($source_array);
+    $variables['classes'][] = backdrop_html_class(implode('-', $source_array));
+  }
+}
+
+function copy_blocks_theme($existing, $type, $theme, $path) {
+  return [
+    'block__region_copy_plain' => [
+      'template' => 'block--region-copy-plain',
+      'base hook' => 'block',
+    ],
+  ];
+}

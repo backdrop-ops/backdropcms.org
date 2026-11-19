@@ -4,10 +4,11 @@ type = module
 backdrop = 1.x
 package = CiviCRM-Contrib
 configure = admin/config/system/civicrm-table-prefixes
+maintainers[bugfolder] = Robert J. Lang
 
 dependencies[] = civicrm
 
-; Added by Backdrop CMS packaging script on 2023-02-18
+; Added by Backdrop CMS packaging script on 2026-10-31
 project = civicrm_table_prefixes
-version = 1.x-1.0.2
-timestamp = 1676758514
+version = 1.x-1.0.3
+timestamp = 1793464175

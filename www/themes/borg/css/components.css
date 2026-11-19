@@ -155,15 +155,16 @@ nav.breadcrumb li a {
   width: 44px;
   text-indent: -9999px;
   background: var(--color__border--gray-mid); /* match border */
-  mask: url(../images/magnifying-glass-solid.svg) center center no-repeat;
+  /* @see template.php in ...search_block_form_alter() for icon addition. */
+  mask: var(--icon-magnifying-glass) center center no-repeat;
   mask-size: 60%;
 }
-.search-block-form input.button-primary:focus,
-.search-block-form input.button-primary:hover,
+.search-block-form input[type="submit"].button-primary:focus,
+.search-block-form input[type="submit"].button-primary:hover,
 .search-block-form input[type="submit"]:focus,
 .search-block-form input[type="submit"]:hover {
   mask: none;
-  background: var(--color__accent--primary) url(../images/magnifying-glass-solid.svg) center center no-repeat;
+  background: var(--color__border--gray-mid) var(--icon-magnifying-glass) center center no-repeat;
   background-size: 60%;
 }
 
@@ -1132,12 +1133,18 @@ a.tabledrag-handle .handle {
  * Default pager styles
 *******************************************************************************/
 
-.pager {
+.item-list:has(.pager) {
+  text-align: center;
+}
+
+.pager,
+.item-list .pager {
   display: inline-block;
-  margin: 20px 0;
+  margin: 20px auto;
   padding: 0;
 }
-.pager li {
+.pager li,
+.item-list .pager li {
   display: inline-block;
   top: 0;
   min-width: 1.5em;
@@ -1148,7 +1155,8 @@ a.tabledrag-handle .handle {
   font-size: 1.25rem; /* 20px */
   text-align: center;
 }
-.pager li a {
+.pager li a
+.item-list .pager li a {
   position: relative;
   display: block;
   height: 2em;
@@ -1164,68 +1172,93 @@ a.tabledrag-handle .handle {
   color: var(--color__accent--primary--dark);
 }
 
-li.pager-item {
+li.pager-item,
+.item-list li.pager-item {
   display: none;
 }
 li.pager-current,
-li.pager-ellipsis {
+.item-list li.pager-current,
+li.pager-ellipsis,
+.item-list li.pager-ellipsis {
   padding: 0 .25em; /* less padding for the non-links */
 }
-li.pager-current {
+li.pager-current,
+.item-list li.pager-current {
   background: var(--color__accent--primary--dark);
   color: white;
 }
 
-li a span.pager-text {
+li a span.pager-text,
+.item-list li a span.pager-text {
   display: none;
 }
 li.pager-previous a span.pager-text,
-li.pager-next a span.pager-text {
+.item-list li.pager-previous a span.pager-text,
+li.pager-next a span.pager-text,
+.item-list li.pager-next a span.pager-text {
   display: inline;
 }
 
 @media (min-width: 34em) { /* 544px @ 16px font size -- SM */
-  li.pager-item {
+  li.pager-item,
+  .item-list li.pager-item {
     display: inline-block;
   }
   .pager li a,
+  .item-list .pager li a,
   li.pager-current,
-  li.pager-ellipsis {
+  .item-list li.pager-current,
+  li.pager-ellipsis,
+  .item-list li.pager-ellipsis {
     padding: 0;
     min-width: 1.75em;
   }
   li.pager-previous a span.pager-text,
-  li.pager-next a span.pager-text {
+  .item-list li.pager-previous a span.pager-text,
+  li.pager-next a span.pager-text,
+  .item-list li.pager-next a span.pager-text {
     display: none;
   }
 }
 @media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
   .pager li a,
+  .item-list .pager li a,
   li.pager-current,
-  li.pager-ellipsis {
+  .item-list li.pager-current,
+  li.pager-ellipsis,
+  .item-list li.pager-ellipsis {
     min-width: 1.5em;
   }
 }
 @media (min-width: 62em) { /* 992px @ 16px font size -- LG */
-  .pager-current:before {
+  .pager-current:before,
+  .item-list .pager-current:before {
     content: 'Page ';
   }
   .pager li a,
+  .item-list .pager li a,
   li.pager-current,
-  li.pager-ellipsis {
+  .item-list li.pager-current,
+  li.pager-ellipsis,
+  .item-list li.pager-ellipsis {
     min-width: 1.75em;
   }
-  li.pager-current {
+  li.pager-current,
+  .item-list li.pager-current {
     padding: 0 .5em; /* less padding for the non-links */
   }
 }
 @media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
   .pager li a,
+  .item-list .pager li a,
   li.pager-current,
-  li.pager-ellipsis {
+  .item-list li.pager-current,
+  li.pager-ellipsis,
+  .item-list li.pager-ellipsis {
     min-width: 2em;
   }
-  li.pager-current {
+  li.pager-current,
+  .item-list li.pager-current {
     padding: 0 1em;
   }
 }

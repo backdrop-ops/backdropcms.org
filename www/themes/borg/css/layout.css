@@ -23,7 +23,7 @@
 .l-header a {
   color: #fff;
 }
-.l-header .block-borg-blocks-branding {
+.l-header .branding {
   padding-right: 0;
 }
 
@@ -45,12 +45,12 @@
   .l-header {
     padding: 16px 0;
   }
-  .l-header .block-borg-blocks-branding {
+  .l-header .branding {
     padding-left: 12px;
   }
 }
 @media (min-width: 75em) { /* 1200px @ 16px font size -- XL */
-  .l-header .block-borg-blocks-branding {
+  .l-header .branding {
     padding-left: .9375rem;
     padding-right: .9375rem;
   }
@@ -58,11 +58,13 @@
 
 
 /*******************************************************************************
- * Top region
+ * Top region - only add space on larger screens.
  ******************************************************************************/
-.l-top-inner {
-  padding-right: 2rem;
-  padding-left: 2rem;
+@media (min-width: 34em) { /* 544px @ 16px font size -- SM */
+  .l-top-inner {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
 }
 
 /*******************************************************************************

@@ -76,12 +76,15 @@ body.front .l-hero-hgradients:after {
 
 body.front .l-hero-hgradients {
   margin: 0 auto;
-  /* 28px at desktop in mockup */
-  font-size: clamp(18px, 2.5vw ,1.75rem);
   text-align: center;
   /* This media query should match the width on `body.front .l-hero .block h1` */
   @media (min-width: 30em) {
     width: min-content;
+  }
+
+  .block {
+    /* 28px at desktop in mockup */
+    font-size: clamp(18px, 2.5vw ,1.75rem);
   }
 }
 

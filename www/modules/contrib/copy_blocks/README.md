@@ -6,7 +6,7 @@ regions.
 
 HOW TO INSTALL:
 ---------------
-- Install this module using the official Backdrop CMS instructions at 
+- Install this module using the official Backdrop CMS instructions at
 https://backdropcms.org/guide/modules
 
 
@@ -18,14 +18,15 @@ Copy blocks provides two types of blocks:
 
 Simply add one (or more) of these blocks to your layout and select which region
 or block you wish to copy.
-      
-LICENSE
----------------    
 
-This project is GPL v2 software. See the LICENSE.txt file in this directory 
+LICENSE
+---------------
+
+This project is GPL v2 software. See the LICENSE.txt file in this directory
 for complete text.
 
 CURRENT MAINTAINERS
----------------    
+---------------
 
-docwilmot (github.com/docwilmot)
+ - [docwilmot](https://github.com/docwilmot)
+ - [Laryn Kragt Bakker](https://github.com/laryn)

@@ -23,30 +23,30 @@
  * - $demo_menu: the demo Backdrop CMS menu.
  */
 ?>
-<div class="branding col-xs-6 col-sm-4 col-md-3 col-lg-2">
-  <?php if ($logo): ?>
-    <a class="wordmark site-name" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home">
-      <span><?php print t('backdrop'); ?></span><?php print $logo; ?>
+<div class="branding <?php print implode(' ', $branding_classes); ?>">
+    <a class="site-name" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home">
+      <span><?php print t('backdrop'); ?></span>
+      <?php if ($logo): print $logo; endif; ?>
+      <?php if ($site_name): print $site_name; endif; ?>
     </a>
-  <?php endif; ?>
-</div>
-
-<div class="borg-navigation col-xs-6 col-sm-8 col-md-9 col-lg-10">
-  <div class="borg-header-menu name-and-slogan">
-    <?php if ($site_name): ?>
-      <div class="site-name"><?php print $site_name; ?></div>
-    <?php endif; ?>
     <?php if ($site_slogan): ?>
       <div class="site-slogan"><?php print $site_slogan; ?></div>
     <?php endif; ?>
+</div>
+<?php if ($menu): ?>
+<div class="borg-navigation <?php print implode(' ', $navigation_classes); ?>">
+  <div class="borg-header-menu menu-main">
+    <?php print render($menu); ?>
   </div>
-
-  <?php if ($menu): ?>
+  <?php if ($account): ?>
     <div class="borg-header-menu menu-account">
       <?php print render($account); ?>
     </div>
+  <?php endif; ?>
+  <?php if ($demo): ?>
     <div class="borg-header-menu menu-demo">
       <?php print render($demo); ?>
     </div>
   <?php endif; ?>
 </div>
+<?php endif; ?>

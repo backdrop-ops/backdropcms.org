@@ -137,7 +137,7 @@ function _civicrm_table_prefixes_get_from_db() {
   try {
     $conn = new PDO(CIVICRM_DSN, $dsn->username, $dsn->password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='$dsn->database';";
+    $sql = "SELECT table_name AS `table_name` FROM information_schema.tables WHERE table_schema='$dsn->database';";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->fetchAll();

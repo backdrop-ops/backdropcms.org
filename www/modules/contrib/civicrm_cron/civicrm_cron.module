@@ -38,7 +38,6 @@ function civicrm_cron_config_info() {
  */
 function civicrm_cron_admin_settings($form, &$form_state) {
   $config = config('civicrm_cron.settings');
-  global $base_url;
   $form = array();
   $form['#config'] = 'civicrm_cron.settings';
 
@@ -175,15 +174,12 @@ function civicrm_cron_cron() {
  *   An error message if there was a problem, or an empty string if it seems
  *    the cron ran successfully.
  */
-function civicrm_cron_passthrough(string $sentkey = '') {
+function civicrm_cron_passthrough(string $sentkey) {
   civicrm_initialize();
   $config = config('civicrm_cron.settings');
 
-  if (empty($sentkey)) {
-    $query = backdrop_get_query_parameters();
-    $sentkey = $query['key'];
-  }
-  if ($sentkey != CIVICRM_SITE_KEY) {
+  $sitekey = defined('CIVICRM_SITE_KEY') ? CIVICRM_SITE_KEY : NULL;
+  if ($sentkey != $sitekey) {
     // Key doesn't match, so don't process.
     return t('The site key that was provided does not match the key in the CiviCRM configuration.');
   }

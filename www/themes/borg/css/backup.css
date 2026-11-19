@@ -1,0 +1,52 @@
+
+.borg-greeting a svg.icon {
+  width: 30px;
+  display: -webkit-flex; /* Safari */
+  display: flex;
+  -webkit-align-items: center; /* Safari 7.0+ */
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+.borg-greeting .borg-user-menu a {
+  text-align: left;
+  width: 10em;
+}
+
+
+@media (min-width: 48em) {  /* 768px @ 16px font size  -- MD */
+  .borg-greeting ul.borg-user-menu {
+    vertical-align: top;
+    display: inline-block;
+    height: 3em;
+  }
+  .borg-greeting li.top {
+    height: 3em;
+  }
+  .borg-greeting li.top a.greeting {
+    line-height: 3em;
+    height: 2.75em;
+  }
+}
+@media (min-width: 62em) { /* 992px @ 16px font size -- LG */
+  .borg-greeting ul.borg-user-menu {
+    display: block;
+    height: 1.75rem;
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.25;
+  }
+  .borg-greeting li.top {
+    height: 1.75rem;
+  }
+  .borg-greeting li.top a.greeting {
+    font-size: 1rem; /* 16px */
+    line-height: 1.75rem;
+    padding: 0 0 0 23px;
+    height: 1.75rem;
+    background-position: 0 7px;
+  }
+  .borg-greeting ul.menu-tree a {
+    padding: 6px 15px;
+  }
+}

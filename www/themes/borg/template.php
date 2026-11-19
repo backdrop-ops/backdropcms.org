@@ -99,6 +99,14 @@ function borg_borg_list($variables) {
 /**
  * Implements hook_form_FORM_ID_alter().
  */
+function borg_form_search_block_form_alter(&$form, &$form_state) {
+  /* see components.css */
+  $form['#attached']['icons'][] = 'magnifying-glass';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
 function borg_form_user_register_form_alter(&$form, &$form_state) {
   $help = t('Already have an account?') . ' ' . l(t('Log in instead'), 'user/login') . '.';
   $form['login'] = array(
@@ -282,7 +290,7 @@ function borg_preprocess_layout(&$variables) {
   }
 
   // Special template suggestion for home pages.
-  elseif (backdrop_is_front_page()) {
+  if (backdrop_is_front_page()) {
     $home_template = $variables['theme_hook_original'] . '__home';
     $variables['theme_hook_suggestion'] = $home_template;
   }
@@ -293,17 +301,100 @@ function borg_preprocess_layout(&$variables) {
  * @see header.tpl.php
  */
 function borg_preprocess_header(&$variables) {
+  if ($variables['logo']) {
+    $uri = icon_get_path('backdrop-logo');
+    $svg_contents = file_get_contents($uri);
+    $variables['logo'] = $svg_contents;
+  }
+
   // Replace the logo with backdrop SVG.
-  $logo = icon('backdrop-logo', array('attributes' => array('width' => 40)));
+  // Default to width of 40.
+  if (!isset($variables['logo_attributes']['width']) &&
+      !isset($variables['logo_attributes']['height'])) {
+    $variables['logo_attributes']['width'] = 40;
+  }
+
+  $logo = icon('backdrop-logo', array('attributes' => $variables['logo_attributes']));
   $variables['logo'] = $logo;
 
+  // Remove 'Backdrop' from the site name in the header template.
+  if ($variables['site_name']) {
+    if (strstr($variables['site_name'], 'Backdrop CMS')) {
+      $variables['site_name'] = trim(str_replace('Backdrop CMS', '', $variables['site_name']));
+    }
+    elseif (strstr($variables['site_name'], 'Backdrop')) {
+      $variables['site_name'] = trim(str_replace('Backdrop', '', $variables['site_name']));
+    }
+  }
+
+  // Switch to drop-down menu for stated menu.
+  if ($variables['menu']) {
+    $layout = layout_load('default');
+    // Assume that the header block is the first block in the default layout.
+    $header_uuid = reset($layout->positions['header']);
+    $header_block = $layout->content[$header_uuid];
+    $menu_name = $header_block->settings['block_settings']['menu'];
+
+    // What header block does
+    $menu = $menu_name ? menu_navigation_links($menu_name) : NULL;
+    //$variables['menu'] = $menu ? theme('links__header_menu', array('links' => $menu)) : NULL;
+
+    // What menu blocks do.
+    module_load_include('inc', 'system', 'system.menu');
+    $config = system_menu_block_defaults($menu_name);
+    $config['expand_all'] = TRUE;
+    $config['style'] = 'dropdown';
+    $tree = system_menu_tree_block_data($config);
+    if (!empty($tree) && $output = menu_tree_output($tree)) {
+      $data['content'] = $output;
+
+      $data['content']['#wrapper_attributes']['class'][] = 'menu-' . str_replace('_', '-', $config['style']);
+      $data['content']['#wrapper_attributes']['data-menu-style'] = $config['style'];
+      $data['content']['#wrapper_attributes']['data-clickdown'] = $config['clickdown'];
+      if (!empty($config['accordion'])) {
+        $collapsible_behavior = (empty($config['collapse']) || $config['collapse'] == 'default') ? 'accordion' : 'accordion-' . $config['collapse'];
+      }
+      else {
+        $collapsible_behavior = (empty($config['collapse'])) ? 'default' : $config['collapse'];
+      }
+      $data['content']['#wrapper_attributes']['data-collapse'] = $collapsible_behavior;
+      $data['content']['#attached']['library'][] = array(
+        'system',
+        'smartmenus',
+      );
+
+      if (!empty($config['toggle']) && $config['toggle'] == TRUE) {
+        $id = backdrop_html_id('menu-toggle-state');
+        $data['content']['#wrapper_attributes']['data-menu-toggle-id'] = $id;
+        $data['content']['#prefix'] = theme('menu_toggle', array(
+          'enabled' => $config['toggle'],
+          'id' => $id,
+          // Allow the user-entered menu toggle text to be translated.
+          'text' => t(trim($config['toggle_text'])),
+        ));
+        $data['content']['#attached']['library'][] = array(
+          'system',
+          'backdrop.menu-toggle',
+        );
+      }
+    }
+
+    $variables['menu'] = $data['content'];
+  }
+
+  // Add the additional menus
   $variables['account'] = _borg_get_account_menu();
   $variables['demo'] = _borg_get_demo_menu();
 
-  // Remove Backdrop CMS from the site name in the header template.
-  if ($variables['site_name'] && strstr($variables['site_name'], 'Backdrop CMS')) {
-    $variables['site_name'] = trim(str_replace('Backdrop CMS', '', $variables['site_name']));
-  }
+  // Add grid system classes.
+  $variables['branding_classes'] = array();
+  $variables['navigation_classes'] = array();
+
+  /* Example of adding classes in subtheme:
+  $variables['branding_classes'] = array('col-xs-6', 'col-sm-4', 'col-md-3', 'col-lg-4');
+  // Note: classes may be added to the Menu block instead of using these.
+  $variables['navigation_classes'] = array('col-xs-6', 'col-sm-8', 'col-md-9', 'col-lg-8');
+  */
 }
 
 /**
@@ -406,6 +497,11 @@ function borg_preprocess_block(&$variables) {
         $variables['account'] = _borg_get_account_menu();
         $variables['demo'] = _borg_get_demo_menu();
       }
+    }
+  }
+  elseif ($variables['block']->module == 'borg_blocks') {
+    if ($variables['block']->delta == 'branding') {
+      $variables['classes'][] = 'branding';
     }
   }
 }

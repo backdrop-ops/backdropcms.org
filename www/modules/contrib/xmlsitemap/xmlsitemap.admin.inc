@@ -172,7 +172,7 @@ function xmlsitemap_sitemap_list_form_submit($form, &$form_state) {
 /**
  * Edit Form.
  */
-function xmlsitemap_sitemap_edit_form(array $form, array &$form_state, stdClass $sitemap = NULL) {
+function xmlsitemap_sitemap_edit_form(array $form, array &$form_state, ?stdClass $sitemap = NULL) {
 
   if (!isset($sitemap)) {
     $sitemap = new stdClass();
