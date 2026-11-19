@@ -68,6 +68,20 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
   protected $_entityIds = [];
 
   /**
+   * Action taken ('create' or 'update') for each saved entity and join.
+   *
+   * @var array
+   */
+  protected $_entityActions = [];
+
+  /**
+   * Ids of contacts identified by a dedupe rule instead of by the submitter.
+   *
+   * @var int[]
+   */
+  protected $_dedupeMatchedContactIds = [];
+
+  /**
    * Values of each entity that is submitted on the form.
    * Eg. $entityValues['Contribution1'][0]['fields']['field1' => 1, 'field2' => 2]
    *
@@ -82,6 +96,20 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
    * @var array
    */
   protected $_submissionTokenValues = [];
+
+  /**
+   * Record that a contact was identified by a dedupe rule.
+   */
+  public function addDedupeMatchedContactId(int $contactId): void {
+    $this->_dedupeMatchedContactIds[] = $contactId;
+  }
+
+  /**
+   * A dedupe match shows that the submitter knows the matching values, not that they are this contact.
+   */
+  public function isDedupeMatchedContact(int $contactId): bool {
+    return in_array($contactId, $this->_dedupeMatchedContactIds, TRUE);
+  }
 
   /**
    * Get the submitted values from all the entities on the form
@@ -333,7 +361,9 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
         $joinInfo = $afEntity['joins'][$joinEntity] ?? [];
         foreach ($joins as $joinIndex => $join) {
           foreach ($join as $fieldName => $fieldValue) {
-            if (!empty($joinInfo['fields'][$fieldName])) {
+            // Only "existing entity" fields may be used to look up a record
+            $fieldDefn = $this->_formDataModel->getField($joinEntity, $fieldName, 'create');
+            if (!empty($joinInfo['fields'][$fieldName]) && !empty($fieldDefn['input_attrs']['autofill'])) {
               $where = [[$fieldName, '=', $fieldValue]];
               $joinResult = \CRM_Utils_Array::first($this->getJoinResult($afEntity, $joinEntity, $joinInfo, $where, 1));
               if ($joinResult) {
@@ -355,9 +385,9 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
       'orderBy' => self::getEntityField($joinEntity, 'is_primary') ? ['is_primary' => 'DESC'] : [],
     ]);
     // Validate autocomplete fields
-    if ($joinResult && !empty($entity['joins'][$joinEntity]['fields'][$joinIdField]['defn']['saved_search'])) {
+    if ($joinResult && !empty($join['fields'][$joinIdField]['defn']['saved_search'])) {
       $keys = array_combine(array_keys($joinResult), array_column($joinResult, $joinIdField));
-      $keys = $this->validateBySavedSearch($entity['name'], $joinEntity, $keys, $joinIdField);
+      $keys = $this->validateBySavedSearch($afEntity['name'] . '+' . $joinEntity, $joinEntity, $keys, $joinIdField);
       $joinResult = array_intersect_key($joinResult, $keys);
     }
     return $joinResult;
@@ -657,7 +687,12 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
       // Gather submitted field values from $values['fields'] and sub-entities from $values['joins']
       $submittableFields = $this->getSubmittableFields($entity['fields']);
       $fileFields = $this->getFileFields($entity['type'], $submittableFields);
-      foreach ($submittedValues[$entityName] ?? [] as $values) {
+      $records = $submittedValues[$entityName] ?? [];
+      // "extra" is not a real entity so it needs to be reshaped to pass the `!is_array` so we can validate required fields.
+      if (!$entity['type']) {
+        $records = [$records];
+      }
+      foreach ($records as $recordIndex => $values) {
         if (!is_array($values)) {
           // For "extra" we might have $values['fields'] if we added any extra fields.
           // But, if we have eg. recaptcha we will have $values['recaptcha2'] and might
@@ -667,12 +702,23 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
         }
         // Use default values from DisplayOnly fields + submittable fields on the form
         $values['fields'] = $this->getForcedDefaultValues($entity['fields']) +
-          array_intersect_key($values['fields'] ?? [], $submittableFields);
+          array_intersect_key($values['fields'] ?? [], $submittableFields) +
+          $this->getHiddenDefaultValues($entity['fields']);
+        if (empty($entity['af-repeat']) || !isset($values['extras']) || !is_array($values['extras'])) {
+          unset($values['extras']);
+        }
         // Special handling for file fields
+        $formDefaults = $this->getForcedDefaultValues($entity['fields']) + $this->getHiddenDefaultValues($entity['fields']);
+        $recordId = $entity['type'] ? ($values['fields'][CoreUtil::getIdFieldName($entity['type'])] ?? NULL) : NULL;
         foreach ($fileFields as $fileFieldName) {
+          $assertKnownFileId = fn($fileId) => $this->assertKnownFileId($fileId, $entityName, $entity['type'], $recordId, $fileFieldName, $formDefaults[$fileFieldName] ?? NULL);
+          if (!empty($values['fields'][$fileFieldName]) && is_scalar($values['fields'][$fileFieldName])) {
+            $assertKnownFileId($values['fields'][$fileFieldName]);
+          }
           if (isset($values['fields'][$fileFieldName]) && is_array($values['fields'][$fileFieldName])) {
             // Keep file id
             if (isset($values['fields'][$fileFieldName]['id'])) {
+              $assertKnownFileId($values['fields'][$fileFieldName]['id']);
               $values['fields'][$fileFieldName] = $values['fields'][$fileFieldName]['id'];
             }
             // File was deleted
@@ -712,6 +758,14 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
                 elseif (array_key_exists('file_name', $joinValues[$index][$fileFieldName])) {
                   $joinValues[$index][$fileFieldName] = '';
                 }
+                else {
+                  $joinValues[$index][$fileFieldName] = $joinValues[$index][$fileFieldName]['id'] ?? '';
+                }
+              }
+              $idField = CoreUtil::getIdFieldName($joinEntity);
+              if (!empty($joinValues[$index][$fileFieldName]) && is_scalar($joinValues[$index][$fileFieldName])) {
+                $joinDefaults = $this->getForcedDefaultValues($entity['joins'][$joinEntity]['fields'] ?? []) + $this->getHiddenDefaultValues($entity['joins'][$joinEntity]['fields'] ?? []);
+                $this->assertKnownFileId($joinValues[$index][$fileFieldName], $entityName, $joinEntity, $joinValues[$index][$idField] ?? NULL, $fileFieldName, $joinDefaults[$fileFieldName] ?? NULL, $joinEntity);
               }
               // Creating new record, add placeholder value so the file upload will have an id
               if (empty($joinValues[$index][$idField])) {
@@ -749,6 +803,139 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
   }
 
   /**
+   * A file id sent by the client is kept only if the file is already in that field or was uploaded by the current user.
+   *
+   * @param mixed $fileId
+   * @param string $entityName
+   *   Name of the form entity, e.g. 'Individual1'
+   * @param string $apiEntity
+   *   Entity that holds the field: the form entity's type, or the join entity
+   * @param mixed $recordId
+   *   Id of the submitted record, if it exists already
+   * @param string $fieldName
+   * @param mixed $formDefault
+   *   Value the form itself sets for this field
+   * @param string|null $joinEntity
+   * @throws \Civi\API\Exception\UnauthorizedException
+   */
+  protected function assertKnownFileId($fileId, string $entityName, string $apiEntity, $recordId, string $fieldName, $formDefault = NULL, ?string $joinEntity = NULL): void {
+    $fileIdOf = fn($value) => is_array($value) ? ($value['id'] ?? NULL) : $value;
+    $knownIds = [$fileIdOf($formDefault)];
+    // Records loaded for this form
+    foreach ($this->_entityValues[$entityName] ?? [] as $loaded) {
+      $loadedRecords = $joinEntity ? ($loaded['joins'][$joinEntity] ?? []) : [$loaded['fields'] ?? []];
+      foreach ($loadedRecords as $loadedRecord) {
+        $knownIds[] = $fileIdOf($loadedRecord[$fieldName] ?? NULL);
+      }
+    }
+    $isKnown = function () use (&$knownIds, $fileId) {
+      return in_array((string) $fileId, array_map('strval', array_filter($knownIds)), TRUE);
+    };
+    if (!$isKnown() && $recordId) {
+      $stored = civicrm_api4($apiEntity, 'get', [
+        'checkPermissions' => FALSE,
+        'select' => [$fieldName],
+        'where' => [[CoreUtil::getIdFieldName($apiEntity), '=', $recordId]],
+      ])->first();
+      $knownIds[] = $fileIdOf($stored[$fieldName] ?? NULL);
+    }
+    $userId = \CRM_Core_Session::getLoggedInContactID();
+    if (!$isKnown() && $userId) {
+      // A file the user uploaded, e.g. to a draft of this form
+      $knownIds[] = File::get(FALSE)
+        ->addSelect('id')
+        ->addWhere('id', '=', $fileId)
+        ->addWhere('created_id', '=', $userId)
+        ->execute()->first()['id'] ?? NULL;
+    }
+    if (!$isKnown()) {
+      throw new UnauthorizedException(E::ts('File %1 is not attached to this record.', [1 => $fileId]));
+    }
+  }
+
+  /**
+   * Filter draft submission values to exclude non-submittable fields (e.g. DisplayOnly).
+   */
+  public function filterDraftValues(array $submittedValues): array {
+    $filtered = [];
+    foreach ($this->_formDataModel->getEntities() as $entityName => $entity) {
+      if (!isset($submittedValues[$entityName])) {
+        continue;
+      }
+      $allowedFields = $this->getAllowedEntityFields($entity);
+      // Form-level "extra" entity is a flat associative array: ['fields' => [...]]
+      if (!$entity['type']) {
+        if (isset($submittedValues[$entityName]['fields']) && is_array($submittedValues[$entityName]['fields'])) {
+          $filtered[$entityName]['fields'] = array_intersect_key($submittedValues[$entityName]['fields'], $allowedFields);
+        }
+        continue;
+      }
+      if (!is_array($submittedValues[$entityName])) {
+        continue;
+      }
+      $filtered[$entityName] = [];
+      foreach ($submittedValues[$entityName] as $recordIndex => $record) {
+        if (!is_array($record)) {
+          continue;
+        }
+        $filteredRecord = [];
+        if (isset($record['fields']) && is_array($record['fields'])) {
+          $filteredRecord['fields'] = array_intersect_key($record['fields'], $allowedFields);
+        }
+        if (isset($record['extras']) && is_array($record['extras'])) {
+          $filteredRecord['extras'] = $record['extras'];
+        }
+        if (isset($record['joins']) && is_array($record['joins'])) {
+          $filteredRecord['joins'] = [];
+          foreach ($entity['joins'] ?? [] as $joinEntity => $joinDefn) {
+            if (empty($record['joins'][$joinEntity]) || !is_array($record['joins'][$joinEntity])) {
+              continue;
+            }
+            $allowedJoinFields = $this->getAllowedJoinFields($joinDefn);
+            foreach ($record['joins'][$joinEntity] as $joinIndex => $joinRecord) {
+              if (is_array($joinRecord)) {
+                $filteredRecord['joins'][$joinEntity][$joinIndex] = array_intersect_key($joinRecord, $allowedJoinFields);
+              }
+            }
+          }
+        }
+        $filtered[$entityName][$recordIndex] = $filteredRecord;
+      }
+    }
+    return $filtered;
+  }
+
+  /**
+   * Return allowed submittable fields for an entity on the form.
+   *
+   * @param array $entity
+   * @return array
+   */
+  protected function getAllowedEntityFields(array $entity): array {
+    $allowed = $this->getSubmittableFields($entity['fields'] ?? []);
+    if (!empty($entity['type'])) {
+      $idField = CoreUtil::getIdFieldName($entity['type']);
+      $allowed[$idField] = TRUE;
+    }
+    return $allowed;
+  }
+
+  /**
+   * Return allowed submittable fields for a joined entity on the form.
+   *
+   * @param array $joinDefn
+   * @return array
+   */
+  protected function getAllowedJoinFields(array $joinDefn): array {
+    $allowed = $this->getSubmittableFields($joinDefn['fields'] ?? []);
+    if (!empty($joinDefn['type'])) {
+      $idField = CoreUtil::getIdFieldName($joinDefn['type']);
+      $allowed[$idField] = TRUE;
+    }
+    return $allowed;
+  }
+
+  /**
    * Return names of submittable fields (not DisplayOnly)
    *
    * TODO: Should filter out conditionally hidden fields too.
@@ -781,6 +968,23 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
   }
 
   /**
+   * Get default values from Hidden fields
+   *
+   * @param array $fields
+   * @return array
+   */
+  protected function getHiddenDefaultValues(array $fields): array {
+    $values = [];
+    foreach ($fields as $field) {
+      $inputType = $field['defn']['input_type'] ?? NULL;
+      if ($inputType === 'Hidden' && isset($field['defn']['afform_default'])) {
+        $values[$field['name']] = $field['defn']['afform_default'];
+      }
+    }
+    return $values;
+  }
+
+  /**
    * Process form data
    */
   public function processFormData(array $entityValues) {
@@ -789,7 +993,7 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
       $entityType = $this->_formDataModel->getEntity($entityName)['type'];
       $records = $this->replaceReferences($entityName, $entityValues[$entityName]);
       $this->fillIdFields($records, $entityName);
-      $event = new AfformSubmitEvent($this->_afform, $this->_formDataModel, $this, $records, $entityType, $entityName, $this->_entityIds);
+      $event = new AfformSubmitEvent($this->_afform, $this->_formDataModel, $this, $records, $entityType, $entityName, $this->_entityIds, $this->_entityActions);
       try {
         \Civi::dispatcher()->dispatch('civi.afform.submit', $event);
       }
@@ -887,32 +1091,53 @@ abstract class AbstractProcessor extends \Civi\Api4\Generic\AbstractAction {
    * Except for special case of JWT submission token [token]
    *
    * @param string $text
+   * @param string $format
+   *   Context the values are inserted into: 'html' or 'url'.
    *
    * @return string
    */
-  public function replaceTokens(string $text): string {
-    $matches = [];
-    preg_match_all('/\[[a-zA-Z0-9_]+\.[0-9]+\.[^]]+]/', $text, $matches);
-
-    foreach ($matches[0] as $match) {
-      // strip [ ] and split on .
-      [$entityName, $index, $field] = explode('.', substr($match, 1, -1), 3);
-      if ($field === 'id') {
-        $value = $this->_entityIds[$entityName][$index]['id'];
-      }
-      elseif (isset($this->_submissionTokenValues[$entityName][$index][$field])) {
-        $value = $this->_submissionTokenValues[$entityName][$index][$field];
-      }
-      else {
-        $value = $this->_entityValues[$entityName][$index]['fields'][$field];
-      }
-      $text = str_replace($match, $value, $text);
-    }
+  public function replaceTokens(string $text, string $format = 'html'): string {
+    // Token values are user input: encode them for the context, in a single pass.
+    $text = preg_replace_callback('/\[[a-zA-Z0-9_]+\.[0-9]+\.[^]]+]/', function ($match) use ($format) {
+      $value = $this->getTokenValue($match[0]);
+      return $format === 'url' ? rawurlencode($value) : htmlspecialchars($value);
+    }, $text);
 
     // handle special case of JWT token token
     $text = str_replace('[token]', $this->_response['token'] ?? '', $text);
 
     return $text;
+  }
+
+  private function getTokenValue(string $token): string {
+    $token = \trim($token, '[]');
+    // split Individual1.0.first_name
+    // remember: custom field field names can contain .
+    if (\substr_count($token, '.') < 2) {
+      // invalid token
+      return '';
+    }
+    [$entityName, $index, $field] = explode('.', $token, 3);
+    if ($field === 'id') {
+      return (string) $this->_entityIds[$entityName][$index]['id'];
+    }
+    if (isset($this->_submissionTokenValues[$entityName][$index][$field])) {
+      return (string) $this->_submissionTokenValues[$entityName][$index][$field];
+    }
+    if (isset($this->_entityValues[$entityName][$index]['fields'][$field])) {
+      return (string) $this->_entityValues[$entityName][$index]['fields'][$field];
+    }
+    if (\substr_count($field, '.') >= 2) {
+      // we may have a join token
+      [$joinEntity, $joinIndex, $joinField] = explode('.', $field, 3);
+      if ($joinField === 'id') {
+        return (string) $this->_entityIds[$entityName][$index]['joins'][$joinEntity][$joinIndex]['id'];
+      }
+      if (isset($this->_entityValues[$entityName][$index]['joins'][$joinEntity][$joinIndex][$joinField])) {
+        return (string) $this->_entityValues[$entityName][$index]['joins'][$joinEntity][$joinIndex][$joinField];
+      }
+    }
+    return '';
   }
 
 }

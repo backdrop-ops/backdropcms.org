@@ -100,6 +100,11 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/smarty
 The [docs](docs/index.md) are written in markdown, configured in [mkdocs.yml](mkdocs.yml) and published 
 to [GitHub pages](https://smarty-php.github.io/smarty) using [mkdocs](https://www.mkdocs.org/) and [mike](https://github.com/jimporter/mike).
 
+You need Python to build the docs. Install the required packages first:
+```bash
+pip install -r docs/requirements.txt
+```
+
 To preview the docs while you are writing, run:
 ```bash
 mkdocs serve
@@ -114,6 +119,8 @@ If you are a maintainer, you can publish the document using [mike](https://githu
 ```bash
 mike deploy 5.x
 ```
+
+Then, push the `gh-pages` branch.
 
 ## Attribution
 This guide is based on the **contributing.md**. [Make your own](https://contributing.md/)!

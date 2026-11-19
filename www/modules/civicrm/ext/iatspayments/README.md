@@ -34,7 +34,7 @@ Once the extension is installed, you need to add the payment processor(s) and in
 
 1. Administer -> System Settings -> Payment Processors -> + Add Payment Processor
 
-2. If you are using a 'legacy' iATS account, select one or more of: iATS Payments Credit Card, iATS Payments ACH/EFT, or iATS Payments SWIPE. They are all provided by this extension, the instructions differ only slightly for each one. You can create multiple payment processor entries using the same credentials for the different types.
+2. If you are using a 'legacy' iATS account, select one of iATS Payments Credit Card or iATS Payments ACH/EFT. They are all provided by this extension, the instructions differ only slightly for each one. You can create multiple payment processor entries using the same credentials for the different types.
 
 3. If you are using a new '1stPay' iATS account, select one or more of: iATS Payments 1stPay Credit Card or iATS Payments 1stPay ACH. ACH must be specifically enabled on your account, check with iATS Payments if you're not sure.
 
@@ -60,8 +60,6 @@ The notes below were written for the legacy processor, 1stPay testing notes stil
   * iATS Payments Credit Card: use test VISA: 4222222222222220 security code = 123 and any future Expiration date - to process any $amount.
 
   * iATS Payments ACH/EFT: use 000000 for the Transit Number; 123 for the Bank Number; 123456 for the Bank Account Number $1
-
-  * iATS Payments SWIPE: not easy to test - even if you have an Encrypted USB Card Reader (sourced by iATS Payments) you will need a physical fake credit card with: 4222222222222220 security code = 123 and any future Expiration date in the magnetic strip - to process any $amount.
 
 7. iATS has another test VISA: 41111111111111111 security code = 123 and any future Expiration date
 

@@ -11,6 +11,7 @@
 
 namespace Civi\Test;
 
+use Civi\Api4\Utils\CoreUtil;
 use Civi\Core\Exception\DBQueryException;
 
 /**
@@ -70,6 +71,17 @@ trait EntityTrait {
   }
 
   /**
+   * Get the stored ID of a created test entity.
+   *
+   * @param string $entity
+   * @param string $identifier
+   * @return int|null
+   */
+  protected function getTestEntityID(string $entity, string $identifier = 'default'): ?int {
+    return $this->ids[$entity][$identifier] ?? NULL;
+  }
+
+  /**
    * Set the test entity on the class for access.
    *
    * This follows the ids patter and also the api4TestTrait pattern.
@@ -81,7 +93,7 @@ trait EntityTrait {
   protected function setTestEntity(string $entity, array $values, string $identifier): void {
     $this->ids[$entity][$identifier] = $values['id'];
     $this->testRecords[] = [$entity, [[$values['id'] => $values]]];
-    $tableName = \CRM_Core_DAO_AllCoreTables::getTableForEntityName($entity);
+    $tableName = CoreUtil::getTableName($entity);
     $this->tablesToCleanUp[$tableName] = $tableName;
   }
 

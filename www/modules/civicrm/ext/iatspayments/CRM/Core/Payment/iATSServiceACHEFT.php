@@ -123,7 +123,7 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
     // If a form allows ACH/EFT and enables recurring, set recurring to the default.
     if (isset($form->_elementIndex['is_recur'])) {
       // Make recurring contrib default to true.
-      $form->setDefaults(array('is_recur' => 1));
+      $form->setDefaults(['is_recur' => 1]);
     }
     $currency = iats_getCurrency($form);
     // my javascript will (should, not yet) use the currency to rewrite some labels
@@ -142,9 +142,9 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
     }
     // Else, I'm handling an unexpected currency.
     elseif ($currency) {
-      CRM_Core_Region::instance('billing-block')->add(array(
+      CRM_Core_Region::instance('billing-block')->add([
         'template' => 'CRM/Iats/BillingBlockDirectDebitExtra_Other.tpl',
-      ));
+      ]);
     }
     return parent::buildForm($form);
   }
@@ -164,9 +164,9 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
     /* if (empty($form->billingFieldSets['direct_debit']['fields']['bank_identification_number']['is_required'])) {
       $form->addRule('bank_identification_number', ts('%1 is a required field.', array(1 => ts('Bank Routing Number'))), 'required');
   } */
-    CRM_Core_Region::instance('billing-block')->add(array(
+    CRM_Core_Region::instance('billing-block')->add([
       'template' => 'CRM/Iats/BillingBlockDirectDebitExtra_USD.tpl',
-    ));
+    ]);
   }
 
   /**
@@ -180,13 +180,13 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
    */
   protected function buildForm_CAD(&$form) {
     $form->addElement('text', 'cad_bank_number', ts('Bank No. (3 digits)'));
-    $form->addRule('cad_bank_number', ts('%1 is a required field.', array(1 => ts('Bank No.'))), 'required');
-    $form->addRule('cad_bank_number', ts('%1 must contain only digits.', array(1 => ts('Bank No.'))), 'numeric');
-    $form->addRule('cad_bank_number', ts('%1 must be of length 3.', array(1 => ts('Bank No.'))), 'rangelength', array(3, 3));
+    $form->addRule('cad_bank_number', ts('%1 is a required field.', [1 => ts('Bank No.')]), 'required');
+    $form->addRule('cad_bank_number', ts('%1 must contain only digits.', [1 => ts('Bank No.')]), 'numeric');
+    $form->addRule('cad_bank_number', ts('%1 must be of length 3.', [1 => ts('Bank No.')]), 'rangelength', [3, 3]);
     $form->addElement('text', 'cad_transit_number', ts('Transit Number (5 digits)'));
-    $form->addRule('cad_transit_number', ts('%1 is a required field.', array(1 => ts('Transit No.'))), 'required');
-    $form->addRule('cad_transit_number', ts('%1 must contain only digits.', array(1 => ts('Transit No.'))), 'numeric');
-    $form->addRule('cad_transit_number', ts('%1 must be of length 5.', array(1 => ts('Transit No.'))), 'rangelength', array(5, 5));
+    $form->addRule('cad_transit_number', ts('%1 is a required field.', [1 => ts('Transit No.')]), 'required');
+    $form->addRule('cad_transit_number', ts('%1 must contain only digits.', [1 => ts('Transit No.')]), 'numeric');
+    $form->addRule('cad_transit_number', ts('%1 must be of length 5.', [1 => ts('Transit No.')]), 'rangelength', [5, 5]);
     /* minor customization of labels + make them required  */
     /* $element = $form->getElement('account_holder');
     $element->setLabel(ts('Name of Account Holder'));
@@ -198,9 +198,9 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
     $element->setLabel(ts('Bank Number + Transit Number')); */
     // print_r($form); die();
     CRM_Core_Resources::singleton()->addScriptFile('com.iatspayments.civicrm', 'js/dd_cad.js', 10);
-    CRM_Core_Region::instance('billing-block')->add(array(
+    CRM_Core_Region::instance('billing-block')->add([
       'template' => 'CRM/Iats/BillingBlockDirectDebitExtra_CAD.tpl',
-    ));
+    ]);
   }
 
 
@@ -210,8 +210,9 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
   public function doPayment(&$params, $component = 'contribute') {
 
     if (empty($params['amount'])) {
-      return _iats_payment_status_complete();
+      return CRM_Iats_Utils::paymentStatus('Completed');
     }
+    CRM_Iats_Utils::checkInvoiceId($params);
     if (!$this->_profile) {
       return self::error('Unexpected error, missing profile');
     }
@@ -223,31 +224,31 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
     }
     $methodType = $isRecur ? 'customer' : 'process';
     $method = $isRecur ? 'create_acheft_customer_code' : 'acheft';
-    $iats = new CRM_Iats_iATSServiceRequest(array('type' => $methodType, 'method' => $method, 'iats_domain' => $this->_profile['iats_domain'], 'currency' => $params['currency']));
+    $iats = new CRM_Iats_iATSServiceRequest(['type' => $methodType, 'method' => $method, 'iats_domain' => $this->_profile['iats_domain'], 'currency' => $params['currency']]);
     $request = $this->convertParams($params, $method);
     $request['customerIPAddress'] = CRM_Iats_Transaction::remote_ip_address();
-    $credentials = array(
+    $credentials = [
       'agentCode' => $this->_paymentProcessor['user_name'],
       'password'  => $this->_paymentProcessor['password'],
-    );
+    ];
     // Make the soap request.
     $response = $iats->request($credentials, $request);
     if (!$isRecur) {
       // Process the soap response into a readable result, logging any transaction.
       $result = $iats->result($response);
       if ($result['status']) {
-        $params['payment_status_id'] = 2;
+        $params += CRM_Iats_Utils::paymentStatus('Pending');
         $params['trxn_id'] = trim($result['remote_id']) . ':' . time();
         // Core assumes that a pending result will have no transaction id, but we have a useful one.
         if (!empty($params['contributionID'])) {
-          $contribution_update = array('id' => $params['contributionID'], 'trxn_id' => $params['trxn_id']);
+          $contribution_update = ['id' => $params['contributionID'], 'trxn_id' => $params['trxn_id']];
           try {
             $result = civicrm_api3('Contribution', 'create', $contribution_update);
           }
           catch (CRM_Core_Exception $e) {
             // Not a critical error, just log and continue.
             $error = $e->getMessage();
-            Civi::log()->info('Unexpected error adding the trxn_id for contribution id {id}: {error}', array('id' => $recur_id, 'error' => $error));
+            Civi::log()->info('Unexpected error adding the trxn_id for contribution id {id}: {error}', ['id' => $recur_id, 'error' => $error]);
           }
         }
         return $params;
@@ -312,10 +313,8 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
         if ($receive_date !== $today) {
           // I've got a schedule to adhere to!
           // set the receieve time to 3:00 am for a better admin experience
-          $update = array(
-            'payment_status_id' => 2,
-            'receive_date' => date('Ymd', $receive_ts) . '030000',
-          );
+          $update = CRM_Iats_Utils::paymentStatus('Pending')
+            + ['receive_date' => date('Ymd', $receive_ts) . '030000'];
           // update the recurring and contribution records with the receive date,
           // i.e. make up for what core doesn't do
           $this->updateRecurring($params, $update);
@@ -325,8 +324,8 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
           return $params;
         }
         else {
-          $iats = new CRM_Iats_iATSServiceRequest(array('type' => 'process', 'method' => 'acheft_with_customer_code', 'iats_domain' => $this->_profile['iats_domain'], 'currency' => $params['currency']));
-          $request = array('invoiceNum' => $params['invoiceID']);
+          $iats = new CRM_Iats_iATSServiceRequest(['type' => 'process', 'method' => 'acheft_with_customer_code', 'iats_domain' => $this->_profile['iats_domain'], 'currency' => $params['currency']]);
+          $request = ['invoiceNum' => $params['invoiceID']];
           $request['total'] = sprintf('%01.2f', CRM_Utils_Rule::cleanMoney($params['amount']));
           $request['customerCode'] = $customer_code;
           $request['customerIPAddress'] = (function_exists('ip_address') ? ip_address() : $_SERVER['REMOTE_ADDR']);
@@ -334,24 +333,22 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
           $result = $iats->result($response);
           if ($result['status']) {
             // Add a time string to iATS short authentication string to ensure uniqueness and provide helpful referencing.
-            $update = array(
-              'trxn_id' => trim($result['remote_id']) . ':' . time(),
-              'payment_status_id' => 2,
-            );
+            $update = CRM_Iats_Utils::paymentStatus('Pending')
+              + ['trxn_id' => trim($result['remote_id']) . ':' . time()];
             // Setting the next_sched_contribution_date param doesn't do anything,
             // work around in updateRecurring
             $this->updateRecurring($params, $update);
             $params = array_merge($params, $update);
             // Core assumes that a pending result will have no transaction id, but we have a useful one.
             if (!empty($params['contributionID'])) {
-              $contribution_update = array('id' => $params['contributionID'], 'trxn_id' => $update['trxn_id']);
+              $contribution_update = ['id' => $params['contributionID'], 'trxn_id' => $update['trxn_id']];
               try {
                 $result = civicrm_api3('Contribution', 'create', $contribution_update);
               }
               catch (CRM_Core_Exception $e) {
                 // Not a critical error, just log and continue.
                 $error = $e->getMessage();
-                Civi::log()->info('Unexpected error adding the trxn_id for contribution id {id}: {error}', array('id' => $recur_id, 'error' => $error));
+                Civi::log()->info('Unexpected error adding the trxn_id for contribution id {id}: {error}', ['id' => $recur_id, 'error' => $error]);
               }
             }
             return $params;
@@ -368,7 +365,7 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
   /**
    *
    */
-  public function changeSubscriptionAmount(&$message = '', $params = array()) {
+  public function changeSubscriptionAmount(&$message = '', $params = []) {
     // $userAlert = ts('You have updated the amount of this recurring contribution.');
     // CRM_Core_Session::setStatus($userAlert, ts('Warning'), 'alert');
     return TRUE;
@@ -377,7 +374,7 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
   /**
    *
    */
-  public function cancelSubscription(&$message = '', $params = array()) {
+  public function cancelSubscription(&$message = '', $params = []) {
     $userAlert = ts('You have cancelled this recurring contribution.');
     CRM_Core_Session::setStatus($userAlert, ts('Warning'), 'alert');
     return TRUE;
@@ -422,7 +419,7 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
    * @public
    */
   public function checkConfig() {
-    $error = array();
+    $error = [];
 
     if (empty($this->_paymentProcessor['user_name'])) {
       $error[] = ts('Agent Code is not set in the Administer CiviCRM &raquo; System Settings &raquo; Payment Processors.');
@@ -444,8 +441,8 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
    * Convert the values in the civicrm params to the request array with keys as expected by iATS.
    */
   public function convertParams($params, $method) {
-    $request = array();
-    $convert = array(
+    $request = [];
+    $convert = [
       'firstName' => 'billing_first_name',
       'lastName' => 'billing_last_name',
       'address' => 'street_address',
@@ -456,7 +453,7 @@ class CRM_Core_Payment_iATSServiceACHEFT extends CRM_Core_Payment_iATSService {
       'invoiceNum' => 'invoiceID',
     /*  'accountNum' => 'bank_account_number', */
       'accountType' => 'bank_account_type',
-    );
+    ];
 
     foreach ($convert as $r => $p) {
       if (isset($params[$p])) {

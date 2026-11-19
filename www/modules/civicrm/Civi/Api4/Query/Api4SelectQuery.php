@@ -17,6 +17,7 @@ use Civi\Api4\Service\Schema\Joiner;
 use Civi\Api4\Utils\FormattingUtil;
 use Civi\Api4\Utils\CoreUtil;
 use Civi\Api4\Utils\SelectUtil;
+use Civi\Schema\EntityRepository;
 
 /**
  * Constructs SELECT FROM queries for API4 GET actions.
@@ -361,6 +362,9 @@ class Api4SelectQuery extends Api4Query {
     if ($stack === NULL) {
       // Track field clauses added to the main entity
       $this->aclFields = array_keys($clauses);
+      if (isset($clauses['id']) && isset($this->apiFieldSpec['contact_id'])) {
+        $this->aclFields[] = 'contact_id';
+      }
     }
     // Dedupe these clauses with ones that have already been applied to the entity being joined on
     else {
@@ -377,7 +381,7 @@ class Api4SelectQuery extends Api4Query {
           $lastField = substr($lastField, strlen($tableAlias) + 1);
         }
         foreach ($clauses as $fieldName => $clause) {
-          if ($fieldName === $lastField && in_array($stackPrev, $this->aclFields, TRUE)) {
+          if (($fieldName === $lastField || ($fieldName === 'id' && $lastField === 'contact_id')) && (in_array($stackPrev, $this->aclFields, TRUE) || ($stackPrev === 'contact_id' && in_array('id', $this->aclFields, TRUE)))) {
             unset($clauses[$fieldName]);
             $this->aclFields[] = $stackLast;
           }
@@ -543,7 +547,7 @@ class Api4SelectQuery extends Api4Query {
     // Used to dedupe acl clauses
     $aclStack = [];
     // See if the ON clause already contains an FK reference to joinEntity
-    $explicitFK = array_filter($joinTree, function($clause) use ($alias, $joinEntityFields, &$aclStack) {
+    $explicitFK = array_filter($joinTree, function($clause) use ($alias, $joinEntity, $joinEntityFields, &$aclStack) {
       [$sideA, $op, $sideB, $isExpr] = array_pad((array) $clause, 4, TRUE);
       if ($op !== '=' || !$isExpr || !is_string($sideB) || !strlen($sideB)) {
         return FALSE;
@@ -553,22 +557,38 @@ class Api4SelectQuery extends Api4Query {
           continue;
         }
         $joinFieldName = str_replace("$alias.", '', $expr);
-        $otherSideField = $this->apiFieldSpec[$clause[$otherSide]] ?? NULL;
-        // Check for explicit link to FK entity (include entity_id for dynamic FKs)
-        if (
-          // FK FROM the other entity
-          !empty($otherSideField['fk_entity']) ||
-          // Unique field - might be a link FROM the other entity
-          // FIXME: This is just guessing. We ought to check the schema for all unique fields
-          in_array($joinFieldName, ['id', 'name'], TRUE) ||
-          // FK field - might be a link TO the other entity
-          !empty($joinEntityFields[$joinFieldName]['dfk_entities']) || !empty($joinEntityFields[$joinFieldName]['fk_entity'])
-        ) {
-          // If the join links to a field on another entity
-          if (preg_match('/^[_a-z0-9.]+$/i', $clause[$otherSide])) {
-            $aclStack = [$clause[$otherSide], $expr];
-            return TRUE;
-          }
+        if (!preg_match('/^[_a-z0-9.]+$/i', $clause[$otherSide])) {
+          continue;
+        }
+        $otherSideField = $this->getField($clause[$otherSide]);
+        $otherSideEntity = $otherSideField['entity'] ?? $this->getEntity();
+        // Resolve to table names to accurately compare facade entities like "Individual"
+        $otherSideTable = CoreUtil::getTableName($otherSideEntity);
+        $joinTable = CoreUtil::getTableName($joinEntity);
+
+        $isFK = FALSE;
+        // 1. Other side has FK pointing to joinEntity (e.g. Contact.primary_email_id -> Email.id)
+        if (!empty($otherSideField['fk_entity']) && CoreUtil::getTableName($otherSideField['fk_entity']) === $joinTable) {
+          $isFK = $joinFieldName === ($otherSideField['fk_column'] ?? 'id');
+        }
+        // 2. Joined field has FK pointing to other side entity (e.g. Email.contact_id -> Contact.id)
+        elseif (!empty($joinEntityFields[$joinFieldName]['fk_entity']) && CoreUtil::getTableName($joinEntityFields[$joinFieldName]['fk_entity']) === $otherSideTable) {
+          $isFK = ($otherSideField['name'] ?? $clause[$otherSide]) === ($joinEntityFields[$joinFieldName]['fk_column'] ?? 'id');
+        }
+        // 3. Dynamic FK on joined entity (e.g. ActivityContact.contact_id with dfk_entities)
+        elseif (!empty($joinEntityFields[$joinFieldName]['dfk_entities']) && (in_array($otherSideEntity, $joinEntityFields[$joinFieldName]['dfk_entities'], TRUE) || in_array(CoreUtil::getApiNameFromTableName($otherSideTable), $joinEntityFields[$joinFieldName]['dfk_entities'], TRUE))) {
+          $isFK = TRUE;
+        }
+        // 4. Link to a unique field of joinEntity from a field that is not a known FK (e.g. SepaMandate.entity_id -> Contribution.id)
+        // Counts as explicit so no FK condition is guessed; without $aclStack the joined entity keeps all its ACL clauses.
+        // A literal value is a filter, not a link, so it does not count.
+        elseif ($otherSideField && $this->isUniqueField($joinTable, $joinFieldName)) {
+          return TRUE;
+        }
+
+        if ($isFK) {
+          $aclStack = [$clause[$otherSide], $expr];
+          return TRUE;
         }
       }
       return FALSE;
@@ -605,6 +625,32 @@ class Api4SelectQuery extends Api4Query {
     }
     $acls = array_values($this->getAclClause($alias, $joinEntity, $aclStack, $joinOn));
     return array_merge($acls, $conditions);
+  }
+
+  /**
+   * Whether one value of the field identifies at most one record: a single-column primary key or unique index.
+   *
+   * @param string|null $tableName
+   * @param string $fieldName
+   * @return bool
+   */
+  private function isUniqueField(?string $tableName, string $fieldName): bool {
+    if ($fieldName === 'id') {
+      return TRUE;
+    }
+    if (!$tableName || !EntityRepository::tableExists($tableName)) {
+      return FALSE;
+    }
+    $entity = \Civi::table($tableName);
+    if ($entity->getMeta('primary_keys') === [$fieldName]) {
+      return TRUE;
+    }
+    foreach ((array) $entity->getMeta('indices') as $index) {
+      if (!empty($index['unique']) && array_keys($index['fields'] ?? []) === [$fieldName]) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**

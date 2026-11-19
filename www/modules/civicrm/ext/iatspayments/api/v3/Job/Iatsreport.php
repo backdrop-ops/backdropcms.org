@@ -37,12 +37,12 @@ function civicrm_api3_job_iatsreport($params) {
   /* get a list of all active/non-test iATS payment processors of any type, quit if there are none */
   /* We'll make sure they are unique from iATS point of view (i.e. distinct agent codes = username) */
   try {
-    $result = civicrm_api3('PaymentProcessor', 'get', array(
+    $result = civicrm_api3('PaymentProcessor', 'get', [
       'sequential' => 1,
-      'class_name' => array('LIKE' => 'Payment_iATSService%'),
+      'class_name' => ['LIKE' => 'Payment_iATSService%'],
       'is_active' => 1,
       'is_test' => 0,
-    ));
+    ]);
   }
   catch (CRM_Core_Exception $e) {
     throw new CRM_Core_Exception('Unexpected error getting payment processors: ' . $e->getMessage()); //  . "\n" . $e->getTraceAsString());
@@ -50,16 +50,16 @@ function civicrm_api3_job_iatsreport($params) {
   if (empty($result['values'])) {
     return;
   }
-  $payment_processors = array();
+  $payment_processors = [];
   foreach ($result['values'] as $payment_processor) {
     $user_name = $payment_processor['user_name'];
     $type = $payment_processor['payment_type']; // 1 for cc, 2 for ach/eft
     $id = $payment_processor['id'];
     if (empty($payment_processors[$user_name])) {
-      $payment_processors[$user_name] = array();
+      $payment_processors[$user_name] = [];
     }
     if (empty($payment_processors[$user_name][$type])) {
-      $payment_processors[$user_name][$type] = array();
+      $payment_processors[$user_name][$type] = [];
     }
     $payment_processors[$user_name][$type][$id] = $payment_processor;
   }
@@ -68,28 +68,28 @@ function civicrm_api3_job_iatsreport($params) {
   $iats_settings = CRM_Iats_Utils::getSettings();
   // I also use the setttings to keep track of the last time I imported journal data from iATS.
   $iats_journal = Civi::settings()->get('iats_journal');
-  foreach (array('quick', 'recur', 'series') as $setting) {
+  foreach (['quick', 'recur', 'series'] as $setting) {
     $import[$setting] = empty($iats_settings['import_' . $setting]) ? 0 : 1;
   }
   // an array of types => methods => payment status of the records retrieved
-  $process_methods = array(
-    1 => array('cc_journal_csv' => 1, 'cc_payment_box_journal_csv' => 1, 'cc_payment_box_reject_csv' => 4),
-    2 => array('acheft_journal_csv' => 1, 'acheft_payment_box_journal_csv' => 1, 'acheft_payment_box_reject_csv' => 4),
-  );
+  $process_methods = [
+    1 => ['cc_journal_csv' => 1, 'cc_payment_box_journal_csv' => 1, 'cc_payment_box_reject_csv' => 4],
+    2 => ['acheft_journal_csv' => 1, 'acheft_payment_box_journal_csv' => 1, 'acheft_payment_box_reject_csv' => 4],
+  ];
   /* initialize some values so I can report at the end */
   // count the number of records from each iats account analysed, and the number of each kind found ('action')
-  $processed = array();
+  $processed = [];
   // save all my api result error messages as well
-  $error_log = array();
+  $error_log = [];
   foreach ($payment_processors as $user_name => $payment_processors_per_user) {
-    $processed[$user_name] = array();
+    $processed[$user_name] = [];
     foreach ($payment_processors_per_user as $type => $payment_processors_per_user_type) {
-      $processed[$user_name][$type] = array();
+      $processed[$user_name][$type] = [];
       // we might have multiple payment processors by type e.g. SWIPE or separate codes for
       // one-time and recurring contributions, I only want to process once per user_name + type
       $payment_processor = reset($payment_processors_per_user_type);
       $process_methods_per_type = $process_methods[$type];
-      $iats_service_params = array('type' => 'report', 'iats_domain' => parse_url($payment_processor['url_site'], PHP_URL_HOST)); // + $iats_service_params;
+      $iats_service_params = ['type' => 'report', 'iats_domain' => parse_url($payment_processor['url_site'], PHP_URL_HOST)]; // + $iats_service_params;
       /* the is_test below should always be 0, but I'm leaving it in, in case eventually we want to be verifying tests */
       $credentials = CRM_Iats_iATSServiceRequest::credentials($payment_processor['id'], $payment_processor['is_test']);
 
@@ -106,20 +106,20 @@ function civicrm_api3_job_iatsreport($params) {
         switch ($method) {
           case 'acheft_journal_csv': // special case to get today's transactions, so we're as real-time as we can be
           case 'cc_journal_csv':
-            $request = array(
+            $request = [
               'date' => date('Y-m-d') . 'T23:59:59+00:00',
               'customerIPAddress' => (function_exists('ip_address') ? ip_address() : $_SERVER['REMOTE_ADDR']),
-            );
+            ];
             break;
 
           default:
             // box journals (approvals and rejections) only go up to the end of yesterday
-            $request = array(
+            $request = [
               'startIndex' => 0,
               'endIndex' => 1000,
               'toDate' => date('Y-m-d', strtotime('-1 day')) . 'T23:59:59+00:00',
               'customerIPAddress' => (function_exists('ip_address') ? ip_address() : $_SERVER['REMOTE_ADDR']),
-            );
+            ];
             // Calculate how far back I want to go, default 2 days ago.
             $fromDate = strtotime('-2 days');
             // Check when I last downloaded this box journal
@@ -191,13 +191,13 @@ function civicrm_api3_job_iatsreport($params) {
     foreach ($p as $type => $ps) {
       $prefix = ($type == 1) ? 'cc' : 'acheft';
       $results
-        = array(
+        = [
           1 => $user_name,
           2 => $prefix,
           3 => $ps[$prefix . '_journal_csv'],
           4 => $ps[$prefix . '_payment_box_journal_csv'],
           5 => $ps[$prefix . '_payment_box_reject_csv'],
-        );
+        ];
       $message .= '<br />' . ts('For account %1, type %2, processed %3 approvals from the one-day journals, and %4 approval and %5 rejection records from previous days using the box journals.', $results);
     }
   }

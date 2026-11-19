@@ -12,26 +12,26 @@
  * Get entries from iATSPayments in the journal table
  */
 function _civicrm_api3_iats_payments_get_journal_spec(&$params) {
-  $params['tnid'] = array(
+  $params['tnid'] = [
     'name' => 'tnid',
     'title' => 'Transaction string',
     'api.required' => 0,
-  );
-  $params['iats_id'] = array(
+  ];
+  $params['iats_id'] = [
     'name' => 'iats_id',
     'title' => 'IatsPayments Journal Id',
     'api.required' => 0,
-  );
-  $params['tntyp'] = array(
+  ];
+  $params['tntyp'] = [
     'name' => 'tntyp',
     'title' => 'Transaction type',
     'api.required' => 0,
-  );
-  $params['inv'] = array(
+  ];
+  $params['inv'] = [
     'name' => 'inv',
     'title' => 'Invoice Reference',
     'api.required' => 0,
-  );
+  ];
 }
 
 /**
@@ -52,26 +52,26 @@ function civicrm_api3_iats_payments_get_journal($params) {
 
   // print_r($params); die();
   $select = "SELECT * FROM civicrm_iats_journal WHERE TRUE ";
-  $args = array();
+  $args = [];
 
-  $select_params = array(
+  $select_params = [
     'tnid' => 'String',
     'tn_type' => 'Integer',
     'iats_id' => 'Integer',
     'inv' => 'String',
-  );
+  ];
   $i = 0;
   foreach ($params as $key => $value) {
     if (isset($select_params[$key])) {
       $i++;
       if (is_string($value)) {
         $select .= " AND $key = %$i";
-        $args[$i] = array($value, $select_params[$key]);
+        $args[$i] = [$value, $select_params[$key]];
       }
       elseif (is_array($value)) {
         foreach (array_keys($value) as $sql) {
           $select .= " AND ($key %$i)";
-          $args[$i] = array($sql, 'String');
+          $args[$i] = [$sql, 'String'];
         }
       }
     }
@@ -80,7 +80,7 @@ function civicrm_api3_iats_payments_get_journal($params) {
     $sort = $params['options']['sort'];
     $i++;
     $select .= " ORDER BY %$i";
-    $args[$i] = array($sort, 'String');
+    $args[$i] = [$sort, 'String'];
   }
   else { // by default, get the most recent entry
     $select .= " ORDER BY id DESC";
@@ -92,15 +92,15 @@ function civicrm_api3_iats_payments_get_journal($params) {
   if ($limit > 0) {
     $i++;
     $select .= " LIMIT %$i";
-    $args[$i] = array($limit, 'Integer');
+    $args[$i] = [$limit, 'Integer'];
   }
 
-  $values = array();
+  $values = [];
   try {
     $dao = CRM_Core_DAO::executeQuery($select, $args);
     while ($dao->fetch()) {
       /* We index in the transaction_id */
-      $record = array();
+      $record = [];
       foreach (get_object_vars($dao) as $key => $value) {
         if ('N' != $key && (0 !== strpos($key, '_'))) {
           $record[$key] = $value;

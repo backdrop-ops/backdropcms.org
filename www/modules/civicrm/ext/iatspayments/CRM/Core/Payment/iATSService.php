@@ -81,17 +81,17 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
    * Mangle the days settings to make it easier to test if it is set.
    */
   protected function getSettings($key = '') {
-    static $settings = array();
+    static $settings = [];
     if (empty($settings)) {
       try {
         $settings = CRM_Iats_Utils::getSettings();
         if (empty($settings['days'])) {
-          $settings['days'] = array('-1');
+          $settings['days'] = ['-1'];
         }
       }
       catch (CRM_Core_Exception $e) {
         // Assume no settings exist, use safest fallback.
-        $settings = array('days' => array('-1'));
+        $settings = ['days' => ['-1']];
       }
     }
     return (empty($key) ? $settings : (empty($settings[$key]) ? '' : $settings[$key]));
@@ -179,8 +179,9 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
   public function doPayment(&$params, $component = 'contribute') {
 
     if (empty($params['amount'])) {
-      return _iats_payment_status_complete();
+      return CRM_Iats_Utils::paymentStatus('Completed');
     }
+    CRM_Iats_Utils::checkInvoiceId($params);
     if (!$this->_profile) {
       return self::error('Unexpected error, missing profile');
     }
@@ -191,13 +192,13 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
     }
     $methodType = $isRecur ? 'customer' : 'process';
     $method = $isRecur ? 'create_credit_card_customer' : 'cc';
-    $iats = new CRM_Iats_iATSServiceRequest(array('type' => $methodType, 'method' => $method, 'iats_domain' => $this->_profile['iats_domain'], 'currency' => $params['currency']));
+    $iats = new CRM_Iats_iATSServiceRequest(['type' => $methodType, 'method' => $method, 'iats_domain' => $this->_profile['iats_domain'], 'currency' => $params['currency']]);
     $request = $this->convertParams($params, $method);
     $request['customerIPAddress'] = CRM_Iats_Transaction::remote_ip_address();
-    $credentials = array(
+    $credentials = [
       'agentCode' => $this->_paymentProcessor['user_name'],
       'password'  => $this->_paymentProcessor['password'],
-    );
+    ];
     // Get the API endpoint URL for the method's transaction mode.
     // TODO: enable override of the default url in the request object
     // $url = $this->_paymentProcessor['url_site'];.
@@ -208,8 +209,9 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
       $result = $iats->result($response);
       if ($result['status']) {
         // Success.
-        $params['payment_status_id'] = 1;
+        $params += CRM_Iats_Utils::paymentStatus('Completed');
         $params['trxn_id'] = trim($result['remote_id']) . ':' . time();
+	// CRM_Core_Error::debug_var('params', $params);
         return $params;
       }
       else {
@@ -272,10 +274,8 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
         if ($receive_date !== $today) {
           // I've got a schedule to adhere to!
           // set the receieve time to 3:00 am for a better admin experience
-          $update = array(
-            'payment_status_id' => 2,
-            'receive_date' => date('Ymd', $receive_ts) . '030000',
-          );
+          $update = CRM_Iats_Utils::paymentStatus('Pending')
+            + ['receive_date' => date('Ymd', $receive_ts) . '030000'];
           // update the recurring and contribution records with the receive date,
           // i.e. make up for what core doesn't do
           $this->updateRecurring($params, $update);
@@ -286,8 +286,8 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
         }
         else {
           // run the (first) transaction immediately
-          $iats = new CRM_Iats_iATSServiceRequest(array('type' => 'process', 'method' => 'cc_with_customer_code', 'iats_domain' => $this->_profile['iats_domain'], 'currency' => $params['currency']));
-          $request = array('invoiceNum' => $params['invoiceID']);
+          $iats = new CRM_Iats_iATSServiceRequest(['type' => 'process', 'method' => 'cc_with_customer_code', 'iats_domain' => $this->_profile['iats_domain'], 'currency' => $params['currency']]);
+          $request = ['invoiceNum' => $params['invoiceID']];
           $request['total'] = sprintf('%01.2f', CRM_Utils_Rule::cleanMoney($params['amount']));
           $request['customerCode'] = $customer_code;
           $request['customerIPAddress'] = (function_exists('ip_address') ? ip_address() : $_SERVER['REMOTE_ADDR']);
@@ -296,10 +296,8 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
           if ($result['status']) {
             // Add a time string to iATS short authentication string to ensure
             // uniqueness and provide helpful referencing.
-            $update = array(
-              'trxn_id' => trim($result['remote_id']) . ':' . time(),
-              'payment_status_id' => 1,
-            );
+            $update = CRM_Iats_Utils::paymentStatus('Completed')
+              + ['trxn_id' => trim($result['remote_id']) . ':' . time()];
             // do some cleanups to the recurring record in updateRecurring
             $this->updateRecurring($params, $update);
             $params = array_merge($params, $update);
@@ -320,7 +318,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
   /**
    * support corresponding CiviCRM method
    */
-  public function changeSubscriptionAmount(&$message = '', $params = array()) {
+  public function changeSubscriptionAmount(&$message = '', $params = []) {
     // $userAlert = ts('You have modified this recurring contribution.');
     // CRM_Core_Session::setStatus($userAlert, ts('Warning'), 'alert');
     return TRUE;
@@ -329,7 +327,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
   /**
    * support corresponding CiviCRM method
    */
-  public function cancelSubscription(&$message = '', $params = array()) {
+  public function cancelSubscription(&$message = '', $params = []) {
     $userAlert = ts('You have cancelled this recurring contribution.');
     CRM_Core_Session::setStatus($userAlert, ts('Warning'), 'alert');
     return TRUE;
@@ -343,13 +341,13 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
    * e.g. the commented out fields below don't work properly here.
    */
   public function getEditableRecurringScheduleFields() {
-    return array('amount',
+    return ['amount',
          'installments',
          'next_sched_contribution_date',
 //         'contribution_status_id',
 //         'start_date',
 //         'is_email_receipt',
-       );
+       ];
   }
 
   /*
@@ -384,7 +382,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
    *   The error message if any
    */
   public function checkConfig() {
-    $error = array();
+    $error = [];
 
     if (empty($this->_paymentProcessor['user_name'])) {
       $error[] = ts('Agent Code is not set in the Administer CiviCRM &raquo; System Settings &raquo; Payment Processors.');
@@ -452,7 +450,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
         break;
 
       case 'cc_with_customer_code':
-        foreach (array('creditCardNum', 'creditCardExpiry', 'mop') as $key) {
+        foreach (['creditCardNum', 'creditCardExpiry', 'mop'] as $key) {
           if (isset($request[$key])) {
             unset($request[$key]);
           }
@@ -460,12 +458,12 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
         break;
     }
     if (!empty($params['credit_card_type'])) {
-      $mop = array(
+      $mop = [
         'Visa' => 'VISA',
         'MasterCard' => 'MC',
         'Amex' => 'AMX',
         'Discover' => 'DSC',
-      );
+      ];
       $request['mop'] = $mop[$params['credit_card_type']];
     }
     // print_r($request); print_r($params); die();
@@ -480,7 +478,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
    *
    * Return TRUE on success or an error.
    */
-  public function updateSubscriptionBillingInfo(&$message = '', $params = array()) {
+  public function updateSubscriptionBillingInfo(&$message = '', $params = []) {
 
     // updatedBillingInfo array has changed a few times, we'll try a few different keys to pull the contribution recurring id
     $crid = !empty($params['contributionRecurID']) ? $params['contributionRecurID'] : (!empty($params['crid']) ? $params['crid'] : $params['recur_id']);
@@ -488,17 +486,17 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
       $alert = ts('This system is unable to perform self-service updates to credit cards. Please contact the administrator of this site.');
       throw new Exception($alert);
     }
-    $mop = array(
+    $mop = [
       'Visa' => 'VISA',
       'MasterCard' => 'MC',
       'Amex' => 'AMX',
       'Discover' => 'DSC',
-    );
+    ];
     $contribution_recur = civicrm_api3('ContributionRecur', 'getsingle', ['id' => $crid]);
     $payment_token = $result = civicrm_api3('PaymentToken', 'getsingle', ['id' => $contribution_recur['payment_token_id']]);
     // construct the array of data that I'll submit to the iATS Payments server.
     $state_province = civicrm_api3('StateProvince', 'getsingle', ['return' => ["abbreviation"], 'id' => $params['state_province_id']]);
-    $submit_values = array(
+    $submit_values = [
       'cid' => $contribution_recur['contact_id'],
       'customerCode' => $payment_token['token'],
       'creditCardCustomerName' => "{$params['first_name']} " . (!empty($params['middle_name']) ? "{$params['middle_name']} " : '') . $params['last_name'],
@@ -509,7 +507,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
       'creditCardNum' => $params['credit_card_number'],
       'creditCardExpiry' => sprintf('%02d/%02d', intval($params['month']), intval($params['year']) % 100),
       'mop' => $mop[$params['credit_card_type']],
-    );
+    ];
 
     // IATS-323
     $submit_values['updateCreditCardNum'] = (0 < strlen($submit_values['creditCardNum']) && (FALSE === strpos($params['creditCardNum'], '*'))) ? 1 : 0;
@@ -519,7 +517,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
     }
 
     $credentials = CRM_Iats_iATSServiceRequest::credentials($contribution_recur['payment_processor_id'], 0);
-    $iats_service_params = array('type' => 'customer', 'iats_domain' => $credentials['domain'], 'method' => 'update_credit_card_customer');
+    $iats_service_params = ['type' => 'customer', 'iats_domain' => $credentials['domain'], 'method' => 'update_credit_card_customer'];
     $iats = new CRM_Iats_iATSServiceRequest($iats_service_params);
     $submit_values['customerIPAddress'] = (function_exists('ip_address') ? ip_address() : $_SERVER['REMOTE_ADDR']);
     // Make the soap request.
@@ -571,10 +569,11 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
     // because we want the recurring job to run for this schedule.
     if (!empty($params['contributionRecurID'])) {
       $recur_id = $params['contributionRecurID'];
-      $recur_update = array(
+      $recur_update = [
         'id' => $recur_id,
         'contribution_status_id' => 'In Progress',
-      );
+        'contribution_status' => 'In Progress',
+      ];
       // use the receive date to set the next sched contribution date.
       // By default, it's empty, unless we've got a future start date.
       if (empty($update['receive_date'])) {
@@ -602,7 +601,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
       catch (CRM_Core_Exception $e) {
         // Not a critical error, just log and continue.
         $error = $e->getMessage();
-        Civi::log()->info('Unexpected error updating the next scheduled contribution date for id {id}: {error}', array('id' => $recur_id, 'error' => $error));
+        Civi::log()->info('Unexpected error updating the next scheduled contribution date for id {id}: {error}', ['id' => $recur_id, 'error' => $error]);
       }
     }
     else {
@@ -617,13 +616,13 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
    * This function will alter the civi contribution record.
    * Implemented only to update the receive date.
    */
-  protected function updateContribution($params, $update = array()) {
+  protected function updateContribution($params, $update = []) {
     if (!empty($params['contributionID'])  && !empty($update['receive_date'])) {
       $contribution_id = $params['contributionID'];
-      $update = array(
+      $update = [
         'id' => $contribution_id,
         'receive_date' => $update['receive_date']
-      );
+      ];
       try {
         $result = civicrm_api3('Contribution', 'create', $update);
         return $result;
@@ -631,7 +630,7 @@ class CRM_Core_Payment_iATSService extends CRM_Core_Payment {
       catch (CRM_Core_Exception $e) {
         // Not a critical error, just log and continue.
         $error = $e->getMessage();
-        Civi::log()->info('Unexpected error updating the contribution date for id {id}: {error}', array('id' => $contribution_id, 'error' => $error));
+        Civi::log()->info('Unexpected error updating the contribution date for id {id}: {error}', ['id' => $contribution_id, 'error' => $error]);
       }
     }
     return false;

@@ -5,13 +5,13 @@
  * http://wiki.civicrm.org/confluence/display/CRMDOC/Hook+Reference
  */
 
-return array(
+return [
    0 =>
-    array(
+    [
       'name' => 'iATS Payments 1stPay Processor',
       'entity' => 'payment_processor_type',
       'params' =>
-        array(
+        [
           'version' => 3,
           'title' => 'iATS Payments 1stPay Credit Card',
           'name' => 'iATS Payments 1stPay Credit Card',
@@ -29,14 +29,14 @@ return array(
           'is_recur' => 1,
           'payment_instrument_id' => 1,
           'is_active' => 1,
-        ),
-    ),
+        ],
+    ],
    1 =>
-    array(
+    [
       'name' => 'iATS Payments 1stPay ACH Processor',
       'entity' => 'payment_processor_type',
       'params' =>
-        array(
+        [
           'version' => 3,
           'title' => 'iATS Payments 1stPay ACH',
           'name' => 'iATS Payments 1stPay ACH',
@@ -54,7 +54,7 @@ return array(
           'is_recur' => 1,
           'payment_instrument_id' => 2,
           'is_active' => 1,
-        ),
-    )
-);
+        ],
+    ]
+];
  

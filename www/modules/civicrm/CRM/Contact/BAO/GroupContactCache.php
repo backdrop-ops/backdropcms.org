@@ -644,6 +644,10 @@ ORDER BY   gc.contact_id, g.children
    * @throws \CRM_Core_Exception
    */
   public static function populateTemporaryTableWithContactsInGroups(array $groupIDs, string $temporaryTable): void {
+    if (empty($groupIDs)) {
+      return;
+    }
+    $groupIDs = CRM_Utils_Type::escapeAll($groupIDs, 'Positive');
     $childAndParentGroupIDs = array_merge($groupIDs, CRM_Contact_BAO_GroupNesting::getDescendentGroupIds($groupIDs));
     $groups = civicrm_api3('Group', 'get', [
       'is_active' => 1,

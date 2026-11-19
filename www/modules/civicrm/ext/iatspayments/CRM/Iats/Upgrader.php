@@ -12,14 +12,14 @@ class CRM_Iats_Upgrader extends CRM_Extension_Upgrader_Base {
    * Standard: run an install sql script
    */
   public function install() {
-    $this->executeSqlFile('sql/install.sql');
+    //$this->executeSqlFile('sql/install.sql');
   }
 
   /**
    * Standard: run an uninstall script
    */
   public function uninstall() {
-   $this->executeSqlFile('sql/uninstall.sql');
+   //$this->executeSqlFile('sql/uninstall.sql');
   }
 
   public function upgrade_1_2_010() {
@@ -114,8 +114,8 @@ class CRM_Iats_Upgrader extends CRM_Extension_Upgrader_Base {
     }
     try {
       $this->ctx->log->info('Setting payment instrument label');
-      $acheft_option_value_id = civicrm_api3('OptionValue', 'getvalue', array('return' => 'id', 'value' => 2, 'option_group_id' => 'payment_instrument'));
-      civicrm_api3('OptionValue', 'create', array('label' => 'ACHEFT', 'id' => $acheft_option_value_id));
+      $acheft_option_value_id = civicrm_api3('OptionValue', 'getvalue', ['return' => 'id', 'value' => 2, 'option_group_id' => 'payment_instrument']);
+      civicrm_api3('OptionValue', 'create', ['label' => 'ACHEFT', 'id' => $acheft_option_value_id]);
     }
     catch (Exception $e) {
       $this->ctx->log->info($e->getMessage());
@@ -195,6 +195,35 @@ class CRM_Iats_Upgrader extends CRM_Extension_Upgrader_Base {
     return TRUE;
   }
 
+  public function upgrade_1_12_001() {
+    $this->ctx->log->info('Applying Update 1_12_001 Add in Foreign Keys correctly and modify database fields as needed');
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_verify CHANGE cid cid int unsigned DEFAULT NULL COMMENT 'CiviCRM contact id'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_verify CHANGE contribution_id contribution_id int unsigned DEFAULT NULL COMMENT 'CiviCRM contribution table id'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_verify CHANGE recur_id recur_id int unsigned DEFAULT NULL COMMENT 'CiviCRM recurring_contribution table id'");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_verify SET cid = NULL WHERE cid = 0");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_verify SET contribution_id = NULL WHERE contribution_id = 0");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_verify SET recur_id = NULL WHERE cid = 0");
+    CRM_COre_DAO::executeQuery("ALTER TABLE civicrm_iats_verify ADD CONSTRAINT FK_civicrm_iats_verify_cid FOREIGN KEY (cid) REFERENCES civicrm_contact(id) ON DELETE SET NULL, CONSTRAINT FK_civicrm_iats_verify_contribution_id FOREIGN KEY (contribution_id) REFERENCES civicrm_contribution (id) ON DELETE SET NULL, CONSTRAINT FK_civicrm_iats_verify_recur_id FOREIGN KEY (recur_id) REFERENCES civicrm_contribution_recur (id) ON DELETE SET NULL");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_journal CHANGE cid cid int unsigned DEFAULT NULL COMMENT 'CiviCRM contact id'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_journal CHANGE contribution_id contribution_id int unsigned DEFAULT NULL COMMENT 'CiviCRM contribution table id'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_journal CHANGE recur_id recur_id int unsigned DEFAULT NULL COMMENT 'CiviCRM recurring_contribution table id'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_journal CHANGE financial_trxn_id financial_trxn_id int unsigned DEFAULT NULL COMMENT 'Foreign key into CiviCRM financial trxn table id'");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_journal SET cid = NULL WHERE cid = 0");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_journal SET contribution_id = NULL WHERE contribution_id = 0");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_journal SET financial_trxn_id = NULL WHERE financial_trxn_id = 0");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_journal SET recur_id = NULL WHERE recur_id = 0");
+    CRM_COre_DAO::executeQuery("ALTER TABLE civicrm_iats_journal ADD CONSTRAINT FK_civicrm_iats_journal_cid FOREIGN KEY (cid) REFERENCES civicrm_contact(id) ON DELETE SET NULL, CONSTRAINT FK_civicrm_iats_journal_contribution_id FOREIGN KEY (contribution_id) REFERENCES civicrm_contribution (id) ON DELETE SET NULL, CONSTRAINT FK_civicrm_iats_journal_recur_id FOREIGN KEY (recur_id) REFERENCES civicrm_contribution_recur (id) ON DELETE SET NULL, CONSTRAINT `FK_civicrm_iats_journal_financial_trxn_id` FOREIGN KEY (`financial_trxn_id`) REFERENCES `civicrm_financial_trxn` (`id`) ON DELETE SET NULL");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_faps_journal CHANGE cid cid int unsigned DEFAULT NULL COMMENT 'CiviCRM contact id'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_faps_journal CHANGE contribution_id contribution_id int unsigned DEFAULT NULL COMMENT 'CiviCRM contribution table id'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_faps_journal CHANGE recur_id recur_id int unsigned DEFAULT NULL COMMENT 'CiviCRM recurring_contribution table id'");
+    CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_iats_faps_journal CHANGE financial_trxn_id financial_trxn_id int unsigned DEFAULT NULL COMMENT 'Foreign key into CiviCRM financial trxn table id'");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_faps_journal SET cid = NULL WHERE cid = 0");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_faps_journal SET contribution_id = NULL WHERE contribution_id = 0");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_faps_journal SET recur_id = NULL WHERE recur_id = 0");
+    CRM_Core_DAO::executeQuery("UPDATE civicrm_iats_faps_journal SET financial_trxn_id = NULL WHERE financial_trxn_id = 0");
+    CRM_COre_DAO::executeQuery("ALTER TABLE civicrm_iats_faps_journal ADD CONSTRAINT FK_civicrm_iats_journal_cid FOREIGN KEY (cid) REFERENCES civicrm_contact(id) ON DELETE SET NULL, CONSTRAINT FK_civicrm_iats_journal_contribution_id FOREIGN KEY (contribution_id) REFERENCES civicrm_contribution (id) ON DELETE SET NULL, CONSTRAINT FK_civicrm_iats_journal_recur_id FOREIGN KEY (recur_id) REFERENCES civicrm_contribution_recur (id) ON DELETE SET NULL, CONSTRAINT `FK_civicrm_iats_faps_journal_financial_trxn_id` FOREIGN KEY (`financial_trxn_id`) REFERENCES `civicrm_financial_trxn` (`id`) ON DELETE SET NULL");
+    return TRUE;
+  }
 
   /**
    * Example: Run an external SQL script

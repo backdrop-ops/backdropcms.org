@@ -35,11 +35,11 @@ function civicrm_api3_iats_payments_journal($params) {
   try {
     $data = $params['data'];
     $dtm = date('YmdHis', $params['receive_date']);
-    $defaults = array(
+    $defaults = [
       'Client Code' => '',
       'Method of Payment' => '',
       'Comment' => '',
-    );
+    ];
     foreach ($defaults as $key => $default) {
       $data[$key] = empty($data[$key]) ? $default : $data[$key];
     }
@@ -56,18 +56,18 @@ function civicrm_api3_iats_payments_journal($params) {
     if ($data['Result'] == 'REJ:TIMEOUT' && $data['Method of Payment'] == 'ACHEFT') {
       throw new CRM_Core_Exception('iATS Payments journal ignore ACHEFT REJ:TIMEOUT');
     } 
-    $query_params = array(
-      1 => array($data['Transaction ID'], 'String'),
-      3 => array($dtm, 'String'),
-      4 => array($data['Client Code'], 'String'),
-      5 => array($params['customer_code'], 'String'),
-      6 => array($params['invoice'], 'String'),
-      7 => array($params['amount'], 'String'),
-      8 => array($data['Result'], 'String'),
-      9 => array($data['Method of Payment'], 'String'),
-      10 => array($data['Comment'], 'String'),
-      11 => array($params['status_id'], 'Integer'),
-    );
+    $query_params = [
+      1 => [$data['Transaction ID'], 'String'],
+      3 => [$dtm, 'String'],
+      4 => [$data['Client Code'], 'String'],
+      5 => [$params['customer_code'], 'String'],
+      6 => [$params['invoice'], 'String'],
+      7 => [$params['amount'], 'String'],
+      8 => [$data['Result'], 'String'],
+      9 => [$data['Method of Payment'], 'String'],
+      10 => [$data['Comment'], 'String'],
+      11 => [$params['status_id'], 'Integer'],
+    ];
     $result = CRM_Core_DAO::executeQuery($sql_action . " civicrm_iats_journal
         (tnid, iats_id, dtm, agt, cstc, inv, amt, rst, tntyp, cm, status_id) VALUES (%1, $iats_journal_id, %3, %4, %5, %6, %7, %8, %9, %10, %11)", $query_params);
   }

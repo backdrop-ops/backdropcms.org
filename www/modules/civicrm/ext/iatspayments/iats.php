@@ -98,7 +98,7 @@ function iats_civicrm_check(&$messages) {
   if (!class_exists('SoapClient')) {
     $messages[] = new CRM_Utils_Check_Message(
       'iats_soap',
-      ts('The SOAP extension for PHP %1 is not installed on this server, but is required for this extension.', array(1 => phpversion())),
+      ts('The SOAP extension for PHP %1 is not installed on this server, but is required for this extension.', [1 => phpversion()]),
       ts('iATS Payments Installation'),
       \Psr\Log\LogLevel::CRITICAL,
       'fa-flag'
@@ -115,10 +115,10 @@ function iats_civicrm_check(&$messages) {
 function _iats_civicrm_domain_info($key) {
   static $domain, $settings;
   if (empty($domain)) {
-    $domain = civicrm_api3('Domain', 'getsingle', array('current_domain' => TRUE));
+    $domain = civicrm_api3('Domain', 'getsingle', ['current_domain' => TRUE]);
   }
   if (!isset($settings)) {
-    $settings = array();
+    $settings = [];
   }
   switch ($key) {
     case 'version':
@@ -133,7 +133,7 @@ function _iats_civicrm_domain_info($key) {
       }
       else {
         try{
-          $setting = civicrm_api3('Setting', 'getvalue', array('name' => $key));
+          $setting = civicrm_api3('Setting', 'getvalue', ['name' => $key]);
           if (is_string($setting)) {
             $settings[$key] = $setting;
             return $setting;
@@ -168,7 +168,7 @@ function _iats_civicrm_domain_info($key) {
  * Utility to get the next available menu key.
  */
 function _iats_getMenuKeyMax($menuArray) {
-  $max = array(max(array_keys($menuArray)));
+  $max = [max(array_keys($menuArray))];
   foreach ($menuArray as $v) {
     if (!empty($v['child'])) {
       $max[] = _iats_getMenuKeyMax($v['child']);
@@ -181,32 +181,32 @@ function _iats_getMenuKeyMax($menuArray) {
  *
  */
 function iats_civicrm_navigationMenu(&$navMenu) {
-  $pages = array(
-    'admin_page' => array(
+  $pages = [
+    'admin_page' => [
       'label'      => 'iATS Payments Admin',
       'name'       => 'iATS Payments Admin',
       'url'        => 'civicrm/iATSAdmin',
-      'parent' => array('Contributions'),
+      'parent' => ['Contributions'],
       'permission' => 'access CiviContribute,administer CiviCRM',
       'operator'   => 'AND',
       'separator'  => NULL,
       'active'     => 1,
-    ),
-    'settings_page' => array(
+    ],
+    'settings_page' => [
       'label'      => 'iATS Payments Settings',
       'name'       => 'iATS Payments Settings',
       'url'        => 'civicrm/admin/setting/iats',
-      'parent'    => array('Administer', 'CiviContribute'),
+      'parent'    => ['Administer', 'CiviContribute'],
       'permission' => 'access CiviContribute,administer CiviCRM',
       'operator'   => 'AND',
       'separator'  => NULL,
       'active'     => 1,
-    ),
-  );
+    ],
+  ];
   foreach ($pages as $item) {
     // Check that our item doesn't already exist.
-    $menu_item_search = array('url' => $item['url']);
-    $menu_items = array();
+    $menu_item_search = ['url' => $item['url']];
+    $menu_items = [];
     CRM_Core_BAO_Navigation::retrieve($menu_item_search, $menu_items);
     if (empty($menu_items)) {
       $path = implode('/', $item['parent']);
@@ -264,18 +264,18 @@ function iats_civicrm_buildForm_CRM_Financial_Form_Payment(&$form) {
   //  && $form->getPaymentProcessorObject()->supports('FutureRecurStartDate') 
     && $form->_paymentProcessor['object']->supports('FutureRecurStartDate')
   ) {
-    $allow_days = empty($settings['days']) ? array('-1') : $settings['days'];
+    $allow_days = empty($settings['days']) ? ['-1'] : $settings['days'];
     $start_dates = CRM_Iats_Transaction::get_future_monthly_start_dates(time(), $allow_days);
     $form->addElement('select', 'receive_date', ts('Date of first contribution'), $start_dates);
-    CRM_Core_Region::instance('billing-block')->add(array(
+    CRM_Core_Region::instance('billing-block')->add([
       'template' => 'CRM/Iats/BillingBlockRecurringExtra.tpl',
-    ));
+    ]);
     $recurStartJs = CRM_Core_Resources::singleton()->getUrl('com.iatspayments.civicrm', 'js/recur_start.js');
     $script = 'var recurStartJs = "' . $recurStartJs . '";';
     $script .= 'CRM.$(function ($) { $.getScript(recurStartJs); });';
-    CRM_Core_Region::instance('billing-block')->add(array(
+    CRM_Core_Region::instance('billing-block')->add([
       'script' => $script,
-    ));
+    ]);
   }
 }
 
@@ -318,10 +318,10 @@ function iats_civicrm_pageRun(&$page) {
 function iats_civicrm_pageRun_CRM_Contribute_Page_ContributionRecur($page) {
   // Get the corresponding (most recently created) iATS customer code record
   // we'll also get the expiry date and last four digits (at least, our best information about that).
-  $extra = array();
+  $extra = [];
   $crid = CRM_Utils_Request::retrieve('id', 'Integer', $page, FALSE);
   try {
-    $recur = civicrm_api3('ContributionRecur', 'getsingle', array('id' => $crid));
+    $recur = civicrm_api3('ContributionRecur', 'getsingle', ['id' => $crid]);
   }
   catch (CRM_Core_Exception $e) {
     return;
@@ -360,9 +360,9 @@ function iats_civicrm_pageRun_CRM_Contribute_Page_ContributionRecur($page) {
   foreach ($extra as $key => $value) {
     $template->assign($key, $value);
   }
-  CRM_Core_Region::instance('page-body')->add(array(
+  CRM_Core_Region::instance('page-body')->add([
     'template' => 'CRM/Iats/ContributionRecur.tpl',
-  ));
+  ]);
   CRM_Core_Resources::singleton()->addScriptFile('com.iatspayments.civicrm', 'js/subscription_view.js');
 }
 
@@ -372,7 +372,7 @@ function iats_civicrm_pageRun_CRM_Contribute_Page_ContributionRecur($page) {
  */
 function iats_civicrm_merge($type, &$data, $mainId = NULL, $otherId = NULL, $tables = NULL) {
   if ('cidRefs' == $type) {
-    $data['civicrm_iats_verify'] = array('cid');
+    $data['civicrm_iats_verify'] = ['cid'];
   }
 }
 
@@ -398,7 +398,7 @@ function iats_civicrm_pre($op, $objectName, $objectId, &$params) {
     if ($type = _iats_civicrm_is_iats($params['payment_processor_id'])) {
       if (!empty($params['next_sched_contribution_date'])) {
         $settings = CRM_Iats_Utils::getSettings();
-        $allow_days = empty($settings['days']) ? array('-1') : $settings['days'];
+        $allow_days = empty($settings['days']) ? ['-1'] : $settings['days'];
         // Force one of the fixed days, and set the cycle_day at the same time.
         if (0 < max($allow_days)) {
           $init_time = ('create' == $op) ? time() : strtotime($params['next_sched_contribution_date']);
@@ -429,9 +429,9 @@ function iats_get_setting($key = NULL) {
  * So we have to dig back via the contribution_recur_id that it is associated with.
  */
 function _iats_civicrm_get_payment_processor_id($contribution_recur_id) {
-  $params = array(
+  $params = [
     'id' => $contribution_recur_id,
-  );
+  ];
   try {
     $result = civicrm_api3('ContributionRecur', 'getsingle', $params);
   }
@@ -454,9 +454,9 @@ function _iats_civicrm_is_iats($payment_processor_id) {
   if (empty($payment_processor_id)) {
     return FALSE;
   }
-  $params = array(
+  $params = [
     'id' => $payment_processor_id,
-  );
+  ];
   try {
     $result = civicrm_api3('PaymentProcessor', 'getsingle', $params);
   }
@@ -481,8 +481,8 @@ function _iats_civicrm_is_iats($payment_processor_id) {
  * processors: an array of payment processors indexed by id to filter by
  * params: an array of additional params to pass to the api call.
  */
-function _iats_filter_payment_processors($class, $processors = array(), $params = array()) {
-  $list = array();
+function _iats_filter_payment_processors($class, $processors = [], $params = []) {
+  $list = [];
   $params['class_name'] = ['LIKE' => 'Payment_' . $class];
   // On the chance that there are a lot of payment processors and the caller
   // hasn't specified a limit, assume they want them all.
@@ -511,7 +511,7 @@ function _iats_get_form_payment_processors($form) {
   if ($form_class == 'CRM_Financial_Form_Payment') {
     // We're on CRM_Financial_Form_Payment, we've got just one payment processor
     $id = $form->_paymentProcessor['id'];
-    return array($id => $form->_paymentProcessor);
+    return [$id => $form->_paymentProcessor];
   }
   else {
     // Handle the legacy: event and contribution page forms
@@ -569,22 +569,22 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_Search(&$form) {
     return;
   }
   $contactID = $form->_defaultValues['contact_id'];
-  $acheft = _iats_filter_payment_processors('iATSServiceACHEFT', array(), array('is_active' => 1, 'is_test' => 0));
-  $acheft_backoffice_links = array();
+  $acheft = _iats_filter_payment_processors('iATSServiceACHEFT', [], ['is_active' => 1, 'is_test' => 0]);
+  $acheft_backoffice_links = [];
   // For each ACH/EFT payment processor, try to provide a different mechanism for 'backoffice' type contributions
   // note: only offer payment pages that provide iATS ACH/EFT exclusively.
   foreach (array_keys($acheft) as $pp_id) {
-    $params = array('is_active' => 1, 'payment_processor' => $pp_id);
+    $params = ['is_active' => 1, 'payment_processor' => $pp_id];
     $result = civicrm_api3('ContributionPage', 'get', $params);
     if (0 == $result['is_error'] && count($result['values']) > 0) {
       foreach ($result['values'] as $page) {
         $url = CRM_Utils_System::url('civicrm/contribute/transact', 'reset=1&cid=' . $contactID . '&id=' . $page['id']);
-        $acheft_backoffice_links[] = array('url' => $url, 'title' => $page['title']);
+        $acheft_backoffice_links[] = ['url' => $url, 'title' => $page['title']];
       }
     }
   }
   if (count($acheft_backoffice_links)) {
-    CRM_Core_Resources::singleton()->addVars('iatspayments', array('backofficeLinks' => $acheft_backoffice_links));
+    CRM_Core_Resources::singleton()->addVars('iatspayments', ['backofficeLinks' => $acheft_backoffice_links]);
     CRM_Core_Resources::singleton()->addScriptFile('com.iatspayments.civicrm', 'js/contribute_form_search.js');
   }
 }
@@ -596,7 +596,7 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_Search(&$form) {
 function iats_civicrm_buildForm_CRM_Contribute_Form_CancelSubscription(&$form) {
   $crid = CRM_Utils_Request::retrieve('crid', 'Integer', $form, FALSE);
   try {
-    $recur = civicrm_api3('ContributionRecur', 'getsingle', array('id' => $crid));
+    $recur = civicrm_api3('ContributionRecur', 'getsingle', ['id' => $crid]);
   }
   catch (CRM_Core_Exception $e) {
     return;
@@ -630,41 +630,41 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_UpdateSubscription(&$form) {
   if (!empty($settings['no_edit_extra'])) {
     return;
   }
-  $allow_days = empty($settings['days']) ? array('-1') : $settings['days'];
+  $allow_days = empty($settings['days']) ? ['-1'] : $settings['days'];
   if (0 < max($allow_days)) {
     $userAlert = ts('Your next scheduled contribution date will automatically be updated to the next allowable day of the month: %1',
-      array(1 => implode(', ', $allow_days)));
+      [1 => implode(', ', $allow_days)]);
     CRM_Core_Session::setStatus($userAlert, ts('Warning'), 'alert');
   }
   $crid = CRM_Utils_Request::retrieve('crid', 'Integer', $form, FALSE);
   /* get the recurring contribution record and the contact record, or quit */
   try {
-    $recur = civicrm_api3('ContributionRecur', 'getsingle', array('id' => $crid));
+    $recur = civicrm_api3('ContributionRecur', 'getsingle', ['id' => $crid]);
   }
   catch (CRM_Core_Exception $e) {
     return;
   }
   try {
-    $contact = civicrm_api3('Contact', 'getsingle', array('id' => $recur['contact_id']));
+    $contact = civicrm_api3('Contact', 'getsingle', ['id' => $recur['contact_id']]);
   }
   catch (CRM_Core_Exception $e) {
     return;
   }
   try {
-    $pp = civicrm_api3('PaymentProcessor', 'getsingle', array('id' => $recur['payment_processor_id']));
+    $pp = civicrm_api3('PaymentProcessor', 'getsingle', ['id' => $recur['payment_processor_id']]);
   }
   catch (CRM_Core_Exception $e) {
-    $pp = array();
+    $pp = [];
   }
   // Turn off default notification checkbox, because that's a better default.
-  $defaults = array('is_notify' => 0);
-  $edit_fields = array(
+  $defaults = ['is_notify' => 0];
+  $edit_fields = [
     'contribution_status_id' => 'Status',
     'next_sched_contribution_date' => 'Next Scheduled Contribution',
     'start_date' => 'Start Date',
     'is_email_receipt' => 'Email receipt for each Contribution in this Recurring Series',
-  );
-  $dupe_fields = array();
+  ];
+  $dupe_fields = [];
   // To be a good citizen, I check if core or another extension hasn't already added these fields
   // and don't add them again if they have.
   foreach (array_keys($edit_fields) as $fid) {
@@ -677,7 +677,7 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_UpdateSubscription(&$form) {
     }
   }
   // Use this in my js to identify which fields need to be removed from the tpl I inject below
-  CRM_Core_Resources::singleton()->addVars('iatspayments', array('dupeSubscriptionFields' => $dupe_fields));
+  CRM_Core_Resources::singleton()->addVars('iatspayments', ['dupeSubscriptionFields' => $dupe_fields]);
   foreach ($edit_fields as $fid => $label) {
     switch($fid) {
       case 'contribution_status_id':
@@ -685,7 +685,7 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_UpdateSubscription(&$form) {
         $form->addElement('select', 'contribution_status_id', ts('Status'), $contributionStatus);
         break;
       case 'is_email_receipt':
-        $receiptStatus = array('0' => 'No', '1' => 'Yes');
+        $receiptStatus = ['0' => 'No', '1' => 'Yes'];
         $form->addElement('select', $fid, ts($label), $receiptStatus);
         break;
       default:
@@ -706,9 +706,9 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_UpdateSubscription(&$form) {
   $label = $labels[$recur['payment_instrument_id']];
   $form->addElement('static', 'payment_instrument', $label);
   $form->addElement('static', 'failure_count', $recur['failure_count']);
-  CRM_Core_Region::instance('page-body')->add(array(
+  CRM_Core_Region::instance('page-body')->add([
     'template' => 'CRM/Iats/Subscription.tpl',
-  ));
+  ]);
   CRM_Core_Resources::singleton()->addScriptFile('com.iatspayments.civicrm', 'js/subscription.js');
 }
 
@@ -720,10 +720,10 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_UpdateBilling(&$form) {
     $mid = $_GET['mid'] ?? NULL;
     if ($mid) {
       try {
-        $crid = civicrm_api3('Membership', 'getvalue', array(
+        $crid = civicrm_api3('Membership', 'getvalue', [
           'id' => $mid,
           'return' => 'contribution_recur_id',
-        ));
+        ]);
       }
       catch (CRM_Core_Exception $e) {
         $crid = 0;
@@ -735,9 +735,3 @@ function iats_civicrm_buildForm_CRM_Contribute_Form_UpdateBilling(&$form) {
   }
 }
 
-function _iats_payment_status_complete() {
-  return [
-    'payment_status_id' => CRM_Core_PseudoConstant::getKey('CRM_Contribute_BAO_Contribution', 'contribution_status_id', 'Completed'),
-    'payment_status' => 'Completed',
-  ];
-}

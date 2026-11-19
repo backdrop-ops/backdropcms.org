@@ -12,26 +12,26 @@
  * Get entries from iATS FAPS in the faps_journal table
  */
 function _civicrm_api3_faps_transaction_get_journal_spec(&$params) {
-  $params['transactionId'] = array(
+  $params['transactionId'] = [
     'name' => 'transactionId',
     'title' => '1stPay Transaction Id',
     'api.required' => 0,
-  );
-  $params['isAch'] = array(
+  ];
+  $params['isAch'] = [
     'name' => 'isAch',
     'title' => 'is ACH',
     'api.required' => 0,
-  );
-  $params['cardType'] = array(
+  ];
+  $params['cardType'] = [
     'name' => 'cardType',
     'title' => 'Card Type',
     'api.required' => 0,
-  );
-  $params['orderId'] = array(
+  ];
+  $params['orderId'] = [
     'name' => 'orderId',
     'title' => 'Order Id',
     'api.required' => 0,
-  );
+  ];
 }
 
 /**
@@ -52,26 +52,26 @@ function civicrm_api3_faps_transaction_get_journal($params) {
 
   // print_r($params); die();
   $select = "SELECT * FROM civicrm_iats_faps_journal WHERE TRUE ";
-  $args = array();
+  $args = [];
 
-  $select_params = array(
+  $select_params = [
     'transactionId' => 'Integer',
     'isAch' => 'Integer',
     'CardType' => 'String',
     'orderId' => 'String',
-  );
+  ];
   $i = 0;
   foreach ($params as $key => $value) {
     if (isset($select_params[$key])) {
       $i++;
       if (is_string($value)) {
         $select .= " AND $key = %$i";
-        $args[$i] = array($value, $select_params[$key]);
+        $args[$i] = [$value, $select_params[$key]];
       }
       elseif (is_array($value)) {
         foreach (array_keys($value) as $sql) {
           $select .= " AND ($key %$i)";
-          $args[$i] = array($sql, 'String');
+          $args[$i] = [$sql, 'String'];
         }
       }
     }
@@ -80,7 +80,7 @@ function civicrm_api3_faps_transaction_get_journal($params) {
     $sort = $params['options']['sort'];
     $i++;
     $select .= " ORDER BY %$i";
-    $args[$i] = array($sort, 'String');
+    $args[$i] = [$sort, 'String'];
   }
   else { // by default, get the "latest" entry
     $select .= " ORDER BY id DESC";
@@ -92,14 +92,14 @@ function civicrm_api3_faps_transaction_get_journal($params) {
   if ($limit > 0) {
     $i++;
     $select .= " LIMIT %$i";
-    $args[$i] = array($limit, 'Integer');
+    $args[$i] = [$limit, 'Integer'];
   }
-  $values = array();
+  $values = [];
   try {
     $dao = CRM_Core_DAO::executeQuery($select, $args);
     while ($dao->fetch()) {
       /* We index in the id */
-      $record = array();
+      $record = [];
       foreach (get_object_vars($dao) as $key => $value) {
         if ('N' != $key && (0 !== strpos($key, '_'))) {
           $record[$key] = $value;

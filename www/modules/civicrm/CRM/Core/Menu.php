@@ -160,7 +160,7 @@ class CRM_Core_Menu {
             $value = [[$value], 'and'];
           }
         }
-        elseif ($key == 'is_public' || $key == 'is_ssl') {
+        elseif ($key == 'is_public' || $key == 'is_ssl' || $key == 'is_ajax') {
           $value = ($value == 'true' || $value == 1) ? 1 : 0;
         }
         $menu[$path][$key] = $value;
@@ -250,7 +250,7 @@ class CRM_Core_Menu {
   }
 
   /**
-   * We use this function to.
+   * Fill-in any missing/omitted properties of the router/menu data-structure, e.g.
    *
    * 1. Compute the breadcrumb
    * 2. Compute local tasks value if any
@@ -270,6 +270,11 @@ class CRM_Core_Menu {
         // add add page_type if not present
         if (!isset($menu[$path]['page_type'])) {
           $menu[$path]['page_type'] = 0;
+        }
+
+        if (str_contains($path, '/ajax/') && !isset($menu[$path]['is_ajax'])) {
+          \Civi::log()->notice("Route \"$path\" looks like AJAX but lacks property \"is_ajax\". Please set property explicitly. Inferred default.");
+          $menu[$path]['is_ajax'] = TRUE;
         }
       }
       catch (CRM_Core_Exception $e) {

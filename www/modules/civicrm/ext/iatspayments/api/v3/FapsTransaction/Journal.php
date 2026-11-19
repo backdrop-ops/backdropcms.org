@@ -62,19 +62,19 @@ function civicrm_api3_faps_transaction_journal($params) {
         }
       }
     }
-    $query_params = array(
-      2 => array($data['authCode'], 'String'),
-      3 => array($isAch, 'Integer'),
-      4 => array($cardType, 'String'),
-      5 => array($params['processorId'], 'String'),
-      6 => array($data['cimRefNumber'], 'String'),
-      7 => array($data['orderId'], 'String'),
-      8 => array($data['transDateAndTime'], 'String'),
-      9 => array($data['amount'], 'String'),
-      10 => array($data['authResponse'], 'String'),
-      11 => array($params['currency'], 'String'),
-      12 => array($status_id, 'Integer'),
-    );
+    $query_params = [
+      2 => [$data['authCode'], 'String'],
+      3 => [$isAch, 'Integer'],
+      4 => [$cardType, 'String'],
+      5 => [$params['processorId'], 'String'],
+      6 => [$data['cimRefNumber'], 'String'],
+      7 => [$data['orderId'], 'String'],
+      8 => [$data['transDateAndTime'], 'String'],
+      9 => [$data['amount'], 'String'],
+      10 => [$data['authResponse'], 'String'],
+      11 => [$params['currency'], 'String'],
+      12 => [$status_id, 'Integer'],
+    ];
     $result = CRM_Core_DAO::executeQuery($sql_action . " civicrm_iats_faps_journal
         (transactionId, authCode, isAch, cardType, processorId, cimRefNumber, orderId, transDateAndTime, amount, authResponse, currency, status_id) 
         VALUES ($transactionId, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12)", $query_params);

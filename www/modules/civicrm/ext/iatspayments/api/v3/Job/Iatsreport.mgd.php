@@ -3,13 +3,13 @@
 // The record will be automatically inserted, updated, or deleted from the
 // database as appropriate. For more details, see "hook_civicrm_managed" at:
 // http://wiki.civicrm.org/confluence/display/CRMDOC42/Hook+Reference
-return array(
+return [
   0 =>
-  array(
+  [
     'name' => 'Cron:Job.Iatsreport',
     'entity' => 'Job',
     'params' =>
-    array(
+    [
       'version' => 3,
       'name' => 'iATS Payments Get Legacy Transaction Journal',
       'description' => 'Call into iATS to get transaction journals, legacy processor (for auditing and verifying).',
@@ -17,7 +17,7 @@ return array(
       'api_entity' => 'Job',
       'api_action' => 'iatsreport',
       'parameters' => '',
-    ),
+    ],
     'update' => 'never',
-  ),
-);
+  ],
+];

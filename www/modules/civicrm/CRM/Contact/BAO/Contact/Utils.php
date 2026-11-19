@@ -250,10 +250,11 @@ WHERE  id IN ( $idString )
    *   (id or name).
    * @param int|null $previousEmployerID
    * @param bool $newContact
+   * @param bool $checkPermissions
    *
    * @throws \CRM_Core_Exception
    */
-  public static function createCurrentEmployerRelationship($contactID, $employerIDorName, $previousEmployerID = NULL, $newContact = FALSE): void {
+  public static function createCurrentEmployerRelationship($contactID, $employerIDorName, $previousEmployerID = NULL, $newContact = FALSE, bool $checkPermissions = FALSE): void {
     if (!$employerIDorName) {
       // This function is not called in core with no organization & should not be
       // Refs CRM-15368,CRM-15547
@@ -261,24 +262,30 @@ WHERE  id IN ( $idString )
       return;
     }
     if (is_numeric($employerIDorName)) {
-      $employerID = $employerIDorName;
+      $employerID = (int) $employerIDorName;
+      if ($checkPermissions && $employerID !== (int) $previousEmployerID && (!CRM_Contact_BAO_Contact_Permission::allow($employerID, CRM_Core_Permission::VIEW) || CRM_Contact_BAO_Contact::getContactType($employerID) !== 'Organization')) {
+        throw new \Civi\API\Exception\UnauthorizedException(ts('Permission denied to link to this employer organization.'));
+      }
     }
     else {
       $employerName = $employerIDorName;
       $dupeIDs = CRM_Contact_BAO_Contact::getDuplicateContacts(['organization_name' => $employerName], 'Organization', 'Unsupervised', [], FALSE);
       if (!empty($dupeIDs)) {
         $employerID = (int) (reset($dupeIDs));
+        if ($checkPermissions && $employerID !== (int) $previousEmployerID && !CRM_Contact_BAO_Contact_Permission::allow($employerID, CRM_Core_Permission::VIEW)) {
+          throw new \Civi\API\Exception\UnauthorizedException(ts('Permission denied to link to this employer organization.'));
+        }
       }
       else {
         $contact = \Civi\Api4\Contact::get(FALSE)
           ->addSelect('employer_id.organization_name', 'employer_id')
           ->addWhere('id', '=', $contactID)
           ->execute()->first();
-        if ($contact && (mb_strtolower($contact['employer_id.organization_name']) === mb_strtolower($employerName))) {
+        if ($contact && (mb_strtolower($contact['employer_id.organization_name'] ?? '') === mb_strtolower($employerName))) {
           $employerID = $contact['employer_id'];
         }
         else {
-          $employerID = Contact::create(FALSE)
+          $employerID = Contact::create($checkPermissions)
             ->setValues([
               'contact_type' => 'Organization',
               'organization_name' => $employerName,
@@ -732,8 +739,10 @@ INNER JOIN civicrm_contact contact_target ON ( contact_target.id = act.contact_i
    *
    * @param array $address
    *   This is associated array which contains submitted form values.
+   * @param array $currentAddresses
+   *   The contact's saved addresses, keyed like $address.
    */
-  public static function processSharedAddress(&$address) {
+  public static function processSharedAddress(&$address, array $currentAddresses = []) {
     if (!is_array($address)) {
       return;
     }
@@ -745,7 +754,7 @@ INNER JOIN civicrm_contact contact_target ON ( contact_target.id = act.contact_i
 
     // 1. loop through entire submitted address array
     $skipFields = ['is_primary', 'location_type_id', 'is_billing', 'master_id', 'add_relationship', 'id', 'contact_id'];
-    foreach ($address as & $values) {
+    foreach ($address as $instance => & $values) {
       // 2. check if "Use another contact's address" is checked, if not continue
       // Additionally, if master_id is set (address was shared), set master_id to empty value.
       if (empty($values['use_shared_address'])) {
@@ -759,13 +768,26 @@ INNER JOIN civicrm_contact contact_target ON ( contact_target.id = act.contact_i
       $values['add_relationship'] = !empty($values['add_relationship']);
 
       // 3. get the address details for master_id
+      if (empty($values['master_id'])) {
+        continue;
+      }
+      $masterContactId = (int) CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Address', $values['master_id'], 'contact_id');
+      $alreadyShared = CRM_Core_BAO_Address::isSharedFrom($currentAddresses[$instance]['id'] ?? NULL, $values['master_id']);
+      if (!$masterContactId || (!$alreadyShared && !CRM_Contact_BAO_Contact_Permission::allow($masterContactId, CRM_Core_Permission::VIEW))) {
+        throw new CRM_Core_Exception(ts('You do not have permission to share an address from this contact.'));
+      }
+
       $masterAddress = new CRM_Core_BAO_Address();
-      $masterAddress->id = $values['master_id'] ?? NULL;
+      $masterAddress->id = $values['master_id'];
       $masterAddress->find(TRUE);
 
       // 4. CRM-10336: Empty all fields (execept the fields to skip)
+      // Custom fields are removed so the address keeps its own custom data, or takes the master's when newly shared.
       foreach ($values as $field => $submittedValue) {
-        if (!in_array($field, $skipFields)) {
+        if (str_starts_with($field, 'custom_')) {
+          unset($values[$field]);
+        }
+        elseif (!in_array($field, $skipFields)) {
           $values[$field] = '';
         }
       }

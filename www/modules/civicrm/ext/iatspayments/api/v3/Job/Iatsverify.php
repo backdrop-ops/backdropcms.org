@@ -16,36 +16,36 @@
  * @see http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
  */
 function _civicrm_api3_job_iatsverify_spec(&$spec) {
-  $spec['recur_id'] = array(
+  $spec['recur_id'] = [
     'name' => 'recur_id',
     'title' => 'Recurring payment id',
     'api.required' => 0,
     'type' => 1,
-  );
-  $spec['contribution_id'] = array(
+  ];
+  $spec['contribution_id'] = [
     'name' => 'contribution_id',
     'title' => 'Test a single contribution by CiviCRM contribution table id.',
     'api.required' => 0,
     'type' => 1,
-  );
-  $spec['invoice_id'] = array(
+  ];
+  $spec['invoice_id'] = [
     'name' => 'invoice_id',
     'title' => 'Test a single contribution by invoice id.',
     'api.required' => 0,
     'type' => 1,
-  );
-  $spec['payment_instrument_id'] = array(
+  ];
+  $spec['payment_instrument_id'] = [
     'name' => 'payment_instrument_id',
     'title' => 'Test contributions by payment method.',
     'api.required' => 0,
     'type' => 1,
-  );
-  $spec['reverify'] = array(
+  ];
+  $spec['reverify'] = [
     'name' => 'reverify',
     'title' => 'Reverify contributions',
     'api.required' => 0,
     'type' => 1,
-  );
+  ];
 }
 
 /**
@@ -77,18 +77,18 @@ function civicrm_api3_job_iatsverify($params) {
   // And see if they are approved in my iATS Journal.
   // This could include ACH/EFT approvals, as well as CC contributions that were completed but didn't get back from iATS.
   // Count the number of each kind found.
-  $processed = array(1 => 0, 2 => 0, 4 => 0);
+  $processed = [1 => 0, 2 => 0, 4 => 0];
   // Save all my api error result messages.
-  $error_log = array();
-  $select_params = array(
+  $error_log = [];
+  $select_params = [
     'sequential' => 1,
-    'receive_date' => array('>' => "now - $verify_days day"),
-    'options' => array('limit' => 0),
-    'contribution_status_id' => array('IN' => array('Pending')),
-    'invoice_id' => array('IS NOT NULL' => 1),
+    'receive_date' => ['>' => "now - $verify_days day"],
+    'options' => ['limit' => 0],
+    'contribution_status_id' => ['IN' => ['Pending']],
+    'invoice_id' => ['IS NOT NULL' => 1],
     'contribution_test' => 0,
-    'return' => array('trxn_id', 'invoice_id', 'contribution_recur_id', 'contact_id', 'source'),
-  );
+    'return' => ['trxn_id', 'invoice_id', 'contribution_recur_id', 'contact_id', 'source'],
+  ];
   // get my parameters
   $recur_id = empty($params['recur_id']) ? 0 : ((int) $params['recur_id']);
   unset($params['recur_id']);
@@ -112,17 +112,17 @@ function civicrm_api3_job_iatsverify($params) {
   $message = '';
   try {
     $contributions = civicrm_api3('Contribution', 'get', $select_params);
-    $message .= '<br />' . ts('Found %1 contributions to verify.', array(1 => count($contributions['values'])));
+    $message .= '<br />' . ts('Found %1 contributions to verify.', [1 => count($contributions['values'])]);
     $contributions_verify = $contributions['values'];
     // CRM_Core_Error::debug_var('Verifying contributions', $contributions_verify);
     foreach ($contributions_verify as $contribution) {
       unset($journal_entry);
       // first check the legacy journal if I've used it recently
       if (!empty($iats_journal_date)) {
-        $journal_matches = civicrm_api3('IatsPayments', 'get_journal', array(
+        $journal_matches = civicrm_api3('IatsPayments', 'get_journal', [
           'sequential' => 1,
           'inv' => $contribution['invoice_id'],
-        ));
+        ]);
         if ($journal_matches['count'] > 0) {
           // CRM_Core_Error::debug_var('Found legacy match(es)', $journal_matches['values']);
           $journal_entry = reset($journal_matches['values']);
@@ -130,10 +130,10 @@ function civicrm_api3_job_iatsverify($params) {
       }
       if (empty($journal_entry) && !empty($iats_faps_journal_date)) {
         // try the FAPS journal
-        $journal_matches = civicrm_api3('FapsTransaction', 'get_journal', array(
+        $journal_matches = civicrm_api3('FapsTransaction', 'get_journal', [
           'sequential' => 1,
           'orderId' => $contribution['invoice_id'],
-        ));
+        ]);
         if ($journal_matches['count'] > 0) {
           // CRM_Core_Error::debug_var('Found faps match(es)', $journal_matches['values']);
           $journal_entry = reset($journal_matches['values']);
@@ -154,16 +154,16 @@ function civicrm_api3_job_iatsverify($params) {
             // Note that I'm updating the timestamp portion of the transaction id here, since this might be useful at some point
             // Should I update the receive date to when it was actually received? Would that confuse membership dates?
             $trxn_id = $journal_entry['transaction_id'] . ':' . time();
-            $complete = array('version' => 3, 'id' => $contribution['id'], 'trxn_id' => $trxn_id, 'receive_date' => $contribution['receive_date']);
+            $complete = ['version' => 3, 'id' => $contribution['id'], 'trxn_id' => $trxn_id, 'receive_date' => $contribution['receive_date']];
             if ($is_recur) {
               // For email receipting, use either my iats extension global, or the specific setting for this schedule.
               $is_email_receipt = $receipt_recurring;
               if ($is_email_receipt >= 2) {
                 try {
-                  $is_email_receipt = civicrm_api3('ContributionRecur', 'getvalue', array(
+                  $is_email_receipt = civicrm_api3('ContributionRecur', 'getvalue', [
                     'return' => 'is_email_receipt',
                     'id' => $contribution['contribution_recur_id'],
-                  ));
+                  ]);
                 }
                 catch (CRM_Core_Exception $e) {
                   $is_email_receipt = 0;
@@ -181,28 +181,28 @@ function civicrm_api3_job_iatsverify($params) {
             }
 
             // Restore source field and trxn_id that completetransaction overwrites
-            civicrm_api3('contribution', 'create', array(
+            civicrm_api3('contribution', 'create', [
               'id' => $contribution['id'],
               'source' => ($contribution['contribution_source'] ?? NULL),
               'trxn_id' => $trxn_id,
-            ));
+            ]);
             break;
           case 4: // failed, just update the contribution status.
-            civicrm_api3('Contribution', 'create', array(
+            civicrm_api3('Contribution', 'create', [
               'id' => $contribution['id'],
               'contribution_status_id' => $contribution_status_id,
-            ));
+            ]);
             break;
         }
         // Always log these requests in my cutom civicrm table for auditing type purposes
-        $query_params = array(
-          1 => array($journal_entry['client_code'], 'String'),
-          2 => array($contribution['contact_id'], 'Integer'),
-          3 => array($contribution['id'], 'Integer'),
-          4 => array($contribution_status_id, 'Integer'),
-          5 => array($journal_entry['auth_result'], 'String'),
-          6 => array($contribution['contribution_recur_id'], 'Integer'),
-        );
+        $query_params = [
+          1 => [$journal_entry['client_code'], 'String'],
+          2 => [$contribution['contact_id'], 'Integer'],
+          3 => [$contribution['id'], 'Integer'],
+          4 => [$contribution_status_id, 'Integer'],
+          5 => [$journal_entry['auth_result'], 'String'],
+          6 => [$contribution['contribution_recur_id'], 'Integer'],
+        ];
         // CRM_Core_Error::debug_var('Logging verify', $query_params);
         if (empty($contribution['contribution_recur_id'])) {
           unset($query_params[6]);
@@ -220,16 +220,16 @@ function civicrm_api3_job_iatsverify($params) {
     $error_log[] = $e->getMessage() . "\n";
   }
   $message .= '<br />' . ts('Completed with %1 errors.',
-    array(
+    [
       1 => count($error_log),
-    )
+    ]
   );
   $message .= '<br />' . ts('Processed %1 approvals, %2 pending and %3 rejection records from the previous ' . IATS_VERIFY_DAYS . ' days.',
-    array(
+    [
       1 => $processed[1],
       2 => $processed[2],
       3 => $processed[4],
-    )
+    ]
   );
   // If errors ..
   if (count($error_log) > 0) {

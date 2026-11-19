@@ -745,6 +745,7 @@ class CRM_Contact_Form_Contact extends CRM_Core_Form {
           'name' => ts('Delete Contact Image'),
           'url' => 'civicrm/contact/image',
           'qs' => 'reset=1&cid=%%id%%&action=delete',
+          'weight' => 0,
         ],
       ];
       $deleteURL = CRM_Core_Action::formLink($deleteURL,
@@ -1026,7 +1027,7 @@ class CRM_Contact_Form_Contact extends CRM_Core_Form {
     }
 
     // process shared contact address.
-    CRM_Contact_BAO_Contact_Utils::processSharedAddress($params['address']);
+    CRM_Contact_BAO_Contact_Utils::processSharedAddress($params['address'], $this->_values['address'] ?? []);
 
     if (!array_key_exists('TagsAndGroups', $this->_editOptions)) {
       unset($params['group']);

@@ -130,9 +130,9 @@ class CRM_Core_Payment_iATSServiceSWIPE extends CRM_Core_Payment_iATSService {
    */
   public function buildForm(&$form) {
     CRM_Core_Resources::singleton()->addScriptFile('com.iatspayments.civicrm', 'js/swipe.js', 10);
-    CRM_Core_Region::instance('billing-block')->add(array(
+    CRM_Core_Region::instance('billing-block')->add([
       'template' => 'CRM/Iats/BillingBlockSwipe.tpl',
-    ));
+    ]);
     return parent::buildForm($form);
   }
 

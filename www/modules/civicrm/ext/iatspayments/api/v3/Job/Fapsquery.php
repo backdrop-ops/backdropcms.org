@@ -37,12 +37,12 @@ function civicrm_api3_job_fapsquery($params) {
   /* get a list of all active/non-test iATS/FAPS payment processors of any type, quit if there are none */
   /* We'll make sure they are unique from iATS/FAPS point of view (i.e. distinct processorId = username) */
   try {
-    $result = civicrm_api3('PaymentProcessor', 'get', array(
+    $result = civicrm_api3('PaymentProcessor', 'get', [
       'sequential' => 1,
-      'class_name' => array('LIKE' => 'Payment_FAPS%'),
+      'class_name' => ['LIKE' => 'Payment_FAPS%'],
       'is_active' => 1,
       'is_test' => 0,
-    ));
+    ]);
   }
   catch (CRM_Core_Exception $e) {
     throw new CRM_Core_Exception('Unexpected error getting payment processors: ' . $e->getMessage()); //  . "\n" . $e->getTraceAsString());
@@ -50,16 +50,16 @@ function civicrm_api3_job_fapsquery($params) {
   if (empty($result['values'])) {
     return;
   }
-  $payment_processors = array();
+  $payment_processors = [];
   foreach ($result['values'] as $payment_processor) {
     $user_name = $payment_processor['user_name'];
     $type = $payment_processor['payment_type']; // 1 for cc, 2 for ach/eft
     $id = $payment_processor['id'];
     if (empty($payment_processors[$user_name])) {
-      $payment_processors[$user_name] = array();
+      $payment_processors[$user_name] = [];
     }
     if (empty($payment_processors[$user_name][$type])) {
-      $payment_processors[$user_name][$type] = array();
+      $payment_processors[$user_name][$type] = [];
     }
     $payment_processors[$user_name][$type][$id] = $payment_processor;
   }
@@ -70,31 +70,31 @@ function civicrm_api3_job_fapsquery($params) {
   $iats_faps_journal = Civi::settings()->get('iats_faps_journal');
   /* initialize some values so I can report at the end */
   // count the number of records from each iats account analysed, and the number of each kind found ('action')
-  $processed = array();
+  $processed = [];
   // save all my api result error messages as well
-  $error_log = array();
+  $error_log = [];
   foreach ($payment_processors as $user_name => $payment_processors_per_user) {
-    $processed[$user_name] = array();
+    $processed[$user_name] = [];
     foreach ($payment_processors_per_user as $type => $payment_processors_per_user_type) {
       // we might have multiple civi payment processors by type e.g. separate codes for
       // one-time and recurring contributions, I only want to process once per user_name + type
       $payment_processor = reset($payment_processors_per_user_type);
-      $options = array(
+      $options = [
        'action' => 'Query'
-      );
-      $credentials = array(
+      ];
+      $credentials = [
         'merchantKey' => $payment_processor['signature'],
         'processorId' => $payment_processor['user_name']
-      );
+      ];
       // unlike iATS legacy, we only have one method and set each contribution's status based on result instead.
       // initialize my counts
       $processed[$user_name][$type] = 0;
       // watchdog('civicrm_iatspayments_com', 'pp: <pre>!pp</pre>', array('!pp' => print_r($payment_processor,TRUE)), WATCHDOG_NOTICE);
       $query_request = new CRM_Iats_FapsRequest($options);
-      $request = array(
+      $request = [
         // 'toDate' => date('Y-m-d', strtotime('-1 day')) . 'T23:59:59+00:00',
         // 'customerIPAddress' => (function_exists('ip_address') ? ip_address() : $_SERVER['REMOTE_ADDR']),
-      );
+      ];
       // Calculate how far back I want to go, default 2 days ago.
       $fromDate = strtotime('-2 days');
       // Check when I last downloaded this box journal
@@ -116,7 +116,7 @@ function civicrm_api3_job_fapsquery($params) {
       // CRM_Core_Error::debug_var('result', $result);
       // convert the result into transactions and then write to the journal table
       // via the api
-      $transactions = $result['isSuccess'] ? $result['data']['orders'] : array();
+      $transactions = $result['isSuccess'] ? $result['data']['orders'] : [];
       foreach ($transactions as $transaction) {
         try {
           $transaction['currency'] = ''; // unknown, but should be retrievable from processor information
@@ -137,11 +137,11 @@ function civicrm_api3_job_fapsquery($params) {
   foreach ($processed as $user_name => $p) {
     foreach ($p as $type_id => $count) {
       $type = ($type_id == 1) ? 'cc' : 'acheft';
-      $results = array(
+      $results = [
         1 => $user_name,
         2 => $type,
         3 => $count
-      );
+      ];
       $message .= '<br />' . ts('For account %1, type %2, retreived %3 transactions.', $results);
     }
   }

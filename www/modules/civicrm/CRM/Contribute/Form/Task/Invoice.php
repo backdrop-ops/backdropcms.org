@@ -61,6 +61,10 @@ class CRM_Contribute_Form_Task_Invoice extends CRM_Contribute_Form_Task {
    */
   public $submitOnce = TRUE;
 
+  public $_emails;
+
+  public $_fromEmails;
+
   /**
    * Build all the data structures needed to build the form.
    */
@@ -90,6 +94,10 @@ class CRM_Contribute_Form_Task_Invoice extends CRM_Contribute_Form_Task {
     $count = CRM_Core_DAO::singleValueQuery($query);
     if ($count != 0) {
       CRM_Core_Error::statusBounce(ts('Please select only contributions with Completed, Pending, Refunded, or Partially Paid status.'));
+    }
+
+    if (!self::validateContributionIds($this->_contributionIds, ($this->cid ?? ($this->getContactID() ?? NULL)))) {
+      CRM_Core_Error::statusBounce(ts('Cannot generate invoices for these contributions. Select only your own contributions'));
     }
 
     // we have all the contribution ids, so now we get the contact ids
@@ -232,6 +240,10 @@ class CRM_Contribute_Form_Task_Invoice extends CRM_Contribute_Form_Task {
    */
   public function postProcess() {
     $params = $this->controller->exportValues($this->_name);
+    $contactID = $this->cid ?? $this->getContactID();
+    if (!$this->validateContributionIds($this->_contributionIds, $contactID)) {
+      CRM_Core_Error::statusBounce(ts('Cannot generate invoices for these contributions. Select only your own contributions'));
+    }
     self::printPDF($this->_contributionIds, $params, $this->_contactIds);
   }
 
@@ -675,7 +687,27 @@ class CRM_Contribute_Form_Task_Invoice extends CRM_Contribute_Form_Task {
     $contributionIDs = [$contributionId];
     $contactId = CRM_Utils_Request::retrieve('cid', 'Positive', CRM_Core_DAO::$_nullObject, FALSE);
     $params = ['output' => 'pdf_invoice'];
+    if (!self::validateContributionIds($contributionIDs, $contactId)) {
+      CRM_Core_Error::statusBounce(ts('Cannot generate invoices for these contributions. Select only your own contributions'));
+    }
     CRM_Contribute_Form_Task_Invoice::printPDF($contributionIDs, $params, $contactId);
+  }
+
+  private static function validateContributionIds(array $ids, ?int $contactID): bool {
+    // Validate all contributions
+    if (!CRM_Core_Permission::check('access CiviContribute')) {
+      $contributions = \Civi\Api4\Contribution::get(FALSE)
+        ->addWhere('id', 'IN', $ids)
+        ->addWhere('contact_id', '!=', $contactID)
+        ->execute()
+        ->count();
+      // Contributions are for contacts that is not the cid / logged in contact.
+      if ($contributions > 0) {
+        return FALSE;
+      }
+      return TRUE;
+    }
+    return TRUE;
   }
 
 }

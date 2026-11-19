@@ -93,7 +93,7 @@ class CRM_Iats_iATSServiceRequest {
       default:
         $this->_wsdl_url = 'https://' . $iats_domain . self::iATS_URL_PROCESSLINK;
         if ($method == 'cc') {/* as suggested by iATS, though not necessary I believe */
-          $this->_tag_order = array('agentCode', 'password', 'customerIPAddress', 'invoiceNum', 'creditCardNum', 'ccNum', 'creditCardExpiry', 'ccExp', 'firstName', 'lastName', 'address', 'city', 'state', 'zipCode', 'cvv2', 'total', 'comment');
+          $this->_tag_order = ['agentCode', 'password', 'customerIPAddress', 'invoiceNum', 'creditCardNum', 'ccNum', 'creditCardExpiry', 'ccExp', 'firstName', 'lastName', 'address', 'city', 'state', 'zipCode', 'cvv2', 'total', 'comment'];
         }
         break;
     }
@@ -107,14 +107,14 @@ class CRM_Iats_iATSServiceRequest {
       switch ($iats_domain) {
         case 'www2.iatspayments.com':
         case 'www.iatspayments.com':
-          if (in_array($options['currency'], array('USD', 'CAD'))) {
+          if (in_array($options['currency'], ['USD', 'CAD'])) {
             $valid = TRUE;
           }
           break;
 
         case 'www.uk.iatspayments.com':
           if ('cc' == substr($method, 0, 2) || 'create_credit_card_customer' == $method) {
-            if (in_array($options['currency'], array('AUD', 'USD', 'EUR', 'GBP', 'IEE', 'CHF', 'HKD', 'JPY', 'SGD', 'MXN'))) {
+            if (in_array($options['currency'], ['AUD', 'USD', 'EUR', 'GBP', 'IEE', 'CHF', 'HKD', 'JPY', 'SGD', 'MXN'])) {
               $valid = TRUE;
             }
           }
@@ -188,13 +188,13 @@ class CRM_Iats_iATSServiceRequest {
       // dpm($logged_request);
       $cc = isset($logged_request['creditCardNum']) ? $logged_request['creditCardNum'] : (isset($logged_request['ccNum']) ? $logged_request['ccNum'] : '');
       $ip = $logged_request['customerIPAddress'];
-      $query_params = array(
-        1 => array($logged_request['invoiceNum'], 'String'),
-        2 => array($ip, 'String'),
-        3 => array(substr($cc, -4), 'String'),
-        4 => array('', 'String'),
-        5 => array($logged_request['total'], 'String'),
-      );
+      $query_params = [
+        1 => [$logged_request['invoiceNum'], 'String'],
+        2 => [$ip, 'String'],
+        3 => [substr($cc, -4), 'String'],
+        4 => ['', 'String'],
+        5 => [$logged_request['total'], 'String'],
+      ];
       // CRM_Core_Error::debug_var('query params to request log', $query_params);
       CRM_Core_DAO::executeQuery("INSERT INTO civicrm_iats_request_log
         (invoice_num, ip, cc, customer_code, total, request_datetime) VALUES (%1, %2, %3, %4, %5, NOW())", $query_params);
@@ -209,7 +209,7 @@ class CRM_Iats_iATSServiceRequest {
       $credentials = (array) $credentials;
       $testAgentCode = ('TEST88' == $credentials['agentCode']) ? TRUE : FALSE;
       /* until iATS fixes it's box verify, we need to have trace on to make the hack below work */
-      $soapClient = new SoapClient($this->_wsdl_url, array('trace' => 1, 'soap_version' => SOAP_1_2));
+      $soapClient = new SoapClient($this->_wsdl_url, ['trace' => 1, 'soap_version' => SOAP_1_2]);
       /* build the request manually as per the iATS docs */
       $xml = '<' . $message . ' xmlns="' . self::iATS_URL_NAMESPACE . '">';
       $request = array_merge($credentials, $request_params);
@@ -293,7 +293,7 @@ class CRM_Iats_iATSServiceRequest {
    * Log the result to an internal table while I'm at it, unless explicitly not requested.
    */
   public function result($response, $log = TRUE) {
-    $result = array('auth_result' => '', 'remote_id' => '', 'status' => '');
+    $result = ['auth_result' => '', 'remote_id' => '', 'status' => ''];
     switch ($this->type) {
       case 'report':
       case 'process':
@@ -344,29 +344,29 @@ class CRM_Iats_iATSServiceRequest {
         break;
     }
     if ($log && !empty($this->invoiceNum) && ($this->type == 'process')) {
-      $query_params = array(
-        1 => array($this->invoiceNum, 'String'),
-        2 => array($result['auth_result'], 'String'),
-        3 => array($result['remote_id'], 'String'),
-      );
+      $query_params = [
+        1 => [$this->invoiceNum, 'String'],
+        2 => [$result['auth_result'], 'String'],
+        3 => [$result['remote_id'], 'String'],
+      ];
       CRM_Core_DAO::executeQuery("INSERT INTO civicrm_iats_response_log
         (invoice_num, auth_result, remote_id, response_datetime) VALUES (%1, %2, %3, NOW())", $query_params);
       // #hack - this is necessary for 4.4 and possibly earlier versions of 4.6.x
       // this ensures that trxn_id gets written to the contribution record - even if core did not do so.
       if ($this->options['method'] == 'cc_with_customer_code') {
-        $api_params = array(
+        $api_params = [
           'version' => 3,
           'sequential' => 1,
           'invoice_id' => $this->invoiceNum,
-        );
+        ];
         $contribution = civicrm_api('contribution', 'getsingle', $api_params);
         if (!empty($contribution['id']) && empty($contribution['trxn_id'])) {
-          $api_params = array(
+          $api_params = [
             'version' => 3,
             'sequential' => 1,
             'id' => $contribution['id'],
             'trxn_id' => trim($result['remote_id']) . ':' . time(),
-          );
+          ];
           civicrm_api('contribution', 'create', $api_params);
           // watchdog('civicrm_iatspayments_com', 'rewrite: !request', array('!request' => '<pre>' . print_r($tmp, TRUE) . '</pre>', WATCHDOG_DEBUG));.
         }
@@ -380,7 +380,7 @@ class CRM_Iats_iATSServiceRequest {
    * convert to an array of objects, each one corresponding to a transaction row.
    */
   public function getCSV($response, $method) {
-    $transactions = array();
+    $transactions = [];
     $iats_domain = parse_url($this->_wsdl_url, PHP_URL_HOST);
 
     switch ($iats_domain) {
@@ -415,7 +415,7 @@ class CRM_Iats_iATSServiceRequest {
           // save the raw data in 'data'
           $data = str_getcsv($box[$i]);
           // and then store it as an associate array based on the headers
-          $record = array();
+          $record = [];
           foreach($headers as $label => $column_i) {
             $record[$label] = $data[$column_i];
           }
@@ -465,53 +465,53 @@ class CRM_Iats_iATSServiceRequest {
     switch ($type) {
       default:
       case 'process':
-        $methods = array(
-          'cc' => array(
+        $methods = [
+          'cc' => [
             'title' => 'Credit card',
             'description' => $desc . 'ProcessCreditCard',
             'method' => 'ProcessCreditCard',
             'message' => 'ProcessCreditCard',
             'response' => 'ProcessCreditCardResult',
-          ),
-          'cc_create_customer_code' => array(
+          ],
+          'cc_create_customer_code' => [
             'title' => 'Credit card, saved',
             'description' => $desc . 'CreateCustomerCodeAndProcessCreditCard',
             'method' => 'CreateCustomerCodeAndProcessCreditCard',
             'message' => 'CreateCustomerCodeAndProcessCreditCard',
             'response' => 'CreateCustomerCodeAndProcessCreditCardResult',
-          ),
-          'cc_with_customer_code' => array(
+          ],
+          'cc_with_customer_code' => [
             'title' => 'Credit card using saved info',
             'description' => $desc . 'ProcessCreditCardWithCustomerCode',
             'method' => 'ProcessCreditCardWithCustomerCode',
             'message' => 'ProcessCreditCardWithCustomerCode',
             'response' => 'ProcessCreditCardWithCustomerCodeResult',
-          ),
-          'acheft' => array(
+          ],
+          'acheft' => [
             'title' => 'ACH/EFT',
             'description' => $desc . 'ProcessACHEFT',
             'method' => 'ProcessACHEFT',
             'message' => 'ProcessACHEFT',
             'response' => 'ProcessACHEFTResult',
-          ),
-          'acheft_create_customer_code' => array(
+          ],
+          'acheft_create_customer_code' => [
             'title' => 'ACH/EFT, saved',
             'description' => $desc . 'CreateCustomerCodeAndProcessACHEFT',
             'method' => 'CreateCustomerCodeAndProcessACHEFT',
             'message' => 'CreateCustomerCodeAndProcessACHEFT',
             'response' => 'CreateCustomerCodeAndProcessACHEFTResult',
-          ),
-          'acheft_with_customer_code' => array(
+          ],
+          'acheft_with_customer_code' => [
             'title' => 'ACH/EFT with customer code',
             'description' => $desc . 'ProcessACHEFTWithCustomerCode',
             'method' => 'ProcessACHEFTWithCustomerCode',
             'message' => 'ProcessACHEFTWithCustomerCode',
             'response' => 'ProcessACHEFTWithCustomerCodeResult',
-          ),
-        );
+          ],
+        ];
         break;
       case 'report':
-        $methods = array(
+        $methods = [
          // 'acheft_journal' => array(
          //   'title' => 'ACH-EFT Journal',
          //   'description'=> $desc. 'GetACHEFTJournal',
@@ -519,48 +519,48 @@ class CRM_Iats_iATSServiceRequest {
          //   'message' => 'GetACHEFTJournal',
          //   'response' => 'GetACHEFTJournalResult',
          // ),.
-          'cc_journal_csv' => array(
+          'cc_journal_csv' => [
             'title' => 'Credit Card Journal CSV',
             'description' => $desc . 'GetCreditCardApprovedSpecificDateCSV',
             'method' => 'GetCreditCardApprovedSpecificDateCSV',
             'message' => 'GetCreditCardApprovedSpecificDateCSV',
             'response' => 'GetCreditCardApprovedSpecificDateCSVResult',
-          ),
-          'cc_payment_box_journal_csv' => array(
+          ],
+          'cc_payment_box_journal_csv' => [
             'title' => 'Credit Card Payment Box Journal CSV',
             'description'=> $desc. 'GetCreditCardApprovedDateRangeCSV',
             'method' => 'GetCreditCardApprovedDateRangeCSV',
             'message' => 'GetCreditCardApprovedDateRangeCSV',
             'response' => 'GetCreditCardApprovedDateRangeCSVResult',
-          ),
-          'cc_payment_box_reject_csv' => array(
+          ],
+          'cc_payment_box_reject_csv' => [
             'title' => 'Credit Card Payment Box Reject CSV',
             'description'=> $desc. 'GetCreditCardRejectDateRangeCSV',
             'method' => 'GetCreditCardRejectDateRangeCSV',
             'message' => 'GetCreditCardRejectDateRangeCSV',
             'response' => 'GetCreditCardRejectDateRangeCSVResult',
-          ),
-          'acheft_journal_csv' => array(
+          ],
+          'acheft_journal_csv' => [
             'title' => 'ACH-EFT Journal CSV',
             'description' => $desc . 'GetACHEFTApprovedSpecificDateCSV',
             'method' => 'GetACHEFTApprovedSpecificDateCSV',
             'message' => 'GetACHEFTApprovedSpecificDateCSV',
             'response' => 'GetACHEFTApprovedSpecificDateCSVResult',
-          ),
-          'acheft_payment_box_journal_csv' => array(
+          ],
+          'acheft_payment_box_journal_csv' => [
             'title' => 'ACH-EFT Payment Box Journal CSV',
             'description' => $desc . 'GetACHEFTApprovedDateRangeCSV',
             'method' => 'GetACHEFTApprovedDateRangeCSV',
             'message' => 'GetACHEFTApprovedDateRangeCSV',
             'response' => 'GetACHEFTApprovedDateRangeCSVResult',
-          ),
-          'acheft_payment_box_reject_csv' => array(
+          ],
+          'acheft_payment_box_reject_csv' => [
             'title' => 'ACH-EFT Payment Box Reject CSV',
             'description' => $desc . 'GetACHEFTRejectDateRangeCSV',
             'method' => 'GetACHEFTRejectDateRangeCSV',
             'message' => 'GetACHEFTRejectDateRangeCSV',
             'response' => 'GetACHEFTRejectDateRangeCSVResult',
-          ),
+          ],
          // 'acheft_reject' => array(
          //   'title' => 'ACH-EFT Reject',
          //   'description'=> $desc. 'GetACHEFTReject',
@@ -568,54 +568,54 @@ class CRM_Iats_iATSServiceRequest {
          //   'message' => 'GetACHEFTReject',
          //   'response' => 'GetACHEFTRejectResult',
          // ),.
-          'acheft_reject_csv' => array(
+          'acheft_reject_csv' => [
             'title' => 'ACH-EFT Reject CSV',
             'description' => $desc . 'GetACHEFTRejectSpecificDateCSV',
             'method' => 'GetACHEFTRejectSpecificDateCSV',
             'message' => 'GetACHEFTRejectSpecificDateCSV',
             'response' => 'GetACHEFTRejectSpecificDateCSVResult',
-          ),
-        );
+          ],
+        ];
         break;
 
       case 'customer':
-        $methods = array(
-          'get_customer_code_detail' => array(
+        $methods = [
+          'get_customer_code_detail' => [
             'title' => 'Get Customer Code Detail',
             'description' => $desc . 'GetCustomerCodeDetail',
             'method' => 'GetCustomerCodeDetail',
             'message' => 'GetCustomerCodeDetail',
             'response' => 'GetCustomerCodeDetailResult',
-          ),
-          'create_credit_card_customer' => array(
+          ],
+          'create_credit_card_customer' => [
             'title' => 'Create CustomerCode Credit Card',
             'description' => $desc . 'CreateCreditCardCustomerCode',
             'method' => 'CreateCreditCardCustomerCode',
             'message' => 'CreateCreditCardCustomerCode',
             'response' => 'CreateCreditCardCustomerCodeResult',
-          ),
-          'update_credit_card_customer' => array(
+          ],
+          'update_credit_card_customer' => [
             'title' => 'Update CustomerCode Credit Card',
             'description' => $desc . 'UpdateCreditCardCustomerCode',
             'method' => 'UpdateCreditCardCustomerCode',
             'message' => 'UpdateCreditCardCustomerCode',
             'response' => 'UpdateCreditCardCustomerCodeResult',
-          ),
-          'direct_debit_acheft_payer_validate' => array(
+          ],
+          'direct_debit_acheft_payer_validate' => [
             'title' => 'Direct Debit ACHEFT Payer Validate',
             'description' => $desc . 'DirectDebitACHEFTPayerValidate',
             'method' => 'DirectDebitACHEFTPayerValidate',
             'message' => 'DirectDebitACHEFTPayerValidate',
             'response' => 'DirectDebitACHEFTPayerValidateResult',
-          ),
-          'create_acheft_customer_code' => array(
+          ],
+          'create_acheft_customer_code' => [
             'title' => 'Create ACHEFT Customer Code',
             'description' => $desc . 'CreateACHEFTCustomerCode',
             'method' => 'CreateACHEFTCustomerCode',
             'message' => 'CreateACHEFTCustomerCode',
             'response' => 'CreateACHEFTCustomerCodeResult',
-          ),
-        );
+          ],
+        ];
         break;
     }
     if ($method) {
@@ -859,12 +859,12 @@ class CRM_Iats_iATSServiceRequest {
    *
    */
   public function creditCardTypes() {
-    return array(
+    return [
       'VI' => t('Visa'),
       'MC' => t('MasterCard'),
       'AMX' => t('American Express'),
       'DSC' => t('Discover Card'),
-    );
+    ];
   }
 
   /**
@@ -872,7 +872,7 @@ class CRM_Iats_iATSServiceRequest {
    */
   public function mask(&$log_request) {
     // Mask the credit card number and CVV.
-    foreach (array('creditCardNum', 'cvv2', 'ccNum') as $mask) {
+    foreach (['creditCardNum', 'cvv2', 'ccNum'] as $mask) {
       if (!empty($log_request[$mask])) {
         // Show the last four digits of cc numbers.
         if (4 < strlen($log_request[$mask])) {
@@ -891,20 +891,20 @@ class CRM_Iats_iATSServiceRequest {
    * I also return the url_site value in case I need that.
    */
   public static function credentials($payment_processor_id, $is_test = 0) {
-    static $credentials = array();
+    static $credentials = [];
     if (empty($credentials[$payment_processor_id])) {
       $select = 'SELECT user_name, password, url_site FROM civicrm_payment_processor WHERE id = %1 AND is_test = %2';
-      $args = array(
-        1 => array($payment_processor_id, 'Int'),
-        2 => array($is_test, 'Int'),
-      );
+      $args = [
+        1 => [$payment_processor_id, 'Int'],
+        2 => [$is_test, 'Int'],
+      ];
       $dao = CRM_Core_DAO::executeQuery($select, $args);
       if ($dao->fetch()) {
-        $cred = array(
+        $cred = [
           'agentCode' => $dao->user_name,
           'password' => $dao->password,
           'domain' => parse_url($dao->url_site, PHP_URL_HOST),
-        );
+        ];
         $credentials[$payment_processor_id] = $cred;
         return $cred;
       }
@@ -958,13 +958,13 @@ class CRM_Iats_iATSServiceRequest {
    */
   private function xmlsafe($string) {
     if (version_compare(PHP_VERSION, '5.4.0') < 0) {
-      $replace = array(
+      $replace = [
         '"'=> "&quot;",
         "&" => "&amp;",
         "'"=> "&apos;",
         "<" => "&lt;",
         ">"=> "&gt;"
-      );
+      ];
       return strtr($string, $replace);
     }
     // else, better way for php5.4 and above

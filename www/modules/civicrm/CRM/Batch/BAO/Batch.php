@@ -19,6 +19,11 @@
  * Batch BAO class.
  */
 class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch implements \Civi\Core\HookInterface {
+  use CRM_Core_OwnershipAccessTrait;
+
+  protected static function checkOwnerAdminPermission(?int $userID = NULL): bool {
+    return CRM_Core_Permission::check('edit all manual batches', $userID);
+  }
 
   /**
    * Cache for the current batch object.
@@ -724,19 +729,6 @@ LEFT JOIN civicrm_contribution_soft ON civicrm_contribution_soft.contribution_id
     foreach ($searchFields as $field) {
       if (isset($params[$field])) {
         $values[$field] = $params[$field];
-        if ($field === 'sort_name') {
-          $from .= " LEFT JOIN civicrm_contact contact_b ON contact_b.id = civicrm_contribution.contact_id
-          LEFT JOIN civicrm_email ON contact_b.id = civicrm_email.contact_id";
-        }
-        if ($field == 'contribution_in_honor_of') {
-          $from .= " LEFT JOIN civicrm_contact contact_b ON contact_b.id = civicrm_contribution.contact_id";
-        }
-        if ($field == 'contact_tags') {
-          $from .= " LEFT JOIN civicrm_entity_tag `civicrm_entity_tag-{$params[$field]}` ON `civicrm_entity_tag-{$params[$field]}`.entity_id = contact_a.id";
-        }
-        if ($field == 'group') {
-          $from .= " LEFT JOIN civicrm_group_contact `civicrm_group_contact-{$params[$field]}` ON contact_a.id = `civicrm_group_contact-{$params[$field]}`.contact_id ";
-        }
         if ($field == 'receive_date_relative') {
           $relativeDate = explode('.', $params[$field]);
           $date = CRM_Utils_Date::relativeToAbsolute($relativeDate[0], $relativeDate[1]);
@@ -789,6 +781,20 @@ LEFT JOIN civicrm_contribution_soft ON civicrm_contribution_soft.contribution_id
 
     if (count($customJoins) > 0) {
       $from .= " " . implode(" ", $customJoins);
+    }
+
+    // Tables the FROM above already joins; joining them again is a SQL error or duplicates rows.
+    $whereTables = array_diff_key($query->_whereTables, array_flip([
+      'civicrm_contact',
+      'civicrm_contribution',
+      'civicrm_contribution_recur',
+      'civicrm_contribution_soft',
+      'civicrm_entity_financial_trxn',
+      'civicrm_financial_trxn',
+    ]));
+    $fromExtra = trim(str_replace('FROM civicrm_contact contact_a', '', CRM_Contact_BAO_Query::fromClause($whereTables)));
+    if ($fromExtra) {
+      $from .= ' ' . $fromExtra;
     }
 
     if (!empty($query->_where[0])) {

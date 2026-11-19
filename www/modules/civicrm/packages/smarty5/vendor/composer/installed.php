@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => 'f1a092e98e710cdd103d136e940bb77b278683d9',
+        'pretty_version' => 'dev-6.16-security',
+        'version' => 'dev-6.16-security',
+        'reference' => 'a9f70f2f1212546d5bad2f87a35726423b2f478d',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,18 +11,18 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => 'f1a092e98e710cdd103d136e940bb77b278683d9',
+            'pretty_version' => 'dev-6.16-security',
+            'version' => 'dev-6.16-security',
+            'reference' => 'a9f70f2f1212546d5bad2f87a35726423b2f478d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'smarty/smarty' => array(
-            'pretty_version' => 'v5.7.0',
-            'version' => '5.7.0.0',
-            'reference' => '73da7e90f302175a570662fcb0ba41f57b7a92ab',
+            'pretty_version' => 'v5.8.5',
+            'version' => '5.8.5.0',
+            'reference' => '0ae663525dcbc9e996feb2a867e43bc85f960938',
             'type' => 'library',
             'install_path' => __DIR__ . '/../smarty/smarty',
             'aliases' => array(),

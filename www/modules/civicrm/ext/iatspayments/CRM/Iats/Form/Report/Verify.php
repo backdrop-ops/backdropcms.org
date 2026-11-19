@@ -12,55 +12,55 @@ require_once('CRM/Report/Form.php');
  */
 class CRM_Iats_Form_Report_Verify extends CRM_Report_Form {
 
-  static private $contributionStatus = array(); 
-  static private $transaction_types = array(
+  static private $contributionStatus = [];
+  static private $transaction_types = [
     'VISA' => 'Visa',
     'ACHEFT' => 'ACH/EFT',
     'UNKNOW' => 'Uknown',
     'MC' => 'MasterCard',
     'AMX' => 'AMEX',
     'DSC' => 'Discover',
-  );
+  ];
 
   /**
    *
    */
   public function __construct() {
     self::$contributionStatus = CRM_Contribute_BAO_Contribution::buildOptions('contribution_status_id');
-    $this->_columns = array(
+    $this->_columns = [
       'civicrm_iats_verify' =>
-        array(
+        [
           'fields' =>
-            array(
-              'id' => array('title' => 'CiviCRM Verify Id', 'default' => TRUE),
-              'customer_code' => array('title' => 'Customer code', 'default' => TRUE),
-              'cid' => array('title' => 'Contact', 'default' => TRUE),
-              'contribution_id' => array('title' => 'Contribution', 'default' => TRUE),
-              'recur_id' => array('title' => 'Recurring Contribution Id', 'default' => TRUE),
-              'contribution_status_id' => array('title' => 'Payment Status', 'default' => TRUE),
-              'verify_datetime' => array('title' => 'Verification date time', 'default' => TRUE),
-            ),
+            [
+              'id' => ['title' => 'CiviCRM Verify Id', 'default' => TRUE],
+              'customer_code' => ['title' => 'Customer code', 'default' => TRUE],
+              'cid' => ['title' => 'Contact', 'default' => TRUE],
+              'contribution_id' => ['title' => 'Contribution', 'default' => TRUE],
+              'recur_id' => ['title' => 'Recurring Contribution Id', 'default' => TRUE],
+              'contribution_status_id' => ['title' => 'Payment Status', 'default' => TRUE],
+              'verify_datetime' => ['title' => 'Verification date time', 'default' => TRUE],
+            ],
           'order_bys' => 
-            array(
-              'id' => array('title' => ts('CiviCRM Verify Id'), 'default' => TRUE, 'default_order' => 'DESC'),
-              'verify_datetime' => array('title' => ts('Verification Date Time')),
-            ),
+            [
+              'id' => ['title' => ts('CiviCRM Verify Id'), 'default' => TRUE, 'default_order' => 'DESC'],
+              'verify_datetime' => ['title' => ts('Verification Date Time')],
+            ],
           'filters' =>
-             array(
-               'verify_datetime' => array(
+             [
+               'verify_datetime' => [
                  'title' => 'Verification date time', 
                  'operatorType' => CRM_Report_Form::OP_DATE,
                  'type' => CRM_Utils_Type::T_DATE,
-               ),
-               'contribution_status_id' => array(
+               ],
+               'contribution_status_id' => [
                  'title' => ts('Payment Status'),
                  'operatorType' => CRM_Report_Form::OP_MULTISELECT,
                  'options' => self::$contributionStatus,
                  'type' => CRM_Utils_Type::T_INT,
-               ),
-             ),
-        ),
-    );
+               ],
+             ],
+        ],
+    ];
     parent::__construct();
   }
 

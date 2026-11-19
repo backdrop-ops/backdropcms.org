@@ -42,7 +42,7 @@ return [
     'is_domain' => 1,
     'is_contact' => 0,
     'settings_pages' => ['iats' => ['weight' => 40]],
-    'options' => array('0' => E::ts('Never'), '1' => E::ts('Always'), '2' => E::ts('As set for a specific Contribution Series'))
+    'options' => ['0' => E::ts('Never'), '1' => E::ts('Always'), '2' => E::ts('As set for a specific Contribution Series')]
   ],
   'iats_email_failure_contribution_receipt' => [
     'name' => 'iats_email_failure_contribution_receipt',

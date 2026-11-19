@@ -48,7 +48,7 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
    */
 
   protected function getDirectDebitFormFields() {
-    $fields =  $this->disable_cryptogram ? parent::getDirectDebitFormFields() : array('cryptogram');
+    $fields =  $this->disable_cryptogram ? parent::getDirectDebitFormFields() : ['cryptogram'];
     return $fields;
   }
 
@@ -90,28 +90,28 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
     $resources = CRM_Core_Resources::singleton();
     $cryptoCss = $resources->getUrl('com.iatspayments.civicrm', 'css/crypto.css');
     $markup = '<link type="text/css" rel="stylesheet" href="'.$cryptoCss.'" media="all" />'; // <script type="text/javascript" src="'.$cryptojs.'"></script>';
-    CRM_Core_Region::instance('billing-block')->add(array(
+    CRM_Core_Region::instance('billing-block')->add([
       'markup' => $markup,
-    ));
+    ]);
     // the cryptojs above is the one on the 1pay server, now I load and invoke the extension's crypto.js
     $myCryptoJs = $resources->getUrl('com.iatspayments.civicrm', 'js/crypto.js');
     // after manually doing what addVars('iats', $jsVariables) would normally do
     $script = 'var iatsSettings = ' . json_encode($jsVariables) . ';';
     $script .= 'var cryptoJs = "'.$myCryptoJs.'";';
     $script .= 'CRM.$(function ($) { $.getScript(cryptoJs); });';
-    CRM_Core_Region::instance('billing-block')->add(array(
+    CRM_Core_Region::instance('billing-block')->add([
       'script' => $script,
-    ));
+    ]);
     // and now add in a helpful cheque image and description
     switch($currency) {
       case 'USD':
-        CRM_Core_Region::instance('billing-block')->add(array(
+        CRM_Core_Region::instance('billing-block')->add([
           'template' => 'CRM/Iats/BillingBlockFapsACH_USD.tpl',
-        ));
+        ]);
       case 'CAD':
-        CRM_Core_Region::instance('billing-block')->add(array(
+        CRM_Core_Region::instance('billing-block')->add([
           'template' => 'CRM/Iats/BillingBlockFapsACH_CAD.tpl',
-        ));
+        ]);
     }
     return FALSE;
   }
@@ -126,31 +126,31 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
   public function doPayment(&$params, $component = 'contribute') {
     // CRM_Core_Error::debug_var('doPayment params', $params);
     if (empty($params['amount'])) {
-      return _iats_payment_status_complete();
+      return CRM_Iats_Utils::paymentStatus('Completed');
     }
-
     $isRecur = $params['is_recur'] ?? NULL;
     if ($isRecur && empty($params['contributionRecurID'])) {
       return self::error('Invalid call to doPayment with is_recur and no contributionRecurID');
     }
     // FAPS only allows ipv4 addresses
     $ipAddress = CRM_Iats_Transaction::remote_ip_address($FILTER_FLAG_IPV4);
-    $credentials = array(
+    $credentials = [
       'merchantKey' => $this->_paymentProcessor['signature'],
       'processorId' => $this->_paymentProcessor['user_name']
-    );
+    ];
     // FAPS has a funny thing called a 'category' that needs to be included with any ACH request.
     // The category is auto-generated in the getCategoryText function, using some default settings that can be overridden on the FAPS settings page.
     // Store it in params, will be used by my convert request call(s) later
     $params['ach_category_text'] = self::getCategoryText($credentials, $this->is_test, $ipAddress);
 
+    CRM_Iats_Utils::checkInvoiceId($params);
     $vault_key = $vault_id = '';
     if ($isRecur) {
       // Store the params in a vault before attempting payment
-      $options = array(
+      $options = [
         'action' => 'VaultCreateAchRecord',
         'test' => $this->is_test,
-      );
+      ];
       $vault_request = new CRM_Iats_FapsRequest($options);
       $request = $this->convertParams($params, $options['action']);
       // auto-generate a compliant vault key
@@ -191,16 +191,16 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
         return self::error($result);
       }
       // now set the options for taking the money
-      $options = array(
+      $options = [
         'action' => 'AchDebitUsingVault',
         'test' => $this->is_test,
-      );
+      ];
     }
     else { // set the simple sale option for taking the money
-      $options = array(
+      $options = [
         'action' => 'AchDebit',
         'test' => $this->is_test,
-      );
+      ];
     }
     // now take the money
     $payment_request = new CRM_Iats_FapsRequest($options);
@@ -216,18 +216,18 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
     // CRM_Core_Error::debug_var('result', $result);
     $success = (!empty($result['isSuccess']));
     if ($success) {
-      $params['payment_status_id'] = 2;
+      $params += CRM_Iats_Utils::paymentStatus('Pending');
       $params['trxn_id'] = trim($result['data']['referenceNumber']).':'.time();
       // Core assumes that a pending result will have no transaction id, but we have a useful one.
       if (!empty($params['contributionID'])) {
-        $contribution_update = array('id' => $params['contributionID'], 'trxn_id' => $params['trxn_id']);
+        $contribution_update = ['id' => $params['contributionID'], 'trxn_id' => $params['trxn_id']];
         try {
           $result = civicrm_api3('Contribution', 'create', $contribution_update);
         }
         catch (CRM_Core_Exception $e) {
           // Not a critical error, just log and continue.
           $error = $e->getMessage();
-          Civi::log()->info('Unexpected error adding the trxn_id for contribution id {id}: {error}', array('id' => $recur_id, 'error' => $error));
+          Civi::log()->info('Unexpected error adding the trxn_id for contribution id {id}: {error}', ['id' => $recur_id, 'error' => $error]);
         }
       }
       return $params;
@@ -263,12 +263,12 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
     $ach_category_text = empty($ach_category_text) ? FAPS_DEFAULT_ACH_CATEGORY_TEXT : $ach_category_text;
     $ach_category_exists = FALSE;
     // check if it's setup
-    $options = array(
+    $options = [
       'action' => 'AchGetCategories',
       'test' => $is_test,
-    );
+    ];
     $categories_request = new CRM_Iats_FapsRequest($options);
-    $request = empty($ipAddress) ? array() : array('ipAddress' => $ipAddress);
+    $request = empty($ipAddress) ? [] : ['ipAddress' => $ipAddress];
     $result = $categories_request->request($credentials, $request);
     // CRM_Core_Error::debug_var('categories request result', $result);
     if (!empty($result['isSuccess']) && !empty($result['data'])) {
@@ -280,17 +280,17 @@ class CRM_Core_Payment_FapsACH extends CRM_Core_Payment_Faps {
       }
     }
     if (!$ach_category_exists) { // set it up!
-      $options = array(
+      $options = [
         'action' => 'AchCreateCategory',
         'test' => $is_test,
-      );
+      ];
       $categories_request = new CRM_Iats_FapsRequest($options);
       // I've got some non-offensive defaults in here.
-      $request = array(
+      $request = [
         'achCategoryText' => $ach_category_text,
         'achClassCode' => 'WEB',
         'achEntry' => 'CiviCRM',
-      );
+      ];
       if (!empty($ipAddress)) {
         $request['ipAddress'] = $ipAddress;
       }

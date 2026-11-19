@@ -22,12 +22,12 @@ class CRM_Iats_Form_Report_ContributeDetailFaps extends CRM_Report_Form {
 
   protected $isTempTableBuilt = FALSE;
 
-  static private $_iats_faps_card_types = array(
+  static private $_iats_faps_card_types = [
     'Visa' => 'Visa',
     'Mastercard' => 'MasterCard',
     'Amex' => 'AMEX',
     'Discover' => 'Discover',
-  );
+  ];
 
   /**
    * Query mode.
@@ -351,67 +351,67 @@ class CRM_Iats_Form_Report_ContributeDetailFaps extends CRM_Report_Form {
 
     // self::$contributionStatus = CRM_Contribute_BAO_Contribution::buildOptions('contribution_status_id');
     // $contributionStatus = CRM_Contribute_PseudoConstant::contributionStatus();
-    $this->_columns['civicrm_iats_faps_journal'] = array(
+    $this->_columns['civicrm_iats_faps_journal'] = [
           'fields' =>
-            array(
-              'id' => array('title' => 'CiviCRM 1stPay Journal Id', 'default' => TRUE),
-              'transactionId' => array('title' => 'Faps transactionId', 'default' => TRUE),
-              'isAch' => array('title' => 'is ACH', 'default' => TRUE),
-              'cardType' => array('title' => 'Card Type', 'default' => TRUE),
-              'processorId' => array('title' => 'Merchant Processor Id', 'default' => TRUE),
-              'cimRefNumber' => array('title' => 'Customer reference', 'default' => TRUE),
-              'orderId' => array('title' => 'Invoice Reference', 'default' => TRUE),
-              'transDateAndTime' => array('title' => 'Transaction date and time', 'default' => TRUE),
-              'amount' => array('title' => 'Amount', 'default' => TRUE),
-              'authResponse' => array('title' => 'Result string', 'default' => TRUE),
-              'status_id' => array('title' => 'Payment Status', 'default' => TRUE),
-            ),
+            [
+              'id' => ['title' => 'CiviCRM 1stPay Journal Id', 'default' => TRUE],
+              'transactionId' => ['title' => 'Faps transactionId', 'default' => TRUE],
+              'isAch' => ['title' => 'is ACH', 'default' => TRUE],
+              'cardType' => ['title' => 'Card Type', 'default' => TRUE],
+              'processorId' => ['title' => 'Merchant Processor Id', 'default' => TRUE],
+              'cimRefNumber' => ['title' => 'Customer reference', 'default' => TRUE],
+              'orderId' => ['title' => 'Invoice Reference', 'default' => TRUE],
+              'transDateAndTime' => ['title' => 'Transaction date and time', 'default' => TRUE],
+              'amount' => ['title' => 'Amount', 'default' => TRUE],
+              'authResponse' => ['title' => 'Result string', 'default' => TRUE],
+              'status_id' => ['title' => 'Payment Status', 'default' => TRUE],
+            ],
           'order_bys' => 
-            array(
-              'id' => array('title' => ts('CiviCRM 1stPay Journal Id'), 'default' => TRUE, 'default_order' => 'DESC'),
-              'transactionId' => array('title' => ts('1stPay Transaction Id')),
-              'transDateAndTime' => array('title' => ts('Transaction Date Time')),
-            ),
+            [
+              'id' => ['title' => ts('CiviCRM 1stPay Journal Id'), 'default' => TRUE, 'default_order' => 'DESC'],
+              'transactionId' => ['title' => ts('1stPay Transaction Id')],
+              'transDateAndTime' => ['title' => ts('Transaction Date Time')],
+            ],
           'filters' =>
-             array(
-               'transDateAndTime' => array(
+             [
+               'transDateAndTime' => [
                  'title' => 'Transaction date', 
                  'operatorType' => CRM_Report_Form::OP_DATE,
                  'type' => CRM_Utils_Type::T_DATE,
-               ),
-               'orderId' => array(
+               ],
+               'orderId' => [
                  'title' => 'Invoice Reference', 
                  'type' => CRM_Utils_Type::T_STRING,
-               ),
-               'amount' => array(
+               ],
+               'amount' => [
                  'title' => 'Amount', 
                  'operatorType' => CRM_Report_Form::OP_FLOAT,
                  'type' => CRM_Utils_Type::T_FLOAT
-               ),
-               'isAch' => array(
+               ],
+               'isAch' => [
                  'title' => 'Is ACH', 
                  'operatorType' => CRM_Report_Form::OP_MULTISELECT,
-                 'options' => array(0 => 'Credit Card', 1 => 'ACH'),
+                 'options' => [0 => 'Credit Card', 1 => 'ACH'],
                  'type' => CRM_Utils_Type::T_INT,
-               ),
-               'cardType' => array(
+               ],
+               'cardType' => [
                  'title' => 'Type', 
                  'operatorType' => CRM_Report_Form::OP_MULTISELECT,
                  'options' => self::$_iats_faps_card_types,
                  'type' => CRM_Utils_Type::T_STRING,
-               ),
-               'authResponse' => array(
+               ],
+               'authResponse' => [
                  'title' => 'Result string',
                  'type' => CRM_Utils_Type::T_STRING,
-               ),
-               'status_id' => array(
+               ],
+               'status_id' => [
                  'title' => ts('iATS Journal Payment Status'),
                  'operatorType' => CRM_Report_Form::OP_MULTISELECT,
                  'options' => CRM_Contribute_PseudoConstant::contributionStatus(),
                  'type' => CRM_Utils_Type::T_INT,
-               ),
-             ),
-    );
+               ],
+             ],
+    ];
     parent::__construct();
   }
 

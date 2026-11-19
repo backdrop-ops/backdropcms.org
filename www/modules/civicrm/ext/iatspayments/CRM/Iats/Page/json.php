@@ -19,26 +19,26 @@ class CRM_Iats_Page_json {
     if (empty($pp_id)) {
       return;
     }
-    $params = array('version' => 3, 'sequential' => 1, 'id' => $pp_id, 'return' => 'user_name');
+    $params = ['version' => 3, 'sequential' => 1, 'id' => $pp_id, 'return' => 'user_name'];
     $result = civicrm_api('PaymentProcessor', 'getvalue', $params);
     $request['agentCode'] = $result;
-    $params = array('version' => 3, 'sequential' => 1, 'id' => $pp_id, 'return' => 'url_site');
+    $params = ['version' => 3, 'sequential' => 1, 'id' => $pp_id, 'return' => 'url_site'];
     $result = civicrm_api('PaymentProcessor', 'getvalue', $params);
     $request['iats_domain'] = parse_url($result, PHP_URL_HOST);
-    foreach (array('reset', 'q', 'IDS_request_uri', 'IDS_user_agent', 'payment_processor_id') as $key) {
+    foreach (['reset', 'q', 'IDS_request_uri', 'IDS_user_agent', 'payment_processor_id'] as $key) {
       if (isset($request[$key])) {
         unset($request[$key]);
       }
     }
-    $options = array();
-    foreach (array('type', 'method', 'iats_domain') as $key) {
+    $options = [];
+    foreach (['type', 'method', 'iats_domain'] as $key) {
       if (isset($request[$key])) {
         $options[$key] = $request[$key];
         unset($request[$key]);
       }
     }
-    $credentials = array();
-    foreach (array('agentCode', 'password') as $key) {
+    $credentials = [];
+    foreach (['agentCode', 'password'] as $key) {
       if (isset($request[$key])) {
         $credentials[$key] = $request[$key];
         unset($request[$key]);
@@ -55,7 +55,7 @@ class CRM_Iats_Page_json {
       $result = $iats->result($response);
     }
     else {
-      $result = array('Invalid request');
+      $result = ['Invalid request'];
     }
     // TODO: fix header
     // header('Content-Type: text/javascript');.

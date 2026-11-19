@@ -49,12 +49,12 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
    */
   public function testIATSCreditCardBackend(): void {
 
-    $params = array(
+    $params = [
       'sequential' => 1,
       'first_name' => "Can",
       'last_name' => "ada",
       'contact_type' => "Individual",
-    );
+    ];
 
     $individual = $this->callAPISuccess('contact', 'create', $params);
 
@@ -64,8 +64,8 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
     $processor = $this->paymentProcessor->getPaymentProcessor();
     $this->paymentProcessorID = $processor['id'];
 
-    $contribution_params = array(
-      'soft_credit_contact_id' => array(),
+    $contribution_params = [
+      'soft_credit_contact_id' => [],
       'total_amount' => 1.00,
       'financial_type_id' => 1,
       'receive_date' => date('Y-m-d H:i:s'),
@@ -74,10 +74,10 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
       'contribution_status_id' => 1,
       'credit_card_number' => 4222222222222220,
       'cvv2' => 123,
-      'credit_card_exp_date' => array(
+      'credit_card_exp_date' => [
         'M' => 12,
         'Y' => 2025,
-      ),
+      ],
       'credit_card_type' => 'Visa',
       'billing_first_name' => 'Karin',
       'billing_middle_name' => '',
@@ -97,17 +97,17 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
       'payment_processor_id' => $this->paymentProcessorID,
       'currency' => 'CAD',
       'source' => 'iATS CC TEST88',
-    );
+    ];
 
     $form = $this->getFormObject('CRM_Contribute_Form_Contribution', $contribution_params);
     $form->buildForm();
     $form->_mode = 'Live';
     $form->postProcess();
 
-    $contribution = $this->callAPISuccessGetSingle('Contribution', array(
+    $contribution = $this->callAPISuccessGetSingle('Contribution', [
       'contact_id' => $individual['id'],
       'contribution_status_id' => 'Completed',
-    ));
+    ]);
     $this->assertEquals('1.00', $contribution['total_amount']);
     $this->assertEquals(0, $contribution['non_deductible_amount']);
 
@@ -118,88 +118,13 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
   }
 
   /**
-   * Test a SWIPE Contribution - one time iATS SWIPE - TEST41 - Backend
-   */
-  public function testIATSSWIPEBackend(): void {
-
-    $params = array(
-      'sequential' => 1,
-      'first_name' => "Can",
-      'last_name' => "ada",
-      'contact_type' => "Individual",
-    );
-
-    $individual = $this->callAPISuccess('contact', 'create', $params);
-
-    // Need to create a Payment Processor - iATS SWIPE - TE4188
-    $this->paymentProcessor = $this->iATSSWIPEProcessorCreate();
-
-    $processor = $this->paymentProcessor->getPaymentProcessor();
-    $this->paymentProcessorID = $processor['id'];
-
-    $contribution_params = array(
-      'soft_credit_contact_id' => array(),
-      'total_amount' => 2.00,
-      'financial_type_id' => 1,
-      'receive_date' => date('Y-m-d H:i:s'),
-      'contact_id' => $individual['id'],
-      'payment_instrument_id' => 1,
-      'contribution_status_id' => 1,
-      // we have some JS that pre-pends e.g. 00|@| when we have an IDTECH encrypted swiper - not sure how to test that - so pre-pending it here (for now)
-      'credit_card_number' => '00|@|02B701801F422300039B%*4222********2220^PAYMENTSTESTCARD/IATS^***********************?*;4222********2220=***************?*FED6CC57978E86AD50F2F9ED1F6C5C46DFA701B5AC802A4419DDAC1EE1BC1C12CD18DC31DA214C1D14C40550D3282C01E1F81900A46990876624179BD99164C523C37C0C78797BFDB52B378F47B7E14F39C9D3956F02D53F0E1A4B8774BCD74721F7D1E15BFEF934E9FB6BC38107960572ECC0405546DCF6035E78D7BDCC3A43A5EED1CD223A07AB70232D8A3FC073D3C8170736F266783AFFFF73813900042002705F8303',
-      // cvv2 is not required
-      'credit_card_exp_date' => array(
-        'M' => 12,
-        'Y' => 2025,
-      ),
-      'credit_card_type' => 'Visa',
-      'billing_first_name' => 'Karin',
-      'billing_middle_name' => '',
-      'billing_last_name' => 'G',
-      'billing_street_address-5' => '39 St',
-      'billing_city-5' => 'Calgary',
-      'billing_state_province_id-5' => 1031,
-      'billing_postal_code-5' => 10545,
-      'billing_country_id-5' => 1228,
-      'frequency_interval' => 1,
-      'frequency_unit' => 'month',
-      'installments' => '',
-      'hidden_AdditionalDetail' => 1,
-      'hidden_Premium' => 1,
-      'receipt_date' => '',
-      'cancel_date' => '',
-      'payment_processor_id' => $this->paymentProcessorID,
-      'currency' => 'CAD',
-      'source' => 'iATS SWIPE TEST88',
-    );
-
-    $form = $this->getFormObject('CRM_Contribute_Form_Contribution', $contribution_params);
-    $form->buildForm();
-    $form->_mode = 'Live';
-    $form->postProcess();
-
-    $contribution = $this->callAPISuccessGetSingle('Contribution', array(
-      'contact_id' => $individual['id'],
-      'contribution_status_id' => 'Completed',
-    ));
-    $this->assertEquals('2.00', $contribution['total_amount']);
-    $this->assertEquals(0, $contribution['non_deductible_amount']);
-
-    // Make sure that we have a Transaction ID and that it contains a : (unique to iATS);
-    $this->assertRegExp('/:/', $contribution['trxn_id']);
-
-    // LineItems; Financial Tables;
-  }
-
-
-  /**
    * Create iATS - TEST41 CC Payment Processor.
    *
    * @param array $processorParams
    *
    * @return Instance of CC Payment Processor
    */
-  public function iATSCCProcessorCreate($processorParams = array()) {
+  public function iATSCCProcessorCreate($processorParams = []) {
     $paymentProcessorID = $this->processorCreateCC($processorParams);
     return System::singleton()->getById($paymentProcessorID);
   }
@@ -211,7 +136,7 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
    *
    * @return Instance of SWIPE Payment Processor
    */
-  public function iATSSWIPEProcessorCreate($processorParams = array()) {
+  public function iATSSWIPEProcessorCreate($processorParams = []) {
     $paymentProcessorID = $this->processorCreateSWIPE($processorParams);
     return System::singleton()->getById($paymentProcessorID);
   }
@@ -223,8 +148,8 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
    * @return int
    *   Id Payment Processor
    */
-  public function processorCreateCC($params = array()) {
-    $processorParams = array(
+  public function processorCreateCC($params = []) {
+    $processorParams = [
       'domain_id' => 1,
       'name' => 'iATS Credit Card - TE4188',
       'payment_processor_type_id' => 'iATS Payments Credit Card',
@@ -240,7 +165,7 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
       'sequential' => 1,
       'payment_type' => 1,
       'payment_instrument_id' => 1,
-    );
+    ];
     $processorParams = array_merge($processorParams, $params);
     $processor = $this->callAPISuccess('PaymentProcessor', 'create', $processorParams);
     return $processor['id'];
@@ -253,8 +178,8 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
    * @return int
    *   Id Payment Processor
    */
-  public function processorCreateSWIPE($params = array()) {
-    $processorParams = array(
+  public function processorCreateSWIPE($params = []) {
+    $processorParams = [
       'domain_id' => 1,
       'name' => 'iATS Credit Card - TE4188',
       'payment_processor_type_id' => 'iATS Payments SWIPE',
@@ -270,7 +195,7 @@ class CRM_Iats_ContributioniATSTest extends BaseTestClass {
       'sequential' => 1,
       'payment_type' => 1,
       'payment_instrument_id' => 1,
-    );
+    ];
     $processorParams = array_merge($processorParams, $params);
     $processor = $this->callAPISuccess('PaymentProcessor', 'create', $processorParams);
     return $processor['id'];

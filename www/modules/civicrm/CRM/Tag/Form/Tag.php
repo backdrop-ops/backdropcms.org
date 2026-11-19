@@ -22,6 +22,13 @@
 class CRM_Tag_Form_Tag extends CRM_Core_Form {
 
   /**
+   * Tags are saved via ajax as they are changed, so there is nothing to warn about.
+   *
+   * @var bool
+   */
+  protected $unsavedChangesWarn = FALSE;
+
+  /**
    * The contact id, used when add/edit tag
    *
    * @var int
@@ -30,14 +37,13 @@ class CRM_Tag_Form_Tag extends CRM_Core_Form {
   protected $_entityTable;
 
   public function preProcess() {
-    if ($this->get('entityID')) {
-      $this->_entityID = $this->get('entityID');
-    }
-    else {
-      $this->_entityID = $this->get('contactId');
+    $this->setAction(CRM_Core_Action::ADD);
+    $this->_entityID = $this->get('entityID') ?: $this->get('contactId');
+    if (!$this->_entityID) {
+      $this->_entityID = CRM_Utils_Request::retrieve('entityID', 'Positive', $this) ?: CRM_Utils_Request::retrieve('cid', 'Positive', $this);
     }
 
-    $this->_entityTable = $this->get('entityTable');
+    $this->_entityTable = $this->get('entityTable') ?: CRM_Utils_Request::retrieve('entityTable', 'String', $this);
 
     if (empty($this->_entityTable)) {
       $this->_entityTable = 'civicrm_contact';
@@ -53,6 +59,12 @@ class CRM_Tag_Form_Tag extends CRM_Core_Form {
    * @return void
    */
   public function buildQuickForm() {
+    $canEdit = $this->_entityTable !== 'civicrm_contact' || ($this->_entityID && CRM_Contact_BAO_Contact_Permission::allow($this->_entityID, CRM_Core_Permission::EDIT));
+    $this->assign('readOnly', !$canEdit);
+    if (!$canEdit) {
+      $this->freeze();
+    }
+
     // get categories for the contact id
     $entityTag = CRM_Core_BAO_EntityTag::getTag($this->_entityID, $this->_entityTable);
     $this->assign('tagged', $entityTag);
@@ -95,6 +107,10 @@ class CRM_Tag_Form_Tag extends CRM_Core_Form {
    * @return void
    */
   public function postProcess() {
+    if ($this->_entityTable === 'civicrm_contact' && !CRM_Contact_BAO_Contact_Permission::allow($this->_entityID, CRM_Core_Permission::EDIT)) {
+      CRM_Utils_System::permissionDenied();
+    }
+
     Civi::rebuild(['system' => TRUE])->execute();
 
     // array contains the posted values

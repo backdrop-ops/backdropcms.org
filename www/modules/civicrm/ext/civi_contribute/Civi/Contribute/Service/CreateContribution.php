@@ -185,7 +185,7 @@ class CreateContribution extends AutoService implements EventSubscriberInterface
       ->execute()
       ->first();
 
-    $event->setEntityId(0, $savedContribution['id']);
+    $event->setSaved(0, $savedContribution, 'create');
 
     if ($contribution['recur_period'] ?? NULL) {
       $this->createContributionRecur($savedContribution['id'], $contribution['recur_period']);

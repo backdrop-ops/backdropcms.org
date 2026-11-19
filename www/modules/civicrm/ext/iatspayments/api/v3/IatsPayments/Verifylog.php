@@ -23,14 +23,14 @@ function civicrm_api3_iats_payments_verifylog($params) {
     $customer_code = empty($params['customer_code']) ? '' : $params['customer_code'];
     if (!empty($params['contribution'])) {
       $contribution = $params['contribution'];
-      $query_params = array(
-        1 => array($customer_code, 'String'),
-        2 => array($contribution['contact_id'], 'Integer'),
-        3 => array($contribution['id'], 'Integer'),
-        4 => array($params['contribution_status_id'], 'Integer'),
-        5 => array($params['transaction_id'], 'String'),
-        6 => array($contribution['contribution_recur_id'], 'Integer'),
-      );
+      $query_params = [
+        1 => [$customer_code, 'String'],
+        2 => [$contribution['contact_id'], 'Integer'],
+        3 => [$contribution['id'], 'Integer'],
+        4 => [$params['contribution_status_id'], 'Integer'],
+        5 => [$params['transaction_id'], 'String'],
+        6 => [$contribution['contribution_recur_id'], 'Integer'],
+      ];
       if (empty($contribution['contribution_recur_id'])) {
         unset($query_params[6]);
         $result = CRM_Core_DAO::executeQuery("INSERT INTO civicrm_iats_verify
@@ -42,10 +42,10 @@ function civicrm_api3_iats_payments_verifylog($params) {
       }
     }
     else {
-      $query_params = array(
-        1 => array($customer_code, 'String'),
-        2 => array($params['transaction_id'], 'String'),
-      );
+      $query_params = [
+        1 => [$customer_code, 'String'],
+        2 => [$params['transaction_id'], 'String'],
+      ];
       $result = CRM_Core_DAO::executeQuery("INSERT INTO civicrm_iats_verify
         (customer_code, auth_result, verify_datetime) VALUES (%1, %2, NOW())", $query_params);
     }

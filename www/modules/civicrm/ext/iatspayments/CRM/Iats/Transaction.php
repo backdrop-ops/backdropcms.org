@@ -31,13 +31,13 @@ class CRM_Iats_Transaction {
       $template = reset($result['values']);
       $contribution_id = $template['id'];
       $template['original_contribution_id'] = $contribution_id;
-      $template['line_items'] = array();
-      $get = array('entity_table' => 'civicrm_contribution', 'entity_id' => $contribution_id);
+      $template['line_items'] = [];
+      $get = ['entity_table' => 'civicrm_contribution', 'entity_id' => $contribution_id];
       $result = civicrm_api3('LineItem', 'get', $get);
       if (!empty($result['values'])) {
         foreach ($result['values'] as $initial_line_item) {
-          $line_item = array();
-          foreach (array('price_field_id', 'qty', 'line_total', 'unit_price', 'label', 'price_field_value_id', 'financial_type_id') as $key) {
+          $line_item = [];
+          foreach (['price_field_id', 'qty', 'line_total', 'unit_price', 'label', 'price_field_value_id', 'financial_type_id'] as $key) {
             $line_item[$key] = $initial_line_item[$key];
           }
           $template['line_items'][] = $line_item;
@@ -145,7 +145,7 @@ class CRM_Iats_Transaction {
       // 2. Date is wrong.
       try {
         // $status = $result['contribution_status_id'] == 1 ? 'Completed' : 'Pending';
-        $contributionResult = civicrm_api3('Contribution', 'repeattransaction', array(
+        $contributionResult = civicrm_api3('Contribution', 'repeattransaction', [
           'original_contribution_id' => $contribution['original_contribution_id'],
           'contribution_status_id' => 'Pending',
           'is_email_receipt' => 0,
@@ -155,7 +155,7 @@ class CRM_Iats_Transaction {
           // 'financial_type_id' => $contribution['financial_type_id'],.
           // 'payment_processor_id' => $contribution['payment_processor'],
           'contribution_recur_id' => $contribution['contribution_recur_id'],
-        ));
+        ]);
         // watchdog('iats_civicrm','repeat transaction result <pre>@params</pre>',array('@params' => print_r($pending,TRUE)));.
         $contribution['id'] = $contributionResult['id'] ?? NULL;
       }
@@ -171,13 +171,13 @@ class CRM_Iats_Transaction {
         // First restore/add various fields that the repeattransaction api may overwrite or ignore.
         // TODO - fix this in core to allow these to be set above.
         try {
-          civicrm_api3('contribution', 'create', array('id' => $contribution['id'], 
+          civicrm_api3('contribution', 'create', ['id' => $contribution['id'],
             'invoice_id' => $contribution['invoice_id'],
             'source' => $contribution['source'],
             'receive_date' => $contribution['receive_date'],
             'payment_instrument_id' => $contribution['payment_instrument_id'],
             // '' => $contribution['receive_date'],
-          ));
+          ]);
         }
         catch (Exception $e) {
           // Not sure why this might fail, but let's be careful
@@ -187,13 +187,13 @@ class CRM_Iats_Transaction {
         if ($contribution['contribution_status_id'] == 1) {
           // My transaction completed, so record that fact in CiviCRM, potentially sending an invoice.
           try {
-            civicrm_api3('Contribution', 'completetransaction', array(
+            civicrm_api3('Contribution', 'completetransaction', [
               'id' => $contribution['id'],
               'payment_processor_id' => $contribution['payment_processor'],
               'is_email_receipt' => (empty($contribution['is_email_receipt']) ? 0 : 1),
               'trxn_id' => $contribution['trxn_id'],
               'receive_date' => $contribution['receive_date'],
-            ));
+            ]);
           }
           catch (Exception $e) {
             // log the error and continue
@@ -203,10 +203,10 @@ class CRM_Iats_Transaction {
         else {
           // just save my trxn_id for ACH verification later
           try {
-            civicrm_api3('Contribution', 'create', array(
+            civicrm_api3('Contribution', 'create', [
               'id' => $contribution['id'],
               'trxn_id' => $contribution['trxn_id'],
-            ));
+            ]);
           }
           catch (Exception $e) {
             // log the error and continue
@@ -231,7 +231,7 @@ class CRM_Iats_Transaction {
       // Connect to a membership if requested.
       if (!empty($contribution['id']) && !empty($contribution['membership_id'])) {
         try {
-          civicrm_api3('MembershipPayment', 'create', array('contribution_id' => $contribution['id'], 'membership_id' => $contribution['membership_id']));
+          civicrm_api3('MembershipPayment', 'create', ['contribution_id' => $contribution['id'], 'membership_id' => $contribution['membership_id']]);
         }
         catch (Exception $e) {
           // Ignore.
@@ -240,11 +240,11 @@ class CRM_Iats_Transaction {
       /* And then I'm done unless it completed */
       if ($payment_result['payment_status_id'] == 1 && $success) {
         /* success, and the transaction has completed */
-        $complete = array('id' => $contribution['id'], 
+        $complete = ['id' => $contribution['id'],
           'payment_processor_id' => $contribution['payment_processor'],
           'trxn_id' => $trxn_id, 
           'receive_date' => $contribution['receive_date']
-        );
+        ];
         $complete['is_email_receipt'] = empty($contribution['is_email_receipt']) ? 0 : 1;
         try {
           $contributionResult = civicrm_api3('contribution', 'completetransaction', $complete);
@@ -254,23 +254,23 @@ class CRM_Iats_Transaction {
           $contribution['source'] .= ' [with unexpected api.completetransaction error: ' . $e->getMessage() . ']';
         }
         // Restore my source field that ipn code irritatingly overwrites, and make sure that the trxn_id is set also.
-        civicrm_api3('contribution', 'setvalue', array('id' => $contribution['id'], 'value' => $contribution['source'], 'field' => 'source'));
-        civicrm_api3('contribution', 'setvalue', array('id' => $contribution['id'], 'value' => $trxn_id, 'field' => 'trxn_id'));
+        civicrm_api3('contribution', 'setvalue', ['id' => $contribution['id'], 'value' => $contribution['source'], 'field' => 'source']);
+        civicrm_api3('contribution', 'setvalue', ['id' => $contribution['id'], 'value' => $trxn_id, 'field' => 'trxn_id']);
         // $message = $is_recurrence ? ts('Successfully processed contribution in recurring series id %1: ', array(1 => $contribution['contribution_recur_id'])) : ts('Successfully processed one-time contribution: ');
       }
     }
     // Now return the appropriate message and code.
     if (!$success) { // calling function will restore next schedule contribution date
-      $message = ts('Failed to process recurring contribution id %1: %2', array(1 => $contribution['contribution_recur_id'], 2 => $payment_result['message']));
+      $message = ts('Failed to process recurring contribution id %1: %2', [1 => $contribution['contribution_recur_id'], 2 => $payment_result['message']]);
     }
     elseif ($payment_result['payment_status_id'] == 1) {
-      $message = ts('Successfully processed recurring contribution in series id %1: %2', array(1 => $contribution['contribution_recur_id'], 2 => $auth_response));
+      $message = ts('Successfully processed recurring contribution in series id %1: %2', [1 => $contribution['contribution_recur_id'], 2 => $auth_response]);
     }
     else {
       // I'm using ACH or a processor that doesn't complete.
-      $message = ts('Successfully processed pending recurring contribution in series id %1: %2', array(1 => $contribution['contribution_recur_id'], 2 => $auth_response));
+      $message = ts('Successfully processed pending recurring contribution in series id %1: %2', [1 => $contribution['contribution_recur_id'], 2 => $auth_response]);
     }
-    return array('message' => $message, 'result' => $payment_result);
+    return ['message' => $message, 'result' => $payment_result];
   }
 
   /**
@@ -293,38 +293,35 @@ class CRM_Iats_Transaction {
    */
   static function process_payment($contribution, $paymentProcessor, $payment_token) {
     // set default result status
-    $result = [
-      'payment_status_id' => 1,
-      'auth_code' => '',
-    ];
-    $request = [
-    ];
+    $result = ['auth_code' => ''];
+    $request = [];
+    $paymentStatus = 'Completed';
     switch ($paymentProcessor['class_name']) {
       case 'Payment_FapsACH':
         $paymentProcessorGroup = 'Faps';
         $action = 'AchDebitUsingVault';
         // Will complete later
-        $result['payment_status_id'] = 2;
+        $paymentStatus = 'Pending';
         // store it in request 
-        $credentials = array(
+        $credentials = [
           'merchantKey' => $paymentProcessor['signature'],
           'processorId' => $paymentProcessor['user_name']
-        );
+        ];
         $request['categoryText'] = CRM_Core_Payment_FapsACH::getCategoryText($credentials, $contribution['is_test']);
         break;
       case 'Payment_Faps':
         $paymentProcessorGroup = 'Faps';
         $action = 'SaleUsingVault';
-        $credentials = array(
+        $credentials = [
           'merchantKey' => $paymentProcessor['signature'],
           'processorId' => $paymentProcessor['user_name']
-        );
+        ];
         break;
       case 'Payment_iATSServiceACHEFT':
         $paymentProcessorGroup = 'iATS';
         $method = 'acheft_with_customer_code';
         // Will complete later.
-        $result['payment_status_id'] = 2;
+        $paymentStatus = 'Pending';
         break;
       case 'Payment_iATSService':
       case 'Payment_iATSServiceSWIPE':
@@ -333,24 +330,25 @@ class CRM_Iats_Transaction {
         break;
       default:
         CRM_Core_Error::debug_var('Unsupported processor class:', $paymentProcessor['class_name']);
-        throw new Exception(ts('Unsupported processor class %1', array(1 => $paymentProcessor['class_name'])));
+        throw new Exception(ts('Unsupported processor class %1', [1 => $paymentProcessor['class_name']]));
     }
+    $result += CRM_Iats_Utils::paymentStatus($paymentStatus);
 
     // Two different "group" flows, either Faps or iATS Legacy
     switch ($paymentProcessorGroup) {
       case 'Faps':
-        $service_params = array('action' => $action);
+        $service_params = ['action' => $action];
         $faps = new CRM_Iats_FapsRequest($service_params);
         // Build the request array.
         // CRM_Core_Error::debug_var('options', $options);
         // TODO: Get the vault key!
         list($vaultKey,$vaultId) = explode(':', $payment_token['token'], 2);
-        $request = $request + array(
+        $request = $request + [
           'vaultKey' => $vaultKey,
           'vaultId' => $vaultId,
           'orderId' => $contribution['invoice_id'],
           'transactionAmount' => sprintf('%01.2f', CRM_Utils_Rule::cleanMoney($contribution['total_amount'])),
-        );
+        ];
         // Make the request.
         // CRM_Core_Error::debug_var('process transaction request', $request);
         $result['result'] = $faps->request($credentials, $request);
@@ -373,30 +371,31 @@ class CRM_Iats_Transaction {
           case 'REJECT: 100':
             /* convert the contribution series to pending to avoid reprocessing until dealt with */
             civicrm_api('ContributionRecur', 'create',
-              array(
+              [
                 'version' => 3,
                 'id'      => $contribution['contribution_recur_id'],
                 'contribution_status_id'   => 'Pending',
-              )
+                'contribution_status'   => 'Pending',
+              ]
             );
             break;
         }
         break;
       case 'iATS':
-        $credentials = array(
+        $credentials = [
           'agentCode' => $paymentProcessor['user_name'],
           'password' => $paymentProcessor['password'],
           'domain' => parse_url($paymentProcessor['url_site'], PHP_URL_HOST),
-        );
-        $iats_service_params = array('method' => $method, 'type' => 'process', 'iats_domain' => $credentials['domain']);
+        ];
+        $iats_service_params = ['method' => $method, 'type' => 'process', 'iats_domain' => $credentials['domain']];
         $iats = new CRM_Iats_iATSServiceRequest($iats_service_params);
         // Build the request array.
-        $request = array(
+        $request = [
           'customerCode' => $payment_token['token'],
           'invoiceNum' => $contribution['invoice_id'],
           'total' => $contribution['total_amount'],
           'customerIPAddress' => '',
-        );
+        ];
         // Make the soap request.
         $response = $iats->request($credentials, $request);
         // Process the soap response into a readable result.
@@ -413,7 +412,7 @@ class CRM_Iats_Transaction {
         break;
       default:
         CRM_Core_Error::debug_var('Unsupported processor group:', $paymentProcessorGroup);
-        throw new Exception(ts('Unsupported processor group %1', array(1 => $paymentProcessorGroup)));
+        throw new Exception(ts('Unsupported processor group %1', [1 => $paymentProcessorGroup]));
     }
     return $result;
   }
@@ -428,7 +427,7 @@ class CRM_Iats_Transaction {
    */
   static function get_future_monthly_start_dates($start_date, $allow_days) {
     // Future date options.
-    $start_dates = array();
+    $start_dates = [];
     // special handling for today - it means immediately or now.
     $today = date('Ymd').'030000';
     // If not set, only allow for the first 28 days of the month.

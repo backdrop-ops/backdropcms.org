@@ -36,7 +36,7 @@ class CRM_Iats_Page_iATSAdmin extends CRM_Core_Page {
       }
     }
     // Load the most recent requests and responses from the log files.
-    foreach (array('cc', 'auth_result') as $key) {
+    foreach (['cc', 'auth_result'] as $key) {
       $search[$key] = empty($_GET['search_' . $key]) ? '' : filter_var($_GET['search_' . $key], FILTER_SANITIZE_STRING);
     }
     $log = $this->getLog($search);
@@ -49,10 +49,10 @@ class CRM_Iats_Page_iATSAdmin extends CRM_Core_Page {
   /**
    *
    */
-  public function getLog($search = array(), $n = 40) {
+  public function getLog($search = [], $n = 40) {
     // Avoid sql injection attacks.
     $n = (int) $n;
-    $filter = array();
+    $filter = [];
     foreach ($search as $key => $value) {
       if (!empty($value)) {
         $filter[] = "$key RLIKE '$value'";
@@ -69,8 +69,8 @@ class CRM_Iats_Page_iATSAdmin extends CRM_Core_Page {
      $where ORDER BY request.id DESC LIMIT $n";
 
     $dao = CRM_Core_DAO::executeQuery($sql);
-    $log = array();
-    $params = array('version' => 3, 'sequential' => 1, 'return' => 'contribution_id');
+    $log = [];
+    $params = ['version' => 3, 'sequential' => 1, 'return' => 'contribution_id'];
     $className = get_class($dao);
     $internal = array_keys(get_class_vars($className));
     // Get some customer data while i'm at it

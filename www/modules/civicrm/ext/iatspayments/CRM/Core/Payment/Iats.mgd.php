@@ -5,13 +5,13 @@
  * http://wiki.civicrm.org/confluence/display/CRMDOC/Hook+Reference
  */
 
-return array(
+return [
   0 =>
-    array(
+    [
     'module' => 'com.iatspayments.civicrm',
     'name' => 'iATS Payments',
     'entity' => 'PaymentProcessorType',
-    'params' => array(
+    'params' => [
       'version' => 3,
       'name' => 'iATS Payments Credit Card',
       'title' => 'iATS Payments Credit Card',
@@ -26,14 +26,14 @@ return array(
       'url_recur_test_default' => 'https://www.iatspayments.com/NetGate/ProcessLinkv2.asmx?WSDL',
       'is_recur' => 1,
       'payment_type' => 1,
-    ),
-  ),
+    ],
+  ],
   1 =>
-    array(
+    [
     'module' => 'com.iatspayments.civicrm',
     'name' => 'iATS Payments ACH/EFT',
     'entity' => 'PaymentProcessorType',
-    'params' => array(
+    'params' => [
       'version' => 3,
       'name' => 'iATS Payments ACH/EFT',
       'title' => 'iATS Payments ACH/EFT',
@@ -49,14 +49,14 @@ return array(
       'is_recur' => 1,
       'payment_type' => 2,
       'payment_instrument_id' => '2', /* "Debit Card"  */
-    ),
-  ),
+    ],
+  ],
   2 =>
-    array(
+    [
     'module' => 'com.iatspayments.civicrm',
     'name' => 'iATS Payments SWIPE',
     'entity' => 'PaymentProcessorType',
-    'params' => array(
+    'params' => [
       'version' => 3,
       'name' => 'iATS Payments SWIPE',
       'title' => 'iATS Payments SWIPE',
@@ -71,6 +71,6 @@ return array(
       'url_recur_test_default' => 'https://www.iatspayments.com/NetGate/ProcessLinkv2.asmx?WSDL',
       'is_recur' => 1,
       'payment_type' => 1,
-    ),
-  ),
-);
+    ],
+  ],
+];

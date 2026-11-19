@@ -25,16 +25,16 @@ function _civicrm_api3_faps_transaction_Get_spec(&$spec) {
  */
 function civicrm_api3_faps_transaction_Get($params) {
   $paymentProcessor = civicrm_api3('PaymentProcessor', 'getsingle', ['return' => ['password','user_name','signature'], 'id' => $params['payment_processor_id'], 'is_test' => 0]);
-  $credentials = array(
+  $credentials = [
     'merchantKey' => $paymentProcessor['signature'],
     'processorId' => $paymentProcessor['user_name']
-  );
-  $service_params = array('action' => 'Query');
+  ];
+  $service_params = ['action' => 'Query'];
   $faps = new CRM_Iats_FapsRequest($service_params);
-  $request = array(
+  $request = [
     'referenceNumber' => '182668',
     // 'transactionId' => $params['transactionId'],
-  );
+  ];
   $result = $faps->request($credentials, $request);
   return civicrm_api3_create_success($result, $params, 'FapsTransaction', 'Get');
 }

@@ -21,16 +21,16 @@ class CRM_Iats_Page_IATSCustomerLink extends CRM_Core_Page {
     $is_test = CRM_Utils_Request::retrieve('is_test', 'Integer');
     $this->assign('customerCode', $customerCode);
     $credentials = CRM_Iats_iATSServiceRequest::credentials($paymentProcessorId, $is_test);
-    $iats_service_params = array('type' => 'customer', 'iats_domain' => $credentials['domain'], 'method' => 'get_customer_code_detail');
+    $iats_service_params = ['type' => 'customer', 'iats_domain' => $credentials['domain'], 'method' => 'get_customer_code_detail'];
     $iats = new CRM_Iats_iATSServiceRequest($iats_service_params);
     // print_r($iats); die();
-    $request = array('customerCode' => $customerCode);
+    $request = ['customerCode' => $customerCode];
     // Make the soap request.
     $response = $iats->request($credentials, $request);
     // note: don't log this to the iats_response table.
     $customer = $iats->result($response, FALSE);
     if (empty($customer['ac1'])) {
-      $alert = ts('Unable to retrieve card details from iATS.<br />%1', array(1 => $customer['AUTHORIZATIONRESULT']));
+      $alert = ts('Unable to retrieve card details from iATS.<br />%1', [1 => $customer['AUTHORIZATIONRESULT']]);
       CRM_Core_Session::setStatus($alert, ts('Warning'), 'alert');
     }
     else {
@@ -40,7 +40,7 @@ class CRM_Iats_Page_IATSCustomerLink extends CRM_Core_Page {
       $type = $attributes['type'];
       $card = get_object_vars($ac1->$type);
       $card['type'] = $type;
-      foreach (array('ac1', 'status', 'remote_id', 'auth_result') as $key) {
+      foreach (['ac1', 'status', 'remote_id', 'auth_result'] as $key) {
         if (isset($customer[$key])) {
           unset($customer[$key]);
         }

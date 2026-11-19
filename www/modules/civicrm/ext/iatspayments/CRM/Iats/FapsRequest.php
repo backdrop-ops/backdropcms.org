@@ -47,7 +47,7 @@ class Faps_Transaction implements JsonSerializable {
 class CRM_Iats_FapsRequest {
 
   const DEBUG = false;
-  public $result = array();
+  public $result = [];
   public $status = "";
   private $liveUrl = "https://secure.1stpaygateway.net/secure/RestGW/Gateway/Transaction/";
   private $testUrl = "https://secure-v.goemerchant.com/secure/RestGW/Gateway/Transaction/";
@@ -73,10 +73,10 @@ class CRM_Iats_FapsRequest {
     $data = array_merge($credentials, $request_params);
     try {
       if ($data == NULL) {
-        $data = array(); 
+        $data = [];
       }
       $url = $this->apiRequest;
-      $this->result = array();
+      $this->result = [];
       $jsondata = json_encode(new Faps_Transaction($data), JSON_PRETTY_PRINT);
       $jsondata = utf8_encode($jsondata);
       // CRM_Core_Error::debug_var('jsondata', $jsondata);
@@ -85,10 +85,10 @@ class CRM_Iats_FapsRequest {
       curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
       curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $jsondata);
       curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
-      curl_setopt($curl_handle, CURLOPT_HTTPHEADER, array(
+      curl_setopt($curl_handle, CURLOPT_HTTPHEADER, [
         "Content-type: application/json; charset-utf-8",
         "Content-Length: " . strlen($jsondata)
-      ));
+      ]);
       curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
       $this->response = curl_exec($curl_handle);
       if (self::DEBUG) {
@@ -97,23 +97,23 @@ class CRM_Iats_FapsRequest {
       $this->status = curl_getinfo($curl_handle,CURLINFO_HTTP_CODE);
       if (connection_aborted()) {
         // handle aborted requests that PHP can detect, returning a result that indicates POST was aborted.
-        $this->result = array(
+        $this->result = [
           "isError" => TRUE,
           "errorMessages" => "Request Aborted",
           "isValid" => FALSE,
-          "validations" => array(),
+          "validations" => [],
           "action" => "gatewayError"
-        );
+        ];
       }
       elseif (curl_errno($curl_handle) == 28 ){
         //This will handle timeouts as per cURL error definitions.
-        $this->result = array(
+        $this->result = [
           "isError" => TRUE,
           "errorMessages" => "Request Timed Out",
           "isValid" => FALSE,
-          "validations" => array(),
+          "validations" => [],
           "action" => "gatewayError"
-        );
+        ];
       }
       else {
         // CRM_Core_Error::debug_var('Response', $this->response);

@@ -2,6 +2,7 @@
 
 namespace Civi\Api4\Action\Afform;
 
+use Civi\API\Exception\UnauthorizedException;
 use Civi\Api4\Generic\Traits\ArrayQueryActionTrait;
 use CRM_Afform_ExtensionUtil as E;
 use Civi\Afform\Event\AfformSubmitEvent;
@@ -30,17 +31,17 @@ class Submit extends AbstractProcessor {
     // preprocess submitted values
     $this->_entityValues = $this->preprocessSubmittedValues($this->values);
 
-    // get the submission information if we have submission id.
-    // currently we don't support processing of already processed forms
-    // return validation error in those cases
+    // A stored submission is completed only by someone allowed to see it, and only once.
     if (!empty($this->args['sid'])) {
-      $afformSubmissionData = \Civi\Api4\AfformSubmission::get(FALSE)
+      $storedSubmission = AfformSubmission::get($this->getCheckPermissions())
         ->addWhere('id', '=', $this->args['sid'])
         ->addWhere('afform_name', '=', $this->name)
-        ->addWhere('status_id:name', '=', 'Processed')
-        ->execute()->count();
-
-      if ($afformSubmissionData > 0) {
+        ->addSelect('status_id:name')
+        ->execute()->first();
+      if (!$storedSubmission) {
+        throw new UnauthorizedException(E::ts('Submission %1 is not available to process.', [1 => $this->args['sid']]));
+      }
+      if ($storedSubmission['status_id:name'] === 'Processed') {
         throw new \CRM_Core_Exception(ts('Submission Processed'), 0, ['validation' => ts('Submission is already processed.')]);
       }
     }
@@ -94,10 +95,7 @@ class Submit extends AbstractProcessor {
       $submissionData = $this->combineValuesAndIds($this->getValues(), $this->_entityIds);
       // Update submission record with entity IDs.
       if (!empty($this->_afform['create_submission'])) {
-        $submissionId = $submission['id'];
-        if (!empty($this->args['sid'])) {
-          $submissionId = $this->args['sid'];
-        }
+        $submissionId = !empty($this->args['sid']) ? $this->args['sid'] : $submission['id'];
 
         AfformSubmission::update(FALSE)
           ->addWhere('id', '=', $submissionId)
@@ -123,7 +121,7 @@ class Submit extends AbstractProcessor {
       $this->setResponseItem('message', $message);
     }
     elseif ($this->_afform['redirect']) {
-      $redirect = $this->replaceTokens($this->_afform['redirect']);
+      $redirect = $this->replaceTokens($this->_afform['redirect'], 'url');
       $this->setResponseItem('redirect', $redirect);
     }
 
@@ -395,6 +393,10 @@ class Submit extends AbstractProcessor {
    * @param \Civi\Afform\Event\AfformSubmitEvent $event
    */
   public static function preprocessParentFormValues(AfformSubmitEvent $event): void {
+    // Only a quick-add form takes over values from the form it was opened from.
+    if (!str_starts_with($event->getAfform()['server_route'] ?? '', 'civicrm/quick-add/')) {
+      return;
+    }
     $entityType = $event->getEntityType();
     $apiRequest = $event->getApiRequest();
     $args = $apiRequest->getArgs();
@@ -414,9 +416,11 @@ class Submit extends AbstractProcessor {
         if (!$entity || $entity['type'] !== $entityType || empty($entity['data'])) {
           return;
         }
+        // Values preset on this form are not replaced
+        $parentData = array_diff_key($entity['data'], $event->getEntity()['data'] ?? []);
         $records = $event->getRecords();
         foreach ($records as &$record) {
-          $record['fields'] = $entity['data'] + $record['fields'];
+          $record['fields'] = $parentData + $record['fields'];
         }
         $event->setRecords($records);
       }
@@ -475,11 +479,9 @@ class Submit extends AbstractProcessor {
         continue;
       }
       try {
-        $idField = CoreUtil::getIdFieldName($event->getEntityType());
         $saved = $api4($event->getEntityType(), 'save', ['records' => [$record['fields']]])->first();
-        $event->setEntityId($index, $saved[$idField]);
         $event->setSaved($index, $saved);
-        self::saveJoins($event, $index, $saved[$idField], $record['joins'] ?? []);
+        self::saveJoins($event, $index, $event->getEntityId($index), $record['joins'] ?? []);
       }
       catch (\CRM_Core_Exception $e) {
         // What to do here? Sometimes we should silently ignore errors, e.g. an optional entity
@@ -563,8 +565,10 @@ class Submit extends AbstractProcessor {
             $params['id'] = $existing['id'];
             unset($params['contact_id_a'], $params['contact_id_b']);
             // If this is a flipped reciprocal relationship, also flip the permissions
-            $params['is_permission_a_b'] = $relationship['is_permission_b_a'] ?? NULL;
-            $params['is_permission_b_a'] = $relationship['is_permission_a_b'] ?? NULL;
+            if ($existing['contact_id_a'] != $contact_id_a) {
+              $params['is_permission_a_b'] = $relationship['is_permission_b_a'] ?? NULL;
+              $params['is_permission_b_a'] = $relationship['is_permission_a_b'] ?? NULL;
+            }
           }
         }
         $api4('Relationship', 'save', ['records' => [$params]]);
@@ -589,14 +593,25 @@ class Submit extends AbstractProcessor {
       $mainIdField = CoreUtil::getIdFieldName($mainEntity['type']);
       $joinIdField = CoreUtil::getIdFieldName($joinEntityName);
       $joinAllowedAction = self::getJoinAllowedAction($mainEntity, $joinEntityName);
+      // The submitter of a dedupe match never saw the stored records, so none are removed.
+      if (!empty($event->dedupeMatches[$index])) {
+        $joinAllowedAction['delete'] = FALSE;
+      }
 
       // Forward FK e.g. Event.loc_block_id => LocBlock
       $forwardFkField = self::getFkField($mainEntity['type'], $joinEntityName);
       if ($forwardFkField && $values) {
-        // Add id to values for update op, but only if id is not already on the form
-        if ($whereClause && $joinAllowedAction['update'] && empty($mainEntity['joins'][$joinEntityName]['fields'][$joinIdField])) {
-          $values[0][$joinIdField] = $whereClause[0][2];
+        $existingId = $whereClause[0][2] ?? NULL;
+        $hasOtherFields = count(array_diff(array_keys($values[0]), [$joinIdField])) > 0;
+        // Add id to values for update op if id is not on the form
+        if ($existingId && $joinAllowedAction['update'] && empty($mainEntity['joins'][$joinEntityName]['fields'][$joinIdField])) {
+          $values[0][$joinIdField] = $existingId;
         }
+        // If modifying fields, do not allow updating a record that does not belong to this entity
+        if ($hasOtherFields && !empty($values[0][$joinIdField]) && (!$joinAllowedAction['update'] || $values[0][$joinIdField] != $existingId)) {
+          unset($values[0][$joinIdField]);
+        }
+        $joinAction = empty($values[0][$joinIdField]) ? 'create' : 'update';
         $result = civicrm_api4($joinEntityName, 'save', [
           // Disable permission checks because the main entity has already been vetted
           'checkPermissions' => FALSE,
@@ -609,6 +624,7 @@ class Submit extends AbstractProcessor {
         ]);
         $indexedResult = array_combine(array_keys($values), (array) $result);
         $event->setJoinIds($index, $joinEntityName, $indexedResult);
+        $event->setJoinActions($index, $joinEntityName, [array_key_first($values) => $joinAction]);
       }
 
       // Reverse FK e.g. Contact <= Email.contact_id
@@ -616,9 +632,16 @@ class Submit extends AbstractProcessor {
         // In update mode, set ids of existing values
         if ($joinAllowedAction['update']) {
           $existingJoinValues = $event->getApiRequest()->loadJoins($joinEntityName, $mainEntity, $entityId, $index);
+          $existingIds = array_filter(array_column($existingJoinValues, $joinIdField));
           foreach ($existingJoinValues as $joinIndex => $existingJoin) {
             if (!empty($existingJoin[$joinIdField]) && !empty($values[$joinIndex])) {
               $values[$joinIndex][$joinIdField] = $existingJoin[$joinIdField];
+            }
+          }
+          // Do not allow updating a record that does not belong to this entity
+          foreach ($values as $key => $value) {
+            if (!empty($value[$joinIdField]) && !in_array($value[$joinIdField], $existingIds)) {
+              unset($values[$key][$joinIdField]);
             }
           }
         }
@@ -627,6 +650,10 @@ class Submit extends AbstractProcessor {
             unset($values[$key][$joinIdField]);
           }
         }
+        $joinActions = array_map(
+          fn($value) => empty($value[$joinIdField]) ? 'create' : 'update',
+          $values
+        );
         // Use REPLACE action if update+delete are both allowed (only need to check for 'delete' as it implies 'update')
         if ($joinAllowedAction['delete']) {
           $result = civicrm_api4($joinEntityName, 'replace', [
@@ -647,6 +674,7 @@ class Submit extends AbstractProcessor {
         }
         $indexedResult = array_combine(array_keys($values), (array) $result);
         $event->setJoinIds($index, $joinEntityName, $indexedResult);
+        $event->setJoinActions($index, $joinEntityName, $joinActions);
       }
       // REPLACE doesn't work if there are no records, have to use DELETE
       elseif ($joinAllowedAction['delete']) {
@@ -736,7 +764,11 @@ class Submit extends AbstractProcessor {
       'exp' => $expires,
       // Note: Scope is not the same as "authx" scope. "Authx" tokens are user-login tokens. This one is a more limited access token.
       'scope' => 'afformPostSubmit',
-      'civiAfformSubmission' => ['name' => $this->name, 'data' => $this->_entityIds],
+      'civiAfformSubmission' => [
+        'name' => $this->name,
+        'data' => $this->_entityIds,
+        'actions' => $this->_entityActions,
+      ],
     ]);
   }
 

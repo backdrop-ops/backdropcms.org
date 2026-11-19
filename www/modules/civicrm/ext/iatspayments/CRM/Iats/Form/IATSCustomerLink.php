@@ -13,7 +13,7 @@ require_once 'CRM/Core/Form.php';
  */
 class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
 
-  private $iats_result = array();
+  private $iats_result = [];
 
   /**
    * Get the field names and labels expected by iATS CustomerLink,
@@ -22,7 +22,7 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
    * @return array
    */
   public function getFields() {
-    $civicrm_fields = array(
+    $civicrm_fields = [
       'firstName' => 'billing_first_name',
       'lastName' => 'billing_last_name',
       'address' => 'street_address',
@@ -32,9 +32,9 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
       'creditCardNum' => 'credit_card_number',
       'creditCardExpiry' => 'credit_card_expiry',
       'mop' => 'credit_card_type',
-    );
+    ];
     // When querying using CustomerLink.
-    $iats_fields = array(
+    $iats_fields = [
     // FLN.
       'creditCardCustomerName' => 'CSTN',
       'address' => 'ADD',
@@ -44,8 +44,8 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
       'creditCardNum' => 'CCN',
       'creditCardExpiry' => 'EXP',
       'mop' => 'MP',
-    );
-    $labels = array(
+    ];
+    $labels = [
       // 'firstName' => 'First Name',
       // 'lastName' => 'Last Name',.
       'creditCardCustomerName' => 'Name on Card',
@@ -56,8 +56,8 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
       'creditCardNum' => 'Credit Card Number',
       'creditCardExpiry' => 'Credit Card Expiry Date',
       'mop' => 'Credit Card Type',
-    );
-    return array($civicrm_fields, $iats_fields, $labels);
+    ];
+    return [$civicrm_fields, $iats_fields, $labels];
   }
 
   /**
@@ -65,16 +65,16 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
    */
   protected function getCustomerCodeDetail($params) {
     $credentials = CRM_Iats_iATSServiceRequest::credentials($params['paymentProcessorId'], $params['is_test']);
-    $iats_service_params = array('type' => 'customer', 'iats_domain' => $credentials['domain'], 'method' => 'get_customer_code_detail');
+    $iats_service_params = ['type' => 'customer', 'iats_domain' => $credentials['domain'], 'method' => 'get_customer_code_detail'];
     $iats = new CRM_Iats_iATSServiceRequest($iats_service_params);
     // print_r($iats); die();
-    $request = array('customerCode' => $params['customerCode']);
+    $request = ['customerCode' => $params['customerCode']];
     // Make the soap request.
     $response = $iats->request($credentials, $request);
     // note: don't log this to the iats_response table.
     $customer = $iats->result($response, FALSE);
     if (empty($customer['ac1'])) {
-      $alert = ts('Unable to retrieve card details from iATS.<br />%1', array(1 => $customer['AUTHORIZATIONRESULT']));
+      $alert = ts('Unable to retrieve card details from iATS.<br />%1', [1 => $customer['AUTHORIZATIONRESULT']]);
       throw new Exception($alert);
     }
     // This is a SimpleXMLElement Object.
@@ -91,7 +91,7 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
     unset($params['paymentProcessorId']);
     unset($params['is_test']);
     unset($params['domain']);
-    $iats_service_params = array('type' => 'customer', 'iats_domain' => $credentials['domain'], 'method' => 'update_credit_card_customer');
+    $iats_service_params = ['type' => 'customer', 'iats_domain' => $credentials['domain'], 'method' => 'update_credit_card_customer'];
     $iats = new CRM_Iats_iATSServiceRequest($iats_service_params);
     // print_r($iats); die();
     $params['updateCreditCardNum'] = (0 < strlen($params['creditCardNum']) && (FALSE === strpos($params['creditCardNum'], '*'))) ? 1 : 0;
@@ -100,7 +100,7 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
       unset($params['updateCreditCardNum']);
     }
     $params['customerIPAddress'] = (function_exists('ip_address') ? ip_address() : $_SERVER['REMOTE_ADDR']);
-    foreach (array('qfKey', 'entryURL', 'firstName', 'lastName', '_qf_default', '_qf_IATSCustomerLink_submit') as $key) {
+    foreach (['qfKey', 'entryURL', 'firstName', 'lastName', '_qf_default', '_qf_IATSCustomerLink_submit'] as $key) {
       if (isset($params[$key])) {
         unset($params[$key]);
       }
@@ -116,7 +116,7 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
    *  Get an appropriate message for the user after an update is attempted.
    */
   protected function getResultMessage() {
-    $message = array();
+    $message = [];
     foreach($this->iats_result as $key => $value) {
       $message[] = strtolower($key).": $value";
     }
@@ -140,12 +140,12 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
     $customerCode = CRM_Utils_Request::retrieve('customerCode', 'String');
     $paymentProcessorId = CRM_Utils_Request::retrieve('paymentProcessorId', 'Positive');
     $is_test = CRM_Utils_Request::retrieve('is_test', 'Integer');
-    $defaults = array(
+    $defaults = [
       'cid' => $cid,
       'customerCode' => $customerCode,
       'paymentProcessorId' => $paymentProcessorId,
       'is_test' => $is_test,
-    );
+    ];
     // Get my current values from iATS as defaults.
     if (empty($_POST)) {
       try {
@@ -171,17 +171,17 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
     $this->add('hidden', 'paymentProcessorId');
     $this->add('hidden', 'is_test');
     $this->setDefaults($defaults);
-    $this->addButtons(array(
-      array(
+    $this->addButtons([
+      [
         'type' => 'submit',
         'name' => ts('Submit'),
         'isDefault' => TRUE,
-      ),
-      array(
+      ],
+      [
         'type' => 'cancel',
         'name' => ts('Back'),
-      ),
-    ));
+      ],
+    ]);
     // Export form elements.
     $this->assign('elementNames', $this->getRenderableElementNames());
     parent::buildQuickForm();
@@ -225,7 +225,7 @@ class CRM_Iats_Form_IATSCustomerLink extends CRM_Core_Form {
     // auto-rendered in the loop -- such as "qfKey" and "buttons".  These
     // items don't have labels.  We'll identify renderable by filtering on
     // the 'label'.
-    $elementNames = array();
+    $elementNames = [];
     foreach ($this->_elements as $element) {
       $label = $element->getLabel();
       if (!empty($label)) {
