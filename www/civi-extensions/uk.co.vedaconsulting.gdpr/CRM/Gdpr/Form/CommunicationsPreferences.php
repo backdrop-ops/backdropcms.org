@@ -55,7 +55,9 @@ class CRM_Gdpr_Form_CommunicationsPreferences extends CRM_Core_Form {
       false
     );
     $recaptchaSettingsUrl = CRM_Utils_System::url('civicrm/admin/setting/misc', 'reset=1');
-    $descriptions['add_captcha'] = E::ts('Check to use reCAPTCHA in Communications Preferences page. Make sure you have configured the <a href="'.$recaptchaSettingsUrl.'">reCAPTCHA keys</a>.');
+    $descriptions['add_captcha'] = E::ts('Check to use reCAPTCHA in Communications Preferences page. Make sure you have configured the <a %1>reCAPTCHA keys</a>.', [
+      1 => "href=\"$recaptchaSettingsUrl\"",
+    ]);
     // Let the template know about elements in this section.
     $page_elements = [
       'page_title',

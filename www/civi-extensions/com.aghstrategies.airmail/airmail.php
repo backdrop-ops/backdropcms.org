@@ -53,7 +53,7 @@ function airmail_civicrm_alterMailParams(&$params, $context) {
         $params['returnPath'] = implode($verpSeparator, ['m', $eventQueue->job_id, $eventQueue->id, $eventQueue->hash]) . "@$emailDomain";
 
         // add custom headers
-        $params['headers']['X-My-Header'] = "This is the mail system at host " . "@$emailDomain" . "I am sorry to have to inform you that your message could not be delivered to one or more recipients. It is attached below. ";
+        //$params['headers']['X-My-Header'] = "This is the mail system at host " . "@$emailDomain" . "I am sorry to have to inform you that your message could not be delivered to one or more recipients. It is attached below. ";
 
         // add a tracking img if enabled.
         if ($mail->open_tracking && !empty($params['html'])) {

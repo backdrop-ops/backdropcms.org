@@ -161,7 +161,7 @@ class CRM_Airmail_Utils {
         ));
         Civi::cache()->set('airmailMailingIds', $cachedMailingIDs);
       }
-      catch (CiviCRM_API3_Exception $e) {
+      catch (CRM_Core_Exception $e) {
         $error = $e->getMessage();
         CRM_Core_Error::debug_log_message(self::ts('API Error retrieving mailing ID: %1', [1 => $error]));
       }

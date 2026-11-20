@@ -259,7 +259,7 @@ class CRM_Airmail_Backend_Elastic implements CRM_Airmail_Backend {
       'ConnectionTerminated'  => 10, // Spam    immediate hold
       'DNSProblem'            => 3,  // DNS      3 tries
       'GreyListed'            => 2,  // Away    30 tries
-      'Ignore'                => NULL, // ? huh? Exists in documentation without definition
+      'Ignore'                => 8, // Although undefined, this is used for quota errors.
       'ManualCancel'          => 6,  // Invalid immediate hold
       'NoMailbox'             => 6,  // Invalid immediate hold
       'NotDelivered'          => 6,  // Invalid immediate hold

@@ -116,7 +116,7 @@ EOT;
       $result = \Civi\Api4\Activity::get(FALSE)
         ->addSelect('subject', 'activity_date_time', 'SLA_Acceptance.Terms_Conditions')
         ->addWhere('activity_type_id:name', '=', self::$activityTypeName)
-        ->addWhere('target_contact_id', '=', $contactId)
+        ->addWhere('target_contact_id', 'CONTAINS', $contactId)
         ->addOrderBy('activity_date_time', 'DESC')
         ->setLimit(1)
         ->execute();

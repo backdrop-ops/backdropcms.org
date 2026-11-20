@@ -129,7 +129,9 @@ TABLE;
   }
 
   public static function getAddressHistory() {
-    $iContactId = $_POST['contactId'];
+    $iContactId = CRM_Utils_Request::retrieveValue('contactId', 'Positive');
+    $aGetAddressHistory = [];
+    $table = NULL;
     if (!empty($iContactId)) {
       $aGetAddressHistory = self::get_address_logs($iContactId);
       $table = self::get_address_history_table($aGetAddressHistory);
@@ -143,7 +145,7 @@ TABLE;
       $return = $countHistory . '|' . $table;
     }
     echo $return;
-    exit;
+    CRM_Utils_System::civiExit();
   }
 
   /**

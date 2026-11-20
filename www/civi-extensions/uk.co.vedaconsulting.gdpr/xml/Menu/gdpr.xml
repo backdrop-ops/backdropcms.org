@@ -22,6 +22,26 @@
     <path>civicrm/ajax/gdpractivitycontactlist</path>
     <page_callback>CRM_Gdpr_Page_AJAX::getGdprActivityContactList</page_callback>
     <access_arguments>access GDPR</access_arguments>
+    <is_ajax>true</is_ajax>
+  </item>
+  <item>
+    <path>civicrm/ajax/gdpraddresshistory</path>
+    <page_callback>CRM_Gdpr_Page_AJAX::getAddressHistory</page_callback>
+    <access_arguments>access GDPR</access_arguments>
+    <is_ajax>true</is_ajax>
+  </item>
+  <item>
+    <path>civicrm/ajax/gdprreruninstallationcustomdata</path>
+    <page_callback>CRM_Gdpr_Page_AJAX::reRunInstallationCustomData</page_callback>
+    <access_arguments>administer GDPR</access_arguments>
+    <is_ajax>true</is_ajax>
+  </item>
+  <item>
+    <path>civicrm/ajax/gdprcommpreferencesubmission</path>
+    <page_callback>CRM_Gdpr_Page_AJAX::commPreferenceSubmission</page_callback>
+    <is_public>true</is_public>
+    <access_callback>1</access_callback>
+    <is_ajax>true</is_ajax>
   </item>
   <item>
     <path>civicrm/gdpr/settings</path>

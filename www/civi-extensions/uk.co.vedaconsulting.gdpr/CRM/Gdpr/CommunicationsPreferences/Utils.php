@@ -320,8 +320,8 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
     //To display Communication Preference URL in Thank you page for event
     if (!empty($cid)) {
       $commPrefURL = CRM_Gdpr_CommunicationsPreferences_Utils::getCommPreferenceURLForContact($cid);
-      $linkIntro   = CRM_Utils_Array::value('comm_pref_link_intro', $settings, NULL);
-      $linkLabel   = CRM_Utils_Array::value('comm_pref_link_label', $settings, 'Update Communication Preferences');
+      $linkIntro   = $settings['comm_pref_link_intro'] ?? NULL;
+      $linkLabel   = $settings['comm_pref_link_label'] ?? 'Update Communication Preferences';
       $form->assign('comm_pref_url', $commPrefURL);
       $form->assign('link_label', $linkLabel);
       $form->assign('link_intro', $linkIntro);
@@ -384,7 +384,7 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
     //   in smarty5 so this is a quick refactor to move it to the PHP side without checking
     //   if we can simplify/cleanup.
     foreach ($form->channelEleNames as $channelName) {
-      $groupChannel[str_replace($containerPrefix, '', $channelName)] = ucwords($channelName);
+      $groupChannel[str_replace($containerPrefix, '', $channelName)] = ucwords(str_replace($containerPrefix, '', $channelName));
     }
     $form->assign('groupChannel', $groupChannel ?? []);
 
@@ -614,7 +614,7 @@ class CRM_Gdpr_CommunicationsPreferences_Utils {
    * @param array $submittedValues
    *
    * @return array|false|null
-   * @throws \API_Exception
+   * @throws \CRM_Core_Exception
    * @throws \Civi\API\Exception\UnauthorizedException
    */
   public static function createCommsPrefActivity($contactID, $submittedValues = []) {

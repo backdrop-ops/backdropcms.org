@@ -124,9 +124,7 @@ class CRM_Gdpr_Form_Search_ActivityContact extends CRM_Contact_Form_Search_Custo
     $count  = 1;
     $clause = [];
     $where = "(1)";
-    $name   = CRM_Utils_Array::value('contact_name',
-      $this->_formValues
-    );
+    $name = $this->_formValues['contact_name'] ?? NULL;
     if (!empty($name)) {
       $gdprParams = ['contact_name' => $name];
     }

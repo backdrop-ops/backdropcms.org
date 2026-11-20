@@ -9,10 +9,6 @@ The [GDPR extension](https://github.com/veda-consulting/uk.co.vedaconsulting.gdp
 * [GitHub Issue Queue](https://github.com/veda-consulting/uk.co.vedaconsulting.gdpr/issues)
 * [Q&A on StackExchange](http://civicrm.stackexchange.com/questions/tagged/gdpr) (with the `gdpr` tag)
 
-## Requirements
-
-* CiviCRM 4.7 or higher
-
 ## Known Issues
 
 You can see any ongoing issues/discussions at the [Issue Queue](https://github.com/veda-consulting/uk.co.vedaconsulting.gdpr/issues)

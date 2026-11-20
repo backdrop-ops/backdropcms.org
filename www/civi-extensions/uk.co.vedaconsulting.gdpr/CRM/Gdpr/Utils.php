@@ -330,7 +330,7 @@ WHERE s.contact_id = %1 ORDER BY s.date DESC";
     if (!empty($params['context']) && $params['context'] == 'activitycontactlist') {
       $params['offset'] = ($params['page'] - 1) * $params['rp'];
       $params['rowCount'] = $params['rp'];
-      $params['sort'] = CRM_Utils_Array::value('sortBy', $params);
+      $params['sort'] = $params['sortBy'] ?? NULL;
 
       if (!empty($params['rowCount']) && is_numeric($params['rowCount'])
         && is_numeric($params['offset']) && $params['rowCount'] > 0
@@ -662,7 +662,7 @@ WHERE url.time_stamp > '{$date}'";
       $xmlString = file_get_contents($file);
       $load = $dom->loadXML($xmlString);
       if (!$load) {
-        $status['error'][] = E::ts("Error loading {$fileName}.xml file while installing");
+        $status['error'][] = E::ts("Error loading %1 file while installing", [1 => "{$fileName}.xml"]);
       }
       $dom->xinclude();
       $xml = simplexml_import_dom($dom);
@@ -682,7 +682,7 @@ WHERE url.time_stamp > '{$date}'";
             $customGroup = new $className();
             $customGroup->name = $entitiesXML->name;
             if (!$customGroup->find(TRUE)) {
-              $status['error'][] = E::ts("$entitiesXML->name {$entities} is not found.");
+              $status['error'][] = E::ts("%1 is not found.", [1 => "$entitiesXML->name $entities"]);
             }
           }
         }

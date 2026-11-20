@@ -14,12 +14,12 @@ class CRM_Airmail_Backend_Sendgrid implements CRM_Airmail_Backend {
 
   public function processMessages($events) {
     foreach ($events as $event) {
-      if (empty($event->civimail_source)) {
+      if (empty($event['civimail_source'])) {
         // Something that wasn't sent through a CiviMail job
         continue;
       }
 
-      $mailingJobInfo = E::parseSourceString($event->civimail_source);
+      $mailingJobInfo = E::parseSourceString($event['civimail_source']);
 
       $params = [
         'job_id' => $mailingJobInfo['job_id'],
@@ -27,7 +27,7 @@ class CRM_Airmail_Backend_Sendgrid implements CRM_Airmail_Backend {
         'hash' => $mailingJobInfo['hash'],
       ];
 
-      switch ($event->event) {
+      switch ($event['event']) {
         case 'deferred':
           // temp failure, just write it to the log
           Civi::log()->debug("Sendgrid webhook (deferred)\n" . print_r($event, TRUE));
@@ -35,7 +35,7 @@ class CRM_Airmail_Backend_Sendgrid implements CRM_Airmail_Backend {
 
         case 'blocked':
         case 'bounce':
-          $params['body'] = $event->reason;
+          $params['body'] = $event['reason'];
           CRM_Airmail_EventAction::bounce($params);
           break;
 
@@ -48,7 +48,7 @@ class CRM_Airmail_Backend_Sendgrid implements CRM_Airmail_Backend {
           break;
 
         case 'dropped':
-          $reason = empty($event->reason) ? E::ts('No reason') : $event->reason;
+          $reason = empty($event['reason']) ? E::ts('No reason') : $event['reason'];
           $params['body'] = E::ts('Dropped: %1', [1 => $reason]);
           CRM_Airmail_EventAction::bounce($params);
           break;
@@ -58,7 +58,7 @@ class CRM_Airmail_Backend_Sendgrid implements CRM_Airmail_Backend {
           break;
 
         case 'click':
-          $params['url'] = $event->url;
+          $params['url'] = $event['url'];
           CRM_Airmail_EventAction::click($params);
           break;
       }

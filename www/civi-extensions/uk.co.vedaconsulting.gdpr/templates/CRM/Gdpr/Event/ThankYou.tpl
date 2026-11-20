@@ -95,7 +95,7 @@
 
       //On comms preference submission
       $("#comm_pref_submit").click(function(){
-        var ajaxURL = {/literal}'{crmURL p="civicrm/ajax/rest" h=0 q="className=CRM_Gdpr_Page_AJAX&fnName=commPreferenceSubmission&json=1"}'{literal};
+        var ajaxURL = {/literal}'{crmURL p="civicrm/ajax/gdprcommpreferencesubmission" h=0}'{literal};
 
         //gather all information we need to update comms preference
         var updatePreferenceData = {};

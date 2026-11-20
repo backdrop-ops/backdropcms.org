@@ -638,7 +638,7 @@ class CRM_Gdpr_Form_Export extends CRM_Core_Form {
     // as multi-row custom data are not returned via API
     $tableName = $entity['table_name'];
     $sql = "SELECT {$selectColumns} FROM {$tableName} WHERE entity_id = %1";
-    $params = array(1 => array($entityId, 'Integer'));
+    $params = [1 => [$entityId, 'Integer']];
     $dao = CRM_Core_DAO::executeQuery($sql, $params);
     $customData = [];
     while($dao->fetch()) {

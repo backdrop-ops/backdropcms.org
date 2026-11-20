@@ -264,7 +264,7 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
         if(!empty($fields[$groupEleName]) && ($diff = array_diff_assoc($groupChannelArray, $channelArray))){
           //do something here.
           $diff = implode(', ', array_keys($diff));
-          $errors[$groupEleName] = E::ts("Communication Preferences {$diff} has to be selected for this group");
+          $errors[$groupEleName] = E::ts("Communication Preferences %1 has to be selected for this group", [1 => $diff]);
         }
       }
     }
@@ -305,7 +305,7 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
       }
     }
     //#7955 params from URL
-    $emailPrimary = CRM_Utils_Request::retrieve('field_email', 'String', CRM_Core_DAO::$_nullObject);
+    $emailPrimary = CRM_Utils_Request::retrieve('field_email', 'String', NULL);
     if ($emailPrimary) {
       $defaults['email-Primary'] = $emailPrimary;
     }
@@ -378,7 +378,7 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
 
     $tplParams = [
       'email' => $email,
-      'confirm_email_text' => CRM_Utils_Array::value('confirm_email_text', $this->commPrefSettings),
+      'confirm_email_text' => $this->commPrefSettings['confirm_email_text'] ?? NULL,
       'display_name' => $displayName,
     ];
 
@@ -389,12 +389,12 @@ class CRM_Gdpr_Form_UpdatePreference extends CRM_Core_Form {
       'tplParams' => $tplParams,
     ];
 
-    $sendTemplateParams['from'] = CRM_Utils_Array::value('confirm_from_name', $this->commPrefSettings) . " <" . CRM_Utils_Array::value('confirm_from_email', $this->commPrefSettings) . ">";
+    $sendTemplateParams['from'] = $this->commPrefSettings['confirm_from_name'] ?? NULL . " <" . ($this->commPrefSettings['confirm_from_email'] ?? '') . ">";
     $sendTemplateParams['toName'] = $displayName;
     $sendTemplateParams['toEmail'] = $email;
     $sendTemplateParams['autoSubmitted'] = TRUE;
-    $sendTemplateParams['cc'] = CRM_Utils_Array::value('cc_confirm', $this->commPrefSettings);
-    $sendTemplateParams['bcc'] = CRM_Utils_Array::value('bcc_confirm', $this->commPrefSettings);
+    $sendTemplateParams['cc'] = $this->commPrefSettings['cc_confirm'] ?? NULL;
+    $sendTemplateParams['bcc'] = $this->commPrefSettings['bcc_confirm'] ?? NULL;
     CRM_Core_BAO_MessageTemplate::sendTemplate($sendTemplateParams);
   }
 

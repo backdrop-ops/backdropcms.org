@@ -160,7 +160,7 @@ class CRM_Gdpr_Form_Search_GroupcontactDetails extends CRM_Contact_Form_Search_C
     $this->_params = CRM_Contact_BAO_Query::convertFormValues($this->_formValues);
 
     //Filter by Name
-    $name   = CRM_Utils_Array::value('sort_name', $this->_formValues);
+    $name   = $this->_formValues['sort_name'] ?? NULL;
     if ($name != NULL) {
       if (strpos($name, '%') === FALSE) {
         $name = "%{$name}%";
@@ -171,7 +171,7 @@ class CRM_Gdpr_Form_Search_GroupcontactDetails extends CRM_Contact_Form_Search_C
     }
 
     //filter by Group
-    $group_id   = CRM_Utils_Array::value('group_id', $this->_formValues);
+    $group_id   = $this->_formValues['group_id'] ?? NULL;
     if ($group_id != NULL) {
       $params[$count] = [$group_id, 'Integer'];
       $clause[] = "group_contact.group_id = %{$count}";
@@ -179,7 +179,7 @@ class CRM_Gdpr_Form_Search_GroupcontactDetails extends CRM_Contact_Form_Search_C
     }
 
     //filter by group contact status
-    $group_status   = CRM_Utils_Array::value('group_contact_status', $this->_formValues);
+    $group_status   = $this->_formValues['group_contact_status'] ?? NULL;
     if (!empty($group_status)) {
       $status   = '"'.implode('", "', array_keys($group_status)).'"';
       $clause[] = "group_contact.status IN ({$status})";

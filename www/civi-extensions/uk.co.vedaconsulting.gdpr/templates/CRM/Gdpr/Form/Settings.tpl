@@ -378,7 +378,7 @@
 
   //On Fix custom data submission
   $("#fix_custom_data").click(function(){
-    var ajaxURL = {/literal}'{crmURL p="civicrm/ajax/rest" h=0 q="className=CRM_Gdpr_Page_AJAX&fnName=reRunInstallationCustomData&json=1"}'{literal};
+    var ajaxURL = {/literal}'{crmURL p="civicrm/ajax/gdprreruninstallationcustomdata" h=0}'{literal};
 
     $.ajax({
       type: "POST",

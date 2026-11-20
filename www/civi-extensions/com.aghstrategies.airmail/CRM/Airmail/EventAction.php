@@ -16,7 +16,7 @@ class CRM_Airmail_EventAction {
     try {
       $bounceEvent = civicrm_api3('Mailing', 'event_bounce', $params);
     }
-    catch (CiviCRM_API3_Exception $e) {
+    catch (CRM_Core_Exception $e) {
       CRM_Core_Error::debug_log_message("Airmail API error (bounce)\n" . $e->getMessage());
     }
   }
@@ -25,7 +25,7 @@ class CRM_Airmail_EventAction {
     try {
       $result = civicrm_api3('MailingEventUnsubscribe', 'create', $params);
     }
-    catch (CiviCRM_API3_Exception $e) {
+    catch (CRM_Core_Exception $e) {
       CRM_Core_Error::debug_log_message("Airmail API error (unsubscribe)" . $e->getMessage());
     }
   }

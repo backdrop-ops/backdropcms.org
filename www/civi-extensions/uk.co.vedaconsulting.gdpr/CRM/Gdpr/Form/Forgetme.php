@@ -85,7 +85,7 @@ class CRM_Gdpr_Form_Forgetme extends CRM_Core_Form {
 
     // return, if entity or params are not passed
     if (!$entity || empty($params)) {
-      CRM_Core_Session::setStatus(E::ts("{$entity} records has not been deleted."), E::ts('Record not Deleted cleanly'), 'error');
+      CRM_Core_Session::setStatus(E::ts("%1 records has not been deleted.", [1 => $entity ?? '']), E::ts('Record not Deleted cleanly'), 'error');
       return;
     }
 
@@ -190,8 +190,8 @@ class CRM_Gdpr_Form_Forgetme extends CRM_Core_Form {
     //Now we have all details to send email notification to Point of Contact/DPO
     if ($emailToDPO && $dpoContactEmail) {
 
-      $defaultSubject = E::ts("{$contactID} has been anonymized");
-      $msg = E::ts("Contact ID : {$contactID} has been anonymized.");
+      $defaultSubject = E::ts("%1 has been anonymized", [1 => $contactID]);
+      $msg = E::ts("Contact ID : %1 has been anonymized.", [1 => $contactID]);
 
       //get the default domain email address.
       list($domainEmailName, $domainEmailAddress) = CRM_Core_BAO_Domain::getNameAndEmail();

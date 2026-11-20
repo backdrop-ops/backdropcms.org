@@ -23,17 +23,17 @@ function _civicrm_api3_contact_Anonymize_spec(&$spec) {
  * @return array API result descriptor
  * @see civicrm_api3_create_success
  * @see civicrm_api3_create_error
- * @throws API_Exception
+ * @throws CRM_Core_Exception
  */
 function civicrm_api3_contact_Anonymize($params) {
-  $contactID = CRM_Utils_Array::value('id', $params);
+  $contactID = $params['id'] ?? NULL;
 
   if (!empty($params['check_permissions']) && !CRM_Contact_BAO_Contact_Permission::allow($contactID, CRM_Core_Permission::DELETE)) {
     throw new \Civi\API\Exception\UnauthorizedException('Permission denied to modify contact record');
   }
   $session = CRM_Core_Session::singleton();
   if ($contactID == $session->get('userID')) {
-    throw new API_Exception('This contact record is linked to the currently logged in user account - and cannot be anonymized.');
+    throw new CRM_Core_Exception('This contact record is linked to the currently logged in user account - and cannot be anonymized.');
   }
   $result = CRM_Gdpr_Utils::anonymizeContact($contactID);
 
@@ -41,6 +41,6 @@ function civicrm_api3_contact_Anonymize($params) {
     return civicrm_api3_create_success($result['values'], $params);
   }
   else {
-     throw new API_Exception($result['error_message'], $result['error_code']);
+     throw new CRM_Core_Exception($result['error_message'], $result['error_code']);
   }
 }

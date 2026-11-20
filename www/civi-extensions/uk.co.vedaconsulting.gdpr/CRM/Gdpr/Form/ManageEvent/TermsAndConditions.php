@@ -186,7 +186,7 @@ class CRM_Gdpr_Form_ManageEvent_TermsAndConditions extends CRM_Event_Form_Manage
     }
     if ($this->versionIs('4.6')) {
       $customFields = CRM_Core_BAO_CustomField::getFields('Event', FALSE, FALSE,
-          CRM_Utils_Array::value('event_type_id', $params)
+          $params['event_type_id'] ?? NULL
       );
       $params['custom'] = CRM_Core_BAO_CustomField::postProcess(
         $params,

@@ -7,7 +7,7 @@ class CRM_Gdpr_Page_Tab extends CRM_Core_Page {
 
   public function run() {
   	// Retrieve contact id from url
-  	$contactId = CRM_Utils_Request::retrieve('cid', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
+  	$contactId = CRM_Utils_Request::retrieve('cid', 'Positive', NULL, TRUE);
 
   	// Get all group subscription
   	$groupSubscriptions = CRM_Gdpr_Utils::getallGroupSubscription($contactId);

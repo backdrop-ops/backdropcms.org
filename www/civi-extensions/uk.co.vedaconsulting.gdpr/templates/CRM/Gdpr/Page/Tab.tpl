@@ -2,9 +2,9 @@
 {if $crmPermissions->check('forget contact')}
 <div class="action-link">
   {capture assign=forgetMeURL}{crmURL p="civicrm/gdpr/forgetme" q="reset=1&cid=`$contactId`"}{/capture}
-  <a href="{$forgetMeURL}" class="button small-popup"><span><i class="crm-i fa-chain-broken"></i> {ts}Forget Me{/ts}</span></a>
+  <a href="{$forgetMeURL}" class="button small-popup"><span><i class="crm-i fa-chain-broken" role="img" aria-hidden="true"></i> {ts}Forget Me{/ts}</span></a>
   {capture assign=exportURL}{crmURL p="civicrm/gdpr/export" q="reset=1&cid=`$contactId`"}{/capture}
-  <a href="{$exportURL}" class="button no-popup"><span><i class="crm-i fa-check"></i> {ts}Export{/ts}</span></a>
+  <a href="{$exportURL}" class="button no-popup"><span><i class="crm-i fa-check" role="img" aria-hidden="true"></i> {ts}Export{/ts}</span></a>
   <br/><br/>
 </div>
 {/if}

@@ -65,7 +65,7 @@ function gdpr_civicrm_alterContent(&$content, $context, $tplName, &$object) {
     require_once "CRM/Logging/Schema.php";
     $config = CRM_Core_Config::singleton();
     if ($config->logging) {
-      $addressHistoryAjaxUrl = CRM_Utils_System::url('civicrm/ajax/rest', 'className=CRM_Gdpr_Page_AJAX&fnName=getAddressHistory&json=1');
+      $addressHistoryAjaxUrl = CRM_Utils_System::url('civicrm/ajax/gdpraddresshistory');
 
       $addressHistoryContent = <<<EOD
 <script type="text/javascript">
